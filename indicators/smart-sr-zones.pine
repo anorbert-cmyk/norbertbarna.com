@@ -1,0 +1,674 @@
+// This Pine Script™ indicator is subject to the terms of the Mozilla Public License 2.0
+// https://mozilla.org/MPL/2.0/
+//
+// Smart S/R Zones — Full Market Maker Intelligence, Retail-Clean Display
+//
+// What you see:  Clean Support & Resistance zones with strength scores (0-100%).
+// What drives it: 10+ institutional concepts working invisibly behind every zone.
+//
+// Hidden engines: auto-calibrated pivots, displacement, fair value gaps,
+// order blocks, change of character, dealing ranges, equal highs/lows,
+// premium/discount positioning, liquidity sweeps, smart flip logic.
+//
+// You will NEVER see "FVG", "CHoCH", or "OB" on the chart.
+// You WILL see: "Key Support (92%)" or "Weak Resistance (28%)".
+//
+// @version=5
+indicator("Smart S/R Zones", shorttitle="Smart-SR", overlay=true,
+     max_boxes_count=500, max_labels_count=500, max_lines_count=500)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+grp_core = "═══ Core ═══"
+autoCalib   = input.bool(true, "Auto-Calibrate Sensitivity",   group=grp_core,
+                 tooltip="Derives optimal sensitivity from the instrument's own price rhythm.")
+pivotLen_in = input.int(8, "Pivot Length (manual)",             group=grp_core, minval=2, maxval=50,
+                 tooltip="Only used when Auto-Calibrate is OFF.")
+maxZones    = input.int(15, "Max Visible Zones",               group=grp_core, options=[8, 10, 12, 15, 20, 25])
+zoneAtrMult = input.float(0.5, "Zone Thickness (× ATR)",       group=grp_core, minval=0.1, maxval=2.0, step=0.1)
+maxRetests  = input.int(4, "Max Retests Before Fade",           group=grp_core, minval=1, maxval=10,
+                 tooltip="After this many touches, a zone weakens significantly.")
+
+grp_vis = "═══ Display ═══"
+supColor    = input.color(#26A69A, "Support Color",             group=grp_vis)
+resColor    = input.color(#EF5350, "Resistance Color",          group=grp_vis)
+showLabels  = input.bool(true, "Show Zone Labels",              group=grp_vis)
+showStrPct  = input.bool(true, "Show Strength %",               group=grp_vis)
+showTable   = input.bool(true, "Show Info Panel",               group=grp_vis)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AUTO-CALIBRATION ENGINE
+// ══════════════════════════════════════════════════════════════════════════════
+
+var array<int> runLengths = array.new_int(0)
+var int curRun = 1
+var int curDir = 0
+
+runDir = close > close[1] ? 1 : close < close[1] ? -1 : curDir
+if runDir == curDir or curDir == 0
+    curRun += 1
+    curDir := runDir != 0 ? runDir : curDir
+else
+    if curRun > 0
+        array.push(runLengths, curRun)
+        if array.size(runLengths) > 200
+            array.shift(runLengths)
+    curRun := 1
+    curDir := runDir
+
+PHI = 2.618
+
+calibMinor() =>
+    if array.size(runLengths) < 20
+        3
+    else
+        sum = 0.0
+        for i = 0 to array.size(runLengths) - 1
+            sum += array.get(runLengths, i)
+        math.max(math.round(sum / array.size(runLengths)), 2)
+
+calibMajor() =>
+    cm = calibMinor()
+    math.max(math.round(cm * PHI), cm + 2)
+
+pivotLen  = autoCalib ? calibMajor() : pivotLen_in
+pivotLenM = autoCalib ? calibMinor() : math.max(math.round(pivotLen_in / PHI), 2)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CORE DETECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+atrVal = ta.atr(14)
+
+// Structural pivots (create zones)
+ph = ta.pivothigh(high, pivotLen, pivotLen)
+pl = ta.pivotlow(low, pivotLen, pivotLen)
+
+// Minor pivots (sweep reference & equal level detection)
+phM = ta.pivothigh(high, pivotLenM, pivotLenM)
+plM = ta.pivotlow(low, pivotLenM, pivotLenM)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIDDEN ENGINE 1: DISPLACEMENT
+// ══════════════════════════════════════════════════════════════════════════════
+
+candleRange = high - low
+candleBody  = math.abs(close - open)
+bodyPct     = candleRange > 0 ? (candleBody / candleRange) * 100.0 : 0.0
+dispUp      = bodyPct >= 70.0 and close > open and candleRange > nz(atrVal) * 0.8
+dispDown    = bodyPct >= 70.0 and close < open and candleRange > nz(atrVal) * 0.8
+
+var int lastDispBar = 0
+var int lastDispDir = 0
+if dispUp
+    lastDispBar := bar_index
+    lastDispDir := 1
+if dispDown
+    lastDispBar := bar_index
+    lastDispDir := -1
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIDDEN ENGINE 2: FAIR VALUE GAP
+// ══════════════════════════════════════════════════════════════════════════════
+
+bullFVG = low > high[2]
+bearFVG = high < low[2]
+
+var float fvgTop = na
+var float fvgBot = na
+var int   fvgBar = 0
+
+if bullFVG
+    fvgTop := low
+    fvgBot := high[2]
+    fvgBar := bar_index - 1
+if bearFVG
+    fvgTop := low[2]
+    fvgBot := high
+    fvgBar := bar_index - 1
+
+hasFVGnear(price) =>
+    not na(fvgTop) and not na(fvgBot) and bar_index - fvgBar <= 10 and
+     price >= fvgBot - nz(atrVal) * 0.3 and price <= fvgTop + nz(atrVal) * 0.3
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIDDEN ENGINE 3: ORDER BLOCKS
+// ══════════════════════════════════════════════════════════════════════════════
+
+var float obBullHi  = na
+var float obBullLo  = na
+var int   obBullBar = 0
+var float obBearHi  = na
+var float obBearLo  = na
+var int   obBearBar = 0
+
+if dispUp
+    obBullHi := na
+    obBullLo := na
+    for k = 1 to 5
+        if close[k] < open[k]
+            obBullHi := high[k]
+            obBullLo := low[k]
+            obBullBar := bar_index - k
+            break
+
+if dispDown
+    obBearHi := na
+    obBearLo := na
+    for k = 1 to 5
+        if close[k] > open[k]
+            obBearHi := high[k]
+            obBearLo := low[k]
+            obBearBar := bar_index - k
+            break
+
+nearOB(price, forSupport) =>
+    if forSupport and not na(obBullHi)
+        price >= obBullLo - nz(atrVal) * 0.3 and price <= obBullHi + nz(atrVal) * 0.3 and
+         bar_index - obBullBar <= 50
+    else if not forSupport and not na(obBearHi)
+        price >= obBearLo - nz(atrVal) * 0.3 and price <= obBearHi + nz(atrVal) * 0.3 and
+         bar_index - obBearBar <= 50
+    else
+        false
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIDDEN ENGINE 4: CHoCH — TREND BIAS
+// ══════════════════════════════════════════════════════════════════════════════
+
+var float swHi = na
+var float swLo = na
+var int   trendBias = 0
+
+if not na(ph)
+    swHi := ph
+if not na(pl)
+    swLo := pl
+
+if not na(swHi) and trendBias <= 0 and close > swHi
+    trendBias := 1
+if not na(swLo) and trendBias >= 0 and close < swLo
+    trendBias := -1
+if trendBias == 0
+    trendBias := close > close[20] ? 1 : -1
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIDDEN ENGINE 5: DEALING RANGE & MARKET PHASE
+// ══════════════════════════════════════════════════════════════════════════════
+
+dealWin     = 10
+recHigh     = ta.highest(high, dealWin)
+recLow      = ta.lowest(low, dealWin)
+recRange    = recHigh - recLow
+avgTrRange  = ta.sma(ta.tr(true), dealWin * 3) * dealWin
+isDealRange = avgTrRange > 0 and (recRange / avgTrRange * 100.0) < 40.0
+
+// Phase: 1=Building(accumulation), 2=Shakeout(manipulation), 3=Trending(distribution)
+var int mktPhase  = 0
+var int phaseBars = 0
+
+if mktPhase == 0 and isDealRange
+    mktPhase  := 1
+    phaseBars := 0
+if mktPhase == 1
+    phaseBars += 1
+    if not isDealRange and phaseBars >= 5
+        mktPhase  := 2
+        phaseBars := 0
+if mktPhase == 2
+    phaseBars += 1
+    if dispUp or dispDown
+        mktPhase  := 3
+        phaseBars := 0
+    if phaseBars > 20
+        mktPhase := 0
+if mktPhase == 3
+    phaseBars += 1
+    if phaseBars > 30 or isDealRange
+        mktPhase := 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIDDEN ENGINE 6: EQUAL HIGHS/LOWS (LIQUIDITY POOLS)
+// ══════════════════════════════════════════════════════════════════════════════
+
+var array<float> eqHiPrices = array.new_float(0)
+var array<float> eqLoPrices = array.new_float(0)
+
+if not na(ph)
+    array.push(eqHiPrices, ph)
+    if array.size(eqHiPrices) > 10
+        array.shift(eqHiPrices)
+if not na(pl)
+    array.push(eqLoPrices, pl)
+    if array.size(eqLoPrices) > 10
+        array.shift(eqLoPrices)
+
+hasEqLevel(price, isHigh) =>
+    arr = isHigh ? eqHiPrices : eqLoPrices
+    cnt = 0
+    if array.size(arr) >= 2
+        for i = 0 to array.size(arr) - 1
+            if math.abs(array.get(arr, i) - price) < nz(atrVal) * 0.3
+                cnt += 1
+    cnt >= 2
+
+// ══════════════════════════════════════════════════════════════════════════════
+// HIDDEN ENGINE 7: PREMIUM / DISCOUNT
+// ══════════════════════════════════════════════════════════════════════════════
+
+rangeMid = (recHigh + recLow) / 2.0
+
+pdBonus(price, isSup) =>
+    if isSup and price < rangeMid
+        10.0
+    else if not isSup and price > rangeMid
+        10.0
+    else
+        0.0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ZONE DATA STRUCTURE
+// ══════════════════════════════════════════════════════════════════════════════
+
+type SRZone
+    box      bx
+    label    lbl
+    float    price
+    float    top
+    float    bot
+    bool     isRes
+    float    strength
+    int      retests
+    int      lastRetBI
+    bool     wasSwept
+    bool     hadDisp
+    bool     hadFVG
+    bool     hadOB
+    bool     hadEQL
+    bool     chochAl
+    bool     dealBorn
+    int      createdBar
+    bool     active
+
+var array<SRZone> zones = array.new<SRZone>()
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPOSITE STRENGTH CALCULATOR (0–100)
+// ══════════════════════════════════════════════════════════════════════════════
+//
+// Every factor is pure market structure — no RSI, no BB, no volume SMA.
+//
+//   Sweep + held:        +20  (market maker stop hunt confirmed)
+//   Displacement:        +15  (institutional aggression)
+//   Fair Value Gap:      +15  (imbalance confirms level)
+//   Order Block:         +15  (institutional entry point)
+//   Equal Highs/Lows:    +10  (liquidity magnet)
+//   CHoCH aligned:       +10  (trend-confirmed zone)
+//   Dealing range born:   +8  (accumulation origin)
+//   Premium/Discount:    +10  (smart money positioning)
+//   Base pivot:           25  (structural level)
+//   Retest penalty:       -8  per retest
+
+calcStr(swept, disp, fvg, ob, eql, chAl, deal, ret, price, isSup) =>
+    s = 25.0
+    if swept
+        s += 20.0
+    if disp
+        s += 15.0
+    if fvg
+        s += 15.0
+    if ob
+        s += 15.0
+    if eql
+        s += 10.0
+    if chAl
+        s += 10.0
+    if deal
+        s += 8.0
+    s += pdBonus(price, isSup)
+    s -= ret * 8.0
+    math.max(math.min(s, 100.0), 0.0)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ZONE CREATION
+// ══════════════════════════════════════════════════════════════════════════════
+
+createZone(isRes, price, pivotBar, fromOB, fromFVG) =>
+    if not na(atrVal) and atrVal > 0
+        half = atrVal * zoneAtrMult
+        zT   = price + half
+        zB   = price - half
+
+        // Overlap check — boost existing zone instead of duplicate
+        skip = false
+        if array.size(zones) > 0
+            for i = 0 to array.size(zones) - 1
+                z = array.get(zones, i)
+                if z.active and math.abs(z.price - price) < atrVal * 0.8
+                    z.strength := math.min(z.strength + 10.0, 100.0)
+                    skip := true
+                    break
+
+        if not skip
+            // Scan for displacement near pivot
+            offset = math.max(bar_index - pivotBar, 0)
+            hasD = false
+            for k = 0 to 5
+                idx = offset + k
+                if idx > 0 and idx < bar_index
+                    bR = high[idx] - low[idx]
+                    bB = math.abs(close[idx] - open[idx])
+                    if bR > 0 and (bB / bR * 100.0) >= 70.0
+                        hasD := true
+                        break
+
+            hasF  = hasFVGnear(price) or fromFVG
+            hasO  = nearOB(price, not isRes) or fromOB
+            hasE  = hasEqLevel(price, isRes)
+            chA   = (isRes and trendBias == -1) or (not isRes and trendBias == 1)
+            dBorn = isDealRange
+
+            isSup = not isRes
+            zStr  = calcStr(false, hasD, hasF, hasO, hasE, chA, dBorn, 0, price, isSup)
+
+            if zStr >= 20.0
+                bx  = box.new(pivotBar, zT, bar_index, zB,
+                     border_color=color.new(color.white, 100),
+                     bgcolor=color.new(color.white, 100))
+                lbl = label.new(na, na, "", style=label.style_none, size=size.tiny)
+                array.push(zones, SRZone.new(bx, lbl, price, zT, zB, isRes, zStr,
+                     0, 0, false, hasD, hasF, hasO, hasE, chA, dBorn, bar_index, true))
+
+// ── Cleanup: keep array under control ──
+if array.size(zones) > 200
+    cnt = 0
+    while array.size(zones) > 150 and cnt < 100
+        old = array.get(zones, 0)
+        box.delete(old.bx)
+        label.delete(old.lbl)
+        array.remove(zones, 0)
+        cnt += 1
+
+// ── Create zones from structural pivots ──
+if not na(ph)
+    createZone(true, ph, bar_index - pivotLen, false, false)
+if not na(pl)
+    createZone(false, pl, bar_index - pivotLen, false, false)
+
+// ── Create zones from FVG imbalances (appear as regular S/R) ──
+if bullFVG
+    createZone(false, (low + high[2]) / 2.0, bar_index - 1, false, true)
+if bearFVG
+    createZone(true, (low[2] + high) / 2.0, bar_index - 1, false, true)
+
+// ── Create zones from order blocks ──
+if dispUp and not na(obBullLo) and bar_index - obBullBar <= 3
+    createZone(false, (obBullHi + obBullLo) / 2.0, obBullBar, true, false)
+if dispDown and not na(obBearLo) and bar_index - obBearBar <= 3
+    createZone(true, (obBearHi + obBearLo) / 2.0, obBearBar, true, false)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ZONE LIFECYCLE — RETEST, SWEEP, FLIP, INVALIDATION
+// ══════════════════════════════════════════════════════════════════════════════
+
+if array.size(zones) > 0
+    for i = 0 to array.size(zones) - 1
+        z = array.get(zones, i)
+        if not z.active
+            continue
+
+        touches  = high >= z.bot and low <= z.top
+        clAbove  = close > z.top
+        clBelow  = close < z.bot
+        clInside = close >= z.bot and close <= z.top
+
+        // ── Retest: touch + respect, with cooldown ──
+        isRetest = touches and (clInside or (z.isRes and clBelow) or (not z.isRes and clAbove))
+        if isRetest and bar_index > z.createdBar + pivotLen and bar_index - z.lastRetBI >= 3
+            z.retests   += 1
+            z.lastRetBI := bar_index
+            z.strength  := calcStr(z.wasSwept, z.hadDisp, z.hadFVG, z.hadOB, z.hadEQL,
+                 z.chochAl, z.dealBorn, z.retests, z.price, not z.isRes)
+
+        // ── Sweep: wick through + close back = stop hunt → strengthen ──
+        if z.isRes and high > z.top and close < z.top and not z.wasSwept
+            z.wasSwept := true
+            z.strength := calcStr(true, z.hadDisp, z.hadFVG, z.hadOB, z.hadEQL,
+                 z.chochAl, z.dealBorn, z.retests, z.price, not z.isRes)
+        if not z.isRes and low < z.bot and close > z.bot and not z.wasSwept
+            z.wasSwept := true
+            z.strength := calcStr(true, z.hadDisp, z.hadFVG, z.hadOB, z.hadEQL,
+                 z.chochAl, z.dealBorn, z.retests, z.price, not z.isRes)
+
+        // ── Smart Flip ──
+        // Displacement through = strong flip (institutional), drift = weak flip
+        if z.isRes and clAbove
+            if bodyPct >= 70.0 and close > open
+                z.isRes   := false
+                z.hadDisp := true
+                z.retests := 0
+                z.chochAl := trendBias == 1
+                z.strength := calcStr(z.wasSwept, true, z.hadFVG, z.hadOB, z.hadEQL,
+                     z.chochAl, z.dealBorn, 0, z.price, true)
+            else
+                z.isRes    := false
+                z.retests  += 1
+                z.strength := calcStr(z.wasSwept, z.hadDisp, z.hadFVG, z.hadOB, z.hadEQL,
+                     z.chochAl, z.dealBorn, z.retests, z.price, true)
+
+        if not z.isRes and clBelow
+            if bodyPct >= 70.0 and close < open
+                z.isRes   := true
+                z.hadDisp := true
+                z.retests := 0
+                z.chochAl := trendBias == -1
+                z.strength := calcStr(z.wasSwept, true, z.hadFVG, z.hadOB, z.hadEQL,
+                     z.chochAl, z.dealBorn, 0, z.price, false)
+            else
+                z.isRes    := true
+                z.retests  += 1
+                z.strength := calcStr(z.wasSwept, z.hadDisp, z.hadFVG, z.hadOB, z.hadEQL,
+                     z.chochAl, z.dealBorn, z.retests, z.price, false)
+
+        // ── Invalidation ──
+        if z.retests >= maxRetests + 2 or z.strength < 5.0
+            box.delete(z.bx)
+            label.delete(z.lbl)
+            z.active := false
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DISPLAY
+// ══════════════════════════════════════════════════════════════════════════════
+
+if barstate.islast
+    // Build visible list
+    var array<SRZone> vis = array.new<SRZone>()
+    array.clear(vis)
+
+    if array.size(zones) > 0
+        for i = 0 to array.size(zones) - 1
+            z = array.get(zones, i)
+            if z.active and z.strength >= 15.0
+                array.push(vis, z)
+
+    // Sort: closest + strongest first
+    if array.size(vis) > 1
+        for i = 0 to array.size(vis) - 2
+            for j = i + 1 to array.size(vis) - 1
+                a = array.get(vis, i)
+                b = array.get(vis, j)
+                sa = math.abs(close - a.price) / math.max(a.strength, 1.0)
+                sb = math.abs(close - b.price) / math.max(b.strength, 1.0)
+                if sa > sb
+                    array.set(vis, i, b)
+                    array.set(vis, j, a)
+
+    showN = math.min(array.size(vis), maxZones)
+
+    // Reset all to invisible
+    if array.size(zones) > 0
+        for i = 0 to array.size(zones) - 1
+            z = array.get(zones, i)
+            if z.active
+                box.set_bgcolor(z.bx, color.new(color.white, 100))
+                box.set_border_color(z.bx, color.new(color.white, 100))
+                box.set_right(z.bx, bar_index + 20)
+                label.set_xy(z.lbl, na, na)
+                label.set_text(z.lbl, "")
+
+    // Render top N zones
+    if showN > 0
+        for i = 0 to showN - 1
+            z = array.get(vis, i)
+            baseCol = z.isRes ? resColor : supColor
+
+            // Opacity: stronger = more visible
+            baseTr = z.strength >= 75 ? 15.0 : z.strength >= 55 ? 30.0 : z.strength >= 35 ? 55.0 : 75.0
+            fade   = math.min(z.retests * 5.0, 12.0)
+            tr     = math.min(baseTr + fade, 90.0)
+
+            box.set_bgcolor(z.bx, color.new(baseCol, tr))
+            box.set_border_color(z.bx, color.new(baseCol, math.max(tr - 20.0, 0.0)))
+            box.set_border_width(z.bx, z.strength >= 75 ? 3 : z.strength >= 55 ? 2 : 1)
+            box.set_right(z.bx, bar_index + 20)
+
+            if showLabels
+                base = z.isRes ? "Resistance" : "Support"
+                word = z.strength >= 75 ? "Key " : z.strength >= 55 ? "Strong " : z.strength >= 35 ? "" : "Weak "
+                txt  = word + base
+                if showStrPct
+                    txt := txt + " (" + str.tostring(math.round(z.strength)) + "%)"
+
+                label.set_xy(z.lbl, bar_index + 21, z.price)
+                label.set_text(z.lbl, txt)
+                label.set_style(z.lbl, label.style_label_left)
+                label.set_color(z.lbl, color.new(baseCol, 25))
+                label.set_textcolor(z.lbl, z.strength >= 55 ? color.white : color.new(color.white, 30))
+                label.set_size(z.lbl, z.strength >= 75 ? size.small : size.tiny)
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // INFO TABLE
+    // ══════════════════════════════════════════════════════════════════════════
+
+    if showTable
+        var table tbl = table.new(position.top_right, 2, 8,
+             bgcolor=color.new(#1A1A2E, 10), frame_color=color.new(#FFFFFF, 70),
+             frame_width=1, border_color=color.new(#FFFFFF, 85), border_width=1)
+
+        // Header
+        table.cell(tbl, 0, 0, "Smart S/R Zones", text_color=color.white,
+             text_size=size.small, text_halign=text.align_left)
+        table.cell(tbl, 1, 0, "", text_color=color.gray,
+             text_size=size.tiny, text_halign=text.align_right)
+
+        // Trend
+        trendStr = trendBias == 1 ? "Bullish  ▲" : "Bearish  ▼"
+        trendCol = trendBias == 1 ? #26A69A : #EF5350
+        table.cell(tbl, 0, 1, "Trend:", text_color=trendCol,
+             text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 1, trendStr, text_color=trendCol,
+             text_size=size.tiny, text_halign=text.align_right)
+
+        // Phase (retail-friendly names)
+        phaseStr = mktPhase == 1 ? "Building" : mktPhase == 2 ? "Shakeout" : mktPhase == 3 ? "Trending" : "—"
+        phaseCol = mktPhase == 1 ? #2196F3 : mktPhase == 2 ? #FF9800 : mktPhase == 3 ? #4CAF50 : color.gray
+        table.cell(tbl, 0, 2, "Phase:", text_color=phaseCol,
+             text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 2, phaseStr, text_color=phaseCol,
+             text_size=size.tiny, text_halign=text.align_right)
+
+        // Nearest Support & Resistance
+        nearSupPrice = 0.0
+        nearSupStr   = 0.0
+        nearResPrice = 0.0
+        nearResStr   = 0.0
+        nearSupDist  = 999999999.0
+        nearResDist  = 999999999.0
+
+        if showN > 0
+            for i = 0 to showN - 1
+                z = array.get(vis, i)
+                d = math.abs(close - z.price)
+                if not z.isRes and d < nearSupDist
+                    nearSupDist  := d
+                    nearSupPrice := z.price
+                    nearSupStr   := z.strength
+                if z.isRes and d < nearResDist
+                    nearResDist  := d
+                    nearResPrice := z.price
+                    nearResStr   := z.strength
+
+        if nearSupPrice > 0
+            sWord = nearSupStr >= 75 ? "Key" : nearSupStr >= 55 ? "Strong" : nearSupStr >= 35 ? "Moderate" : "Weak"
+            table.cell(tbl, 0, 3, "Near. Support:", text_color=supColor,
+                 text_size=size.tiny, text_halign=text.align_left)
+            table.cell(tbl, 1, 3, str.tostring(nearSupPrice, format.mintick) + " (" + sWord + ")",
+                 text_color=supColor, text_size=size.tiny, text_halign=text.align_right)
+        else
+            table.cell(tbl, 0, 3, "Near. Support:", text_color=color.gray,
+                 text_size=size.tiny, text_halign=text.align_left)
+            table.cell(tbl, 1, 3, "—", text_color=color.gray,
+                 text_size=size.tiny, text_halign=text.align_right)
+
+        if nearResPrice > 0
+            rWord = nearResStr >= 75 ? "Key" : nearResStr >= 55 ? "Strong" : nearResStr >= 35 ? "Moderate" : "Weak"
+            table.cell(tbl, 0, 4, "Near. Resist:", text_color=resColor,
+                 text_size=size.tiny, text_halign=text.align_left)
+            table.cell(tbl, 1, 4, str.tostring(nearResPrice, format.mintick) + " (" + rWord + ")",
+                 text_color=resColor, text_size=size.tiny, text_halign=text.align_right)
+        else
+            table.cell(tbl, 0, 4, "Near. Resist:", text_color=color.gray,
+                 text_size=size.tiny, text_halign=text.align_left)
+            table.cell(tbl, 1, 4, "—", text_color=color.gray,
+                 text_size=size.tiny, text_halign=text.align_right)
+
+        // Active zones
+        table.cell(tbl, 0, 5, "Active Zones:", text_color=#00BCD4,
+             text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 5, str.tostring(showN), text_color=#00BCD4,
+             text_size=size.tiny, text_halign=text.align_right)
+
+        // Average zone quality
+        avgQ = 0.0
+        if showN > 0
+            qSum = 0.0
+            for i = 0 to showN - 1
+                qSum += array.get(vis, i).strength
+            avgQ := qSum / showN
+
+        qCol = avgQ >= 60 ? #4CAF50 : avgQ >= 40 ? #FF9800 : #EF5350
+        qBlocks = math.round(avgQ / 10)
+        qBar = ""
+        for i = 0 to 9
+            qBar := qBar + (i < qBlocks ? "█" : "░")
+
+        table.cell(tbl, 0, 6, "Zone Quality:", text_color=qCol,
+             text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 6, str.tostring(math.round(avgQ)) + "% " + qBar,
+             text_color=qCol, text_size=size.tiny, text_halign=text.align_right)
+
+        // Sensitivity
+        calStr = autoCalib ? "Auto: " + str.tostring(pivotLen) : "Manual: " + str.tostring(pivotLen)
+        table.cell(tbl, 0, 7, "Sensitivity:", text_color=#78909C,
+             text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 7, calStr, text_color=#78909C,
+             text_size=size.tiny, text_halign=text.align_right)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+alertcondition(not na(ph), title="New Resistance Zone",
+     message="New resistance zone detected at a structural level")
+alertcondition(not na(pl), title="New Support Zone",
+     message="New support zone detected at a structural level")
+alertcondition(trendBias == 1 and trendBias[1] != 1, title="Bullish Shift",
+     message="Market structure shifted to Bullish")
+alertcondition(trendBias == -1 and trendBias[1] != -1, title="Bearish Shift",
+     message="Market structure shifted to Bearish")
+alertcondition(mktPhase == 2 and mktPhase[1] != 2, title="Shakeout Started",
+     message="Shakeout phase detected — potential stop hunt in progress")
+alertcondition(mktPhase == 3 and mktPhase[1] != 3, title="Trend Started",
+     message="Trending phase — real directional move may be starting")
