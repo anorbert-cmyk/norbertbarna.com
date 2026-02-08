@@ -13,6 +13,8 @@ app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "SAMEORIGIN");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "interest-cohort=()");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
   next();
 });
 
@@ -32,13 +34,15 @@ app.use(express.static(__dirname, {
 app.get("*", (req, res) => {
   const filePath = path.join(__dirname, req.path + ".html");
   const indexPath = path.join(__dirname, req.path, "index.html");
-  
+
   if (require("fs").existsSync(filePath)) {
     res.sendFile(filePath);
   } else if (require("fs").existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).sendFile(path.join(__dirname, "index.html"));
+    res.status(404).sendFile(path.join(__dirname, "404.html"), (err) => {
+      if (err) res.status(404).send("Page not found");
+    });
   }
 });
 

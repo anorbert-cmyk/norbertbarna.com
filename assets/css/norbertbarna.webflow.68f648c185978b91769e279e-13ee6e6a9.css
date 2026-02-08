@@ -452,6 +452,25 @@ figure {
   display: flex;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: color 0.4s ease;
+}
+
+.awards-card:hover {
+  color: var(--bg-color--white, #fff);
+}
+
+.awards-card:hover .awards-bg-video-wrap {
+  opacity: 1;
+}
+
+.awards-card:hover .awards-card-text {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.awards-card:hover .awards-year {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 .awards-card-title {
@@ -465,6 +484,7 @@ figure {
 .awards-card-text {
   color: var(--font-color--grey);
   margin-bottom: 0;
+  transition: color 0.4s ease;
 }
 
 .awards-year-wrap {
@@ -485,6 +505,7 @@ figure {
   font-size: 18px;
   font-weight: 600;
   line-height: 1;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 .awards-title-wrap {
@@ -496,6 +517,7 @@ figure {
   opacity: 0;
   position: absolute;
   inset: 0%;
+  transition: opacity 0.4s ease;
 }
 
 .awards-bg-video {
