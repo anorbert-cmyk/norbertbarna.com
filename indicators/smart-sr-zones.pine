@@ -525,9 +525,7 @@ if barstate.islast
             baseCol = z.isRes ? resColor : supColor
 
             // Opacity: stronger = more visible
-            baseTr = z.strength >= 75 ? 15.0 :
-                     z.strength >= 55 ? 30.0 :
-                     z.strength >= 35 ? 55.0 : 75.0
+            baseTr = z.strength >= 75 ? 15.0 : z.strength >= 55 ? 30.0 : z.strength >= 35 ? 55.0 : 75.0
             fade   = math.min(z.retests * 5.0, 12.0)
             tr     = math.min(baseTr + fade, 90.0)
 
@@ -538,9 +536,7 @@ if barstate.islast
 
             if showLabels
                 base = z.isRes ? "Resistance" : "Support"
-                word = z.strength >= 75 ? "Key " :
-                       z.strength >= 55 ? "Strong " :
-                       z.strength >= 35 ? "" : "Weak "
+                word = z.strength >= 75 ? "Key " : z.strength >= 55 ? "Strong " : z.strength >= 35 ? "" : "Weak "
                 txt  = word + base
                 if showStrPct
                     txt := txt + " (" + str.tostring(math.round(z.strength)) + "%)"
@@ -576,12 +572,8 @@ if barstate.islast
              text_size=size.tiny, text_halign=text.align_right)
 
         // Phase (retail-friendly names)
-        phaseStr = mktPhase == 1 ? "Building" :
-                   mktPhase == 2 ? "Shakeout" :
-                   mktPhase == 3 ? "Trending" : "—"
-        phaseCol = mktPhase == 1 ? #2196F3 :
-                   mktPhase == 2 ? #FF9800 :
-                   mktPhase == 3 ? #4CAF50 : color.gray
+        phaseStr = mktPhase == 1 ? "Building" : mktPhase == 2 ? "Shakeout" : mktPhase == 3 ? "Trending" : "—"
+        phaseCol = mktPhase == 1 ? #2196F3 : mktPhase == 2 ? #FF9800 : mktPhase == 3 ? #4CAF50 : color.gray
         table.cell(tbl, 0, 2, "Phase:", text_color=phaseCol,
              text_size=size.tiny, text_halign=text.align_left)
         table.cell(tbl, 1, 2, phaseStr, text_color=phaseCol,
@@ -609,8 +601,7 @@ if barstate.islast
                     nearResStr   := z.strength
 
         if nearSupPrice > 0
-            sWord = nearSupStr >= 75 ? "Key" : nearSupStr >= 55 ? "Strong" :
-                    nearSupStr >= 35 ? "Moderate" : "Weak"
+            sWord = nearSupStr >= 75 ? "Key" : nearSupStr >= 55 ? "Strong" : nearSupStr >= 35 ? "Moderate" : "Weak"
             table.cell(tbl, 0, 3, "Near. Support:", text_color=supColor,
                  text_size=size.tiny, text_halign=text.align_left)
             table.cell(tbl, 1, 3, str.tostring(nearSupPrice, format.mintick) + " (" + sWord + ")",
@@ -622,8 +613,7 @@ if barstate.islast
                  text_size=size.tiny, text_halign=text.align_right)
 
         if nearResPrice > 0
-            rWord = nearResStr >= 75 ? "Key" : nearResStr >= 55 ? "Strong" :
-                    nearResStr >= 35 ? "Moderate" : "Weak"
+            rWord = nearResStr >= 75 ? "Key" : nearResStr >= 55 ? "Strong" : nearResStr >= 35 ? "Moderate" : "Weak"
             table.cell(tbl, 0, 4, "Near. Resist:", text_color=resColor,
                  text_size=size.tiny, text_halign=text.align_left)
             table.cell(tbl, 1, 4, str.tostring(nearResPrice, format.mintick) + " (" + rWord + ")",
