@@ -1,39 +1,58 @@
 // This Pine Script™ indicator is subject to the terms of the Mozilla Public License 2.0
 // https://mozilla.org/MPL/2.0/
 //
-// Market Maker Swing Count [Fractal] Indicator
+// Market Maker Swing Count [Fractal] Indicator — v2 (Bias-Reduced)
 //
-// Based on the fractal swing counting methodology observed in ICT Market Maker Models.
-// The core concept: price moves are fractal — each major swing contains internal swings,
-// and each internal swing contains micro-swings. By counting these at multiple levels,
-// we can describe the internal structure with a formula:
+// Core logic preserved from v1:
+//   - Fractal swing counting: (legs × sub_legs) + 1
+//   - Market Maker Model phases (Accumulation → Manipulation → Distribution)
+//   - Cycle Top Prediction (@KillaXBT formula)
 //
-//   (legs × sub_legs) + 1 = total swing points
-//
-// This result feeds recursively into the next level:
-//   (total × next_sub) + 1 = grand_total
-//
-// The indicator also tracks "completion" — how many expected swings have occurred
-// vs. how many remain — to predict when a move might be exhausted.
-//
-// Combined with Market Maker Model (MMM) phase detection:
-//   Accumulation → Manipulation → Distribution
+// v2 additions to reduce bias:
+//   1. Volume confirmation — only count swings with above-average volume
+//   2. ATR swing filter — ignore swings smaller than ATR threshold
+//   3. Statistical completion — mean ± stddev over N legs (not just previous leg)
+//   4. RSI divergence — confirm major pivots with momentum divergence
+//   5. Bollinger Band squeeze — objective accumulation detection
+//   6. Composite confidence score — 0-100% combining all factors
 //
 // @version=5
-indicator("MM Swing Count [Fractal]", shorttitle="MM-SC", overlay=true,
+indicator("MM Swing Count [Fractal] v2", shorttitle="MM-SC2", overlay=true,
      max_labels_count=500, max_lines_count=500, max_boxes_count=200)
 
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 // INPUTS
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 
 grp_swing    = "═══ Swing Detection ═══"
 majorLen     = input.int(21, "Major Swing Length",  minval=3,  maxval=100, group=grp_swing,
-                 tooltip="Bars left/right for major (structural) pivots. Higher = fewer, more significant swings.")
+                 tooltip="Bars left/right for major pivots. Daily: 21 (≈1 month).")
 minorLen     = input.int(8,  "Minor Swing Length",  minval=2,  maxval=50,  group=grp_swing,
-                 tooltip="Bars left/right for minor (internal) pivots within each major leg.")
+                 tooltip="Bars left/right for minor pivots. Daily: 8 (≈1.5 weeks).")
 microLen     = input.int(3,  "Micro Swing Length",  minval=1,  maxval=20,  group=grp_swing,
-                 tooltip="Bars left/right for micro (sub-structure) pivots within each minor leg.")
+                 tooltip="Bars left/right for micro pivots. Daily: 3.")
+
+grp_valid    = "═══ Validation Filters (Bias Reduction) ═══"
+useVolFilter = input.bool(true, "Volume Confirmation",              group=grp_valid,
+                 tooltip="Only count swings where volume > threshold × average. Filters noise pivots.")
+volMulti     = input.float(1.0, "  Volume Threshold (× avg)",      group=grp_valid, minval=0.5, maxval=5.0, step=0.1)
+volLen       = input.int(20,    "  Volume SMA Length",              group=grp_valid, minval=5, maxval=100)
+useAtrFilter = input.bool(true, "ATR Swing Filter",                group=grp_valid,
+                 tooltip="Only count swings where price move > threshold × ATR. Filters insignificant wiggles.")
+atrMulti     = input.float(0.5, "  ATR Threshold (× ATR)",         group=grp_valid, minval=0.1, maxval=3.0, step=0.1)
+atrLen       = input.int(14,    "  ATR Length",                     group=grp_valid, minval=5, maxval=50)
+useStats     = input.bool(true, "Statistical Completion",           group=grp_valid,
+                 tooltip="Use mean ± stddev of last N legs instead of just previous leg for completion estimate.")
+statsLegs    = input.int(10,    "  Legs to Track",                  group=grp_valid, minval=3, maxval=50)
+useRsiDiv    = input.bool(true, "RSI Divergence Confirmation",     group=grp_valid,
+                 tooltip="Flag major swing points with RSI divergence as higher confidence.")
+rsiLen       = input.int(14,    "  RSI Length",                     group=grp_valid, minval=5, maxval=50)
+useBBsqueeze = input.bool(true, "BB Squeeze (Accumulation)",       group=grp_valid,
+                 tooltip="Use Bollinger Band width percentile for objective accumulation detection.")
+bbLen        = input.int(20,    "  BB Length",                      group=grp_valid, minval=10, maxval=50)
+bbMult       = input.float(2.0, "  BB Multiplier",                 group=grp_valid, minval=1.0, maxval=3.0, step=0.5)
+bbSqzPctile  = input.int(20,   "  Squeeze Percentile",             group=grp_valid, minval=5, maxval=50,
+                 tooltip="BB width below this percentile = squeeze/accumulation.")
 
 grp_display  = "═══ Display ═══"
 showFormula  = input.bool(true,  "Show Fractal Formula at Major Swings",    group=grp_display)
@@ -42,28 +61,23 @@ showMicro    = input.bool(false, "Show Micro Swing Numbers",               group
 showZigzag   = input.bool(true,  "Show ZigZag Lines (Major)",              group=grp_display)
 showMinorZZ  = input.bool(false, "Show ZigZag Lines (Minor)",              group=grp_display)
 showCompletion = input.bool(true, "Show Completion Estimate",              group=grp_display)
+showConfScore = input.bool(true, "Show Confidence Score",                  group=grp_display)
 showTable    = input.bool(true,  "Show Info Table",                        group=grp_display)
 
 grp_mmm      = "═══ Market Maker Model ═══"
 showMMM      = input.bool(true,  "Enable MMM Phase Detection",   group=grp_mmm)
-accumBars    = input.int(10,     "Min Accumulation Bars",        group=grp_mmm, minval=3, maxval=100,
-                 tooltip="Minimum bars of range-bound price before qualifying as accumulation.")
-manipThresh  = input.float(0.5,  "Manipulation Threshold (%)",   group=grp_mmm, minval=0.1, maxval=5.0, step=0.1,
-                 tooltip="% beyond range that qualifies as manipulation (false breakout).")
+accumBars    = input.int(10,     "Min Accumulation Bars",        group=grp_mmm, minval=3, maxval=100)
+manipThresh  = input.float(0.5,  "Manipulation Threshold (%)",   group=grp_mmm, minval=0.1, maxval=5.0, step=0.1)
 accColor     = input.color(color.new(#2196F3, 85), "Accumulation",  group=grp_mmm)
 manColor     = input.color(color.new(#F44336, 85), "Manipulation",  group=grp_mmm)
 distColor    = input.color(color.new(#4CAF50, 85), "Distribution",  group=grp_mmm)
 
 grp_cycle    = "═══ Cycle Top Prediction (@KillaXBT) ═══"
 showCycle    = input.bool(true,   "Enable Cycle Top Prediction",    group=grp_cycle)
-athBreak     = input.float(70000, "ATH Break Price",                group=grp_cycle, minval=1,
-                 tooltip="Price at which the new ATH was broken (e.g., $70,000 for BTC 2024 cycle).")
-prevGainPct  = input.float(250,   "Previous Cycle Gain %",          group=grp_cycle, minval=1, maxval=10000,
-                 tooltip="Percentage gain from the last cycle after ATH break (e.g., 250% means 2.5x).")
-dimFactor    = input.float(0.2935,"Diminishing Factor",             group=grp_cycle, minval=0.01, maxval=1.0, step=0.01,
-                 tooltip="Average reduction in gains each cycle. Default 0.2935 per @KillaXBT research.")
-confluencePct = input.float(3.0,  "Confluence Zone %",              group=grp_cycle, minval=0.5, maxval=10.0, step=0.5,
-                 tooltip="% distance from predicted top to trigger confluence with swing completion.")
+athBreak     = input.float(70000, "ATH Break Price",                group=grp_cycle, minval=1)
+prevGainPct  = input.float(250,   "Previous Cycle Gain %",          group=grp_cycle, minval=1, maxval=10000)
+dimFactor    = input.float(0.2935,"Diminishing Factor",             group=grp_cycle, minval=0.01, maxval=1.0, step=0.01)
+confluencePct = input.float(3.0,  "Confluence Zone %",              group=grp_cycle, minval=0.5, maxval=10.0, step=0.5)
 colCycleTop  = input.color(#E040FB, "Cycle Top Line Color",         group=grp_cycle)
 colConfluence = input.color(color.new(#E040FB, 75), "Confluence Zone Color", group=grp_cycle)
 
@@ -76,9 +90,45 @@ colZZ        = input.color(#FFFFFF, "ZigZag Major",        group=grp_style)
 colZZminor   = input.color(color.new(#FF9800, 40), "ZigZag Minor", group=grp_style)
 zzWidth      = input.int(2, "ZigZag Width", minval=1, maxval=5, group=grp_style)
 
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// CORE INDICATORS (for validation)
+// ══════════════════════════════════════════════════════════════════════════════
+
+atrVal       = ta.atr(atrLen)
+rsiVal       = ta.rsi(close, rsiLen)
+volSma       = ta.sma(volume, volLen)
+
+// Bollinger Bands for squeeze detection
+bbBasis      = ta.sma(close, bbLen)
+bbDev        = bbMult * ta.stdev(close, bbLen)
+bbUpper      = bbBasis + bbDev
+bbLower      = bbBasis - bbDev
+bbWidth      = (bbUpper - bbLower) / bbBasis * 100.0  // normalized width %
+
+// BB width percentile over rolling window (100 bars)
+var array<float> bbWidthHist = array.new_float(0)
+if not na(bbWidth)
+    array.push(bbWidthHist, bbWidth)
+    if array.size(bbWidthHist) > 100
+        array.shift(bbWidthHist)
+
+bbWidthPctile() =>
+    if array.size(bbWidthHist) < 10
+        50.0
+    else
+        count = 0
+        sz = array.size(bbWidthHist)
+        for i = 0 to sz - 1
+            if array.get(bbWidthHist, i) < bbWidth
+                count += 1
+        (count / sz) * 100.0
+
+currentBBpctile = bbWidthPctile()
+isBBsqueeze     = currentBBpctile <= bbSqzPctile
+
+// ══════════════════════════════════════════════════════════════════════════════
 // PIVOT DETECTION
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 
 majorPH = ta.pivothigh(high, majorLen, majorLen)
 majorPL = ta.pivotlow(low,   majorLen, majorLen)
@@ -87,28 +137,67 @@ minorPL = ta.pivotlow(low,   minorLen, minorLen)
 microPH = ta.pivothigh(high, microLen, microLen)
 microPL = ta.pivotlow(low,   microLen, microLen)
 
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// VALIDATION FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Check if volume at pivot bar confirms the swing
+isVolConfirmed(int lookback) =>
+    if not useVolFilter
+        true
+    else
+        pivotVol = volume[lookback]
+        avgVol   = volSma[lookback]
+        not na(avgVol) and pivotVol > avgVol * volMulti
+
+// Check if price move from last swing is significant vs ATR
+var float lastSwingPrice = na
+
+isAtrConfirmed(float pivotPrice) =>
+    if not useAtrFilter or na(lastSwingPrice) or na(atrVal)
+        true
+    else
+        math.abs(pivotPrice - lastSwingPrice) > atrVal * atrMulti
+
+// ══════════════════════════════════════════════════════════════════════════════
 // STATE VARIABLES
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 
 // Major swing tracking
 var float lastMajorHiPrice  = na
 var int   lastMajorHiBar    = na
 var float lastMajorLoPrice  = na
 var int   lastMajorLoBar    = na
-var int   lastMajorDir      = 0   // 1 = last was high, -1 = last was low
+var int   lastMajorDir      = 0
+var float lastMajorHiRsi    = na   // RSI at last major high
+var float lastMajorLoRsi    = na   // RSI at last major low
+var float prevMajorHiPrice  = na   // previous major high price (for divergence)
+var float prevMajorHiRsi    = na   // previous major high RSI
+var float prevMajorLoPrice  = na
+var float prevMajorLoRsi    = na
 
-// Counts within the CURRENT leg (between major swings)
+// Counts within CURRENT leg
 var int   minorCount        = 0
 var int   microCount        = 0
 var int   minorHiCount      = 0
 var int   minorLoCount      = 0
+var int   confirmedMinor    = 0    // volume+ATR confirmed minor swings
+var int   totalMinor        = 0    // all detected minor swings (for ratio)
 
-// Saved counts from the PREVIOUS completed leg (for comparison/prediction)
+// Saved counts from PREVIOUS completed leg
 var int   prevLegMinor      = 0
 var int   prevLegMicro      = 0
 var int   prev2LegMinor     = 0
 var int   prev2LegMicro     = 0
+
+// Statistical tracking — arrays of swing counts from last N completed legs
+var array<int> legMinorHistory   = array.new_int(0)
+var array<int> legMicroHistory   = array.new_int(0)
+var array<int> legConfirmedHist  = array.new_int(0)
+
+// RSI divergence flags
+var bool  lastMajorHiDivergence = false
+var bool  lastMajorLoDivergence = false
 
 // ZigZag state
 var int   lastZZbar         = na
@@ -116,149 +205,260 @@ var float lastZZprice       = na
 var int   lastMinorZZbar    = na
 var float lastMinorZZprice  = na
 
-// ──────────────────────────────────────────────────────────────────────────────
-// FRACTAL FORMULA CALCULATION
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// STATISTICAL FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
 
-// The formula: (legs × avg_sub_per_leg) + 1
-// - legs = minor swing count in the leg
-// - avg_sub_per_leg = average micro swings per minor swing
-// - +1 accounts for the starting point
+arrayMean(array<int> arr) =>
+    sz = array.size(arr)
+    if sz == 0
+        0.0
+    else
+        sum = 0.0
+        for i = 0 to sz - 1
+            sum += array.get(arr, i)
+        sum / sz
+
+arrayStdev(array<int> arr) =>
+    sz = array.size(arr)
+    if sz < 2
+        0.0
+    else
+        avg = arrayMean(arr)
+        sumSq = 0.0
+        for i = 0 to sz - 1
+            diff = array.get(arr, i) - avg
+            sumSq += diff * diff
+        math.sqrt(sumSq / (sz - 1))
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FRACTAL FORMULA CALCULATION
+// ══════════════════════════════════════════════════════════════════════════════
+
 fractalCalc(int minorN, int microN) =>
     legs    = math.max(minorN, 1)
     subAvg  = microN > 0 and minorN > 0 ? math.round(microN / math.max(minorN, 1)) : 1
     total   = (legs * subAvg) + 1
     [legs, subAvg, total]
 
-// Build the formula string for display
-fractalStr(int minorN, int microN) =>
-    [legs, sub, total] = fractalCalc(minorN, microN)
-    "(" + str.tostring(legs) + " × " + str.tostring(sub) + ") + 1 = " + str.tostring(total)
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPLETION ESTIMATE (statistical or single-leg)
+// ══════════════════════════════════════════════════════════════════════════════
 
-// ──────────────────────────────────────────────────────────────────────────────
+// Returns [expected, lo_bound, hi_bound, confidence_text]
+completionEstimate() =>
+    expVal  = 0.0
+    loBound = 0.0
+    hiBound = 0.0
+    cText   = ""
+
+    if useStats and array.size(legMinorHistory) >= 3
+        avg = arrayMean(legMinorHistory)
+        sd  = arrayStdev(legMinorHistory)
+        expVal  := avg
+        loBound := math.max(avg - sd, 1.0)
+        hiBound := avg + sd
+        cText   := str.tostring(math.round(avg * 10) / 10) + " ± " + str.tostring(math.round(sd * 10) / 10)
+    else if prevLegMinor > 0
+        [_l, _s, t] = fractalCalc(prevLegMinor, prevLegMicro)
+        expVal  := t
+        loBound := t * 0.7
+        hiBound := t * 1.3
+        cText   := str.tostring(t) + " (prev leg)"
+    else
+        expVal  := 0.0
+        cText   := "—"
+
+    [expVal, loBound, hiBound, cText]
+
+// ══════════════════════════════════════════════════════════════════════════════
 // PROCESS MAJOR SWINGS
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 
-// Helper to draw major pivot label
-drawMajorLabel(int pivotBar, float pivotPrice, bool isHigh, int minorN, int microN) =>
+drawMajorLabel(int pivotBar, float pivotPrice, bool isHigh, int minorN, int microN, bool hasDivergence, int confMinor) =>
     [legs, sub, total] = fractalCalc(minorN, microN)
 
     txt = ""
     if showFormula and minorN > 0
         txt := "(" + str.tostring(legs) + " × " + str.tostring(sub) + ") + 1 = " + str.tostring(total)
-        // Second level fractal (using previous leg's total as input)
         if prevLegMinor > 0
             [pLegs, pSub, pTotal] = fractalCalc(prevLegMinor, prevLegMicro)
             txt := txt + "\n(" + str.tostring(pTotal) + " × " + str.tostring(sub) + ") + 1 = " + str.tostring((pTotal * sub) + 1)
     else
         txt := "S:" + str.tostring(minorN)
 
-    if showCompletion and prevLegMinor > 0
-        [_pL, _pS, pTotal] = fractalCalc(prevLegMinor, prevLegMicro)
-        expectedSwings = pTotal
-        remaining = math.max(expectedSwings - minorN, 0)
-        if remaining > 0
-            txt := txt + "\nRemaining ≈ " + str.tostring(remaining)
-        else
-            txt := txt + "\n✓ Complete"
+    // Completion from statistical estimate
+    if showCompletion
+        [expVal, loBound, hiBound, cText] = completionEstimate()
+        if expVal > 0
+            remaining = math.max(math.round(expVal) - minorN, 0)
+            if remaining > 0
+                txt := txt + "\nExp: " + cText + " | Left ≈ " + str.tostring(remaining)
+            else
+                txt := txt + "\nExp: " + cText + " | Done"
+
+    // Validation badges
+    if useVolFilter
+        ratio = minorN > 0 ? math.round(confMinor / math.max(minorN, 1) * 100) : 0
+        txt := txt + "\nVol: " + str.tostring(ratio) + "% confirmed"
+
+    if hasDivergence
+        txt := txt + (isHigh ? "\nRSI: Bear Div" : "\nRSI: Bull Div")
 
     style = isHigh ? label.style_label_down : label.style_label_up
     col   = isHigh ? colMajorHi : colMajorLo
-    label.new(pivotBar, pivotPrice, txt, style=style, color=col, textcolor=color.white, size=size.small)
+    // Brighter color if divergence confirms
+    finalCol = hasDivergence ? col : color.new(col, 30)
+    label.new(pivotBar, pivotPrice, txt, style=style, color=finalCol, textcolor=color.white, size=size.small)
+
+// Helper to save leg to history arrays
+saveLegToHistory(int minorN, int microN, int confN) =>
+    array.push(legMinorHistory, minorN)
+    array.push(legMicroHistory, microN)
+    array.push(legConfirmedHist, confN)
+    if array.size(legMinorHistory) > statsLegs
+        array.shift(legMinorHistory)
+    if array.size(legMicroHistory) > statsLegs
+        array.shift(legMicroHistory)
+    if array.size(legConfirmedHist) > statsLegs
+        array.shift(legConfirmedHist)
 
 // ─── MAJOR HIGH ───
 if not na(majorPH)
     pivotBar   = bar_index - majorLen
     pivotPrice = majorPH
+    pivotRsi   = rsiVal[majorLen]
 
-    // Save completed leg counts
+    // RSI divergence: price higher high but RSI lower high = bearish divergence
+    hasBearDiv = false
+    if useRsiDiv and not na(prevMajorHiPrice) and not na(prevMajorHiRsi)
+        hasBearDiv := pivotPrice > prevMajorHiPrice and pivotRsi < prevMajorHiRsi
+
+    // Save history
+    saveLegToHistory(minorCount, microCount, confirmedMinor)
+
     prev2LegMinor := prevLegMinor
     prev2LegMicro := prevLegMicro
     prevLegMinor  := minorCount
     prevLegMicro  := microCount
 
-    // Draw label
-    drawMajorLabel(pivotBar, pivotPrice, true, minorCount, microCount)
+    drawMajorLabel(pivotBar, pivotPrice, true, minorCount, microCount, hasBearDiv, confirmedMinor)
 
-    // ZigZag
     if showZigzag and not na(lastZZbar)
         line.new(lastZZbar, lastZZprice, pivotBar, pivotPrice, color=colZZ, width=zzWidth)
     lastZZbar   := pivotBar
     lastZZprice := pivotPrice
 
-    // Update state
+    // Update RSI tracking
+    prevMajorHiPrice := lastMajorHiPrice
+    prevMajorHiRsi   := lastMajorHiRsi
     lastMajorHiPrice := pivotPrice
     lastMajorHiBar   := pivotBar
+    lastMajorHiRsi   := pivotRsi
+    lastMajorHiDivergence := hasBearDiv
     lastMajorDir     := 1
 
     // Reset counters
-    minorCount  := 0
-    microCount  := 0
-    minorHiCount := 0
-    minorLoCount := 0
+    minorCount    := 0
+    microCount    := 0
+    minorHiCount  := 0
+    minorLoCount  := 0
+    confirmedMinor := 0
+    totalMinor    := 0
+    lastSwingPrice := pivotPrice
 
 // ─── MAJOR LOW ───
 if not na(majorPL)
     pivotBar   = bar_index - majorLen
     pivotPrice = majorPL
+    pivotRsi   = rsiVal[majorLen]
 
-    // Save completed leg counts
+    // RSI divergence: price lower low but RSI higher low = bullish divergence
+    hasBullDiv = false
+    if useRsiDiv and not na(prevMajorLoPrice) and not na(prevMajorLoRsi)
+        hasBullDiv := pivotPrice < prevMajorLoPrice and pivotRsi > prevMajorLoRsi
+
+    saveLegToHistory(minorCount, microCount, confirmedMinor)
+
     prev2LegMinor := prevLegMinor
     prev2LegMicro := prevLegMicro
     prevLegMinor  := minorCount
     prevLegMicro  := microCount
 
-    // Draw label
-    drawMajorLabel(pivotBar, pivotPrice, false, minorCount, microCount)
+    drawMajorLabel(pivotBar, pivotPrice, false, minorCount, microCount, hasBullDiv, confirmedMinor)
 
-    // ZigZag
     if showZigzag and not na(lastZZbar)
         line.new(lastZZbar, lastZZprice, pivotBar, pivotPrice, color=colZZ, width=zzWidth)
     lastZZbar   := pivotBar
     lastZZprice := pivotPrice
 
-    // Update state
+    prevMajorLoPrice := lastMajorLoPrice
+    prevMajorLoRsi   := lastMajorLoRsi
     lastMajorLoPrice := pivotPrice
     lastMajorLoBar   := pivotBar
+    lastMajorLoRsi   := pivotRsi
+    lastMajorLoDivergence := hasBullDiv
     lastMajorDir     := -1
 
-    // Reset counters
-    minorCount  := 0
-    microCount  := 0
-    minorHiCount := 0
-    minorLoCount := 0
+    minorCount    := 0
+    microCount    := 0
+    minorHiCount  := 0
+    minorLoCount  := 0
+    confirmedMinor := 0
+    totalMinor    := 0
+    lastSwingPrice := pivotPrice
 
-// ──────────────────────────────────────────────────────────────────────────────
-// COUNT MINOR SWINGS
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// COUNT MINOR SWINGS (with validation)
+// ══════════════════════════════════════════════════════════════════════════════
 
 if not na(minorPH)
+    pivotBar = bar_index - minorLen
+    volOk  = isVolConfirmed(minorLen)
+    atrOk  = isAtrConfirmed(minorPH)
+    isValid = volOk and atrOk
+
+    totalMinor  += 1
     minorCount  += 1
     minorHiCount += 1
-    pivotBar = bar_index - minorLen
+    if isValid
+        confirmedMinor += 1
+
     if showMinor
-        label.new(pivotBar, minorPH, str.tostring(minorCount),
-             style=label.style_label_down, color=colMinor, textcolor=color.white, size=size.tiny)
+        lbl_col = isValid ? colMinor : color.new(colMinor, 60)
+        label.new(pivotBar, minorPH, str.tostring(minorCount) + (isValid ? "" : "?"),
+             style=label.style_label_down, color=lbl_col, textcolor=color.white, size=size.tiny)
     if showMinorZZ and not na(lastMinorZZbar)
         line.new(lastMinorZZbar, lastMinorZZprice, pivotBar, minorPH, color=colZZminor, width=1)
     lastMinorZZbar   := pivotBar
     lastMinorZZprice := minorPH
+    lastSwingPrice   := minorPH
 
 if not na(minorPL)
+    pivotBar = bar_index - minorLen
+    volOk  = isVolConfirmed(minorLen)
+    atrOk  = isAtrConfirmed(minorPL)
+    isValid = volOk and atrOk
+
+    totalMinor  += 1
     minorCount  += 1
     minorLoCount += 1
-    pivotBar = bar_index - minorLen
+    if isValid
+        confirmedMinor += 1
+
     if showMinor
-        label.new(pivotBar, minorPL, str.tostring(minorCount),
-             style=label.style_label_up, color=colMinor, textcolor=color.white, size=size.tiny)
+        lbl_col = isValid ? colMinor : color.new(colMinor, 60)
+        label.new(pivotBar, minorPL, str.tostring(minorCount) + (isValid ? "" : "?"),
+             style=label.style_label_up, color=lbl_col, textcolor=color.white, size=size.tiny)
     if showMinorZZ and not na(lastMinorZZbar)
         line.new(lastMinorZZbar, lastMinorZZprice, pivotBar, minorPL, color=colZZminor, width=1)
     lastMinorZZbar   := pivotBar
     lastMinorZZprice := minorPL
+    lastSwingPrice   := minorPL
 
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 // COUNT MICRO SWINGS
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 
 if not na(microPH)
     microCount += 1
@@ -272,28 +472,22 @@ if not na(microPL)
         label.new(bar_index - microLen, microPL, str.tostring(microCount),
              style=label.style_label_up, color=colMicro, textcolor=color.white, size=size.tiny)
 
-// ──────────────────────────────────────────────────────────────────────────────
-// MARKET MAKER MODEL — PHASE DETECTION
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// MARKET MAKER MODEL — PHASE DETECTION (enhanced with BB squeeze)
+// ══════════════════════════════════════════════════════════════════════════════
 
-// Phase: 0=none  1=accumulation  2=manipulation  3=distribution
 var int   mmmPhase     = 0
 var float mmmRangeHi   = na
 var float mmmRangeLo   = na
 var int   mmmStartBar  = na
 var int   mmmAccumBars = 0
-
-// We detect phases based on major swing structure:
-// - Accumulation: price consolidates in a range (between last major hi/lo)
-// - Manipulation: price sweeps beyond the range by manipThresh %
-// - Distribution: price returns inside and breaks out in the opposite direction
+var bool  mmmBBconfirm = false   // BB squeeze confirms accumulation
 
 if showMMM
     if not na(lastMajorHiPrice) and not na(lastMajorLoPrice)
         rangeSize  = lastMajorHiPrice - lastMajorLoPrice
         manipDist  = rangeSize * manipThresh / 100.0
 
-        // Phase 0 → 1: Accumulation starts when price is within the range
         if mmmPhase == 0
             if close >= lastMajorLoPrice and close <= lastMajorHiPrice
                 mmmPhase    := 1
@@ -301,48 +495,41 @@ if showMMM
                 mmmRangeLo  := lastMajorLoPrice
                 mmmStartBar := bar_index
                 mmmAccumBars := 0
+                mmmBBconfirm := false
 
-        // Phase 1: Counting accumulation bars, waiting for manipulation
         if mmmPhase == 1
             mmmAccumBars += 1
+            // BB squeeze during accumulation = objective confirmation
+            if useBBsqueeze and isBBsqueeze
+                mmmBBconfirm := true
             if close < mmmRangeLo - manipDist or close > mmmRangeHi + manipDist
                 if mmmAccumBars >= accumBars
                     mmmPhase := 2
                 else
-                    mmmPhase := 0  // too short, reset
+                    mmmPhase := 0
 
-        // Phase 2 → 3: Manipulation ends when price returns inside range
         if mmmPhase == 2
             if close > mmmRangeLo and close < mmmRangeHi
                 mmmPhase := 3
 
-        // Phase 3 → 0: Distribution ends after a while or on next major swing
         if mmmPhase == 3
             if not na(majorPH) or not na(majorPL)
                 mmmPhase := 0
 
-// Background colors for MMM phases
 bgcolor(showMMM and mmmPhase == 1 ? accColor  : na, title="Accumulation")
 bgcolor(showMMM and mmmPhase == 2 ? manColor  : na, title="Manipulation")
 bgcolor(showMMM and mmmPhase == 3 ? distColor : na, title="Distribution")
 
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 // CYCLE TOP PREDICTION (@KillaXBT formula)
-// ──────────────────────────────────────────────────────────────────────────────
-//
-// NextTop = ATH_Break × (1 + Previous_Gain% × Diminishing_Factor)
-//
-// This gives a macro price target for the cycle top. When swing count shows
-// "complete" near this price level, it's a high-confluence reversal signal.
+// ══════════════════════════════════════════════════════════════════════════════
 
-cycleTop = athBreak * (1.0 + (prevGainPct / 100.0) * dimFactor)
+cycleTop    = athBreak * (1.0 + (prevGainPct / 100.0) * dimFactor)
 cycleConfHi = cycleTop * (1.0 + confluencePct / 100.0)
 cycleConfLo = cycleTop * (1.0 - confluencePct / 100.0)
 
-// Track if price is in the confluence zone
 inConfluenceZone = close >= cycleConfLo and close <= cycleConfHi
 
-// Detect confluence: swing count is complete AND price near predicted top
 var bool swingComplete = false
 if prevLegMinor > 0
     [_cL, _cS, cTotal] = fractalCalc(prevLegMinor, prevLegMicro)
@@ -352,14 +539,12 @@ else
 
 isConfluence = showCycle and inConfluenceZone and swingComplete and lastMajorDir == -1
 
-// Draw cycle top line and zone
 var line cycleTopLine = na
 var linefill cycleFill = na
 var line cycleHiLine = na
 var line cycleLoLine = na
 
 if showCycle and barstate.islast
-    // Clean up previous drawings
     if not na(cycleTopLine)
         line.delete(cycleTopLine)
     if not na(cycleHiLine)
@@ -369,107 +554,214 @@ if showCycle and barstate.islast
     if not na(cycleFill)
         linefill.delete(cycleFill)
 
-    // Draw predicted cycle top
     startBar = bar_index - 100
     endBar   = bar_index + 20
 
     cycleTopLine := line.new(startBar, cycleTop, endBar, cycleTop,
-         color=colCycleTop, width=2, style=line.style_dashed,
-         extend=extend.right)
+         color=colCycleTop, width=2, style=line.style_dashed, extend=extend.right)
     label.new(endBar, cycleTop,
          "Cycle Top: $" + str.tostring(math.round(cycleTop)),
-         style=label.style_label_left, color=colCycleTop,
-         textcolor=color.white, size=size.small)
+         style=label.style_label_left, color=colCycleTop, textcolor=color.white, size=size.small)
 
-    // Draw confluence zone
     cycleHiLine := line.new(startBar, cycleConfHi, endBar, cycleConfHi,
-         color=color.new(colCycleTop, 70), width=1, style=line.style_dotted,
-         extend=extend.right)
+         color=color.new(colCycleTop, 70), width=1, style=line.style_dotted, extend=extend.right)
     cycleLoLine := line.new(startBar, cycleConfLo, endBar, cycleConfLo,
-         color=color.new(colCycleTop, 70), width=1, style=line.style_dotted,
-         extend=extend.right)
+         color=color.new(colCycleTop, 70), width=1, style=line.style_dotted, extend=extend.right)
     cycleFill := linefill.new(cycleHiLine, cycleLoLine, colConfluence)
 
-// Confluence background flash
 bgcolor(isConfluence ? color.new(#E040FB, 80) : na, title="Cycle+Swing Confluence")
 
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPOSITE CONFIDENCE SCORE (0–100)
+// ══════════════════════════════════════════════════════════════════════════════
+//
+// Combines independent signals into a single score.
+// Each factor contributes equally. Only active factors count.
+// This reduces reliance on any single (potentially biased) signal.
+
+calcConfidence() =>
+    totalWeight = 0.0
+    totalScore  = 0.0
+
+    // Factor 1: Volume confirmation ratio (what % of minor swings are volume-confirmed?)
+    if useVolFilter and totalMinor > 0
+        totalWeight += 1.0
+        totalScore  += confirmedMinor / math.max(totalMinor, 1) * 100.0
+
+    // Factor 2: Completion within statistical range
+    if useStats and array.size(legMinorHistory) >= 3
+        avg = arrayMean(legMinorHistory)
+        sd  = arrayStdev(legMinorHistory)
+        loBound = math.max(avg - sd, 0.0)
+        hiBound = avg + sd
+        if minorCount >= loBound and minorCount <= hiBound
+            totalWeight += 1.0
+            totalScore  += 80.0  // in range
+        else if minorCount > hiBound
+            totalWeight += 1.0
+            totalScore  += 100.0  // exceeded = likely done
+        else
+            totalWeight += 1.0
+            remaining_pct = minorCount / math.max(loBound, 1.0) * 80.0
+            totalScore  += math.min(remaining_pct, 70.0)
+    else if prevLegMinor > 0
+        [_l, _s, t] = fractalCalc(prevLegMinor, prevLegMicro)
+        totalWeight += 1.0
+        totalScore  += math.min(minorCount / math.max(t, 1) * 100.0, 100.0) * 0.5  // lower weight, single leg
+
+    // Factor 3: RSI divergence at last major swing
+    if useRsiDiv
+        totalWeight += 1.0
+        hasDivAtLast = lastMajorDir == 1 ? lastMajorHiDivergence : lastMajorLoDivergence
+        totalScore  += hasDivAtLast ? 100.0 : 20.0
+
+    // Factor 4: BB squeeze confirmed accumulation (relevant if in MMM phase 1-2)
+    if useBBsqueeze and showMMM and (mmmPhase == 1 or mmmPhase == 2)
+        totalWeight += 1.0
+        totalScore  += mmmBBconfirm ? 90.0 : 30.0
+
+    // Factor 5: Cycle top proximity (if enabled)
+    if showCycle
+        totalWeight += 1.0
+        if inConfluenceZone
+            totalScore += 90.0
+        else
+            dist = math.abs(close - cycleTop) / cycleTop * 100.0
+            totalScore += math.max(100.0 - dist * 5.0, 10.0)
+
+    score = totalWeight > 0 ? totalScore / totalWeight : 0.0
+    math.min(math.round(score), 100)
+
+confidence = calcConfidence()
+
+// ══════════════════════════════════════════════════════════════════════════════
 // INFO TABLE
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 
 if showTable and barstate.islast
-    var table tbl = table.new(position.top_right, 2, 10,
+    rows = showCycle ? 14 : 12
+    var table tbl = table.new(position.top_right, 2, rows,
          bgcolor=color.new(#1A1A2E, 10), frame_color=color.new(#FFFFFF, 70),
          frame_width=1, border_color=color.new(#FFFFFF, 85), border_width=1)
 
+    row = 0
+
     // Header
-    table.cell(tbl, 0, 0, "MM Swing Count", text_color=color.white, text_size=size.small, text_halign=text.align_left)
-    table.cell(tbl, 1, 0, "[Fractal]",      text_color=color.gray,  text_size=size.tiny,  text_halign=text.align_right)
+    table.cell(tbl, 0, row, "MM Swing Count v2", text_color=color.white, text_size=size.small, text_halign=text.align_left)
+    table.cell(tbl, 1, row, "[Bias-Reduced]",    text_color=color.gray,  text_size=size.tiny,  text_halign=text.align_right)
+    row += 1
 
-    // Current leg stats
-    table.cell(tbl, 0, 1, "Minor swings:",  text_color=#FF9800, text_size=size.tiny, text_halign=text.align_left)
-    table.cell(tbl, 1, 1, str.tostring(minorCount), text_color=#FF9800, text_size=size.tiny, text_halign=text.align_right)
+    // ─── Swing counts ───
+    table.cell(tbl, 0, row, "Minor swings:",     text_color=#FF9800, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, row, str.tostring(minorCount) + (useVolFilter ? " (" + str.tostring(confirmedMinor) + " conf)" : ""),
+         text_color=#FF9800, text_size=size.tiny, text_halign=text.align_right)
+    row += 1
 
-    table.cell(tbl, 0, 2, "Micro swings:",  text_color=#9E9E9E, text_size=size.tiny, text_halign=text.align_left)
-    table.cell(tbl, 1, 2, str.tostring(microCount), text_color=#9E9E9E, text_size=size.tiny, text_halign=text.align_right)
+    table.cell(tbl, 0, row, "Micro swings:",     text_color=#9E9E9E, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, row, str.tostring(microCount), text_color=#9E9E9E, text_size=size.tiny, text_halign=text.align_right)
+    row += 1
 
-    // Current fractal formula
+    // ─── Fractal formula ───
     [curLegs, curSub, curTotal] = fractalCalc(minorCount, microCount)
     fStr = "(" + str.tostring(curLegs) + "×" + str.tostring(curSub) + ")+1 = " + str.tostring(curTotal)
-    table.cell(tbl, 0, 3, "Fractal:",       text_color=#00BCD4, text_size=size.tiny, text_halign=text.align_left)
-    table.cell(tbl, 1, 3, fStr,             text_color=#00BCD4, text_size=size.tiny, text_halign=text.align_right)
+    table.cell(tbl, 0, row, "Fractal:",          text_color=#00BCD4, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, row, fStr,                text_color=#00BCD4, text_size=size.tiny, text_halign=text.align_right)
+    row += 1
 
-    // Previous leg for comparison
-    table.cell(tbl, 0, 4, "Prev leg minor:", text_color=#78909C, text_size=size.tiny, text_halign=text.align_left)
-    table.cell(tbl, 1, 4, str.tostring(prevLegMinor), text_color=#78909C, text_size=size.tiny, text_halign=text.align_right)
-
-    // Completion estimate
-    if prevLegMinor > 0
-        [_pL, _pS, pTotal] = fractalCalc(prevLegMinor, prevLegMicro)
-        remaining = math.max(pTotal - minorCount, 0)
-        compPct   = minorCount > 0 ? math.min(math.round(minorCount / math.max(pTotal, 1) * 100), 100) : 0
-        compStr   = str.tostring(compPct) + "% (" + str.tostring(remaining) + " left)"
+    // ─── Statistical completion ───
+    [expVal, loBound, hiBound, cText] = completionEstimate()
+    if expVal > 0
+        remaining = math.max(math.round(expVal) - minorCount, 0)
+        compPct   = math.min(math.round(minorCount / math.max(expVal, 1) * 100), 100)
+        compStr   = str.tostring(compPct) + "% | " + cText
         compCol   = remaining == 0 ? #4CAF50 : remaining <= 2 ? #FF9800 : #F44336
-        table.cell(tbl, 0, 5, "Completion:",  text_color=compCol, text_size=size.tiny, text_halign=text.align_left)
-        table.cell(tbl, 1, 5, compStr,        text_color=compCol, text_size=size.tiny, text_halign=text.align_right)
+        table.cell(tbl, 0, row, "Completion:",   text_color=compCol, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, compStr,         text_color=compCol, text_size=size.tiny, text_halign=text.align_right)
     else
-        table.cell(tbl, 0, 5, "Completion:",  text_color=#78909C, text_size=size.tiny, text_halign=text.align_left)
-        table.cell(tbl, 1, 5, "—",            text_color=#78909C, text_size=size.tiny, text_halign=text.align_right)
+        table.cell(tbl, 0, row, "Completion:",   text_color=#78909C, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, "—",             text_color=#78909C, text_size=size.tiny, text_halign=text.align_right)
+    row += 1
 
-    // Direction
-    dirStr = lastMajorDir == 1 ? "▼ From High" : lastMajorDir == -1 ? "▲ From Low" : "—"
+    // ─── Direction ───
+    dirStr = lastMajorDir == 1 ? "From High" : lastMajorDir == -1 ? "From Low" : "—"
     dirCol = lastMajorDir == 1 ? #EF5350 : lastMajorDir == -1 ? #26A69A : color.gray
-    table.cell(tbl, 0, 6, "Direction:",    text_color=dirCol, text_size=size.tiny, text_halign=text.align_left)
-    table.cell(tbl, 1, 6, dirStr,          text_color=dirCol, text_size=size.tiny, text_halign=text.align_right)
+    table.cell(tbl, 0, row, "Direction:",        text_color=dirCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, row, dirStr,              text_color=dirCol, text_size=size.tiny, text_halign=text.align_right)
+    row += 1
 
-    // MMM phase
-    mmmStr = mmmPhase == 1 ? "Accumulation" : mmmPhase == 2 ? "Manipulation" : mmmPhase == 3 ? "Distribution" : "—"
+    // ─── RSI Divergence ───
+    if useRsiDiv
+        divAtLast = lastMajorDir == 1 ? lastMajorHiDivergence : lastMajorLoDivergence
+        divStr = divAtLast ? (lastMajorDir == 1 ? "Bearish Div" : "Bullish Div") : "None"
+        divCol = divAtLast ? #FFEB3B : #78909C
+        table.cell(tbl, 0, row, "RSI Divergence:", text_color=divCol, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, divStr,            text_color=divCol, text_size=size.tiny, text_halign=text.align_right)
+        row += 1
+
+    // ─── BB Squeeze ───
+    if useBBsqueeze
+        sqzStr = isBBsqueeze ? "SQUEEZE (" + str.tostring(math.round(currentBBpctile)) + "th)" :
+             str.tostring(math.round(currentBBpctile)) + "th pctile"
+        sqzCol = isBBsqueeze ? #2196F3 : #78909C
+        table.cell(tbl, 0, row, "BB Width:",       text_color=sqzCol, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, sqzStr,            text_color=sqzCol, text_size=size.tiny, text_halign=text.align_right)
+        row += 1
+
+    // ─── MMM phase ───
+    mmmStr = mmmPhase == 1 ? (mmmBBconfirm ? "Accum (BB)" : "Accumulation") :
+             mmmPhase == 2 ? "Manipulation" : mmmPhase == 3 ? "Distribution" : "—"
     mmmCol = mmmPhase == 1 ? #2196F3 : mmmPhase == 2 ? #F44336 : mmmPhase == 3 ? #4CAF50 : color.gray
-    table.cell(tbl, 0, 7, "MMM Phase:",    text_color=mmmCol, text_size=size.tiny, text_halign=text.align_left)
-    table.cell(tbl, 1, 7, mmmStr,          text_color=mmmCol, text_size=size.tiny, text_halign=text.align_right)
+    table.cell(tbl, 0, row, "MMM Phase:",        text_color=mmmCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, row, mmmStr,              text_color=mmmCol, text_size=size.tiny, text_halign=text.align_right)
+    row += 1
 
     // ─── Cycle Top Prediction ───
     if showCycle
-        table.cell(tbl, 0, 8, "Cycle Top:",   text_color=#E040FB, text_size=size.tiny, text_halign=text.align_left)
-        table.cell(tbl, 1, 8, "$" + str.tostring(math.round(cycleTop)),
+        table.cell(tbl, 0, row, "Cycle Top:",    text_color=#E040FB, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, "$" + str.tostring(math.round(cycleTop)),
              text_color=#E040FB, text_size=size.tiny, text_halign=text.align_right)
+        row += 1
 
         distFromTop = ((cycleTop - close) / close) * 100.0
         confStr = inConfluenceZone ?
-             (swingComplete ? "CONFLUENCE" : "In zone (" + str.tostring(math.round(distFromTop * 10) / 10) + "%)") :
+             (swingComplete ? "CONFLUENCE" : "In zone") :
              str.tostring(math.round(distFromTop * 10) / 10) + "% away"
         confCol = isConfluence ? #FF1744 : inConfluenceZone ? #E040FB : #78909C
-        table.cell(tbl, 0, 9, "Proximity:",   text_color=confCol, text_size=size.tiny, text_halign=text.align_left)
-        table.cell(tbl, 1, 9, confStr,        text_color=confCol, text_size=size.tiny, text_halign=text.align_right)
-    else
-        table.cell(tbl, 0, 8, "", text_size=size.tiny)
-        table.cell(tbl, 1, 8, "", text_size=size.tiny)
-        table.cell(tbl, 0, 9, "", text_size=size.tiny)
-        table.cell(tbl, 1, 9, "", text_size=size.tiny)
+        table.cell(tbl, 0, row, "Proximity:",    text_color=confCol, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, confStr,         text_color=confCol, text_size=size.tiny, text_halign=text.align_right)
+        row += 1
 
-// ──────────────────────────────────────────────────────────────────────────────
+    // ─── Confidence Score ───
+    if showConfScore
+        confCol2 = confidence >= 75 ? #4CAF50 : confidence >= 50 ? #FF9800 : confidence >= 25 ? #F44336 : #78909C
+        confBar  = ""
+        blocks   = math.round(confidence / 10)
+        for i = 0 to 9
+            confBar := confBar + (i < blocks ? "█" : "░")
+        table.cell(tbl, 0, row, "Confidence:",   text_color=confCol2, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, str.tostring(confidence) + "% " + confBar,
+             text_color=confCol2, text_size=size.tiny, text_halign=text.align_right)
+        row += 1
+
+        // Factors active
+        factors = 0
+        if useVolFilter
+            factors += 1
+        if useStats or prevLegMinor > 0
+            factors += 1
+        if useRsiDiv
+            factors += 1
+        if useBBsqueeze and showMMM
+            factors += 1
+        if showCycle
+            factors += 1
+        table.cell(tbl, 0, row, "Factors:",      text_color=#78909C, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, row, str.tostring(factors) + " active",
+             text_color=#78909C, text_size=size.tiny, text_halign=text.align_right)
+
+// ══════════════════════════════════════════════════════════════════════════════
 // ALERTS
-// ──────────────────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
 
 alertcondition(not na(majorPH), title="Major Swing High",
      message="Major Swing High detected — check fractal count for completion")
@@ -480,4 +772,6 @@ alertcondition(mmmPhase == 2 and mmmPhase[1] == 1, title="Manipulation Start",
 alertcondition(mmmPhase == 3 and mmmPhase[1] == 2, title="Distribution Start",
      message="MMM: Distribution phase — look for entry in true direction")
 alertcondition(isConfluence and not isConfluence[1], title="Cycle + Swing Confluence",
-     message="HIGH CONFLUENCE: Swing count complete near predicted cycle top — potential macro reversal")
+     message="HIGH CONFLUENCE: Swing count complete near predicted cycle top")
+alertcondition(confidence >= 75 and confidence[1] < 75, title="High Confidence Signal",
+     message="Confidence score crossed above 75% — multiple independent factors align")
