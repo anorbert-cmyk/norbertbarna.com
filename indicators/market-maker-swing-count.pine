@@ -28,12 +28,14 @@ indicator("MM Swing Count [Fractal] v3", shorttitle="MM-SC3", overlay=true,
 // ══════════════════════════════════════════════════════════════════════════════
 
 grp_swing    = "═══ Swing Detection ═══"
-majorLen     = input.int(21, "Major Swing Length",  minval=3,  maxval=100, group=grp_swing,
-                 tooltip="Bars left/right for major pivots. Daily: 21 (≈1 month).")
-minorLen     = input.int(8,  "Minor Swing Length",  minval=2,  maxval=50,  group=grp_swing,
-                 tooltip="Bars left/right for minor pivots. Daily: 8 (≈1.5 weeks).")
-microLen     = input.int(3,  "Micro Swing Length",  minval=1,  maxval=20,  group=grp_swing,
-                 tooltip="Bars left/right for micro pivots. Daily: 3.")
+autoCalib    = input.bool(true, "Auto-Calibrate Swing Lengths",   group=grp_swing,
+                 tooltip="Automatically calculate optimal swing lengths from the instrument's own price structure. When ON, the manual values below are ignored and calibrated values are used instead.")
+majorLen_in  = input.int(21, "Major Swing Length (manual)",  minval=3,  maxval=100, group=grp_swing,
+                 tooltip="Only used when Auto-Calibrate is OFF.")
+minorLen_in  = input.int(8,  "Minor Swing Length (manual)",  minval=2,  maxval=50,  group=grp_swing,
+                 tooltip="Only used when Auto-Calibrate is OFF.")
+microLen_in  = input.int(3,  "Micro Swing Length (manual)",  minval=1,  maxval=20,  group=grp_swing,
+                 tooltip="Only used when Auto-Calibrate is OFF.")
 
 grp_mm       = "═══ Market Maker Validation ═══"
 useLiqSweep  = input.bool(true, "Liquidity Sweep Detection",           group=grp_mm,
@@ -96,6 +98,70 @@ colZZminor   = input.color(color.new(#FF9800, 40), "ZigZag Minor", group=grp_sty
 zzWidth      = input.int(2, "ZigZag Width", minval=1, maxval=5, group=grp_style)
 colSweep     = input.color(#FFEB3B, "Liquidity Sweep",     group=grp_style)
 colChoch     = input.color(#FF1744, "CHoCH",               group=grp_style)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AUTO-CALIBRATION ENGINE
+// ══════════════════════════════════════════════════════════════════════════════
+//
+// Instead of hardcoded "recommended" values per timeframe, the indicator
+// calculates optimal swing lengths from the instrument's own price behavior.
+//
+// Method: measure the average "directional run" — how many consecutive bars
+// does price move in one direction before reversing? This gives us the
+// natural rhythm of the instrument on the current timeframe.
+//
+//   micro  ≈ average run length (smallest swing unit)
+//   minor  ≈ micro × φ (golden ratio ≈ 2.618, captures one level up)
+//   major  ≈ minor × φ (captures structural level)
+//
+// This is self-referential — it uses only the instrument's own price data,
+// not arbitrary numbers or external indicators.
+
+// Count directional runs over the last 200 bars
+var array<int> runLengths = array.new_int(0)
+var int currentRun = 1
+var int currentDir = 0  // 1=up, -1=down
+
+runDir = close > close[1] ? 1 : close < close[1] ? -1 : currentDir
+if runDir == currentDir or currentDir == 0
+    currentRun += 1
+    currentDir := runDir != 0 ? runDir : currentDir
+else
+    if currentRun > 0
+        array.push(runLengths, currentRun)
+        if array.size(runLengths) > 200
+            array.shift(runLengths)
+    currentRun := 1
+    currentDir := runDir
+
+// Calculate calibrated lengths
+PHI = 2.618  // golden ratio for fractal scaling
+
+calibMicro() =>
+    if array.size(runLengths) < 20
+        3  // fallback
+    else
+        sum = 0.0
+        sz = array.size(runLengths)
+        for i = 0 to sz - 1
+            sum += array.get(runLengths, i)
+        avg = sum / sz
+        math.max(math.round(avg), 1)
+
+calibMinor() =>
+    math.max(math.round(calibMicro() * PHI), calibMicro() + 1)
+
+calibMajor() =>
+    math.max(math.round(calibMinor() * PHI), calibMinor() + 1)
+
+calMicro = calibMicro()
+calMinor = calibMinor()
+calMajor = calibMajor()
+
+// Use calibrated or manual values
+majorLen = autoCalib ? calMajor : majorLen_in
+minorLen = autoCalib ? calMinor : minorLen_in
+microLen = autoCalib ? calMicro : microLen_in
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PIVOT DETECTION
@@ -701,6 +767,14 @@ if showTable and barstate.islast
     // Header
     table.cell(tbl, 0, row, "MM Swing Count v3", text_color=color.white, text_size=size.small, text_halign=text.align_left)
     table.cell(tbl, 1, row, "[MM Native]",       text_color=color.gray,  text_size=size.tiny,  text_halign=text.align_right)
+    row += 1
+
+    // Calibration info
+    calibStr = str.tostring(majorLen) + " / " + str.tostring(minorLen) + " / " + str.tostring(microLen)
+    calibCol = autoCalib ? #00BCD4 : #78909C
+    calibMode = autoCalib ? "Auto: " : "Manual: "
+    table.cell(tbl, 0, row, "Swing lengths:",    text_color=calibCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, row, calibMode + calibStr, text_color=calibCol, text_size=size.tiny, text_halign=text.align_right)
     row += 1
 
     // ─── Swing counts ───
