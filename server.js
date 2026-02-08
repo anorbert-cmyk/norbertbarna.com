@@ -32,13 +32,15 @@ app.use(express.static(__dirname, {
 app.get("*", (req, res) => {
   const filePath = path.join(__dirname, req.path + ".html");
   const indexPath = path.join(__dirname, req.path, "index.html");
-  
+
   if (require("fs").existsSync(filePath)) {
     res.sendFile(filePath);
   } else if (require("fs").existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).sendFile(path.join(__dirname, "index.html"));
+    res.status(404).sendFile(path.join(__dirname, "404.html"), (err) => {
+      if (err) res.status(404).send("Page not found");
+    });
   }
 });
 
