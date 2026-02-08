@@ -1,0 +1,504 @@
+// This Pine Script™ indicator is subject to the terms of the Mozilla Public License 2.0
+// https://mozilla.org/MPL/2.0/
+//
+// MM Buy / Sell Signals
+//
+// Full Market Maker intelligence distilled into simple ✕ markers:
+//   ✕ below candle = start accumulating (buying slowly)
+//   ✕ above candle = start distributing (selling slowly)
+//
+// Hidden engines: auto-calibration, fractal swing counting, liquidity sweeps,
+// displacement, FVG, CHoCH, dealing range, MMM phases, statistical completion,
+// cycle top prediction, composite confidence score.
+//
+// Nothing visible except the ✕ signals and a small info panel.
+//
+// @version=5
+indicator("MM Buy / Sell", shorttitle="MM-BS", overlay=true,
+     max_labels_count=500, max_lines_count=500, max_boxes_count=200)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+grp_core = "═══ Core ═══"
+autoCalib    = input.bool(true, "Auto-Calibrate", group=grp_core,
+                 tooltip="Derive swing lengths from the instrument's own price rhythm.")
+majorLen_in  = input.int(21, "Major Length (manual)", minval=3, maxval=100, group=grp_core)
+minorLen_in  = input.int(8,  "Minor Length (manual)", minval=2, maxval=50,  group=grp_core)
+microLen_in  = input.int(3,  "Micro Length (manual)", minval=1, maxval=20,  group=grp_core)
+
+grp_sig = "═══ Signal Sensitivity ═══"
+minConf      = input.int(50, "Min Confidence for Signal (%)", minval=10, maxval=90, step=5, group=grp_sig,
+                 tooltip="Only show ✕ when MM confidence reaches this level. Lower = more signals, higher = fewer but stronger.")
+dispBodyPct  = input.float(70, "Displacement Body %", minval=50, maxval=95, step=5, group=grp_sig)
+dealRangeLen = input.int(10, "Dealing Range Window", minval=5, maxval=50, group=grp_sig)
+dealRangePct = input.float(40, "Range Compression %", minval=10, maxval=80, step=5, group=grp_sig)
+statsLegs    = input.int(10, "Legs to Track", minval=3, maxval=50, group=grp_sig)
+
+grp_cycle = "═══ Cycle Top (@KillaXBT) ═══"
+useCycle     = input.bool(true, "Enable Cycle Top", group=grp_cycle)
+athBreak     = input.float(70000, "ATH Break Price", minval=1, group=grp_cycle)
+prevGainPct  = input.float(250, "Previous Cycle Gain %", minval=1, maxval=10000, group=grp_cycle)
+dimFactor    = input.float(0.2935, "Diminishing Factor", minval=0.01, maxval=1.0, step=0.01, group=grp_cycle)
+confluencePct = input.float(3.0, "Confluence Zone %", minval=0.5, maxval=10.0, step=0.5, group=grp_cycle)
+
+grp_vis = "═══ Display ═══"
+buyColor     = input.color(#26A69A, "Buy Signal Color",  group=grp_vis)
+sellColor    = input.color(#EF5350, "Sell Signal Color", group=grp_vis)
+sigSize      = input.string("normal", "Signal Size", options=["small", "normal", "large"], group=grp_vis)
+showTable    = input.bool(true, "Show Info Panel", group=grp_vis)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AUTO-CALIBRATION ENGINE
+// ══════════════════════════════════════════════════════════════════════════════
+
+var array<int> runLengths = array.new_int(0)
+var int curRun = 1
+var int curDir = 0
+
+runDir = close > close[1] ? 1 : close < close[1] ? -1 : curDir
+if runDir == curDir or curDir == 0
+    curRun += 1
+    curDir := runDir != 0 ? runDir : curDir
+else
+    if curRun > 0
+        array.push(runLengths, curRun)
+        if array.size(runLengths) > 200
+            array.shift(runLengths)
+    curRun := 1
+    curDir := runDir
+
+PHI = 2.618
+
+calibMicro() =>
+    if array.size(runLengths) < 20
+        3
+    else
+        sum = 0.0
+        sz = array.size(runLengths)
+        for i = 0 to sz - 1
+            sum += array.get(runLengths, i)
+        math.max(math.round(sum / sz), 1)
+
+calibMinor() =>
+    math.max(math.round(calibMicro() * PHI), calibMicro() + 1)
+
+calibMajor() =>
+    math.max(math.round(calibMinor() * PHI), calibMinor() + 1)
+
+majorLen = autoCalib ? calibMajor() : majorLen_in
+minorLen = autoCalib ? calibMinor() : minorLen_in
+microLen = autoCalib ? calibMicro() : microLen_in
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PIVOT DETECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+majorPH = ta.pivothigh(high, majorLen, majorLen)
+majorPL = ta.pivotlow(low, majorLen, majorLen)
+minorPH = ta.pivothigh(high, minorLen, minorLen)
+minorPL = ta.pivotlow(low, minorLen, minorLen)
+microPH = ta.pivothigh(high, microLen, microLen)
+microPL = ta.pivotlow(low, microLen, microLen)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MM ENGINE: FVG
+// ══════════════════════════════════════════════════════════════════════════════
+
+bullFVG = low > high[2]
+bearFVG = high < low[2]
+
+var int fvgCount = 0
+if bullFVG
+    fvgCount += 1
+if bearFVG
+    fvgCount += 1
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MM ENGINE: DISPLACEMENT
+// ══════════════════════════════════════════════════════════════════════════════
+
+candleRange = high - low
+candleBody = math.abs(close - open)
+bodyPct = candleRange > 0 ? (candleBody / candleRange) * 100.0 : 0.0
+isDisplacement = bodyPct >= dispBodyPct and candleRange > 0
+
+var int dispCount = 0
+if isDisplacement
+    dispCount += 1
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MM ENGINE: DEALING RANGE
+// ══════════════════════════════════════════════════════════════════════════════
+
+recHigh = ta.highest(high, dealRangeLen)
+recLow = ta.lowest(low, dealRangeLen)
+recRange = recHigh - recLow
+avgRange = ta.sma(ta.tr(true), dealRangeLen * 3) * dealRangeLen
+isDealRange = avgRange > 0 and (recRange / avgRange * 100.0) < dealRangePct
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATE VARIABLES
+// ══════════════════════════════════════════════════════════════════════════════
+
+var float lastMajorHiPrice = na
+var int lastMajorHiBar = na
+var float lastMajorLoPrice = na
+var int lastMajorLoBar = na
+var int lastMajorDir = 0
+var int minorCount = 0
+var int microCount = 0
+var int sweepCount = 0
+var int legFvgCount = 0
+var int legDispCount = 0
+var bool legHasChoch = false
+var bool legDealRange = false
+var int prevLegMinor = 0
+var int prevLegMicro = 0
+var float lastMinorHiPrice = na
+var float lastMinorLoPrice = na
+
+// Statistical tracking
+var array<int> legMinorHistory = array.new_int(0)
+var array<int> legMicroHistory = array.new_int(0)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MM ENGINE: LIQUIDITY SWEEP
+// ══════════════════════════════════════════════════════════════════════════════
+
+sweptHi = false
+if not na(lastMinorHiPrice)
+    if high > lastMinorHiPrice and close < lastMinorHiPrice
+        sweptHi := true
+        sweepCount += 1
+
+sweptLo = false
+if not na(lastMinorLoPrice)
+    if low < lastMinorLoPrice and close > lastMinorLoPrice
+        sweptLo := true
+        sweepCount += 1
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MM ENGINE: CHoCH
+// ══════════════════════════════════════════════════════════════════════════════
+
+chochDetected = false
+if lastMajorDir == -1 and not na(lastMinorHiPrice)
+    if close > lastMinorHiPrice
+        chochDetected := true
+if lastMajorDir == 1 and not na(lastMinorLoPrice)
+    if close < lastMinorLoPrice
+        chochDetected := true
+
+if chochDetected and not legHasChoch
+    legHasChoch := true
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATISTICAL FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+arrayMean(arr) =>
+    sz = array.size(arr)
+    if sz == 0
+        0.0
+    else
+        sum = 0.0
+        for i = 0 to sz - 1
+            sum += array.get(arr, i)
+        sum / sz
+
+arrayStdev(arr) =>
+    sz = array.size(arr)
+    if sz < 2
+        0.0
+    else
+        avg = arrayMean(arr)
+        sumSq = 0.0
+        for i = 0 to sz - 1
+            diff = array.get(arr, i) - avg
+            sumSq += diff * diff
+        math.sqrt(sumSq / (sz - 1))
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FRACTAL FORMULA
+// ══════════════════════════════════════════════════════════════════════════════
+
+fractalCalc(minorN, microN) =>
+    legs = math.max(minorN, 1)
+    subAvg = microN > 0 and minorN > 0 ? math.round(microN / math.max(minorN, 1)) : 1
+    total = (legs * subAvg) + 1
+    [legs, subAvg, total]
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PROCESS MAJOR SWINGS
+// ══════════════════════════════════════════════════════════════════════════════
+
+saveLeg(minorN, microN) =>
+    array.push(legMinorHistory, minorN)
+    array.push(legMicroHistory, microN)
+    if array.size(legMinorHistory) > statsLegs
+        array.shift(legMinorHistory)
+    if array.size(legMicroHistory) > statsLegs
+        array.shift(legMicroHistory)
+
+if not na(majorPH)
+    saveLeg(minorCount, microCount)
+    prevLegMinor := minorCount
+    prevLegMicro := microCount
+    lastMajorHiPrice := majorPH
+    lastMajorHiBar := bar_index - majorLen
+    lastMajorDir := 1
+    legDealRange := isDealRange
+    minorCount := 0
+    microCount := 0
+    sweepCount := 0
+    legFvgCount := 0
+    legDispCount := 0
+    legHasChoch := false
+    fvgCount := 0
+    dispCount := 0
+    lastMinorHiPrice := na
+    lastMinorLoPrice := na
+
+if not na(majorPL)
+    saveLeg(minorCount, microCount)
+    prevLegMinor := minorCount
+    prevLegMicro := microCount
+    lastMajorLoPrice := majorPL
+    lastMajorLoBar := bar_index - majorLen
+    lastMajorDir := -1
+    legDealRange := isDealRange
+    minorCount := 0
+    microCount := 0
+    sweepCount := 0
+    legFvgCount := 0
+    legDispCount := 0
+    legHasChoch := false
+    fvgCount := 0
+    dispCount := 0
+    lastMinorHiPrice := na
+    lastMinorLoPrice := na
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COUNT SWINGS
+// ══════════════════════════════════════════════════════════════════════════════
+
+if not na(minorPH)
+    minorCount += 1
+    lastMinorHiPrice := minorPH
+    legFvgCount := fvgCount
+    legDispCount := dispCount
+
+if not na(minorPL)
+    minorCount += 1
+    lastMinorLoPrice := minorPL
+    legFvgCount := fvgCount
+    legDispCount := dispCount
+
+if not na(microPH)
+    microCount += 1
+if not na(microPL)
+    microCount += 1
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MMM PHASE DETECTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+var int mmmPhase = 0
+var float mmmRangeHi = na
+var float mmmRangeLo = na
+var int mmmAccumBars = 0
+
+if not na(lastMajorHiPrice) and not na(lastMajorLoPrice)
+    rangeSize = lastMajorHiPrice - lastMajorLoPrice
+    manipDist = rangeSize * 0.5 / 100.0
+
+    if mmmPhase == 0
+        if close >= lastMajorLoPrice and close <= lastMajorHiPrice
+            mmmPhase := 1
+            mmmRangeHi := lastMajorHiPrice
+            mmmRangeLo := lastMajorLoPrice
+            mmmAccumBars := 0
+
+    if mmmPhase == 1
+        mmmAccumBars += 1
+        if close < mmmRangeLo - manipDist or close > mmmRangeHi + manipDist
+            if mmmAccumBars >= 10
+                mmmPhase := 2
+            else
+                mmmPhase := 0
+
+    if mmmPhase == 2
+        if close > mmmRangeLo and close < mmmRangeHi
+            mmmPhase := 3
+
+    if mmmPhase == 3
+        if not na(majorPH) or not na(majorPL)
+            mmmPhase := 0
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CYCLE TOP PREDICTION
+// ══════════════════════════════════════════════════════════════════════════════
+
+cycleTop = athBreak * (1.0 + (prevGainPct / 100.0) * dimFactor)
+cycleConfHi = cycleTop * (1.0 + confluencePct / 100.0)
+cycleConfLo = cycleTop * (1.0 - confluencePct / 100.0)
+inConfluenceZone = useCycle and close >= cycleConfLo and close <= cycleConfHi
+
+// ══════════════════════════════════════════════════════════════════════════════
+// COMPOSITE CONFIDENCE SCORE (0–100)
+// ══════════════════════════════════════════════════════════════════════════════
+
+calcConfidence() =>
+    tw = 0.0
+    ts = 0.0
+
+    // Liquidity sweeps
+    tw += 1.0
+    ts += sweepCount >= 2 ? 100.0 : sweepCount == 1 ? 60.0 : 10.0
+
+    // Displacement
+    tw += 1.0
+    ts += legDispCount >= 3 ? 100.0 : legDispCount >= 1 ? 60.0 : 10.0
+
+    // FVGs
+    tw += 1.0
+    ts += legFvgCount >= 3 ? 100.0 : legFvgCount >= 1 ? 50.0 : 10.0
+
+    // CHoCH
+    tw += 1.0
+    ts += legHasChoch ? 100.0 : 10.0
+
+    // Dealing range
+    tw += 1.0
+    ts += legDealRange ? 90.0 : isDealRange ? 50.0 : 15.0
+
+    // Statistical completion
+    if array.size(legMinorHistory) >= 3
+        avg = arrayMean(legMinorHistory)
+        sd = arrayStdev(legMinorHistory)
+        loBound = math.max(avg - sd, 0.0)
+        hiBound = avg + sd
+        tw += 1.0
+        if minorCount >= loBound and minorCount <= hiBound
+            ts += 80.0
+        else if minorCount > hiBound
+            ts += 100.0
+        else
+            ts += math.min(minorCount / math.max(loBound, 1.0) * 80.0, 70.0)
+    else if prevLegMinor > 0
+        [_l, _s, t] = fractalCalc(prevLegMinor, prevLegMicro)
+        tw += 0.5
+        ts += math.min(minorCount / math.max(t, 1) * 100.0, 100.0) * 0.5
+
+    // Cycle top proximity
+    if useCycle
+        tw += 1.0
+        if inConfluenceZone
+            ts += 90.0
+        else
+            dist = math.abs(close - cycleTop) / cycleTop * 100.0
+            ts += math.max(100.0 - dist * 5.0, 10.0)
+
+    tw > 0 ? math.min(math.round(ts / tw), 100) : 0
+
+confidence = calcConfidence()
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SIGNAL LOGIC
+// ══════════════════════════════════════════════════════════════════════════════
+//
+// BUY ✕ (below candle): Major swing low confirmed + confidence >= threshold
+//   = MM finished hunting sell stops, displacement up, structure shifting bullish
+//
+// SELL ✕ (above candle): Major swing high confirmed + confidence >= threshold
+//   = MM finished hunting buy stops, displacement down, structure shifting bearish
+//
+// These are "start building/reducing" signals, not instant entries.
+
+isBuySignal = not na(majorPL) and confidence >= minConf
+isSellSignal = not na(majorPH) and confidence >= minConf
+
+// Extra signals from MMM phase transitions
+mmmBuy = mmmPhase == 3 and mmmPhase[1] == 2 and lastMajorDir == -1 and confidence >= minConf
+mmmSell = mmmPhase == 3 and mmmPhase[1] == 2 and lastMajorDir == 1 and confidence >= minConf
+
+// CHoCH-confirmed signals (strong)
+chochBuy = chochDetected and not legHasChoch[1] and lastMajorDir == -1 and sweepCount > 0 and confidence >= minConf
+chochSell = chochDetected and not legHasChoch[1] and lastMajorDir == 1 and sweepCount > 0 and confidence >= minConf
+
+// Cycle top sell (macro)
+cycleSell = useCycle and inConfluenceZone and not inConfluenceZone[1] and confidence >= minConf
+
+buySignal = isBuySignal or mmmBuy or chochBuy
+sellSignal = isSellSignal or mmmSell or chochSell or cycleSell
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SIGNAL SIZE
+// ══════════════════════════════════════════════════════════════════════════════
+
+lblSize = sigSize == "small" ? size.small : sigSize == "large" ? size.large : size.normal
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PLOT SIGNALS
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Prevent duplicate signals on same bar
+var int lastBuyBar = 0
+var int lastSellBar = 0
+
+if buySignal and bar_index - lastBuyBar > minorLen
+    label.new(bar_index, low, "✕", style=label.style_label_up,
+         color=buyColor, textcolor=color.white, size=lblSize)
+    lastBuyBar := bar_index
+
+if sellSignal and bar_index - lastSellBar > minorLen
+    label.new(bar_index, high, "✕", style=label.style_label_down,
+         color=sellColor, textcolor=color.white, size=lblSize)
+    lastSellBar := bar_index
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INFO PANEL
+// ══════════════════════════════════════════════════════════════════════════════
+
+if showTable and barstate.islast
+    var table tbl = table.new(position.top_right, 2, 5,
+         bgcolor=color.new(#1A1A2E, 10), frame_color=color.new(#FFFFFF, 70),
+         frame_width=1, border_color=color.new(#FFFFFF, 85), border_width=1)
+
+    table.cell(tbl, 0, 0, "MM Buy / Sell", text_color=color.white, text_size=size.small, text_halign=text.align_left)
+    table.cell(tbl, 1, 0, "", text_color=color.gray, text_size=size.tiny, text_halign=text.align_right)
+
+    // Direction
+    dirStr = lastMajorDir == 1 ? "Bearish leg  ▼" : lastMajorDir == -1 ? "Bullish leg  ▲" : "—"
+    dirCol = lastMajorDir == 1 ? sellColor : lastMajorDir == -1 ? buyColor : color.gray
+    table.cell(tbl, 0, 1, "Bias:", text_color=dirCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 1, dirStr, text_color=dirCol, text_size=size.tiny, text_halign=text.align_right)
+
+    // Confidence
+    confCol = confidence >= 75 ? #4CAF50 : confidence >= 50 ? #FF9800 : confidence >= 25 ? #F44336 : #78909C
+    confBlocks = math.round(confidence / 10)
+    confBar = ""
+    for i = 0 to 9
+        confBar := confBar + (i < confBlocks ? "█" : "░")
+    table.cell(tbl, 0, 2, "Confidence:", text_color=confCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 2, str.tostring(confidence) + "% " + confBar, text_color=confCol, text_size=size.tiny, text_halign=text.align_right)
+
+    // Phase
+    phaseStr = mmmPhase == 1 ? "Building" : mmmPhase == 2 ? "Shakeout" : mmmPhase == 3 ? "Trending" : "—"
+    phaseCol = mmmPhase == 1 ? #2196F3 : mmmPhase == 2 ? #FF9800 : mmmPhase == 3 ? #4CAF50 : color.gray
+    table.cell(tbl, 0, 3, "Phase:", text_color=phaseCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 3, phaseStr, text_color=phaseCol, text_size=size.tiny, text_halign=text.align_right)
+
+    // Swings in current leg
+    table.cell(tbl, 0, 4, "Swings:", text_color=#FF9800, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 4, str.tostring(minorCount), text_color=#FF9800, text_size=size.tiny, text_halign=text.align_right)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════════════════════════════════════
+
+alertcondition(buySignal, title="Buy Signal", message="MM Buy Signal — start accumulating slowly")
+alertcondition(sellSignal, title="Sell Signal", message="MM Sell Signal — start distributing slowly")
+alertcondition(confidence >= 75 and confidence[1] < 75, title="High Confidence", message="MM Confidence crossed 75%")
