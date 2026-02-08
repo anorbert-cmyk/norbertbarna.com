@@ -93,20 +93,7 @@ Valós idejű összesítő az aktuális állapotról:
 
 1. Másold be a `.pine` fájl tartalmát a TradingView Pine Editor-ba
 2. Kattints az "Add to Chart" gombra
-3. Állítsd be a swing hosszakat az időkeretednek megfelelően:
-   - **Napi chart**: Major=21, Minor=8, Micro=3
-   - **4H chart**: Major=13, Minor=5, Micro=2
-   - **1H chart**: Major=8, Minor=3, Micro=1
-
-## Ajánlott beállítások időkeretenként
-
-| Időkeret | Major | Minor | Micro |
-|----------|-------|-------|-------|
-| Heti     | 34    | 13    | 5     |
-| Napi     | 21    | 8     | 3     |
-| 4H       | 13    | 5     | 2     |
-| 1H       | 8     | 3     | 1     |
-| 15M      | 5     | 2     | 1     |
+3. Az indikátor automatikusan kalibrálja a swing hosszakat az adott instrumentum volatilitása alapján (Auto-Calibration mód). Manuális beállítás is lehetséges, de ajánlott az auto módot használni.
 
 ## Források
 
