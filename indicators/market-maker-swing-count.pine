@@ -1,0 +1,483 @@
+// This Pine Script™ indicator is subject to the terms of the Mozilla Public License 2.0
+// https://mozilla.org/MPL/2.0/
+//
+// Market Maker Swing Count [Fractal] Indicator
+//
+// Based on the fractal swing counting methodology observed in ICT Market Maker Models.
+// The core concept: price moves are fractal — each major swing contains internal swings,
+// and each internal swing contains micro-swings. By counting these at multiple levels,
+// we can describe the internal structure with a formula:
+//
+//   (legs × sub_legs) + 1 = total swing points
+//
+// This result feeds recursively into the next level:
+//   (total × next_sub) + 1 = grand_total
+//
+// The indicator also tracks "completion" — how many expected swings have occurred
+// vs. how many remain — to predict when a move might be exhausted.
+//
+// Combined with Market Maker Model (MMM) phase detection:
+//   Accumulation → Manipulation → Distribution
+//
+// @version=5
+indicator("MM Swing Count [Fractal]", shorttitle="MM-SC", overlay=true,
+     max_labels_count=500, max_lines_count=500, max_boxes_count=200)
+
+// ──────────────────────────────────────────────────────────────────────────────
+// INPUTS
+// ──────────────────────────────────────────────────────────────────────────────
+
+grp_swing    = "═══ Swing Detection ═══"
+majorLen     = input.int(21, "Major Swing Length",  minval=3,  maxval=100, group=grp_swing,
+                 tooltip="Bars left/right for major (structural) pivots. Higher = fewer, more significant swings.")
+minorLen     = input.int(8,  "Minor Swing Length",  minval=2,  maxval=50,  group=grp_swing,
+                 tooltip="Bars left/right for minor (internal) pivots within each major leg.")
+microLen     = input.int(3,  "Micro Swing Length",  minval=1,  maxval=20,  group=grp_swing,
+                 tooltip="Bars left/right for micro (sub-structure) pivots within each minor leg.")
+
+grp_display  = "═══ Display ═══"
+showFormula  = input.bool(true,  "Show Fractal Formula at Major Swings",    group=grp_display)
+showMinor    = input.bool(true,  "Show Minor Swing Numbers",               group=grp_display)
+showMicro    = input.bool(false, "Show Micro Swing Numbers",               group=grp_display)
+showZigzag   = input.bool(true,  "Show ZigZag Lines (Major)",              group=grp_display)
+showMinorZZ  = input.bool(false, "Show ZigZag Lines (Minor)",              group=grp_display)
+showCompletion = input.bool(true, "Show Completion Estimate",              group=grp_display)
+showTable    = input.bool(true,  "Show Info Table",                        group=grp_display)
+
+grp_mmm      = "═══ Market Maker Model ═══"
+showMMM      = input.bool(true,  "Enable MMM Phase Detection",   group=grp_mmm)
+accumBars    = input.int(10,     "Min Accumulation Bars",        group=grp_mmm, minval=3, maxval=100,
+                 tooltip="Minimum bars of range-bound price before qualifying as accumulation.")
+manipThresh  = input.float(0.5,  "Manipulation Threshold (%)",   group=grp_mmm, minval=0.1, maxval=5.0, step=0.1,
+                 tooltip="% beyond range that qualifies as manipulation (false breakout).")
+accColor     = input.color(color.new(#2196F3, 85), "Accumulation",  group=grp_mmm)
+manColor     = input.color(color.new(#F44336, 85), "Manipulation",  group=grp_mmm)
+distColor    = input.color(color.new(#4CAF50, 85), "Distribution",  group=grp_mmm)
+
+grp_cycle    = "═══ Cycle Top Prediction (@KillaXBT) ═══"
+showCycle    = input.bool(true,   "Enable Cycle Top Prediction",    group=grp_cycle)
+athBreak     = input.float(70000, "ATH Break Price",                group=grp_cycle, minval=1,
+                 tooltip="Price at which the new ATH was broken (e.g., $70,000 for BTC 2024 cycle).")
+prevGainPct  = input.float(250,   "Previous Cycle Gain %",          group=grp_cycle, minval=1, maxval=10000,
+                 tooltip="Percentage gain from the last cycle after ATH break (e.g., 250% means 2.5x).")
+dimFactor    = input.float(0.2935,"Diminishing Factor",             group=grp_cycle, minval=0.01, maxval=1.0, step=0.01,
+                 tooltip="Average reduction in gains each cycle. Default 0.2935 per @KillaXBT research.")
+confluencePct = input.float(3.0,  "Confluence Zone %",              group=grp_cycle, minval=0.5, maxval=10.0, step=0.5,
+                 tooltip="% distance from predicted top to trigger confluence with swing completion.")
+colCycleTop  = input.color(#E040FB, "Cycle Top Line Color",         group=grp_cycle)
+colConfluence = input.color(color.new(#E040FB, 75), "Confluence Zone Color", group=grp_cycle)
+
+grp_style    = "═══ Colors ═══"
+colMajorHi   = input.color(#EF5350, "Major High",          group=grp_style)
+colMajorLo   = input.color(#26A69A, "Major Low",           group=grp_style)
+colMinor     = input.color(#FF9800, "Minor Swing",         group=grp_style)
+colMicro     = input.color(#9E9E9E, "Micro Swing",         group=grp_style)
+colZZ        = input.color(#FFFFFF, "ZigZag Major",        group=grp_style)
+colZZminor   = input.color(color.new(#FF9800, 40), "ZigZag Minor", group=grp_style)
+zzWidth      = input.int(2, "ZigZag Width", minval=1, maxval=5, group=grp_style)
+
+// ──────────────────────────────────────────────────────────────────────────────
+// PIVOT DETECTION
+// ──────────────────────────────────────────────────────────────────────────────
+
+majorPH = ta.pivothigh(high, majorLen, majorLen)
+majorPL = ta.pivotlow(low,   majorLen, majorLen)
+minorPH = ta.pivothigh(high, minorLen, minorLen)
+minorPL = ta.pivotlow(low,   minorLen, minorLen)
+microPH = ta.pivothigh(high, microLen, microLen)
+microPL = ta.pivotlow(low,   microLen, microLen)
+
+// ──────────────────────────────────────────────────────────────────────────────
+// STATE VARIABLES
+// ──────────────────────────────────────────────────────────────────────────────
+
+// Major swing tracking
+var float lastMajorHiPrice  = na
+var int   lastMajorHiBar    = na
+var float lastMajorLoPrice  = na
+var int   lastMajorLoBar    = na
+var int   lastMajorDir      = 0   // 1 = last was high, -1 = last was low
+
+// Counts within the CURRENT leg (between major swings)
+var int   minorCount        = 0
+var int   microCount        = 0
+var int   minorHiCount      = 0
+var int   minorLoCount      = 0
+
+// Saved counts from the PREVIOUS completed leg (for comparison/prediction)
+var int   prevLegMinor      = 0
+var int   prevLegMicro      = 0
+var int   prev2LegMinor     = 0
+var int   prev2LegMicro     = 0
+
+// ZigZag state
+var int   lastZZbar         = na
+var float lastZZprice       = na
+var int   lastMinorZZbar    = na
+var float lastMinorZZprice  = na
+
+// ──────────────────────────────────────────────────────────────────────────────
+// FRACTAL FORMULA CALCULATION
+// ──────────────────────────────────────────────────────────────────────────────
+
+// The formula: (legs × avg_sub_per_leg) + 1
+// - legs = minor swing count in the leg
+// - avg_sub_per_leg = average micro swings per minor swing
+// - +1 accounts for the starting point
+fractalCalc(int minorN, int microN) =>
+    legs    = math.max(minorN, 1)
+    subAvg  = microN > 0 and minorN > 0 ? math.round(microN / math.max(minorN, 1)) : 1
+    total   = (legs * subAvg) + 1
+    [legs, subAvg, total]
+
+// Build the formula string for display
+fractalStr(int minorN, int microN) =>
+    [legs, sub, total] = fractalCalc(minorN, microN)
+    "(" + str.tostring(legs) + " × " + str.tostring(sub) + ") + 1 = " + str.tostring(total)
+
+// ──────────────────────────────────────────────────────────────────────────────
+// PROCESS MAJOR SWINGS
+// ──────────────────────────────────────────────────────────────────────────────
+
+// Helper to draw major pivot label
+drawMajorLabel(int pivotBar, float pivotPrice, bool isHigh, int minorN, int microN) =>
+    [legs, sub, total] = fractalCalc(minorN, microN)
+
+    txt = ""
+    if showFormula and minorN > 0
+        txt := "(" + str.tostring(legs) + " × " + str.tostring(sub) + ") + 1 = " + str.tostring(total)
+        // Second level fractal (using previous leg's total as input)
+        if prevLegMinor > 0
+            [pLegs, pSub, pTotal] = fractalCalc(prevLegMinor, prevLegMicro)
+            txt := txt + "\n(" + str.tostring(pTotal) + " × " + str.tostring(sub) + ") + 1 = " + str.tostring((pTotal * sub) + 1)
+    else
+        txt := "S:" + str.tostring(minorN)
+
+    if showCompletion and prevLegMinor > 0
+        [_pL, _pS, pTotal] = fractalCalc(prevLegMinor, prevLegMicro)
+        expectedSwings = pTotal
+        remaining = math.max(expectedSwings - minorN, 0)
+        if remaining > 0
+            txt := txt + "\nRemaining ≈ " + str.tostring(remaining)
+        else
+            txt := txt + "\n✓ Complete"
+
+    style = isHigh ? label.style_label_down : label.style_label_up
+    col   = isHigh ? colMajorHi : colMajorLo
+    label.new(pivotBar, pivotPrice, txt, style=style, color=col, textcolor=color.white, size=size.small)
+
+// ─── MAJOR HIGH ───
+if not na(majorPH)
+    pivotBar   = bar_index - majorLen
+    pivotPrice = majorPH
+
+    // Save completed leg counts
+    prev2LegMinor := prevLegMinor
+    prev2LegMicro := prevLegMicro
+    prevLegMinor  := minorCount
+    prevLegMicro  := microCount
+
+    // Draw label
+    drawMajorLabel(pivotBar, pivotPrice, true, minorCount, microCount)
+
+    // ZigZag
+    if showZigzag and not na(lastZZbar)
+        line.new(lastZZbar, lastZZprice, pivotBar, pivotPrice, color=colZZ, width=zzWidth)
+    lastZZbar   := pivotBar
+    lastZZprice := pivotPrice
+
+    // Update state
+    lastMajorHiPrice := pivotPrice
+    lastMajorHiBar   := pivotBar
+    lastMajorDir     := 1
+
+    // Reset counters
+    minorCount  := 0
+    microCount  := 0
+    minorHiCount := 0
+    minorLoCount := 0
+
+// ─── MAJOR LOW ───
+if not na(majorPL)
+    pivotBar   = bar_index - majorLen
+    pivotPrice = majorPL
+
+    // Save completed leg counts
+    prev2LegMinor := prevLegMinor
+    prev2LegMicro := prevLegMicro
+    prevLegMinor  := minorCount
+    prevLegMicro  := microCount
+
+    // Draw label
+    drawMajorLabel(pivotBar, pivotPrice, false, minorCount, microCount)
+
+    // ZigZag
+    if showZigzag and not na(lastZZbar)
+        line.new(lastZZbar, lastZZprice, pivotBar, pivotPrice, color=colZZ, width=zzWidth)
+    lastZZbar   := pivotBar
+    lastZZprice := pivotPrice
+
+    // Update state
+    lastMajorLoPrice := pivotPrice
+    lastMajorLoBar   := pivotBar
+    lastMajorDir     := -1
+
+    // Reset counters
+    minorCount  := 0
+    microCount  := 0
+    minorHiCount := 0
+    minorLoCount := 0
+
+// ──────────────────────────────────────────────────────────────────────────────
+// COUNT MINOR SWINGS
+// ──────────────────────────────────────────────────────────────────────────────
+
+if not na(minorPH)
+    minorCount  += 1
+    minorHiCount += 1
+    pivotBar = bar_index - minorLen
+    if showMinor
+        label.new(pivotBar, minorPH, str.tostring(minorCount),
+             style=label.style_label_down, color=colMinor, textcolor=color.white, size=size.tiny)
+    if showMinorZZ and not na(lastMinorZZbar)
+        line.new(lastMinorZZbar, lastMinorZZprice, pivotBar, minorPH, color=colZZminor, width=1)
+    lastMinorZZbar   := pivotBar
+    lastMinorZZprice := minorPH
+
+if not na(minorPL)
+    minorCount  += 1
+    minorLoCount += 1
+    pivotBar = bar_index - minorLen
+    if showMinor
+        label.new(pivotBar, minorPL, str.tostring(minorCount),
+             style=label.style_label_up, color=colMinor, textcolor=color.white, size=size.tiny)
+    if showMinorZZ and not na(lastMinorZZbar)
+        line.new(lastMinorZZbar, lastMinorZZprice, pivotBar, minorPL, color=colZZminor, width=1)
+    lastMinorZZbar   := pivotBar
+    lastMinorZZprice := minorPL
+
+// ──────────────────────────────────────────────────────────────────────────────
+// COUNT MICRO SWINGS
+// ──────────────────────────────────────────────────────────────────────────────
+
+if not na(microPH)
+    microCount += 1
+    if showMicro
+        label.new(bar_index - microLen, microPH, str.tostring(microCount),
+             style=label.style_label_down, color=colMicro, textcolor=color.white, size=size.tiny)
+
+if not na(microPL)
+    microCount += 1
+    if showMicro
+        label.new(bar_index - microLen, microPL, str.tostring(microCount),
+             style=label.style_label_up, color=colMicro, textcolor=color.white, size=size.tiny)
+
+// ──────────────────────────────────────────────────────────────────────────────
+// MARKET MAKER MODEL — PHASE DETECTION
+// ──────────────────────────────────────────────────────────────────────────────
+
+// Phase: 0=none  1=accumulation  2=manipulation  3=distribution
+var int   mmmPhase     = 0
+var float mmmRangeHi   = na
+var float mmmRangeLo   = na
+var int   mmmStartBar  = na
+var int   mmmAccumBars = 0
+
+// We detect phases based on major swing structure:
+// - Accumulation: price consolidates in a range (between last major hi/lo)
+// - Manipulation: price sweeps beyond the range by manipThresh %
+// - Distribution: price returns inside and breaks out in the opposite direction
+
+if showMMM
+    if not na(lastMajorHiPrice) and not na(lastMajorLoPrice)
+        rangeSize  = lastMajorHiPrice - lastMajorLoPrice
+        manipDist  = rangeSize * manipThresh / 100.0
+
+        // Phase 0 → 1: Accumulation starts when price is within the range
+        if mmmPhase == 0
+            if close >= lastMajorLoPrice and close <= lastMajorHiPrice
+                mmmPhase    := 1
+                mmmRangeHi  := lastMajorHiPrice
+                mmmRangeLo  := lastMajorLoPrice
+                mmmStartBar := bar_index
+                mmmAccumBars := 0
+
+        // Phase 1: Counting accumulation bars, waiting for manipulation
+        if mmmPhase == 1
+            mmmAccumBars += 1
+            if close < mmmRangeLo - manipDist or close > mmmRangeHi + manipDist
+                if mmmAccumBars >= accumBars
+                    mmmPhase := 2
+                else
+                    mmmPhase := 0  // too short, reset
+
+        // Phase 2 → 3: Manipulation ends when price returns inside range
+        if mmmPhase == 2
+            if close > mmmRangeLo and close < mmmRangeHi
+                mmmPhase := 3
+
+        // Phase 3 → 0: Distribution ends after a while or on next major swing
+        if mmmPhase == 3
+            if not na(majorPH) or not na(majorPL)
+                mmmPhase := 0
+
+// Background colors for MMM phases
+bgcolor(showMMM and mmmPhase == 1 ? accColor  : na, title="Accumulation")
+bgcolor(showMMM and mmmPhase == 2 ? manColor  : na, title="Manipulation")
+bgcolor(showMMM and mmmPhase == 3 ? distColor : na, title="Distribution")
+
+// ──────────────────────────────────────────────────────────────────────────────
+// CYCLE TOP PREDICTION (@KillaXBT formula)
+// ──────────────────────────────────────────────────────────────────────────────
+//
+// NextTop = ATH_Break × (1 + Previous_Gain% × Diminishing_Factor)
+//
+// This gives a macro price target for the cycle top. When swing count shows
+// "complete" near this price level, it's a high-confluence reversal signal.
+
+cycleTop = athBreak * (1.0 + (prevGainPct / 100.0) * dimFactor)
+cycleConfHi = cycleTop * (1.0 + confluencePct / 100.0)
+cycleConfLo = cycleTop * (1.0 - confluencePct / 100.0)
+
+// Track if price is in the confluence zone
+inConfluenceZone = close >= cycleConfLo and close <= cycleConfHi
+
+// Detect confluence: swing count is complete AND price near predicted top
+var bool swingComplete = false
+if prevLegMinor > 0
+    [_cL, _cS, cTotal] = fractalCalc(prevLegMinor, prevLegMicro)
+    swingComplete := minorCount >= cTotal
+else
+    swingComplete := false
+
+isConfluence = showCycle and inConfluenceZone and swingComplete and lastMajorDir == -1
+
+// Draw cycle top line and zone
+var line cycleTopLine = na
+var linefill cycleFill = na
+var line cycleHiLine = na
+var line cycleLoLine = na
+
+if showCycle and barstate.islast
+    // Clean up previous drawings
+    if not na(cycleTopLine)
+        line.delete(cycleTopLine)
+    if not na(cycleHiLine)
+        line.delete(cycleHiLine)
+    if not na(cycleLoLine)
+        line.delete(cycleLoLine)
+    if not na(cycleFill)
+        linefill.delete(cycleFill)
+
+    // Draw predicted cycle top
+    startBar = bar_index - 100
+    endBar   = bar_index + 20
+
+    cycleTopLine := line.new(startBar, cycleTop, endBar, cycleTop,
+         color=colCycleTop, width=2, style=line.style_dashed,
+         extend=extend.right)
+    label.new(endBar, cycleTop,
+         "Cycle Top: $" + str.tostring(math.round(cycleTop)),
+         style=label.style_label_left, color=colCycleTop,
+         textcolor=color.white, size=size.small)
+
+    // Draw confluence zone
+    cycleHiLine := line.new(startBar, cycleConfHi, endBar, cycleConfHi,
+         color=color.new(colCycleTop, 70), width=1, style=line.style_dotted,
+         extend=extend.right)
+    cycleLoLine := line.new(startBar, cycleConfLo, endBar, cycleConfLo,
+         color=color.new(colCycleTop, 70), width=1, style=line.style_dotted,
+         extend=extend.right)
+    cycleFill := linefill.new(cycleHiLine, cycleLoLine, colConfluence)
+
+// Confluence background flash
+bgcolor(isConfluence ? color.new(#E040FB, 80) : na, title="Cycle+Swing Confluence")
+
+// ──────────────────────────────────────────────────────────────────────────────
+// INFO TABLE
+// ──────────────────────────────────────────────────────────────────────────────
+
+if showTable and barstate.islast
+    var table tbl = table.new(position.top_right, 2, 10,
+         bgcolor=color.new(#1A1A2E, 10), frame_color=color.new(#FFFFFF, 70),
+         frame_width=1, border_color=color.new(#FFFFFF, 85), border_width=1)
+
+    // Header
+    table.cell(tbl, 0, 0, "MM Swing Count", text_color=color.white, text_size=size.small, text_halign=text.align_left)
+    table.cell(tbl, 1, 0, "[Fractal]",      text_color=color.gray,  text_size=size.tiny,  text_halign=text.align_right)
+
+    // Current leg stats
+    table.cell(tbl, 0, 1, "Minor swings:",  text_color=#FF9800, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 1, str.tostring(minorCount), text_color=#FF9800, text_size=size.tiny, text_halign=text.align_right)
+
+    table.cell(tbl, 0, 2, "Micro swings:",  text_color=#9E9E9E, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 2, str.tostring(microCount), text_color=#9E9E9E, text_size=size.tiny, text_halign=text.align_right)
+
+    // Current fractal formula
+    [curLegs, curSub, curTotal] = fractalCalc(minorCount, microCount)
+    fStr = "(" + str.tostring(curLegs) + "×" + str.tostring(curSub) + ")+1 = " + str.tostring(curTotal)
+    table.cell(tbl, 0, 3, "Fractal:",       text_color=#00BCD4, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 3, fStr,             text_color=#00BCD4, text_size=size.tiny, text_halign=text.align_right)
+
+    // Previous leg for comparison
+    table.cell(tbl, 0, 4, "Prev leg minor:", text_color=#78909C, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 4, str.tostring(prevLegMinor), text_color=#78909C, text_size=size.tiny, text_halign=text.align_right)
+
+    // Completion estimate
+    if prevLegMinor > 0
+        [_pL, _pS, pTotal] = fractalCalc(prevLegMinor, prevLegMicro)
+        remaining = math.max(pTotal - minorCount, 0)
+        compPct   = minorCount > 0 ? math.min(math.round(minorCount / math.max(pTotal, 1) * 100), 100) : 0
+        compStr   = str.tostring(compPct) + "% (" + str.tostring(remaining) + " left)"
+        compCol   = remaining == 0 ? #4CAF50 : remaining <= 2 ? #FF9800 : #F44336
+        table.cell(tbl, 0, 5, "Completion:",  text_color=compCol, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 5, compStr,        text_color=compCol, text_size=size.tiny, text_halign=text.align_right)
+    else
+        table.cell(tbl, 0, 5, "Completion:",  text_color=#78909C, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 5, "—",            text_color=#78909C, text_size=size.tiny, text_halign=text.align_right)
+
+    // Direction
+    dirStr = lastMajorDir == 1 ? "▼ From High" : lastMajorDir == -1 ? "▲ From Low" : "—"
+    dirCol = lastMajorDir == 1 ? #EF5350 : lastMajorDir == -1 ? #26A69A : color.gray
+    table.cell(tbl, 0, 6, "Direction:",    text_color=dirCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 6, dirStr,          text_color=dirCol, text_size=size.tiny, text_halign=text.align_right)
+
+    // MMM phase
+    mmmStr = mmmPhase == 1 ? "Accumulation" : mmmPhase == 2 ? "Manipulation" : mmmPhase == 3 ? "Distribution" : "—"
+    mmmCol = mmmPhase == 1 ? #2196F3 : mmmPhase == 2 ? #F44336 : mmmPhase == 3 ? #4CAF50 : color.gray
+    table.cell(tbl, 0, 7, "MMM Phase:",    text_color=mmmCol, text_size=size.tiny, text_halign=text.align_left)
+    table.cell(tbl, 1, 7, mmmStr,          text_color=mmmCol, text_size=size.tiny, text_halign=text.align_right)
+
+    // ─── Cycle Top Prediction ───
+    if showCycle
+        table.cell(tbl, 0, 8, "Cycle Top:",   text_color=#E040FB, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 8, "$" + str.tostring(math.round(cycleTop)),
+             text_color=#E040FB, text_size=size.tiny, text_halign=text.align_right)
+
+        distFromTop = ((cycleTop - close) / close) * 100.0
+        confStr = inConfluenceZone ?
+             (swingComplete ? "CONFLUENCE" : "In zone (" + str.tostring(math.round(distFromTop * 10) / 10) + "%)") :
+             str.tostring(math.round(distFromTop * 10) / 10) + "% away"
+        confCol = isConfluence ? #FF1744 : inConfluenceZone ? #E040FB : #78909C
+        table.cell(tbl, 0, 9, "Proximity:",   text_color=confCol, text_size=size.tiny, text_halign=text.align_left)
+        table.cell(tbl, 1, 9, confStr,        text_color=confCol, text_size=size.tiny, text_halign=text.align_right)
+    else
+        table.cell(tbl, 0, 8, "", text_size=size.tiny)
+        table.cell(tbl, 1, 8, "", text_size=size.tiny)
+        table.cell(tbl, 0, 9, "", text_size=size.tiny)
+        table.cell(tbl, 1, 9, "", text_size=size.tiny)
+
+// ──────────────────────────────────────────────────────────────────────────────
+// ALERTS
+// ──────────────────────────────────────────────────────────────────────────────
+
+alertcondition(not na(majorPH), title="Major Swing High",
+     message="Major Swing High detected — check fractal count for completion")
+alertcondition(not na(majorPL), title="Major Swing Low",
+     message="Major Swing Low detected — check fractal count for completion")
+alertcondition(mmmPhase == 2 and mmmPhase[1] == 1, title="Manipulation Start",
+     message="MMM: Manipulation phase detected — watch for false breakout")
+alertcondition(mmmPhase == 3 and mmmPhase[1] == 2, title="Distribution Start",
+     message="MMM: Distribution phase — look for entry in true direction")
+alertcondition(isConfluence and not isConfluence[1], title="Cycle + Swing Confluence",
+     message="HIGH CONFLUENCE: Swing count complete near predicted cycle top — potential macro reversal")
