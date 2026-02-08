@@ -129,7 +129,7 @@ if bearFVG
     fvgBot := high
     fvgBar := bar_index - 1
 
-hasFVGnear(float price) =>
+hasFVGnear(price) =>
     not na(fvgTop) and not na(fvgBot) and bar_index - fvgBar <= 10 and
      price >= fvgBot - nz(atrVal) * 0.3 and price <= fvgTop + nz(atrVal) * 0.3
 
@@ -164,7 +164,7 @@ if dispDown
             obBearBar := bar_index - k
             break
 
-nearOB(float price, bool forSupport) =>
+nearOB(price, forSupport) =>
     if forSupport and not na(obBullHi)
         price >= obBullLo - nz(atrVal) * 0.3 and price <= obBullHi + nz(atrVal) * 0.3 and
          bar_index - obBullBar <= 50
@@ -245,7 +245,7 @@ if not na(pl)
     if array.size(eqLoPrices) > 10
         array.shift(eqLoPrices)
 
-hasEqLevel(float price, bool isHigh) =>
+hasEqLevel(price, isHigh) =>
     arr = isHigh ? eqHiPrices : eqLoPrices
     cnt = 0
     if array.size(arr) >= 2
@@ -260,7 +260,7 @@ hasEqLevel(float price, bool isHigh) =>
 
 rangeMid = (recHigh + recLow) / 2.0
 
-pdBonus(float price, bool isSup) =>
+pdBonus(price, isSup) =>
     if isSup and price < rangeMid
         10.0
     else if not isSup and price > rangeMid
@@ -311,8 +311,7 @@ var array<SRZone> zones = array.new<SRZone>()
 //   Base pivot:           25  (structural level)
 //   Retest penalty:       -8  per retest
 
-calcStr(bool swept, bool disp, bool fvg, bool ob, bool eql,
-        bool chAl, bool deal, int ret, float price, bool isSup) =>
+calcStr(swept, disp, fvg, ob, eql, chAl, deal, ret, price, isSup) =>
     s = 25.0
     if swept
         s += 20.0
@@ -336,7 +335,7 @@ calcStr(bool swept, bool disp, bool fvg, bool ob, bool eql,
 // ZONE CREATION
 // ══════════════════════════════════════════════════════════════════════════════
 
-createZone(bool isRes, float price, int pivotBar, bool fromOB, bool fromFVG) =>
+createZone(isRes, price, pivotBar, fromOB, fromFVG) =>
     if not na(atrVal) and atrVal > 0
         half = atrVal * zoneAtrMult
         zT   = price + half
