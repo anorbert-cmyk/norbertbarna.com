@@ -56,6 +56,29 @@
   });
   gsap.ticker.lagSmoothing(0);
 
+  // Content height grows after init (lazy images, videos, web fonts), which
+  // leaves Lenis with a stale scroll limit: wheel/touch scrolling stops short
+  // of the footer while the native scrollbar still reaches it. Recalculate on
+  // full load and whenever the body actually changes height, and keep
+  // ScrollTrigger positions in sync.
+  function refreshScrollLimits() {
+    lenis.resize();
+    ScrollTrigger.refresh();
+  }
+  window.addEventListener("load", refreshScrollLimits);
+  if (window.ResizeObserver) {
+    var lastBodyHeight = document.body.scrollHeight;
+    var resizeTimer = null;
+    new ResizeObserver(function () {
+      var h = document.body.scrollHeight;
+      if (Math.abs(h - lastBodyHeight) > 1) {
+        lastBodyHeight = h;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(refreshScrollLimits, 150);
+      }
+    }).observe(document.body);
+  }
+
   // ============================================================
   // UTILITY: Text Splitter
   // ============================================================
