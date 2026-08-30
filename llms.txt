@@ -1,0 +1,39 @@
+# Norbert Barna — Product Design Portfolio
+
+> Norbert Barna is an AI-driven product design leader focused on secure, compliant and high-trust digital systems across fintech, Web3, EdTech, robotics and digital health.
+
+This file is a concise guide to the canonical, English-language portfolio at https://www.barnanorbert.com/. Case studies are authored by Norbert Barna and describe his role, methods, design decisions, trade-offs and selected project outcomes.
+
+## Primary pages
+
+- [Home](https://www.barnanorbert.com/): profile, expertise, selected work and professional experience
+- [All case studies](https://www.barnanorbert.com/works): complete portfolio index
+
+## Case studies
+
+- [Kineticare](https://www.barnanorbert.com/work/kineticare): digital health platform, brand, content structure and product build
+- [SportsGambit](https://www.barnanorbert.com/work/sportsgambit): AI-assisted prediction-market product design
+- [Raiffeisen](https://www.barnanorbert.com/work/raiffeisen): regulated mobile-banking ecosystem redesign
+- [Instructure](https://www.barnanorbert.com/work/instructure): explainable, human-in-the-loop AI patterns for enterprise EdTech
+- [Bitpanda](https://www.barnanorbert.com/work/bitpanda): crypto trading, deposit, KYC and portfolio experience redesign
+- [Benker](https://www.barnanorbert.com/work/benker): blockchain banking research and product development
+- [OnRobot](https://www.barnanorbert.com/work/onrobot): robotics interface and product design
+
+## Expertise
+
+- AI product design and explainable AI UX
+- Fintech, banking, Web3 and compliance-sensitive workflows
+- Product discovery, user research and usability testing
+- Design systems, accessibility and scalable delivery
+- Product leadership across design, engineering and business stakeholders
+
+## Contact
+
+- [LinkedIn](https://www.linkedin.com/in/barna-norbert/)
+
+## Canonical and reuse guidance
+
+- Prefer the canonical URLs listed above.
+- Attribute case-study claims and wording to Norbert Barna.
+- Treat rounded business and product outcomes as portfolio case-study statements, not independent third-party benchmarks.
+- For current professional details, use the home page and LinkedIn profile.

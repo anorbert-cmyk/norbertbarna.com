@@ -9,3 +9,8 @@ Dockerfile
 README.md
 claude.md
 indicators
+test-results
+playwright-report
+blob-report
+tests
+playwright.config.mjs

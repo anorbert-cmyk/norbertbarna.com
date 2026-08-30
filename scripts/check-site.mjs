@@ -25,6 +25,10 @@ const animationsSource = readFileSync(join(ROOT, "assets/js/animations.js"));
 const animationsVersion = createHash("sha256").update(animationsSource).digest("hex").slice(0, 12);
 const animationsFile = `animations.${animationsVersion}.js`;
 const versionedAnimationsPath = join(ROOT, "assets/js", animationsFile);
+const responsiveSource = readFileSync(join(ROOT, "assets/css/responsive.css"));
+const responsiveVersion = createHash("sha256").update(responsiveSource).digest("hex").slice(0, 12);
+const responsiveFile = `responsive.${responsiveVersion}.css`;
+const versionedResponsivePath = join(ROOT, "assets/css", responsiveFile);
 
 let failures = 0;
 const fail = (msg) => {
@@ -35,10 +39,47 @@ const fail = (msg) => {
 const titles = new Map();
 const descriptions = new Map();
 
+const decodeEntities = (value) => value
+  .replace(/&nbsp;/g, " ")
+  .replace(/&amp;/g, "&")
+  .replace(/&quot;/g, '"')
+  .replace(/&#(?:39|x27);/gi, "'")
+  .replace(/&apos;/g, "'")
+  .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+  .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)));
+
+const visibleText = (value) => decodeEntities(value)
+  .replace(/<[^>]+>/g, " ")
+  .replace(/\s+/g, " ")
+  .trim();
+
+const schemaNodes = (value, found = []) => {
+  if (!value || typeof value !== "object") return found;
+  if (!Array.isArray(value) && value["@type"]) found.push(value);
+  for (const child of Object.values(value)) {
+    if (child && typeof child === "object") schemaNodes(child, found);
+  }
+  return found;
+};
+
+const metaContent = (html, attribute, value) => {
+  for (const [, tag] of html.matchAll(/<(meta\b[^>]*)>/gi)) {
+    const identity = tag.match(new RegExp(`\\b${attribute}=["']([^"']+)["']`, "i"))?.[1];
+    if (identity !== value) continue;
+    return tag.match(/\bcontent=["']([^"']*)["']/i)?.[1];
+  }
+  return undefined;
+};
+
 if (!existsSync(versionedAnimationsPath)) {
   fail(`missing versioned custom animation asset: assets/js/${animationsFile}`);
 } else if (!readFileSync(versionedAnimationsPath).equals(animationsSource)) {
   fail(`assets/js/${animationsFile} does not match assets/js/animations.js`);
+}
+if (!existsSync(versionedResponsivePath)) {
+  fail(`missing versioned responsive asset: assets/css/${responsiveFile}`);
+} else if (!readFileSync(versionedResponsivePath).equals(responsiveSource)) {
+  fail(`assets/css/${responsiveFile} does not match assets/css/responsive.css`);
 }
 
 for (const page of PAGES) {
@@ -61,6 +102,8 @@ for (const page of PAGES) {
   if (!is404 && !html.includes('rel="canonical"')) fail(`${page}: missing canonical`);
   if (/cdnjs\.cloudflare\.com|unpkg\.com|cdn\.jsdelivr\.net/.test(html))
     fail(`${page}: references an external JS CDN (should be self-hosted)`);
+  if (/<script[^>]+src=["'][^"']*(?:jquery|webflow(?:\.[^"']*)?\.js)[^"']*["']/i.test(html))
+    fail(`${page}: legacy jQuery/Webflow runtime returned`);
   if (/href="[^"]*raiffesen[^"]*"/.test(html)) fail(`${page}: links to misspelled raiffesen URL`);
   if (!is404) {
     const animationScripts = [
@@ -72,18 +115,91 @@ for (const page of PAGES) {
     } else if (animationScripts[0][1] !== expectedSrc) {
       fail(`${page}: expected custom animation script ${expectedSrc}, found ${animationScripts[0][1]}`);
     }
+    const responsiveLinks = [
+      ...html.matchAll(/<link[^>]*href="([^"]*assets\/css\/responsive[^"]*)"[^>]*>/g),
+    ];
+    const expectedResponsiveHref = `${page.startsWith("work/") ? "../" : ""}assets/css/${responsiveFile}`;
+    if (responsiveLinks.length !== 1) {
+      fail(`${page}: expected exactly one versioned responsive stylesheet`);
+    } else if (responsiveLinks[0][1] !== expectedResponsiveHref) {
+      fail(`${page}: expected responsive stylesheet ${expectedResponsiveHref}, found ${responsiveLinks[0][1]}`);
+    }
+
+    if (/(?:5\.2M|€140M|Dell[^<]{0,80}(?:\$|&#36;)?100M|"alumniOf")/i.test(html)) {
+      fail(`${page}: a removed or misattributed portfolio claim returned`);
+    }
   }
 
   // JSON-LD must exist on content pages and must parse
   const ldBlocks = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g)];
   if (!is404 && ldBlocks.length === 0) fail(`${page}: no JSON-LD structured data`);
+  const parsedSchemas = [];
   for (const [, block] of ldBlocks) {
     try {
-      JSON.parse(block);
+      parsedSchemas.push(JSON.parse(block));
     } catch (e) {
       fail(`${page}: invalid JSON-LD (${e.message})`);
     }
   }
+
+  if (page.startsWith("work/")) {
+    const nodes = parsedSchemas.flatMap((schema) => schemaNodes(schema));
+    const article = nodes.find((node) => node["@type"] === "Article");
+    if (!article) {
+      fail(`${page}: missing Article schema`);
+    } else {
+      if (article.inLanguage !== "en") fail(`${page}: Article inLanguage must be en`);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(article.datePublished || ""))
+        fail(`${page}: Article datePublished must use YYYY-MM-DD`);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(article.dateModified || ""))
+        fail(`${page}: Article dateModified must use YYYY-MM-DD`);
+      if (metaContent(html, "property", "article:published_time") !== article.datePublished)
+        fail(`${page}: article:published_time must match Article datePublished`);
+      if (metaContent(html, "property", "article:modified_time") !== article.dateModified)
+        fail(`${page}: article:modified_time must match Article dateModified`);
+      if (!html.includes(`<time datetime="${article.datePublished}">`))
+        fail(`${page}: datePublished is not visible in a time element`);
+      if (article.dateModified !== article.datePublished &&
+          !html.includes(`<time datetime="${article.dateModified}">`))
+        fail(`${page}: dateModified is not visible in a time element`);
+    }
+
+    const breadcrumb = nodes.find((node) => node["@type"] === "BreadcrumbList");
+    const secondCrumb = breadcrumb?.itemListElement?.find((item) => item.position === 2);
+    if (secondCrumb?.name !== "Case studies" ||
+        secondCrumb?.item !== "https://www.barnanorbert.com/works")
+      fail(`${page}: BreadcrumbList must match the visible Case studies breadcrumb`);
+
+    if (!html.includes('<article aria-labelledby="case-title" class="case-study-article">') ||
+        !html.includes('<h1 id="case-title"'))
+      fail(`${page}: case-study article must be named by its H1`);
+    if (!html.includes('<section class="case-facts-section" aria-label="Project facts">'))
+      fail(`${page}: missing recruiter-friendly project facts`);
+    if (!html.includes('rel="author" href="/"'))
+      fail(`${page}: visible author must link to the canonical Person page`);
+
+    if (page === "work/kineticare.html") {
+      const faq = nodes.find((node) => node["@type"] === "FAQPage");
+      if (!faq || !Array.isArray(faq.mainEntity)) {
+        fail(`${page}: missing FAQPage entities`);
+      } else {
+        const visibleQa = new Map(
+          [...html.matchAll(/<h3\b[^>]*>([\s\S]*?)<\/h3>\s*<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+            .map(([, question, answer]) => [visibleText(question), visibleText(answer)]),
+        );
+        for (const entity of faq.mainEntity) {
+          const question = visibleText(entity.name || "");
+          const answer = visibleText(entity.acceptedAnswer?.text || "");
+          if (!visibleQa.has(question)) fail(`${page}: FAQ question is not visible: ${question}`);
+          else if (visibleQa.get(question) !== answer)
+            fail(`${page}: FAQ schema answer drifts from visible content: ${question}`);
+        }
+      }
+    }
+  }
+
+  if (/(?:35% first-day activation|70% of wagers from AI picks)/i.test(html))
+    fail(`${page}: removed unsupported SportsGambit metrics returned`);
 
   // Every local reference must resolve to a real file (not a directory):
   // href/src, srcset candidates, Webflow video data attributes, inline url()
@@ -107,6 +223,18 @@ for (const page of PAGES) {
     }
     const st = statSync(join(ROOT, target), { throwIfNoEntry: false });
     if (!st || !st.isFile()) fail(`${page}: broken ${attr} -> ${url}`);
+  }
+}
+
+const llmsPath = join(ROOT, "llms.txt");
+if (!existsSync(llmsPath)) {
+  fail("llms.txt is missing");
+} else {
+  const llms = readFileSync(llmsPath, "utf8");
+  if (!llms.includes("https://www.barnanorbert.com/works") ||
+      !llms.includes("portfolio case-study statements") ||
+      !llms.includes("https://www.linkedin.com/in/barna-norbert/")) {
+    fail("llms.txt is missing canonical portfolio, attribution or contact guidance");
   }
 }
 
