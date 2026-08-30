@@ -1,0 +1,320 @@
+/*
+ * Case-study motion layer
+ *
+ * Hand-authored, opt-in styles for work/* pages. Runtime state is applied by
+ * animations.js; without those classes, every project remains fully visible.
+ */
+
+:root {
+  --case-motion-ink: #111;
+  --case-motion-muted: rgb(17 17 17 / 32%);
+  --case-motion-line: rgb(17 17 17 / 18%);
+  --case-motion-focus: #5b45ff;
+  --case-motion-ease: cubic-bezier(.16, 1, .3, 1);
+  --case-motion-fast: 220ms;
+  --case-motion-medium: 420ms;
+}
+
+/* Fixed signal/progress rail. It never participates in page layout. */
+.case-motion-rail {
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  position: fixed;
+  top: 50%;
+  right: clamp(14px, 2vw, 32px);
+  z-index: 30;
+  display: grid;
+  grid-template-columns: auto 2px;
+  grid-template-rows: auto minmax(130px, 24vh) auto;
+  column-gap: 10px;
+  row-gap: 10px;
+  align-items: center;
+  opacity: 0;
+  transform: translate3d(14px, -50%, 0);
+}
+
+body.case-motion-active .case-motion-rail {
+  opacity: 1;
+  transform: translate3d(0, -50%, 0);
+}
+
+.case-motion-rail__label,
+.case-motion-rail__count {
+  grid-column: 1;
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .12em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.case-motion-rail__label {
+  grid-row: 1;
+}
+
+.case-motion-rail__count {
+  grid-row: 3;
+  font-variant-numeric: tabular-nums;
+}
+
+.case-motion-rail__track {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  align-self: stretch;
+  position: relative;
+  width: 2px;
+  min-height: 160px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 24%);
+}
+
+.case-motion-rail__progress {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  transform: scaleY(var(--case-motion-progress, 0));
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+/* Editorial chapter indices echo the rail without changing heading content. */
+.case-motion-heading {
+  position: relative;
+}
+
+.case-motion-heading::before {
+  content: attr(data-motion-index);
+  position: absolute;
+  top: .48em;
+  right: calc(100% + 18px);
+  color: currentColor;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .12em;
+  opacity: .42;
+}
+
+/* Existing rich-text figure children receive these classes at runtime. */
+.case-motion-figure__mask {
+  overflow: hidden;
+  overflow: clip;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.case-motion-figure__media {
+  backface-visibility: hidden;
+  transform-origin: 50% 50%;
+}
+
+html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure__mask {
+  clip-path: inset(7% 3% round 12px);
+}
+
+html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure__media {
+  transform: scale(1.08);
+}
+
+.case-motion-figure.is-motion-complete .case-motion-figure__mask {
+  clip-path: inset(0 round 0);
+}
+
+/* Active-versus-dim project-card rhythm, with keyboard parity. */
+.related-work-card .related-work-image-wrap {
+  position: relative;
+  isolation: isolate;
+}
+
+.related-work-card .related-work-image-wrap::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid rgb(255 255 255 / 62%);
+  border-radius: inherit;
+  opacity: 0;
+  transform: scale(.96);
+}
+
+.related-work-card:is(.is-active, :focus-within) .related-work-image-wrap::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* The static width lets the existing GSAP scaleX underline animate cheaply. */
+.related-work-card .work-title-line {
+  width: 100% !important;
+  transform-origin: 0 50%;
+}
+
+.related-work-image-wrap:focus-visible,
+.related-work-title:focus-visible,
+.summary a:focus-visible,
+.nav-menu-area > .nav-link:focus-visible,
+.nav-logo-wrap:focus-visible,
+.w-backgroundvideo-backgroundvideoplaypausebutton:focus-visible {
+  outline: 2px solid var(--case-motion-focus);
+  outline-offset: 4px;
+}
+
+/* Editorial links get the same clear signal for hover and keyboard focus. */
+.summary a {
+  text-decoration-thickness: .08em;
+  text-underline-offset: .18em;
+}
+
+.summary a:is(:hover, :focus-visible) {
+  text-decoration-color: currentColor;
+  text-underline-offset: .3em;
+}
+
+/* CTA layers are injected inside the existing Webflow button. */
+.dark-button.projects.case-motion-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.dark-button.projects.case-motion-button .case-motion-button__label {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  color: inherit;
+}
+
+.dark-button.projects.case-motion-button .case-motion-button__accent {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.dark-button.projects.case-motion-button:is(:hover, :focus-visible, .is-active) {
+  color: var(--case-motion-ink);
+}
+
+.dark-button.projects.case-motion-button:is(:hover, :focus-visible, .is-active) .case-motion-button__accent {
+  transform: scaleX(1);
+}
+
+.dark-button.projects:focus-visible,
+.back-to-top-wrap:focus-visible {
+  outline: 2px solid var(--case-motion-focus);
+  outline-offset: 4px;
+}
+
+.back-to-top-arrow-wrap {
+  translate: 0 0;
+}
+
+.nav-menu-area > .nav-link:is(:hover, :focus-visible),
+.nav-logo-wrap:is(:hover, :focus-visible) {
+  translate: 0 -2px;
+}
+
+.w-backgroundvideo-backgroundvideoplaypausebutton:is(:hover, :focus-visible) {
+  scale: 1.06;
+}
+
+@media (max-width: 991px), (hover: none), (pointer: coarse) {
+  .case-motion-rail {
+    display: none;
+  }
+
+  .case-motion-heading::before {
+    display: none;
+  }
+
+  html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure__mask {
+    clip-path: inset(4% 2% round 8px);
+  }
+
+  html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure__media {
+    transform: scale(1.04);
+  }
+
+  .related-work-card.is-active,
+  .related-work-card:focus-within,
+  .related-work-card:is(.is-active, :focus-within) .related-work-title,
+  .related-work-card:is(.is-active, :focus-within) .work-category-text {
+    transform: none;
+  }
+
+  .related-work-card:is(.is-active, :focus-within) .work-image {
+    transform: scale(1.02);
+  }
+
+  .dark-button.projects.case-motion-button:is(:hover, :focus-visible, .is-active),
+  .back-to-top-wrap:is(:hover, :focus-visible, .is-active) {
+    scale: 1;
+    transform: none;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-motion-rail {
+    display: none;
+  }
+
+  .case-motion-figure__mask,
+  .case-motion-figure__media,
+  .related-work-card,
+  .dark-button.projects,
+  .back-to-top-wrap,
+  .back-to-top-arrow-wrap,
+  .nav-menu-area > .nav-link,
+  .nav-logo-wrap,
+  .w-backgroundvideo-backgroundvideoplaypausebutton {
+    animation: none !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure__mask {
+    clip-path: none;
+  }
+
+  html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure__media,
+  .case-motion-figure:hover .case-motion-figure__media,
+  .related-work-card,
+  .dark-button.projects,
+  .back-to-top-wrap,
+  .back-to-top-arrow-wrap,
+  .nav-menu-area > .nav-link,
+  .nav-logo-wrap,
+  .w-backgroundvideo-backgroundvideoplaypausebutton {
+    opacity: 1;
+    filter: none;
+    scale: 1;
+    translate: 0;
+    transform: none;
+  }
+
+  .related-projects-area.is-interacting .related-work-card:not(.is-active):not(:focus-within),
+  .related-work-card:is(.is-active, :focus-within),
+  .related-work-card:is(.is-active, :focus-within) .related-work-title,
+  .related-work-card:is(.is-active, :focus-within) .work-category-text {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  .related-work-card:is(.is-active, :focus-within) .work-image {
+    transform: none;
+  }
+
+  .related-work-card:is(.is-active, :focus-within) .related-work-image-wrap::after,
+  .dark-button.projects.case-motion-button .case-motion-button__accent {
+    display: none;
+  }
+}

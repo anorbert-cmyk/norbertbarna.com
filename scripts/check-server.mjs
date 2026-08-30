@@ -73,23 +73,27 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  const animationsSource = readFileSync(join(ASSETS, "js/animations.js"));
-  const animationsVersion = createHash("sha256")
-    .update(animationsSource)
-    .digest("hex")
-    .slice(0, 12);
-  const versionedUrl = `${baseUrl}/assets/js/animations.${animationsVersion}.js`;
-  const versioned = await fetch(versionedUrl, { method: "HEAD" });
-  const versionedCache = cacheDirectives(versioned.headers.get("cache-control") || "");
-  assert(versioned.ok, `${versionedUrl} returned ${versioned.status}`);
-  assert(versionedCache.has("immutable"), `${versionedUrl} is not immutable`);
-  assert(
-    versionedCache.get("max-age") === "31536000",
-    `${versionedUrl} does not have a one-year cache lifetime`
-  );
+  const versionedMotionAssets = [
+    ["js/animations.js", "js", "animations"],
+    ["css/case-motion.css", "css", "case-motion"],
+  ];
+
+  for (const [sourcePath, directory, stem] of versionedMotionAssets) {
+    const source = readFileSync(join(ASSETS, sourcePath));
+    const version = createHash("sha256").update(source).digest("hex").slice(0, 12);
+    const versionedUrl = `${baseUrl}/assets/${directory}/${stem}.${version}.${directory}`;
+    const versioned = await fetch(versionedUrl, { method: "HEAD" });
+    const versionedCache = cacheDirectives(versioned.headers.get("cache-control") || "");
+    assert(versioned.ok, `${versionedUrl} returned ${versioned.status}`);
+    assert(versionedCache.has("immutable"), `${versionedUrl} is not immutable`);
+    assert(
+      versionedCache.get("max-age") === "31536000",
+      `${versionedUrl} does not have a one-year cache lifetime`
+    );
+  }
 
   console.log(
-    `OK: ${mutableAssets.length} mutable assets revalidate; versioned animation asset is immutable`
+    `OK: ${mutableAssets.length} mutable assets revalidate; ${versionedMotionAssets.length} versioned motion assets are immutable`
   );
 } finally {
   await new Promise((resolveClose, rejectClose) => {
