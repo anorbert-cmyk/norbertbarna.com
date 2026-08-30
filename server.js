@@ -63,12 +63,29 @@ const REDIRECTS = {
   "/work/raiffesen": "/work/raiffeisen",
   "/work/raiffesen.html": "/work/raiffeisen",
 };
-for (const slug of ["benker", "bitpanda", "instructure", "onrobot", "raiffeisen", "sportsgambit"]) {
+for (const slug of ["benker", "bitpanda", "instructure", "kineticare", "onrobot", "raiffeisen", "sportsgambit"]) {
   REDIRECTS[`/work/${slug}.html`] = `/work/${slug}`;
 }
 app.use((req, res, next) => {
   const target = REDIRECTS[req.path];
   if (target) return res.redirect(301, target);
+  next();
+});
+
+// The page mount below serves the repo root, so explicitly refuse paths that
+// are deployment internals rather than site content (server source, manifests,
+// docs, dotfiles). Decode first: express.static decodes percent-encoding when
+// resolving, so the filter must see the same path it would serve.
+const PRIVATE_PATH =
+  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|indicators(?:\/|$)|server\.js$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$)/i;
+app.use((req, res, next) => {
+  let decoded;
+  try {
+    decoded = decodeURIComponent(req.path);
+  } catch {
+    return res.status(400).send("Bad request");
+  }
+  if (PRIVATE_PATH.test(decoded)) return sendNotFound(res);
   next();
 });
 
@@ -91,11 +108,12 @@ app.use(
 );
 
 // Anything unmatched is a 404
-app.use((req, res) => {
+function sendNotFound(res) {
   res.status(404).sendFile(path.join(__dirname, "404.html"), (err) => {
     if (err && !res.headersSent) res.status(404).send("Page not found");
   });
-});
+}
+app.use((req, res) => sendNotFound(res));
 
 app.listen(PORT, () => {
   console.log(`🚀 Portfolio running on http://localhost:${PORT}`);

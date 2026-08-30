@@ -4,7 +4,7 @@
  * Verifies SEO invariants (one H1, unique title/description, canonical,
  * valid JSON-LD) and that every local link/asset reference resolves.
  */
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
@@ -51,8 +51,10 @@ for (const page of PAGES) {
     fail(`${page}: references an external JS CDN (should be self-hosted)`);
   if (/href="[^"]*raiffesen[^"]*"/.test(html)) fail(`${page}: links to misspelled raiffesen URL`);
 
-  // JSON-LD must parse
-  for (const [, block] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+  // JSON-LD must exist on content pages and must parse
+  const ldBlocks = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g)];
+  if (!is404 && ldBlocks.length === 0) fail(`${page}: no JSON-LD structured data`);
+  for (const [, block] of ldBlocks) {
     try {
       JSON.parse(block);
     } catch (e) {
@@ -60,9 +62,18 @@ for (const page of PAGES) {
     }
   }
 
-  // Every local href/src must resolve to a real file
-  for (const [, attr, url] of html.matchAll(/(href|src)="([^"]+)"/g)) {
-    if (/^(https?:|mailto:|tel:|#|data:)/.test(url)) continue;
+  // Every local reference must resolve to a real file (not a directory):
+  // href/src, srcset candidates, Webflow video data attributes, inline url()
+  const refs = [];
+  for (const [, attr, url] of html.matchAll(/(href|src)="([^"]+)"/g)) refs.push([attr, url]);
+  for (const [, list] of html.matchAll(/srcset="([^"]+)"/g))
+    for (const cand of list.split(",")) refs.push(["srcset", cand.trim().split(/\s+/)[0]]);
+  for (const [, list] of html.matchAll(/data-video-urls="([^"]+)"/g))
+    for (const u of list.split(",")) refs.push(["data-video-urls", u.trim()]);
+  for (const [, u] of html.matchAll(/data-poster-url="([^"]+)"/g)) refs.push(["data-poster-url", u]);
+  for (const [, , u] of html.matchAll(/url\((["']?)([^"')]+)\1\)/g)) refs.push(["url()", u]);
+  for (const [attr, url] of refs) {
+    if (!url || /^(https?:|mailto:|tel:|#|data:)/.test(url)) continue;
     const bare = url.split("#")[0].split("?")[0];
     if (bare === "") continue;
     let target;
@@ -71,7 +82,8 @@ for (const page of PAGES) {
     } else {
       target = join(dirname(page), bare);
     }
-    if (!existsSync(join(ROOT, target))) fail(`${page}: broken ${attr} -> ${url}`);
+    const st = statSync(join(ROOT, target), { throwIfNoEntry: false });
+    if (!st || !st.isFile()) fail(`${page}: broken ${attr} -> ${url}`);
   }
 }
 
