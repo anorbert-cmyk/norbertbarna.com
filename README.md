@@ -1,10 +1,10 @@
 # Norbert Barna - Portfolio Website
 
-Self-hosted mirror of the portfolio site. Ready to deploy anywhere.
+Self-hosted portfolio site (static HTML + a small Express server), deployed on Railway.
 
-## 🚀 Quick Deploy
+## 🚀 Deploy
 
-### Railway (Recommended)
+### Railway (production)
 ```bash
 # Install Railway CLI
 npm i -g @railway/cli
@@ -21,18 +21,6 @@ docker build -t portfolio .
 docker run -p 3000:3000 portfolio
 ```
 
-### Vercel
-```bash
-npm i -g vercel
-vercel
-```
-
-### Netlify
-```bash
-npm i -g netlify-cli
-netlify deploy --prod
-```
-
 ### Local Development
 ```bash
 npm install
@@ -40,27 +28,38 @@ npm start
 # Open http://localhost:3000
 ```
 
+## ✅ Checks
+```bash
+npm test   # SEO invariants + broken-link check (also runs in CI)
+```
+
 ## 📁 Structure
 ```
 ├── index.html          # Homepage
 ├── works.html          # Works page
-├── work/               # Individual work pages
+├── work/               # Individual case studies
 │   ├── sportsgambit.html
-│   ├── raiffesen.html
+│   ├── raiffeisen.html
 │   ├── instructure.html
 │   ├── bitpanda.html
+│   ├── onrobot.html
 │   └── benker.html
 ├── assets/             # All static assets
 │   ├── css/
-│   ├── js/
+│   ├── js/             # animations.js + self-hosted vendor libs + Webflow runtime
 │   ├── images/
 │   ├── videos/
-│   ├── fonts/
 │   └── icons/
-├── server.js           # Express server
+├── docs/seo-keywords.md  # Keyword & long-tail strategy per page
+├── scripts/check-site.mjs # Site invariant checks (npm test)
+├── server.js           # Express server (clean URLs, redirects, security headers)
 ├── package.json        # Node.js config
 ├── Dockerfile          # Docker config
-├── railway.json        # Railway config
-├── vercel.json         # Vercel config
-└── netlify.toml        # Netlify config
+└── railway.json        # Railway config
 ```
+
+## URL conventions
+
+- Canonical URLs are extension-less: `/works`, `/work/benker`.
+- `.html` variants and the old `/work/raiffesen` misspelling 301-redirect
+  to the canonical URL (see `server.js`).

@@ -1,7 +1,7 @@
 /**
  * Norbert Barna Portfolio — Premium GSAP Animations
  *
- * Dependencies (loaded via CDN before this file):
+ * Dependencies (self-hosted in assets/js/vendor/, loaded before this file):
  *   - Lenis (smooth scroll)
  *   - GSAP 3.12+ (core)
  *   - GSAP ScrollTrigger
@@ -62,39 +62,47 @@
   function splitChars(el) {
     if (!el) return [];
     var text = el.textContent;
-    var html = "";
+    // Keep the original text for assistive tech; spans read letter-by-letter
+    el.setAttribute("aria-label", text);
+    el.textContent = "";
     for (var i = 0; i < text.length; i++) {
-      var ch = text[i];
-      if (ch === " ") {
-        html += '<span class="split-char" style="display:inline-block">&nbsp;</span>';
+      var span = document.createElement("span");
+      span.className = "split-char";
+      span.setAttribute("aria-hidden", "true");
+      span.style.display = "inline-block";
+      if (text[i] === " ") {
+        span.innerHTML = "&nbsp;";
       } else {
-        html +=
-          '<span class="split-char" style="display:inline-block;will-change:transform">' +
-          ch +
-          "</span>";
+        span.style.willChange = "transform";
+        span.textContent = text[i];
       }
+      el.appendChild(span);
     }
-    el.innerHTML = html;
     return el.querySelectorAll(".split-char");
   }
 
   function splitWords(el) {
     if (!el) return [];
     var text = el.textContent;
-    el.innerHTML = text
-      .split(/\s+/)
-      .filter(function (w) { return w.length > 0; })
-      .map(function (w) {
-        return '<span class="split-word" style="display:inline-block">' + w + "</span>";
-      })
-      .join(" ");
+    el.setAttribute("aria-label", text);
+    el.textContent = "";
+    var words = text.split(/\s+/).filter(function (w) { return w.length > 0; });
+    words.forEach(function (w, i) {
+      var span = document.createElement("span");
+      span.className = "split-word";
+      span.setAttribute("aria-hidden", "true");
+      span.style.display = "inline-block";
+      span.textContent = w;
+      el.appendChild(span);
+      if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
+    });
     return el.querySelectorAll(".split-word");
   }
 
   // ============================================================
   // UTILITY: Magnetic Cursor Effect
   // ============================================================
-  function addMagneticEffect(els, strength) {
+  function addMagneticEffect(els, strength, signal) {
     strength = strength || 0.3;
     els.forEach(function (el) {
       el.addEventListener("mousemove", function (e) {
@@ -102,27 +110,27 @@
         var x = (e.clientX - rect.left - rect.width / 2) * strength;
         var y = (e.clientY - rect.top - rect.height / 2) * strength;
         gsap.to(el, { x: x, y: y, duration: 0.4, ease: "power3.out" });
-      });
+      }, { signal: signal });
       el.addEventListener("mouseleave", function () {
         gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" });
-      });
+      }, { signal: signal });
     });
   }
 
   // ============================================================
   // UTILITY: Hover underline on work cards
   // ============================================================
-  function initHoverUnderlines(cards) {
+  function initHoverUnderlines(cards, signal) {
     cards.forEach(function (card) {
       var line = card.querySelector(".work-title-line");
       if (!line) return;
       gsap.set(line, { transformOrigin: "left center", scaleX: 0 });
       card.addEventListener("mouseenter", function () {
         gsap.to(line, { scaleX: 1, duration: 0.4, ease: "power2.out" });
-      });
+      }, { signal: signal });
       card.addEventListener("mouseleave", function () {
         gsap.to(line, { scaleX: 0, duration: 0.3, ease: "power2.in" });
-      });
+      }, { signal: signal });
     });
   }
 
@@ -142,6 +150,7 @@
   // DESKTOP (768px+)
   // ============================================================
   mm.add("(min-width: 768px)", function () {
+    var listeners = new AbortController();
 
     // ── SHARED: Nav + Logo ────────────────────────────────────
     var logo = document.querySelector(".nav-logo-wrap");
@@ -164,12 +173,12 @@
     // ── SHARED: Back to Top ───────────────────────────────────
     var backToTop = document.querySelectorAll(".back-to-top-wrap");
     if (backToTop.length) {
-      addMagneticEffect(Array.from(backToTop), 0.4);
+      addMagneticEffect(Array.from(backToTop), 0.4, listeners.signal);
       backToTop.forEach(function (el) {
         el.addEventListener("click", function (e) {
           e.preventDefault();
           lenis.scrollTo(0, { duration: 1.5 });
-        });
+        }, { signal: listeners.signal });
       });
     }
 
@@ -224,7 +233,7 @@
           });
         }
       });
-      initHoverUnderlines(workCards);
+      initHoverUnderlines(workCards, listeners.signal);
     }
 
     // ── SHARED: Related work cards (case study pages) ─────────
@@ -243,7 +252,7 @@
           toggleActions: "play none none reverse",
         },
       });
-      initHoverUnderlines(relatedCards);
+      initHoverUnderlines(relatedCards, listeners.signal);
     }
 
     // ==========================================================
@@ -366,7 +375,7 @@
 
         var serviceIcons = document.querySelectorAll(".home-service-icon-area");
         if (serviceIcons.length) {
-          addMagneticEffect(Array.from(serviceIcons), 0.25);
+          addMagneticEffect(Array.from(serviceIcons), 0.25, listeners.signal);
         }
       }
 
@@ -607,7 +616,7 @@
             toggleActions: "play none none reverse",
           },
         });
-        addMagneticEffect([viewAllBtn], 0.15);
+        addMagneticEffect([viewAllBtn], 0.15, listeners.signal);
       }
 
       // Service divider line grow
@@ -627,12 +636,16 @@
       }
     }
 
+    return function () {
+      listeners.abort();
+    };
   }); // end desktop
 
   // ============================================================
   // MOBILE (< 768px)
   // ============================================================
   mm.add("(max-width: 767px)", function () {
+    var listeners = new AbortController();
 
     // ── Mobile hero: mini-timeline for coordinated entrance ────
     var mHeroTl = gsap.timeline({ delay: 0.15 });
@@ -709,9 +722,12 @@
       el.addEventListener("click", function (e) {
         e.preventDefault();
         lenis.scrollTo(0, { duration: 1.2 });
-      });
+      }, { signal: listeners.signal });
     });
 
+    return function () {
+      listeners.abort();
+    };
   }); // end mobile
 
 })();
