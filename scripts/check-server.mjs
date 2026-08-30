@@ -76,6 +76,7 @@ try {
   const versionedMotionAssets = [
     ["js/animations.js", "js", "animations"],
     ["css/case-motion.css", "css", "case-motion"],
+    ["css/responsive.css", "css", "responsive"],
   ];
 
   for (const [sourcePath, directory, stem] of versionedMotionAssets) {
