@@ -229,6 +229,12 @@ if (!/<h2\b[^>]*class="[^"]*\babout-section-title\b[^>]*>Selected work<\/h2>/i.t
     !/class="[^"]*\bhome-work-footer\b[^"]*"[\s\S]*?href="\/works"/i.test(homeHtml)) {
   fail("index.html: selected work needs a clear heading and all-case-studies action");
 }
+if (/class="[^"]*\bhome-service-grid\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
+  fail("index.html: the service heading must not be an invalid child of an ARIA list");
+}
+if (/class="[^"]*\bhome-work-wrap\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
+  fail("index.html: the selected-work CTA must not be an invalid child of an ARIA list");
+}
 if (!/<ul\b[^>]*class="[^"]*\bhome-banner-outcomes\b/i.test(homeHtml) ||
     !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="#works"/i.test(homeHtml)) {
   fail("index.html: hero outcomes must be a semantic list with a selected-work action");
@@ -261,11 +267,13 @@ const cssContracts = [
   [/\.work-image-wrap[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/i, "portfolio cover ratio is not reserved"],
   [/\.home-about-video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "homepage video ratio is not reserved"],
   [/\.kineticare-browser-frame video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "Kineticare video ratio is not reserved"],
+  [/\.summary \.kineticare-video-caption[\s\S]*?color:\s*#d8e2ec/i, "Kineticare video caption contrast is not guaranteed"],
   [/\.case-facts[\s\S]*?grid-template-columns:\s*repeat\(4/i, "desktop project facts grid is missing"],
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
   [/\.footer-contact-link[\s\S]*?min-height:\s*52px/i, "footer contact action is not touch-safe"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
+  [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
   [/\.banner-section\.raiffesen \.case-byline/i, "light hero byline contrast rule is missing"],
   [/\.work-card \.work-title-line[\s\S]*?width:\s*100%\s*!important/i, "project underline geometry is unstable"],

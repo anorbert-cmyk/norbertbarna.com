@@ -136,10 +136,15 @@ try {
   for (const pagePath of ["/", "/works", "/work/instructure"]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
+    const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
     assert(page.ok, `${pagePath} returned ${page.status}`);
     assert(!pageCache.has("immutable"), `${pagePath} is incorrectly immutable`);
     assert(pageCache.get("max-age") === "0", `${pagePath} must use max-age=0`);
     assert(pageCache.has("must-revalidate"), `${pagePath} must revalidate after a deploy`);
+    assert(
+      /connect-src\s+'self'\s+fonts\.googleapis\.com(?:;|$)/i.test(contentSecurityPolicy),
+      `${pagePath} blocks the WebFont stylesheet request`
+    );
   }
 
   const llms = await fetch(`${baseUrl}/llms.txt`);

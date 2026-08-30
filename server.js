@@ -28,7 +28,7 @@ app.use((req, res, next) => {
       "font-src 'self' fonts.gstatic.com data:",
       "img-src 'self' data:",
       "media-src 'self'",
-      "connect-src 'self'",
+      "connect-src 'self' fonts.googleapis.com",
       "object-src 'none'",
       "base-uri 'self'",
       "frame-ancestors 'self'",
