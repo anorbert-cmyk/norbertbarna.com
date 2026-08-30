@@ -31,6 +31,12 @@
   // ============================================================
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     document.documentElement.classList.add("no-motion");
+    // Background/demo videos autoplay from markup; stop them for
+    // reduced-motion users (the poster frame stays visible).
+    document.querySelectorAll("video[autoplay]").forEach(function (v) {
+      v.removeAttribute("autoplay");
+      v.pause();
+    });
     return;
   }
 
@@ -84,36 +90,48 @@
   // ============================================================
   function splitChars(el) {
     if (!el) return [];
-    var text = el.textContent;
-    // Keep the original text for assistive tech; spans read letter-by-letter
-    el.setAttribute("aria-label", text);
+    // Preserve non-text children (e.g. <br/> inside multi-line headings)
+    // instead of flattening them away via textContent.
+    var nodes = Array.prototype.slice.call(el.childNodes);
+    // Keep the original text for assistive tech (spans read letter-by-letter);
+    // join per-node text with spaces so line breaks don't glue words together.
+    el.setAttribute("aria-label", nodes.map(function (n) {
+      return n.textContent.trim();
+    }).filter(Boolean).join(" "));
     el.textContent = "";
-    for (var i = 0; i < text.length; i++) {
-      var span = document.createElement("span");
-      span.className = "split-char";
-      span.setAttribute("aria-hidden", "true");
-      span.style.display = "inline-block";
-      if (text[i] === " ") {
-        span.innerHTML = "&nbsp;";
-      } else {
-        span.style.willChange = "transform";
-        span.textContent = text[i];
+    nodes.forEach(function (node) {
+      if (node.nodeType !== Node.TEXT_NODE) {
+        el.appendChild(node);
+        return;
       }
-      el.appendChild(span);
-    }
+      var text = node.textContent;
+      for (var i = 0; i < text.length; i++) {
+        var span = document.createElement("span");
+        span.className = "split-char";
+        span.setAttribute("aria-hidden", "true");
+        span.style.display = "inline-block";
+        if (text[i] === " ") {
+          span.innerHTML = "&nbsp;";
+        } else {
+          span.style.willChange = "transform";
+          span.textContent = text[i];
+        }
+        el.appendChild(span);
+      }
+    });
     return el.querySelectorAll(".split-char");
   }
 
   function splitWords(el) {
     if (!el) return [];
+    // Whole words in document order read fine to assistive tech, so no
+    // aria-hidden/aria-label here (aria-label is unsupported on <p> anyway).
     var text = el.textContent;
-    el.setAttribute("aria-label", text);
     el.textContent = "";
     var words = text.split(/\s+/).filter(function (w) { return w.length > 0; });
     words.forEach(function (w, i) {
       var span = document.createElement("span");
       span.className = "split-word";
-      span.setAttribute("aria-hidden", "true");
       span.style.display = "inline-block";
       span.textContent = w;
       el.appendChild(span);
@@ -125,9 +143,11 @@
   // ============================================================
   // UTILITY: Magnetic Cursor Effect
   // ============================================================
+  var magneticTargets = [];
   function addMagneticEffect(els, strength, signal) {
     strength = strength || 0.3;
     els.forEach(function (el) {
+      magneticTargets.push(el);
       el.addEventListener("mousemove", function (e) {
         var rect = el.getBoundingClientRect();
         var x = (e.clientX - rect.left - rect.width / 2) * strength;
@@ -661,6 +681,13 @@
 
     return function () {
       listeners.abort();
+      // A mousemove tween may still be mid-flight when the breakpoint flips;
+      // with its mouseleave listener gone the element would stay translated.
+      magneticTargets.forEach(function (el) {
+        gsap.killTweensOf(el);
+        gsap.set(el, { clearProps: "x,y" });
+      });
+      magneticTargets.length = 0;
     };
   }); // end desktop
 
