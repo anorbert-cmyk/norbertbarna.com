@@ -1,54 +1,67 @@
-# Kineticare — megosztható poszt (LinkedIn / social)
+# Kineticare: megosztható poszt (LinkedIn / social)
 
 A case study: https://www.barnanorbert.com/work/kineticare
 
 ## Magyar változat
 
-**Egy rendelőnyi tudás, egy weboldalba sűrítve. 🖐️**
+**Egy kézrehabilitációs praxis felső korlátja két pár kéz.**
 
-Az elmúlt hónapokban két gyógytornásszal dolgoztam azon, hogy a kéz- és
-karrehabilitációs praxisukat digitális termékké alakítsuk. Így született meg
-az új Kineticare: online videókurzus-platform kéztőalagút-szindrómára,
-csuklósérülésekre és teniszkönyökre — otthonról, saját tempóban.
+Kata és Kata gyógytornászok, több mint tíz éve foglalkoznak kézzel, csuklóval,
+könyökkel, vállal. Aki nem fér be a heti időpontok közé, az vár vagy feladja.
 
-Amit ebből a projektből a legjobban szerettem: a bizalom volt a design brief.
-Aki fájdalommal keres megoldást, az nem "konvertálni" akar, hanem megbizonyosodni
-arról, hogy jó kezekben van. Ezért:
+Az elmúlt hónapokban azon dolgoztam, hogy a módszerük eljusson azokhoz is, akik
+sosem ülnek be a rendelőbe. Ebből lett az új Kineticare: online kurzusplatform
+kéztőalagút-szindrómára, csuklósérülésre, teniszkönyökre.
 
-🔹 a márka nyugodt, klinikai-mégis-emberi — mélykék, sok levegő, kézfotók
-🔹 a belépő nem sales-oldal, hanem egy ingyenes SOS gyakorlatsor
-🔹 az információs architektúra a gyógyulás útját követi, nem a szolgáltatáslistát
-🔹 a Tudástár cikkei azokra a keresésekre válaszolnak, amiket a páciensek tényleg beírnak
+A projekt legnehezebb kérdése nem a technológia volt, hanem a bizalom. Aki fél
+éve fáj a csuklója, addigra kipróbált három-négy dolgot, ami nem működött. Nem
+lelkesedést keres, hanem okot arra, hogy elhiggye: ez most más lesz.
 
-És mert a design a kódban válik valósággá: az egész platformot végig is
-építettem — Next.js + Payload CMS, streamelt videó, Barion-fizetés, tagsági
-terület.
+Ezért minden állítás mellé bizonyíték került. Nevesített gyógytornászok a
+végzettségükkel. Saját fotók, nem stock képek. Páciensvélemények névvel,
+foglalkozással, konkrét panasszal. Kimondott ár.
 
-A teljes case study a portfóliómban: 👉 barnanorbert.com/work/kineticare
+A belépő pedig nem értékesítési oldal, hanem egy ingyenes gyakorlatsor. Aki
+fájdalommal érkezik, előbb kap valamit, ami segít, és csak utána dönt a fizetős
+programról.
 
-#ux #productdesign #digitalhealth #designengineering #healthtech
+A platformot nem csak terveztem, meg is építettem: Next.js, Payload CMS,
+streamelt kurzusvideó, Barion-fizetés, tagsági terület. A tartalmat a két
+gyógytornász kezeli, fejlesztő nélkül.
+
+A teljes esettanulmány: barnanorbert.com/work/kineticare
+
+#ux #productdesign #digitalhealth #healthtech
 
 ## English version
 
-**A clinic's worth of expertise, distilled into one product. 🖐️**
+**A hand therapy practice has a hard ceiling: two pairs of hands.**
 
-I spent the past months turning two physiotherapists' hand-rehabilitation
-practice into a digital product. The result is the new Kineticare: an online
-video course platform for carpal tunnel syndrome, wrist injuries, and tennis
-elbow — followed from home, at the patient's own pace.
+Kata and Kata are physiotherapists who have spent more than ten years on the
+hand, wrist, elbow and shoulder. Everyone who cannot get an appointment either
+waits or gives up.
 
-My favourite part of this project: trust *was* the design brief. Someone in
-pain isn't looking to be converted — they're looking for proof they're in good
-hands. So:
+Over the past months I worked on carrying their method to patients who will
+never sit in the treatment room. The result is the new Kineticare: an online
+course platform for carpal tunnel syndrome, wrist injuries and tennis elbow.
 
-🔹 the brand is calm and clinical-yet-human — deep navy, air, hand photography
-🔹 the front door is a genuinely useful free SOS exercise program, not a sales page
-🔹 the information architecture follows the recovery journey, not a service list
-🔹 knowledge-hub articles answer the exact symptom searches patients actually type
+The hardest question in the project was not technical. It was trust. Someone
+with six months of wrist pain has already tried three or four things that did
+not work. They are not looking for enthusiasm. They are looking for a reason to
+believe this one is different.
 
-And because design becomes real in code, I built the entire platform too —
-Next.js + Payload CMS, streamed video, payments, and a members' area.
+So every claim on the site has its evidence next to it. Named practitioners with
+their qualifications. Real photographs instead of stock imagery. Patient stories
+with names, occupations and specific complaints. A stated price.
 
-Full case study on my portfolio: 👉 barnanorbert.com/work/kineticare
+The entrance is not a sales page. It is a free exercise course. Someone arriving
+in pain gets something that helps first, and decides about a paid programme
+afterwards.
 
-#ux #productdesign #digitalhealth #designengineering #healthtech
+I built the platform as well as designing it: Next.js, Payload CMS, streamed
+course video, payments and a members area. The two physiotherapists publish
+their own content without a developer.
+
+Full case study: barnanorbert.com/work/kineticare
+
+#ux #productdesign #digitalhealth #healthtech
