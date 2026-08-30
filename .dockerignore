@@ -1,0 +1,11 @@
+.git
+node_modules
+.claude
+.github
+docs
+scripts
+Dockerfile
+.dockerignore
+README.md
+claude.md
+indicators
