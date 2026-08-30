@@ -37,6 +37,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// Canonical host: the site lives on www.barnanorbert.com. Requests hitting
+// the Railway service domain (or any other alias) 301 to the canonical host
+// so search engines see a single origin. Localhost/dev hosts are untouched.
+const CANONICAL_HOST = "www.barnanorbert.com";
+app.use((req, res, next) => {
+  const host = req.hostname;
+  if (host === CANONICAL_HOST || host === "localhost" || host === "127.0.0.1") {
+    return next();
+  }
+  if (host.endsWith(".up.railway.app") || host === "barnanorbert.com") {
+    return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+  }
+  next();
+});
+
 // Redirects: legacy .html URLs -> canonical clean URLs, plus the fixed
 // /work/raiffesen misspelling. Keeps one canonical URL per page.
 const REDIRECTS = {

@@ -1,4 +1,4 @@
-# SEO Keyword & Long-Tail Strategy — norbertbarna.com
+# SEO Keyword & Long-Tail Strategy — barnanorbert.com
 
 Keyword map for the portfolio. Every page targets one primary keyword cluster;
 secondary and long-tail terms support it. Terms are woven into the title tag,
