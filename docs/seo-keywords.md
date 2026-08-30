@@ -1,9 +1,9 @@
-# SEO Keyword & Long-Tail Strategy — barnanorbert.com
+# SEO Keyword and Long-Tail Strategy: barnanorbert.com
 
 Keyword map for the portfolio. Every page targets one primary keyword cluster;
 secondary and long-tail terms support it. Terms are woven into the title tag,
 meta description, H1/H2s, JSON-LD (`keywords`, `knowsAbout`, `about`) and body
-copy — never stuffed.
+copy. Never stuffed.
 
 ## Positioning
 
@@ -14,7 +14,7 @@ copy — never stuffed.
 - **Strategy for a small personal domain:** low-competition long-tail case-study
   queries are the realistic entry point; the brand + portfolio queries convert.
   Case studies are the linkable, citable assets (also for AI search / LLM
-  citation — each study leads with concrete metrics, which AI answers quote).
+  citation, since each study leads with concrete metrics, which AI answers quote).
 
 ## Page-by-page keyword map
 
@@ -77,7 +77,13 @@ Implemented in: title, meta description, `CollectionPage` + `ItemList` JSON-LD.
 |---|---|
 | Primary | digital health platform design |
 | Secondary | telehealth UX design, healthcare product design case study |
-| Long-tail | online physiotherapy course platform UX design; health e-learning platform design case study; patient education platform design; designing trust in digital health products; Next.js Payload CMS healthcare build |
+| Long-tail | online physiotherapy course platform design; patient education platform UX; designing trust in digital health products; how to structure a physiotherapy site for search; Next.js Payload CMS healthcare build |
+
+Written for answer engines as well as classic search: every section stands on
+its own, headings state the subject plainly, and the page closes with four
+question-and-answer blocks backed by `FAQPage` schema. The `Article` schema
+carries `datePublished`/`dateModified` and an author description, which is what
+AI assistants read when deciding whether a source is credible.
 
 ### /work/sportsgambit
 | Tier | Keywords |
@@ -89,14 +95,17 @@ Implemented in: title, meta description, `CollectionPage` + `ItemList` JSON-LD.
 ## On-page rules applied
 
 - One unique title (≤60 chars, keyword first) and meta description
-  (~105–155 chars, with the primary keyword) per page.
+  (105 to 155 chars, with the primary keyword) per page.
 - Exactly one H1 per page, matching the page's subject (hidden duplicate
   Webflow CMS banners were removed).
 - Canonical URL = clean URL (`/works`, `/work/benker`); `.html` variants and
   the old `/work/raiffesen` misspelling 301-redirect to it (server.js).
 - `BreadcrumbList` JSON-LD on every case study; `keywords` on every `Article`.
 - robots.txt no longer blocks CSS/JS, so Google can render the pages.
-- No `<meta name="keywords">` — ignored by every major engine; the map above
+- House editorial standard: no em dashes, no filler adjectives, no
+  machine-sounding phrasing ("seamless", "leverage", "delve", "not just X
+  but Y"). Claims are specific and checkable, or they are cut.
+- No `<meta name="keywords">`: ignored by every major engine; the map above
   lives in content and structured data instead.
 
 ## Content roadmap (highest-leverage next steps)
