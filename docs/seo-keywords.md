@@ -72,6 +72,13 @@ Implemented in: title, meta description, `CollectionPage` + `ItemList` JSON-LD.
 | Secondary | banking app redesign, banking design system |
 | Long-tail | mobile banking app redesign case study; multi-country banking app design; payments and KYC UX design; banking app rating improvement case study |
 
+### /work/kineticare
+| Tier | Keywords |
+|---|---|
+| Primary | digital health platform design |
+| Secondary | telehealth UX design, healthcare product design case study |
+| Long-tail | online physiotherapy course platform UX design; health e-learning platform design case study; patient education platform design; designing trust in digital health products; Next.js Payload CMS healthcare build |
+
 ### /work/sportsgambit
 | Tier | Keywords |
 |---|---|
