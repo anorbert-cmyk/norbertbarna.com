@@ -18,6 +18,7 @@ const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .sort()
   .map((name) => `work/${name}`);
 const ANIMATED_PAGES = ["index.html", "works.html", ...WORK_PAGES];
+const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
 
 let failures = 0;
 function fail(message) {
@@ -130,6 +131,21 @@ function checkRichTextImages(page, html) {
 
 const animationsFile = versionedAsset("assets/js/animations.js", "animations", "js");
 const caseMotionFile = versionedAsset("assets/css/case-motion.css", "case-motion", "css");
+const responsiveFile = versionedAsset("assets/css/responsive.css", "responsive", "css");
+
+for (const page of ALL_PAGES) {
+  const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
+  const responsiveRefs = [...html.matchAll(/<link\b[^>]*>/gi)]
+    .map((match) => attribute(match[0], "href"))
+    .filter((href) => /\/responsive(?:\.[a-f0-9]+)?\.css$/i.test(href));
+  const expectedResponsiveRef = `${page === "404.html" ? "/" : page.startsWith("work/") ? "../" : ""}assets/css/${responsiveFile}`;
+
+  if (responsiveRefs.length !== 1) {
+    fail(`${page}: expected one active content-hashed responsive stylesheet, found ${responsiveRefs.length}`);
+  } else if (responsiveFile && responsiveRefs[0] !== expectedResponsiveRef) {
+    fail(`${page}: expected ${expectedResponsiveRef}, found ${responsiveRefs[0]}`);
+  }
+}
 
 for (const page of ANIMATED_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
