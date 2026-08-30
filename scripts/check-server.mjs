@@ -7,14 +7,15 @@
 import { createHash } from "node:crypto";
 import { once } from "node:events";
 import { readdirSync, readFileSync, statSync } from "node:fs";
+import { request as httpRequest } from "node:http";
 import { createRequire } from "node:module";
-import { basename, dirname, join, relative, resolve, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const ASSETS = join(ROOT, "assets");
-const CONTENT_HASHED_ASSET = /(?:^|[._-])[a-f0-9]{8,}(?=[._-]|$)/i;
 const require = createRequire(import.meta.url);
-const app = require(join(ROOT, "server.js"));
+const serverModulePath = join(ROOT, "server.js");
+const app = require(serverModulePath);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -34,6 +35,29 @@ function encodeAssetPath(filePath) {
     .join("/");
 }
 
+function assetPath(filePath) {
+  return relative(ASSETS, filePath).split(sep).join("/");
+}
+
+// This intentionally does not import or duplicate the server classifier.
+// A release is immutable only when it belongs to an approved family and the
+// embedded token is the real SHA-256 prefix of the bytes being served.
+function hasVerifiedReleaseDigest(filePath) {
+  const [directory, fileName, extra] = assetPath(filePath).split("/");
+  if (extra || !directory || !fileName) return false;
+
+  let match = null;
+  if (directory === "js") {
+    match = fileName.match(/^animations\.([a-f0-9]{12})\.js$/i);
+  } else if (directory === "css") {
+    match = fileName.match(/^(?:case-motion|responsive)\.([a-f0-9]{12})\.css$/i);
+  }
+  if (!match) return false;
+
+  const actual = createHash("sha256").update(readFileSync(filePath)).digest("hex").slice(0, 12);
+  return match[1].toLowerCase() === actual;
+}
+
 function cacheDirectives(header) {
   const directives = new Map();
   for (const part of header.toLowerCase().split(",")) {
@@ -41,6 +65,33 @@ function cacheDirectives(header) {
     if (name) directives.set(name, value ?? true);
   }
   return directives;
+}
+
+function rawGet(port, requestPath, headers = {}) {
+  return new Promise((resolveResponse, rejectResponse) => {
+    const request = httpRequest(
+      {
+        hostname: "127.0.0.1",
+        port,
+        path: requestPath,
+        method: "GET",
+        headers,
+      },
+      (response) => {
+        const chunks = [];
+        response.on("data", (chunk) => chunks.push(chunk));
+        response.once("end", () => {
+          resolveResponse({
+            statusCode: response.statusCode,
+            headers: response.headers,
+            body: Buffer.concat(chunks).toString("utf8"),
+          });
+        });
+      }
+    );
+    request.once("error", rejectResponse);
+    request.end();
+  });
 }
 
 const server = app.listen(0, "127.0.0.1");
@@ -51,19 +102,28 @@ try {
   assert(address && typeof address === "object", "server did not expose a listening address");
   const baseUrl = `http://127.0.0.1:${address.port}`;
 
-  const mutableAssets = allFiles(ASSETS).filter(
-    (filePath) => !CONTENT_HASHED_ASSET.test(basename(filePath))
-  );
+  const assetFiles = allFiles(ASSETS);
+  let immutableAssetCount = 0;
 
-  for (const filePath of mutableAssets) {
+  for (const filePath of assetFiles) {
     const assetUrl = `${baseUrl}/assets/${encodeAssetPath(filePath)}`;
     const response = await fetch(assetUrl, { method: "HEAD" });
     const cache = cacheDirectives(response.headers.get("cache-control") || "");
+    const shouldBeImmutable = hasVerifiedReleaseDigest(filePath);
     assert(response.ok, `${assetUrl} returned ${response.status}`);
-    assert(!cache.has("immutable"), `${assetUrl} is incorrectly immutable`);
-    assert(cache.get("max-age") === "0", `${assetUrl} must use max-age=0`);
-    assert(cache.has("must-revalidate"), `${assetUrl} must revalidate`);
+
+    if (shouldBeImmutable) {
+      immutableAssetCount += 1;
+      assert(cache.has("immutable"), `${assetUrl} is a verified release but is not immutable`);
+      assert(cache.get("max-age") === "31536000", `${assetUrl} needs a one-year cache lifetime`);
+    } else {
+      assert(!cache.has("immutable"), `${assetUrl} is not output-content-hashed but is immutable`);
+      assert(cache.get("max-age") === "0", `${assetUrl} must use max-age=0`);
+      assert(cache.has("must-revalidate"), `${assetUrl} must revalidate`);
+    }
   }
+
+  assert(immutableAssetCount > 0, "no verified immutable release assets were found");
 
   const queryProbe = await fetch(`${baseUrl}/assets/js/webfont.js?v=deadbeef`, {
     method: "HEAD",
@@ -72,6 +132,104 @@ try {
   assert(queryProbe.ok, `query-string cache probe returned ${queryProbe.status}`);
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
+
+  for (const pagePath of ["/", "/works", "/work/instructure"]) {
+    const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
+    const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
+    assert(page.ok, `${pagePath} returned ${page.status}`);
+    assert(!pageCache.has("immutable"), `${pagePath} is incorrectly immutable`);
+    assert(pageCache.get("max-age") === "0", `${pagePath} must use max-age=0`);
+    assert(pageCache.has("must-revalidate"), `${pagePath} must revalidate after a deploy`);
+  }
+
+  const llms = await fetch(`${baseUrl}/llms.txt`);
+  const llmsCache = cacheDirectives(llms.headers.get("cache-control") || "");
+  assert(llms.ok, `/llms.txt returned ${llms.status}`);
+  assert(/text\/plain/i.test(llms.headers.get("content-type") || ""), "/llms.txt is not text/plain");
+  assert((await llms.text()).includes("Norbert Barna — Product Design Portfolio"), "/llms.txt content is incomplete");
+  assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
+
+  for (const [legacyPath, expectedLocation] of [
+    ["/works/?utm_source=portfolio", "/works?utm_source=portfolio"],
+    ["/work/benker/?ref=case", "/work/benker?ref=case"],
+    ["/work/raiffesen?utm_campaign=legacy", "/work/raiffeisen?utm_campaign=legacy"],
+    ["/work/raiffesen/?utm_campaign=legacy", "/work/raiffeisen?utm_campaign=legacy"],
+  ]) {
+    const redirect = await fetch(`${baseUrl}${legacyPath}`, { redirect: "manual" });
+    assert(redirect.status === 301, `${legacyPath} did not return a permanent redirect`);
+    assert(redirect.headers.get("location") === expectedLocation, `${legacyPath} lost its canonical path or query`);
+  }
+
+  const previousCanonicalRedirect = process.env.CANONICAL_REDIRECT;
+  process.env.CANONICAL_REDIRECT = "1";
+  delete require.cache[require.resolve(serverModulePath)];
+  const canonicalApp = require(serverModulePath);
+  const canonicalServer = canonicalApp.listen(0, "127.0.0.1");
+  try {
+    await once(canonicalServer, "listening");
+    const canonicalAddress = canonicalServer.address();
+    assert(canonicalAddress && typeof canonicalAddress === "object", "canonical server did not start");
+    const canonicalBase = `http://127.0.0.1:${canonicalAddress.port}`;
+    // WHATWG fetch protects the Host header in newer Node versions. Use the
+    // low-level client so this test exercises the exact reverse-proxy input.
+    const canonicalRedirect = await new Promise((resolveResponse, rejectResponse) => {
+      const request = httpRequest(`${canonicalBase}/work/raiffesen/?utm_source=apex`, {
+        method: "GET",
+        headers: { host: "barnanorbert.com" },
+      }, (response) => {
+        response.resume();
+        response.once("end", () => resolveResponse(response));
+      });
+      request.once("error", rejectResponse);
+      request.end();
+    });
+    assert(canonicalRedirect.statusCode === 301, "apex legacy URL did not redirect permanently");
+    assert(
+      canonicalRedirect.headers.location ===
+        "https://www.barnanorbert.com/work/raiffeisen?utm_source=apex",
+      "apex legacy URL did not canonicalize host and path in one hop"
+    );
+  } finally {
+    await new Promise((resolveClose, rejectClose) => {
+      canonicalServer.close((error) => (error ? rejectClose(error) : resolveClose()));
+    });
+    if (previousCanonicalRedirect === undefined) delete process.env.CANONICAL_REDIRECT;
+    else process.env.CANONICAL_REDIRECT = previousCanonicalRedirect;
+    delete require.cache[require.resolve(serverModulePath)];
+  }
+
+  for (const notFoundPath of [
+    "/404",
+    "/404.html",
+    "/definitely-not-a-real-page",
+    "/tests/portfolio.spec.mjs",
+    "/playwright.config.mjs",
+  ]) {
+    const response = await fetch(`${baseUrl}${notFoundPath}`, { redirect: "manual" });
+    const cache = cacheDirectives(response.headers.get("cache-control") || "");
+    const body = await response.text();
+    assert(response.status === 404, `${notFoundPath} returned ${response.status} instead of 404`);
+    assert(/text\/html/i.test(response.headers.get("content-type") || ""), `${notFoundPath} is not HTML`);
+    assert(/noindex,\s*follow/i.test(body), `${notFoundPath} did not serve the noindex error document`);
+    assert(cache.get("max-age") === "0", `${notFoundPath} must use max-age=0`);
+    assert(cache.has("must-revalidate"), `${notFoundPath} must revalidate`);
+  }
+
+  for (const traversalPath of [
+    "/assets/../server.js",
+    "/assets/%2e%2e/server.js",
+    "/foo/%2e%2e/server.js",
+    "/assets/%2e%2e/package.json",
+    "/assets/%2E%2E%2Fserver.js",
+    "/assets/%2e%2e%5cserver.js",
+  ]) {
+    const response = await rawGet(address.port, traversalPath);
+    assert(response.statusCode === 404, `${traversalPath} returned ${response.statusCode} instead of 404`);
+    assert(
+      /noindex,\s*follow/i.test(response.body),
+      `${traversalPath} did not serve the noindex error document`
+    );
+  }
 
   const versionedMotionAssets = [
     ["js/animations.js", "js", "animations"],
@@ -94,7 +252,8 @@ try {
   }
 
   console.log(
-    `OK: ${mutableAssets.length} mutable assets revalidate; ${versionedMotionAssets.length} versioned motion assets are immutable`
+    `OK: HTML and ${assetFiles.length - immutableAssetCount} mutable assets revalidate; ` +
+      `${immutableAssetCount} verified release assets are immutable; direct error URLs return 404`
   );
 } finally {
   await new Promise((resolveClose, rejectClose) => {

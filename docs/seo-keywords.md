@@ -25,8 +25,8 @@ copy. Never stuffed.
 | Secondary | fintech UX designer, product design lead portfolio, senior product designer |
 | Long-tail | product design lead for AI and fintech products; senior product designer for regulated industries; AI-driven product design portfolio; hire product design lead with banking experience |
 
-Implemented in: title, meta description, H1 + hero copy, `Person` JSON-LD
-(`jobTitle`, `knowsAbout`, `alumniOf`).
+Implemented in: title, meta description, H1 + hero copy, and `Person` JSON-LD
+(`jobTitle`, `knowsAbout`, `alternateName`).
 
 ### /works
 | Tier | Keywords |
@@ -82,8 +82,8 @@ Implemented in: title, meta description, `CollectionPage` + `ItemList` JSON-LD.
 Written for answer engines as well as classic search: every section stands on
 its own, headings state the subject plainly, and the page closes with four
 question-and-answer blocks backed by `FAQPage` schema. The `Article` schema
-carries `datePublished`/`dateModified` and an author description, which is what
-AI assistants read when deciding whether a source is credible.
+carries visible, matching `datePublished`/`dateModified` values and links the
+author to the site's canonical `Person` entity.
 
 ### /work/sportsgambit
 | Tier | Keywords |
@@ -102,17 +102,17 @@ AI assistants read when deciding whether a source is credible.
   the old `/work/raiffesen` misspelling 301-redirect to it (server.js).
 - `BreadcrumbList` JSON-LD on every case study; `keywords` on every `Article`.
 - robots.txt no longer blocks CSS/JS, so Google can render the pages.
-- House editorial standard: no em dashes, no filler adjectives, no
-  machine-sounding phrasing ("seamless", "leverage", "delve", "not just X
-  but Y"). Claims are specific and checkable, or they are cut.
+- House editorial standard: direct, human phrasing without filler adjectives or
+  stock AI language. Claims are scoped and checkable, or clearly labelled as
+  portfolio-reported evidence.
 - No `<meta name="keywords">`: ignored by every major engine; the map above
   lives in content and structured data instead.
 
 ## Content roadmap (highest-leverage next steps)
 
 1. **One insight article per cluster** (informational long-tail, low KD):
-   "How we raised KYC pass rates by 30%", "Designing HMIs cobot operators
-   don't need training for", "What explainable AI means in EdTech UX".
+   "Designing clearer KYC recovery paths", "Designing HMIs for new cobot
+   operators", "What explainable AI means in EdTech UX".
    Link each article to its case study (internal link with descriptive anchor).
 2. **About/services copy on the home page** targeting "hire" intent phrases
    naturally (e.g. "available for AI product design leadership roles").

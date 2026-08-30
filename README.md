@@ -30,7 +30,8 @@ npm start
 
 ## ✅ Checks
 ```bash
-npm test   # SEO invariants + broken-link check (also runs in CI)
+npm test   # Content, responsive, release, server, SEO and broken-link checks
+npm run test:e2e  # Chromium scroll, layout, navigation, CLS and accessibility checks
 ```
 
 ## 📁 Structure
@@ -43,10 +44,11 @@ npm test   # SEO invariants + broken-link check (also runs in CI)
 │   ├── instructure.html
 │   ├── bitpanda.html
 │   ├── onrobot.html
+│   ├── kineticare.html
 │   └── benker.html
 ├── assets/             # All static assets
 │   ├── css/
-│   ├── js/             # animations.js + self-hosted vendor libs + Webflow runtime
+│   ├── js/             # animations.js + self-hosted GSAP vendor libraries
 │   ├── images/
 │   ├── videos/
 │   └── icons/
