@@ -6,6 +6,7 @@
  */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
+import { createHash } from "node:crypto";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [
@@ -20,6 +21,11 @@ for (const f of readdirSync(join(ROOT, "work"))) {
   if (f.endsWith(".html")) CLEAN_URLS[`/work/${f.replace(".html", "")}`] = `work/${f}`;
 }
 
+const animationsSource = readFileSync(join(ROOT, "assets/js/animations.js"));
+const animationsVersion = createHash("sha256").update(animationsSource).digest("hex").slice(0, 12);
+const animationsFile = `animations.${animationsVersion}.js`;
+const versionedAnimationsPath = join(ROOT, "assets/js", animationsFile);
+
 let failures = 0;
 const fail = (msg) => {
   failures++;
@@ -28,6 +34,12 @@ const fail = (msg) => {
 
 const titles = new Map();
 const descriptions = new Map();
+
+if (!existsSync(versionedAnimationsPath)) {
+  fail(`missing versioned custom animation asset: assets/js/${animationsFile}`);
+} else if (!readFileSync(versionedAnimationsPath).equals(animationsSource)) {
+  fail(`assets/js/${animationsFile} does not match assets/js/animations.js`);
+}
 
 for (const page of PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
@@ -50,6 +62,17 @@ for (const page of PAGES) {
   if (/cdnjs\.cloudflare\.com|unpkg\.com|cdn\.jsdelivr\.net/.test(html))
     fail(`${page}: references an external JS CDN (should be self-hosted)`);
   if (/href="[^"]*raiffesen[^"]*"/.test(html)) fail(`${page}: links to misspelled raiffesen URL`);
+  if (!is404) {
+    const animationScripts = [
+      ...html.matchAll(/<script[^>]*src="([^"]*assets\/js\/animations[^"]*)"[^>]*><\/script>/g),
+    ];
+    const expectedSrc = `${page.startsWith("work/") ? "../" : ""}assets/js/${animationsFile}`;
+    if (animationScripts.length !== 1) {
+      fail(`${page}: expected exactly one versioned custom animation script`);
+    } else if (animationScripts[0][1] !== expectedSrc) {
+      fail(`${page}: expected custom animation script ${expectedSrc}, found ${animationScripts[0][1]}`);
+    }
+  }
 
   // JSON-LD must exist on content pages and must parse
   const ldBlocks = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/g)];

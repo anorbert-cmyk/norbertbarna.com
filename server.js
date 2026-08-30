@@ -89,12 +89,21 @@ app.use((req, res, next) => {
   next();
 });
 
-// Cache static assets for 1 year (filenames are content-hashed or immutable)
+// Cache only content-hashed assets forever. Mutable names such as
+// animations.js, webfont.js, vendor bundles, and project media must
+// revalidate so a production fix cannot be trapped in a browser cache.
+const CONTENT_HASHED_ASSET = /(?:^|[._-])[a-f0-9]{8,}(?=[._-]|$)/i;
 app.use(
   "/assets",
   express.static(path.join(__dirname, "assets"), {
-    maxAge: "1y",
-    immutable: true,
+    setHeaders(res, filePath) {
+      const fileName = path.basename(filePath);
+      if (CONTENT_HASHED_ASSET.test(fileName)) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      } else {
+        res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+      }
+    },
   })
 );
 
@@ -115,6 +124,10 @@ function sendNotFound(res) {
 }
 app.use((req, res) => sendNotFound(res));
 
-app.listen(PORT, () => {
-  console.log(`🚀 Portfolio running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Portfolio running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
