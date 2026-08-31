@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 concurrency:
   group: portfolio-refinement-${{ github.event.pull_request.number }}
   cancel-in-progress: true
