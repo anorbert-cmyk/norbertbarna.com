@@ -59,9 +59,10 @@ for (const viewport of [
         if (example.ratio) {
           const geometry = await video.evaluate(v => {
             const r = v.getBoundingClientRect();
-            return { width: r.width, height: r.height, natural: v.videoWidth / v.videoHeight };
+            return { width: r.width, height: r.height, natural: v.videoWidth / v.videoHeight, offset: Math.abs(r.top - v.parentElement.getBoundingClientRect().top) };
           });
           expect(geometry.width).toBeGreaterThan(100);
+          if (example.name === "Instructure") expect(geometry.offset).toBeLessThan(2);
           expect(Math.abs(geometry.width / geometry.height - geometry.natural)).toBeLessThan(.02);
         }
         await screenshot(page, info, viewport.name + '-' + example.name.replaceAll(' ', '-'));
@@ -128,7 +129,7 @@ for (const width of [360, 768, 1366]) {
       expect(result.labelSize).toBeGreaterThanOrEqual(12);
       expect(result.overflow).toBeLessThanOrEqual(1);
       expect(result.width).toBeGreaterThan(200);
-      expect(result.text).toContain('independently audited');
+      expect(result.text).toContain(slug === 'raiffeisen' ? 'independently reproducible headline claims' : 'independently audited');
       if (slug === 'onrobot') {
         expect(result.text).toContain('12 tasks with 18 operators');
         await screenshot(page, info, 'onrobot-editorial-' + width);
@@ -256,4 +257,23 @@ test('a JavaScript-free visit keeps readable notes, navigation and poster fallba
     await page.goto('http://127.0.0.1:3000/work/kineticare');
     expect(await page.locator('video[autoplay], video[controls]').count()).toBe(0);
   } finally { await context.close(); }
+});
+
+
+test('deep scrolling before GSAP loads cannot corrupt the trigger registry', async ({ page }) => {
+  let release;
+  const gate = new Promise(resolve => { release = resolve; });
+  await page.route('**/assets/js/vendor/gsap.min.js', async route => { await gate; await route.continue(); });
+  await page.goto('/work/kineticare', { waitUntil: 'commit' });
+  await expect.poll(() => page.evaluate(() => Boolean(window.PortfolioMedia))).toBe(true);
+  const video = page.locator('.kineticare-browser-frame > video');
+  await intoView(video);
+  release();
+  await page.waitForLoadState('load');
+  await expect(page.locator('html')).toHaveClass(/gsap-ready/);
+  await playing(video);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.evaluate(() => window.ScrollTrigger.refresh());
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(page.locator('#case-title')).toBeVisible();
 });

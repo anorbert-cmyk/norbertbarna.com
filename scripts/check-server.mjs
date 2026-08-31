@@ -48,7 +48,7 @@ function hasVerifiedReleaseDigest(filePath) {
 
   let match = null;
   if (directory === "js") {
-    match = fileName.match(/^animations\.([a-f0-9]{12})\.js$/i);
+    match = fileName.match(/^(?:animations|media)\.([a-f0-9]{12})\.js$/i);
   } else if (directory === "css") {
     match = fileName.match(/^(?:case-motion|responsive)\.([a-f0-9]{12})\.css$/i);
   }
@@ -155,6 +155,7 @@ try {
   assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
 
   for (const [legacyPath, expectedLocation] of [
+    ["/favicon.ico", "/assets/icons/68f923d010d274634c966a6e_favicon.png"],
     ["/works/?utm_source=portfolio", "/works?utm_source=portfolio"],
     ["/work/benker/?ref=case", "/work/benker?ref=case"],
     ["/work/raiffesen?utm_campaign=legacy", "/work/raiffeisen?utm_campaign=legacy"],
@@ -238,6 +239,7 @@ try {
 
   const versionedMotionAssets = [
     ["js/animations.js", "js", "animations"],
+    ["js/media.js", "js", "media"],
     ["css/case-motion.css", "css", "case-motion"],
     ["css/responsive.css", "css", "responsive"],
   ];

@@ -18,25 +18,13 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Prepare isolated review workspace
-        if: github.head_ref == 'codex/ship-editorial-autoplay'
-        run: |
-          tar -czf "$RUNNER_TEMP/portfolio-workspace.tar.gz" assets work scripts tests docs index.html works.html 404.html server.js package.json package-lock.json playwright.config.mjs robots.txt sitemap.xml llms.txt .github/workflows/ci.yml node_modules
-      - name: Save isolated review workspace
-        if: github.head_ref == 'codex/ship-editorial-autoplay'
-        uses: actions/upload-artifact@v4
-        with:
-          name: portfolio-review-workspace
-          path: ${{ runner.temp }}/portfolio-workspace.tar.gz
-          retention-days: 1
-          compression-level: 0
-          if-no-files-found: error
       - name: Dependency audit
         run: npm audit --omit=dev --audit-level=high
       - name: Syntax-check JS
         run: |
           node --check server.js
           node --check assets/js/animations.js
+          node --check assets/js/media.js
           node --check assets/js/navigation.js
       - name: Site invariants
         run: npm test

@@ -41,6 +41,7 @@ app.use((req, res, next) => {
 // canonicalization so an apex + legacy request never needs two redirects.
 const REDIRECTS = {
   "/index.html": "/",
+  "/favicon.ico": "/assets/icons/68f923d010d274634c966a6e_favicon.png",
   "/works.html": "/works",
   "/works/": "/works",
   "/work/raiffesen": "/work/raiffeisen",
@@ -114,7 +115,7 @@ app.use((req, res, next) => {
 // so those assets must revalidate after a deployment.
 const ASSET_ROOT = path.join(__dirname, "assets");
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/animations\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive)\.[a-f0-9]{12}\.css)$/i;
+  /^(?:js\/(?:animations|media)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive)\.[a-f0-9]{12}\.css)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");
