@@ -254,9 +254,13 @@ for (const page of ["index.html", "works.html"]) {
 }
 
 const kineticareHtml = readFileSync(join(ROOT, "work/kineticare.html"), "utf8");
-if (!/<video\b[^>]*\bcontrols\b[^>]*aria-label="Kineticare platform walkthrough"/i.test(kineticareHtml) ||
+if (!/<button\b[^>]*\bdata-media-toggle(?:\s|>)/i.test(kineticareHtml) ||
+    /<video\b[^>]*\scontrols(?:\s|=|>)/i.test(kineticareHtml)) {
+  fail("work/kineticare.html: use an accessible page-level pause setting, not native player chrome");
+}
+if (!/<video\b[^>]*\bdata-autoplay-video\b[^>]*aria-label="Kineticare platform walkthrough"/i.test(kineticareHtml) ||
     !/<details\b[^>]*class="kineticare-video-description"[\s\S]*?<summary>Walkthrough description<\/summary>/i.test(kineticareHtml)) {
-  fail("work/kineticare.html: content video needs native controls and a text description");
+  fail("work/kineticare.html: content video needs managed autoplay and a text description");
 }
 
 const responsiveCss = readFileSync(join(ROOT, "assets/css/responsive.css"), "utf8");
@@ -284,6 +288,7 @@ for (const [pattern, message] of cssContracts) if (!pattern.test(responsiveCss))
 
 const animationJs = readFileSync(join(ROOT, "assets/js/animations.js"), "utf8");
 const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8");
+const mediaJs = readFileSync(join(ROOT, "assets/js/media.js"), "utf8");
 const reducedIndex = animationJs.indexOf("prefers-reduced-motion: reduce");
 const libraryGuardIndex = animationJs.indexOf("typeof window.gsap");
 if (reducedIndex < 0 || libraryGuardIndex < 0 || reducedIndex > libraryGuardIndex) {
@@ -300,8 +305,8 @@ if (!animationJs.includes("window.Webflow.push") || !animationJs.includes("sched
 }
 if (!navigationJs.includes('primaryNavigation.setAttribute("data-nav-menu-open", "")') ||
     !navigationJs.includes('event.key !== "Escape"') ||
-    !animationJs.includes('webflowControl.addEventListener("click"')) {
-  fail("independent menu and retained background-video controls are incomplete");
+    !mediaJs.includes('button.addEventListener("click"')) {
+  fail("independent menu and page-level media control are incomplete");
 }
 const takeoverIndex = animationJs.indexOf("var webflowMotionReady = scheduleWebflowMotionTakeover()");
 const startIndex = animationJs.indexOf("function startResponsiveMotion()");
@@ -326,7 +331,7 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
   fail("runtime reduced-motion changes must stop active motion and media");
 }
 if (/html:not\(\.nav-enhanced\)/i.test(responsiveCss)) fail("pre-enhancement navigation must not cause layout shift");
-if (!/video\.closest\("\.home-about-video"\)/.test(animationJs)) fail("homepage video control must stay on the media surface");
+if (!mediaJs.includes("IntersectionObserver") || !mediaJs.includes("document.hidden") || !mediaJs.includes("motionAllowed")) fail("viewport and preference-aware video playback is missing");
 if (!/@media\s*\(max-width:\s*599px\)[\s\S]*?\.motion-video-toggle[\s\S]*?top:\s*12px\s*!important;[\s\S]*?bottom:\s*auto\s*!important;/i.test(responsiveCss)) {
   fail("mobile video control must not be stretched by simultaneous top and bottom offsets");
 }
