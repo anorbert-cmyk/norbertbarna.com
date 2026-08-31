@@ -48,7 +48,7 @@ function hasVerifiedReleaseDigest(filePath) {
 
   let match = null;
   if (directory === "js") {
-    match = fileName.match(/^animations\.([a-f0-9]{12})\.js$/i);
+    match = fileName.match(/^(?:animations|media)\.([a-f0-9]{12})\.js$/i);
   } else if (directory === "css") {
     match = fileName.match(/^(?:case-motion|responsive)\.([a-f0-9]{12})\.css$/i);
   }
