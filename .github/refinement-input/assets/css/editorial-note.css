@@ -1,0 +1,56 @@
+/* Editorial annotation, not an alert/card. Keep every evidence qualifier visible. */
+.summary > .case-evidence-note {
+  margin-top: 0;
+  margin-bottom: clamp(44px, 6vw, 72px);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--site-muted, #62676a);
+  font-size: 14px;
+  line-height: 1.7;
+  font-style: normal;
+}
+
+.summary > .case-evidence-note strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #4d5356;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.5;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* A single navigation-level motion preference, never a video/player overlay. */
+.nav-menu.w-nav-menu .nav-button-wrap:has([data-media-toggle]) {
+  display: flex;
+  align-items: center;
+  min-width: 92px;
+  min-height: 44px;
+}
+
+.site-media-toggle {
+  display: inline-flex;
+  min-width: 92px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 10px 8px;
+  color: #24282b;
+  font: 600 12px/1.4 Inter, sans-serif;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: #858b8e;
+  text-underline-offset: 4px;
+}
+
+.site-media-toggle[hidden] { display: none !important; }
+.site-media-toggle:disabled { color: #62676a; cursor: default; }
+.site-media-toggle:focus-visible {
+  outline: 3px solid var(--site-focus, #5b45ff);
+  outline-offset: 3px;
+}
