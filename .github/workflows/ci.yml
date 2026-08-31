@@ -24,6 +24,7 @@ jobs:
         run: |
           node --check server.js
           node --check assets/js/animations.js
+          node --check assets/js/media.js
           node --check assets/js/navigation.js
       - name: Site invariants
         run: npm test
@@ -31,3 +32,13 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Browser UX and accessibility
         run: npm run test:e2e
+      - name: Save browser verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-browser-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore

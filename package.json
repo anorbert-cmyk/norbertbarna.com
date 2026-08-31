@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node scripts/check-site.mjs && node scripts/check-responsive.mjs && node scripts/check-motion.mjs && node scripts/check-server.mjs",
+    "test": "node scripts/check-site.mjs && node scripts/check-responsive.mjs && node scripts/check-motion.mjs && node scripts/check-server.mjs && node scripts/check-editorial-media.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
