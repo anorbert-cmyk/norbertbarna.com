@@ -154,6 +154,11 @@ const instructureHero = caseHero(instructure);
 if (!/insights-feed/.test(instructureHero) || /Data Insights|data-insights/.test(instructureHero)) {
   fail("FigmaLeftover: Instructure fold must not use Data Insights.png");
 }
+const instMontage = css.match(/\.inst-bg-video\.mobile \.background-video > video\s*\{([^}]+)\}/)?.[1] || "";
+if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
+    /inset:\s*-100%/.test(instMontage) || /z-index:\s*-100/.test(instMontage)) {
+  fail("HiddenMontage: Instructure video must fill the 16:9 frame (inset 0, z-index 0)");
+}
 
 // Footer contact lock: a local email action to anorbert@pm.me guarded by a
 // honeypot; the primary footer CTA is never LinkedIn or a third-party form.
