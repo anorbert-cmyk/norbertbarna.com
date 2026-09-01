@@ -45,10 +45,11 @@ async function screenshot(page, info, name) {
   await page.screenshot({ path });
   await info.attach(name, { path, contentType: 'image/png' });
 }
-async function switchInView(page, mobile) {
-  await page.evaluate(() => window.scrollTo(0, 0));
-  if (mobile) await page.locator('.menu-button').click();
-  return page.getByRole('switch', { name: 'Page motion' });
+async function pauseMotion(page) {
+  await page.evaluate(() => window.PortfolioMedia.setPaused(true));
+}
+async function resumeMotion(page) {
+  await page.evaluate(() => window.PortfolioMedia.setPaused(false));
 }
 
 for (const viewport of [
@@ -80,15 +81,12 @@ for (const viewport of [
         await playing(video);
       });
     }
-    test('one keyboard-accessible motion preference survives scrolling, navigation and reload', async ({ page }) => {
+    test('session motion pause survives scrolling, navigation and reload', async ({ page }) => {
       await open(page, '/work/kineticare');
       await playing(page.locator('.kineticare-hero-bg > video'));
-      const toggle = await switchInView(page, viewport.mobile);
-      await toggle.focus();
-      await page.keyboard.press('Space');
-      await expect(toggle).toHaveAttribute('aria-checked', 'false');
+      await pauseMotion(page);
+      await expect.poll(() => page.evaluate(() => window.PortfolioMedia?.isReduced())).toBe(true);
       expect(await page.evaluate(() => [...document.querySelectorAll('video')].every(v => v.paused))).toBe(true);
-      if (viewport.mobile) await page.keyboard.press('Escape');
       const walkthrough = page.locator('.kineticare-browser-frame > video');
       await intoView(walkthrough);
       await page.waitForTimeout(200);
@@ -99,13 +97,11 @@ for (const viewport of [
       const demo = page.locator('.background-video > video');
       await intoView(demo);
       expect(await demo.evaluate(v => v.paused)).toBe(true);
-      const resume = await switchInView(page, viewport.mobile);
-      await resume.click();
-      await expect(resume).toHaveAttribute('aria-checked', 'true');
-      if (viewport.mobile) await page.keyboard.press('Escape');
+      await resumeMotion(page);
       await intoView(demo);
       await playing(demo);
       expect(await page.evaluate(() => document.querySelectorAll('.case-motion-rail').length)).toBeLessThanOrEqual(1);
+      expect(await page.locator('[data-motion-toggle], .site-motion-toggle').count()).toBe(0);
     });
   });
 }
@@ -163,10 +159,10 @@ for (const width of [390, 768, 991, 992, 1366]) {
   });
 }
 
-test('device reduced motion stops autoplay and cannot be overridden by the site switch', async ({ page }) => {
+test('device reduced motion stops autoplay and cannot be overridden by a session resume', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await open(page, '/work/kineticare');
-  await expect(page.getByRole('switch', { name: 'Page motion' })).toBeDisabled();
+  expect(await page.locator('[data-motion-toggle]').count()).toBe(0);
   expect(await page.evaluate(() => [...document.querySelectorAll('video')].every(v => v.paused && !v.autoplay))).toBe(true);
   await page.evaluate(() => window.PortfolioMedia.setPaused(false));
   expect(await page.evaluate(() => window.PortfolioMedia.isReduced())).toBe(true);
@@ -192,7 +188,7 @@ test('Save-Data suppresses media requests and handles a runtime preference chang
   await open(page, '/work/kineticare');
   await page.waitForTimeout(250);
   expect(mediaRequests).toEqual([]);
-  await expect(page.getByRole('switch', { name: 'Page motion' })).toBeDisabled();
+  expect(await page.locator('[data-motion-toggle]').count()).toBe(0);
   await page.evaluate(() => { window.__testConnection.saveData = false; window.__testConnection.dispatchEvent(new Event('change')); });
   await playing(page.locator('.kineticare-hero-bg > video'));
   await page.evaluate(() => { window.__testConnection.saveData = true; window.__testConnection.dispatchEvent(new Event('change')); });
@@ -215,7 +211,7 @@ test('visibility and page lifecycle handlers pause and safely restore visible me
   await playing(video);
 });
 
-test('denied autoplay turns motion off and recovers in one switch action without unbounded retries', async ({ page }) => {
+test('denied autoplay turns motion off and recovers in one resume without unbounded retries', async ({ page }) => {
   await page.addInitScript(() => {
     const nativePlay = HTMLMediaElement.prototype.play;
     window.__playAttempts = 0;
@@ -230,17 +226,14 @@ test('denied autoplay turns motion off and recovers in one switch action without
   await open(page, '/work/kineticare');
   const video = page.locator('.kineticare-hero-bg > video');
   await expect(video).toHaveAttribute('data-media-state', 'blocked');
-  const toggle = page.getByRole('switch', { name: 'Page motion' });
-  await expect(toggle).toHaveAttribute('aria-checked', 'false');
   await expect.poll(() => page.evaluate(() => window.PortfolioMedia.isReduced())).toBe(true);
   const before = await page.evaluate(() => window.__playAttempts);
   await page.waitForTimeout(400);
   expect(await page.evaluate(() => window.__playAttempts)).toBe(before);
   expect(await video.evaluate(v => Boolean(v.poster) && v.paused && !v.controls)).toBe(true);
-  await expect(page.locator('.motion-video-toggle, [data-w-bg-video-control]')).toHaveCount(0);
-  await toggle.click();
+  await expect(page.locator('.motion-video-toggle, [data-w-bg-video-control], [data-motion-toggle]')).toHaveCount(0);
+  await page.evaluate(() => window.PortfolioMedia.setPaused(false));
   await expect.poll(() => page.evaluate(() => window.__playAttempts)).toBe(before + 1);
-  await expect(toggle).toHaveAttribute('aria-checked', 'true');
   await playing(video);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.locator('#case-title').click();
@@ -258,19 +251,18 @@ test('a late play promise cannot undo an explicit pause', async ({ page }) => {
   });
   await open(page, '/work/kineticare');
   await expect.poll(() => page.evaluate(() => window.__releasePlayback.length)).toBeGreaterThan(0);
-  await page.getByRole('switch', { name: 'Page motion' }).click();
+  await page.evaluate(() => window.PortfolioMedia.setPaused(true));
   await page.evaluate(() => window.__releasePlayback.splice(0).forEach(release => release()));
   await page.waitForTimeout(300);
   expect(await page.evaluate(() => [...document.querySelectorAll('video')].every(v => v.paused && !v.autoplay))).toBe(true);
-  await expect(page.getByRole('switch', { name: 'Page motion' })).toHaveAttribute('aria-checked', 'false');
+  expect(await page.evaluate(() => window.PortfolioMedia.isReduced())).toBe(true);
 });
 
 test('autoplay and motion preference work even when GSAP fails to load', async ({ page }) => {
   await page.route('**/assets/js/vendor/**', route => route.abort());
   await open(page, '/work/kineticare');
   await playing(page.locator('.kineticare-hero-bg > video'));
-  const toggle = page.getByRole('switch', { name: 'Page motion' });
-  await toggle.click(); await toggle.click();
+  await page.evaluate(() => { window.PortfolioMedia.setPaused(true); window.PortfolioMedia.setPaused(false); });
   await playing(page.locator('.kineticare-hero-bg > video'));
 });
 
@@ -291,7 +283,7 @@ test('a JavaScript-free visit keeps readable notes, navigation and poster fallba
     await page.goto('http://127.0.0.1:3000/work/onrobot');
     await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible();
     await expect(page.locator('.case-evidence-note')).toBeVisible();
-    await expect(page.locator('[data-motion-toggle]')).toBeHidden();
+    await expect(page.locator('[data-motion-toggle]')).toHaveCount(0);
     await page.goto('http://127.0.0.1:3000/work/kineticare');
     expect(await page.locator('video[autoplay], video[controls]').count()).toBe(0);
   } finally { await context.close(); }
