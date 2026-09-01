@@ -142,6 +142,29 @@ for (const page of PAGES) {
     }
   }
 
+  if (page === "index.html") {
+    const nodes = parsedSchemas.flatMap((schema) => schemaNodes(schema));
+    const websites = nodes.filter((node) => node["@type"] === "WebSite");
+    if (websites.length !== 1) {
+      fail(`${page}: expected exactly one WebSite schema, found ${websites.length}`);
+    } else {
+      const website = websites[0];
+      if (website["@id"] !== "https://www.barnanorbert.com/#website")
+        fail(`${page}: WebSite must use the stable #website identifier`);
+      if (website.name !== "Norbert Barna")
+        fail(`${page}: WebSite name must match the visible site identity`);
+      if (website.url !== "https://www.barnanorbert.com/")
+        fail(`${page}: WebSite url must match the canonical home page`);
+      if (!Array.isArray(website.alternateName) ||
+          !website.alternateName.includes("Barna Norbert") ||
+          !website.alternateName.includes("barnanorbert.com"))
+        fail(`${page}: WebSite alternateName must retain the verified name and domain forms`);
+    }
+    const profile = nodes.find((node) => node["@type"] === "ProfilePage");
+    if (profile?.isPartOf?.["@id"] !== "https://www.barnanorbert.com/#website")
+      fail(`${page}: ProfilePage must link to the canonical WebSite entity`);
+  }
+
   if (page.startsWith("work/")) {
     const nodes = parsedSchemas.flatMap((schema) => schemaNodes(schema));
     const article = nodes.find((node) => node["@type"] === "Article");

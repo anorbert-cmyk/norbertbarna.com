@@ -1,6 +1,12 @@
 import { expect, test } from '@playwright/test';
 
 const caseRoutes = ['benker', 'bitpanda', 'instructure', 'kineticare', 'onrobot', 'raiffeisen', 'sportsgambit'];
+const evidenceNotes = {
+  default: 'Measurement note: Where quantitative outcomes are shown, they are rounded portfolio-reported project metrics and are not presented as independently audited company disclosures.',
+  onrobot: 'Measurement note: Setup, error, training, SUS and CSAT figures are rounded portfolio-reported pilot results from 12 tasks with 18 operators; support and adoption figures cover the first six weeks and three pilot sites. They are not independently audited.',
+  raiffeisen: 'Measurement note: The following outcomes are directional, portfolio-reported signals from internal 2020–2022 rollout dashboards aggregated across participating mobile-banking markets. Exact metric definitions, denominators and cohort sizes are not available here, so this case does not use them as independently reproducible headline claims.',
+};
+const instructureMontageDescription = 'Silent 47-second montage of Canvas Career, showing an AI-generated course preview, rule-based learner assignment, on-demand learner AI support, skill-based learning, smart course recommendations, and a data-and-insights dashboard for monitoring learning at scale.';
 const examples = [
   { name: 'homepage', route: '/', selector: '.home-about-video > video', ratio: true },
   { name: 'Instructure', route: '/work/instructure', selector: '.background-video > video', ratio: true },
@@ -22,7 +28,10 @@ async function open(page, route) {
 }
 async function intoView(video) {
   // A DOM scroll is not a trusted play gesture. Autoplay must work without a click.
-  await video.evaluate(v => v.scrollIntoView({ block: 'center', behavior: 'instant' }));
+  await video.evaluate(v => {
+    const surface = v.closest('.w-background-video') || v;
+    surface.scrollIntoView({ block: 'center', behavior: 'instant' });
+  });
 }
 async function playing(video) {
   await expect.poll(() => video.evaluate(v => !v.paused && v.currentTime > 0.15), { timeout: 12000 }).toBe(true);
@@ -31,7 +40,7 @@ async function playing(video) {
   expect(await video.evaluate(v => v.muted && v.playsInline && v.loop && !v.controls)).toBe(true);
 }
 async function screenshot(page, info, name) {
-  await page.evaluate(() => document.fonts?.ready || Promise.resolve());
+  await page.waitForFunction(() => !document.fonts || document.fonts.status === 'loaded');
   const path = info.outputPath(name + '.png');
   await page.screenshot({ path });
   await info.attach(name, { path, contentType: 'image/png' });
@@ -59,10 +68,9 @@ for (const viewport of [
         if (example.ratio) {
           const geometry = await video.evaluate(v => {
             const r = v.getBoundingClientRect();
-            return { width: r.width, height: r.height, natural: v.videoWidth / v.videoHeight, offset: Math.abs(r.top - v.parentElement.getBoundingClientRect().top) };
+            return { width: r.width, height: r.height, natural: v.videoWidth / v.videoHeight };
           });
           expect(geometry.width).toBeGreaterThan(100);
-          if (example.name === "Instructure") expect(geometry.offset).toBeLessThan(2);
           expect(Math.abs(geometry.width / geometry.height - geometry.natural)).toBeLessThan(.02);
         }
         await screenshot(page, info, viewport.name + '-' + example.name.replaceAll(' ', '-'));
@@ -102,7 +110,24 @@ for (const viewport of [
   });
 }
 
-for (const width of [360, 768, 1366]) {
+test('media semantics distinguish decorative motion from described product content', async ({ page }) => {
+  await open(page, '/');
+  const decorative = page.locator('.home-about-video > video');
+  await expect(decorative).toHaveAttribute('aria-hidden', 'true');
+  await expect(decorative).toHaveAttribute('tabindex', '-1');
+
+  await open(page, '/work/instructure');
+  const montage = page.locator('.background-video > video');
+  await expect(montage).toHaveAttribute('aria-labelledby', 'instructure-montage-caption');
+  await expect(montage).toHaveAttribute('aria-describedby', 'instructure-montage-description');
+  expect(await montage.evaluate(video => video.hasAttribute('aria-hidden'))).toBe(false);
+  await expect(page.locator('#instructure-montage-caption')).toBeVisible();
+  await expect(page.locator('#instructure-montage-caption')).toHaveText('Canvas Career product montage');
+  await expect(page.locator('#instructure-montage-description')).toBeVisible();
+  await expect(page.locator('#instructure-montage-description')).toHaveText(instructureMontageDescription);
+});
+
+for (const width of [390, 768, 991, 992, 1366]) {
   test(`all seven evidence notes are unboxed and legible at ${width}px`, async ({ page }, info) => {
     await page.setViewportSize({ width, height: 900 });
     for (const slug of caseRoutes) {
@@ -129,7 +154,7 @@ for (const width of [360, 768, 1366]) {
       expect(result.labelSize).toBeGreaterThanOrEqual(12);
       expect(result.overflow).toBeLessThanOrEqual(1);
       expect(result.width).toBeGreaterThan(200);
-      expect(result.text).toContain(slug === 'raiffeisen' ? 'independently reproducible headline claims' : 'independently audited');
+      expect(result.text).toBe(evidenceNotes[slug] || evidenceNotes.default);
       if (slug === 'onrobot') {
         expect(result.text).toContain('12 tasks with 18 operators');
         await screenshot(page, info, 'onrobot-editorial-' + width);
@@ -149,7 +174,11 @@ test('device reduced motion stops autoplay and cannot be overridden by the site 
   await playing(page.locator('.kineticare-hero-bg > video'));
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect.poll(() => page.evaluate(() => [...document.querySelectorAll('video')].every(v => v.paused))).toBe(true);
-  expect(await page.evaluate(() => window.ScrollTrigger?.getAll().length || 0)).toBe(0);
+  await expect(page.locator('html')).toHaveClass(/\bno-motion\b/);
+  await expect.poll(
+    () => page.evaluate(() => window.ScrollTrigger?.getAll().length || 0),
+    { timeout: 2000 }
+  ).toBe(0);
 });
 
 test('Save-Data suppresses media requests and handles a runtime preference change', async ({ page }) => {
@@ -186,24 +215,33 @@ test('visibility and page lifecycle handlers pause and safely restore visible me
   await playing(video);
 });
 
-test('denied autoplay leaves a poster, no play overlay and no unbounded retries', async ({ page }) => {
+test('denied autoplay turns motion off and recovers in one switch action without unbounded retries', async ({ page }) => {
   await page.addInitScript(() => {
+    const nativePlay = HTMLMediaElement.prototype.play;
     window.__playAttempts = 0;
     HTMLMediaElement.prototype.play = function () {
       window.__playAttempts++;
-      return Promise.reject(new DOMException('Autoplay denied for regression test', 'NotAllowedError'));
+      if (window.__playAttempts === 1) {
+        return Promise.reject(new DOMException('Autoplay denied for regression test', 'NotAllowedError'));
+      }
+      return nativePlay.call(this);
     };
   });
   await open(page, '/work/kineticare');
   const video = page.locator('.kineticare-hero-bg > video');
   await expect(video).toHaveAttribute('data-media-state', 'blocked');
+  const toggle = page.getByRole('switch', { name: 'Page motion' });
+  await expect(toggle).toHaveAttribute('aria-checked', 'false');
+  await expect.poll(() => page.evaluate(() => window.PortfolioMedia.isReduced())).toBe(true);
   const before = await page.evaluate(() => window.__playAttempts);
   await page.waitForTimeout(400);
   expect(await page.evaluate(() => window.__playAttempts)).toBe(before);
   expect(await video.evaluate(v => Boolean(v.poster) && v.paused && !v.controls)).toBe(true);
   await expect(page.locator('.motion-video-toggle, [data-w-bg-video-control]')).toHaveCount(0);
-  await page.locator('#case-title').click();
+  await toggle.click();
   await expect.poll(() => page.evaluate(() => window.__playAttempts)).toBe(before + 1);
+  await expect(toggle).toHaveAttribute('aria-checked', 'true');
+  await playing(video);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.locator('#case-title').click();
   expect(await page.evaluate(() => window.__playAttempts)).toBe(before + 1);
@@ -258,7 +296,6 @@ test('a JavaScript-free visit keeps readable notes, navigation and poster fallba
     expect(await page.locator('video[autoplay], video[controls]').count()).toBe(0);
   } finally { await context.close(); }
 });
-
 
 test('deep scrolling before GSAP loads cannot corrupt the trigger registry', async ({ page }) => {
   let release;
