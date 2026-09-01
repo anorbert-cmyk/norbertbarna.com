@@ -62,8 +62,11 @@ if (home.indexOf("hero-work-link") > home.indexOf("hero-proof")) {
 if (/hero-proof[\s\S]{0,1200}banking-experience/.test(home)) {
   fail("CoverPoster: home fold still uses the cropped Raiffeisen device cluster");
 }
-if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 5))) {
-  fail(`home selected-work order is ${homeOrder.join(", ")}`);
+if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 6))) {
+  fail(`home selected-work order is ${homeOrder.join(", ")} (must be hiring 1–6 incl. Kineticare)`);
+}
+if (homeOrder.length % 2 !== 0) {
+  fail("StaggerHole: home selected work must pair cards into full two-column rows");
 }
 if (JSON.stringify(worksOrder) !== JSON.stringify(hiring)) {
   fail(`/works order is ${worksOrder.join(", ")}`);
@@ -74,7 +77,6 @@ if (/The Value Provided|Gain insights through user interviews/i.test(home)) {
   fail("template about copy returned");
 }
 if (/Professional<br\s*\/?>Experience/.test(home)) fail("Professional experience heading is still jammed");
-if (/mailto:/i.test(home + works)) fail("do not invent a mailto address");
 
 if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   fail("design.md must lock Funnel Display and Inter");
@@ -113,8 +115,37 @@ if (!/\.kineticare-hero \.banner-text[\s\S]{0,80}#fff/.test(css)) {
 if (!/\.case-facts dd[\s\S]{0,80}overflow-wrap:\s*anywhere/.test(css)) {
   fail("MotionCover: fact values must wrap instead of clipping");
 }
-if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?padding-right:\s*7\.5rem/.test(css)) {
-  fail("MotionCover: compact fact band must clear the Motion chip");
+
+// Locked header: one sticky white bar, 64/56, 1px #e6e8e9; Motion at 12px in
+// the bar; no fixed chip floating over content.
+if (!/\.navbar\s*\{[\s\S]{0,200}position:\s*sticky/.test(css)) {
+  fail("header lock: .navbar must be sticky");
+}
+if (!/\.navbar\s*\{[\s\S]{0,300}border-bottom:\s*1px solid #e6e8e9/.test(css) ||
+    !/\.navbar\s*\{[\s\S]{0,300}background:\s*#fff/.test(css)) {
+  fail("header lock: .navbar must be a white bar with a 1px #e6e8e9 border");
+}
+if (!/\.navbar \.nav-wrap,\s*\.navbar \.nav-wrap\.dark\s*\{[\s\S]{0,120}min-height:\s*64px/.test(css)) {
+  fail("header lock: desktop bar height must be 64px");
+}
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.navbar \.nav-wrap,\s*\.navbar \.nav-wrap\.dark\s*\{[\s\S]{0,120}min-height:\s*56px/.test(css)) {
+  fail("header lock: compact bar height must be 56px");
+}
+if (/position:\s*fixed[\s\S]{0,200}site-motion-toggle|site-motion-toggle[\s\S]{0,200}position:\s*fixed/.test(css)) {
+  fail("MotionNav: the Motion control must not be a fixed chip");
+}
+if (!/\.navbar \.site-motion-toggle\s*\{[\s\S]{0,400}font-size:\s*12px/.test(css)) {
+  fail("MotionNav: the Motion control must be a 12px control in the header bar");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*?\.home-work-area\s*\{[\s\S]{0,200}display:\s*grid/.test(css) ||
+    !/\.home-work-area\s*\{[\s\S]{0,300}repeat\(2,\s*minmax\(0,\s*1fr\)\)/.test(css)) {
+  fail("StaggerHole: home selected work must be a flush two-column grid at desktop");
+}
+if (!/\.home-work-card-wrap,\s*\.home-work-card-wrap\.top-space\s*\{[\s\S]{0,300}margin-top:\s*0/.test(css)) {
+  fail("StaggerHole: the top-space stagger offset must be neutralized");
+}
+if (!/--site-readable:\s*720px/.test(css)) {
+  fail("body lock: reading measure must be 720px");
 }
 
 const raiffeisenHero = caseHero(raiffeisen);
@@ -126,18 +157,88 @@ if (!/insights-feed/.test(instructureHero) || /Data Insights|data-insights/.test
   fail("FigmaLeftover: Instructure fold must not use Data Insights.png");
 }
 
+// Footer contact lock: a local email action to anorbert@pm.me guarded by a
+// honeypot; the primary footer CTA is never LinkedIn or a third-party form.
+const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`)];
+for (const page of footerPages) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
+  if (!footer.includes("footer-cta")) {
+    fail(`${page}: footer CTA block is missing`);
+    continue;
+  }
+  if (/linkedin\.com/i.test(footer)) {
+    fail(`BlogFooterCTA: ${page} footer primary CTA must not be LinkedIn`);
+  }
+  if (!/data-contact-form/.test(footer) || !/action="mailto:anorbert@pm\.me"/.test(footer)) {
+    fail(`${page}: footer must be a local email form targeting anorbert@pm.me`);
+  }
+  if (!/<input[^>]*name="company"[^>]*tabindex="-1"/.test(footer) ||
+      !/class="footer-hp"[^>]*aria-hidden="true"/.test(footer)) {
+    fail(`${page}: footer email form is missing the spam honeypot`);
+  }
+  if (!/<button[^>]*class="footer-contact-link"[^>]*type="submit"/.test(footer)) {
+    fail(`${page}: footer email action must be the primary contact button`);
+  }
+  const mailtos = [...html.matchAll(/mailto:([^"'?\s>]+)/gi)].map((m) => m[1]);
+  if (mailtos.some((address) => address !== "anorbert@pm.me")) {
+    fail(`${page}: only mailto:anorbert@pm.me is allowed (got ${mailtos.join(", ")})`);
+  }
+  if (footer.includes("data-motion-toggle")) {
+    fail(`MotionNav: ${page} still keeps the Motion control in the footer`);
+  }
+}
+
 for (const slug of WORK) {
   const html = readFileSync(join(ROOT, "work", `${slug}.html`), "utf8");
   const keys = [...html.matchAll(/<dt>([^<]+)<\/dt>/g)].map((m) => m[1]);
   if (JSON.stringify(keys) !== JSON.stringify(["Role", "Focus", "Period", "Delivery"])) {
     fail(`${slug}: fact keys must be Role, Focus, Period, Delivery (got ${keys.join(", ")})`);
   }
-  if (!html.includes('class="case-hero-shot"')) fail(`${slug}: case fold has no product crop`);
-  if (html.indexOf("case-facts-section") > html.indexOf("case-byline") && html.includes("case-byline")) {
-    fail(`${slug}: blog byline is still above the fact band`);
+
+  // One sticky bar owns the breadcrumb; the 57px strip under the nav is gone.
+  const navbar = html.slice(html.indexOf('class="navbar'), html.indexOf("<main"));
+  if (!/class="nav-breadcrumb"[\s\S]*?href="\/works">Works<\/a>/.test(navbar) ||
+      !/aria-current="page"/.test(navbar)) {
+    fail(`${slug}: header bar must carry the Works / {page} breadcrumb`);
   }
-  if (html.includes("data-motion-toggle") && html.indexOf("data-motion-toggle") < html.indexOf("</nav>")) {
-    fail(`${slug}: motion toggle is still in the nav`);
+  if (html.includes('class="case-breadcrumb"')) {
+    fail(`${slug}: the old breadcrumb strip under the nav must be removed`);
+  }
+  if (!navbar.includes("data-motion-toggle")) {
+    fail(`${slug}: the Motion control must sit in the header bar`);
+  }
+
+  // BlogHero: no visible byline anywhere; dates stay in meta and JSON-LD.
+  if (html.includes("case-byline") || /Written by/.test(html)) {
+    fail(`BlogHero: ${slug} still renders a visible byline`);
+  }
+
+  // Case header media: Kineticare is exactly one autoplaying video; every
+  // other case shows one complete screenshot in the hero slot.
+  const header = html.slice(
+    html.indexOf('<header class="case-study-header"'),
+    html.indexOf("</header>") + 9
+  );
+  if (slug === "kineticare") {
+    const mediaNodes = [...header.matchAll(/<(?:video|img|picture|iframe)\b/gi)];
+    if (mediaNodes.length !== 1 || !/<video[^>]*data-autoplay-video/.test(header)) {
+      fail(`kineticare: case header must contain exactly one autoplaying video (found ${mediaNodes.length} media nodes)`);
+    }
+    if (header.includes("case-hero-media")) {
+      fail("kineticare: no hero screenshot next to the header video");
+    }
+  } else {
+    if (!header.includes('class="case-hero-shot"')) fail(`${slug}: case fold has no product crop`);
+  }
+
+  // First still after the role section, not thousands of pixels down.
+  const summaryStart = html.indexOf('class="summary');
+  const summary = html.slice(summaryStart);
+  const headings = [...summary.matchAll(/<h2 id="/g)];
+  const firstFigure = summary.search(/<figure\b[^>]*w-richtext-figure-type-image/);
+  if (headings.length >= 3 && (firstFigure < 0 || firstFigure > headings[2].index)) {
+    fail(`${slug}: first body still must land right after the role section`);
   }
 }
 

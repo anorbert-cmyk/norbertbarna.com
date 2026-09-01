@@ -160,8 +160,9 @@ for (const page of ALL_PAGES) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
     if (count(html, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
-        !/class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\//i.test(html)) {
-      fail(`${page}: footer must expose one clear LinkedIn contact action`);
+        !/<form\b[^>]*data-contact-form[^>]*action="mailto:anorbert@pm\.me"/i.test(html) ||
+        !/<button\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*type="submit"/i.test(html)) {
+      fail(`${page}: footer must expose one local email contact action`);
     }
 
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
@@ -184,8 +185,11 @@ for (const page of ALL_PAGES) {
       fail(`${page}: related projects must follow the article inside main`);
     }
     const article = html.slice(articleStart, articleEnd + 10);
-    if (count(article, /class="case-breadcrumb"/gi) !== 1 || count(article, /class="case-toc"/gi) !== 1) {
-      fail(`${page}: long-form case study needs breadcrumb and on-page navigation`);
+    if (count(article, /class="case-toc"/gi) !== 1) {
+      fail(`${page}: long-form case study needs on-page navigation`);
+    }
+    if (count(html, /class="nav-breadcrumb"/gi) !== 1) {
+      fail(`${page}: the header bar must carry the breadcrumb`);
     }
     const sectionIds = [...article.matchAll(/<h[23]\b[^>]*\bid="([^"]+)"/gi)].map((match) => match[1]);
     if (sectionIds.length === 0 || new Set(sectionIds).size !== sectionIds.length) {
@@ -195,9 +199,8 @@ for (const page of ALL_PAGES) {
     for (const [, target] of toc.matchAll(/href="#([^"]+)"/gi)) {
       if (!sectionIds.includes(target)) fail(`${page}: on-page navigation target #${target} is missing`);
     }
-    if (count(article, /<h1\b/gi) !== 1 || !/<time\b[^>]*datetime="\d{4}-\d{2}-\d{2}"/i.test(article) ||
-        !/class="[^"]*\bcase-evidence-note\b/i.test(article)) {
-      fail(`${page}: article needs one H1, a dated byline and an evidence note`);
+    if (count(article, /<h1\b/gi) !== 1 || !/class="[^"]*\bcase-evidence-note\b/i.test(article)) {
+      fail(`${page}: article needs one H1 and an evidence note`);
     }
     if (count(article, /class="case-facts-section"/gi) !== 1 ||
         count(article, /<dt\b/gi) !== 4 || count(article, /<dd\b/gi) !== 4) {
@@ -277,7 +280,7 @@ const cssContracts = [
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
-  [/\.banner-section\.raiffesen \.case-byline/i, "light hero byline contrast rule is missing"],
+  [/\.navbar\s*\{[\s\S]{0,200}position:\s*sticky/i, "sticky header bar rule is missing"],
   [/\.banner-section\.gambit:not\(\.kineticare-hero\) \.banner-text/i, "Kineticare must not inherit SportsGambit ink dek"],
   [/\.kineticare-hero \.banner-text[\s\S]{0,80}#fff/i, "Kineticare dek contrast is not guaranteed"],
   [/\.case-facts dd[\s\S]*?overflow-wrap:\s*anywhere/i, "project fact values must wrap on compact viewports"],
