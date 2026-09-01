@@ -1850,6 +1850,32 @@ main {
   outline-offset: 4px;
 }
 
+footer .nav-button-wrap {
+  position: static;
+}
+
+footer .site-motion-toggle {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 60;
+  background: #fff;
+  border: 1px solid rgb(17 17 17 / 12%);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgb(17 17 17 / 10%);
+}
+
+.banner-section.raiffesen .banner-text,
+.banner-section.gambit .banner-text,
+.banner-section.bitpanda.benker .banner-text {
+  color: #111 !important;
+}
+
+.banner-section.instructure .banner-text,
+.banner-section.bitpanda:not(.benker) .banner-text {
+  color: #fff !important;
+}
+
 @media (max-width: 991px) {
   .nav-button-wrap { margin-top: 4px; padding-left: 0; }
   .site-motion-toggle {
@@ -1976,7 +2002,7 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
   display: block;
   width: 100%;
   height: auto;
-  max-height: min(520px, 58vh);
+  max-height: min(640px, 70vh);
   object-fit: contain;
   object-position: center;
   background: rgb(255 255 255 / 18%);

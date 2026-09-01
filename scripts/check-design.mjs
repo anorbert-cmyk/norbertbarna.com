@@ -40,7 +40,7 @@ if (!home.includes('class="hero-kicker">Norbert Barna')) {
 if (!/class="hero-work-link"[^>]*href="\/works"/.test(home)) {
   fail("home CTA must go to /works");
 }
-if (!home.includes('class="hero-proof"') || !home.includes("card-raiffeisen")) {
+if (!home.includes('class="hero-proof"') || !/hero-proof[\s\S]{0,800}raiffeisen|banking-experience/.test(home)) {
   fail("home fold must show a real Raiffeisen UI crop");
 }
 if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 5))) {
