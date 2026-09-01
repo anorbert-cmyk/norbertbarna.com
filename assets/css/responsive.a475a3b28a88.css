@@ -1975,42 +1975,17 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
   line-height: 1.35;
 }
 
-.home-banner-content-wrap,
-.home-banner-outcomes,
-.home-banner-outcomes li,
-.home-banner-outcomes strong {
-  color: var(--ink);
-}
-
-.home-banner-area .metric-context {
-  color: var(--muted);
-}
-
 @media (min-width: 992px) {
   .home-banner-area {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-    grid-template-rows: auto auto auto;
-    align-items: start;
-    gap: 16px 48px;
-  }
-
-  .home-banner-area > .banner-left-wrap {
-    grid-column: 1;
-    grid-row: 1;
+    align-items: end;
+    gap: 48px;
   }
 
   .hero-proof {
-    grid-column: 2;
-    grid-row: 1 / span 3;
     margin-top: 0;
     max-width: none;
-    align-self: center;
-  }
-
-  .home-banner-area > .home-banner-content-wrap,
-  .home-banner-area > .home-work-divider-line {
-    grid-column: 1;
   }
 
   .banner-wrap {
@@ -2080,7 +2055,5 @@ h2.work-title-heading {
 
   .hero-proof {
     max-width: none;
-    margin-top: 20px;
-    margin-bottom: 8px;
   }
 }

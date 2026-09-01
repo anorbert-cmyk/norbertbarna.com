@@ -1949,68 +1949,33 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
   color: var(--muted);
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 
 .hero-proof {
   display: block;
   margin-top: 28px;
-  max-width: 520px;
-  overflow: visible;
-  color: inherit;
-  text-decoration: none;
+  max-width: 420px;
 }
 
-.hero-proof .case-hero-shot {
-  background: #ececec;
-}
-
-.hero-proof-caption {
-  display: block;
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-.home-banner-content-wrap,
-.home-banner-outcomes,
-.home-banner-outcomes li,
-.home-banner-outcomes strong {
-  color: var(--ink);
-}
-
-.home-banner-area .metric-context {
-  color: var(--muted);
+.hero-proof .work-image-wrap,
+.hero-proof {
+  overflow: hidden;
+  border-radius: 20px;
 }
 
 @media (min-width: 992px) {
   .home-banner-area {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
-    grid-template-rows: auto auto auto;
-    align-items: start;
-    gap: 16px 48px;
-  }
-
-  .home-banner-area > .banner-left-wrap {
-    grid-column: 1;
-    grid-row: 1;
+    align-items: end;
+    gap: 48px;
   }
 
   .hero-proof {
-    grid-column: 2;
-    grid-row: 1 / span 3;
     margin-top: 0;
     max-width: none;
-    align-self: center;
-  }
-
-  .home-banner-area > .home-banner-content-wrap,
-  .home-banner-area > .home-work-divider-line {
-    grid-column: 1;
   }
 
   .banner-wrap {
@@ -2080,7 +2045,5 @@ h2.work-title-heading {
 
   .hero-proof {
     max-width: none;
-    margin-top: 20px;
-    margin-bottom: 8px;
   }
 }

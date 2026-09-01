@@ -1975,17 +1975,6 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
   line-height: 1.35;
 }
 
-.home-banner-content-wrap,
-.home-banner-outcomes,
-.home-banner-outcomes li,
-.home-banner-outcomes strong {
-  color: var(--ink);
-}
-
-.home-banner-area .metric-context {
-  color: var(--muted);
-}
-
 @media (min-width: 992px) {
   .home-banner-area {
     display: grid;

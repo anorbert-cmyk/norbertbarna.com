@@ -11,12 +11,12 @@ This file is a concise guide to the canonical, English-language portfolio at htt
 
 ## Case studies
 
-- [Kineticare](https://www.barnanorbert.com/work/kineticare): digital health platform, brand, content structure and product build
-- [SportsGambit](https://www.barnanorbert.com/work/sportsgambit): AI-assisted prediction-market product design
 - [Raiffeisen](https://www.barnanorbert.com/work/raiffeisen): regulated mobile-banking ecosystem redesign
 - [Instructure](https://www.barnanorbert.com/work/instructure): explainable, human-in-the-loop AI patterns for enterprise EdTech
 - [Bitpanda](https://www.barnanorbert.com/work/bitpanda): crypto trading, deposit, KYC and portfolio experience redesign
 - [Benker](https://www.barnanorbert.com/work/benker): blockchain banking research and product development
+- [SportsGambit](https://www.barnanorbert.com/work/sportsgambit): AI-assisted prediction-market product design
+- [Kineticare](https://www.barnanorbert.com/work/kineticare): Hungarian digital health platform, brand, content structure and product build
 - [OnRobot](https://www.barnanorbert.com/work/onrobot): robotics interface and product design
 
 ## Expertise
