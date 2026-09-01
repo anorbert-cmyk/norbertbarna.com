@@ -106,9 +106,7 @@ for (const page of pages) {
     if(page==='work/kineticare.html') assert(types.includes('FAQPage'),'existing FAQ data was lost');
     assert(!/name=["']keywords["']/i.test(html),'meta keywords must not be introduced');
     const switches=[...html.matchAll(/<button\b[^>]*\bdata-motion-toggle\b[^>]*>/g)];
-    assert.equal(switches.length,1,'one global motion control is required');
-    assert.equal(attrs(switches[0][0]).get('role'),'switch');
-    assert.equal(attrs(switches[0][0]).get('aria-label'),'Page motion');
+    assert.equal(switches.length,0,'Motion control must not return');
     assert(html.includes(`assets/js/${mediaFile}`),'active media fingerprint is missing');
     assert(html.includes(`assets/css/${cssFile}`),'active CSS fingerprint is missing');
     assert(html.indexOf(`assets/js/${mediaFile}`)<html.indexOf('assets/js/animations.'),'media must initialize before GSAP owner');
