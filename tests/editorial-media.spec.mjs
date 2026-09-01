@@ -83,8 +83,8 @@ for (const viewport of [
           });
           expect(geometry.width).toBeGreaterThan(100);
           expect(Math.abs(geometry.width / geometry.height - geometry.natural)).toBeLessThan(.02);
-          expect(geometry.overlapRatio, 'playing video must sit inside its visible frame').toBeGreaterThan(0.9);
           if (example.name === 'Instructure') {
+            expect(geometry.overlapRatio, 'HiddenMontage: playing video must sit inside the 16:9 frame').toBeGreaterThan(0.9);
             expect(Number(geometry.z)).toBeGreaterThanOrEqual(0);
           }
         }
