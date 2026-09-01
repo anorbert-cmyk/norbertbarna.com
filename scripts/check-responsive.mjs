@@ -238,7 +238,7 @@ if (/class="[^"]*\bhome-work-wrap\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
   fail("index.html: the selected-work CTA must not be an invalid child of an ARIA list");
 }
 if (!/<ul\b[^>]*class="[^"]*\bhome-banner-outcomes\b/i.test(homeHtml) ||
-    !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="#works"/i.test(homeHtml)) {
+    !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="\/works"/i.test(homeHtml)) {
   fail("index.html: hero outcomes must be a semantic list with a selected-work action");
 }
 if (/home-banner-details-wrap[^>]*><\/div>[\s\S]{0,80}home-work-divider-line[\s\S]{0,80}home-work-divider-line/i.test(homeHtml)) {

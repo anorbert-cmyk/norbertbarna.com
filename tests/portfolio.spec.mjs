@@ -181,7 +181,7 @@ test("skip link and full-card project action work without hover", async ({ page 
   await openStable(page, "/works");
   const firstCard = page.locator(".work-card").first();
   await firstCard.click({ position: { x: 30, y: 30 } });
-  await expect(page).toHaveURL(/\/work\/kineticare$/);
+  await expect(page).toHaveURL(/\/work\/raiffeisen$/);
 });
 
 test("reduced-motion preference stops active animation and video", async ({ page }) => {
