@@ -95,6 +95,9 @@ if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must
 if (/\.hero-kicker[\s\S]{0,160}text-transform:\s*uppercase/.test(css)) {
   fail("TrackedKicker: name kicker must not be all-caps tracked");
 }
+if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {
+  fail("home outcomes must stay ink on paper after leaving the .black wrap");
+}
 
 const raiffeisenHero = caseHero(raiffeisen);
 if (!/student/.test(raiffeisenHero) || /banking-experience/.test(raiffeisenHero)) {
