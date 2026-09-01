@@ -1,0 +1,17 @@
+{
+  "name": "Norbert Barna Portfolio",
+  "install": "npm ci && npx playwright install --with-deps chromium",
+  "terminals": [
+    {
+      "name": "server",
+      "command": "node server.js",
+      "description": "Express server for the portfolio site on http://localhost:3000"
+    }
+  ],
+  "ports": [
+    {
+      "name": "portfolio",
+      "port": 3000
+    }
+  ]
+}
