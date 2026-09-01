@@ -65,8 +65,8 @@ if (/hero-proof[\s\S]{0,1200}banking-experience/.test(home)) {
 if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 6))) {
   fail(`home selected-work order is ${homeOrder.join(", ")} (must be hiring 1–6 incl. Kineticare)`);
 }
-if (homeOrder.length % 2 !== 0) {
-  fail("StaggerHole: home selected work must pair cards into full two-column rows");
+if (homeOrder.length < 6) {
+  fail("home selected work must include Kineticare (hiring 1–6)");
 }
 if (JSON.stringify(worksOrder) !== JSON.stringify(hiring)) {
   fail(`/works order is ${worksOrder.join(", ")}`);
@@ -116,8 +116,7 @@ if (!/\.case-facts dd[\s\S]{0,80}overflow-wrap:\s*anywhere/.test(css)) {
   fail("MotionCover: fact values must wrap instead of clipping");
 }
 
-// Locked header: one sticky white bar, 64/56, 1px #e6e8e9; Motion at 12px in
-// the bar; no fixed chip floating over content.
+// Locked header: one sticky white bar, 64/56, 1px #e6e8e9. No Motion control.
 if (!/\.navbar\s*\{[\s\S]{0,200}position:\s*sticky/.test(css)) {
   fail("header lock: .navbar must be sticky");
 }
@@ -131,18 +130,17 @@ if (!/\.navbar \.nav-wrap,\s*\.navbar \.nav-wrap\.dark\s*\{[\s\S]{0,120}min-heig
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.navbar \.nav-wrap,\s*\.navbar \.nav-wrap\.dark\s*\{[\s\S]{0,120}min-height:\s*56px/.test(css)) {
   fail("header lock: compact bar height must be 56px");
 }
-if (/position:\s*fixed[\s\S]{0,200}site-motion-toggle|site-motion-toggle[\s\S]{0,200}position:\s*fixed/.test(css)) {
-  fail("MotionNav: the Motion control must not be a fixed chip");
+if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(home + works)) {
+  fail("MotionNav: the Motion control must not appear on home or /works");
 }
-if (!/\.navbar \.site-motion-toggle\s*\{[\s\S]{0,400}font-size:\s*12px/.test(css)) {
-  fail("MotionNav: the Motion control must be a 12px control in the header bar");
+if (!/\.work-grid[\s\S]{0,200}repeat\(12,\s*minmax\(0,\s*1fr\)\)/.test(css)) {
+  fail("work grid must be a 12-column track");
 }
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*?\.home-work-area\s*\{[\s\S]{0,200}display:\s*grid/.test(css) ||
-    !/\.home-work-area\s*\{[\s\S]{0,300}repeat\(2,\s*minmax\(0,\s*1fr\)\)/.test(css)) {
-  fail("StaggerHole: home selected work must be a flush two-column grid at desktop");
+if (!/:nth-child\(odd\)[\s\S]{0,80}span 7/.test(css) || !/:nth-child\(even\)[\s\S]{0,80}span 5/.test(css)) {
+  fail("work grid must keep the 7/5 rhythm");
 }
-if (!/\.home-work-card-wrap,\s*\.home-work-card-wrap\.top-space\s*\{[\s\S]{0,300}margin-top:\s*0/.test(css)) {
-  fail("StaggerHole: the top-space stagger offset must be neutralized");
+if (/\.home-work-card-wrap\.top-space[\s\S]{0,80}margin-top:\s*1\d{2}px/.test(css)) {
+  fail("StaggerHole: the 140px stagger offset must not return");
 }
 if (!/--site-readable:\s*720px/.test(css)) {
   fail("body lock: reading measure must be 720px");
@@ -184,8 +182,8 @@ for (const page of footerPages) {
   if (mailtos.some((address) => address !== "anorbert@pm.me")) {
     fail(`${page}: only mailto:anorbert@pm.me is allowed (got ${mailtos.join(", ")})`);
   }
-  if (footer.includes("data-motion-toggle")) {
-    fail(`MotionNav: ${page} still keeps the Motion control in the footer`);
+  if (html.includes("data-motion-toggle") || html.includes("site-motion-toggle")) {
+    fail(`MotionNav: ${page} still renders a Motion control`);
   }
 }
 
@@ -205,8 +203,8 @@ for (const slug of WORK) {
   if (html.includes('class="case-breadcrumb"')) {
     fail(`${slug}: the old breadcrumb strip under the nav must be removed`);
   }
-  if (!navbar.includes("data-motion-toggle")) {
-    fail(`${slug}: the Motion control must sit in the header bar`);
+  if (navbar.includes("data-motion-toggle") || html.includes("site-motion-toggle")) {
+    fail(`MotionNav: ${slug} still renders a Motion control`);
   }
 
   // BlogHero: no visible byline anywhere; dates stay in meta and JSON-LD.

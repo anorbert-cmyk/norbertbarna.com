@@ -173,19 +173,20 @@ missing middle size. Do not uppercase-track the name kicker.
 6. Kineticare (HU product — kicker must say so)
 7. OnRobot
 
-Home selected work shows 1–6 in a flush two-column grid (equal card heights,
-no stagger hole at 1280). `/works` shows all seven in that order.
-Do not lead the **list** with a prediction-market MVP or a Hungarian product
-on an otherwise English hiring path.
+Home selected work shows 1–6 on a 12-column **7/5** grid (wider card, then
+narrower, tops aligned). `/works` shows all seven in that order on the same
+grid; the seventh card stays span 7. Do not lead the **list** with a
+prediction-market MVP or a Hungarian product on an otherwise English hiring
+path.
 
 **Header (locked):** one sticky white bar, 64px desktop / 56px compact,
 `#fff` fill, 1px `#e6e8e9` bottom border. Contents in order: logo →
 (case pages only) breadcrumb `Works / {Project}` in the bar → LinkedIn link
-(visible label `LinkedIn`, full aria-label kept) → Motion toggle at 12px.
-Home and `/works` keep the `Works` nav link instead of the breadcrumb.
-The Motion control lives in the bar — never as a fixed chip floating over
-content, and never in the footer. The old 57px breadcrumb strip under the
-nav is retired. The one real contact address is `anorbert@pm.me`; do not
+(visible label `LinkedIn`, full aria-label kept). Home and `/works` keep the
+`Works` nav link instead of the breadcrumb. There is no Motion control —
+not in the bar, not as a fixed chip, not in the footer. Autoplay and GSAP
+already honor `prefers-reduced-motion`. The old 57px breadcrumb strip under
+the nav is retired. The one real contact address is `anorbert@pm.me`; do not
 invent additional addresses. `/contact` and `/cv` stay unpublished rather
 than 404-bait.
 
@@ -262,11 +263,11 @@ English-wash the screenshot.
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI |
-| MotionNav | Motion toggle as a fixed chip floating over content, or in the footer | 12px control inside the sticky header bar |
+| MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
-| MotionCover | Any fixed chip covering Role / Focus on a compact fold | No fixed chips; the Motion control stays in the header bar and fact values wrap |
+| MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
-| StaggerHole | Selected-work grid leaving an empty offset column at 1280 | Flush two-column grid, equal card heights |
+| StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
 | BlogFooterCTA | Footer primary action pointing at LinkedIn or a third-party form | Local email action to `anorbert@pm.me` with a honeypot |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 
@@ -288,12 +289,12 @@ Agents compose pages from these names. Do not invent parallel components.
 **Chrome:** `.skip-to-content` `.navbar` `.nav-logo-wrap` `.nav-breadcrumb`
 `.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
 `.footer-cta` `.footer-contact-form` `.footer-hp` `.footer-contact-link`
-`.back-to-top-wrap` `[data-motion-toggle]` (header bar)
+`.back-to-top-wrap`
 
 **Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
 `.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link` `.hero-proof`
-`.hero-proof-caption` `.about-section-title` `.home-about-area` `.work-card`
-`.work-image` `.work-title` `.work-card-summary` `.home-work-footer`
+`.hero-proof-caption` `.about-section-title` `.home-about-area` `.work-grid`
+`.work-card` `.work-image` `.work-title` `.work-card-summary` `.home-work-footer`
 
 **Works:** same cards; `.home-banner-text` max two sentences.
 
@@ -306,9 +307,9 @@ Agents compose pages from these names. Do not invent parallel components.
 ## Motion
 
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis).
-Respect `prefers-reduced-motion`. Do not add Three.js, particles, or
-generated Lottie. Hide `.case-motion-rail`. Default to stillness for anything
-new.
+Respect `prefers-reduced-motion`. Do not add a visible Motion toggle, Three.js,
+particles, or generated Lottie. Hide `.case-motion-rail`. Default to stillness
+for anything new.
 
 ## Eval rubric (first attempt must pass)
 

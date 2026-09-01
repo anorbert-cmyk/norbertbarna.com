@@ -227,7 +227,7 @@ for (const viewport of [viewports[0], viewports[4]]) {
   }
 }
 
-test("Kineticare compact fold: white dek, unclipped facts, Motion control in the bar", async ({ page }) => {
+test("Kineticare compact fold: white dek and unclipped facts, no Motion chip", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await openStable(page, "/work/kineticare");
 
@@ -238,18 +238,15 @@ test("Kineticare compact fold: white dek, unclipped facts, Motion control in the
 
   const layout = await page.evaluate(() => {
     const role = document.querySelector(".case-facts dd");
-    const chip = document.querySelector(".navbar .site-motion-toggle");
     return {
       clipped: role.scrollWidth > role.clientWidth + 1,
       roleText: role.textContent.trim(),
-      chipInBar: Boolean(chip),
-      chipPosition: chip ? getComputedStyle(chip).position : "missing",
+      motionControl: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
     };
   });
   expect(layout.roleText).toBe("Product designer and full-stack builder");
   expect(layout.clipped).toBe(false);
-  expect(layout.chipInBar).toBe(true);
-  expect(layout.chipPosition).not.toBe("fixed");
+  expect(layout.motionControl).toBe(false);
 });
 
 const caseRoutes = contentRoutes.filter((route) => route.startsWith("/work/"));
@@ -327,25 +324,30 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
   });
 }
 
-test("1280 home selected work: Kineticare present, flush two-column rows, equal heights, stable title color", async ({ page }) => {
+test("1280 home selected work: Kineticare present, 7/5 grid, no stagger hole, stable title color", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await openStable(page, "/");
   const grid = await page.evaluate(() => {
-    const rows = [...document.querySelectorAll("#works .home-work-area")].map((row) =>
-      [...row.querySelectorAll(".home-work-card-wrap")].map((wrap) => {
-        const box = wrap.getBoundingClientRect();
-        return { top: Math.round(box.top + window.scrollY), height: Math.round(box.height), width: Math.round(box.width) };
-      })
-    );
-    const titles = [...document.querySelectorAll("#works .work-title")].map((a) => a.getAttribute("href"));
-    return { rows, titles };
+    const wraps = [...document.querySelectorAll("#works .home-work-card-wrap")].map((wrap, index) => {
+      const box = wrap.getBoundingClientRect();
+      const col = getComputedStyle(wrap).gridColumn;
+      return {
+        index,
+        href: wrap.querySelector(".work-title")?.getAttribute("href"),
+        top: Math.round(box.top + window.scrollY),
+        width: Math.round(box.width),
+        col,
+      };
+    });
+    return wraps;
   });
-  expect(grid.titles).toContain("/work/kineticare");
-  for (const row of grid.rows) {
-    expect(row.length, "each selected-work row must be a full pair — no stagger hole").toBe(2);
-    expect(Math.abs(row[0].top - row[1].top), "cards in a row must sit flush").toBeLessThanOrEqual(2);
-    expect(Math.abs(row[0].height - row[1].height), "cards in a row must be equal height").toBeLessThanOrEqual(2);
-    expect(Math.abs(row[0].width - row[1].width)).toBeLessThanOrEqual(2);
+  expect(grid.map((card) => card.href)).toContain("/work/kineticare");
+  expect(grid.length).toBe(6);
+  for (let i = 0; i < grid.length; i += 2) {
+    const wide = grid[i];
+    const narrow = grid[i + 1];
+    expect(wide.width, "odd cards are the 7-span").toBeGreaterThan(narrow.width + 40);
+    expect(Math.abs(wide.top - narrow.top), "pair tops align — no stagger hole").toBeLessThanOrEqual(4);
   }
 
   const kineticareTitle = page.locator('#works .work-title[href="/work/kineticare"]');
@@ -372,6 +374,7 @@ for (const [width, expected] of [[1280, 64], [390, 56]]) {
         height: Math.round(wrap.getBoundingClientRect().height),
         breadcrumb: navbar.querySelector(".nav-breadcrumb")?.textContent.replace(/\s+/g, " ").trim() || "",
         oldStrip: Boolean(document.querySelector(".case-breadcrumb")),
+        motion: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
       };
     });
     expect(bar.position).toBe("sticky");
@@ -381,6 +384,7 @@ for (const [width, expected] of [[1280, 64], [390, 56]]) {
     expect(bar.breadcrumb).toContain("Works");
     expect(bar.breadcrumb).toContain("Instructure");
     expect(bar.oldStrip).toBe(false);
+    expect(bar.motion).toBe(false);
 
     await page.evaluate(() => window.scrollTo(0, 1200));
     await page.waitForTimeout(80);
