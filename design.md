@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | One LinkedIn close (no invented email) |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer email action to `anorbert@pm.me` (real address, honeypot-guarded, no third-party form service) |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -65,8 +65,10 @@ If a change helps a designer-flex and hurts one of those jobs, reject it.
 The executive path on `/` is: name, role, one complete shipped UI, how to
 see the work, how to reach him. The audit path is the case studies.
 
-Do not invent metrics, emails, or a second contact channel. Do not restore
-removed SportsGambit figures (`35% first-day activation`, `70% of wagers`).
+Do not invent metrics or emails. The one real contact address is
+`anorbert@pm.me`; the footer email action targets it and nothing else.
+Do not restore removed SportsGambit figures (`35% first-day activation`,
+`70% of wagers`).
 
 ### 2. Choose the composition
 
@@ -103,7 +105,7 @@ Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
 4. Can any tracked kicker, icon tile, or marquee motion be removed without
    losing meaning? Prefer stillness. Do not add marquees.
 5. On Kineticare at 390: is the dek white on the dark field, and does Role
-   wrap instead of sitting under the Motion chip?
+   wrap cleanly under the sticky bar?
 6. Does `npm test` still pass?
 
 Keep this review internal. Deliver the implementation, not a scorecard.
@@ -171,14 +173,21 @@ missing middle size. Do not uppercase-track the name kicker.
 6. Kineticare (HU product — kicker must say so)
 7. OnRobot
 
-Home selected work shows 1–5. `/works` shows all seven in that order.
+Home selected work shows 1–6 in a flush two-column grid (equal card heights,
+no stagger hole at 1280). `/works` shows all seven in that order.
 Do not lead the **list** with a prediction-market MVP or a Hungarian product
 on an otherwise English hiring path.
 
-**Nav (in this order):** logo → Works → LinkedIn (label required:
-“Find me on LinkedIn”). Motion is not a nav item; keep the toggle in the
-footer. Do not invent `mailto:` until a real address exists. `/contact` and
-`/cv` stay unpublished rather than 404-bait.
+**Header (locked):** one sticky white bar, 64px desktop / 56px compact,
+`#fff` fill, 1px `#e6e8e9` bottom border. Contents in order: logo →
+(case pages only) breadcrumb `Works / {Project}` in the bar → LinkedIn link
+(visible label `LinkedIn`, full aria-label kept) → Motion toggle at 12px.
+Home and `/works` keep the `Works` nav link instead of the breadcrumb.
+The Motion control lives in the bar — never as a fixed chip floating over
+content, and never in the footer. The old 57px breadcrumb strip under the
+nav is retired. The one real contact address is `anorbert@pm.me`; do not
+invent additional addresses. `/contact` and `/cv` stay unpublished rather
+than 404-bait.
 
 **Home fold**
 
@@ -197,15 +206,22 @@ visible in a 900px-tall desktop viewport. No “these aren’t mockups” line.
 
 **Case header (one template, color varies)**
 
-1. Site nav
-2. Breadcrumb `Home / Case studies / {Project}`
-3. Hero row: left = kicker + H1 56–64 + 1–2 line dek (regular) + four facts;
-   right = `.case-hero-media` with a **complete** screenshot,
-   `object-fit: contain`
-4. Byline with `rel="author"` and `<time>` sits under the fact band, not as
-   Medium-style meta in the color field
+1. Sticky site bar with the breadcrumb `Works / {Project}` inside it
+2. Hero row: left = kicker + H1 56–64 + 1–2 line dek (regular);
+   right = `.case-hero-media` with a **complete** screenshot already on the
+   page, `object-fit: contain`. New images are forbidden.
+3. Fact band with four keys directly under the hero
+4. No visible byline. “Written by / Published / Updated” never appears on
+   the page; authorship and dates live in meta tags and JSON-LD only.
 5. Measurement note under the fact band, not in the hero
-6. TOC wraps. Labels ≤ 18 characters. No “PROJECT FLOW” rail.
+6. TOC wraps or truncates to `+n`. Labels ≤ 18 characters. Never a clipped
+   chip (“Design P”). No “PROJECT FLOW” rail.
+7. Body: H2 28–32, reading measure 720px, and the first still sits right
+   after the role section — not thousands of pixels down.
+
+**Kineticare exception:** its case header contains exactly one media node —
+the existing hand-rehabilitation background video, autoplaying via
+`data-autoplay-video`. No hero screenshot next to it.
 
 **Raiffeisen fold proof:** payment / account phone frames (`student` asset),
 not the yellow “Reimagining Student Banking Journey” device cluster.
@@ -238,7 +254,7 @@ English-wash the screenshot.
 |---|---|---|
 | EmptyFold | Name or manifesto, no product UI | Put a complete product screen in the first viewport |
 | DualIndex | Home **list** order ≠ `/works` order | One list, hiring-first |
-| BlogHero | “Written by / Published / Updated” as the hero | Facts + UI; byline below |
+| BlogHero | “Written by / Published / Updated” anywhere on the page | Facts + UI; authorship stays in meta and JSON-LD |
 | CoverPoster | Campaign headline + clustered devices, site URL in the corner, or any artboard that already crops the phones | One complete product screen; `contain` |
 | CroppedProduct | Sidebar or phone clipped by `object-fit: cover` **or** by the source artboard | Different existing asset whose UI is fully in frame |
 | FakePII | Invented names, emails, `+123%` in comps we author | Shipped UI only, no unaudited % in our chrome |
@@ -246,9 +262,12 @@ English-wash the screenshot.
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI |
-| MotionNav | Motion On as a 11px nav item | Footer control only |
+| MotionNav | Motion toggle as a fixed chip floating over content, or in the footer | 12px control inside the sticky header bar |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
-| MotionCover | Fixed Motion chip covering Role / Focus on a compact fold | Wrap fact values; pad the fact band so copy clears the chip |
+| MotionCover | Any fixed chip covering Role / Focus on a compact fold | No fixed chips; the Motion control stays in the header bar and fact values wrap |
+| ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
+| StaggerHole | Selected-work grid leaving an empty offset column at 1280 | Flush two-column grid, equal card heights |
+| BlogFooterCTA | Footer primary action pointing at LinkedIn or a third-party form | Local email action to `anorbert@pm.me` with a honeypot |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 
 ## Reject generated-design reflexes
@@ -256,7 +275,8 @@ English-wash the screenshot.
 Do not ship: decorative gradients or glow blobs; generic centered hero copy
 followed by a card grid as the only structure; a 16:9 cover poster as the
 fold; nested cards to fake hierarchy; icon tiles as a substitute for proof;
-uppercase-tracked eyebrows; invented `mailto:`; generated screenshots.
+uppercase-tracked eyebrows; any `mailto:` other than `anorbert@pm.me`;
+generated screenshots.
 
 Restraint here is precise hierarchy and honest product evidence. It is not
 black-and-white empty margin, and it is not a Vercel report shell.
@@ -265,9 +285,10 @@ black-and-white empty margin, and it is not a Vercel report shell.
 
 Agents compose pages from these names. Do not invent parallel components.
 
-**Chrome:** `.skip-to-content` `.navbar` `.nav-logo-wrap` `.menu-button`
-`#primary-navigation` `.nav-menu` `.nav-link` `.footer-section` `.footer-cta`
-`.footer-contact-link` `.back-to-top-wrap` `[data-motion-toggle]` (footer)
+**Chrome:** `.skip-to-content` `.navbar` `.nav-logo-wrap` `.nav-breadcrumb`
+`.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
+`.footer-cta` `.footer-contact-form` `.footer-hp` `.footer-contact-link`
+`.back-to-top-wrap` `[data-motion-toggle]` (header bar)
 
 **Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
 `.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link` `.hero-proof`
@@ -276,9 +297,9 @@ Agents compose pages from these names. Do not invent parallel components.
 
 **Works:** same cards; `.home-banner-text` max two sentences.
 
-**Case:** `article.case-study-article` `h1#case-title` `.case-breadcrumb`
-`.case-hero-media` `.case-hero-shot` `.case-facts-section` `.case-facts`
-`.case-byline` `.case-toc` `.case-evidence-note` `.summary` `.related-work-card`
+**Case:** `article.case-study-article` `h1#case-title` `.case-hero-media`
+`.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
+`.case-evidence-note` `.summary` `.related-work-card`
 
 **Buttons:** `.dark-button` `#000` on `#fff`. Footer contact min-height 52px.
 

@@ -180,26 +180,23 @@ for (const page of PAGES) {
         fail(`${page}: article:published_time must match Article datePublished`);
       if (metaContent(html, "property", "article:modified_time") !== article.dateModified)
         fail(`${page}: article:modified_time must match Article dateModified`);
-      if (!html.includes(`<time datetime="${article.datePublished}">`))
-        fail(`${page}: datePublished is not visible in a time element`);
-      if (article.dateModified !== article.datePublished &&
-          !html.includes(`<time datetime="${article.dateModified}">`))
-        fail(`${page}: dateModified is not visible in a time element`);
+      // Authorship and dates live in meta tags and JSON-LD only; the visible
+      // blog byline (Written by / Published) is a named anti-pattern.
+      if (/class="case-byline"|Written by/.test(html))
+        fail(`${page}: visible blog byline must not return`);
     }
 
     const breadcrumb = nodes.find((node) => node["@type"] === "BreadcrumbList");
-    const secondCrumb = breadcrumb?.itemListElement?.find((item) => item.position === 2);
-    if (secondCrumb?.name !== "Case studies" ||
-        secondCrumb?.item !== "https://www.barnanorbert.com/works")
-      fail(`${page}: BreadcrumbList must match the visible Case studies breadcrumb`);
+    const firstCrumb = breadcrumb?.itemListElement?.find((item) => item.position === 1);
+    if (firstCrumb?.name !== "Works" ||
+        firstCrumb?.item !== "https://www.barnanorbert.com/works")
+      fail(`${page}: BreadcrumbList must match the visible Works breadcrumb in the header bar`);
 
     if (!html.includes('<article aria-labelledby="case-title" class="case-study-article">') ||
         !html.includes('<h1 id="case-title"'))
       fail(`${page}: case-study article must be named by its H1`);
     if (!html.includes('<section class="case-facts-section" aria-label="Project facts">'))
       fail(`${page}: missing recruiter-friendly project facts`);
-    if (!html.includes('rel="author" href="/"'))
-      fail(`${page}: visible author must link to the canonical Person page`);
 
     if (page === "work/kineticare.html") {
       const faq = nodes.find((node) => node["@type"] === "FAQPage");

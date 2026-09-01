@@ -227,7 +227,7 @@ for (const viewport of [viewports[0], viewports[4]]) {
   }
 }
 
-test("Kineticare compact fold: white dek and facts clear the Motion chip", async ({ page }) => {
+test("Kineticare compact fold: white dek, unclipped facts, Motion control in the bar", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await openStable(page, "/work/kineticare");
 
@@ -238,18 +238,153 @@ test("Kineticare compact fold: white dek and facts clear the Motion chip", async
 
   const layout = await page.evaluate(() => {
     const role = document.querySelector(".case-facts dd");
-    const chip = document.querySelector("footer .site-motion-toggle");
-    const roleBox = role.getBoundingClientRect();
-    const chipBox = chip.getBoundingClientRect();
-    const overlapX = Math.min(roleBox.right, chipBox.right) - Math.max(roleBox.left, chipBox.left);
-    const overlapY = Math.min(roleBox.bottom, chipBox.bottom) - Math.max(roleBox.top, chipBox.top);
+    const chip = document.querySelector(".navbar .site-motion-toggle");
     return {
       clipped: role.scrollWidth > role.clientWidth + 1,
-      overlapping: overlapX > 1 && overlapY > 1,
       roleText: role.textContent.trim(),
+      chipInBar: Boolean(chip),
+      chipPosition: chip ? getComputedStyle(chip).position : "missing",
     };
   });
   expect(layout.roleText).toBe("Product designer and full-stack builder");
   expect(layout.clipped).toBe(false);
-  expect(layout.overlapping).toBe(false);
+  expect(layout.chipInBar).toBe(true);
+  expect(layout.chipPosition).not.toBe("fixed");
 });
+
+const caseRoutes = contentRoutes.filter((route) => route.startsWith("/work/"));
+
+for (const route of caseRoutes) {
+  test(`1280: ${route} TOC chips wrap without clipping`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openStable(page, route);
+    const toc = await page.evaluate(() => {
+      const list = document.querySelector(".case-toc ol");
+      const chips = [...document.querySelectorAll(".case-toc a")];
+      const listBox = list.getBoundingClientRect();
+      return {
+        chipCount: chips.length,
+        listOverflow: list.scrollWidth - list.clientWidth,
+        clippedChips: chips.filter((chip) => {
+          const box = chip.getBoundingClientRect();
+          return chip.scrollWidth > chip.clientWidth + 1 ||
+            box.right > listBox.right + 1 || box.left < listBox.left - 1;
+        }).map((chip) => chip.textContent.trim()),
+      };
+    });
+    expect(toc.chipCount).toBeGreaterThan(0);
+    expect(toc.listOverflow, "TOC list must wrap instead of overflowing").toBeLessThanOrEqual(1);
+    expect(toc.clippedChips, `clipped TOC chips: ${toc.clippedChips.join(", ")}`).toEqual([]);
+  });
+}
+
+test("Kineticare case header contains exactly one media node and it autoplays", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openStable(page, "/work/kineticare");
+  const header = await page.evaluate(() => {
+    const scope = document.querySelector(".case-study-header");
+    const media = [...scope.querySelectorAll("video, img, picture, iframe")];
+    const video = scope.querySelector("video");
+    return {
+      mediaCount: media.length,
+      isVideo: media.length === 1 && media[0].tagName === "VIDEO",
+      managedAutoplay: Boolean(video && video.hasAttribute("data-autoplay-video")),
+    };
+  });
+  expect(header.mediaCount).toBe(1);
+  expect(header.isVideo).toBe(true);
+  expect(header.managedAutoplay).toBe(true);
+  await expect.poll(() => page.evaluate(() => {
+    const video = document.querySelector(".case-study-header video");
+    return video.getAttribute("data-media-state");
+  }), { timeout: 15000 }).toMatch(/playing|loading/);
+});
+
+for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
+  test(`${route}: footer primary CTA is the local email form, not LinkedIn`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await openStable(page, route);
+    const footer = await page.evaluate(() => {
+      const cta = document.querySelector(".footer-cta");
+      const form = cta.querySelector("form[data-contact-form]");
+      const trap = form ? form.querySelector('input[name="company"]') : null;
+      const button = cta.querySelector("button.footer-contact-link");
+      const trapBox = trap ? trap.getBoundingClientRect() : null;
+      return {
+        hasLinkedIn: Boolean(cta.querySelector('a[href*="linkedin.com"]')),
+        action: form ? form.getAttribute("action") : "",
+        // The honeypot must be unreachable for humans: off-screen or zero-size,
+        // and removed from the tab order.
+        trapHidden: Boolean(trapBox && (trapBox.right <= 0 || trapBox.width <= 1) &&
+          trap.tabIndex === -1),
+        buttonText: button ? button.textContent.trim() : "",
+      };
+    });
+    expect(footer.hasLinkedIn).toBe(false);
+    expect(footer.action).toBe("mailto:anorbert@pm.me");
+    expect(footer.trapHidden).toBe(true);
+    expect(footer.buttonText).toContain("anorbert@pm.me");
+  });
+}
+
+test("1280 home selected work: Kineticare present, flush two-column rows, equal heights, stable title color", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openStable(page, "/");
+  const grid = await page.evaluate(() => {
+    const rows = [...document.querySelectorAll("#works .home-work-area")].map((row) =>
+      [...row.querySelectorAll(".home-work-card-wrap")].map((wrap) => {
+        const box = wrap.getBoundingClientRect();
+        return { top: Math.round(box.top + window.scrollY), height: Math.round(box.height), width: Math.round(box.width) };
+      })
+    );
+    const titles = [...document.querySelectorAll("#works .work-title")].map((a) => a.getAttribute("href"));
+    return { rows, titles };
+  });
+  expect(grid.titles).toContain("/work/kineticare");
+  for (const row of grid.rows) {
+    expect(row.length, "each selected-work row must be a full pair — no stagger hole").toBe(2);
+    expect(Math.abs(row[0].top - row[1].top), "cards in a row must sit flush").toBeLessThanOrEqual(2);
+    expect(Math.abs(row[0].height - row[1].height), "cards in a row must be equal height").toBeLessThanOrEqual(2);
+    expect(Math.abs(row[0].width - row[1].width)).toBeLessThanOrEqual(2);
+  }
+
+  const kineticareTitle = page.locator('#works .work-title[href="/work/kineticare"]');
+  await kineticareTitle.scrollIntoViewIfNeeded();
+  const colorBefore = await kineticareTitle.evaluate((el) => getComputedStyle(el).color);
+  await kineticareTitle.hover();
+  await page.waitForTimeout(250);
+  const colorAfter = await kineticareTitle.evaluate((el) => getComputedStyle(el).color);
+  expect(colorAfter, "title color must not jump on hover").toBe(colorBefore);
+});
+
+for (const [width, expected] of [[1280, 64], [390, 56]]) {
+  test(`${width}: header is a sticky white ${expected}px bar with the locked border`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await openStable(page, "/work/instructure");
+    const bar = await page.evaluate(() => {
+      const navbar = document.querySelector(".navbar");
+      const wrap = navbar.querySelector(".nav-wrap");
+      const style = getComputedStyle(navbar);
+      return {
+        position: style.position,
+        background: style.backgroundColor,
+        border: style.borderBottomWidth + " " + style.borderBottomColor,
+        height: Math.round(wrap.getBoundingClientRect().height),
+        breadcrumb: navbar.querySelector(".nav-breadcrumb")?.textContent.replace(/\s+/g, " ").trim() || "",
+        oldStrip: Boolean(document.querySelector(".case-breadcrumb")),
+      };
+    });
+    expect(bar.position).toBe("sticky");
+    expect(bar.background).toBe("rgb(255, 255, 255)");
+    expect(bar.border).toBe("1px rgb(230, 232, 233)");
+    expect(bar.height).toBe(expected);
+    expect(bar.breadcrumb).toContain("Works");
+    expect(bar.breadcrumb).toContain("Instructure");
+    expect(bar.oldStrip).toBe(false);
+
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await page.waitForTimeout(80);
+    const stuckTop = await page.evaluate(() => document.querySelector(".navbar").getBoundingClientRect().top);
+    expect(stuckTop).toBe(0);
+  });
+}

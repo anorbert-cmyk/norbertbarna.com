@@ -51,9 +51,28 @@
     setMenuOpen(false);
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initNavigation, { once: true });
-  } else {
+  /** Footer contact: local mailto action guarded by a spam honeypot. */
+  function initContactForm() {
+    document.querySelectorAll("form[data-contact-form]").forEach(function (form) {
+      if (form.dataset.contactReady === "true") return;
+      form.dataset.contactReady = "true";
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var trap = form.querySelector('input[name="company"]');
+        if (trap && trap.value.trim() !== "") return;
+        window.location.href = "mailto:anorbert@pm.me";
+      });
+    });
+  }
+
+  function init() {
     initNavigation();
+    initContactForm();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init, { once: true });
+  } else {
+    init();
   }
 })();
