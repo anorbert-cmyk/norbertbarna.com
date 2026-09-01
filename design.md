@@ -230,6 +230,10 @@ not the yellow “Reimagining Student Banking Journey” device cluster.
 **Instructure fold proof:** insights-feed dashboard, not `Data Insights.png`
 (that file still has a red Figma selection stroke).
 
+**Instructure montage:** the Canvas Career video in `.inst-bg-video` must fill
+the 16:9 frame (`inset: 0; z-index: 0`). Webflow background-video CSS
+(`inset: -100%`, `z-index: -100`) parks a playing file outside the clip.
+
 **Fact keys (identical on every case):** Role, Focus, Period, Delivery.
 
 ## Copy
@@ -270,6 +274,7 @@ English-wash the screenshot.
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
 | BlogFooterCTA | Footer primary action pointing at LinkedIn or a third-party form | Local email action to `anorbert@pm.me` with a honeypot |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
+| HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 
 ## Reject generated-design reflexes
 

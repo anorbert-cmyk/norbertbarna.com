@@ -68,11 +68,25 @@ for (const viewport of [
         await expect(page.locator('.motion-video-toggle, [data-w-bg-video-control], video[controls]')).toHaveCount(0);
         if (example.ratio) {
           const geometry = await video.evaluate(v => {
+            const wrap = v.closest('.background-video, .home-about-video, .kineticare-browser-frame') || v.parentElement;
             const r = v.getBoundingClientRect();
-            return { width: r.width, height: r.height, natural: v.videoWidth / v.videoHeight };
+            const w = wrap.getBoundingClientRect();
+            const overlapW = Math.max(0, Math.min(r.right, w.right) - Math.max(r.left, w.left));
+            const overlapH = Math.max(0, Math.min(r.bottom, w.bottom) - Math.max(r.top, w.top));
+            return {
+              width: r.width,
+              height: r.height,
+              natural: v.videoWidth / v.videoHeight,
+              overlapRatio: w.width * w.height ? (overlapW * overlapH) / (w.width * w.height) : 0,
+              z: getComputedStyle(v).zIndex,
+            };
           });
           expect(geometry.width).toBeGreaterThan(100);
           expect(Math.abs(geometry.width / geometry.height - geometry.natural)).toBeLessThan(.02);
+          expect(geometry.overlapRatio, 'playing video must sit inside its visible frame').toBeGreaterThan(0.9);
+          if (example.name === 'Instructure') {
+            expect(Number(geometry.z)).toBeGreaterThanOrEqual(0);
+          }
         }
         await screenshot(page, info, viewport.name + '-' + example.name.replaceAll(' ', '-'));
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
