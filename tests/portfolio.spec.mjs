@@ -226,3 +226,30 @@ for (const viewport of [viewports[0], viewports[4]]) {
     });
   }
 }
+
+test("Kineticare compact fold: white dek and facts clear the Motion chip", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await openStable(page, "/work/kineticare");
+
+  const dekColor = await page.locator(".kineticare-hero .banner-text").evaluate(
+    (element) => getComputedStyle(element).color
+  );
+  expect(dekColor).toBe("rgb(255, 255, 255)");
+
+  const layout = await page.evaluate(() => {
+    const role = document.querySelector(".case-facts dd");
+    const chip = document.querySelector("footer .site-motion-toggle");
+    const roleBox = role.getBoundingClientRect();
+    const chipBox = chip.getBoundingClientRect();
+    const overlapX = Math.min(roleBox.right, chipBox.right) - Math.max(roleBox.left, chipBox.left);
+    const overlapY = Math.min(roleBox.bottom, chipBox.bottom) - Math.max(roleBox.top, chipBox.top);
+    return {
+      clipped: role.scrollWidth > role.clientWidth + 1,
+      overlapping: overlapX > 1 && overlapY > 1,
+      roleText: role.textContent.trim(),
+    };
+  });
+  expect(layout.roleText).toBe("Product designer and full-stack builder");
+  expect(layout.clipped).toBe(false);
+  expect(layout.overlapping).toBe(false);
+});

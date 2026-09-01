@@ -83,6 +83,9 @@ if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
   fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
 }
+if (!/InkOnNight/.test(design) || !/MotionCover/.test(design)) {
+  fail("design.md must name InkOnNight and MotionCover");
+}
 
 if (!/\.home-banner-title[\s\S]{0,160}64px/.test(css)) fail("display size is not locked to 56–64");
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
@@ -100,6 +103,18 @@ if (/\.hero-kicker[\s\S]{0,160}text-transform:\s*uppercase/.test(css)) {
 }
 if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {
   fail("home outcomes must stay ink on paper after leaving the .black wrap");
+}
+if (!/\.banner-section\.gambit:not\(\.kineticare-hero\) \.banner-text[\s\S]{0,80}#111/.test(css)) {
+  fail("SportsGambit ink dek must not paint Kineticare");
+}
+if (!/\.kineticare-hero \.banner-text[\s\S]{0,80}#fff/.test(css)) {
+  fail("InkOnNight: Kineticare dek must be white on the dark field");
+}
+if (!/\.case-facts dd[\s\S]{0,80}overflow-wrap:\s*anywhere/.test(css)) {
+  fail("MotionCover: fact values must wrap instead of clipping");
+}
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?padding-right:\s*7\.5rem/.test(css)) {
+  fail("MotionCover: compact fact band must clear the Motion chip");
 }
 
 const raiffeisenHero = caseHero(raiffeisen);

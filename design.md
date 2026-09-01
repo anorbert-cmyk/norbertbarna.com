@@ -92,8 +92,8 @@ new type families, case colors, or component names that duplicate these.
 
 ### 4. Inspect and revise
 
-Render `/`, `/works`, `/work/raiffeisen`, and `/work/instructure` at 1280 and
-390. Ask, in order:
+Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
+`/work/kineticare` at 1280 and 390. Ask, in order:
 
 1. If the reader saw only the first viewport of `/`, would they remember the
    role and one shipped product — not only a mood or a headline?
@@ -102,7 +102,9 @@ Render `/`, `/works`, `/work/raiffeisen`, and `/work/instructure` at 1280 and
 3. Do `/` and `/works` use the same case order?
 4. Can any tracked kicker, icon tile, or marquee motion be removed without
    losing meaning? Prefer stillness. Do not add marquees.
-5. Does `npm test` still pass?
+5. On Kineticare at 390: is the dek white on the dark field, and does Role
+   wrap instead of sitting under the Motion chip?
+6. Does `npm test` still pass?
 
 Keep this review internal. Deliver the implementation, not a scorecard.
 
@@ -130,7 +132,7 @@ Do not add a third family. Do not generate letterforms.
 | Bitpanda | `#203d36` | `#fff` |
 | Benker | `#d9daf2` | `#111` |
 | OnRobot | `#ecf2f5` | `#111` |
-| Kineticare | existing live field | Match current contrast |
+| Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
 Site chrome (nav, footer, home) stays ink on paper. Case color is only the
 case header field.
@@ -245,6 +247,8 @@ English-wash the screenshot.
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI |
 | MotionNav | Motion On as a 11px nav item | Footer control only |
+| InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
+| MotionCover | Fixed Motion chip covering Role / Focus on a compact fold | Wrap fact values; pad the fact band so copy clears the chip |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 
 ## Reject generated-design reflexes
