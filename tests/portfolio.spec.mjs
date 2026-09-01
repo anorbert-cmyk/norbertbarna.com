@@ -48,7 +48,7 @@ test.afterEach(async ({ page }) => {
 
 async function openStable(page, route) {
   await page.goto(route, { waitUntil: "load" });
-  await page.evaluate(() => document.fonts?.ready || Promise.resolve());
+  await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
   await page.waitForTimeout(100);
 }
 
