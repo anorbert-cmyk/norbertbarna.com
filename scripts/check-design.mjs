@@ -56,6 +56,9 @@ if (!home.includes("hero-proof-caption") || !home.includes("Instructure — Canv
 if (home.indexOf("hero-proof") > home.indexOf("home-banner-outcomes")) {
   fail("EmptyFold: product screen must precede the outcomes list so it can land in the compact fold");
 }
+if (home.indexOf("hero-work-link") > home.indexOf("hero-proof")) {
+  fail("home CTA must sit with the role, before the product screen");
+}
 if (/hero-proof[\s\S]{0,1200}banking-experience/.test(home)) {
   fail("CoverPoster: home fold still uses the cropped Raiffeisen device cluster");
 }
