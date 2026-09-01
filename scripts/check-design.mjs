@@ -23,6 +23,8 @@ const home = readFileSync(join(ROOT, "index.html"), "utf8");
 const works = readFileSync(join(ROOT, "works.html"), "utf8");
 const css = readFileSync(join(ROOT, "assets/css/responsive.css"), "utf8");
 const design = readFileSync(join(ROOT, "design.md"), "utf8");
+const raiffeisen = readFileSync(join(ROOT, "work/raiffeisen.html"), "utf8");
+const instructure = readFileSync(join(ROOT, "work/instructure.html"), "utf8");
 
 const titles = (html) =>
   [...html.matchAll(/<a[^>]*class="work-title"[^>]*href="\/work\/([^"]+)"/g)].map((m) => m[1]);
@@ -30,6 +32,8 @@ const titles = (html) =>
 const homeOrder = titles(home);
 const worksOrder = titles(works);
 const hiring = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
+
+const caseHero = (html) => html.match(/class="case-hero-shot"[^>]*>/)?.[0] || "";
 
 if (home.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1] !== "AI Product Design Lead") {
   fail("home H1 must be the role, not only the name");
@@ -40,8 +44,17 @@ if (!home.includes('class="hero-kicker">Norbert Barna')) {
 if (!/class="hero-work-link"[^>]*href="\/works"/.test(home)) {
   fail("home CTA must go to /works");
 }
-if (!home.includes('class="hero-proof"') || !/hero-proof[\s\S]{0,800}raiffeisen|banking-experience/.test(home)) {
-  fail("home fold must show a real Raiffeisen UI crop");
+if (!home.includes('class="hero-proof"') || !/hero-proof[\s\S]{0,1200}insights-feed/.test(home)) {
+  fail("home fold must show a complete Instructure Canvas Career screen, not a CoverPoster");
+}
+if (!/class="hero-proof"[^>]*href="\/work\/instructure"/.test(home)) {
+  fail("home-fold proof must link to the Instructure case");
+}
+if (!home.includes("hero-proof-caption") || !home.includes("Instructure — Canvas Career")) {
+  fail("home-fold proof needs a caption that names the shipped product");
+}
+if (/hero-proof[\s\S]{0,1200}banking-experience/.test(home)) {
+  fail("CoverPoster: home fold still uses the cropped Raiffeisen device cluster");
 }
 if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 5))) {
   fail(`home selected-work order is ${homeOrder.join(", ")}`);
@@ -61,6 +74,9 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   fail("design.md must lock Funnel Display and Inter");
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
+if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
+  fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
+}
 
 if (!/\.home-banner-title[\s\S]{0,160}64px/.test(css)) fail("display size is not locked to 56–64");
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
@@ -73,6 +89,18 @@ if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
   fail("PROJECT FLOW rail is not hidden");
 }
 if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must wrap");
+if (/\.hero-kicker[\s\S]{0,160}text-transform:\s*uppercase/.test(css)) {
+  fail("TrackedKicker: name kicker must not be all-caps tracked");
+}
+
+const raiffeisenHero = caseHero(raiffeisen);
+if (!/student/.test(raiffeisenHero) || /banking-experience/.test(raiffeisenHero)) {
+  fail("Raiffeisen fold must use complete phone frames (student), not the CoverPoster cluster");
+}
+const instructureHero = caseHero(instructure);
+if (!/insights-feed/.test(instructureHero) || /Data Insights|data-insights/.test(instructureHero)) {
+  fail("FigmaLeftover: Instructure fold must not use Data Insights.png");
+}
 
 for (const slug of WORK) {
   const html = readFileSync(join(ROOT, "work", `${slug}.html`), "utf8");
