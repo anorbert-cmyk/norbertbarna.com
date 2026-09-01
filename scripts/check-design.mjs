@@ -53,6 +53,9 @@ if (!/class="hero-proof"[^>]*href="\/work\/instructure"/.test(home)) {
 if (!home.includes("hero-proof-caption") || !home.includes("Instructure — Canvas Career")) {
   fail("home-fold proof needs a caption that names the shipped product");
 }
+if (home.indexOf("hero-proof") > home.indexOf("home-banner-outcomes")) {
+  fail("EmptyFold: product screen must precede the outcomes list so it can land in the compact fold");
+}
 if (/hero-proof[\s\S]{0,1200}banking-experience/.test(home)) {
   fail("CoverPoster: home fold still uses the cropped Raiffeisen device cluster");
 }

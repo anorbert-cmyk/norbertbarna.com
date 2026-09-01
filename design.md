@@ -185,9 +185,11 @@ footer. Do not invent `mailto:` until a real address exists. `/contact` and
 3. One-line dek (existing positioning, not a slogan)
 4. Outcomes list (existing bullets)
 5. Primary action: `View selected work` → `/works`
-6. Right column: Instructure Canvas Career insights-feed screenshot, fully in
-   frame, linking to `/work/instructure`, with a short caption. This supports
-   the H1. It is not DualIndex.
+6. Right column: Instructure Canvas Career insights-feed screenshot, fully
+   in frame, linking to `/work/instructure`, with a short caption. This
+   supports the H1. It is not DualIndex. On compact viewports the proof sits
+   after the dek and before the outcomes list so it still lands in the first
+   viewport.
 
 **Works fold:** H1 `Works`, two-line intro max, first card (Raiffeisen)
 visible in a 900px-tall desktop viewport. No “these aren’t mockups” line.
