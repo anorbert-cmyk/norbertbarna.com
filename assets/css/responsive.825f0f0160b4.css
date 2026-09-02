@@ -638,13 +638,15 @@ main {
 }
 
 .footer-cta {
+  position: relative;
+  z-index: 3;
   display: flex;
   flex-shrink: 0;
   align-items: flex-start;
   gap: 12px;
 }
 
-.footer-contact-link {
+.footer-section a.footer-contact-link {
   display: inline-flex;
   width: 52px;
   min-width: 52px;
@@ -653,17 +655,22 @@ main {
   justify-content: center;
   border: 1.5px solid var(--footer-navy);
   border-radius: 12px;
-  background: transparent;
+  background-color: transparent;
   color: var(--footer-navy);
   padding: 0;
   text-decoration: none;
   transition: background-color .18s ease, color .18s ease, border-color .18s ease;
 }
 
-.footer-contact-link:hover,
-.footer-contact-link:focus-visible {
-  background: #000;
+.footer-section a.footer-contact-link:hover,
+.footer-section a.footer-contact-link:focus-visible {
+  background-color: #000;
   border-color: #000;
+  color: #fff;
+}
+
+.footer-section a.footer-contact-link:hover .footer-icon,
+.footer-section a.footer-contact-link:focus-visible .footer-icon {
   color: #fff;
 }
 
@@ -675,7 +682,8 @@ main {
   position: relative;
   overflow: hidden;
   min-height: min(58vw, 560px);
-  background: var(--footer-paper);
+  /* Yellow ridge is the back plate so paper never peeks through the dunes. */
+  background: #FFE000;
 }
 
 .footer-dunes-art {
@@ -764,6 +772,7 @@ main {
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
+  text-align: right;
 }
 
 .footer-section .back-to-top-wrap {

@@ -182,6 +182,9 @@ if (/footer-atmosphere|#d9daf2|#5b45ff/.test(css.slice(css.indexOf(".footer-sect
 if (!/#FFE000/.test(css) && !/#ffe000/.test(footerCanon[0])) {
   fail("footer dunes must include Raiffeisen #FFE000");
 }
+if (!/\.footer-section a\.footer-contact-link:hover[\s\S]{0,160}background-color:\s*#000/.test(css)) {
+  fail("footer icon hover must fill black via background-color (not a delayed shorthand)");
+}
 for (const page of footerPages) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);

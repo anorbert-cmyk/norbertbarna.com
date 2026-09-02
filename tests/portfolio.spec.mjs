@@ -351,13 +351,10 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     expect(footer.paper).toBe("rgb(243, 246, 247)");
 
     const email = page.locator("footer a.footer-contact-link").first();
-    await email.hover();
-    const hover = await email.evaluate((el) => {
-      const style = getComputedStyle(el);
-      return { bg: style.backgroundColor, color: style.color };
-    });
-    expect(hover.bg).toBe("rgb(0, 0, 0)");
-    expect(hover.color).toBe("rgb(255, 255, 255)");
+    await email.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
+    await email.hover({ force: true });
+    await expect(email).toHaveCSS("background-color", "rgb(0, 0, 0)");
+    await expect(email).toHaveCSS("color", "rgb(255, 255, 255)");
   });
 }
 
