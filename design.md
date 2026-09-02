@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer small grey LinkedIn icon + black **Email** pill (`mailto:anorbert@pm.me`). Footer is one full-bleed analog-grain mesh (greyer-lilac type band, navy horizon under the type, olive-chartreuse bottom) — not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. One Email CTA (no Contact column). Footer is one full-bleed analog-grain mesh (greyer-lilac type band, navy horizon under the type, olive-chartreuse bottom) — not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -66,8 +66,10 @@ The executive path on `/` is: name, role, one complete shipped UI, how to
 see the work, how to reach him. The audit path is the case studies.
 
 Do not invent metrics or emails. The one real contact address is
-`anorbert@pm.me`; the footer Email pill and Contact line target it and
-nothing else. Do not put a multi-field form back in the footer.
+`anorbert@pm.me`. HTML must not contain `mailto:` or that address as
+text; the footer Email control assembles the mail href on click from
+split JS parts. Do not put a multi-field form back in the footer.
+Do not restore a Contact column.
 Do not restore removed SportsGambit figures (`35% first-day activation`,
 `70% of wagers`).
 
@@ -156,13 +158,14 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 1. Existing `NB.svg` wordmark (not a new logo, not live text) and the line
    `Product VP — I lead AI products in regulated finance and high-trust
    systems.` Em dash. Do not use “AI Product Design Lead” in the footer.
-2. Controls under the lede, left: compact light-grey LinkedIn rounded-square
-   (~32px, thin ink border, `https://www.linkedin.com/in/barna-norbert/`)
-   then a solid black pill labeled `Email` (`mailto:anorbert@pm.me`), ~44px
-   tall, white text. Email hover is a slightly lighter black, not an outline
-   inversion. LinkedIn hover may fill black. Do not draw a mouse cursor.
-   Do not use a 44×44 outlined LinkedIn hit-square or a second 52×52 envelope
-   square.
+2. Controls under the lede, left: LinkedIn and Email share chrome — height
+   44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
+   grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
+   (~17px) at `https://www.linkedin.com/in/barna-norbert/`. Email is the word
+   `Email` (Inter 15/500, black), width hug, padding 0 14, min-width 44,
+   ~72–76px wide, same height as LinkedIn, gap 8–10px. Hover is a light ink
+   wash; keep the outline and black ink. Do not draw a mouse cursor. Do not
+   make Email a 44px square with tiny type.
 3. Mesh field: greyer-lilac `#D6D4ED` type band, a readable navy `#0A1628`
    horizon **under** the type, muted olive-chartreuse `#BDB414` in the bottom
    third. Soft SVG blur only (`feGaussianBlur` ≤ 28). No extra CSS blur on
@@ -172,9 +175,9 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 4. Work column, right, dark type: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
-5. Contact column: `anorbert@pm.me` as a mailto. No Email label required.
-   Do not add LinkedIn again here. A 1px dark hairline between columns is
-   fine.
+5. No Contact column and no empty Contact heading. One Email CTA in the
+   ident row. Do not add LinkedIn again in the nav. `/contact` stays 404;
+   no `/contact` link, no form, no captcha, no send endpoint.
 6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Sharp 1px
    dark hairline on the yellow. The right side of that row is empty — do not
    restore a back-to-top control.
@@ -227,8 +230,8 @@ path.
 not in the bar, not as a fixed chip, not in the footer. Autoplay and GSAP
 already honor `prefers-reduced-motion`. The old 57px breadcrumb strip under
 the nav is retired. The one real contact address is `anorbert@pm.me`; do not
-invent additional addresses. `/contact` and `/cv` stay unpublished rather
-than 404-bait.
+invent additional addresses. Do not put `mailto:` or the address in HTML.
+`/contact` stays 404. `/cv` stays unpublished.
 
 **Home fold**
 
@@ -310,18 +313,21 @@ English-wash the screenshot.
 | YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work/Contact so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type |
+| NavyFlood | Navy mesh blob bleeds up under Work so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
-| LinkedInHitSquare | Footer LinkedIn is a 44×44 outlined square | Small grey-filled icon next to the Email pill |
-| SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | Compact LinkedIn icon + black Email pill; Work/Contact on the mesh; no sitemap |
+| LinkedInHitSquare | Footer LinkedIn is a grey-filled ~32px chip, or Email is a filled black pill | Both share 44px height, 12px radius, 1px black stroke, transparent fill, black ink |
+| FilledEmailPill | Email is a solid black pill (radius 999) with white type | Outlined rounded-square chrome; word `Email` in black Inter 15/500 |
+| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | One Email CTA; Work column only |
+| MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML, or the complete address is one JS string | Assemble the mail href on click from split parts |
+| SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | Outlined LinkedIn + Email; Work on the mesh; no Contact column; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
-| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | Black `Email` pill + `mailto:anorbert@pm.me`; LinkedIn is the compact grey icon, not duplicated in Contact |
+| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined `Email` word CTA; mail href assembled on click; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 
@@ -330,7 +336,7 @@ English-wash the screenshot.
 Do not ship: decorative gradients or glow blobs; generic centered hero copy
 followed by a card grid as the only structure; a 16:9 cover poster as the
 fold; nested cards to fake hierarchy; icon tiles as a substitute for proof;
-uppercase-tracked eyebrows; any `mailto:` other than `anorbert@pm.me`;
+uppercase-tracked eyebrows; `mailto:` or the contact address in HTML;
 generated screenshots.
 
 Restraint here is precise hierarchy and honest product evidence. It is not
@@ -357,7 +363,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is a compact grey-filled rounded square (~32px); Email is the black pill.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn and Email share outlined 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); Email is the word `Email`.
 
 ## Motion
 
