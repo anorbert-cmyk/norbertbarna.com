@@ -608,26 +608,12 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   expect(await email.getAttribute("type")).toBe("button");
   expect(await email.getAttribute("href")).toBeNull();
 
-  const result = await page.evaluate(() => {
-    const button = document.querySelector("footer button.footer-email");
-    let assigned = "";
-    const proto = Location.prototype;
-    const original = proto.assign;
-    proto.assign = function (url) {
-      assigned = String(url);
-    };
-    button.click();
-    proto.assign = original;
-    return {
-      assigned,
-      href: button.getAttribute("href"),
-      outer: button.outerHTML,
-    };
-  });
-  expect(result.assigned).toBe("mailto:anorbert@pm.me");
-  expect(result.href).toBeNull();
-  expect(result.outer).not.toMatch(/mailto:/i);
-  expect(result.outer).not.toMatch(/anorbert@pm\.me/i);
+  const mailRequestPromise = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
+  await email.click();
+  expect((await mailRequestPromise).url()).toBe("mailto:anorbert@pm.me");
+  expect(await email.getAttribute("href")).toBeNull();
+  expect(await email.evaluate((el) => el.outerHTML)).not.toMatch(/mailto:/i);
+  expect(await email.evaluate((el) => el.outerHTML)).not.toMatch(/anorbert@pm\.me/i);
 
   const afterHtml = await page.content();
   expect(afterHtml).not.toMatch(/mailto:/i);
