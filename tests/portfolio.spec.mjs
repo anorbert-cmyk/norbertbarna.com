@@ -338,6 +338,9 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
         work,
         contactTitle: contact?.querySelector(".footer-col-title")?.textContent.trim() || "",
         contactLinks: [...(contact?.querySelectorAll("a") || [])].map((a) => a.textContent.trim()),
+        contactText: contact?.textContent.replace(/\s+/g, " ").trim() || "",
+        ledeColor: root.querySelector(".footer-lede") ? getComputedStyle(root.querySelector(".footer-lede")).color : "",
+        workColor: root.querySelector(".footer-col-title") ? getComputedStyle(root.querySelector(".footer-col-title")).color : "",
         mesh: Boolean(root.querySelector(".footer-mesh") && root.querySelector("#mesh-blur")),
         dunes: Boolean(root.querySelector(".footer-dunes, .footer-dune-layer, #dune-lit-yellow, #sand-grain-1")),
         paper: getComputedStyle(root).backgroundColor,
@@ -369,6 +372,11 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     ]);
     expect(footer.contactTitle).toBe("Contact");
     expect(footer.contactLinks).toEqual(["anorbert@pm.me"]);
+    expect(footer.contactText).toMatch(/Contact/);
+    expect(footer.contactText).toMatch(/anorbert@pm\.me/);
+    expect(footer.contactText).not.toMatch(/Email/);
+    expect(footer.ledeColor).toBe("rgb(17, 17, 17)");
+    expect(footer.workColor).toBe("rgb(17, 17, 17)");
     expect(footer.mesh).toBe(true);
     expect(footer.dunes).toBe(false);
     expect(footer.paper).not.toBe("rgb(241, 243, 242)");
