@@ -703,7 +703,7 @@ main {
 
 .footer-dunes-grain {
   z-index: 1;
-  opacity: .42;
+  opacity: .55;
   mix-blend-mode: overlay;
 }
 

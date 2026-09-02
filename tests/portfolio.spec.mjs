@@ -355,6 +355,12 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     await email.hover({ force: true });
     await expect(email).toHaveCSS("background-color", "rgb(0, 0, 0)");
     await expect(email).toHaveCSS("color", "rgb(255, 255, 255)");
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("no-motion"))).toBe(true);
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector(".footer-dune-layer")).transform)).toBe("none");
+    await email.hover({ force: true });
+    await expect(email).toHaveCSS("background-color", "rgb(0, 0, 0)");
   });
 }
 
