@@ -683,15 +683,12 @@ main {
 
 .footer-dunes {
   position: relative;
-  isolation: isolate;
   overflow: hidden;
   width: 100%;
-  /* ~40vw matches the lock PNG dune field (1536×~610). Keep 2.5:1 so
-     xMidYMax slice does not crop the yellow/teal horizon into a slab. */
-  min-height: min(40vw, 560px);
-  height: min(40vw, 768px);
-  /* Paper in the horizon bays. Yellow is the SVG back plate, not a CSS slab. */
-  background: var(--footer-paper);
+  min-height: min(52vw, 560px);
+  height: min(56vw, 600px);
+  /* Yellow back plate so paper cannot flash in valleys. Body, not #FFE000. */
+  background: var(--footer-yellow-body);
 }
 
 .footer-dunes-art {
@@ -706,18 +703,6 @@ main {
 
 .footer-dune-layer {
   transform: translate3d(0, 0, 0);
-}
-
-.footer-dune-blend-overlay {
-  mix-blend-mode: overlay;
-}
-
-.footer-dune-blend-soft {
-  mix-blend-mode: soft-light;
-}
-
-.footer-dune-blend-multiply {
-  mix-blend-mode: multiply;
 }
 
 .footer-dunes-inner {

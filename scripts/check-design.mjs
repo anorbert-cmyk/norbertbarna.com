@@ -83,6 +83,7 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
+if (/FlatDuneGrain/.test(design) === false) fail("design.md must name the FlatDuneGrain anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
 if (/footer-dunes/.test(design) === false) fail("design.md must document footer-dunes");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -174,18 +175,40 @@ const footerCanon = footerPages.map((page) => {
 if (new Set(footerCanon).size !== 1) {
   fail("site-wide footer markup must match across pages (asset prefix aside)");
 }
-if (!/\.footer-section[\s\S]{0,240}#f3f6f7/.test(css) && !/--footer-paper:\s*#f3f6f7/.test(css)) {
-  fail("footer chrome must be cool paper, not a dark or lavender band");
+if (!/\.footer-section[\s\S]{0,400}#f1f3f2/.test(css) && !/--footer-paper:\s*#f1f3f2/.test(css)) {
+  fail("footer chrome must be cool paper #f1f3f2, not a dark or lavender band");
 }
 if (/footer-atmosphere|#d9daf2|#5b45ff/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 8000))) {
   fail("footer stylesheet must not restore the lavender atmosphere wash");
 }
-if (!/#FFE000/.test(css) && !/#ffe000/.test(footerCanon[0])) {
-  fail("footer dunes must include Raiffeisen #FFE000");
+if (!/#FFE000/.test(css) && !/#ffe000/.test(footerCanon[0]) && !/#FFE000/.test(footerCanon[0])) {
+  fail("footer dunes must name the Raiffeisen #FFE000 family");
 }
 const duneField = css.match(/\.footer-dunes\s*\{[^}]+\}/)?.[0] || "";
 if (/background:\s*#FFE000/i.test(duneField)) {
-  fail("YellowDuneSlab: dune field must not be a flat #FFE000 band — yellow is a ridge");
+  fail("YellowDuneSlab: dune field must not be a flat #FFE000 band — yellow is a back plate with sampled body");
+}
+if (/\.footer-dunes-grain/.test(css) || /class="footer-dunes-grain"/.test(footerCanon[0]) || /class="footer-dunes-noise"/.test(footerCanon[0])) {
+  fail("FlatDuneGrain: do not put one grain overlay on the whole footer");
+}
+if (!/sand-grain-1/.test(footerCanon[0]) || !/sand-grain-4/.test(footerCanon[0]) || !/seed="4"/.test(footerCanon[0])) {
+  fail("each dune ridge must have its own sand-grain filter seed");
+}
+if (!/#DCA30C/.test(footerCanon[0]) || !/#05646F/.test(footerCanon[0]) || !/#01112F/.test(footerCanon[0]) || !/#9BA306/.test(footerCanon[0])) {
+  fail("dune albedo must use sampled body colors, not flat named fills");
+}
+if (!/dune-lit-yellow/.test(footerCanon[0]) || !/dune-cast/.test(footerCanon[0])) {
+  fail("dune ridges need crest lighting and contact shadows");
+}
+if (/<path[^>]*filter="url\(#sand-grain-[1234]\)"[^>]*mix-blend-mode/.test(footerCanon[0]) ||
+    /<path[^>]*mix-blend-mode[^>]*filter="url\(#sand-grain-[1234]\)"/.test(footerCanon[0])) {
+  fail("sand grain mix-blend must wrap the filtered path, not sit on the same node");
+}
+if (!/footer-dune-blend-overlay/.test(footerCanon[0]) || !/footer-dune-blend-soft/.test(footerCanon[0])) {
+  fail("each dune ridge must blend lighting/grain on a child group");
+}
+if (!/dy="-12"/.test(footerCanon[0]) || !/y="-40%"/.test(footerCanon[0])) {
+  fail("contact shadows must offset onto the ridge below, not hide under the caster fill");
 }
 if (!/\.footer-section a\.footer-contact-link:hover[\s\S]{0,160}background-color:\s*#000/.test(css)) {
   fail("footer icon hover must fill black via background-color (not a delayed shorthand)");
@@ -230,8 +253,8 @@ for (const page of footerPages) {
   ])) {
     fail(`${page}: Work column must be Raiffeisen, Instructure, Bitpanda, Kineticare (got ${workHrefs.join(", ")})`);
   }
-  if (!/#0c1b2f/.test(footer) || !/#203d36/.test(footer) || !/#aaed15/.test(footer) || !/#FFE000/.test(footer)) {
-    fail(`${page}: dune SVG must use navy, teal, lime, and #FFE000`);
+  if (!/#DCA30C/.test(footer) || !/#05646F/.test(footer) || !/#9BA306/.test(footer) || !/#FFE000/.test(footer)) {
+    fail(`${page}: dune SVG must keep sampled bodies and the #FFE000 family name`);
   }
   if (!footer.includes("68f9e9de8ed08e31e52c4188_NB.svg")) {
     fail(`${page}: footer must reuse the existing nb wordmark`);
