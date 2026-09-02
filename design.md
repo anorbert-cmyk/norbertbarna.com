@@ -156,7 +156,10 @@ change the asset prefix). Composition, top to bottom:
    `https://www.linkedin.com/in/barna-norbert/` URL). Rest: navy outline
    on paper. Hover/focus: black fill, white glyph. Not a black pill.
 3. Organic stacked sand-dune ridges (Ironclad-style morphology) with
-   analog film grain. Pointer-follow parallax on the dune layers when
+   analog film grain. Yellow is a lock-traced crest: a left-center hill
+   against the paper, then teal, then navy as the field, then lime
+   rising from the bottom right — not a jagged strip and not a flat
+   `#FFE000` slab. Pointer-follow parallax on the dune layers when
    motion is on (`PortfolioMedia` / `prefers-reduced-motion`). When
    motion is off, dunes stay still; button hover still works.
 4. Work column on the navy dune: Raiffeisen, Instructure, Bitpanda,
@@ -293,6 +296,7 @@ English-wash the screenshot.
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer dunes may only use the four locked case fills + SVG noise — never a generated landscape, Benker lavender, or a third palette |
+| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is the organic horizon against paper; navy holds the lower field via SVG, not a crop-line |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles, or a black-pill contact | Two outlined Email + LinkedIn squares; Work/Contact on the navy dune; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |

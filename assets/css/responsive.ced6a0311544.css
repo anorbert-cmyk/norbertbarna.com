@@ -584,7 +584,7 @@ main {
   position: relative;
   z-index: 2;
   background: var(--footer-paper);
-  padding: clamp(56px, 6.5vw, 88px) 0 clamp(12px, 1.8vw, 24px);
+  padding: clamp(56px, 6.5vw, 88px) 0 clamp(28px, 3.5vw, 44px);
 }
 
 .footer-chrome::after,
@@ -632,7 +632,7 @@ main {
 
 .footer-lede {
   margin: 0;
-  max-width: 22.5rem;
+  max-width: 19rem;
   color: var(--footer-navy);
   font-size: 17px;
   font-weight: 400;
@@ -684,13 +684,12 @@ main {
   position: relative;
   overflow: hidden;
   width: 100%;
-  /* Lock mock dune field is ~2.5:1. Paper continues from chrome so the
-   * yellow crest is the horizon — not a hard navy crop-line. Navy still
-   * holds the lower field via the SVG fill. */
+  /* Lock mock dune field is ~2.5:1. Keep that box so stacked ridges stay
+   * hills, not a flattened yellow strip. Navy holds the field. */
   aspect-ratio: 1600 / 640;
   min-height: min(48vw, 520px);
   max-height: 640px;
-  background: var(--footer-paper);
+  background: #0c1b2f;
 }
 
 .footer-dunes-art {
