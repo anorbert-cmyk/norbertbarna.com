@@ -668,8 +668,8 @@ test("1280 home footer: type stays on the pale band, olive bottom, analog grain"
   expect(yellow.g).toBeGreaterThan(110);
 });
 
-test("1280 home footer: navy/yellow boundary is a semicircle, not a sausage band", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
+test("1440 home footer: yellow is right-weighted, navy is a left horizon, not a balloon", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
   await openStable(page, "/");
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await page.waitForTimeout(80);
@@ -677,7 +677,8 @@ test("1280 home footer: navy/yellow boundary is a semicircle, not a sausage band
     const box = document.querySelector("footer.footer-section").getBoundingClientRect();
     return { x: box.x, y: box.y, width: box.width, height: box.height };
   });
-  expect(footer.height, "desktop field must be tall enough for a dome (~3:2)").toBeGreaterThan(800);
+  expect(footer.height, "desktop field must be tall enough for the lock mesh (~3:2 / 960px at 1440)").toBeGreaterThan(900);
+  expect(footer.y, "full 960px footer must sit in the 1100 viewport after scroll").toBeGreaterThanOrEqual(0);
 
   const isYellow = (sample) => sample.r > 120 && sample.g > 110 && sample.b < 95 && sample.luminance > 90;
   const sampleAt = (fx, fy) => screenshotClip(page, {
@@ -694,20 +695,38 @@ test("1280 home footer: navy/yellow boundary is a semicircle, not a sausage band
     return 1;
   }
 
+  const leftOnset = await yellowOnset(0.08);
   const centerOnset = await yellowOnset(0.5);
-  const sideOnset = await yellowOnset(0.14);
-  expect(centerOnset, "yellow must bite higher in the center (semicircle)").toBeLessThan(sideOnset - 0.05);
-  expect(centerOnset).toBeGreaterThan(0.52);
-  expect(centerOnset).toBeLessThan(0.84);
+  const rightOnset = await yellowOnset(0.92);
+  expect(rightOnset, "yellow onset must be right-weighted (lock ~73% on the right)").toBeLessThan(centerOnset - 0.04);
+  expect(centerOnset, "yellow onset must rise from right to left (lock ~84% center / ~94% left)").toBeLessThan(leftOnset - 0.04);
+  expect(rightOnset).toBeGreaterThan(0.62);
+  expect(rightOnset).toBeLessThan(0.82);
+  expect(centerOnset).toBeGreaterThan(0.74);
+  expect(centerOnset).toBeLessThan(0.90);
+  expect(leftOnset).toBeGreaterThan(0.86);
 
-  const biteY = (centerOnset + sideOnset) / 2;
-  const midCenter = await sampleAt(0.5, biteY);
-  const midSide = await sampleAt(0.12, biteY);
-  expect(isYellow(midCenter), "center of the bite must be yellow").toBe(true);
-  expect(midSide.luminance, "sides at the bite must still be navy, not a flat yellow slab").toBeLessThan(85);
+  const left80 = await sampleAt(0.08, 0.80);
+  const right80 = await sampleAt(0.92, 0.80);
+  expect(isYellow(left80), "at 80% height the left is still dark green-navy, not yellow").toBe(false);
+  expect(left80.luminance, "at 80% height the left is still dark").toBeLessThan(90);
+  expect(isYellow(right80), "at 80% height the right is already yellow").toBe(true);
 
-  const navyBand = await sampleAt(0.45, 0.55);
-  expect(navyBand.luminance, "navy must be a large dome under the type, not a thin stripe").toBeLessThan(85);
+  const left50 = await sampleAt(0.20, 0.50);
+  const right50 = await sampleAt(0.88, 0.50);
+  expect(left50.luminance, "at 50% height x≈20% is navy, not a lilac gutter").toBeLessThan(90);
+  expect(right50.luminance, "at 50% height the right is navy, not a lilac gutter beside a centered blob").toBeLessThan(140);
+
+  const atCenterOnsetRight = await sampleAt(0.90, centerOnset);
+  expect(isYellow(atCenterOnsetRight), "no yellow island: when the center turns yellow the right is already yellow").toBe(true);
+
+  const left95 = await sampleAt(0.08, 0.95);
+  const right95 = await sampleAt(0.92, 0.95);
+  expect(isYellow(right95), "at 95% the right is bright chartreuse").toBe(true);
+  expect(right95.r + right95.g, "at 95% the left stays olive; the right is brighter yellow").toBeGreaterThan(left95.r + left95.g + 20);
+
+  const navyBand = await sampleAt(0.28, 0.55);
+  expect(navyBand.luminance, "navy must be a wide left-center horizon, not a thin stripe").toBeLessThan(85);
 });
 
 test("/contact stays unpublished", async ({ request }) => {
@@ -751,7 +770,7 @@ test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top"
     width: 16,
     height: 14,
   });
-  expect(workBand.luminance, "390 Work must sit on the pale lilac band, not the navy dome").toBeGreaterThan(140);
+  expect(workBand.luminance, "390 Work must sit on the pale lilac band, not the navy horizon").toBeGreaterThan(140);
 });
 
 test("1280 home selected work: Kineticare present, 7/5 grid, no stagger hole, stable title color", async ({ page }) => {
