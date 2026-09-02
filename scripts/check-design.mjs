@@ -85,6 +85,7 @@ if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
 if (/SausageBand/.test(design) === false) fail("design.md must name the SausageBand anti-pattern");
 if (/YellowBalloon/.test(design) === false) fail("design.md must name the YellowBalloon anti-pattern");
+if (/HardMeshSeam/.test(design) === false) fail("design.md must name the HardMeshSeam anti-pattern");
 if (/FlatDuneGrain/.test(design) === false) fail("design.md must name the FlatDuneGrain anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
 if (/FogGrain/.test(design) === false) fail("design.md must name the FogGrain anti-pattern");
@@ -259,8 +260,12 @@ if (!/min-height:\s*min\(66\.667vw,\s*960px\)/.test(css)) {
   fail("SausageBand: desktop footer field must be ~3:2 (min(66.667vw, 960px)), not a 680px crush");
 }
 const blurMatch = footerCanon[0].match(/<feGaussianBlur stdDeviation="([0-9.]+)"/);
-if (!blurMatch || Number(blurMatch[1]) > 28) {
-  fail("NavyFlood: mesh SVG blur must stay ≤ 28 so the navy horizon does not flood the type band");
+const blur = Number(blurMatch?.[1]);
+if (!blurMatch || blur < 48) {
+  fail("HardMeshSeam: mesh SVG blur must be ≥ 48 so lilac/navy/yellow seams wash like the lock");
+}
+if (blur > 72) {
+  fail("NavyFlood: mesh SVG blur must stay ≤ 72 so the navy horizon does not flood the type band");
 }
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");

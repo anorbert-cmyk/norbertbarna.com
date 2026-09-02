@@ -180,9 +180,11 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    yellow onset from the top of the field is ≈ left 94%, center 84%, right
    73%. At 80% height the left is still dark green-navy and the right is
    already yellow. There is no yellow island in the middle with navy on both
-   sides. Desktop field ~3:2. Soft SVG blur only (`feGaussianBlur` ≤ 28).
+   sides. Desktop field ~3:2. Color seams are an analog wash: large
+   overlapping masses plus a strong SVG blur (`feGaussianBlur` 48–72). Do
+   not leave hard-ish ellipse bands between lilac / navy / olive / yellow.
    No extra CSS blur on `.footer-mesh-art`. Heavy static analog film grain
-   (speckle on soft bands, not two hard ellipses that read as a smiley). No
+   (speckle on the wash, not two hard ellipses that read as a smiley). No
    stacked SVG dune paths, no crest lighting per ridge, no pointer parallax.
    Grain does not crawl. Do not restore a yellow `<rect>` slab.
 4. Work column, right, dark type: Raiffeisen, Instructure, Bitpanda,
@@ -326,6 +328,7 @@ English-wash the screenshot.
 | YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
 | SausageBand | Navy is a thin full-width ellipse (~8% of field height, `ry` ≪ field) then a flat yellow rectangle | Taller ~3:2 field; navy is a left-weighted horizon mass, not a crushed stripe |
 | YellowBalloon | Centered yellow ellipse (`cx` at field center, sitting as an island / smiley) | Yellow is right-weighted (onset left 94% / center 84% / right 73%); left at 80% stays dark |
+| HardMeshSeam | Visible ellipse contours or hard-ish bands between lilac / navy / olive / yellow | Larger overlapping masses + `feGaussianBlur` ≥ 48 so the lock reads as analog bleed |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
 | NavyFlood | Navy mesh blob bleeds up under Work so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type |
