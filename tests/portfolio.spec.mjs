@@ -729,6 +729,93 @@ test("1440 home footer: yellow is right-weighted, navy is a left horizon, not a 
   expect(navyBand.luminance, "navy must be a wide left-center horizon, not a thin stripe").toBeLessThan(85);
 });
 
+async function readFooterMeshMotion(page) {
+  return page.evaluate(() => {
+    const offset = (el) => {
+      if (!el) return { x: 0, y: 0 };
+      const transform = getComputedStyle(el).transform;
+      if (!transform || transform === "none") return { x: 0, y: 0 };
+      const matrix = new DOMMatrixReadOnly(transform);
+      return { x: matrix.e, y: matrix.f };
+    };
+    const state = {
+      navy: offset(document.querySelector(".footer-mesh-navy")),
+      olive: offset(document.querySelector(".footer-mesh-olive")),
+      yellow: offset(document.querySelector(".footer-mesh-yellow")),
+      lilac: offset(document.querySelector(".footer-mesh-lilac")),
+      lede: offset(document.querySelector(".footer-lede")),
+      work: offset(document.querySelector(".footer-col-title")),
+      email: offset(document.querySelector("button.footer-email")),
+      linkedin: offset(document.querySelector("a.footer-contact-link")),
+      copy: offset(document.querySelector(".footer-copyright")),
+      bar: offset(document.querySelector(".footer-bar")),
+      layers: {
+        navy: Boolean(document.querySelector(".footer-mesh-navy")),
+        olive: document.querySelectorAll(".footer-mesh-olive").length,
+        yellow: Boolean(document.querySelector(".footer-mesh-yellow")),
+      },
+    };
+    return {
+      ...state,
+      navyTravel: Math.hypot(state.navy.x, state.navy.y),
+      oliveTravel: Math.hypot(state.olive.x, state.olive.y),
+      yellowTravel: Math.hypot(state.yellow.x, state.yellow.y),
+      lilacTravel: Math.hypot(state.lilac.x, state.lilac.y),
+    };
+  });
+}
+
+test("1440 footer mesh: pointer moves masses a little; type and chrome stay still", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await openStable(page, "/");
+  await page.mouse.move(8, 8);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(80);
+
+  const rest = await readFooterMeshMotion(page);
+  expect(rest.layers.navy).toBe(true);
+  expect(rest.layers.olive).toBeGreaterThanOrEqual(2);
+  expect(rest.layers.yellow).toBe(true);
+  expect(rest.navyTravel, "resting navy must stay near identity").toBeLessThan(1.5);
+  expect(rest.yellowTravel, "resting yellow must stay near identity").toBeLessThan(1.5);
+  expect(rest.lilacTravel).toBeLessThan(0.05);
+
+  const footer = page.locator("footer.footer-section");
+  const box = await footer.boundingBox();
+  expect(box).toBeTruthy();
+  await page.mouse.move(box.x + box.width * 0.92, box.y + box.height * 0.86);
+  await expect.poll(async () => (await readFooterMeshMotion(page)).yellowTravel, {
+    timeout: 2500,
+  }).toBeGreaterThan(1.8);
+
+  const moved = await readFooterMeshMotion(page);
+  expect(moved.yellowTravel, "yellow is the closer mass").toBeGreaterThan(moved.navyTravel + 0.4);
+  expect(moved.oliveTravel).toBeGreaterThan(moved.navyTravel);
+  expect(moved.yellowTravel, "travel stays a few pixels").toBeLessThan(12);
+  expect(moved.navyTravel).toBeGreaterThan(0.4);
+  expect(moved.navyTravel).toBeLessThan(8);
+  expect(moved.lilacTravel, "lilac plate stays still").toBeLessThan(0.05);
+  for (const key of ["lede", "work", "email", "linkedin", "copy", "bar"]) {
+    expect(Math.hypot(moved[key].x, moved[key].y), `${key} must not parallax`).toBeLessThan(0.05);
+  }
+});
+
+test("reduced-motion keeps the footer mesh static under the pointer", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await openStable(page, "/");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const box = await page.locator("footer.footer-section").boundingBox();
+  expect(box).toBeTruthy();
+  await page.mouse.move(box.x + box.width * 0.92, box.y + box.height * 0.86);
+  await page.waitForTimeout(400);
+  const moved = await readFooterMeshMotion(page);
+  expect(moved.navyTravel).toBeLessThan(0.05);
+  expect(moved.oliveTravel).toBeLessThan(0.05);
+  expect(moved.yellowTravel).toBeLessThan(0.05);
+  expect(moved.lilacTravel).toBeLessThan(0.05);
+});
+
 test("/contact stays unpublished", async ({ request }) => {
   const response = await request.get("/contact");
   expect(response.status()).toBe(404);

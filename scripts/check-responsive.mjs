@@ -354,8 +354,16 @@ if (/new\s+(?:window\.)?Lenis\b/i.test(animationJs)) fail("custom smooth scrolli
 if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("enforceReducedMotion") ||
     !animationJs.includes("window.ScrollTrigger.getAll()") ||
-    !animationJs.includes("function initFooterDunes()")) {
-  fail("runtime reduced-motion changes must stop active motion and media (mesh footer stays still)");
+    !animationJs.includes("function initFooterMeshField()") ||
+    !animationJs.includes("stopFooterMeshField()")) {
+  fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
+}
+if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
+  fail("Ironclad dunes: do not revive the footer dune pointer field");
+}
+if (!/MESH_POINTER_RANGE\s*=\s*[1-8](?:\.\d+)?/.test(animationJs) ||
+    /rotate\(/.test(animationJs.slice(animationJs.indexOf("function initFooterMeshField()")))) {
+  fail("MeshParallaxCircus: mesh pointer travel must stay a few pixels with no rotation");
 }
 if (/html:not\(\.nav-enhanced\)/i.test(responsiveCss)) fail("pre-enhancement navigation must not cause layout shift");
 if (animationJs.includes("enhanceVideoControls")) fail("the old click-to-play controller returned");

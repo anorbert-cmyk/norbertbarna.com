@@ -98,6 +98,7 @@ if (/FilledEmailPill/.test(design) === false) fail("design.md must name the Fill
 if (/ContactColumn/.test(design) === false) fail("design.md must name the ContactColumn anti-pattern");
 if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoInHtml anti-pattern");
 if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
+if (/MeshParallaxCircus/.test(design) === false) fail("design.md must name the MeshParallaxCircus anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -266,6 +267,22 @@ if (!blurMatch || blur < 48) {
 }
 if (blur > 72) {
   fail("NavyFlood: mesh SVG blur must stay ≤ 72 so the navy horizon does not flood the type band");
+}
+if (!/class="footer-mesh-lilac"/.test(footerCanon[0]) ||
+    !/class="footer-mesh-navy"/.test(footerCanon[0]) ||
+    !/class="footer-mesh-olive"/.test(footerCanon[0]) ||
+    !/class="footer-mesh-yellow"/.test(footerCanon[0])) {
+  fail("mesh masses must be separate lilac/navy/olive/yellow groups inside the same blur");
+}
+if ((footerCanon[0].match(/class="footer-mesh-olive"/g) || []).length < 2) {
+  fail("olive must stay two groups so the left overlay still paints after yellow");
+}
+if (/\.footer-mesh-(?:navy|olive|yellow)[\s\S]{0,240}rotate\(/.test(css) ||
+    /@keyframes[\s\S]{0,200}footer-mesh-(?:navy|olive|yellow)/.test(css)) {
+  fail("MeshParallaxCircus: mesh mass CSS must not rotate or keyframe-loop");
+}
+if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
+  fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");
 }
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");
