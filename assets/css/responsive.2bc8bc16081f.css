@@ -682,65 +682,63 @@ main {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
 }
 
 .footer-section a.footer-contact-link {
   display: inline-flex;
-  width: 32px;
-  min-width: 32px;
-  min-height: 32px;
-  height: 32px;
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--footer-ink);
-  border-radius: 8px;
-  background-color: #e6e6e8;
+  border-radius: 12px;
+  background-color: transparent;
   color: var(--footer-ink);
   padding: 0;
   text-decoration: none;
-  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+  transition: background-color .18s ease;
 }
 
 .footer-section a.footer-contact-link:hover,
 .footer-section a.footer-contact-link:focus-visible {
-  background-color: #000;
-  border-color: #000;
-  color: #fff;
-}
-
-.footer-section a.footer-contact-link:hover .footer-icon,
-.footer-section a.footer-contact-link:focus-visible .footer-icon {
-  color: #fff;
+  background-color: rgb(17 17 17 / 6%);
+  color: var(--footer-ink);
 }
 
 .footer-icon {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
 }
 
 .footer-section a.footer-email {
   display: inline-flex;
+  min-width: 44px;
   min-height: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
-  border: 0;
-  border-radius: 999px;
-  background-color: #000;
-  color: #fff;
-  padding: 0 22px;
+  border: 1px solid var(--footer-ink);
+  border-radius: 12px;
+  background-color: transparent;
+  color: var(--footer-ink);
+  padding: 0 14px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2;
+  white-space: nowrap;
   text-decoration: none;
+  cursor: pointer;
   transition: background-color .18s ease;
 }
 
 .footer-section a.footer-email:hover,
 .footer-section a.footer-email:focus-visible {
-  background-color: #1a1a1a;
-  color: #fff;
+  background-color: rgb(17 17 17 / 6%);
+  color: var(--footer-ink);
 }
 
 .footer-nav {
@@ -1832,7 +1830,7 @@ main {
   }
 
   .footer-contact-link {
-    width: 32px;
+    width: 44px;
   }
 
   .home-work-footer .dark-button {
@@ -2395,5 +2393,4 @@ h2.work-title-heading {
   }
 }
 
-/* Footer contact: two matching outlined icon buttons. Email is mailto:
- * anorbert@pm.me. LinkedIn reuses the nav URL. No form, no pill. */
+/* Footer CTAs: matching outlined rounded squares. Mail href is assembled on click. */

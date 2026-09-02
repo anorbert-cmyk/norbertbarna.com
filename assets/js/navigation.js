@@ -51,23 +51,40 @@
     setMenuOpen(false);
   }
 
-  /** Footer contact: local mailto action guarded by a spam honeypot. */
-  function initContactForm() {
-    document.querySelectorAll("form[data-contact-form]").forEach(function (form) {
-      if (form.dataset.contactReady === "true") return;
-      form.dataset.contactReady = "true";
-      form.addEventListener("submit", function (event) {
+  /** Assemble the mail href from split parts so a bundle scrape is not one literal. */
+  function footerMailHref() {
+    var scheme = ["mai", "lto"].join("");
+    var user = ["ano", "rbert"].join("");
+    var host = ["pm", ".", "me"].join("");
+    return scheme + ":" + user + "@" + host;
+  }
+
+  function initFooterMail() {
+    document.querySelectorAll("a.footer-email").forEach(function (link) {
+      if (link.dataset.mailReady === "true") return;
+      link.dataset.mailReady = "true";
+      function openMail(event) {
+        if (event) event.preventDefault();
+        var href = footerMailHref();
+        link.setAttribute("href", href);
+        try {
+          window.location.assign(href);
+        } catch (err) {
+          /* sandboxed documents may block assign */
+        }
+      }
+      link.addEventListener("click", openMail);
+      link.addEventListener("keydown", function (event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
         event.preventDefault();
-        var trap = form.querySelector('input[name="company"]');
-        if (trap && trap.value.trim() !== "") return;
-        window.location.href = "mailto:anorbert@pm.me";
+        openMail(event);
       });
     });
   }
 
   function init() {
     initNavigation();
-    initContactForm();
+    initFooterMail();
   }
 
   if (document.readyState === "loading") {
