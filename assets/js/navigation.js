@@ -60,24 +60,15 @@
   }
 
   function initFooterMail() {
-    document.querySelectorAll("a.footer-email").forEach(function (link) {
-      if (link.dataset.mailReady === "true") return;
-      link.dataset.mailReady = "true";
-      function openMail(event) {
-        if (event) event.preventDefault();
-        var href = footerMailHref();
-        link.setAttribute("href", href);
+    document.querySelectorAll("button.footer-email").forEach(function (button) {
+      if (button.dataset.mailReady === "true") return;
+      button.dataset.mailReady = "true";
+      button.addEventListener("click", function () {
         try {
-          window.location.assign(href);
+          window.location.assign(footerMailHref());
         } catch (err) {
           /* sandboxed documents may block assign */
         }
-      }
-      link.addEventListener("click", openMail);
-      link.addEventListener("keydown", function (event) {
-        if (event.key !== "Enter" && event.key !== " ") return;
-        event.preventDefault();
-        openMail(event);
       });
     });
   }

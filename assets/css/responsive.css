@@ -714,29 +714,32 @@ main {
   height: 17px;
 }
 
-.footer-section a.footer-email {
+.footer-section button.footer-email {
+  appearance: none;
+  -webkit-appearance: none;
   display: inline-flex;
   min-width: 44px;
   min-height: 44px;
   height: 44px;
   align-items: center;
   justify-content: center;
+  margin: 0;
   border: 1px solid var(--footer-ink);
   border-radius: 12px;
   background-color: transparent;
   color: var(--footer-ink);
   padding: 0 14px;
+  font-family: inherit;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.2;
   white-space: nowrap;
-  text-decoration: none;
   cursor: pointer;
   transition: background-color .18s ease;
 }
 
-.footer-section a.footer-email:hover,
-.footer-section a.footer-email:focus-visible {
+.footer-section button.footer-email:hover,
+.footer-section button.footer-email:focus-visible {
   background-color: rgb(17 17 17 / 6%);
   color: var(--footer-ink);
 }
@@ -2393,4 +2396,4 @@ h2.work-title-heading {
   }
 }
 
-/* Footer CTAs: matching outlined rounded squares. Mail href is assembled on click. */
+/* Footer CTAs: matching outlined rounded squares. Mail opens via assign on click. */
