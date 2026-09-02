@@ -67,8 +67,10 @@ see the work, how to reach him. The audit path is the case studies.
 
 Do not invent metrics or emails. The one real contact address is
 `anorbert@pm.me`. HTML must not contain `mailto:` or that address as
-text; the footer Email control assembles the mail href on click from
-split JS parts. Do not put a multi-field form back in the footer.
+text, including after the Email click. The footer Email button only
+`location.assign`s the assembled href from split JS parts — do not write
+`mailto:` onto an `href` or into the DOM. Do not put a multi-field form
+back in the footer.
 Do not restore a Contact column.
 Do not restore removed SportsGambit figures (`35% first-day activation`,
 `70% of wagers`).
@@ -163,9 +165,10 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
    (~17px) at `https://www.linkedin.com/in/barna-norbert/`. Email is the word
    `Email` (Inter 15/500, black), width hug, padding 0 14, min-width 44,
-   ~72–76px wide, same height as LinkedIn, gap 8–10px. Hover is a light ink
-   wash; keep the outline and black ink. Do not draw a mouse cursor. Do not
-   make Email a 44px square with tiny type.
+   ~72–76px wide, same height as LinkedIn, gap 8–10px. Email is
+   `<button type="button" class="footer-email">` — native Space/Enter, not a
+   fake link. Hover is a light ink wash; keep the outline and black ink. Do
+   not draw a mouse cursor. Do not make Email a 44px square with tiny type.
 3. Mesh field: greyer-lilac `#D6D4ED` type band, a readable navy `#0A1628`
    horizon **under** the type, muted olive-chartreuse `#BDB414` in the bottom
    third. Soft SVG blur only (`feGaussianBlur` ≤ 28). No extra CSS blur on
@@ -320,14 +323,15 @@ English-wash the screenshot.
 | LinkedInHitSquare | Footer LinkedIn is a grey-filled ~32px chip, or Email is a filled black pill | Both share 44px height, 12px radius, 1px black stroke, transparent fill, black ink |
 | FilledEmailPill | Email is a solid black pill (radius 999) with white type | Outlined rounded-square chrome; word `Email` in black Inter 15/500 |
 | ContactColumn | A Contact heading (empty or with a mailto line) beside Work | One Email CTA; Work column only |
-| MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML, or the complete address is one JS string | Assemble the mail href on click from split parts |
+| MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML (before or after click), or the complete address is one JS string | `location.assign` the assembled href; never write it onto `href` or into the DOM |
+| FakeEmailLink | Email is an `<a role="link">` without href | Native `<button type="button" class="footer-email">`; Space/Enter come for free |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | Outlined LinkedIn + Email; Work on the mesh; no Contact column; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
-| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined `Email` word CTA; mail href assembled on click; no form; no Contact column |
+| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined `Email` button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 
@@ -363,7 +367,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn and Email share outlined 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); Email is the word `Email`.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); Email is the word `Email`.
 
 ## Motion
 

@@ -157,16 +157,18 @@ for (const page of ALL_PAGES) {
     if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"[^>]*class="[^\"]*\bnav-link\b/i.test(html)) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
-    const emailCta = [...html.matchAll(/<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+    const emailCta = [...html.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
       /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(html);
     if (count(html, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
         count(html, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
         emailCta.length !== 1 ||
+        !/\btype="button"/.test(emailCta[0] || "") ||
         /href=/.test(emailCta[0] || "") ||
         /mailto:/i.test(emailCta[0] || "") ||
+        /<a[^>]*footer-email/.test(html) ||
         !linkedinIcon) {
-      fail(`${page}: footer must expose a LinkedIn icon and a labeled Email CTA without a mailto href`);
+      fail(`${page}: footer must expose a LinkedIn icon and a native Email button with no mailto href`);
     }
     if (/mailto:/i.test(html) || /anorbert@pm\.me/i.test(html)) {
       fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
@@ -327,8 +329,10 @@ if (!navigationJs.includes('primaryNavigation.setAttribute("data-nav-menu-open",
 if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }
-if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes("a.footer-email")) {
-  fail("Email click must assemble the mail href from split parts");
+if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes("button.footer-email") ||
+    !navigationJs.includes("location.assign") || /setAttribute\(\s*["']href["']/.test(navigationJs) ||
+    /a\.footer-email/.test(navigationJs)) {
+  fail("Email click must location.assign from split parts on a native button, without writing href");
 }
 const takeoverIndex = animationJs.indexOf("var webflowMotionReady = scheduleWebflowMotionTakeover()");
 const startIndex = animationJs.indexOf("function startResponsiveMotion()");

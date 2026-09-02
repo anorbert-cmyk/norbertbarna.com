@@ -94,6 +94,7 @@ if (/LinkedInHitSquare/.test(design) === false) fail("design.md must name the Li
 if (/FilledEmailPill/.test(design) === false) fail("design.md must name the FilledEmailPill anti-pattern");
 if (/ContactColumn/.test(design) === false) fail("design.md must name the ContactColumn anti-pattern");
 if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoInHtml anti-pattern");
+if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -229,15 +230,19 @@ if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
 if (/\.footer-mesh::after[\s\S]{0,240}opacity:\s*\.38/.test(css)) {
   fail("FogGrain: grain must not ship as a faint 0.38 multiply overlay");
 }
-if (/\.footer-section a\.footer-email[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
-    /\.footer-section a\.footer-email[\s\S]{0,200}background-color:\s*#000/.test(css)) {
-  fail("FilledEmailPill: Email must not be a filled black pill");
+if (/\.footer-section a\.footer-email/.test(css) ||
+    /\.footer-section a\.footer-email[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    /\.footer-section button\.footer-email[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    /\.footer-section button\.footer-email[\s\S]{0,200}background-color:\s*#000/.test(css)) {
+  fail("FilledEmailPill/FakeEmailLink: Email must be a native button, not a filled pill or fake link");
 }
-if (!/\.footer-section a\.footer-email[\s\S]{0,480}border-radius:\s*12px/.test(css) ||
-    !/\.footer-section a\.footer-email[\s\S]{0,480}padding:\s*0 14px/.test(css) ||
-    !/\.footer-section a\.footer-email[\s\S]{0,480}font-weight:\s*500/.test(css) ||
-    !/\.footer-section a\.footer-email[\s\S]{0,480}background-color:\s*transparent/.test(css)) {
-  fail("Email must share outlined 44px / 12px chrome (Inter 15/500, padding 0 14)");
+if (!/\.footer-section button\.footer-email[\s\S]{0,480}border-radius:\s*12px/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}padding:\s*0 14px/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}font-weight:\s*500/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}background-color:\s*transparent/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}appearance:\s*none/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}font-family:\s*inherit/.test(css)) {
+  fail("Email must be a reset native button with outlined 44px / 12px chrome (Inter 15/500, padding 0 14)");
 }
 if (!/\.footer-section a\.footer-contact-link[\s\S]{0,360}width:\s*44px/.test(css) ||
     !/\.footer-section a\.footer-contact-link[\s\S]{0,360}border-radius:\s*12px/.test(css) ||
@@ -283,14 +288,17 @@ for (const page of footerPages) {
   if (!footer.includes("© 2026 Norbert Barna") || /All rights reserved/.test(footer)) {
     fail(`${page}: copyright must be © 2026 Norbert Barna`);
   }
-  if (!/>Email<\/a>/.test(footer)) {
+  if (!/>Email<\/button>/.test(footer)) {
     fail(`${page}: Email CTA must be visible text “Email”`);
   }
-  const emailTag = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+  const emailTag = [...footer.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
   if (emailTag.length !== 1) {
-    fail(`${page}: footer needs exactly one Email CTA (got ${emailTag.length})`);
-  } else if (/href=/.test(emailTag[0]) || /mailto:/i.test(emailTag[0])) {
-    fail(`${page}: MailtoInHtml: Email must not ship a mailto href`);
+    fail(`${page}: footer needs exactly one Email button (got ${emailTag.length})`);
+  } else if (!/\btype="button"/.test(emailTag[0]) || /href=/.test(emailTag[0]) || /mailto:/i.test(emailTag[0])) {
+    fail(`${page}: FakeEmailLink: Email must be type=button with no href`);
+  }
+  if (/<a[^>]*footer-email/.test(footer)) {
+    fail(`${page}: FakeEmailLink: Email must not be an anchor`);
   }
   const linkedin = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
   if (linkedin.length !== 1) {
@@ -332,8 +340,12 @@ if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }
 if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes('["ano", "rbert"]') ||
-    !navigationJs.includes('["pm", ".", "me"]') || !navigationJs.includes("a.footer-email")) {
-  fail("Email click must assemble the mail href from split parts");
+    !navigationJs.includes('["pm", ".", "me"]') || !navigationJs.includes("button.footer-email") ||
+    !navigationJs.includes("location.assign")) {
+  fail("Email click must location.assign a href assembled from split parts");
+}
+if (/a\.footer-email/.test(navigationJs) || /setAttribute\(\s*["']href["']/.test(navigationJs)) {
+  fail("MailtoInHtml: do not write mailto onto href or use a fake Email link");
 }
 if (/mailto:/i.test(css) || /anorbert@pm\.me/i.test(css)) {
   fail("MailtoInHtml: stylesheet must not contain mailto: or the contact address");
