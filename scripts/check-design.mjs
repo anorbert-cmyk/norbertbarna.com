@@ -85,6 +85,12 @@ if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
 if (/FlatDuneGrain/.test(design) === false) fail("design.md must name the FlatDuneGrain anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
+if (/FogGrain/.test(design) === false) fail("design.md must name the FogGrain anti-pattern");
+if (/NavyFlood/.test(design) === false) fail("design.md must name the NavyFlood anti-pattern");
+if (/NeonMeshYellow/.test(design) === false) fail("design.md must name the NeonMeshYellow anti-pattern");
+if (/BrightMeshLilac/.test(design) === false) fail("design.md must name the BrightMeshLilac anti-pattern");
+if (/FooterBackToTop/.test(design) === false) fail("design.md must name the FooterBackToTop anti-pattern");
+if (/LinkedInHitSquare/.test(design) === false) fail("design.md must name the LinkedInHitSquare anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -165,8 +171,9 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
   fail("HiddenMontage: Instructure video must fill the 16:9 frame (inset 0, z-index 0)");
 }
 
-// Locked footer: mesh field, LinkedIn square + Email pill, Work/Contact
-// on the pale type band. No form, no sitemap, no Ironclad dunes.
+// Locked footer: mesh field, compact LinkedIn + Email pill, Work/Contact
+// on the pale type band. No form, no sitemap, no Ironclad dunes, no
+// back-to-top on the copyright row.
 const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`)];
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
@@ -176,14 +183,20 @@ const footerCanon = footerPages.map((page) => {
 if (new Set(footerCanon).size !== 1) {
   fail("site-wide footer markup must match across pages (asset prefix aside)");
 }
-if (!/--footer-lavender:\s*#e1e1f5/.test(css) && !/#e1e1f5/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 4000))) {
-  fail("footer mesh type band must be Benker lavender #e1e1f5");
+const footerCssStart = css.indexOf(".footer-section");
+const footerCss = css.slice(footerCssStart, footerCssStart + 9000);
+if (!/--footer-lavender:\s*#d6d4ed/.test(css)) {
+  fail("footer mesh type band must be lock lilac #d6d4ed");
 }
-if (/#5b45ff/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 8000))) {
+if (!/--footer-yellow:\s*#bdb414/.test(css)) {
+  fail("footer mesh bottom must be lock olive-chartreuse #bdb414");
+}
+if (/#5b45ff/.test(footerCss)) {
   fail("footer stylesheet must not restore candy purple");
 }
-if (!/#FFE000/.test(css) && !/#ffe000/.test(css) && !/#FFE000/.test(footerCanon[0])) {
-  fail("footer mesh must name the Raiffeisen #FFE000 glow");
+if (/#ffe000|#FFE000|#e1e1f5|#E1E1F5|#a8d800|#A8D800/.test(footerCss) ||
+    /#FFE000|#E1E1F5|#A8D800/.test(footerCanon[0])) {
+  fail("NeonMeshYellow/BrightMeshLilac: footer must not use neon #FFE000, bright #E1E1F5, or lime #A8D800");
 }
 if (/\.footer-dunes\b/.test(css) || /class="footer-dunes"/.test(footerCanon[0]) || /footer-dune-layer/.test(footerCanon[0])) {
   fail("Ironclad dunes: stacked .footer-dunes ridges must not return");
@@ -194,20 +207,39 @@ if (/<path[^>]*fill="#DCA30C"/.test(footerCanon[0]) || /id="dune-lit-yellow"/.te
 if (existsSync(join(ROOT, "contact.html"))) {
   fail("/contact must stay unpublished; contact is the footer address");
 }
-if (/#f1f3f2|#F1F3F2/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 500))) {
+if (/#f1f3f2|#F1F3F2/.test(css.slice(footerCssStart, footerCssStart + 500))) {
   fail("footer must not restore the paper chrome slab");
 }
 if (!/footer-mesh/.test(footerCanon[0]) || !/mesh-blur/.test(footerCanon[0])) {
   fail("footer must ship a blurred mesh field, not stacked dune paths");
 }
-if (!/#E1E1F5/.test(footerCanon[0]) || !/#0A1628/.test(footerCanon[0]) || !/#1B3A32/.test(footerCanon[0]) || !/#A8D800/.test(footerCanon[0])) {
-  fail("mesh blobs must use lavender, navy, teal, and lime from the lock");
+if (!/#D6D4ED/.test(footerCanon[0]) || !/#0A1628/.test(footerCanon[0]) || !/#BDB414/.test(footerCanon[0])) {
+  fail("mesh blobs must use lock lilac, navy, and olive-chartreuse");
+}
+const blurMatch = footerCanon[0].match(/<feGaussianBlur stdDeviation="([0-9.]+)"/);
+if (!blurMatch || Number(blurMatch[1]) > 28) {
+  fail("NavyFlood: mesh SVG blur must stay ≤ 28 so the navy horizon does not flood the type band");
+}
+if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
+  fail("FogGrain: .footer-mesh-art must not add a second CSS blur");
+}
+if (/\.footer-mesh::after[\s\S]{0,240}opacity:\s*\.38/.test(css)) {
+  fail("FogGrain: grain must not ship as a faint 0.38 multiply overlay");
 }
 if (!/\.footer-section a\.footer-email[\s\S]{0,200}background-color:\s*#000/.test(css)) {
   fail("Email CTA must be a filled black pill via background-color");
 }
 if (!/\.footer-section a\.footer-email:hover[\s\S]{0,120}background-color:\s*#1a1a1a/.test(css)) {
   fail("Email hover must lighten the black pill, not invert to an outline");
+}
+if (/\.footer-section a\.footer-contact-link[\s\S]{0,200}width:\s*44px/.test(css)) {
+  fail("LinkedInHitSquare: footer LinkedIn must not be a 44px outlined square");
+}
+if (!/\.footer-bar[\s\S]{0,200}border-top:\s*1px solid rgb\(17 17 17 \/ 62%\)/.test(css)) {
+  fail("footer hairline must be a sharp dark 1px rule, not a 14% ghost line");
+}
+if (/class="back-to-top-wrap"/.test(footerCanon[0]) || /aria-label="Back to top"/.test(footerCanon[0])) {
+  fail("FooterBackToTop: copyright row must not restore a back-to-top control");
 }
 for (const page of footerPages) {
   const html = readFileSync(join(ROOT, page), "utf8");
@@ -237,9 +269,9 @@ for (const page of footerPages) {
   }
   const linkedin = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
   if (linkedin.length !== 1) {
-    fail(`${page}: footer needs exactly one outlined LinkedIn square (got ${linkedin.length})`);
+    fail(`${page}: footer needs exactly one compact LinkedIn icon (got ${linkedin.length})`);
   } else if (!/linkedin\.com\/in\/barna-norbert/.test(linkedin[0])) {
-    fail(`${page}: outlined footer icon must reuse the site LinkedIn URL`);
+    fail(`${page}: footer LinkedIn icon must reuse the site LinkedIn URL`);
   }
   if (!/class="footer-email"[^>]*href="mailto:anorbert@pm\.me"/.test(footer) &&
       !/href="mailto:anorbert@pm\.me"[^>]*class="footer-email"/.test(footer)) {
@@ -258,7 +290,7 @@ for (const page of footerPages) {
     fail(`${page}: footer Work must not list Benker, SportsGambit, or OnRobot`);
   }
   if ((footer.match(/linkedin\.com\/in\/barna-norbert/g) || []).length !== 1) {
-    fail(`${page}: LinkedIn must appear once in the footer (the outlined icon)`);
+    fail(`${page}: LinkedIn must appear once in the footer (the compact icon)`);
   }
   if (!footer.includes("68f9e9de8ed08e31e52c4188_NB.svg")) {
     fail(`${page}: footer must reuse the existing nb wordmark`);

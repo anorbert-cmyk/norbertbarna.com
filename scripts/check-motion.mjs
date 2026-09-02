@@ -88,15 +88,9 @@ function checkBackToTop(page, html) {
     .map((match) => match[0])
     .filter((anchor) => hasClass(anchor, "back-to-top-wrap"));
 
-  if (anchors.length === 0) {
-    fail(`${page}: missing back-to-top link`);
-    return;
+  if (anchors.length !== 0) {
+    fail(`${page}: FooterBackToTop: back-to-top must not appear in the footer lock`);
   }
-  anchors.forEach((anchor, index) => {
-    if (!hasAccessibleName(anchor, html)) {
-      fail(`${page}: back-to-top link ${index + 1} has no accessible name`);
-    }
-  });
 }
 
 function hasStableAspect(image, figure) {

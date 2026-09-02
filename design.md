@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn outlined icon + black **Email** pill (`mailto:anorbert@pm.me`). Footer is one full-bleed mesh (Benker lavender type band melting into navy / teal / lime / yellow) — not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer small grey LinkedIn icon + black **Email** pill (`mailto:anorbert@pm.me`). Footer is one full-bleed analog-grain mesh (greyer-lilac type band, navy horizon under the type, olive-chartreuse bottom) — not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -138,9 +138,11 @@ Do not add a third family. Do not generate letterforms.
 | Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
 Site chrome (nav, home) stays ink on cool paper. Case color is the case
-header field. The footer is a **soft mesh** of shipped case colors: Benker
-lavender `#E1E1F5` on the type band, Instructure navy `#0A1628`, Bitpanda
-forest `#1B3A32`, SportsGambit lime `#A8D800`, Raiffeisen yellow `#FFE000`.
+header field. The footer mesh **pixel-matches the accepted lock crop**, not
+the raw case hexes: greyer-lilac `#D6D4ED` on the type band, Instructure navy
+`#0A1628` as a horizon under the type, Bitpanda forest `#1B3A32` as a quiet
+accent, olive-chartreuse `#BDB414` on the bottom third. Do not use bright
+Benker `#E1E1F5`, neon `#FFE000`, or SportsGambit `#A8D800` in the footer.
 Do not restore stacked Ironclad dune ridges. Do not wash the field in candy
 pink, magenta, or `#5b45ff`.
 
@@ -149,20 +151,23 @@ pink, magenta, or `#5b45ff`.
 One site-wide footer on every content page (same markup; work pages only
 change the asset prefix). The whole footer is one full-bleed mesh. Type sits
 on the pale top of the mesh — not on a separate paper chrome slab, not
-`.footer-dunes`, and not on a navy dune.
+`.footer-dunes`, and not on a navy dune. Pixel-match the accepted lock crop.
 
 1. Existing `NB.svg` wordmark (not a new logo, not live text) and the line
    `Product VP — I lead AI products in regulated finance and high-trust
    systems.` Em dash. Do not use “AI Product Design Lead” in the footer.
-2. Controls under the lede, left: small outlined LinkedIn rounded-square
-   (`https://www.linkedin.com/in/barna-norbert/`) then a solid black pill
-   labeled `Email` (`mailto:anorbert@pm.me`), ~44px tall, white text. Email
-   hover is a slightly lighter black, not an outline inversion. LinkedIn
-   hover may fill black. Do not draw a mouse cursor. Do not use a second
-   52×52 envelope square.
-3. Mesh field: soft continuous blend (20–30px visual blur) of `#E1E1F5` →
-   `#0A1628` → `#1B3A32` → `#A8D800` → `#FFE000`, plus one static analog
-   grain overlay. No stacked SVG dune paths, no crest lighting per ridge,
+2. Controls under the lede, left: compact light-grey LinkedIn rounded-square
+   (~32px, thin ink border, `https://www.linkedin.com/in/barna-norbert/`)
+   then a solid black pill labeled `Email` (`mailto:anorbert@pm.me`), ~44px
+   tall, white text. Email hover is a slightly lighter black, not an outline
+   inversion. LinkedIn hover may fill black. Do not draw a mouse cursor.
+   Do not use a 44×44 outlined LinkedIn hit-square or a second 52×52 envelope
+   square.
+3. Mesh field: greyer-lilac `#D6D4ED` type band, a readable navy `#0A1628`
+   horizon **under** the type, muted olive-chartreuse `#BDB414` in the bottom
+   third. Soft SVG blur only (`feGaussianBlur` ≤ 28). No extra CSS blur on
+   `.footer-mesh-art`. Heavy static analog film grain (speckle, not a faint
+   multiply fog). No stacked SVG dune paths, no crest lighting per ridge,
    no pointer parallax. Grain does not crawl.
 4. Work column, right, dark type: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
@@ -170,8 +175,9 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 5. Contact column: `anorbert@pm.me` as a mailto. No Email label required.
    Do not add LinkedIn again here. A 1px dark hairline between columns is
    fine.
-6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Keep
-   the existing back-to-top control; do not invent a new one.
+6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Sharp 1px
+   dark hairline on the yellow. The right side of that row is empty — do not
+   restore a back-to-top control.
 
 **Logo:** existing `NB.svg`. Do not generate a new mark. Do not put
 `BARNANORBERT.COM` in the case hero.
@@ -300,16 +306,22 @@ English-wash the screenshot.
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
-| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays inside shipped case colors + Benker lavender type band — never Ironclad dunes, candy pink, or a third palette |
-| YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Yellow is the bottom glow of the mesh, not a ridge or a CSS slab |
-| FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static grain overlay. No `.footer-dunes` |
-| SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | LinkedIn outlined square + black Email pill; Work/Contact on the mesh; no sitemap |
+| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays on the lock crop (greyer-lilac, navy horizon, olive-chartreuse) — never Ironclad dunes, candy pink, or a third palette |
+| YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
+| FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
+| FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
+| NavyFlood | Navy mesh blob bleeds up under Work/Contact so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type |
+| NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
+| BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
+| FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
+| LinkedInHitSquare | Footer LinkedIn is a 44×44 outlined square | Small grey-filled icon next to the Email pill |
+| SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | Compact LinkedIn icon + black Email pill; Work/Contact on the mesh; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
-| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | Black `Email` pill + `mailto:anorbert@pm.me`; LinkedIn is the matching outlined square, not duplicated in Contact |
+| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | Black `Email` pill + `mailto:anorbert@pm.me`; LinkedIn is the compact grey icon, not duplicated in Contact |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 
@@ -332,8 +344,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
 `.footer-chrome` `.footer-ident` `.footer-brand` `.footer-wordmark`
 `.footer-lede` `.footer-cta` `.footer-contact-link` `.footer-email` `.footer-mesh`
-`.footer-nav` `.footer-col` `.footer-col-title` `.footer-copyright`
-`.back-to-top-wrap`
+`.footer-nav` `.footer-col` `.footer-col-title` `.footer-copyright` `.footer-bar`
 
 **Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
 `.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link` `.hero-proof`
@@ -346,7 +357,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn 44×44 outlined square; Email is the black pill.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is a compact grey-filled rounded square (~32px); Email is the black pill.
 
 ## Motion
 

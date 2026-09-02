@@ -114,9 +114,7 @@ for (const page of ALL_PAGES) {
   if (/\bdata-autoplay=["']true["']/i.test(html)) fail(`${page}: Webflow video wrapper still autoplays`);
 
   for (const match of html.matchAll(/<a\b[^>]*\bhref="#"[^>]*>/gi)) {
-    if (!/\bclass="[^"]*\bback-to-top-wrap\b/i.test(match[0])) {
-      fail(`${page}: non-functional href=# remains outside back-to-top`);
-    }
+    fail(`${page}: non-functional href=# remains (back-to-top is not in the lock)`);
   }
 
   if (page !== "404.html") {
@@ -283,10 +281,10 @@ const cssContracts = [
   [/\.case-facts[\s\S]*?grid-template-columns:\s*repeat\(4/i, "desktop project facts grid is missing"],
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
-  [/\.footer-contact-link[\s\S]*?min-height:\s*44px/i, "footer LinkedIn icon is not touch-safe"],
+  [/\.footer-contact-link[\s\S]*?min-height:\s*32px/i, "footer LinkedIn icon is missing its compact lock size"],
   [/\.footer-email[\s\S]*?min-height:\s*44px/i, "footer Email pill is not touch-safe"],
   [/\.footer-section[\s\S]*?min-height:/i, "footer mesh field must reserve height"],
-  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer LinkedIn must be a rounded square, not a pill"],
+  [/\.footer-contact-link[\s\S]*?border-radius:\s*8px/i, "footer LinkedIn must be a compact rounded square, not a 44px hit-square"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
