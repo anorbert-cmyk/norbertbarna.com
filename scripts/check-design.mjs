@@ -200,6 +200,16 @@ if (!/#DCA30C/.test(footerCanon[0]) || !/#05646F/.test(footerCanon[0]) || !/#011
 if (!/dune-lit-yellow/.test(footerCanon[0]) || !/dune-cast/.test(footerCanon[0])) {
   fail("dune ridges need crest lighting and contact shadows");
 }
+if (/<path[^>]*filter="url\(#sand-grain-[1234]\)"[^>]*mix-blend-mode/.test(footerCanon[0]) ||
+    /<path[^>]*mix-blend-mode[^>]*filter="url\(#sand-grain-[1234]\)"/.test(footerCanon[0])) {
+  fail("sand grain mix-blend must wrap the filtered path, not sit on the same node");
+}
+if (!/footer-dune-blend-overlay/.test(footerCanon[0]) || !/footer-dune-blend-soft/.test(footerCanon[0])) {
+  fail("each dune ridge must blend lighting/grain on a child group");
+}
+if (!/dy="-12"/.test(footerCanon[0]) || !/y="-40%"/.test(footerCanon[0])) {
+  fail("contact shadows must offset onto the ridge below, not hide under the caster fill");
+}
 if (!/\.footer-section a\.footer-contact-link:hover[\s\S]{0,160}background-color:\s*#000/.test(css)) {
   fail("footer icon hover must fill black via background-color (not a delayed shorthand)");
 }

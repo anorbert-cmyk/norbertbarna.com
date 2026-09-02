@@ -160,11 +160,16 @@ change the asset prefix). Composition, top to bottom:
    Do not draw a mouse cursor.
 3. Four stacked sand-dune ridges (Ironclad-style). Each ridge is albedo +
    crest lighting + per-layer sand grain (own `seed`) + contact shadow on
-   the ridge below. Yellow is a full-width back plate so paper never peeks.
-   Lime is a bottom-right peak only. Do not flatten this to four solid fills
-   plus one global grain overlay. Grain is static. Pointer-follow parallax
-   on `.footer-dune-layer` when motion is on; when motion is off, dunes stay
-   still (`transform: none`, lerp zeroed) and button hover still works.
+   the ridge below. Lighting and grain sit on child `<g>` wrappers with
+   `mix-blend-mode` — never on the same node as the sand `filter` (browsers
+   drop the blend). Grain opacity is baked into the filter so
+   `html.no-motion * { opacity: 1 }` cannot flatten the volume. Yellow is a
+   full-width SVG back plate; `.footer-dunes` stays paper so the horizon is
+   the crest, not a CSS slab. Lime is a bottom-right peak only. Do not
+   flatten this to four solid fills plus one global grain overlay. Grain is
+   static. Pointer-follow parallax on `.footer-dune-layer` when motion is
+   on; when motion is off, dunes stay still (`transform: none`, lerp zeroed)
+   and button hover still works.
 4. Work column on the navy dune: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
@@ -300,7 +305,7 @@ English-wash the screenshot.
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer dunes stay inside the four case-color families + sand grain — never a generated landscape, Benker lavender, or a third palette |
-| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is a full-width back plate with sampled body/crest/trough, not a named-hex slab |
+| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is a full-width SVG back plate with sampled body/crest/trough; the CSS field is paper, not a named-hex slab |
 | FlatDuneGrain | Four solid fills plus one global grain rectangle/overlay on the whole footer | Each ridge: albedo + crest light + clipped sand grain (own seed) + contact shadow |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles, or a black-pill contact | Two outlined Email + LinkedIn squares; Work/Contact on the navy dune; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
@@ -331,7 +336,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
 `.footer-chrome` `.footer-ident` `.footer-brand` `.footer-wordmark`
 `.footer-lede` `.footer-cta` `.footer-contact-link` `.footer-dunes`
-`.footer-dune-nav` `.footer-col` `.footer-col-title` `.footer-copyright`
+`.footer-dune-layer` `.footer-dune-nav` `.footer-col` `.footer-col-title` `.footer-copyright`
 `.back-to-top-wrap`
 
 **Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
