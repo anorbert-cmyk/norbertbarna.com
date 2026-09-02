@@ -342,6 +342,8 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
         dunes: Boolean(root.querySelector(".footer-dunes, .footer-dune-layer, #dune-lit-yellow, #sand-grain-1")),
         paper: getComputedStyle(root).backgroundColor,
         chromeBg: chrome ? getComputedStyle(chrome).backgroundColor : "",
+        copyrightLeft: root.querySelector(".footer-copyright")?.getBoundingClientRect().left || 0,
+        backToTopLeft: root.querySelector(".back-to-top-wrap")?.getBoundingClientRect().left || 0,
       };
     });
     expect(footer.form).toBe(false);
@@ -371,6 +373,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     expect(footer.dunes).toBe(false);
     expect(footer.paper).not.toBe("rgb(241, 243, 242)");
     expect(footer.chromeBg).toMatch(/rgba?\(0,\s*0,\s*0,\s*0\)|transparent/);
+    expect(footer.copyrightLeft).toBeLessThan(footer.backToTopLeft);
 
     const email = page.locator("footer a.footer-email");
     const linkedin = page.locator("footer a.footer-contact-link");
@@ -397,6 +400,32 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
 test("/contact stays unpublished", async ({ request }) => {
   const response = await request.get("/contact");
   expect(response.status()).toBe(404);
+});
+
+test("390 footer stacks ident, CTA, Work, Contact with copyright left", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openStable(page, "/");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const stack = await page.evaluate(() => {
+    const ident = document.querySelector(".footer-ident").getBoundingClientRect();
+    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
+    const work = document.querySelector(".footer-nav .footer-col:first-child").getBoundingClientRect();
+    const contact = document.querySelector(".footer-nav .footer-col:last-child").getBoundingClientRect();
+    const copy = document.querySelector(".footer-copyright").getBoundingClientRect();
+    const top = document.querySelector(".back-to-top-wrap").getBoundingClientRect();
+    return {
+      identBottom: ident.bottom,
+      ctaBottom: cta.bottom,
+      workTop: work.top,
+      workBottom: work.bottom,
+      contactTop: contact.top,
+      copyLeft: copy.left,
+      topLeft: top.left,
+    };
+  });
+  expect(stack.workTop).toBeGreaterThan(stack.identBottom - 1);
+  expect(stack.contactTop).toBeGreaterThan(stack.workBottom - 1);
+  expect(stack.copyLeft).toBeLessThan(stack.topLeft);
 });
 
 test("1280 home selected work: Kineticare present, 7/5 grid, no stagger hole, stable title color", async ({ page }) => {
