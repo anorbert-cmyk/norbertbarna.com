@@ -433,7 +433,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     const footer = await page.evaluate(() => {
       const root = document.querySelector("footer.footer-section");
       const chrome = root.querySelector(".footer-chrome");
-      const email = root.querySelector("a.footer-email");
+      const email = root.querySelector("button.footer-email");
       const linkedin = root.querySelector("a.footer-contact-link");
       const icon = linkedin?.querySelector(".footer-icon");
       const work = [...root.querySelectorAll(".footer-nav .footer-col:first-child a")].map((a) => ({
@@ -455,9 +455,12 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
         form: Boolean(root.querySelector("form, .footer-hp, [data-contact-form]")),
         emailHref: email ? email.getAttribute("href") : "missing",
         emailText: email ? email.textContent.trim() : "",
+        emailTag: email ? email.tagName : "",
+        emailType: email ? email.getAttribute("type") : "",
         linkedinHref: linkedin ? linkedin.getAttribute("href") : "",
         linkedinCount: root.querySelectorAll("a.footer-contact-link").length,
-        emailCount: root.querySelectorAll("a.footer-email").length,
+        emailCount: root.querySelectorAll("button.footer-email").length,
+        fakeEmailLink: Boolean(root.querySelector("a.footer-email")),
         emailSize: emailBox && emailStyle ? {
           w: Math.round(emailBox.width),
           h: Math.round(emailBox.height),
@@ -499,7 +502,10 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     expect(footer.copyright).toBe("© 2026 Norbert Barna");
     expect(footer.emailHref).toBeNull();
     expect(footer.emailText).toBe("Email");
+    expect(footer.emailTag).toBe("BUTTON");
+    expect(footer.emailType).toBe("button");
     expect(footer.emailCount).toBe(1);
+    expect(footer.fakeEmailLink).toBe(false);
     expect(footer.linkedinHref).toBe("https://www.linkedin.com/in/barna-norbert/");
     expect(footer.linkedinCount).toBe(1);
     expect(footer.emailSize.h).toBe(44);
@@ -545,7 +551,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     expect(footer.hairlineWidth).toBe("1px");
     expect(footer.hairlineAlpha).toBeGreaterThanOrEqual(0.45);
 
-    const email = page.locator("footer a.footer-email");
+    const email = page.locator("footer button.footer-email");
     const linkedin = page.locator("footer a.footer-contact-link");
     await email.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
     await email.hover({ force: true });
@@ -568,11 +574,12 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
   });
 }
 
-test("home HTML has no mailto or address; Email click assembles the mail href", async ({ page, request }) => {
+test("home HTML has no mailto or address; Email button assigns mail without writing the DOM", async ({ page, request }) => {
   const html = await (await request.get("/")).text();
   expect(html).not.toMatch(/mailto:/i);
   expect(html).not.toMatch(/anorbert@pm\.me/i);
-  expect(html).toMatch(/>Email<\/a>/);
+  expect(html).toMatch(/<button type="button" class="footer-email">Email<\/button>/);
+  expect(html).not.toMatch(/<a[^>]*footer-email/);
   expect(html).not.toMatch(/footer-col-title">Contact/);
   expect(html).not.toMatch(/href="\/contact"/);
   expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
@@ -585,34 +592,46 @@ test("home HTML has no mailto or address; Email click assembles the mail href", 
   const navJs = await (await request.get("/assets/js/navigation.js")).text();
   expect(navJs).not.toMatch(/anorbert@pm\.me/);
   expect(navJs).not.toMatch(/mailto:anorbert/);
+  expect(navJs).not.toMatch(/setAttribute\(\s*["']href["']/);
+  expect(navJs).toMatch(/button\.footer-email/);
+  expect(navJs).toMatch(/location\.assign/);
 
   await openStable(page, "/");
   const liveHtml = await page.content();
   expect(liveHtml).not.toMatch(/mailto:/i);
   expect(liveHtml).not.toMatch(/anorbert@pm\.me/i);
 
-  const email = page.locator("footer a.footer-email");
+  const email = page.locator("footer button.footer-email");
   await expect(email).toBeVisible();
   await expect(email).toHaveText("Email");
+  await expect(email).toHaveJSProperty("tagName", "BUTTON");
+  expect(await email.getAttribute("type")).toBe("button");
   expect(await email.getAttribute("href")).toBeNull();
 
-  const assembled = await page.evaluate(() => {
-    const el = document.querySelector("footer a.footer-email");
-    const original = window.location.assign.bind(window.location);
-    try {
-      window.location.assign = function () {};
-    } catch {
-      /* Location.assign may be non-writable */
-    }
-    el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
-    try {
-      window.location.assign = original;
-    } catch {
-      /* ignore restore failures */
-    }
-    return el.getAttribute("href");
+  const result = await page.evaluate(() => {
+    const button = document.querySelector("footer button.footer-email");
+    let assigned = "";
+    const proto = Location.prototype;
+    const original = proto.assign;
+    proto.assign = function (url) {
+      assigned = String(url);
+    };
+    button.click();
+    proto.assign = original;
+    return {
+      assigned,
+      href: button.getAttribute("href"),
+      outer: button.outerHTML,
+    };
   });
-  expect(assembled).toBe("mailto:anorbert@pm.me");
+  expect(result.assigned).toBe("mailto:anorbert@pm.me");
+  expect(result.href).toBeNull();
+  expect(result.outer).not.toMatch(/mailto:/i);
+  expect(result.outer).not.toMatch(/anorbert@pm\.me/i);
+
+  const afterHtml = await page.content();
+  expect(afterHtml).not.toMatch(/mailto:/i);
+  expect(afterHtml).not.toMatch(/anorbert@pm\.me/i);
 });
 
 test("1280 home footer: type stays on the pale band, olive bottom, analog grain", async ({ page }) => {
