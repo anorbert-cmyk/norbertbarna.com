@@ -296,7 +296,7 @@ English-wash the screenshot.
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer dunes may only use the four locked case fills + SVG noise — never a generated landscape, Benker lavender, or a third palette |
-| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is a thin organic top ridge; navy holds the field |
+| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is the organic horizon against paper; navy holds the lower field via SVG, not a crop-line |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles, or a black-pill contact | Two outlined Email + LinkedIn squares; Work/Contact on the navy dune; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
