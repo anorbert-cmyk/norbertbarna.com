@@ -1377,13 +1377,21 @@ main {
   }
 
   .footer-section {
+    display: flex;
+    flex-direction: column;
+    min-height: min(210vw, 880px);
+  }
+
+  .footer-section .container.footer-inner,
+  .footer-inner {
+    flex: 1 1 auto;
     min-height: min(210vw, 880px);
   }
 
   .footer-mesh-art {
     inset: auto 0 0 0;
-    height: auto;
-    aspect-ratio: 3 / 2;
+    height: min(145vw, 580px);
+    aspect-ratio: auto;
   }
 
   .footer-nav {
@@ -1839,6 +1847,7 @@ main {
   .footer-inner {
     display: flex;
     flex-direction: column;
+    min-height: min(210vw, 880px);
   }
 
   .footer-contact-link {
