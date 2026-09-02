@@ -4,7 +4,7 @@
  * Judgment stays in design.md. These catch mechanical failures that have
  * already been named there.
  */
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -85,7 +85,8 @@ if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
 if (/FlatDuneGrain/.test(design) === false) fail("design.md must name the FlatDuneGrain anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
-if (/footer-dunes/.test(design) === false) fail("design.md must document footer-dunes");
+if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
+if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
   fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
 }
@@ -164,8 +165,8 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
   fail("HiddenMontage: Instructure video must fill the 16:9 frame (inset 0, z-index 0)");
 }
 
-// Locked footer: cool-paper chrome, Email + LinkedIn icon buttons, Work/Contact
-// on the navy dune, analog grain. No form, no sitemap, no lavender wash.
+// Locked footer: mesh field, LinkedIn square + Email pill, Work/Contact
+// on the pale type band. No form, no sitemap, no Ironclad dunes.
 const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`)];
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
@@ -175,49 +176,44 @@ const footerCanon = footerPages.map((page) => {
 if (new Set(footerCanon).size !== 1) {
   fail("site-wide footer markup must match across pages (asset prefix aside)");
 }
-if (!/\.footer-section[\s\S]{0,400}#f1f3f2/.test(css) && !/--footer-paper:\s*#f1f3f2/.test(css)) {
-  fail("footer chrome must be cool paper #f1f3f2, not a dark or lavender band");
+if (!/--footer-lavender:\s*#e1e1f5/.test(css) && !/#e1e1f5/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 4000))) {
+  fail("footer mesh type band must be Benker lavender #e1e1f5");
 }
-if (/footer-atmosphere|#d9daf2|#5b45ff/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 8000))) {
-  fail("footer stylesheet must not restore the lavender atmosphere wash");
+if (/#5b45ff/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 8000))) {
+  fail("footer stylesheet must not restore candy purple");
 }
-if (!/#FFE000/.test(css) && !/#ffe000/.test(footerCanon[0]) && !/#FFE000/.test(footerCanon[0])) {
-  fail("footer dunes must name the Raiffeisen #FFE000 family");
+if (!/#FFE000/.test(css) && !/#ffe000/.test(css) && !/#FFE000/.test(footerCanon[0])) {
+  fail("footer mesh must name the Raiffeisen #FFE000 glow");
 }
-const duneField = css.match(/\.footer-dunes\s*\{[^}]+\}/)?.[0] || "";
-if (/background:\s*#FFE000/i.test(duneField)) {
-  fail("YellowDuneSlab: dune field must not be a flat #FFE000 band — yellow is a back plate with sampled body");
+if (/\.footer-dunes\b/.test(css) || /class="footer-dunes"/.test(footerCanon[0]) || /footer-dune-layer/.test(footerCanon[0])) {
+  fail("Ironclad dunes: stacked .footer-dunes ridges must not return");
 }
-if (/\.footer-dunes-grain/.test(css) || /class="footer-dunes-grain"/.test(footerCanon[0]) || /class="footer-dunes-noise"/.test(footerCanon[0])) {
-  fail("FlatDuneGrain: do not put one grain overlay on the whole footer");
+if (/<path[^>]*fill="#DCA30C"/.test(footerCanon[0]) || /id="dune-lit-yellow"/.test(footerCanon[0])) {
+  fail("Ironclad dunes: lit-sand path army must not return");
 }
-if (!/sand-grain-1/.test(footerCanon[0]) || !/sand-grain-4/.test(footerCanon[0]) || !/seed="4"/.test(footerCanon[0])) {
-  fail("each dune ridge must have its own sand-grain filter seed");
+if (existsSync(join(ROOT, "contact.html"))) {
+  fail("/contact must stay unpublished; contact is the footer address");
 }
-if (!/#DCA30C/.test(footerCanon[0]) || !/#05646F/.test(footerCanon[0]) || !/#01112F/.test(footerCanon[0]) || !/#9BA306/.test(footerCanon[0])) {
-  fail("dune albedo must use sampled body colors, not flat named fills");
+if (/#f1f3f2|#F1F3F2/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 500))) {
+  fail("footer must not restore the paper chrome slab");
 }
-if (!/dune-lit-yellow/.test(footerCanon[0]) || !/dune-cast/.test(footerCanon[0])) {
-  fail("dune ridges need crest lighting and contact shadows");
+if (!/footer-mesh/.test(footerCanon[0]) || !/mesh-blur/.test(footerCanon[0])) {
+  fail("footer must ship a blurred mesh field, not stacked dune paths");
 }
-if (/<path[^>]*filter="url\(#sand-grain-[1234]\)"[^>]*mix-blend-mode/.test(footerCanon[0]) ||
-    /<path[^>]*mix-blend-mode[^>]*filter="url\(#sand-grain-[1234]\)"/.test(footerCanon[0])) {
-  fail("sand grain mix-blend must wrap the filtered path, not sit on the same node");
+if (!/#E1E1F5/.test(footerCanon[0]) || !/#0A1628/.test(footerCanon[0]) || !/#1B3A32/.test(footerCanon[0]) || !/#A8D800/.test(footerCanon[0])) {
+  fail("mesh blobs must use lavender, navy, teal, and lime from the lock");
 }
-if (!/footer-dune-blend-overlay/.test(footerCanon[0]) || !/footer-dune-blend-soft/.test(footerCanon[0])) {
-  fail("each dune ridge must blend lighting/grain on a child group");
+if (!/\.footer-section a\.footer-email[\s\S]{0,200}background-color:\s*#000/.test(css)) {
+  fail("Email CTA must be a filled black pill via background-color");
 }
-if (!/dy="-12"/.test(footerCanon[0]) || !/y="-40%"/.test(footerCanon[0])) {
-  fail("contact shadows must offset onto the ridge below, not hide under the caster fill");
-}
-if (!/\.footer-section a\.footer-contact-link:hover[\s\S]{0,160}background-color:\s*#000/.test(css)) {
-  fail("footer icon hover must fill black via background-color (not a delayed shorthand)");
+if (!/\.footer-section a\.footer-email:hover[\s\S]{0,120}background-color:\s*#1a1a1a/.test(css)) {
+  fail("Email hover must lighten the black pill, not invert to an outline");
 }
 for (const page of footerPages) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
-  if (!footer.includes("footer-cta") || !footer.includes("footer-dunes") || !footer.includes("data-footer-dunes")) {
-    fail(`${page}: locked footer chrome + dunes are missing`);
+  if (!footer.includes("footer-cta") || !footer.includes("footer-mesh") || !footer.includes("footer-email")) {
+    fail(`${page}: locked footer mesh + Email pill are missing`);
     continue;
   }
   if (/Product<\/h3>|Company<\/h3>|Resources<\/h3>|Legal<\/h3>/.test(footer) ||
@@ -236,16 +232,18 @@ for (const page of footerPages) {
   if (!footer.includes("© 2026 Norbert Barna") || /All rights reserved/.test(footer)) {
     fail(`${page}: copyright must be © 2026 Norbert Barna`);
   }
-  const iconLinks = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
-  if (iconLinks.length !== 2) {
-    fail(`${page}: footer needs exactly two icon buttons (Email + LinkedIn)`);
-  } else {
-    if (!/mailto:anorbert@pm\.me/.test(iconLinks[0])) {
-      fail(`${page}: first footer icon must be mailto:anorbert@pm.me`);
-    }
-    if (!/linkedin\.com\/in\/barna-norbert/.test(iconLinks[1])) {
-      fail(`${page}: second footer icon must reuse the site LinkedIn URL`);
-    }
+  if (!/>Email<\/a>/.test(footer)) {
+    fail(`${page}: Email CTA must be visible text “Email”`);
+  }
+  const linkedin = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+  if (linkedin.length !== 1) {
+    fail(`${page}: footer needs exactly one outlined LinkedIn square (got ${linkedin.length})`);
+  } else if (!/linkedin\.com\/in\/barna-norbert/.test(linkedin[0])) {
+    fail(`${page}: outlined footer icon must reuse the site LinkedIn URL`);
+  }
+  if (!/class="footer-email"[^>]*href="mailto:anorbert@pm\.me"/.test(footer) &&
+      !/href="mailto:anorbert@pm\.me"[^>]*class="footer-email"/.test(footer)) {
+    fail(`${page}: Email pill must be mailto:anorbert@pm.me`);
   }
   const workHrefs = [...footer.matchAll(/href="(\/work\/[^"]+)"/g)].map((m) => m[1]);
   if (JSON.stringify(workHrefs) !== JSON.stringify([
@@ -253,8 +251,14 @@ for (const page of footerPages) {
   ])) {
     fail(`${page}: Work column must be Raiffeisen, Instructure, Bitpanda, Kineticare (got ${workHrefs.join(", ")})`);
   }
-  if (!/#DCA30C/.test(footer) || !/#05646F/.test(footer) || !/#9BA306/.test(footer) || !/#FFE000/.test(footer)) {
-    fail(`${page}: dune SVG must keep sampled bodies and the #FFE000 family name`);
+  if (/footer-col-title">Email/.test(footer)) {
+    fail(`${page}: Contact column must not add an Email label; the pill is the CTA`);
+  }
+  if (/href="\/work\/(?:benker|sportsgambit|onrobot)"/.test(footer)) {
+    fail(`${page}: footer Work must not list Benker, SportsGambit, or OnRobot`);
+  }
+  if ((footer.match(/linkedin\.com\/in\/barna-norbert/g) || []).length !== 1) {
+    fail(`${page}: LinkedIn must appear once in the footer (the outlined icon)`);
   }
   if (!footer.includes("68f9e9de8ed08e31e52c4188_NB.svg")) {
     fail(`${page}: footer must reuse the existing nb wordmark`);

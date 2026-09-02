@@ -207,6 +207,8 @@ try {
   for (const notFoundPath of [
     "/404",
     "/404.html",
+    "/contact",
+    "/cv",
     "/definitely-not-a-real-page",
     "/tests/portfolio.spec.mjs",
     "/playwright.config.mjs",

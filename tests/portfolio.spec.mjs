@@ -298,82 +298,88 @@ test("Kineticare case header contains exactly one media node and it autoplays", 
 });
 
 for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
-  test(`${route}: footer lock — paper chrome, icon buttons, Work cases, no form`, async ({ page }) => {
+  test(`${route}: footer lock — mesh field, Email pill, Work cases, no form`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openStable(page, route);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const footer = await page.evaluate(() => {
       const root = document.querySelector("footer.footer-section");
       const chrome = root.querySelector(".footer-chrome");
-      const icons = [...root.querySelectorAll("a.footer-contact-link")];
-      const work = [...root.querySelectorAll(".footer-dune-nav .footer-col:first-child a")].map((a) => ({
+      const email = root.querySelector("a.footer-email");
+      const linkedin = root.querySelector("a.footer-contact-link");
+      const work = [...root.querySelectorAll(".footer-nav .footer-col:first-child a")].map((a) => ({
         href: a.getAttribute("href"),
         text: a.textContent.trim(),
       }));
-      const email = icons[0];
-      const linkedin = icons[1];
+      const contact = root.querySelector(".footer-nav .footer-col:last-child");
       const emailStyle = email ? getComputedStyle(email) : null;
+      const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
+      const emailBox = email ? email.getBoundingClientRect() : null;
+      const linkedinBox = linkedin ? linkedin.getBoundingClientRect() : null;
       return {
-        paper: chrome ? getComputedStyle(chrome).backgroundColor : "",
         lede: root.querySelector(".footer-lede")?.textContent.trim() || "",
         copyright: root.querySelector(".footer-copyright")?.textContent.trim() || "",
         form: Boolean(root.querySelector("form, .footer-hp, [data-contact-form]")),
-        iconCount: icons.length,
         emailHref: email ? email.getAttribute("href") : "",
+        emailText: email ? email.textContent.trim() : "",
         linkedinHref: linkedin ? linkedin.getAttribute("href") : "",
-        iconSize: email ? {
-          w: Math.round(email.getBoundingClientRect().width),
-          h: Math.round(email.getBoundingClientRect().height),
+        linkedinCount: root.querySelectorAll("a.footer-contact-link").length,
+        emailSize: emailBox ? {
+          h: Math.round(emailBox.height),
+          bg: emailStyle.backgroundColor,
+          color: emailStyle.color,
           radius: emailStyle.borderRadius,
         } : null,
+        linkedinSize: linkedinBox ? {
+          w: Math.round(linkedinBox.width),
+          h: Math.round(linkedinBox.height),
+          radius: linkedinStyle.borderRadius,
+        } : null,
         work,
-        purple: /rgb\(\s*(1[89]\d|2\d\d)\s*,\s*(1[0-6]\d)\s*,\s*(2\d\d)/.test(
-          chrome ? getComputedStyle(chrome).backgroundColor : ""
-        ),
+        contactTitle: contact?.querySelector(".footer-col-title")?.textContent.trim() || "",
+        contactLinks: [...(contact?.querySelectorAll("a") || [])].map((a) => a.textContent.trim()),
+        mesh: Boolean(root.querySelector(".footer-mesh") && root.querySelector("#mesh-blur")),
+        dunes: Boolean(root.querySelector(".footer-dunes, .footer-dune-layer, #dune-lit-yellow, #sand-grain-1")),
+        paper: getComputedStyle(root).backgroundColor,
+        chromeBg: chrome ? getComputedStyle(chrome).backgroundColor : "",
+        copyrightLeft: root.querySelector(".footer-copyright")?.getBoundingClientRect().left || 0,
+        backToTopLeft: root.querySelector(".back-to-top-wrap")?.getBoundingClientRect().left || 0,
       };
     });
     expect(footer.form).toBe(false);
     expect(footer.lede).toBe("Product VP — I lead AI products in regulated finance and high-trust systems.");
     expect(footer.copyright).toBe("© 2026 Norbert Barna");
-    expect(footer.iconCount).toBe(2);
     expect(footer.emailHref).toBe("mailto:anorbert@pm.me");
+    expect(footer.emailText).toBe("Email");
     expect(footer.linkedinHref).toBe("https://www.linkedin.com/in/barna-norbert/");
-    expect(footer.iconSize.w).toBe(52);
-    expect(footer.iconSize.h).toBe(52);
-    expect(footer.iconSize.radius).toBe("12px");
+    expect(footer.linkedinCount).toBe(1);
+    expect(footer.emailSize.h).toBeGreaterThanOrEqual(40);
+    expect(footer.emailSize.h).toBeLessThanOrEqual(48);
+    expect(footer.emailSize.bg).toBe("rgb(0, 0, 0)");
+    expect(footer.emailSize.color).toBe("rgb(255, 255, 255)");
+    expect(Number.parseFloat(footer.emailSize.radius)).toBeGreaterThanOrEqual(20);
+    expect(footer.linkedinSize.w).toBe(44);
+    expect(footer.linkedinSize.h).toBe(44);
+    expect(footer.linkedinSize.radius).toBe("12px");
     expect(footer.work.map((item) => item.href)).toEqual([
       "/work/raiffeisen",
       "/work/instructure",
       "/work/bitpanda",
       "/work/kineticare",
     ]);
-    expect(footer.purple).toBe(false);
-    expect(footer.paper).toBe("rgb(241, 243, 242)");
-    const duneLock = await page.evaluate(() => {
-      const root = document.querySelector("footer.footer-section");
-      return {
-        globalGrain: Boolean(root.querySelector(".footer-dunes-grain, .footer-dunes-noise")),
-        sand: Boolean(root.querySelector("#sand-grain-1") && root.querySelector("#sand-grain-4")),
-        lighting: Boolean(root.querySelector("#dune-lit-yellow") && root.querySelector("#dune-cast")),
-        yellowBody: Boolean(root.querySelector('path[fill="#DCA30C"]')),
-        blendWrap: Boolean(root.querySelector(".footer-dune-blend-overlay") && root.querySelector(".footer-dune-blend-soft")),
-        grainOnPath: [...root.querySelectorAll("path[filter]")].some((path) => /sand-grain/.test(path.getAttribute("filter") || "") && /mix-blend/.test(path.getAttribute("style") || "")),
-        shadowUp: (root.querySelector("#dune-cast feOffset")?.getAttribute("dy") || "") === "-12",
-      };
-    });
-    expect(duneLock.globalGrain).toBe(false);
-    expect(duneLock.sand).toBe(true);
-    expect(duneLock.lighting).toBe(true);
-    expect(duneLock.yellowBody).toBe(true);
-    expect(duneLock.blendWrap).toBe(true);
-    expect(duneLock.grainOnPath).toBe(false);
-    expect(duneLock.shadowUp).toBe(true);
+    expect(footer.contactTitle).toBe("Contact");
+    expect(footer.contactLinks).toEqual(["anorbert@pm.me"]);
+    expect(footer.mesh).toBe(true);
+    expect(footer.dunes).toBe(false);
+    expect(footer.paper).not.toBe("rgb(241, 243, 242)");
+    expect(footer.chromeBg).toMatch(/rgba?\(0,\s*0,\s*0,\s*0\)|transparent/);
+    expect(footer.copyrightLeft).toBeLessThan(footer.backToTopLeft);
 
-    const email = page.locator("footer a.footer-contact-link").first();
-    const linkedin = page.locator("footer a.footer-contact-link").nth(1);
+    const email = page.locator("footer a.footer-email");
+    const linkedin = page.locator("footer a.footer-contact-link");
     await email.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
     await email.hover({ force: true });
-    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(0, 0, 0)");
+    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(26, 26, 26)");
     await expect.poll(() => email.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(255, 255, 255)");
     await linkedin.hover({ force: true });
     await expect.poll(() => linkedin.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(0, 0, 0)");
@@ -382,15 +388,45 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("no-motion"))).toBe(true);
     await expect.poll(() => page.evaluate(() => {
-      const transform = getComputedStyle(document.querySelector(".footer-dune-layer")).transform;
-      if (transform === "none") return true;
-      const values = transform.slice(transform.indexOf("(") + 1, transform.indexOf(")")).split(",").map((part) => Number(part.trim()));
-      return values.length >= 6 && Math.abs(values[4]) < 0.05 && Math.abs(values[5]) < 0.05;
+      const mesh = document.querySelector(".footer-mesh");
+      const transform = getComputedStyle(mesh).transform;
+      return transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)";
     })).toBe(true);
     await email.hover({ force: true });
-    await expect(email).toHaveCSS("background-color", "rgb(0, 0, 0)");
+    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(26, 26, 26)");
   });
 }
+
+test("/contact stays unpublished", async ({ request }) => {
+  const response = await request.get("/contact");
+  expect(response.status()).toBe(404);
+});
+
+test("390 footer stacks ident, CTA, Work, Contact with copyright left", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openStable(page, "/");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const stack = await page.evaluate(() => {
+    const ident = document.querySelector(".footer-ident").getBoundingClientRect();
+    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
+    const work = document.querySelector(".footer-nav .footer-col:first-child").getBoundingClientRect();
+    const contact = document.querySelector(".footer-nav .footer-col:last-child").getBoundingClientRect();
+    const copy = document.querySelector(".footer-copyright").getBoundingClientRect();
+    const top = document.querySelector(".back-to-top-wrap").getBoundingClientRect();
+    return {
+      identBottom: ident.bottom,
+      ctaBottom: cta.bottom,
+      workTop: work.top,
+      workBottom: work.bottom,
+      contactTop: contact.top,
+      copyLeft: copy.left,
+      topLeft: top.left,
+    };
+  });
+  expect(stack.workTop).toBeGreaterThan(stack.identBottom - 1);
+  expect(stack.contactTop).toBeGreaterThan(stack.workBottom - 1);
+  expect(stack.copyLeft).toBeLessThan(stack.topLeft);
+});
 
 test("1280 home selected work: Kineticare present, 7/5 grid, no stagger hole, stable title color", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });

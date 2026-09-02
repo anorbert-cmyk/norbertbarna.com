@@ -801,8 +801,6 @@ main {
 
 .footer-section .back-to-top-wrap {
   position: static;
-  order: 0;
-  margin: 0;
   min-width: 44px;
   max-width: 44px;
   min-height: 44px;
@@ -1848,10 +1846,8 @@ main {
     font-size: 13px;
   }
 
-  .footer-section .container.footer-inner,
-  .footer-inner {
-    display: flex;
-    flex-direction: column;
+  .footer-section .container {
+    display: block;
   }
 
   .footer-contact-link {
