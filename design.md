@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer Email + LinkedIn outlined icon buttons. Email is `mailto:anorbert@pm.me`. Footer is cool-paper chrome (`#f1f3f2`, in the `#FFFFFF`–`#E0EAEC` range) with the existing `nb` wordmark, then stacked lit sand dunes — not a dark void, not a lavender wash, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn outlined icon + black **Email** pill (`mailto:anorbert@pm.me`). Footer is one full-bleed mesh (Benker lavender type band melting into navy / teal / lime / yellow) — not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -66,7 +66,7 @@ The executive path on `/` is: name, role, one complete shipped UI, how to
 see the work, how to reach him. The audit path is the case studies.
 
 Do not invent metrics or emails. The one real contact address is
-`anorbert@pm.me`; the footer Email icon and Contact line target it and
+`anorbert@pm.me`; the footer Email pill and Contact line target it and
 nothing else. Do not put a multi-field form back in the footer.
 Do not restore removed SportsGambit figures (`35% first-day activation`,
 `70% of wagers`).
@@ -137,45 +137,41 @@ Do not add a third family. Do not generate letterforms.
 | OnRobot | `#ecf2f5` | `#111` |
 | Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
-Site chrome (nav, home, footer paper) stays ink on cool paper. Case color
-is the case header field. Footer dune *families* stay Raiffeisen `#FFE000`,
-Bitpanda teal, Instructure navy, SportsGambit lime — the PNG lock is sampled
-body / crest / trough inside those families, not a flat named fill. Do not
-wash the footer in Benker lavender, OnRobot pale, candy pink, or purple.
+Site chrome (nav, home) stays ink on cool paper. Case color is the case
+header field. The footer is a **soft mesh** of shipped case colors: Benker
+lavender `#E1E1F5` on the type band, Instructure navy `#0A1628`, Bitpanda
+forest `#1B3A32`, SportsGambit lime `#A8D800`, Raiffeisen yellow `#FFE000`.
+Do not restore stacked Ironclad dune ridges. Do not wash the field in candy
+pink, magenta, or `#5b45ff`.
 
 **Locked footer**
 
 One site-wide footer on every content page (same markup; work pages only
-change the asset prefix). Composition, top to bottom:
+change the asset prefix). The whole footer is one full-bleed mesh. Type sits
+on the pale top of the mesh — not on a separate paper chrome slab, not
+`.footer-dunes`, and not on a navy dune.
 
-1. Cool-paper chrome (`#f1f3f2`) behind the existing `NB.svg` wordmark (not a
-   new logo) and the line `Product VP — I lead AI products in regulated
-   finance and high-trust systems.` Em dash. Do not use “AI Product Design
-   Lead” in the footer. Dedicated paper grain on `.footer-chrome` only
-   (`multiply`, opacity ~0.06, `baseFrequency` 1.35). Not the sand filter.
-2. Two matching outlined rounded-square icon buttons, 52×52, same size:
-   Email (envelope stroke, `mailto:anorbert@pm.me`) then LinkedIn (existing
-   `https://www.linkedin.com/in/barna-norbert/` URL). Rest: navy `#01112F`
-   outline on paper. Hover/focus: black fill, white glyph. Not a black pill.
-   Do not draw a mouse cursor.
-3. Four stacked sand-dune ridges (Ironclad-style). Each ridge is albedo +
-   crest lighting + per-layer sand grain (own `seed`) + contact shadow on
-   the ridge below. Lighting and grain sit on child `<g>` wrappers with
-   `mix-blend-mode` — never on the same node as the sand `filter` (browsers
-   drop the blend). Grain opacity is baked into the filter so
-   `html.no-motion * { opacity: 1 }` cannot flatten the volume. Yellow is a
-   full-width SVG back plate; `.footer-dunes` stays paper so the horizon is
-   the crest, not a CSS slab. Lime is a bottom-right peak only. Do not
-   flatten this to four solid fills plus one global grain overlay. Grain is
-   static. Pointer-follow parallax on `.footer-dune-layer` when motion is
-   on; when motion is off, dunes stay still (`transform: none`, lerp zeroed)
-   and button hover still works.
-4. Work column on the navy dune: Raiffeisen, Instructure, Bitpanda,
+1. Existing `NB.svg` wordmark (not a new logo, not live text) and the line
+   `Product VP — I lead AI products in regulated finance and high-trust
+   systems.` Em dash. Do not use “AI Product Design Lead” in the footer.
+2. Controls under the lede, left: small outlined LinkedIn rounded-square
+   (`https://www.linkedin.com/in/barna-norbert/`) then a solid black pill
+   labeled `Email` (`mailto:anorbert@pm.me`), ~44px tall, white text. Email
+   hover is a slightly lighter black, not an outline inversion. LinkedIn
+   hover may fill black. Do not draw a mouse cursor. Do not use a second
+   52×52 envelope square.
+3. Mesh field: soft continuous blend (20–30px visual blur) of `#E1E1F5` →
+   `#0A1628` → `#1B3A32` → `#A8D800` → `#FFE000`, plus one static analog
+   grain overlay. No stacked SVG dune paths, no crest lighting per ridge,
+   no pointer parallax. Grain does not crawl.
+4. Work column, right, dark type: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
-5. Contact column: Email / `anorbert@pm.me`. 1px white divider (~45%)
-   between the columns, only as tall as the lists.
-6. Copyright on the lime dune: `© 2026 Norbert Barna` in navy, not white.
+5. Contact column: `anorbert@pm.me` as a mailto. No Email label required.
+   Do not add LinkedIn again here. A 1px dark hairline between columns is
+   fine.
+6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Keep
+   the existing back-to-top control; do not invent a new one.
 
 **Logo:** existing `NB.svg`. Do not generate a new mark. Do not put
 `BARNANORBERT.COM` in the case hero.
@@ -304,16 +300,16 @@ English-wash the screenshot.
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
-| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer dunes stay inside the four case-color families + sand grain — never a generated landscape, Benker lavender, or a third palette |
-| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is a full-width SVG back plate with sampled body/crest/trough; the CSS field is paper, not a named-hex slab |
-| FlatDuneGrain | Four solid fills plus one global grain rectangle/overlay on the whole footer | Each ridge: albedo + crest light + clipped sand grain (own seed) + contact shadow |
-| SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles, or a black-pill contact | Two outlined Email + LinkedIn squares; Work/Contact on the navy dune; no sitemap |
+| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays inside shipped case colors + Benker lavender type band — never Ironclad dunes, candy pink, or a third palette |
+| YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Yellow is the bottom glow of the mesh, not a ridge or a CSS slab |
+| FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static grain overlay. No `.footer-dunes` |
+| SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | LinkedIn outlined square + black Email pill; Work/Contact on the mesh; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
-| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | Icon + `mailto:anorbert@pm.me`; LinkedIn is the matching square, not the primary close |
+| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | Black `Email` pill + `mailto:anorbert@pm.me`; LinkedIn is the matching outlined square, not duplicated in Contact |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 
@@ -335,8 +331,8 @@ Agents compose pages from these names. Do not invent parallel components.
 **Chrome:** `.skip-to-content` `.navbar` `.nav-logo-wrap` `.nav-breadcrumb`
 `.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
 `.footer-chrome` `.footer-ident` `.footer-brand` `.footer-wordmark`
-`.footer-lede` `.footer-cta` `.footer-contact-link` `.footer-dunes`
-`.footer-dune-layer` `.footer-dune-nav` `.footer-col` `.footer-col-title` `.footer-copyright`
+`.footer-lede` `.footer-cta` `.footer-contact-link` `.footer-email` `.footer-mesh`
+`.footer-nav` `.footer-col` `.footer-col-title` `.footer-copyright`
 `.back-to-top-wrap`
 
 **Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
@@ -350,16 +346,15 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer icon buttons 52×52.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn 44×44 outlined square; Email is the black pill.
 
 ## Motion
 
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis).
 Respect `prefers-reduced-motion` and `PortfolioMedia.isReduced()`. Do not
 add a visible Motion toggle, Three.js, particles, or generated Lottie.
-Hide `.case-motion-rail`. Default to stillness for anything new except
-the locked footer dune pointer-follow, which must freeze when motion is
-off.
+Hide `.case-motion-rail`. Default to stillness for anything new. The locked
+footer mesh does not parallax.
 
 ## Eval rubric (first attempt must pass)
 

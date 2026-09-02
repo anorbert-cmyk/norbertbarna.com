@@ -159,11 +159,17 @@ for (const page of ALL_PAGES) {
     if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"[^>]*class="[^\"]*\bnav-link\b/i.test(html)) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
+    const emailPill =
+      /<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*href="mailto:anorbert@pm\.me"/i.test(html) ||
+      /<a\b[^>]*href="mailto:anorbert@pm\.me"[^>]*class="[^"]*\bfooter-email/i.test(html);
+    const linkedinIcon =
+      /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(html);
     if (count(html, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
-        count(html, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 2 ||
-        !/<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="mailto:anorbert@pm\.me"/i.test(html) ||
-        !/<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(html)) {
-      fail(`${page}: footer must expose matching Email and LinkedIn icon buttons`);
+        count(html, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
+        count(html, /<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"/gi) !== 1 ||
+        !emailPill ||
+        !linkedinIcon) {
+      fail(`${page}: footer must expose a LinkedIn icon and a labeled Email pill`);
     }
 
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
@@ -277,9 +283,10 @@ const cssContracts = [
   [/\.case-facts[\s\S]*?grid-template-columns:\s*repeat\(4/i, "desktop project facts grid is missing"],
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
-  [/\.footer-contact-link[\s\S]*?min-height:\s*52px/i, "footer contact action is not touch-safe"],
-  [/\.footer-dunes[\s\S]*?min-height:/i, "footer dune field must reserve height"],
-  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer icons must be rounded squares, not pills"],
+  [/\.footer-contact-link[\s\S]*?min-height:\s*44px/i, "footer LinkedIn icon is not touch-safe"],
+  [/\.footer-email[\s\S]*?min-height:\s*44px/i, "footer Email pill is not touch-safe"],
+  [/\.footer-section[\s\S]*?min-height:/i, "footer mesh field must reserve height"],
+  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer LinkedIn must be a rounded square, not a pill"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
@@ -335,7 +342,7 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("enforceReducedMotion") ||
     !animationJs.includes("window.ScrollTrigger.getAll()") ||
     !animationJs.includes("function initFooterDunes()")) {
-  fail("runtime reduced-motion changes must stop active motion, media, and footer dunes");
+  fail("runtime reduced-motion changes must stop active motion and media (mesh footer stays still)");
 }
 if (/html:not\(\.nav-enhanced\)/i.test(responsiveCss)) fail("pre-enhancement navigation must not cause layout shift");
 if (animationJs.includes("enhanceVideoControls")) fail("the old click-to-play controller returned");
