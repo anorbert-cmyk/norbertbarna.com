@@ -82,6 +82,8 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   fail("design.md must lock Funnel Display and Inter");
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
+if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
+if (/footer-atmosphere/.test(design) === false) fail("design.md must document footer-atmosphere");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
   fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
 }
@@ -169,6 +171,12 @@ for (const page of footerPages) {
   if (!footer.includes("footer-cta")) {
     fail(`${page}: footer CTA block is missing`);
     continue;
+  }
+  if (!footer.includes("footer-atmosphere") || !footer.includes("footer-directories") || !footer.includes("footer-bar")) {
+    fail(`${page}: footer must keep atmosphere + Work/Site directories + copyright bar`);
+  }
+  if (/Product<\/h3>|Company<\/h3>|Resources<\/h3>|Legal<\/h3>/.test(footer)) {
+    fail(`SaaSFooter: ${page} must not ship Product/Company/Resources/Legal columns`);
   }
   if (/linkedin\.com/i.test(footer)) {
     fail(`BlogFooterCTA: ${page} footer primary CTA must not be LinkedIn`);
