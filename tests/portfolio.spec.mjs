@@ -416,8 +416,17 @@ test("Kineticare case header contains exactly one media node and it autoplays", 
   }), { timeout: 15000 }).toMatch(/playing|loading/);
 });
 
+function isTransparentFill(color) {
+  return /rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)|transparent/.test(color);
+}
+
+function isInkWash(color) {
+  const match = color.match(/rgba\(\s*17,\s*17,\s*17,\s*([0-9.]+)\s*\)/);
+  return Boolean(match && Number(match[1]) > 0 && Number(match[1]) <= 0.12);
+}
+
 for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
-  test(`${route}: footer lock — mesh field, Email pill, Work cases, no form`, async ({ page }) => {
+  test(`${route}: footer lock — mesh field, outlined Email, Work cases, no form`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openStable(page, route);
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
@@ -426,42 +435,53 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
       const chrome = root.querySelector(".footer-chrome");
       const email = root.querySelector("a.footer-email");
       const linkedin = root.querySelector("a.footer-contact-link");
+      const icon = linkedin?.querySelector(".footer-icon");
       const work = [...root.querySelectorAll(".footer-nav .footer-col:first-child a")].map((a) => ({
         href: a.getAttribute("href"),
         text: a.textContent.trim(),
       }));
-      const contact = root.querySelector(".footer-nav .footer-col:last-child");
+      const cols = [...root.querySelectorAll(".footer-nav .footer-col")];
       const emailStyle = email ? getComputedStyle(email) : null;
       const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
       const barStyle = getComputedStyle(root.querySelector(".footer-bar"));
       const emailBox = email ? email.getBoundingClientRect() : null;
       const linkedinBox = linkedin ? linkedin.getBoundingClientRect() : null;
+      const iconBox = icon ? icon.getBoundingClientRect() : null;
       const hairline = barStyle.borderTopColor;
       const alphaMatch = hairline.match(/rgba?\(\s*17,\s*17,\s*17(?:,\s*([0-9.]+))?\s*\)/);
       return {
         lede: root.querySelector(".footer-lede")?.textContent.trim() || "",
         copyright: root.querySelector(".footer-copyright")?.textContent.trim() || "",
         form: Boolean(root.querySelector("form, .footer-hp, [data-contact-form]")),
-        emailHref: email ? email.getAttribute("href") : "",
+        emailHref: email ? email.getAttribute("href") : "missing",
         emailText: email ? email.textContent.trim() : "",
         linkedinHref: linkedin ? linkedin.getAttribute("href") : "",
         linkedinCount: root.querySelectorAll("a.footer-contact-link").length,
-        emailSize: emailBox ? {
+        emailCount: root.querySelectorAll("a.footer-email").length,
+        emailSize: emailBox && emailStyle ? {
+          w: Math.round(emailBox.width),
           h: Math.round(emailBox.height),
           bg: emailStyle.backgroundColor,
           color: emailStyle.color,
           radius: emailStyle.borderRadius,
+          weight: emailStyle.fontWeight,
+          size: emailStyle.fontSize,
+          padX: `${emailStyle.paddingLeft} ${emailStyle.paddingRight}`,
+          border: emailStyle.borderTopWidth,
         } : null,
-        linkedinSize: linkedinBox ? {
+        linkedinSize: linkedinBox && linkedinStyle ? {
           w: Math.round(linkedinBox.width),
           h: Math.round(linkedinBox.height),
           radius: linkedinStyle.borderRadius,
           bg: linkedinStyle.backgroundColor,
+          color: linkedinStyle.color,
+          border: linkedinStyle.borderTopWidth,
         } : null,
+        iconH: iconBox ? Math.round(iconBox.height) : 0,
+        gap: emailBox && linkedinBox ? Math.round(emailBox.left - linkedinBox.right) : null,
         work,
-        contactTitle: contact?.querySelector(".footer-col-title")?.textContent.trim() || "",
-        contactLinks: [...(contact?.querySelectorAll("a") || [])].map((a) => a.textContent.trim()),
-        contactText: contact?.textContent.replace(/\s+/g, " ").trim() || "",
+        colTitles: cols.map((col) => col.querySelector(".footer-col-title")?.textContent.trim() || ""),
+        colCount: cols.length,
         ledeColor: root.querySelector(".footer-lede") ? getComputedStyle(root.querySelector(".footer-lede")).color : "",
         workColor: root.querySelector(".footer-col-title") ? getComputedStyle(root.querySelector(".footer-col-title")).color : "",
         mesh: Boolean(root.querySelector(".footer-mesh") && root.querySelector("#mesh-blur")),
@@ -477,21 +497,31 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     expect(footer.backToTop).toBe(false);
     expect(footer.lede).toBe("Product VP — I lead AI products in regulated finance and high-trust systems.");
     expect(footer.copyright).toBe("© 2026 Norbert Barna");
-    expect(footer.emailHref).toBe("mailto:anorbert@pm.me");
+    expect(footer.emailHref).toBeNull();
     expect(footer.emailText).toBe("Email");
+    expect(footer.emailCount).toBe(1);
     expect(footer.linkedinHref).toBe("https://www.linkedin.com/in/barna-norbert/");
     expect(footer.linkedinCount).toBe(1);
-    expect(footer.emailSize.h).toBeGreaterThanOrEqual(40);
-    expect(footer.emailSize.h).toBeLessThanOrEqual(48);
-    expect(footer.emailSize.bg).toBe("rgb(0, 0, 0)");
-    expect(footer.emailSize.color).toBe("rgb(255, 255, 255)");
-    expect(Number.parseFloat(footer.emailSize.radius)).toBeGreaterThanOrEqual(20);
-    expect(footer.linkedinSize.w).toBeGreaterThanOrEqual(28);
-    expect(footer.linkedinSize.w).toBeLessThanOrEqual(36);
-    expect(footer.linkedinSize.h).toBeGreaterThanOrEqual(28);
-    expect(footer.linkedinSize.h).toBeLessThanOrEqual(36);
-    expect(footer.linkedinSize.radius).toBe("8px");
-    expect(footer.linkedinSize.bg).toBe("rgb(230, 230, 232)");
+    expect(footer.emailSize.h).toBe(44);
+    expect(footer.emailSize.w).toBeGreaterThanOrEqual(68);
+    expect(footer.emailSize.w).toBeLessThanOrEqual(80);
+    expect(isTransparentFill(footer.emailSize.bg)).toBe(true);
+    expect(footer.emailSize.color).toBe("rgb(17, 17, 17)");
+    expect(footer.emailSize.radius).toBe("12px");
+    expect(footer.emailSize.weight).toBe("500");
+    expect(footer.emailSize.size).toBe("15px");
+    expect(footer.emailSize.padX).toBe("14px 14px");
+    expect(footer.emailSize.border).toBe("1px");
+    expect(footer.linkedinSize.w).toBe(44);
+    expect(footer.linkedinSize.h).toBe(44);
+    expect(footer.linkedinSize.radius).toBe("12px");
+    expect(isTransparentFill(footer.linkedinSize.bg)).toBe(true);
+    expect(footer.linkedinSize.color).toBe("rgb(17, 17, 17)");
+    expect(footer.linkedinSize.border).toBe("1px");
+    expect(footer.iconH).toBeGreaterThanOrEqual(16);
+    expect(footer.iconH).toBeLessThanOrEqual(18);
+    expect(footer.gap).toBeGreaterThanOrEqual(8);
+    expect(footer.gap).toBeLessThanOrEqual(10);
     expect(footer.work.map((item) => item.href)).toEqual([
       "/work/raiffeisen",
       "/work/instructure",
@@ -504,11 +534,8 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
       "Bitpanda",
       "Kineticare",
     ]);
-    expect(footer.contactTitle).toBe("Contact");
-    expect(footer.contactLinks).toEqual(["anorbert@pm.me"]);
-    expect(footer.contactText).toMatch(/Contact/);
-    expect(footer.contactText).toMatch(/anorbert@pm\.me/);
-    expect(footer.contactText).not.toMatch(/Email/);
+    expect(footer.colCount).toBe(1);
+    expect(footer.colTitles).toEqual(["Work"]);
     expect(footer.ledeColor).toBe("rgb(17, 17, 17)");
     expect(footer.workColor).toBe("rgb(17, 17, 17)");
     expect(footer.mesh).toBe(true);
@@ -522,11 +549,12 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     const linkedin = page.locator("footer a.footer-contact-link");
     await email.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
     await email.hover({ force: true });
-    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(26, 26, 26)");
-    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(255, 255, 255)");
+    await expect.poll(async () => isInkWash(await email.evaluate((el) => getComputedStyle(el).backgroundColor))).toBe(true);
+    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(17, 17, 17)");
+    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).borderRadius)).toBe("12px");
     await linkedin.hover({ force: true });
-    await expect.poll(() => linkedin.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(0, 0, 0)");
-    await expect.poll(() => linkedin.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(255, 255, 255)");
+    await expect.poll(async () => isInkWash(await linkedin.evaluate((el) => getComputedStyle(el).backgroundColor))).toBe(true);
+    await expect.poll(() => linkedin.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(17, 17, 17)");
 
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("no-motion"))).toBe(true);
@@ -536,9 +564,56 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
       return transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)";
     })).toBe(true);
     await email.hover({ force: true });
-    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe("rgb(26, 26, 26)");
+    await expect.poll(async () => isInkWash(await email.evaluate((el) => getComputedStyle(el).backgroundColor))).toBe(true);
   });
 }
+
+test("home HTML has no mailto or address; Email click assembles the mail href", async ({ page, request }) => {
+  const html = await (await request.get("/")).text();
+  expect(html).not.toMatch(/mailto:/i);
+  expect(html).not.toMatch(/anorbert@pm\.me/i);
+  expect(html).toMatch(/>Email<\/a>/);
+  expect(html).not.toMatch(/footer-col-title">Contact/);
+  expect(html).not.toMatch(/href="\/contact"/);
+  expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
+    "/work/raiffeisen",
+    "/work/instructure",
+    "/work/bitpanda",
+    "/work/kineticare",
+  ]);
+
+  const navJs = await (await request.get("/assets/js/navigation.js")).text();
+  expect(navJs).not.toMatch(/anorbert@pm\.me/);
+  expect(navJs).not.toMatch(/mailto:anorbert/);
+
+  await openStable(page, "/");
+  const liveHtml = await page.content();
+  expect(liveHtml).not.toMatch(/mailto:/i);
+  expect(liveHtml).not.toMatch(/anorbert@pm\.me/i);
+
+  const email = page.locator("footer a.footer-email");
+  await expect(email).toBeVisible();
+  await expect(email).toHaveText("Email");
+  expect(await email.getAttribute("href")).toBeNull();
+
+  const assembled = await page.evaluate(() => {
+    const el = document.querySelector("footer a.footer-email");
+    const original = window.location.assign.bind(window.location);
+    try {
+      window.location.assign = function () {};
+    } catch {
+      /* Location.assign may be non-writable */
+    }
+    el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+    try {
+      window.location.assign = original;
+    } catch {
+      /* ignore restore failures */
+    }
+    return el.getAttribute("href");
+  });
+  expect(assembled).toBe("mailto:anorbert@pm.me");
+});
 
 test("1280 home footer: type stays on the pale band, olive bottom, analog grain", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -548,12 +623,10 @@ test("1280 home footer: type stays on the pale band, olive bottom, analog grain"
   const boxes = await page.evaluate(() => {
     const footer = document.querySelector("footer.footer-section").getBoundingClientRect();
     const work = document.querySelector(".footer-col-title").getBoundingClientRect();
-    const contact = document.querySelector(".footer-nav .footer-col:last-child .footer-col-title").getBoundingClientRect();
     const lede = document.querySelector(".footer-lede").getBoundingClientRect();
     return {
       footer: { x: footer.x, y: footer.y, width: footer.width, height: footer.height },
       work: { x: work.x, y: work.y, width: work.width, height: work.height },
-      contact: { x: contact.x, y: contact.y, width: contact.width, height: contact.height },
       lede: { x: lede.x, y: lede.y, width: lede.width, height: lede.height },
     };
   });
@@ -564,9 +637,8 @@ test("1280 home footer: type stays on the pale band, olive bottom, analog grain"
     height: 16,
   });
   const workBand = await screenshotClip(page, sampleBeside(boxes.work));
-  const contactBand = await screenshotClip(page, sampleBeside(boxes.contact));
   const ledeBand = await screenshotClip(page, sampleBeside(boxes.lede));
-  for (const [name, sample] of [["Work", workBand], ["Contact", contactBand], ["lede", ledeBand]]) {
+  for (const [name, sample] of [["Work", workBand], ["lede", ledeBand]]) {
     expect(sample.luminance, `${name} must sit on the pale lilac band, not navy`).toBeGreaterThan(140);
     expect(sample.b, `${name} band should stay cool-lilac, not yellow`).toBeGreaterThan(sample.r - 8);
   }
@@ -596,29 +668,30 @@ test("/contact stays unpublished", async ({ request }) => {
   expect(response.status()).toBe(404);
 });
 
-test("390 footer stacks ident, CTA, Work, Contact with copyright left and no back-to-top", async ({ page }) => {
+test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   const stack = await page.evaluate(() => {
     const ident = document.querySelector(".footer-ident").getBoundingClientRect();
-    const work = document.querySelector(".footer-nav .footer-col:first-child").getBoundingClientRect();
-    const contact = document.querySelector(".footer-nav .footer-col:last-child").getBoundingClientRect();
+    const work = document.querySelector(".footer-nav .footer-col").getBoundingClientRect();
     const copy = document.querySelector(".footer-copyright").getBoundingClientRect();
     const footer = document.querySelector("footer.footer-section").getBoundingClientRect();
+    const cols = document.querySelectorAll(".footer-nav .footer-col");
     return {
       identBottom: ident.bottom,
       workTop: work.top,
-      workBottom: work.bottom,
-      contactTop: contact.top,
       copyLeft: copy.left,
       footerLeft: footer.left,
+      colCount: cols.length,
+      contactHeading: Boolean([...cols].some((col) => /Contact/.test(col.textContent))),
       backToTop: Boolean(document.querySelector("footer .back-to-top-wrap")),
     };
   });
   expect(stack.backToTop).toBe(false);
+  expect(stack.colCount).toBe(1);
+  expect(stack.contactHeading).toBe(false);
   expect(stack.workTop).toBeGreaterThan(stack.identBottom - 1);
-  expect(stack.contactTop).toBeGreaterThan(stack.workBottom - 1);
   expect(stack.copyLeft).toBeLessThan(stack.footerLeft + 80);
 });
 
