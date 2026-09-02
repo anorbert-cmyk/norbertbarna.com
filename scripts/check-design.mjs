@@ -82,6 +82,7 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   fail("design.md must lock Funnel Display and Inter");
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
+if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
 if (/footer-dunes/.test(design) === false) fail("design.md must document footer-dunes");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -181,6 +182,10 @@ if (/footer-atmosphere|#d9daf2|#5b45ff/.test(css.slice(css.indexOf(".footer-sect
 }
 if (!/#FFE000/.test(css) && !/#ffe000/.test(footerCanon[0])) {
   fail("footer dunes must include Raiffeisen #FFE000");
+}
+const duneField = css.match(/\.footer-dunes\s*\{[^}]+\}/)?.[0] || "";
+if (/background:\s*#FFE000/i.test(duneField)) {
+  fail("YellowDuneSlab: dune field must not be a flat #FFE000 band — yellow is a ridge");
 }
 if (!/\.footer-section a\.footer-contact-link:hover[\s\S]{0,160}background-color:\s*#000/.test(css)) {
   fail("footer icon hover must fill black via background-color (not a delayed shorthand)");
