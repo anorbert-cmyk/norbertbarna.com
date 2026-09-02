@@ -114,9 +114,7 @@ for (const page of ALL_PAGES) {
   if (/\bdata-autoplay=["']true["']/i.test(html)) fail(`${page}: Webflow video wrapper still autoplays`);
 
   for (const match of html.matchAll(/<a\b[^>]*\bhref="#"[^>]*>/gi)) {
-    if (!/\bclass="[^"]*\bback-to-top-wrap\b/i.test(match[0])) {
-      fail(`${page}: non-functional href=# remains outside back-to-top`);
-    }
+    fail(`${page}: non-functional href=# remains (back-to-top is not in the lock)`);
   }
 
   if (page !== "404.html") {
@@ -159,17 +157,24 @@ for (const page of ALL_PAGES) {
     if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"[^>]*class="[^\"]*\bnav-link\b/i.test(html)) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
-    const emailPill =
-      /<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*href="mailto:anorbert@pm\.me"/i.test(html) ||
-      /<a\b[^>]*href="mailto:anorbert@pm\.me"[^>]*class="[^"]*\bfooter-email/i.test(html);
+    const emailCta = [...html.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
       /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(html);
     if (count(html, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
         count(html, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
-        count(html, /<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"/gi) !== 1 ||
-        !emailPill ||
+        emailCta.length !== 1 ||
+        !/\btype="button"/.test(emailCta[0] || "") ||
+        /href=/.test(emailCta[0] || "") ||
+        /mailto:/i.test(emailCta[0] || "") ||
+        /<a[^>]*footer-email/.test(html) ||
         !linkedinIcon) {
-      fail(`${page}: footer must expose a LinkedIn icon and a labeled Email pill`);
+      fail(`${page}: footer must expose a LinkedIn icon and a native Email button with no mailto href`);
+    }
+    if (/mailto:/i.test(html) || /anorbert@pm\.me/i.test(html)) {
+      fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
+    }
+    if (/footer-col-title">Contact/.test(html) || /href="\/contact"/.test(html)) {
+      fail(`${page}: Contact column and /contact links must not ship`);
     }
 
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
@@ -283,10 +288,10 @@ const cssContracts = [
   [/\.case-facts[\s\S]*?grid-template-columns:\s*repeat\(4/i, "desktop project facts grid is missing"],
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
-  [/\.footer-contact-link[\s\S]*?min-height:\s*44px/i, "footer LinkedIn icon is not touch-safe"],
-  [/\.footer-email[\s\S]*?min-height:\s*44px/i, "footer Email pill is not touch-safe"],
+  [/\.footer-contact-link[\s\S]*?min-height:\s*44px/i, "footer LinkedIn is missing its 44px lock height"],
+  [/\.footer-email[\s\S]*?min-height:\s*44px/i, "footer Email is not 44px tall"],
   [/\.footer-section[\s\S]*?min-height:/i, "footer mesh field must reserve height"],
-  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer LinkedIn must be a rounded square, not a pill"],
+  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer LinkedIn must share 12px outlined chrome"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
@@ -320,6 +325,14 @@ if (!navigationJs.includes('primaryNavigation.setAttribute("data-nav-menu-open",
     !navigationJs.includes('event.key !== "Escape"') ||
     !animationJs.includes('window.addEventListener("portfolio:motionchange"')) {
   fail("independent menu and shared motion preference bridge are incomplete");
+}
+if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
+  fail("MailtoInHtml: do not store the complete address as one string in JS");
+}
+if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes("button.footer-email") ||
+    !navigationJs.includes("location.assign") || /setAttribute\(\s*["']href["']/.test(navigationJs) ||
+    /a\.footer-email/.test(navigationJs)) {
+  fail("Email click must location.assign from split parts on a native button, without writing href");
 }
 const takeoverIndex = animationJs.indexOf("var webflowMotionReady = scheduleWebflowMotionTakeover()");
 const startIndex = animationJs.indexOf("function startResponsiveMotion()");

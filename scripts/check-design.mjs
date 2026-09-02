@@ -85,6 +85,16 @@ if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
 if (/FlatDuneGrain/.test(design) === false) fail("design.md must name the FlatDuneGrain anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
+if (/FogGrain/.test(design) === false) fail("design.md must name the FogGrain anti-pattern");
+if (/NavyFlood/.test(design) === false) fail("design.md must name the NavyFlood anti-pattern");
+if (/NeonMeshYellow/.test(design) === false) fail("design.md must name the NeonMeshYellow anti-pattern");
+if (/BrightMeshLilac/.test(design) === false) fail("design.md must name the BrightMeshLilac anti-pattern");
+if (/FooterBackToTop/.test(design) === false) fail("design.md must name the FooterBackToTop anti-pattern");
+if (/LinkedInHitSquare/.test(design) === false) fail("design.md must name the LinkedInHitSquare anti-pattern");
+if (/FilledEmailPill/.test(design) === false) fail("design.md must name the FilledEmailPill anti-pattern");
+if (/ContactColumn/.test(design) === false) fail("design.md must name the ContactColumn anti-pattern");
+if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoInHtml anti-pattern");
+if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -165,8 +175,9 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
   fail("HiddenMontage: Instructure video must fill the 16:9 frame (inset 0, z-index 0)");
 }
 
-// Locked footer: mesh field, LinkedIn square + Email pill, Work/Contact
-// on the pale type band. No form, no sitemap, no Ironclad dunes.
+// Locked footer: mesh field, outlined LinkedIn + Email, Work only.
+// No Contact column, no form, no sitemap, no Ironclad dunes, no
+// back-to-top on the copyright row. Mail href is assembled on click.
 const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`)];
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
@@ -176,14 +187,20 @@ const footerCanon = footerPages.map((page) => {
 if (new Set(footerCanon).size !== 1) {
   fail("site-wide footer markup must match across pages (asset prefix aside)");
 }
-if (!/--footer-lavender:\s*#e1e1f5/.test(css) && !/#e1e1f5/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 4000))) {
-  fail("footer mesh type band must be Benker lavender #e1e1f5");
+const footerCssStart = css.indexOf(".footer-section");
+const footerCss = css.slice(footerCssStart, footerCssStart + 9000);
+if (!/--footer-lavender:\s*#d6d4ed/.test(css)) {
+  fail("footer mesh type band must be lock lilac #d6d4ed");
 }
-if (/#5b45ff/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 8000))) {
+if (!/--footer-yellow:\s*#bdb414/.test(css)) {
+  fail("footer mesh bottom must be lock olive-chartreuse #bdb414");
+}
+if (/#5b45ff/.test(footerCss)) {
   fail("footer stylesheet must not restore candy purple");
 }
-if (!/#FFE000/.test(css) && !/#ffe000/.test(css) && !/#FFE000/.test(footerCanon[0])) {
-  fail("footer mesh must name the Raiffeisen #FFE000 glow");
+if (/#ffe000|#FFE000|#e1e1f5|#E1E1F5|#a8d800|#A8D800/.test(footerCss) ||
+    /#FFE000|#E1E1F5|#A8D800/.test(footerCanon[0])) {
+  fail("NeonMeshYellow/BrightMeshLilac: footer must not use neon #FFE000, bright #E1E1F5, or lime #A8D800");
 }
 if (/\.footer-dunes\b/.test(css) || /class="footer-dunes"/.test(footerCanon[0]) || /footer-dune-layer/.test(footerCanon[0])) {
   fail("Ironclad dunes: stacked .footer-dunes ridges must not return");
@@ -192,28 +209,67 @@ if (/<path[^>]*fill="#DCA30C"/.test(footerCanon[0]) || /id="dune-lit-yellow"/.te
   fail("Ironclad dunes: lit-sand path army must not return");
 }
 if (existsSync(join(ROOT, "contact.html"))) {
-  fail("/contact must stay unpublished; contact is the footer address");
+  fail("/contact must stay unpublished; contact is the footer Email CTA");
 }
-if (/#f1f3f2|#F1F3F2/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 500))) {
+if (/#f1f3f2|#F1F3F2/.test(css.slice(footerCssStart, footerCssStart + 500))) {
   fail("footer must not restore the paper chrome slab");
 }
 if (!/footer-mesh/.test(footerCanon[0]) || !/mesh-blur/.test(footerCanon[0])) {
   fail("footer must ship a blurred mesh field, not stacked dune paths");
 }
-if (!/#E1E1F5/.test(footerCanon[0]) || !/#0A1628/.test(footerCanon[0]) || !/#1B3A32/.test(footerCanon[0]) || !/#A8D800/.test(footerCanon[0])) {
-  fail("mesh blobs must use lavender, navy, teal, and lime from the lock");
+if (!/#D6D4ED/.test(footerCanon[0]) || !/#0A1628/.test(footerCanon[0]) || !/#BDB414/.test(footerCanon[0])) {
+  fail("mesh blobs must use lock lilac, navy, and olive-chartreuse");
 }
-if (!/\.footer-section a\.footer-email[\s\S]{0,200}background-color:\s*#000/.test(css)) {
-  fail("Email CTA must be a filled black pill via background-color");
+const blurMatch = footerCanon[0].match(/<feGaussianBlur stdDeviation="([0-9.]+)"/);
+if (!blurMatch || Number(blurMatch[1]) > 28) {
+  fail("NavyFlood: mesh SVG blur must stay ≤ 28 so the navy horizon does not flood the type band");
 }
-if (!/\.footer-section a\.footer-email:hover[\s\S]{0,120}background-color:\s*#1a1a1a/.test(css)) {
-  fail("Email hover must lighten the black pill, not invert to an outline");
+if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
+  fail("FogGrain: .footer-mesh-art must not add a second CSS blur");
+}
+if (/\.footer-mesh::after[\s\S]{0,240}opacity:\s*\.38/.test(css)) {
+  fail("FogGrain: grain must not ship as a faint 0.38 multiply overlay");
+}
+if (/\.footer-section a\.footer-email/.test(css) ||
+    /\.footer-section a\.footer-email[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    /\.footer-section button\.footer-email[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    /\.footer-section button\.footer-email[\s\S]{0,200}background-color:\s*#000/.test(css)) {
+  fail("FilledEmailPill/FakeEmailLink: Email must be a native button, not a filled pill or fake link");
+}
+if (!/\.footer-section button\.footer-email[\s\S]{0,480}border-radius:\s*12px/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}padding:\s*0 14px/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}font-weight:\s*500/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}background-color:\s*transparent/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}appearance:\s*none/.test(css) ||
+    !/\.footer-section button\.footer-email[\s\S]{0,480}font-family:\s*inherit/.test(css)) {
+  fail("Email must be a reset native button with outlined 44px / 12px chrome (Inter 15/500, padding 0 14)");
+}
+if (!/\.footer-section a\.footer-contact-link[\s\S]{0,360}width:\s*44px/.test(css) ||
+    !/\.footer-section a\.footer-contact-link[\s\S]{0,360}border-radius:\s*12px/.test(css) ||
+    !/\.footer-section a\.footer-contact-link[\s\S]{0,360}background-color:\s*transparent/.test(css)) {
+  fail("LinkedIn must be the 44px outlined square (transparent fill, 12px radius)");
+}
+if (/\.footer-section a\.footer-contact-link[\s\S]{0,200}background-color:\s*#e6e6e8/.test(css) ||
+    /\.footer-section a\.footer-contact-link[\s\S]{0,80}width:\s*32px/.test(css)) {
+  fail("LinkedInHitSquare: do not restore the grey 32px chip");
+}
+if (!/\.footer-cta[\s\S]{0,160}gap:\s*9px/.test(css)) {
+  fail("CTA gap must stay in the 8–10px lock (9px)");
+}
+if (!/\.footer-icon[\s\S]{0,80}width:\s*17px/.test(css)) {
+  fail("LinkedIn icon must be ~17px");
+}
+if (!/\.footer-bar[\s\S]{0,200}border-top:\s*1px solid rgb\(17 17 17 \/ 62%\)/.test(css)) {
+  fail("footer hairline must be a sharp dark 1px rule, not a 14% ghost line");
+}
+if (/class="back-to-top-wrap"/.test(footerCanon[0]) || /aria-label="Back to top"/.test(footerCanon[0])) {
+  fail("FooterBackToTop: copyright row must not restore a back-to-top control");
 }
 for (const page of footerPages) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
   if (!footer.includes("footer-cta") || !footer.includes("footer-mesh") || !footer.includes("footer-email")) {
-    fail(`${page}: locked footer mesh + Email pill are missing`);
+    fail(`${page}: locked footer mesh + Email CTA are missing`);
     continue;
   }
   if (/Product<\/h3>|Company<\/h3>|Resources<\/h3>|Legal<\/h3>/.test(footer) ||
@@ -232,18 +288,23 @@ for (const page of footerPages) {
   if (!footer.includes("© 2026 Norbert Barna") || /All rights reserved/.test(footer)) {
     fail(`${page}: copyright must be © 2026 Norbert Barna`);
   }
-  if (!/>Email<\/a>/.test(footer)) {
+  if (!/>Email<\/button>/.test(footer)) {
     fail(`${page}: Email CTA must be visible text “Email”`);
+  }
+  const emailTag = [...footer.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+  if (emailTag.length !== 1) {
+    fail(`${page}: footer needs exactly one Email button (got ${emailTag.length})`);
+  } else if (!/\btype="button"/.test(emailTag[0]) || /href=/.test(emailTag[0]) || /mailto:/i.test(emailTag[0])) {
+    fail(`${page}: FakeEmailLink: Email must be type=button with no href`);
+  }
+  if (/<a[^>]*footer-email/.test(footer)) {
+    fail(`${page}: FakeEmailLink: Email must not be an anchor`);
   }
   const linkedin = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
   if (linkedin.length !== 1) {
-    fail(`${page}: footer needs exactly one outlined LinkedIn square (got ${linkedin.length})`);
+    fail(`${page}: footer needs exactly one LinkedIn icon (got ${linkedin.length})`);
   } else if (!/linkedin\.com\/in\/barna-norbert/.test(linkedin[0])) {
-    fail(`${page}: outlined footer icon must reuse the site LinkedIn URL`);
-  }
-  if (!/class="footer-email"[^>]*href="mailto:anorbert@pm\.me"/.test(footer) &&
-      !/href="mailto:anorbert@pm\.me"[^>]*class="footer-email"/.test(footer)) {
-    fail(`${page}: Email pill must be mailto:anorbert@pm.me`);
+    fail(`${page}: footer LinkedIn icon must reuse the site LinkedIn URL`);
   }
   const workHrefs = [...footer.matchAll(/href="(\/work\/[^"]+)"/g)].map((m) => m[1]);
   if (JSON.stringify(workHrefs) !== JSON.stringify([
@@ -251,25 +312,43 @@ for (const page of footerPages) {
   ])) {
     fail(`${page}: Work column must be Raiffeisen, Instructure, Bitpanda, Kineticare (got ${workHrefs.join(", ")})`);
   }
-  if (/footer-col-title">Email/.test(footer)) {
-    fail(`${page}: Contact column must not add an Email label; the pill is the CTA`);
+  if (/footer-col-title">Contact/.test(footer) || /<p class="footer-col-title">Contact<\/p>/.test(footer)) {
+    fail(`${page}: ContactColumn: Contact heading must not ship`);
+  }
+  if (/href="\/contact"/.test(html)) {
+    fail(`${page}: must not link to /contact`);
   }
   if (/href="\/work\/(?:benker|sportsgambit|onrobot)"/.test(footer)) {
     fail(`${page}: footer Work must not list Benker, SportsGambit, or OnRobot`);
   }
   if ((footer.match(/linkedin\.com\/in\/barna-norbert/g) || []).length !== 1) {
-    fail(`${page}: LinkedIn must appear once in the footer (the outlined icon)`);
+    fail(`${page}: LinkedIn must appear once in the footer (the icon)`);
   }
   if (!footer.includes("68f9e9de8ed08e31e52c4188_NB.svg")) {
     fail(`${page}: footer must reuse the existing nb wordmark`);
   }
-  const mailtos = [...html.matchAll(/mailto:([^"'?\s>]+)/gi)].map((m) => m[1]);
-  if (mailtos.some((address) => address !== "anorbert@pm.me")) {
-    fail(`${page}: only mailto:anorbert@pm.me is allowed (got ${mailtos.join(", ")})`);
+  if (/mailto:/i.test(html) || /anorbert@pm\.me/i.test(html)) {
+    fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
   }
   if (html.includes("data-motion-toggle") || html.includes("site-motion-toggle")) {
     fail(`MotionNav: ${page} still renders a Motion control`);
   }
+}
+
+const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8");
+if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
+  fail("MailtoInHtml: do not store the complete address as one string in JS");
+}
+if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes('["ano", "rbert"]') ||
+    !navigationJs.includes('["pm", ".", "me"]') || !navigationJs.includes("button.footer-email") ||
+    !navigationJs.includes("location.assign")) {
+  fail("Email click must location.assign a href assembled from split parts");
+}
+if (/a\.footer-email/.test(navigationJs) || /setAttribute\(\s*["']href["']/.test(navigationJs)) {
+  fail("MailtoInHtml: do not write mailto onto href or use a fake Email link");
+}
+if (/mailto:/i.test(css) || /anorbert@pm\.me/i.test(css)) {
+  fail("MailtoInHtml: stylesheet must not contain mailto: or the contact address");
 }
 
 for (const slug of WORK) {
