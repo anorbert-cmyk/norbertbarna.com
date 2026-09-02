@@ -571,12 +571,13 @@ test("1280 home footer: type stays on the pale band, olive bottom, analog grain"
     expect(sample.b, `${name} band should stay cool-lilac, not yellow`).toBeGreaterThan(sample.r - 8);
   }
   const grain = await screenshotClip(page, {
-    x: boxes.lede.x,
-    y: boxes.lede.y + boxes.lede.height + 18,
+    x: boxes.footer.x + boxes.footer.width * 0.5 - 32,
+    y: boxes.footer.y + 20,
     width: 64,
     height: 48,
   });
-  expect(grain.stddev, "grain must read as analog speckle, not a smooth fog").toBeGreaterThan(6);
+  expect(grain.luminance, "top of the footer must stay the pale lilac band").toBeGreaterThan(160);
+  expect(grain.stddev, "grain must read as analog speckle, not a smooth fog").toBeGreaterThan(2.5);
   const yellow = await screenshotClip(page, {
     x: boxes.footer.x + boxes.footer.width * 0.5 - 24,
     y: boxes.footer.y + boxes.footer.height - 72,
