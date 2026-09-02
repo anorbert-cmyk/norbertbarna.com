@@ -160,9 +160,10 @@ for (const page of ALL_PAGES) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
     if (count(html, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
-        !/<form\b[^>]*data-contact-form[^>]*action="mailto:anorbert@pm\.me"/i.test(html) ||
-        !/<button\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*type="submit"/i.test(html)) {
-      fail(`${page}: footer must expose one local email contact action`);
+        count(html, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 2 ||
+        !/<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="mailto:anorbert@pm\.me"/i.test(html) ||
+        !/<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(html)) {
+      fail(`${page}: footer must expose matching Email and LinkedIn icon buttons`);
     }
 
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
@@ -277,6 +278,8 @@ const cssContracts = [
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
   [/\.footer-contact-link[\s\S]*?min-height:\s*52px/i, "footer contact action is not touch-safe"],
+  [/\.footer-dunes[\s\S]*?min-height:/i, "footer dune field must reserve height"],
+  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer icons must be rounded squares, not pills"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
@@ -330,8 +333,9 @@ if (/smoothTouch/i.test(animationJs)) fail("touch smoothing must remain disabled
 if (/new\s+(?:window\.)?Lenis\b/i.test(animationJs)) fail("custom smooth scrolling must not override native scroll state");
 if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("enforceReducedMotion") ||
-    !animationJs.includes("window.ScrollTrigger.getAll()")) {
-  fail("runtime reduced-motion changes must stop active motion and media");
+    !animationJs.includes("window.ScrollTrigger.getAll()") ||
+    !animationJs.includes("function initFooterDunes()")) {
+  fail("runtime reduced-motion changes must stop active motion, media, and footer dunes");
 }
 if (/html:not\(\.nav-enhanced\)/i.test(responsiveCss)) fail("pre-enhancement navigation must not cause layout shift");
 if (animationJs.includes("enhanceVideoControls")) fail("the old click-to-play controller returned");

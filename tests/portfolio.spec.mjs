@@ -298,29 +298,66 @@ test("Kineticare case header contains exactly one media node and it autoplays", 
 });
 
 for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
-  test(`${route}: footer primary CTA is the local email form, not LinkedIn`, async ({ page }) => {
+  test(`${route}: footer lock — paper chrome, icon buttons, Work cases, no form`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openStable(page, route);
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     const footer = await page.evaluate(() => {
-      const cta = document.querySelector(".footer-cta");
-      const form = cta.querySelector("form[data-contact-form]");
-      const trap = form ? form.querySelector('input[name="company"]') : null;
-      const button = cta.querySelector("button.footer-contact-link");
-      const trapBox = trap ? trap.getBoundingClientRect() : null;
+      const root = document.querySelector("footer.footer-section");
+      const chrome = root.querySelector(".footer-chrome");
+      const icons = [...root.querySelectorAll("a.footer-contact-link")];
+      const work = [...root.querySelectorAll(".footer-dune-nav .footer-col:first-child a")].map((a) => ({
+        href: a.getAttribute("href"),
+        text: a.textContent.trim(),
+      }));
+      const email = icons[0];
+      const linkedin = icons[1];
+      const emailStyle = email ? getComputedStyle(email) : null;
       return {
-        hasLinkedIn: Boolean(cta.querySelector('a[href*="linkedin.com"]')),
-        action: form ? form.getAttribute("action") : "",
-        // The honeypot must be unreachable for humans: off-screen or zero-size,
-        // and removed from the tab order.
-        trapHidden: Boolean(trapBox && (trapBox.right <= 0 || trapBox.width <= 1) &&
-          trap.tabIndex === -1),
-        buttonText: button ? button.textContent.trim() : "",
+        paper: chrome ? getComputedStyle(chrome).backgroundColor : "",
+        lede: root.querySelector(".footer-lede")?.textContent.trim() || "",
+        copyright: root.querySelector(".footer-copyright")?.textContent.trim() || "",
+        form: Boolean(root.querySelector("form, .footer-hp, [data-contact-form]")),
+        iconCount: icons.length,
+        emailHref: email ? email.getAttribute("href") : "",
+        linkedinHref: linkedin ? linkedin.getAttribute("href") : "",
+        iconSize: email ? {
+          w: Math.round(email.getBoundingClientRect().width),
+          h: Math.round(email.getBoundingClientRect().height),
+          radius: emailStyle.borderRadius,
+        } : null,
+        work,
+        purple: /rgb\(\s*(1[89]\d|2\d\d)\s*,\s*(1[0-6]\d)\s*,\s*(2\d\d)/.test(
+          chrome ? getComputedStyle(chrome).backgroundColor : ""
+        ),
       };
     });
-    expect(footer.hasLinkedIn).toBe(false);
-    expect(footer.action).toBe("mailto:anorbert@pm.me");
-    expect(footer.trapHidden).toBe(true);
-    expect(footer.buttonText).toContain("anorbert@pm.me");
+    expect(footer.form).toBe(false);
+    expect(footer.lede).toBe("Product VP — I lead AI products in regulated finance and high-trust systems.");
+    expect(footer.copyright).toBe("© 2026 Norbert Barna");
+    expect(footer.iconCount).toBe(2);
+    expect(footer.emailHref).toBe("mailto:anorbert@pm.me");
+    expect(footer.linkedinHref).toBe("https://www.linkedin.com/in/barna-norbert/");
+    expect(footer.iconSize.w).toBe(52);
+    expect(footer.iconSize.h).toBe(52);
+    expect(footer.iconSize.radius).toBe("12px");
+    expect(footer.work.map((item) => item.href)).toEqual([
+      "/work/raiffeisen",
+      "/work/instructure",
+      "/work/bitpanda",
+      "/work/kineticare",
+    ]);
+    expect(footer.purple).toBe(false);
+    expect(footer.paper).toBe("rgb(243, 246, 247)");
+
+    const email = page.locator("footer a.footer-contact-link").first();
+    await email.hover();
+    const hover = await email.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return { bg: style.backgroundColor, color: style.color };
+    });
+    expect(hover.bg).toBe("rgb(0, 0, 0)");
+    expect(hover.color).toBe("rgb(255, 255, 255)");
   });
 }
 

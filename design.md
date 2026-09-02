@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer email action to `anorbert@pm.me` (real address, honeypot-guarded, no third-party form service). Footer is a light paper slab with brand + CTA, Work/Site directories, a copyright bar, and a case-color grain wash at the bottom — not a dark void and not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer Email + LinkedIn outlined icon buttons. Email is `mailto:anorbert@pm.me`. Footer is cool-paper chrome (`#f3f6f7`, in the `#FFFFFF`–`#E0EAEC` range) with the existing `nb` wordmark, then stacked case-color dunes — not a dark void, not a lavender wash, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -66,7 +66,8 @@ The executive path on `/` is: name, role, one complete shipped UI, how to
 see the work, how to reach him. The audit path is the case studies.
 
 Do not invent metrics or emails. The one real contact address is
-`anorbert@pm.me`; the footer email action targets it and nothing else.
+`anorbert@pm.me`; the footer Email icon and Contact line target it and
+nothing else. Do not put a multi-field form back in the footer.
 Do not restore removed SportsGambit figures (`35% first-day activation`,
 `70% of wagers`).
 
@@ -136,10 +137,33 @@ Do not add a third family. Do not generate letterforms.
 | OnRobot | `#ecf2f5` | `#111` |
 | Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
-Site chrome (nav, home) stays ink on paper. Case color is only the case
-header field — except the footer atmosphere wash, which may reuse the
-locked case field colors as a soft bottom grain (no new palette, no
-generated image).
+Site chrome (nav, home, footer paper) stays ink on cool paper. Case color
+is the case header field and the locked footer dune ridges (Instructure
+navy, Bitpanda teal, SportsGambit lime, Raiffeisen `#FFE000`). Do not
+wash the footer in Benker lavender, OnRobot pale, candy pink, or purple.
+
+**Locked footer**
+
+One site-wide footer on every content page (same markup; work pages only
+change the asset prefix). Composition, top to bottom:
+
+1. Cool-paper chrome behind the existing `NB.svg` wordmark (not a new
+   logo) and the line `Product VP — I lead AI products in regulated
+   finance and high-trust systems.` Do not use “AI Product Design Lead”
+   in the footer.
+2. Two matching outlined rounded-square icon buttons, 52×52, same size:
+   Email (envelope, `mailto:anorbert@pm.me`) then LinkedIn (existing
+   `https://www.linkedin.com/in/barna-norbert/` URL). Rest: navy outline
+   on paper. Hover/focus: black fill, white glyph. Not a black pill.
+3. Organic stacked sand-dune ridges (Ironclad-style morphology) with
+   analog film grain. Pointer-follow parallax on the dune layers when
+   motion is on (`PortfolioMedia` / `prefers-reduced-motion`). When
+   motion is off, dunes stay still; button hover still works.
+4. Work column on the navy dune: Raiffeisen, Instructure, Bitpanda,
+   Kineticare — existing case URLs only. Do not invent AI Governance or
+   add Benker / SportsGambit / OnRobot / BlackRock here.
+5. Contact column: Email / `anorbert@pm.me`.
+6. Copyright on the lime dune: `© 2026 Norbert Barna`.
 
 **Logo:** existing `NB.svg`. Do not generate a new mark. Do not put
 `BARNANORBERT.COM` in the case hero.
@@ -268,14 +292,14 @@ English-wash the screenshot.
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
-| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer grain wash may only use locked case field colors + SVG noise — never a generated landscape image or a third palette |
-| SaaSFooter | Product / Company / Resources / Legal columns, social icon tiles, or a LinkedIn primary CTA | Keep Work + Site directories, email form to `anorbert@pm.me`, no LinkedIn in the footer |
+| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer dunes may only use the four locked case fills + SVG noise — never a generated landscape, Benker lavender, or a third palette |
+| SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles, or a black-pill contact | Two outlined Email + LinkedIn squares; Work/Contact on the navy dune; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
-| BlogFooterCTA | Footer primary action pointing at LinkedIn or a third-party form | Local email action to `anorbert@pm.me` with a honeypot |
+| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | Icon + `mailto:anorbert@pm.me`; LinkedIn is the matching square, not the primary close |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 
@@ -296,10 +320,10 @@ Agents compose pages from these names. Do not invent parallel components.
 
 **Chrome:** `.skip-to-content` `.navbar` `.nav-logo-wrap` `.nav-breadcrumb`
 `.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
-`.footer-atmosphere` `.footer-main` `.footer-cta` `.footer-brand`
-`.footer-brand-name` `.footer-brand-dek` `.footer-directories` `.footer-dir`
-`.footer-dir-title` `.footer-dir-list` `.footer-bar` `.footer-copy`
-`.footer-contact-form` `.footer-hp` `.footer-contact-link` `.back-to-top-wrap`
+`.footer-chrome` `.footer-ident` `.footer-brand` `.footer-wordmark`
+`.footer-lede` `.footer-cta` `.footer-contact-link` `.footer-dunes`
+`.footer-dune-nav` `.footer-col` `.footer-col-title` `.footer-copyright`
+`.back-to-top-wrap`
 
 **Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
 `.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link` `.hero-proof`
@@ -312,14 +336,16 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer contact min-height 52px.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer icon buttons 52×52.
 
 ## Motion
 
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis).
-Respect `prefers-reduced-motion`. Do not add a visible Motion toggle, Three.js,
-particles, or generated Lottie. Hide `.case-motion-rail`. Default to stillness
-for anything new.
+Respect `prefers-reduced-motion` and `PortfolioMedia.isReduced()`. Do not
+add a visible Motion toggle, Three.js, particles, or generated Lottie.
+Hide `.case-motion-rail`. Default to stillness for anything new except
+the locked footer dune pointer-follow, which must freeze when motion is
+off.
 
 ## Eval rubric (first attempt must pass)
 
