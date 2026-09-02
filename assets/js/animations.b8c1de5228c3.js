@@ -242,12 +242,8 @@
     }
 
     function resetLayers() {
-      x = 0;
-      y = 0;
-      targetX = 0;
-      targetY = 0;
       layers.forEach(function (layer) {
-        layer.style.transform = "none";
+        layer.style.transform = "translate3d(0,0,0)";
       });
     }
 
@@ -259,10 +255,6 @@
       }
       x += (targetX - x) * 0.08;
       y += (targetY - y) * 0.08;
-      if (motionOff()) {
-        resetLayers();
-        return;
-      }
       layers.forEach(function (layer) {
         var depth = parseFloat(layer.getAttribute("data-depth")) || 0;
         layer.style.transform = "translate3d(" + (x * depth) + "px," + (y * depth) + "px,0)";

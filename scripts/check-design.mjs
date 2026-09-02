@@ -83,7 +83,7 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
-if (/footer-atmosphere/.test(design) === false) fail("design.md must document footer-atmosphere");
+if (/footer-dunes/.test(design) === false) fail("design.md must document footer-dunes");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
   fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
 }
@@ -162,34 +162,74 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
   fail("HiddenMontage: Instructure video must fill the 16:9 frame (inset 0, z-index 0)");
 }
 
-// Footer contact lock: a local email action to anorbert@pm.me guarded by a
-// honeypot; the primary footer CTA is never LinkedIn or a third-party form.
+// Locked footer: cool-paper chrome, Email + LinkedIn icon buttons, Work/Contact
+// on the navy dune, analog grain. No form, no sitemap, no lavender wash.
 const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`)];
+const footerCanon = footerPages.map((page) => {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
+  return footer.replaceAll("../assets/", "assets/");
+});
+if (new Set(footerCanon).size !== 1) {
+  fail("site-wide footer markup must match across pages (asset prefix aside)");
+}
+if (!/\.footer-section[\s\S]{0,240}#f3f6f7/.test(css) && !/--footer-paper:\s*#f3f6f7/.test(css)) {
+  fail("footer chrome must be cool paper, not a dark or lavender band");
+}
+if (/footer-atmosphere|#d9daf2|#5b45ff/.test(css.slice(css.indexOf(".footer-section"), css.indexOf(".footer-section") + 8000))) {
+  fail("footer stylesheet must not restore the lavender atmosphere wash");
+}
+if (!/#FFE000/.test(css) && !/#ffe000/.test(footerCanon[0])) {
+  fail("footer dunes must include Raiffeisen #FFE000");
+}
+if (!/\.footer-section a\.footer-contact-link:hover[\s\S]{0,160}background-color:\s*#000/.test(css)) {
+  fail("footer icon hover must fill black via background-color (not a delayed shorthand)");
+}
 for (const page of footerPages) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
-  if (!footer.includes("footer-cta")) {
-    fail(`${page}: footer CTA block is missing`);
+  if (!footer.includes("footer-cta") || !footer.includes("footer-dunes") || !footer.includes("data-footer-dunes")) {
+    fail(`${page}: locked footer chrome + dunes are missing`);
     continue;
   }
-  if (!footer.includes("footer-atmosphere") || !footer.includes("footer-directories") || !footer.includes("footer-bar")) {
-    fail(`${page}: footer must keep atmosphere + Work/Site directories + copyright bar`);
+  if (/Product<\/h3>|Company<\/h3>|Resources<\/h3>|Legal<\/h3>/.test(footer) ||
+      /instagram|youtube|twitter\.com|\bx\.com\b/i.test(footer)) {
+    fail(`SaaSFooter: ${page} must not ship sitemap columns or extra socials`);
   }
-  if (/Product<\/h3>|Company<\/h3>|Resources<\/h3>|Legal<\/h3>/.test(footer)) {
-    fail(`SaaSFooter: ${page} must not ship Product/Company/Resources/Legal columns`);
+  if (/data-contact-form|footer-hp|footer-contact-form/.test(footer)) {
+    fail(`${page}: footer must not restore the multi-field email form`);
   }
-  if (/linkedin\.com/i.test(footer)) {
-    fail(`BlogFooterCTA: ${page} footer primary CTA must not be LinkedIn`);
+  if (/AI Product Design Lead|AI Governance|BlackRock|All rights reserved/.test(footer)) {
+    fail(`${page}: footer copy is off the lock`);
   }
-  if (!/data-contact-form/.test(footer) || !/action="mailto:anorbert@pm\.me"/.test(footer)) {
-    fail(`${page}: footer must be a local email form targeting anorbert@pm.me`);
+  if (!footer.includes("Product VP — I lead AI products in regulated finance and high-trust systems.")) {
+    fail(`${page}: footer must use the Product VP line`);
   }
-  if (!/<input[^>]*name="company"[^>]*tabindex="-1"/.test(footer) ||
-      !/class="footer-hp"[^>]*aria-hidden="true"/.test(footer)) {
-    fail(`${page}: footer email form is missing the spam honeypot`);
+  if (!footer.includes("© 2026 Norbert Barna") || /All rights reserved/.test(footer)) {
+    fail(`${page}: copyright must be © 2026 Norbert Barna`);
   }
-  if (!/<button[^>]*class="footer-contact-link"[^>]*type="submit"/.test(footer)) {
-    fail(`${page}: footer email action must be the primary contact button`);
+  const iconLinks = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+  if (iconLinks.length !== 2) {
+    fail(`${page}: footer needs exactly two icon buttons (Email + LinkedIn)`);
+  } else {
+    if (!/mailto:anorbert@pm\.me/.test(iconLinks[0])) {
+      fail(`${page}: first footer icon must be mailto:anorbert@pm.me`);
+    }
+    if (!/linkedin\.com\/in\/barna-norbert/.test(iconLinks[1])) {
+      fail(`${page}: second footer icon must reuse the site LinkedIn URL`);
+    }
+  }
+  const workHrefs = [...footer.matchAll(/href="(\/work\/[^"]+)"/g)].map((m) => m[1]);
+  if (JSON.stringify(workHrefs) !== JSON.stringify([
+    "/work/raiffeisen", "/work/instructure", "/work/bitpanda", "/work/kineticare",
+  ])) {
+    fail(`${page}: Work column must be Raiffeisen, Instructure, Bitpanda, Kineticare (got ${workHrefs.join(", ")})`);
+  }
+  if (!/#0c1b2f/.test(footer) || !/#203d36/.test(footer) || !/#aaed15/.test(footer) || !/#FFE000/.test(footer)) {
+    fail(`${page}: dune SVG must use navy, teal, lime, and #FFE000`);
+  }
+  if (!footer.includes("68f9e9de8ed08e31e52c4188_NB.svg")) {
+    fail(`${page}: footer must reuse the existing nb wordmark`);
   }
   const mailtos = [...html.matchAll(/mailto:([^"'?\s>]+)/gi)].map((m) => m[1]);
   if (mailtos.some((address) => address !== "anorbert@pm.me")) {
