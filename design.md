@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer Email + LinkedIn outlined icon buttons. Email is `mailto:anorbert@pm.me`. Footer is cool-paper chrome (`#f3f6f7`, in the `#FFFFFF`–`#E0EAEC` range) with the existing `nb` wordmark, then stacked case-color dunes — not a dark void, not a lavender wash, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer Email + LinkedIn outlined icon buttons. Email is `mailto:anorbert@pm.me`. Footer is cool-paper chrome (`#f1f3f2`, in the `#FFFFFF`–`#E0EAEC` range) with the existing `nb` wordmark, then stacked lit sand dunes — not a dark void, not a lavender wash, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -138,8 +138,9 @@ Do not add a third family. Do not generate letterforms.
 | Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
 Site chrome (nav, home, footer paper) stays ink on cool paper. Case color
-is the case header field and the locked footer dune ridges (Instructure
-navy, Bitpanda teal, SportsGambit lime, Raiffeisen `#FFE000`). Do not
+is the case header field. Footer dune *families* stay Raiffeisen `#FFE000`,
+Bitpanda teal, Instructure navy, SportsGambit lime — the PNG lock is sampled
+body / crest / trough inside those families, not a flat named fill. Do not
 wash the footer in Benker lavender, OnRobot pale, candy pink, or purple.
 
 **Locked footer**
@@ -147,26 +148,29 @@ wash the footer in Benker lavender, OnRobot pale, candy pink, or purple.
 One site-wide footer on every content page (same markup; work pages only
 change the asset prefix). Composition, top to bottom:
 
-1. Cool-paper chrome behind the existing `NB.svg` wordmark (not a new
-   logo) and the line `Product VP — I lead AI products in regulated
-   finance and high-trust systems.` Do not use “AI Product Design Lead”
-   in the footer.
+1. Cool-paper chrome (`#f1f3f2`) behind the existing `NB.svg` wordmark (not a
+   new logo) and the line `Product VP — I lead AI products in regulated
+   finance and high-trust systems.` Em dash. Do not use “AI Product Design
+   Lead” in the footer. Dedicated paper grain on `.footer-chrome` only
+   (`multiply`, opacity ~0.06, `baseFrequency` 1.35). Not the sand filter.
 2. Two matching outlined rounded-square icon buttons, 52×52, same size:
-   Email (envelope, `mailto:anorbert@pm.me`) then LinkedIn (existing
-   `https://www.linkedin.com/in/barna-norbert/` URL). Rest: navy outline
-   on paper. Hover/focus: black fill, white glyph. Not a black pill.
-3. Organic stacked sand-dune ridges (Ironclad-style morphology) with
-   analog film grain. Yellow is a lock-traced crest: a left-center hill
-   against the paper, then teal, then navy as the field, then lime
-   rising from the bottom right — not a jagged strip and not a flat
-   `#FFE000` slab. Pointer-follow parallax on the dune layers when
-   motion is on (`PortfolioMedia` / `prefers-reduced-motion`). When
-   motion is off, dunes stay still; button hover still works.
+   Email (envelope stroke, `mailto:anorbert@pm.me`) then LinkedIn (existing
+   `https://www.linkedin.com/in/barna-norbert/` URL). Rest: navy `#01112F`
+   outline on paper. Hover/focus: black fill, white glyph. Not a black pill.
+   Do not draw a mouse cursor.
+3. Four stacked sand-dune ridges (Ironclad-style). Each ridge is albedo +
+   crest lighting + per-layer sand grain (own `seed`) + contact shadow on
+   the ridge below. Yellow is a full-width back plate so paper never peeks.
+   Lime is a bottom-right peak only. Do not flatten this to four solid fills
+   plus one global grain overlay. Grain is static. Pointer-follow parallax
+   on `.footer-dune-layer` when motion is on; when motion is off, dunes stay
+   still (`transform: none`, lerp zeroed) and button hover still works.
 4. Work column on the navy dune: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
-5. Contact column: Email / `anorbert@pm.me`.
-6. Copyright on the lime dune: `© 2026 Norbert Barna`.
+5. Contact column: Email / `anorbert@pm.me`. 1px white divider (~45%)
+   between the columns, only as tall as the lists.
+6. Copyright on the lime dune: `© 2026 Norbert Barna` in navy, not white.
 
 **Logo:** existing `NB.svg`. Do not generate a new mark. Do not put
 `BARNANORBERT.COM` in the case hero.
@@ -295,8 +299,9 @@ English-wash the screenshot.
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
-| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer dunes may only use the four locked case fills + SVG noise — never a generated landscape, Benker lavender, or a third palette |
-| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is the organic horizon against paper; navy holds the lower field via SVG, not a crop-line |
+| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer dunes stay inside the four case-color families + sand grain — never a generated landscape, Benker lavender, or a third palette |
+| YellowDuneSlab | Footer dune field filled as a flat `#FFE000` rectangle under the chrome | Yellow is a full-width back plate with sampled body/crest/trough, not a named-hex slab |
+| FlatDuneGrain | Four solid fills plus one global grain rectangle/overlay on the whole footer | Each ridge: albedo + crest light + clipped sand grain (own seed) + contact shadow |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles, or a black-pill contact | Two outlined Email + LinkedIn squares; Work/Contact on the navy dune; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |

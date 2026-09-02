@@ -348,13 +348,30 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
       "/work/kineticare",
     ]);
     expect(footer.purple).toBe(false);
-    expect(footer.paper).toBe("rgb(243, 246, 247)");
+    expect(footer.paper).toBe("rgb(241, 243, 242)");
+    const duneLock = await page.evaluate(() => {
+      const root = document.querySelector("footer.footer-section");
+      return {
+        globalGrain: Boolean(root.querySelector(".footer-dunes-grain, .footer-dunes-noise")),
+        sand: Boolean(root.querySelector("#sand-grain-1") && root.querySelector("#sand-grain-4")),
+        lighting: Boolean(root.querySelector("#dune-lit-yellow") && root.querySelector("#dune-cast")),
+        yellowBody: Boolean(root.querySelector('path[fill="#DCA30C"]')),
+      };
+    });
+    expect(duneLock.globalGrain).toBe(false);
+    expect(duneLock.sand).toBe(true);
+    expect(duneLock.lighting).toBe(true);
+    expect(duneLock.yellowBody).toBe(true);
 
     const email = page.locator("footer a.footer-contact-link").first();
+    const linkedin = page.locator("footer a.footer-contact-link").nth(1);
     await email.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
     await email.hover({ force: true });
     await expect(email).toHaveCSS("background-color", "rgb(0, 0, 0)");
     await expect(email).toHaveCSS("color", "rgb(255, 255, 255)");
+    await linkedin.hover({ force: true });
+    await expect(linkedin).toHaveCSS("background-color", "rgb(0, 0, 0)");
+    await expect(linkedin).toHaveCSS("color", "rgb(255, 255, 255)");
 
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("no-motion"))).toBe(true);
