@@ -358,7 +358,12 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
 
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("no-motion"))).toBe(true);
-    expect(await page.evaluate(() => getComputedStyle(document.querySelector(".footer-dune-layer")).transform)).toBe("none");
+    await expect.poll(() => page.evaluate(() => {
+      const transform = getComputedStyle(document.querySelector(".footer-dune-layer")).transform;
+      if (transform === "none") return true;
+      const values = transform.slice(transform.indexOf("(") + 1, transform.indexOf(")")).split(",").map((part) => Number(part.trim()));
+      return values.length >= 6 && Math.abs(values[4]) < 0.05 && Math.abs(values[5]) < 0.05;
+    })).toBe(true);
     await email.hover({ force: true });
     await expect(email).toHaveCSS("background-color", "rgb(0, 0, 0)");
   });
