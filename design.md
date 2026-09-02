@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer email action to `anorbert@pm.me` (real address, honeypot-guarded, no third-party form service) |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer email action to `anorbert@pm.me` (real address, honeypot-guarded, no third-party form service). Footer is a light paper slab with brand + CTA, Work/Site directories, a copyright bar, and a case-color grain wash at the bottom — not a dark void and not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -136,8 +136,10 @@ Do not add a third family. Do not generate letterforms.
 | OnRobot | `#ecf2f5` | `#111` |
 | Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
-Site chrome (nav, footer, home) stays ink on paper. Case color is only the
-case header field.
+Site chrome (nav, home) stays ink on paper. Case color is only the case
+header field — except the footer atmosphere wash, which may reuse the
+locked case field colors as a soft bottom grain (no new palette, no
+generated image).
 
 **Logo:** existing `NB.svg`. Do not generate a new mark. Do not put
 `BARNANORBERT.COM` in the case hero.
@@ -266,7 +268,8 @@ English-wash the screenshot.
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
-| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI |
+| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer grain wash may only use locked case field colors + SVG noise — never a generated landscape image or a third palette |
+| SaaSFooter | Product / Company / Resources / Legal columns, social icon tiles, or a LinkedIn primary CTA | Keep Work + Site directories, email form to `anorbert@pm.me`, no LinkedIn in the footer |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
@@ -293,8 +296,10 @@ Agents compose pages from these names. Do not invent parallel components.
 
 **Chrome:** `.skip-to-content` `.navbar` `.nav-logo-wrap` `.nav-breadcrumb`
 `.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
-`.footer-cta` `.footer-contact-form` `.footer-hp` `.footer-contact-link`
-`.back-to-top-wrap`
+`.footer-atmosphere` `.footer-main` `.footer-cta` `.footer-brand`
+`.footer-brand-name` `.footer-brand-dek` `.footer-directories` `.footer-dir`
+`.footer-dir-title` `.footer-dir-list` `.footer-bar` `.footer-copy`
+`.footer-contact-form` `.footer-hp` `.footer-contact-link` `.back-to-top-wrap`
 
 **Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
 `.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link` `.hero-proof`
