@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. One Email CTA (no Contact column). Footer is one full-bleed analog-grain mesh (greyer-lilac type band, navy horizon under the type, olive-chartreuse bottom) — not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. One Email CTA (no Contact column). Footer is one full-bleed analog-grain mesh (greyer-lilac type band, navy **dome** under the type, olive-chartreuse **semicircle** biting from below) — not a thin navy stripe, not a flat yellow slab, not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -144,9 +144,12 @@ Do not add a third family. Do not generate letterforms.
 Site chrome (nav, home) stays ink on cool paper. Case color is the case
 header field. The footer mesh **pixel-matches the accepted lock crop**, not
 the raw case hexes: greyer-lilac `#D6D4ED` on the type band, Instructure navy
-`#0A1628` as a horizon under the type, Bitpanda forest `#1B3A32` as a quiet
-accent, olive-chartreuse `#BDB414` on the bottom third. Do not use bright
-Benker `#E1E1F5`, neon `#FFE000`, or SportsGambit `#A8D800` in the footer.
+`#0A1628` as a **dome** under the type (~31% of field height, starting ~49%
+down), Bitpanda forest `#1B3A32` as a quiet accent, olive-chartreuse `#BDB414`
+as a **semicircle biting up from below**. The desktop field is ~3:2
+(`min(66.667vw, 960px)` — about 960px tall at 1440px) so that dome can exist.
+Do not crush it into a ~680px slab. Do not use bright Benker `#E1E1F5`, neon
+`#FFE000`, or SportsGambit `#A8D800` in the footer.
 Do not restore stacked Ironclad dune ridges. Do not wash the field in candy
 pink, magenta, or `#5b45ff`.
 
@@ -170,11 +173,14 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    fake link. Hover is a light ink wash; keep the outline and black ink. Do
    not draw a mouse cursor. Do not make Email a 44px square with tiny type.
 3. Mesh field: greyer-lilac `#D6D4ED` type band, a readable navy `#0A1628`
-   horizon **under** the type, muted olive-chartreuse `#BDB414` in the bottom
-   third. Soft SVG blur only (`feGaussianBlur` ≤ 28). No extra CSS blur on
-   `.footer-mesh-art`. Heavy static analog film grain (speckle, not a faint
-   multiply fog). No stacked SVG dune paths, no crest lighting per ridge,
-   no pointer parallax. Grain does not crawl.
+   **dome** under the type (not a thin horizon stripe), muted olive-chartreuse
+   `#BDB414` biting that dome from below as a **circular / semicircle curve**.
+   Desktop field ~3:2 so the forms have height. Soft SVG blur only
+   (`feGaussianBlur` ≤ 28). No extra CSS blur on `.footer-mesh-art`. Heavy
+   static analog film grain (speckle, not a faint multiply fog). No stacked
+   SVG dune paths, no crest lighting per ridge, no pointer parallax. Grain
+   does not crawl. Do not replace the yellow semicircle with a full-width
+   rectangle slab.
 4. Work column, right, dark type: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
@@ -312,11 +318,12 @@ English-wash the screenshot.
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
-| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays on the lock crop (greyer-lilac, navy horizon, olive-chartreuse) — never Ironclad dunes, candy pink, or a third palette |
+| AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays on the lock crop (greyer-lilac, navy dome, olive-chartreuse semicircle) — never Ironclad dunes, candy pink, or a third palette |
 | YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
+| SausageBand | Navy is a thin full-width ellipse (~8% of field height, `ry` ≪ field) then a flat yellow rectangle | Taller ~3:2 field; navy is a large dome; yellow is a semicircle bite from below, not a sausage-then-slab |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type |
+| NavyFlood | Navy mesh blob bleeds up under Work so ink contrast dies | Keep type on the pale lilac band; navy is a dome under the type |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |

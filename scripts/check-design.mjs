@@ -83,6 +83,7 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
+if (/SausageBand/.test(design) === false) fail("design.md must name the SausageBand anti-pattern");
 if (/FlatDuneGrain/.test(design) === false) fail("design.md must name the FlatDuneGrain anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
 if (/FogGrain/.test(design) === false) fail("design.md must name the FogGrain anti-pattern");
@@ -220,9 +221,29 @@ if (!/footer-mesh/.test(footerCanon[0]) || !/mesh-blur/.test(footerCanon[0])) {
 if (!/#D6D4ED/.test(footerCanon[0]) || !/#0A1628/.test(footerCanon[0]) || !/#BDB414/.test(footerCanon[0])) {
   fail("mesh blobs must use lock lilac, navy, and olive-chartreuse");
 }
+if (!/viewBox="0 0 1600 1067"/.test(footerCanon[0])) {
+  fail("SausageBand: mesh viewBox must be ~3:2 (1600×1067) so the dome and semicircle can exist");
+}
+if (/ry="72"/.test(footerCanon[0]) || /rx="1800"[\s\S]{0,80}fill="#0A1628"/.test(footerCanon[0])) {
+  fail("SausageBand: navy must be a dome, not a thin rx=1800 ry=72 stripe");
+}
+if (/<rect[^>]*fill="#BDB414"/.test(footerCanon[0])) {
+  fail("SausageBand: yellow must be a semicircle ellipse, not a rectangle slab");
+}
+const navyRy = Number((footerCanon[0].match(/<ellipse[^>]*ry="([0-9.]+)" fill="#0A1628"/) || [])[1]);
+if (!navyRy || navyRy < 180) {
+  fail("SausageBand: navy ellipse ry must be a dome (≥ 180 in the 1067-tall viewBox)");
+}
+const yellowBite = footerCanon[0].match(/<ellipse cx="800" cy="1067" rx="([0-9.]+)" ry="([0-9.]+)" fill="#BDB414"/);
+if (!yellowBite || Number(yellowBite[2]) < 240) {
+  fail("SausageBand: yellow must bite from the bottom as a semicircle (cy=1067, ry ≥ 240)");
+}
+if (!/min-height:\s*min\(66\.667vw,\s*960px\)/.test(css)) {
+  fail("SausageBand: desktop footer field must be ~3:2 (min(66.667vw, 960px)), not a 680px crush");
+}
 const blurMatch = footerCanon[0].match(/<feGaussianBlur stdDeviation="([0-9.]+)"/);
 if (!blurMatch || Number(blurMatch[1]) > 28) {
-  fail("NavyFlood: mesh SVG blur must stay ≤ 28 so the navy horizon does not flood the type band");
+  fail("NavyFlood: mesh SVG blur must stay ≤ 28 so the navy dome does not flood the type band");
 }
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");

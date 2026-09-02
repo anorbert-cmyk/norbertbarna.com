@@ -668,6 +668,48 @@ test("1280 home footer: type stays on the pale band, olive bottom, analog grain"
   expect(yellow.g).toBeGreaterThan(110);
 });
 
+test("1280 home footer: navy/yellow boundary is a semicircle, not a sausage band", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openStable(page, "/");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(80);
+  const footer = await page.evaluate(() => {
+    const box = document.querySelector("footer.footer-section").getBoundingClientRect();
+    return { x: box.x, y: box.y, width: box.width, height: box.height };
+  });
+  expect(footer.height, "desktop field must be tall enough for a dome (~3:2)").toBeGreaterThan(800);
+
+  const isYellow = (sample) => sample.r > 120 && sample.g > 110 && sample.b < 95 && sample.luminance > 90;
+  const sampleAt = (fx, fy) => screenshotClip(page, {
+    x: Math.max(0, footer.x + footer.width * fx - 10),
+    y: footer.y + footer.height * fy,
+    width: 20,
+    height: 12,
+  });
+
+  async function yellowOnset(fx) {
+    for (let fy = 0.48; fy <= 0.98; fy += 0.02) {
+      if (isYellow(await sampleAt(fx, fy))) return fy;
+    }
+    return 1;
+  }
+
+  const centerOnset = await yellowOnset(0.5);
+  const sideOnset = await yellowOnset(0.14);
+  expect(centerOnset, "yellow must bite higher in the center (semicircle)").toBeLessThan(sideOnset - 0.05);
+  expect(centerOnset).toBeGreaterThan(0.52);
+  expect(centerOnset).toBeLessThan(0.84);
+
+  const biteY = (centerOnset + sideOnset) / 2;
+  const midCenter = await sampleAt(0.5, biteY);
+  const midSide = await sampleAt(0.12, biteY);
+  expect(isYellow(midCenter), "center of the bite must be yellow").toBe(true);
+  expect(midSide.luminance, "sides at the bite must still be navy, not a flat yellow slab").toBeLessThan(85);
+
+  const navyBand = await sampleAt(0.45, 0.55);
+  expect(navyBand.luminance, "navy must be a large dome under the type, not a thin stripe").toBeLessThan(85);
+});
+
 test("/contact stays unpublished", async ({ request }) => {
   const response = await request.get("/contact");
   expect(response.status()).toBe(404);
@@ -698,6 +740,18 @@ test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top"
   expect(stack.contactHeading).toBe(false);
   expect(stack.workTop).toBeGreaterThan(stack.identBottom - 1);
   expect(stack.copyLeft).toBeLessThan(stack.footerLeft + 80);
+
+  const work = await page.evaluate(() => {
+    const title = document.querySelector(".footer-col-title").getBoundingClientRect();
+    return { x: title.x, y: title.y, width: title.width, height: title.height };
+  });
+  const workBand = await screenshotClip(page, {
+    x: Math.max(0, work.x - 24),
+    y: work.y + 2,
+    width: 16,
+    height: 14,
+  });
+  expect(workBand.luminance, "390 Work must sit on the pale lilac band, not the navy dome").toBeGreaterThan(140);
 });
 
 test("1280 home selected work: Kineticare present, 7/5 grid, no stagger hole, stable title color", async ({ page }) => {
