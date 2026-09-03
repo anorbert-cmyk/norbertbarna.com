@@ -312,6 +312,11 @@ invented descriptions from the compact-row mock.
 **Works fold:** H1 `Works`, two-line intro max, first card (Raiffeisen)
 visible in a 900px-tall desktop viewport. No “these aren’t mockups” line.
 
+**Home professional experience:** paper cards until hover (fine pointer) or
+tap / Enter (coarse and keyboard). Then the existing award video fills the
+card (`inset: 0; object-fit: cover`). Not a 500px Webflow strip. Compact
+does not hide the wrap. Reduced motion keeps the paper card.
+
 **Case header (one template, color varies)**
 
 1. Sticky site bar with the breadcrumb `Works / {Project}` inside it
@@ -406,6 +411,7 @@ English-wash the screenshot.
 | BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined `Email` button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
+| TightAwardVideo | Professional-experience hover/tap shows a 500px Webflow strip or `inset: -100%` file, or compact hides the wrap | `.awards-bg-video > video` fills the card (`inset: 0; object-fit: cover`). Hover, focus, and tap (`.is-award-on`) all reveal the same full-bleed fill. Do not `display: none` the wrap on compact. Reduced motion keeps the paper card |
 
 ## Reject generated-design reflexes
 

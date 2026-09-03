@@ -1423,6 +1423,79 @@ test("390 home mast type meets WCAG AA on lilac, navy sits under the last highli
   expect(dome.luminance, "navy félkör still occupies the compact lower field").toBeLessThan(90);
 });
 
+async function awardFill(page, card) {
+  return card.evaluate((el) => {
+    const wrap = el.querySelector(".awards-bg-video-wrap");
+    const frame = el.querySelector(".awards-bg-video");
+    const video = el.querySelector("video");
+    if (!wrap || !frame || !video) return null;
+    const cardBox = el.getBoundingClientRect();
+    const wrapBox = wrap.getBoundingClientRect();
+    const frameBox = frame.getBoundingClientRect();
+    const videoBox = video.getBoundingClientRect();
+    const cover = (inner, outer) => {
+      const overlapW = Math.max(0, Math.min(inner.right, outer.right) - Math.max(inner.left, outer.left));
+      const overlapH = Math.max(0, Math.min(inner.bottom, outer.bottom) - Math.max(inner.top, outer.top));
+      const area = outer.width * outer.height;
+      return area ? (overlapW * overlapH) / area : 0;
+    };
+    const style = getComputedStyle(video);
+    return {
+      wrapDisplay: getComputedStyle(wrap).display,
+      wrapOpacity: Number.parseFloat(getComputedStyle(wrap).opacity),
+      wrapFill: cover(wrapBox, cardBox),
+      frameFill: cover(frameBox, cardBox),
+      videoFill: cover(videoBox, cardBox),
+      inset: style.inset,
+      objectFit: style.objectFit,
+      cardW: cardBox.width,
+      cardH: cardBox.height,
+      videoW: videoBox.width,
+      videoH: videoBox.height,
+    };
+  });
+}
+
+test("1440 experience card hover fills the card with the award video", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openStable(page, "/");
+  const card = page.locator(".awards-card").first();
+  await card.scrollIntoViewIfNeeded();
+  const rest = await awardFill(page, card);
+  expect(rest.wrapDisplay, "desktop wrap stays in layout").not.toBe("none");
+  expect(rest.wrapOpacity, "video stays off until hover").toBeLessThan(0.2);
+  await card.hover();
+  await expect.poll(() => awardFill(page, card).then((info) => info.wrapOpacity)).toBeGreaterThan(0.9);
+  const hot = await awardFill(page, card);
+  expect(hot.wrapFill, "wrap covers the card").toBeGreaterThan(0.98);
+  expect(hot.frameFill, "500px Webflow frame must not sit as a tight strip").toBeGreaterThan(0.98);
+  expect(hot.videoFill, "video file must cover the card").toBeGreaterThan(0.98);
+  expect(hot.inset).toMatch(/^(0px|0)$/);
+  expect(hot.objectFit).toBe("cover");
+});
+
+test.describe("compact award tap", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  test("390 experience card tap fills the card with the award video", async ({ page }) => {
+    await openStable(page, "/");
+    const card = page.locator(".awards-card").first();
+    await card.scrollIntoViewIfNeeded();
+    const rest = await awardFill(page, card);
+    expect(rest.wrapDisplay, "compact must not hide the award video wrap").not.toBe("none");
+    expect(rest.wrapOpacity, "video stays off until tap").toBeLessThan(0.2);
+    await card.tap();
+    await expect.poll(() => page.locator(".awards-card").first().evaluate((el) => el.classList.contains("is-award-on"))).toBe(true);
+    await expect.poll(() => awardFill(page, card).then((info) => info.wrapOpacity)).toBeGreaterThan(0.9);
+    const hot = await awardFill(page, card);
+    expect(hot.wrapFill, "wrap covers the compact card").toBeGreaterThan(0.98);
+    expect(hot.frameFill, "compact video frame must fill the card, not a tight strip").toBeGreaterThan(0.98);
+    expect(hot.videoFill, "compact video file must cover the card").toBeGreaterThan(0.98);
+    expect(hot.inset).toMatch(/^(0px|0)$/);
+    expect(hot.objectFit).toBe("cover");
+  });
+});
+
 for (const [width, expected] of [[1280, 64], [390, 56]]) {
   test(`${width}: header is a sticky white ${expected}px bar with the locked border`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
