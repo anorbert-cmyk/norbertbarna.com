@@ -111,8 +111,11 @@ if (worksLd) {
     fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
   }
 }
-if (!/"jobTitle": "AI Product Design Lead"/.test(home)) {
-  fail("home JSON-LD jobTitle must match the locked H1");
+if (!/"jobTitle": "Product VP"/.test(home)) {
+  fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
+}
+if (!/"name": "Norbert Barna — Product VP"/.test(home)) {
+  fail("JobTitleDrift: ProfilePage name must use Product VP, not the H1");
 }
 if (/These aren.t mockups/i.test(works)) fail("/works still has the defensive manifesto");
 if (!works.includes("Hungarian product")) fail("Kineticare card must flag the Hungarian product");
@@ -155,6 +158,9 @@ if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKic
 if (!/InkOnNight/.test(design) || !/MotionCover/.test(design)) {
   fail("design.md must name InkOnNight and MotionCover");
 }
+if (/InkOnNavy/.test(design) === false) fail("design.md must name the InkOnNavy anti-pattern");
+if (/GrainWash/.test(design) === false) fail("design.md must name the GrainWash anti-pattern");
+if (/JobTitleDrift/.test(design) === false) fail("design.md must name the JobTitleDrift anti-pattern");
 
 if (!/\.home-banner-title[\s\S]{0,160}64px/.test(css)) fail("display size is not locked to 56–64");
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
@@ -365,6 +371,18 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,280}mask-im
 }
 if (!/\.home-mast::after[\s\S]{0,240}radial-gradient[\s\S]{0,80}#0a1628/.test(css)) {
   fail("NavyFlood: compact home mast must paint a bottom navy overlay under the type");
+}
+if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
+  fail("GrainWash: --mast-muted must be solid #2a2a2e");
+}
+if (!/\.home-mast \.hero-kicker[\s\S]{0,80}--mast-muted/.test(css)) {
+  fail("GrainWash: mast kicker must use --mast-muted, not 62% --muted");
+}
+if (!/--mast-on-navy:\s*#f4f5f7/.test(css)) {
+  fail("InkOnNavy: --mast-on-navy must be near-white #F4F5F7");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-outcomes[\s\S]{0,160}--mast-on-navy/.test(css)) {
+  fail("InkOnNavy: desktop mast highlights must use --mast-on-navy");
 }
 if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13px/.test(css)) {
   fail("home kicker must stay 13px on compact, not inherit the 17px banner bump");

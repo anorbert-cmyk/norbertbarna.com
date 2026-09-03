@@ -165,6 +165,97 @@ async function screenshotClip(page, clip) {
   return sampleStats(readPng(buffer));
 }
 
+function srgbToLin(channel) {
+  const value = channel / 255;
+  return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+}
+
+function relativeLuminance(r, g, b) {
+  return 0.2126 * srgbToLin(r) + 0.7152 * srgbToLin(g) + 0.0722 * srgbToLin(b);
+}
+
+function contrastRatio(l1, l2) {
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function parseCssColor(color) {
+  const match = color.match(/rgba?\(\s*([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)/i);
+  if (!match) throw new Error(`unparsed color: ${color}`);
+  return {
+    r: Number(match[1]),
+    g: Number(match[2]),
+    b: Number(match[3]),
+    a: match[4] === undefined ? 1 : Number(match[4]),
+  };
+}
+
+function pixelStats(png) {
+  const samples = [];
+  for (let y = 1; y < png.height - 1; y += 1) {
+    for (let x = 1; x < png.width - 1; x += 1) {
+      const i = (y * png.width + x) * 4;
+      const r = png.pixels[i];
+      const g = png.pixels[i + 1];
+      const b = png.pixels[i + 2];
+      samples.push({ r, g, b, l: relativeLuminance(r, g, b) });
+    }
+  }
+  samples.sort((a, b) => a.l - b.l);
+  const pick = (q) => samples[Math.min(samples.length - 1, Math.floor((samples.length - 1) * q))];
+  return {
+    darkest: pick(0.05),
+    lightest: pick(0.95),
+    median: pick(0.5),
+  };
+}
+
+function colorLuminance(color) {
+  return relativeLuminance(color.r, color.g, color.b);
+}
+
+function contrastAgainst(fg, bg) {
+  return contrastRatio(colorLuminance(fg), bg.l);
+}
+
+function hexRgb({ r, g, b }) {
+  return `#${[r, g, b].map((n) => Math.round(n).toString(16).padStart(2, "0")).join("")}`;
+}
+
+async function sampleBehindGlyphs(page, locator) {
+  const box = await locator.boundingBox();
+  if (!box || box.width < 4 || box.height < 4) throw new Error("no glyph box");
+  await locator.evaluate((el) => {
+    const hide = (node) => {
+      node.style.color = "transparent";
+      node.style.webkitTextFillColor = "transparent";
+      node.style.caretColor = "transparent";
+    };
+    hide(el);
+    el.querySelectorAll("*").forEach(hide);
+  });
+  const png = readPng(await page.screenshot({
+    clip: {
+      x: Math.max(0, box.x),
+      y: Math.max(0, box.y),
+      width: Math.max(4, Math.ceil(box.width)),
+      height: Math.max(4, Math.ceil(box.height)),
+    },
+    type: "png",
+  }));
+  await locator.evaluate((el) => {
+    const show = (node) => {
+      node.style.color = "";
+      node.style.webkitTextFillColor = "";
+      node.style.caretColor = "";
+    };
+    show(el);
+    el.querySelectorAll("*").forEach(show);
+  });
+  return pixelStats(png);
+}
+
 async function openStable(page, route) {
   await page.goto(route, { waitUntil: "load" });
   await page.evaluate(() => (document.fonts ? document.fonts.ready : Promise.resolve()));
@@ -1083,12 +1174,12 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     return { x: list.x, y: list.y };
   });
   const outcomesBand = await screenshotClip(page, {
-    x: Math.max(0, outcomes.x - 20),
-    y: outcomes.y + 4,
+    x: Math.max(0, outcomes.x + 8),
+    y: outcomes.y + 8,
     width: 18,
     height: 14,
   });
-  expect(outcomesBand.luminance, "highlights stay on lilac, not the navy félkör").toBeGreaterThan(130);
+  expect(outcomesBand.luminance, "desktop highlights sit on the navy félkör, not a lilac dodge").toBeLessThan(90);
   const dome = await screenshotClip(page, {
     x: Math.max(0, mast.x + mast.width * 0.72 - 24),
     y: mast.y + mast.height - 70,
@@ -1111,6 +1202,137 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     height: 48,
   });
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
+});
+
+test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openStable(page, "/");
+
+  const kicker = page.locator(".home-mast .hero-kicker").first();
+  const h1 = page.locator(".home-mast h1").first();
+  const label = page.locator(".home-mast .metric-context").first();
+  const firstBullet = page.locator(".home-mast .home-banner-outcomes li").first();
+  const lastBullet = page.locator(".home-mast .home-banner-outcomes li").last();
+  const outcomes = page.locator(".home-mast .home-banner-outcomes").first();
+  const email = page.locator(".navbar button.footer-email").first();
+  const linkedin = page.locator(".navbar a.footer-contact-link").first();
+
+  const schema = await page.evaluate(() => {
+    const nodes = [...document.querySelectorAll('script[type="application/ld+json"]')]
+      .flatMap((script) => {
+        try { return [JSON.parse(script.textContent)]; } catch { return []; }
+      });
+    const walk = (value, found = []) => {
+      if (!value || typeof value !== "object") return found;
+      if (!Array.isArray(value) && value["@type"]) found.push(value);
+      for (const child of Object.values(value)) {
+        if (child && typeof child === "object") walk(child, found);
+      }
+      return found;
+    };
+    const typed = nodes.flatMap((node) => walk(node));
+    const person = typed.find((node) => node["@type"] === "Person");
+    const profile = typed.find((node) => node["@type"] === "ProfilePage");
+    return {
+      h1: document.querySelector(".home-mast h1")?.textContent.trim() || "",
+      jobTitle: person?.jobTitle || "",
+      profileName: profile?.name || "",
+    };
+  });
+  expect(schema.h1).toBe("AI Product Design Lead");
+  expect(schema.jobTitle).toBe("Product VP");
+  expect(schema.profileName).toBe("Norbert Barna — Product VP");
+
+  const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
+  const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
+  const labelRgb = parseCssColor(await label.evaluate((el) => getComputedStyle(el).color));
+  const bulletRgb = parseCssColor(await firstBullet.evaluate((el) => getComputedStyle(el).color));
+  const strongRgb = parseCssColor(await firstBullet.locator("strong").evaluate((el) => getComputedStyle(el).color));
+  const hairline = parseCssColor(await outcomes.evaluate((el) => getComputedStyle(el).borderTopColor));
+  const emailBorder = parseCssColor(await email.evaluate((el) => getComputedStyle(el).borderTopColor));
+  const linkedinBorder = parseCssColor(await linkedin.evaluate((el) => getComputedStyle(el).borderTopColor));
+
+  expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
+  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(160);
+  expect(h1Rgb.r + h1Rgb.g + h1Rgb.b, "H1 stays dark ink on lilac").toBeLessThan(80);
+  expect(labelRgb.r + labelRgb.g + labelRgb.b, "InkOnNavy: highlights label must be light ink").toBeGreaterThan(600);
+  expect(bulletRgb.r + bulletRgb.g + bulletRgb.b, "InkOnNavy: highlights body must be light ink").toBeGreaterThan(600);
+  expect(strongRgb.r + strongRgb.g + strongRgb.b, "InkOnNavy: highlights strongs must be light ink").toBeGreaterThan(600);
+
+  const kickerBg = await sampleBehindGlyphs(page, kicker);
+  const h1Bg = await sampleBehindGlyphs(page, h1);
+  const labelBg = await sampleBehindGlyphs(page, label);
+  const bulletBg = await sampleBehindGlyphs(page, firstBullet);
+  const lastBg = await sampleBehindGlyphs(page, lastBullet);
+
+  expect(labelBg.median.l, "highlights label must sit on the navy félkör, not a lilac dodge").toBeLessThan(0.2);
+  expect(bulletBg.median.l, "highlights body must sit on the navy félkör").toBeLessThan(0.2);
+  expect(lastBg.median.l, "last highlight must sit on the navy félkör").toBeLessThan(0.2);
+  expect(h1Bg.median.l, "H1 must stay on lilac").toBeGreaterThan(0.5);
+  expect(kickerBg.median.l, "kicker must stay on lilac").toBeGreaterThan(0.5);
+
+  const kickerVsLight = contrastAgainst(kickerRgb, kickerBg.lightest);
+  const kickerVsDark = contrastAgainst(kickerRgb, kickerBg.darkest);
+  const h1VsLilac = contrastAgainst(h1Rgb, h1Bg.median);
+  const labelVsNavy = contrastAgainst(labelRgb, labelBg.darkest);
+  const labelVsLight = contrastAgainst(labelRgb, labelBg.lightest);
+  const bulletVsNavy = contrastAgainst(bulletRgb, bulletBg.darkest);
+  const bulletVsLight = contrastAgainst(bulletRgb, bulletBg.lightest);
+  const strongVsNavy = contrastAgainst(strongRgb, bulletBg.darkest);
+  const lastVsNavy = contrastAgainst(bulletRgb, lastBg.darkest);
+
+  expect(kickerVsLight, `kicker vs lightest grain ${kickerVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(kickerVsDark, `kicker vs darkest grain ${kickerVsDark.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(h1VsLilac, `H1 vs lilac ${h1VsLilac.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(labelVsNavy, `highlights label vs darkest navy ${labelVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(labelVsLight, `highlights label vs lightest under glyphs ${labelVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(bulletVsNavy, `highlights body vs darkest navy ${bulletVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(bulletVsLight, `highlights body vs lightest under glyphs ${bulletVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(strongVsNavy, `highlights strong vs darkest navy ${strongVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(lastVsNavy, `last highlight vs darkest navy ${lastVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+
+  const hairlineFg = {
+    r: hairline.r * hairline.a + labelBg.darkest.r * (1 - hairline.a),
+    g: hairline.g * hairline.a + labelBg.darkest.g * (1 - hairline.a),
+    b: hairline.b * hairline.a + labelBg.darkest.b * (1 - hairline.a),
+  };
+  const hairlineContrast = contrastAgainst(hairlineFg, labelBg.darkest);
+  expect(hairlineContrast, `outcomes hairline vs navy ${hairlineContrast.toFixed(2)}`).toBeGreaterThanOrEqual(3);
+
+  const emailBox = await email.boundingBox();
+  const linkedinBox = await linkedin.boundingBox();
+  const emailFill = await screenshotClip(page, {
+    x: emailBox.x + 10,
+    y: emailBox.y + 12,
+    width: 16,
+    height: 10,
+  });
+  const linkedinFill = await screenshotClip(page, {
+    x: linkedinBox.x + 12,
+    y: linkedinBox.y + 12,
+    width: 12,
+    height: 10,
+  });
+  const emailStroke = contrastRatio(colorLuminance(emailBorder), relativeLuminance(emailFill.r, emailFill.g, emailFill.b));
+  const linkedinStroke = contrastRatio(colorLuminance(linkedinBorder), relativeLuminance(linkedinFill.r, linkedinFill.g, linkedinFill.b));
+  expect(emailStroke, `Email 1px stroke ${emailStroke.toFixed(2)}`).toBeGreaterThanOrEqual(3);
+  expect(linkedinStroke, `LinkedIn 1px stroke ${linkedinStroke.toFixed(2)}`).toBeGreaterThanOrEqual(3);
+
+  const ratios = [
+    `kicker ${hexRgb(kickerRgb)} vs light ${hexRgb(kickerBg.lightest)} = ${kickerVsLight.toFixed(2)}`,
+    `kicker ${hexRgb(kickerRgb)} vs dark ${hexRgb(kickerBg.darkest)} = ${kickerVsDark.toFixed(2)}`,
+    `H1 ${hexRgb(h1Rgb)} vs ${hexRgb(h1Bg.median)} = ${h1VsLilac.toFixed(2)}`,
+    `label ${hexRgb(labelRgb)} vs darkest ${hexRgb(labelBg.darkest)} = ${labelVsNavy.toFixed(2)}`,
+    `label ${hexRgb(labelRgb)} vs lightest ${hexRgb(labelBg.lightest)} = ${labelVsLight.toFixed(2)}`,
+    `bullet ${hexRgb(bulletRgb)} vs darkest ${hexRgb(bulletBg.darkest)} = ${bulletVsNavy.toFixed(2)}`,
+    `bullet ${hexRgb(bulletRgb)} vs lightest ${hexRgb(bulletBg.lightest)} = ${bulletVsLight.toFixed(2)}`,
+    `strong vs darkest navy = ${strongVsNavy.toFixed(2)}`,
+    `hairline vs navy = ${hairlineContrast.toFixed(2)}`,
+    `Email stroke = ${emailStroke.toFixed(2)}`,
+    `LinkedIn stroke = ${linkedinStroke.toFixed(2)}`,
+  ].join("\n");
+  console.log(ratios);
+  expect(ratios).toMatch(/label .+ = [4-9]|1[0-9]/);
 });
 
 test("390 home header: highlights stay on lilac, kicker stays 13px, navy sits under the type", async ({ page }) => {

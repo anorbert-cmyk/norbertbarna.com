@@ -167,6 +167,8 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 1. Existing `NB.svg` wordmark (not a new logo, not live text) and the line
    `Product VP — I lead AI products in regulated finance and high-trust
    systems.` Em dash. Do not use “AI Product Design Lead” in the footer.
+   JSON-LD `jobTitle` and ProfilePage `name` use Product VP. Visible H1
+   stays `AI Product Design Lead`.
 2. Controls under the lede, left: LinkedIn and Email share chrome — height
    44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
@@ -280,8 +282,15 @@ or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
    right-weighted yellow. Type on the pale band. Empty right is mesh.
    On compact, navy fades in below the highlights (`mask-image`) so ink
    stays on lilac — same NavyFlood rule as the footer.
+   On desktop the highlights column sits on the navy félkör: use light ink
+   (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
+   dome (still inside the mast). Do not shrink the dome to dodge contrast.
+   Do not move the list down onto About.
 2. Kicker: `Norbert Barna` (sentence case, no tracking). Stay 13px on
    compact; do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
+   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Fold type
+   must meet WCAG AA against the live grain: 4.5:1 normal, 3:1 large / UI
+   stroke. Left column stays dark ink on lilac.
 3. H1: `AI Product Design Lead`
 4. One-line dek (existing positioning, not a slogan)
 5. Primary action: `View selected work` → `/works` (outlined 12px chrome,
@@ -371,7 +380,10 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work or home highlights so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type. Compact footer: fade `.footer-mesh-navy` in below Work (`mask-image`). Compact home: fade `.home-mast-navy` in below the highlights; drop the desktop CSS navy radials |
+| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the type. Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
+| InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
+| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker uses solid `--mast-muted` `#2a2a2e` |
+| JobTitleDrift | JSON-LD `jobTitle` is still Design Lead while the footer says Product VP | `jobTitle` is `Product VP`; H1 stays `AI Product Design Lead` |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
