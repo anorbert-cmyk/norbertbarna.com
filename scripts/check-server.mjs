@@ -156,6 +156,11 @@ try {
 
   for (const [legacyPath, expectedLocation] of [
     ["/favicon.ico", "/assets/icons/68f923d010d274634c966a6e_favicon.png"],
+    ["/index", "/"],
+    ["/index?utm_source=home", "/?utm_source=home"],
+    ["/raiffeisen", "/work/raiffeisen"],
+    ["/raiffeisen/?ref=old", "/work/raiffeisen?ref=old"],
+    ["/instructure.html", "/work/instructure"],
     ["/works/?utm_source=portfolio", "/works?utm_source=portfolio"],
     ["/work/benker/?ref=case", "/work/benker?ref=case"],
     ["/work/raiffesen?utm_campaign=legacy", "/work/raiffeisen?utm_campaign=legacy"],
@@ -165,6 +170,16 @@ try {
     assert(redirect.status === 301, `${legacyPath} did not return a permanent redirect`);
     assert(redirect.headers.get("location") === expectedLocation, `${legacyPath} lost its canonical path or query`);
   }
+
+  const apexWithoutFlag = await rawGet(address.port, "/raiffeisen?utm_source=apex", {
+    host: "barnanorbert.com",
+  });
+  assert(apexWithoutFlag.statusCode === 301, "apex must redirect to www without CANONICAL_REDIRECT");
+  assert(
+    apexWithoutFlag.headers.location ===
+      "https://www.barnanorbert.com/work/raiffeisen?utm_source=apex",
+    "apex must canonicalize host and path in one hop without the flag"
+  );
 
   const previousCanonicalRedirect = process.env.CANONICAL_REDIRECT;
   process.env.CANONICAL_REDIRECT = "1";

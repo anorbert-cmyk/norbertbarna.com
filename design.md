@@ -164,6 +164,7 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 1. Existing `NB.svg` wordmark (not a new logo, not live text) and the line
    `Product VP — I lead AI products in regulated finance and high-trust
    systems.` Em dash. Do not use “AI Product Design Lead” in the footer.
+   JSON-LD `jobTitle` is `Product VP` so it matches this line, not the H1.
 2. Controls under the lede, left: LinkedIn and Email share chrome — height
    44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
@@ -230,6 +231,28 @@ missing middle size. Do not uppercase-track the name kicker.
 
 ## Information architecture
 
+**Canonical host and paths**
+
+The live host is `www.barnanorbert.com`. Apex `barnanorbert.com` always 301s
+to www in one hop (path + query preserved). `CANONICAL_REDIRECT=1` is only
+for folding `*.up.railway.app` preview URLs onto www. Localhost never
+redirects.
+
+One 200 per page. `/index` and `/index.html` 301 to `/`. Bare project slugs
+(`/raiffeisen`, `/raiffeisen.html`) 301 to `/work/{slug}`. Do not leave
+those as 404s.
+
+`robots.txt` must list `/llms.txt` as well as the sitemap. Sitemap case
+order is hiring-first (Raiffeisen → OnRobot), not DualIndex.
+
+Do not invent `twitter:site` or a `google-site-verification` token. There is
+no documented X handle and no GSC HTML token in the repo. Claim Search
+Console in the Google account; paste a real token only when one exists.
+
+Case `<title>`, `og:title`, and `twitter:title` start with the visible H1,
+then an em dash (`Raiffeisen — Mobile Banking UX Case Study — Norbert Barna`).
+H1 stays the project name.
+
 **One work order everywhere** (hiring-first):
 
 1. Raiffeisen
@@ -269,8 +292,9 @@ invent additional addresses. Do not put `mailto:` or the address in HTML.
    the CTA so it still lands in the first viewport.
 6. Outcomes list (existing bullets) follows as supporting evidence.
 
-**Works fold:** H1 `Works`, two-line intro max, first card (Raiffeisen)
-visible in a 900px-tall desktop viewport. No “these aren’t mockups” line.
+**Works fold:** H1 `Product Design Case Studies` (same subject as `<title>`),
+two-line intro max, first card (Raiffeisen) visible in a 900px-tall desktop
+viewport. No “these aren’t mockups” line.
 
 **Case header (one template, color varies)**
 
@@ -360,6 +384,11 @@ English-wash the screenshot.
 | BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined `Email` button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
+| JobTitleDrift | JSON-LD `jobTitle` is still Design Lead while the footer says Product VP | `jobTitle` is `Product VP`; H1 stays `AI Product Design Lead` |
+| BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
+| DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
+| TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Product Design Case Studies`; case titles start `{H1} —` |
+| InventedSocial | A made-up `twitter:site` handle or GSC verification token | Omit both until a real handle or token is documented |
 
 ## Reject generated-design reflexes
 

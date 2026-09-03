@@ -39,8 +39,10 @@ app.use((req, res, next) => {
 
 // One canonical URL per page. The same map is used by both host and path
 // canonicalization so an apex + legacy request never needs two redirects.
+const WORK_SLUGS = ["benker", "bitpanda", "instructure", "kineticare", "onrobot", "raiffeisen", "sportsgambit"];
 const REDIRECTS = {
   "/index.html": "/",
+  "/index": "/",
   "/favicon.ico": "/assets/icons/68f923d010d274634c966a6e_favicon.png",
   "/works.html": "/works",
   "/works/": "/works",
@@ -48,9 +50,12 @@ const REDIRECTS = {
   "/work/raiffesen/": "/work/raiffeisen",
   "/work/raiffesen.html": "/work/raiffeisen",
 };
-for (const slug of ["benker", "bitpanda", "instructure", "kineticare", "onrobot", "raiffeisen", "sportsgambit"]) {
+for (const slug of WORK_SLUGS) {
   REDIRECTS[`/work/${slug}.html`] = `/work/${slug}`;
   REDIRECTS[`/work/${slug}/`] = `/work/${slug}`;
+  REDIRECTS[`/${slug}`] = `/work/${slug}`;
+  REDIRECTS[`/${slug}/`] = `/work/${slug}`;
+  REDIRECTS[`/${slug}.html`] = `/work/${slug}`;
 }
 
 function querySuffix(req) {
@@ -58,27 +63,33 @@ function querySuffix(req) {
   return queryIndex >= 0 ? req.originalUrl.slice(queryIndex) : "";
 }
 
-// Canonical host: the site lives on www.barnanorbert.com. The redirect is
-// OFF until the domain's DNS is live — set CANONICAL_REDIRECT=1 on Railway
-// once www.barnanorbert.com resolves, so the *.up.railway.app preview URL
-// keeps working in the meantime. Localhost/dev hosts are never redirected.
+// Canonical host: the site lives on www.barnanorbert.com.
+// Apex always 301s to www (production DNS is live). Railway preview hosts
+// stay on *.up.railway.app unless CANONICAL_REDIRECT=1. Localhost never
+// redirects.
 const CANONICAL_HOST = "www.barnanorbert.com";
-if (process.env.CANONICAL_REDIRECT === "1") {
-  app.use((req, res, next) => {
-    const host = req.hostname;
-    if (host === CANONICAL_HOST || host === "localhost" || host === "127.0.0.1") {
-      return next();
-    }
-    if (host.endsWith(".up.railway.app") || host === "barnanorbert.com") {
-      const pathName = REDIRECTS[req.path] || req.path;
-      return res.redirect(301, `https://${CANONICAL_HOST}${pathName}${querySuffix(req)}`);
-    }
-    next();
-  });
+
+function redirectToCanonical(req, res) {
+  const pathName = REDIRECTS[req.path] || req.path;
+  return res.redirect(301, `https://${CANONICAL_HOST}${pathName}${querySuffix(req)}`);
 }
 
-// Redirects: legacy .html URLs -> canonical clean URLs, plus the fixed
-// /work/raiffesen misspelling. Keeps one canonical URL per page.
+app.use((req, res, next) => {
+  const host = req.hostname;
+  if (host === CANONICAL_HOST || host === "localhost" || host === "127.0.0.1") {
+    return next();
+  }
+  if (host === "barnanorbert.com") {
+    return redirectToCanonical(req, res);
+  }
+  if (process.env.CANONICAL_REDIRECT === "1" && host.endsWith(".up.railway.app")) {
+    return redirectToCanonical(req, res);
+  }
+  next();
+});
+
+// Redirects: legacy .html URLs, /index, and bare /{slug} → /work/{slug}.
+// Keeps one canonical URL per page.
 app.use((req, res, next) => {
   const target = REDIRECTS[req.path];
   if (target) {
