@@ -21,13 +21,13 @@ Do not hand-tune a single page and leave the rule unwritten.
 
 ## Scope
 
-Hiring portfolio for Norbert Barna, AI Product Design Lead.
+Hiring portfolio for Norbert Barna, Product VP.
 English site. Self-hosted static HTML. Canonical host: `www.barnanorbert.com`.
 
-The reader in the first five seconds is a VP / hiring manager for a
-regulated or AI-lead role. They need: role, proof of shipped product, a
-contact close. They are not here for a Webflow demo, a blog, or a Dribbble
-cover.
+The reader in the first five seconds is a VP / hiring manager or a client
+for AI product and web work in regulated or high-trust systems. They need:
+role, proof of shipped product, a contact close. They are not here for a
+Webflow demo, a blog, or a Dribbble cover.
 
 Out of scope: live Webflow edits, ads, session deletion, invented metrics,
 generated UI screenshots, generated palettes, generated wordmarks, Geist /
@@ -51,7 +51,7 @@ When requirements compete, protect them in this order:
 
 | Surface | Job in the first viewport | Proof they should see |
 |---|---|---|
-| `/` | Identify an AI product design lead and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
+| `/` | Identify a Product VP and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
 | Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. One Email CTA (no Contact column). Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
@@ -79,7 +79,7 @@ Do not restore removed SportsGambit figures (`35% first-day activation`,
 
 The first viewport is the argument, not a masthead plus setup.
 
-- H1 is the role (`AI Product Design Lead`), not the name.
+- H1 is the role (`Product VP`), not the name.
 - The name is a plain kicker, not an all-caps tracked eyebrow.
 - The first viewport is an analog mesh mast (greyer-lilac grain, a **large
   navy félkör** from the bottom toward center-right, blur 56 family). Live
@@ -166,9 +166,9 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 
 1. Existing `NB.svg` wordmark (not a new logo, not live text) and the line
    `Product VP — I lead AI products in regulated finance and high-trust
-   systems.` Em dash. Do not use “AI Product Design Lead” in the footer.
-   JSON-LD `jobTitle` and ProfilePage `name` use Product VP. Visible H1
-   stays `AI Product Design Lead`.
+   systems.` Em dash. Do not use “AI Product Design Lead” in the footer,
+   title, H1, meta, or JSON-LD name. JSON-LD `jobTitle`, ProfilePage
+   `name`, Person `name`, and visible H1 all use Product VP.
 2. Controls under the lede, left: LinkedIn and Email share chrome — height
    44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
@@ -296,22 +296,27 @@ or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
    against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
    UI stroke. Left column stays dark ink on lilac. Compact highlights stay
    dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
-3. H1: `AI Product Design Lead`
+3. H1: `Product VP`
 4. One-line dek (existing positioning, not a slogan)
 5. Primary action: `View selected work` → `/works` (outlined 12px chrome,
    not a filled black pill)
 6. `SELECTED PORTFOLIO HIGHLIGHTS` plus the four live bullets (Raiffeisen /
    Instructure / Bitpanda / Balabit). Do not invent a Canvas Career mock.
    Do not put any product screenshot in the header.
+7. After About: secondary block `Open for engagements` (H2, never a second
+   H1). Short offer for AI product / web / similar work in fintech,
+   regulated, and high-trust environments. LinkedIn link plus the existing
+   Email button. No `/contact` page.
 
 **Home selected work (E):** compact rows, not giant 2-up rounded color cards.
 Small 72–96px thumbs (crops of existing case images), live titles + live
 one-liners, hairline between rows, quiet arrow. Do not use invented years or
 invented descriptions from the compact-row mock.
 
-**Works fold:** H1 `Product Design Case Studies` (same subject as `<title>`),
+**Works fold:** H1 `Selected work` (same subject as `<title>`),
 two-line intro max, first card (Raiffeisen) visible in a 900px-tall desktop
-viewport. No “these aren’t mockups” line.
+viewport. No “these aren’t mockups” line. No “Design Case Studies” as the
+primary title.
 
 **Home professional experience:** paper cards until hover (fine pointer) or
 tap / Enter (coarse and keyboard). Then the existing award video fills the
@@ -352,6 +357,11 @@ the 16:9 frame (`inset: 0; z-index: 0`). Webflow background-video CSS
 ## Copy
 
 Use the shipped case copy. Do not rewrite claims.
+
+Home About opens on Product VP ownership (strategy → ship, teams,
+regulated), not “I’ve spent the last 16 years designing”. Do not invent
+metrics. The client offer is an H2 (`Open for engagements`), never a
+second H1, and does not add `/contact`.
 
 Forbidden template strings:
 
@@ -394,7 +404,7 @@ English-wash the screenshot.
 | NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last highlight (mask from 88%). Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
 | InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
 | GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
-| JobTitleDrift | JSON-LD `jobTitle` is still Design Lead while the footer says Product VP | `jobTitle` is `Product VP`; H1 stays `AI Product Design Lead` |
+| JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, ProfilePage `name`, and Person `name` are Product VP |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
@@ -415,7 +425,7 @@ English-wash the screenshot.
 | MeshParallaxCircus | Mesh masses rotate, travel tens of pixels, loop like a GIF, or drag type/chrome | Navy / olive / yellow translate a few pixels at different depths; chrome stays still; reduced-motion is static |
 | BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
 | DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
-| TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Product Design Case Studies`; case titles start `{H1} —` |
+| TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Selected work`; case titles start `{H1} —` |
 | InventedSocial | A made-up `twitter:site` handle or GSC verification token | Omit both until a real handle or token is documented |
 | TightAwardVideo | Professional-experience hover/tap shows a 500px Webflow strip or `inset: -100%` file, or compact hides the wrap | `.awards-bg-video > video` fills the card (`inset: 0; object-fit: cover`). Hover, focus, and tap (`.is-award-on`) all reveal the same full-bleed fill. Do not `display: none` the wrap on compact. Reduced motion keeps the paper card |
 

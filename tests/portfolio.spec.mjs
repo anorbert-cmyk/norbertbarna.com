@@ -1120,7 +1120,7 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     };
   });
   expect(fold.kicker).toBe("Norbert Barna");
-  expect(fold.h1).toBe("AI Product Design Lead");
+  expect(fold.h1).toBe("Product VP");
   expect(fold.sub).toMatch(/AI-driven, secure/);
   expect(fold.cta).toBe("View selected work");
   expect(fold.ctaHref).toBe("/works");
@@ -1235,13 +1235,22 @@ test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => 
     const profile = typed.find((node) => node["@type"] === "ProfilePage");
     return {
       h1: document.querySelector(".home-mast h1")?.textContent.trim() || "",
+      h1Count: document.querySelectorAll("h1").length,
+      engage: document.querySelector(".home-service-section h2.section-title")?.textContent.trim() || "",
       jobTitle: person?.jobTitle || "",
       profileName: profile?.name || "",
+      personName: person?.name || "",
+      personDescription: person?.description || "",
     };
   });
-  expect(schema.h1).toBe("AI Product Design Lead");
+  expect(schema.h1).toBe("Product VP");
+  expect(schema.h1Count).toBe(1);
+  expect(schema.engage).toBe("Open for engagements");
   expect(schema.jobTitle).toBe("Product VP");
   expect(schema.profileName).toBe("Norbert Barna — Product VP");
+  expect(schema.personName).toBe("Norbert Barna — Product VP");
+  expect(schema.personDescription).toMatch(/Product VP/);
+  expect(schema.personDescription).not.toMatch(/design lead/i);
 
   const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
   const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
