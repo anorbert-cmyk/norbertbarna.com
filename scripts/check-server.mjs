@@ -151,7 +151,7 @@ try {
   const llmsCache = cacheDirectives(llms.headers.get("cache-control") || "");
   assert(llms.ok, `/llms.txt returned ${llms.status}`);
   assert(/text\/plain/i.test(llms.headers.get("content-type") || ""), "/llms.txt is not text/plain");
-  assert((await llms.text()).includes("Norbert Barna — Product Design Portfolio"), "/llms.txt content is incomplete");
+  assert((await llms.text()).includes("Norbert Barna — Product VP Portfolio"), "/llms.txt content is incomplete");
   assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
 
   for (const [legacyPath, expectedLocation] of [

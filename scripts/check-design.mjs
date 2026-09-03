@@ -35,8 +35,17 @@ const hiring = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit
 
 const caseHero = (html) => html.match(/class="case-hero-shot"[^>]*>/)?.[0] || "";
 
-if (home.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1] !== "AI Product Design Lead") {
-  fail("home H1 must be the role, not only the name");
+if (home.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1] !== "Product VP") {
+  fail("home H1 must be Product VP, not the name and not Design Lead");
+}
+if ((home.match(/<h1\b/g) || []).length !== 1) {
+  fail("home must keep exactly one H1");
+}
+if (!/<h2\b[^>]*>Open for engagements<\/h2>/.test(home)) {
+  fail("home must keep a secondary Open for engagements heading");
+}
+if (/<h1\b[^>]*>Open for engagements/.test(home)) {
+  fail("client offer must not be a second H1");
 }
 if (!home.includes('class="hero-kicker">Norbert Barna')) {
   fail("home fold must name Norbert Barna in the kicker");
@@ -115,7 +124,19 @@ if (!/"jobTitle": "Product VP"/.test(home)) {
   fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
 }
 if (!/"name": "Norbert Barna — Product VP"/.test(home)) {
-  fail("JobTitleDrift: ProfilePage name must use Product VP, not the H1");
+  fail("JobTitleDrift: ProfilePage and Person name must include Product VP");
+}
+const homeHead = home.slice(0, home.indexOf("</head>"));
+if (/AI Product Design Lead|product design lead/i.test(homeHead)) {
+  fail("JobTitleDrift: home title, meta and JSON-LD must not say Design Lead");
+}
+if (works.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1] !== "Selected work") {
+  fail("TitleDrift: /works H1 must be Selected work");
+}
+const llms = readFileSync(join(ROOT, "llms.txt"), "utf8");
+const llmsOpener = llms.split("\n").slice(0, 6).join("\n");
+if (!/Product VP/.test(llmsOpener) || /product design leader/i.test(llmsOpener)) {
+  fail("llms.txt opener must lead with Product VP, not product design leader");
 }
 if (/These aren.t mockups/i.test(works)) fail("/works still has the defensive manifesto");
 if (!works.includes("Hungarian product")) fail("Kineticare card must flag the Hungarian product");

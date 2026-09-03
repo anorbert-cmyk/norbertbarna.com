@@ -1,7 +1,7 @@
 {
   "name": "norbertbarna-portfolio",
   "version": "1.0.0",
-  "description": "Norbert Barna - AI-Driven Product Design Lead - Portfolio",
+  "description": "Norbert Barna - Product VP - Portfolio",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

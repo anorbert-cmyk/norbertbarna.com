@@ -1,13 +1,13 @@
-# Norbert Barna — Product Design Portfolio
+# Norbert Barna — Product VP Portfolio
 
-> Norbert Barna is an AI-driven product design leader focused on secure, compliant and high-trust digital systems across fintech, Web3, EdTech, robotics and digital health.
+> Norbert Barna is a Product VP focused on AI products in regulated and high-trust systems. Case studies on this site are authored by Norbert and describe his role, methods, decisions, trade-offs and selected outcomes.
 
 This file is a concise guide to the canonical, English-language portfolio at https://www.barnanorbert.com/. Case studies are authored by Norbert Barna and describe his role, methods, design decisions, trade-offs and selected project outcomes.
 
 ## Primary pages
 
 - [Home](https://www.barnanorbert.com/): profile, expertise, selected work and professional experience
-- [All case studies](https://www.barnanorbert.com/works): complete portfolio index
+- [Selected work](https://www.barnanorbert.com/works): complete portfolio index
 
 ## Case studies
 
@@ -21,7 +21,7 @@ This file is a concise guide to the canonical, English-language portfolio at htt
 
 ## Expertise
 
-- AI product design and explainable AI UX
+- AI products in regulated and high-trust systems
 - Fintech, banking, Web3 and compliance-sensitive workflows
 - Product discovery, user research and usability testing
 - Design systems, accessibility and scalable delivery

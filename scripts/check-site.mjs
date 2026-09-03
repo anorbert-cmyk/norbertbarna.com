@@ -96,8 +96,8 @@ for (const page of PAGES) {
 
   const h1 = visibleText(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "");
   if (page === "works.html") {
-    if (h1 !== "Product Design Case Studies") {
-      fail("TitleDrift: /works H1 must be Product Design Case Studies");
+    if (h1 !== "Selected work") {
+      fail("TitleDrift: /works H1 must be Selected work");
     } else if (!title.startsWith(h1)) {
       fail("TitleDrift: /works <title> must start with the H1");
     }
