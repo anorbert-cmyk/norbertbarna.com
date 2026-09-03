@@ -401,6 +401,7 @@ test("skip link and full-card project action work without hover", async ({ page 
   await expect(page.locator("#main-content")).toBeFocused();
 
   await openStable(page, "/works");
+  await expect(page.locator("h1")).toHaveText("Selected work");
   const firstCard = page.locator(".work-card").first();
   await firstCard.click({ position: { x: 30, y: 30 } });
   await expect(page).toHaveURL(/\/work\/raiffeisen$/);
@@ -690,6 +691,7 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   expect(html).toMatch(/<button type="button" class="footer-email">Email<\/button>/);
   expect(html).not.toMatch(/<a[^>]*footer-email/);
   expect((html.match(/<button type="button" class="footer-email">Email<\/button>/g) || []).length).toBe(2);
+  expect((html.match(/<button type="button" class="footer-email[^"]*">Email<\/button>/g) || []).length).toBe(3);
   expect(html).not.toMatch(/footer-col-title">Contact/);
   expect(html).not.toMatch(/href="\/contact"/);
   expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
@@ -713,25 +715,29 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
 
   const email = page.locator("footer button.footer-email");
   const headerEmail = page.locator(".navbar button.footer-email");
+  const engageEmail = page.locator(".home-service-section button.footer-email");
   await expect(email).toBeVisible();
   await expect(headerEmail).toBeVisible();
+  await expect(engageEmail).toBeVisible();
   await expect(email).toHaveText("Email");
   await expect(headerEmail).toHaveText("Email");
+  await expect(engageEmail).toHaveText("Email");
   await expect(email).toHaveJSProperty("tagName", "BUTTON");
   expect(await email.getAttribute("type")).toBe("button");
   expect(await headerEmail.getAttribute("type")).toBe("button");
+  expect(await engageEmail.getAttribute("type")).toBe("button");
   expect(await email.getAttribute("href")).toBeNull();
   expect(await headerEmail.getAttribute("href")).toBeNull();
+  expect(await engageEmail.getAttribute("href")).toBeNull();
 
-  const mailRequestPromise = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
-  await email.click();
-  expect((await mailRequestPromise).url()).toBe("mailto:anorbert@pm.me");
-  expect(await email.getAttribute("href")).toBeNull();
-  expect(await headerEmail.getAttribute("href")).toBeNull();
-  expect(await email.evaluate((el) => el.outerHTML)).not.toMatch(/mailto:/i);
-  expect(await headerEmail.evaluate((el) => el.outerHTML)).not.toMatch(/mailto:/i);
-  expect(await email.evaluate((el) => el.outerHTML)).not.toMatch(/anorbert@pm\.me/i);
-  expect(await headerEmail.evaluate((el) => el.outerHTML)).not.toMatch(/anorbert@pm\.me/i);
+  for (const locator of [headerEmail, email, engageEmail]) {
+    const mailRequestPromise = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
+    await locator.click();
+    expect((await mailRequestPromise).url()).toBe("mailto:anorbert@pm.me");
+    expect(await locator.getAttribute("href")).toBeNull();
+    expect(await locator.evaluate((el) => el.outerHTML)).not.toMatch(/mailto:/i);
+    expect(await locator.evaluate((el) => el.outerHTML)).not.toMatch(/anorbert@pm\.me/i);
+  }
 
   const afterHtml = await page.content();
   expect(afterHtml).not.toMatch(/mailto:/i);
@@ -1069,7 +1075,7 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     const navbar = document.querySelector(".navbar");
     const email = navbar.querySelector("button.footer-email");
     const linkedin = navbar.querySelector("a.footer-contact-link");
-    const cta = document.querySelector(".hero-work-link");
+    const cta = document.querySelector(".home-banner-section a.hero-work-link[href='/works']");
     const headerImgs = [...header.querySelectorAll("img")].map((img) => img.getAttribute("src"));
     const emailStyle = email ? getComputedStyle(email) : null;
     const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
@@ -1243,6 +1249,7 @@ test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => 
       profileName: profile?.name || "",
       personName: person?.name || "",
       personDescription: person?.description || "",
+      engageLinkedIn: document.querySelector('.home-service-section a.hero-work-link[href*="linkedin"]')?.getAttribute("aria-label") || "",
     };
   });
   expect(schema.h1).toBe("Product VP");
@@ -1250,7 +1257,8 @@ test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => 
   expect(schema.engage).toBe("Open for engagements");
   expect(schema.jobTitle).toBe("Product VP");
   expect(schema.profileName).toBe("Norbert Barna — Product VP");
-  expect(schema.personName).toBe("Norbert Barna — Product VP");
+  expect(schema.personName).toBe("Norbert Barna");
+  expect(schema.engageLinkedIn).toBe("Find me on LinkedIn (opens in a new tab)");
   expect(schema.personDescription).toMatch(/Product VP/);
   expect(schema.personDescription).not.toMatch(/design lead/i);
 

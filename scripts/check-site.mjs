@@ -187,6 +187,13 @@ for (const page of PAGES) {
     const profile = nodes.find((node) => node["@type"] === "ProfilePage");
     if (profile?.isPartOf?.["@id"] !== "https://www.barnanorbert.com/#website")
       fail(`${page}: ProfilePage must link to the canonical WebSite entity`);
+    if (profile?.name !== "Norbert Barna — Product VP")
+      fail(`${page}: ProfilePage name must be Norbert Barna — Product VP`);
+    const person = nodes.find((node) => node["@type"] === "Person");
+    if (person?.name !== "Norbert Barna")
+      fail(`${page}: Person name must be Norbert Barna, not a job title`);
+    if (person?.jobTitle !== "Product VP")
+      fail(`${page}: Person jobTitle must be Product VP`);
   }
 
   if (page.startsWith("work/")) {

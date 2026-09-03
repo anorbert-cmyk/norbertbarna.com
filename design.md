@@ -54,7 +54,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify a Product VP and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. One Email CTA (no Contact column). Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. Email also appears in the home engagements block. No Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -168,7 +168,8 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    `Product VP — I lead AI products in regulated finance and high-trust
    systems.` Em dash. Do not use “AI Product Design Lead” in the footer,
    title, H1, meta, or JSON-LD name. JSON-LD `jobTitle`, ProfilePage
-   `name`, Person `name`, and visible H1 all use Product VP.
+   `name`, and visible H1 use Product VP. Person `name` stays
+   `Norbert Barna`.
 2. Controls under the lede, left: LinkedIn and Email share chrome — height
    44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
@@ -205,9 +206,10 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 4. Work column, right, dark type: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
-5. No Contact column and no empty Contact heading. One Email CTA in the
-   ident row. Do not add LinkedIn again in the nav. `/contact` stays 404;
-   no `/contact` link, no form, no captcha, no send endpoint.
+5. No Contact column and no empty Contact heading. Footer Email stays in
+   the ident row. Home also has Email in the engagements block after the
+   services cards. Do not add LinkedIn again in the nav. `/contact` stays
+   404; no `/contact` link, no form, no captcha, no send endpoint.
 6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Sharp 1px
    dark hairline on the yellow. The right side of that row is empty — do not
    restore a back-to-top control.
@@ -303,10 +305,12 @@ or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
 6. `SELECTED PORTFOLIO HIGHLIGHTS` plus the four live bullets (Raiffeisen /
    Instructure / Bitpanda / Balabit). Do not invent a Canvas Career mock.
    Do not put any product screenshot in the header.
-7. After About: secondary block `Open for engagements` (H2, never a second
-   H1). Short offer for AI product / web / similar work in fintech,
-   regulated, and high-trust environments. LinkedIn link plus the existing
-   Email button. No `/contact` page.
+7. After the services cards, still in `.home-service-section`: secondary
+   block `Open for engagements` (H2, never a second H1). Short offer for
+   AI product / web / similar work in fintech, regulated, and high-trust
+   environments. LinkedIn (`aria-label="Find me on LinkedIn (opens in a
+   new tab)"`) plus the existing Email `button.footer-email`. Do not put
+   `.footer-cta` on this block. No `/contact` page.
 
 **Home selected work (E):** compact rows, not giant 2-up rounded color cards.
 Small 72–96px thumbs (crops of existing case images), live titles + live
@@ -404,13 +408,13 @@ English-wash the screenshot.
 | NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last highlight (mask from 88%). Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
 | InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
 | GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
-| JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, ProfilePage `name`, and Person `name` are Product VP |
+| JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
 | LinkedInHitSquare | Footer LinkedIn is a grey-filled ~32px chip, or Email is a filled black pill | Both share 44px height, 12px radius, 1px black stroke, transparent fill, black ink |
 | FilledEmailPill | Email is a solid black pill (radius 999) with white type | Outlined rounded-square chrome; word `Email` in black Inter 15/500 |
-| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | One Email CTA; Work column only |
+| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Email in nav, footer ident, and home engagements; Work column only |
 | MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML (before or after click), or the complete address is one JS string | `location.assign` the assembled href; never write it onto `href` or into the DOM |
 | FakeEmailLink | Email is an `<a role="link">` without href | Native `<button type="button" class="footer-email">`; Space/Enter come for free |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | Outlined LinkedIn + Email; Work on the mesh; no Contact column; no sitemap |
