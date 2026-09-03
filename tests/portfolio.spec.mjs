@@ -1176,13 +1176,18 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
   });
   expect(dome.luminance, "navy félkör must occupy the lower field").toBeLessThan(70);
   expect(dome.b, "dome is navy, not yellow").toBeGreaterThan(dome.r - 20);
+  const lastHighlight = await page.evaluate(() => {
+    const last = document.querySelector(".home-banner-outcomes li:last-child").getBoundingClientRect();
+    const mastBox = document.querySelector(".home-mast").getBoundingClientRect();
+    return { lastBottom: last.bottom, mastBottom: mastBox.bottom };
+  });
   const domeRise = await screenshotClip(page, {
     x: Math.max(0, mast.x + mast.width * 0.74 - 24),
-    y: mast.y + mast.height * 0.78,
+    y: Math.min(lastHighlight.mastBottom - 80, lastHighlight.lastBottom + 28),
     width: 48,
     height: 36,
   });
-  expect(domeRise.luminance, "félkör rises through the lower field, not a thin horizon").toBeLessThan(110);
+  expect(domeRise.luminance, "félkör rises under the type, not through the highlights").toBeLessThan(110);
   const grain = await screenshotClip(page, {
     x: Math.max(0, mast.x + 80),
     y: mast.y + 80,
