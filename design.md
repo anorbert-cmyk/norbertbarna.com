@@ -40,8 +40,8 @@ When requirements compete, protect them in this order:
 1. Preserve shipped facts, case copy, claims, and the no-invented-email rule.
 2. Preserve Funnel Display + Inter, the shipped case colors, existing routes,
    and the class names in **Primitives**.
-3. Make the hiring question, the role, and one complete product screen
-   obvious in the first viewport of `/`.
+3. Make the hiring question, the role, and how to reach him obvious in
+   the first viewport of `/`. Product UI lives in Selected work and cases.
 4. Keep one hiring-order work list on `/` and `/works`.
 5. Choose a composition for this reader. Reject both generic SaaS heroes and
    a fixed “portfolio template”.
@@ -51,7 +51,7 @@ When requirements compete, protect them in this order:
 
 | Surface | Job in the first viewport | Proof they should see |
 |---|---|---|
-| `/` | Identify an AI product design lead and open work | Role in H1; one **complete** product screen that supports the H1; CTA to `/works` |
+| `/` | Identify an AI product design lead and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
 | Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. One Email CTA (no Contact column). Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
@@ -62,8 +62,8 @@ If a change helps a designer-flex and hurts one of those jobs, reject it.
 
 ### 1. Frame the reader’s job
 
-The executive path on `/` is: name, role, one complete shipped UI, how to
-see the work, how to reach him. The audit path is the case studies.
+The executive path on `/` is: name, role, live proof in the highlights,
+how to see the work, how to reach him. The audit path is the case studies.
 
 Do not invent metrics or emails. The one real contact address is
 `anorbert@pm.me`. HTML must not contain `mailto:` or that address as
@@ -81,11 +81,14 @@ The first viewport is the argument, not a masthead plus setup.
 
 - H1 is the role (`AI Product Design Lead`), not the name.
 - The name is a plain kicker, not an all-caps tracked eyebrow.
-- Fold proof is **one complete product screen** that supports the H1 —
-  Instructure Canvas Career (insights feed). It is not a marketing
-  composition with a campaign headline and cropped device cluster, and it is
-  not DualIndex: the **work list** still opens with Raiffeisen.
-- One primary action: `View selected work` → `/works`.
+- The first viewport is an analog mesh mast (greyer-lilac grain, a **large
+  navy félkör** from the bottom toward center-right, blur 56 family). Live
+  copy sits left on the lilac. The right side is mesh — not Canvas Career,
+  not any product screenshot.
+- Fold proof on `/` is the live highlights list, not DualIndex: the **work
+  list** still opens with Raiffeisen.
+- One primary action: `View selected work` → `/works`. Outlined 12px chrome,
+  not a black pill.
 
 Before adding a block, name the generic layout this page type would suggest
 (centered manifesto, card grid, 16:9 cover). Reject it unless the material
@@ -103,7 +106,7 @@ Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
 `/work/kineticare` at 1280 and 390. Ask, in order:
 
 1. If the reader saw only the first viewport of `/`, would they remember the
-   role and one shipped product — not only a mood or a headline?
+   role and how to open the work — not a Canvas mock or a mood-only mesh?
 2. Is every product crop a complete UI (`object-fit: contain`), not a
    CoverPoster or a Figma leftover?
 3. Do `/` and `/works` use the same case order?
@@ -173,6 +176,9 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    `<button type="button" class="footer-email">` — native Space/Enter, not a
    fake link. Hover is a light ink wash; keep the outline and black ink. Do
    not draw a mouse cursor. Do not make Email a 44px square with tiny type.
+   Page card/row hit-areas (`.work-title::after`) stay scoped to the card or
+   row. The footer stacks above them (`z-index: 8`) so Email and LinkedIn
+   keep their hover wash.
 3. Mesh field: greyer-lilac `#D6D4ED` type band. Navy `#0A1628` is a wide
    **left-weighted horizon** under the type — already spanning the width by
    mid-height, stronger on the left. Not a centered blob with lilac still at
@@ -240,34 +246,59 @@ missing middle size. Do not uppercase-track the name kicker.
 6. Kineticare (HU product — kicker must say so)
 7. OnRobot
 
-Home selected work shows 1–6 on a 12-column **7/5** grid (wider card, then
-narrower, tops aligned). `/works` shows all seven in that order on the same
-grid; the seventh card stays span 7. Do not lead the **list** with a
+Home selected work shows 1–6 as compact stacked rows (`.work-list` / `.work-row`):
+72–96px thumbs cropped from existing case images, live titles, live one-liners,
+hairline between rows, quiet arrow. Never giant 2-up color cards.
+`/works` shows all seven in that order on the 12-column **7/5** grid; the seventh
+card stays span 7. Do not lead the **list** with a
 prediction-market MVP or a Hungarian product on an otherwise English hiring
 path.
 
-**Header (locked):** one sticky white bar, 64px desktop / 56px compact,
-`#fff` fill, 1px `#e6e8e9` bottom border. Contents in order: logo →
-(case pages only) breadcrumb `Works / {Project}` in the bar → LinkedIn link
-(visible label `LinkedIn`, full aria-label kept). Home and `/works` keep the
-`Works` nav link instead of the breadcrumb. There is no Motion control —
-not in the bar, not as a fixed chip, not in the footer. Autoplay and GSAP
-already honor `prefers-reduced-motion`. The old 57px breadcrumb strip under
-the nav is retired. The one real contact address is `anorbert@pm.me`; do not
-invent additional addresses. Do not put `mailto:` or the address in HTML.
-`/contact` stays 404. `/cv` stays unpublished.
+**Header (locked):**
+
+- **Home:** the bar sits **on the analog mast** — transparent fill, no white
+  slab, no `#e6e8e9` border. Contents: `nb` left; right: Works text + outlined
+  LinkedIn 44px square + outlined Email (`<button type="button" class="footer-email">`,
+  same 1px black / radius 12 / Inter 15/500 chrome as the footer). Email is
+  assign-only; no `mailto:` / address in HTML. Not a footer clone: no Work
+  column, no copyright in the header. No Motion control.
+- **`/works` and case pages:** one sticky white bar, 64px desktop / 56px compact,
+  `#fff` fill, 1px `#e6e8e9` bottom border. Contents in order: logo →
+  (case pages only) breadcrumb `Works / {Project}` in the bar → LinkedIn link
+  (visible label `LinkedIn`, full aria-label kept). `/works` keeps the `Works`
+  nav link instead of the breadcrumb.
+
+There is no Motion control — not in the bar, not as a fixed chip, not in
+the footer. Autoplay and GSAP already honor `prefers-reduced-motion`. The old
+57px breadcrumb strip under the nav is retired. The one real contact address
+is `anorbert@pm.me`; do not invent additional addresses. Do not put `mailto:`
+or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
 
 **Home fold**
 
-1. Kicker: `Norbert Barna` (sentence case, no tracking)
-2. H1: `AI Product Design Lead`
-3. One-line dek (existing positioning, not a slogan)
-4. Primary action: `View selected work` → `/works`
-5. Product screen: Instructure Canvas Career insights-feed screenshot, fully
-   in frame, linking to `/work/instructure`, with a short caption. This
-   supports the H1. It is not DualIndex. On compact viewports it sits after
-   the CTA so it still lands in the first viewport.
-6. Outcomes list (existing bullets) follows as supporting evidence.
+1. Analog mesh mast: greyer-lilac `#D6D4ED` grain, a **large navy félkör**
+   (`#0A1628`) rising from the bottom toward center-right, `feGaussianBlur` 56.
+   Not the weaker/smaller navy of the text-only crop. Not the footer’s
+   right-weighted yellow. Type on the pale band. Empty right is mesh.
+   On compact, navy fades in below the highlights (`mask-image`) so ink
+   stays on lilac — same NavyFlood rule as the footer.
+2. Kicker: `Norbert Barna` (sentence case, no tracking). Stay 13px on
+   compact; do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
+   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Fold type
+   (kicker, H1, dek, CTA, highlight label, four bullets) must meet WCAG AA
+   against the live grain: 4.5:1 normal, 3:1 large. Do not put copy on navy.
+3. H1: `AI Product Design Lead`
+4. One-line dek (existing positioning, not a slogan)
+5. Primary action: `View selected work` → `/works` (outlined 12px chrome,
+   not a filled black pill)
+6. `SELECTED PORTFOLIO HIGHLIGHTS` plus the four live bullets (Raiffeisen /
+   Instructure / Bitpanda / Balabit). Do not invent a Canvas Career mock.
+   Do not put any product screenshot in the header.
+
+**Home selected work (E):** compact rows, not giant 2-up rounded color cards.
+Small 72–96px thumbs (crops of existing case images), live titles + live
+one-liners, hairline between rows, quiet arrow. Do not use invented years or
+invented descriptions from the compact-row mock.
 
 **Works fold:** H1 `Works`, two-line intro max, first card (Raiffeisen)
 visible in a 900px-tall desktop viewport. No “these aren’t mockups” line.
@@ -324,7 +355,11 @@ English-wash the screenshot.
 
 | Name | What it looks like | Fix |
 |---|---|---|
-| EmptyFold | Name or manifesto, no product UI | Put a complete product screen in the first viewport |
+| EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + live highlights on the analog mast; product UI lives in Selected work rows and case pages |
+| CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Empty right is mesh |
+| WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080); blur 56; lock saturation `#0A1628` on `#D6D4ED` |
+| GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
+| FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
 | DualIndex | Home **list** order ≠ `/works` order | One list, hiring-first |
 | BlogHero | “Written by / Published / Updated” anywhere on the page | Facts + UI; authorship stays in meta and JSON-LD |
 | CoverPoster | Campaign headline + clustered devices, site URL in the corner, or any artboard that already crops the phones | One complete product screen; `contain` |
@@ -342,7 +377,8 @@ English-wash the screenshot.
 | MeshParallaxCircus | Mesh masses rotate, travel tens of pixels, loop like a GIF, or drag type/chrome | Navy / olive / yellow translate a few pixels at different depths; chrome stays still; reduced-motion is static |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type |
+| NavyFlood | Navy mesh blob bleeds up under Work or home highlights so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type. Compact footer: fade `.footer-mesh-navy` in below Work (`mask-image`). Home mast: lilac plate only — fade `.home-mast-navy` in below the type; do not paint desktop CSS navy radials under the copy |
+| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker and highlight label use solid `--mast-muted` `#2a2a2e` |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
@@ -384,18 +420,20 @@ Agents compose pages from these names. Do not invent parallel components.
 `.footer-mesh-yellow` `.footer-nav` `.footer-col` `.footer-col-title`
 `.footer-copyright` `.footer-bar`
 
-**Home:** `.home-banner-section` `.hero-kicker` `.home-banner-title`
-`.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link` `.hero-proof`
-`.hero-proof-caption` `.about-section-title` `.home-about-area` `.work-grid`
-`.work-card` `.work-image` `.work-title` `.work-card-summary` `.home-work-footer`
+**Home:** `.home-mast` `.home-mast-mesh` `.home-mast-art` `.home-mast-lilac`
+`.home-mast-navy` `.home-banner-section` `.hero-kicker` `.home-banner-title`
+`.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link`
+`.about-section-title` `.home-about-area` `.work-list` `.work-row`
+`.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
+`.work-card-summary` `.home-work-footer` `.nav-cta`
 
-**Works:** same cards; `.home-banner-text` max two sentences.
+**Works:** `.work-grid` `.work-card` `.work-image`; `.home-banner-text` max two sentences.
 
 **Case:** `article.case-study-article` `h1#case-title` `.case-hero-media`
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); Email is the word `Email`.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); Email is the word `Email`. Home nav reuses that LinkedIn square + Email chrome. Home `View selected work` is the same outlined 12px language, not a black pill.
 
 ## Motion
 
@@ -406,6 +444,7 @@ Hide `.case-motion-rail`. Default to stillness for anything new. The locked
 footer mesh may translate navy / olive / yellow a few pixels under the
 pointer (yellow closer, navy deeper) with an easy-to-miss idle. Type,
 Work, Email, LinkedIn, copyright, and the hairline do not move.
+The **home mast is static** — no pointer parallax, no Motion control.
 `prefers-reduced-motion: reduce` is the static wash. No dunes, no header
 Motion control, no rotation circus.
 

@@ -2483,7 +2483,7 @@ body.home .navbar {
   isolation: isolate;
   overflow: hidden;
   width: 100%;
-  min-height: min(100svh, 1040px);
+  min-height: min(100svh, 920px);
   margin-top: -64px;
   padding-top: 64px;
   background: #d6d4ed;
@@ -2493,7 +2493,7 @@ body.home .navbar {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
-  height: 42%;
+  height: 32%;
   z-index: 0;
   pointer-events: none;
   background: radial-gradient(120% 90% at 70% 110%, #0a1628 0 50%, transparent 76%);
@@ -2502,8 +2502,8 @@ body.home .navbar {
 }
 
 .home-mast-navy {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 70%, #000 80%);
-  mask-image: linear-gradient(to bottom, transparent 70%, #000 80%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 58%, #000 82%);
+  mask-image: linear-gradient(to bottom, transparent 58%, #000 82%);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
@@ -2557,7 +2557,7 @@ body.home .navbar {
   position: relative;
   z-index: 1;
   background: transparent;
-  padding: clamp(28px, 5vw, 56px) 0 min(36vw, 360px);
+  padding: clamp(28px, 5vw, 56px) 0 clamp(72px, 9vw, 120px);
 }
 
 .home-mast .home-banner-area,
