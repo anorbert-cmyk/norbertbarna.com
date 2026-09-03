@@ -111,15 +111,18 @@ if (worksLd) {
     fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
   }
 }
-if (!/"jobTitle": "AI Product Design Lead"/.test(home)) {
-  fail("home JSON-LD jobTitle must match the locked H1");
-}
 if (/These aren.t mockups/i.test(works)) fail("/works still has the defensive manifesto");
 if (!works.includes("Hungarian product")) fail("Kineticare card must flag the Hungarian product");
 if (/The Value Provided|Gain insights through user interviews/i.test(home)) {
   fail("template about copy returned");
 }
 if (/Professional<br\s*\/?>Experience/.test(home)) fail("Professional experience heading is still jammed");
+if (!/"jobTitle": "Product VP"/.test(home)) {
+  fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
+}
+if (works.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1] !== "Product Design Case Studies") {
+  fail("TitleDrift: /works H1 must be Product Design Case Studies");
+}
 
 if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   fail("design.md must lock Funnel Display and Inter");
@@ -157,6 +160,11 @@ if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKic
 if (!/InkOnNight/.test(design) || !/MotionCover/.test(design)) {
   fail("design.md must name InkOnNight and MotionCover");
 }
+if (/JobTitleDrift/.test(design) === false) fail("design.md must name the JobTitleDrift anti-pattern");
+if (/BareWorkSlug/.test(design) === false) fail("design.md must name the BareWorkSlug anti-pattern");
+if (/DualHome/.test(design) === false) fail("design.md must name the DualHome anti-pattern");
+if (/TitleDrift/.test(design) === false) fail("design.md must name the TitleDrift anti-pattern");
+if (/InventedSocial/.test(design) === false) fail("design.md must name the InventedSocial anti-pattern");
 
 if (!/\.home-banner-title[\s\S]{0,160}64px/.test(css)) fail("display size is not locked to 56–64");
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
