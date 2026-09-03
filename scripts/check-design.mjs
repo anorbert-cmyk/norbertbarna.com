@@ -44,23 +44,53 @@ if (!home.includes('class="hero-kicker">Norbert Barna')) {
 if (!/class="hero-work-link"[^>]*href="\/works"/.test(home)) {
   fail("home CTA must go to /works");
 }
-if (!home.includes('class="hero-proof"') || !/hero-proof[\s\S]{0,1200}insights-feed/.test(home)) {
-  fail("home fold must show a complete Instructure Canvas Career screen, not a CoverPoster");
+const homeMast = home.slice(
+  Math.max(0, home.indexOf("home-mast")),
+  home.indexOf("home-about-section")
+);
+if (!/class="home-mast-mesh"/.test(homeMast) || !/home-mast-navy/.test(homeMast)) {
+  fail("home fold must open on the analog mesh mast (lilac + navy félkör)");
 }
-if (!/class="hero-proof"[^>]*href="\/work\/instructure"/.test(home)) {
-  fail("home-fold proof must link to the Instructure case");
+if (!/id="home-mast-blur"/.test(homeMast) || !/stdDeviation="56"/.test(homeMast)) {
+  fail("home mast must use the blur 56 family, not a second CSS fog");
 }
-if (!home.includes("hero-proof-caption") || !home.includes("Instructure — Canvas Career")) {
-  fail("home-fold proof needs a caption that names the shipped product");
+if (!/#D6D4ED/.test(homeMast) || !/#0A1628/.test(homeMast)) {
+  fail("home mast must use lock lilac and navy");
 }
-if (home.indexOf("hero-proof") > home.indexOf("home-banner-outcomes")) {
-  fail("EmptyFold: product screen must precede the outcomes list so it can land in the compact fold");
+const homeNavy = [...homeMast.matchAll(/<ellipse cx="([0-9.]+)" cy="([0-9.]+)" rx="([0-9.]+)" ry="([0-9.]+)" fill="#0A1628"/g)];
+if (!homeNavy.some((m) => Number(m[4]) >= 700 && Number(m[1]) >= 1080)) {
+  fail("WeakNavyDome: home mast navy félkör must be a large center-right mass (ry ≥ 700, cx ≥ 1080)");
 }
-if (home.indexOf("hero-work-link") > home.indexOf("hero-proof")) {
-  fail("home CTA must sit with the role, before the product screen");
+if (/hero-proof|insights-feed|Canvas Career|hero-proof-caption/.test(homeMast)) {
+  fail("CanvasFold: homepage header must not ship a product screenshot");
 }
-if (/hero-proof[\s\S]{0,1200}banking-experience/.test(home)) {
-  fail("CoverPoster: home fold still uses the cropped Raiffeisen device cluster");
+if (/<img\b(?![^>]*NB\.svg)/.test(homeMast)) {
+  fail("CanvasFold: homepage header may only show the nb wordmark, not case UI");
+}
+if (/footer-col-title">Work|footer-copyright|© 2026 Norbert Barna/.test(homeMast)) {
+  fail("home mast is not a footer clone: no Work column or copyright");
+}
+if (/#BDB414|#FFE000/.test(homeMast)) {
+  fail("home mast must not paint the footer yellow into the header");
+}
+if (/home-banner-outcomes/.test(home) === false) {
+  fail("home fold must keep the four live portfolio highlights");
+}
+if (/4M\+|Redesigning banking for/.test(home)) {
+  fail("do not replace live work copy with invented mock one-liners");
+}
+const homeNav = home.slice(home.indexOf('class="navbar'), home.indexOf("<main"));
+if (!/class="nav-link[^"]*"[^>]*href="\/works">Works<\/a>/.test(homeNav)) {
+  fail("home top bar must keep the Works text link");
+}
+if (!/class="footer-contact-link"/.test(homeNav) || !/linkedin\.com\/in\/barna-norbert/.test(homeNav)) {
+  fail("home top bar must use the outlined LinkedIn square");
+}
+if (!/<button type="button" class="footer-email">Email<\/button>/.test(homeNav)) {
+  fail("home top bar Email must be type=button assign-only, same class as footer");
+}
+if (/href="[^"]*mailto:/.test(homeNav) || /anorbert@pm\.me/.test(homeNav)) {
+  fail("MailtoInHtml: home Email must not expose mailto or the address");
 }
 if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 6))) {
   fail(`home selected-work order is ${homeOrder.join(", ")} (must be hiring 1–6 incl. Kineticare)`);
@@ -70,6 +100,19 @@ if (homeOrder.length < 6) {
 }
 if (JSON.stringify(worksOrder) !== JSON.stringify(hiring)) {
   fail(`/works order is ${worksOrder.join(", ")}`);
+}
+const worksLd = works.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
+if (worksLd) {
+  const items = JSON.parse(worksLd).mainEntity?.itemListElement || [];
+  const ldOrder = [...items].sort((a, b) => a.position - b.position).map((item) =>
+    String(item.url || "").replace("https://www.barnanorbert.com/work/", "")
+  );
+  if (JSON.stringify(ldOrder) !== JSON.stringify(hiring)) {
+    fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
+  }
+}
+if (!/"jobTitle": "AI Product Design Lead"/.test(home)) {
+  fail("home JSON-LD jobTitle must match the locked H1");
 }
 if (/These aren.t mockups/i.test(works)) fail("/works still has the defensive manifesto");
 if (!works.includes("Hungarian product")) fail("Kineticare card must flag the Hungarian product");
@@ -100,7 +143,13 @@ if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoI
 if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
 if (/MeshParallaxCircus/.test(design) === false) fail("design.md must name the MeshParallaxCircus anti-pattern");
 if (/CompactMeshClip/.test(design) === false) fail("design.md must name the CompactMeshClip anti-pattern");
+if (/CanvasFold/.test(design) === false) fail("design.md must name the CanvasFold anti-pattern");
+if (/WeakNavyDome/.test(design) === false) fail("design.md must name the WeakNavyDome anti-pattern");
+if (/GiantWorkCards/.test(design) === false) fail("design.md must name the GiantWorkCards anti-pattern");
+if (/FooterHitSteal/.test(design) === false) fail("design.md must name the FooterHitSteal anti-pattern");
+if (/GrainWash/.test(design) === false) fail("design.md must name the GrainWash anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
+if (/home-mast/.test(design) === false) fail("design.md must document the home mast");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
   fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
@@ -152,6 +201,27 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.navbar \.nav-wrap,\s*\.navbar \.n
 }
 if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(home + works)) {
   fail("MotionNav: the Motion control must not appear on home or /works");
+}
+if (!/body\.home \.navbar[\s\S]{0,240}background:\s*transparent/.test(css)) {
+  fail("home mast: navbar must sit on the mesh, not a white slab");
+}
+if (!/\.hero-work-link[\s\S]{0,360}border-radius:\s*12px/.test(css) ||
+    /\.hero-work-link[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    /\.hero-work-link[\s\S]{0,240}background:\s*#111/.test(css)) {
+  fail("home CTA must be outlined 12px chrome, not a black pill");
+}
+if (!/\.work-list[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
+  fail("home selected work must be a stacked row list");
+}
+if (!/\.work-row-thumb[\s\S]{0,160}width:\s*84px/.test(css) ||
+    !/\.work-row-thumb[\s\S]{0,200}height:\s*84px/.test(css)) {
+  fail("home work thumbs must lock at 84px (72–96 family), not half-viewport cards");
+}
+if (/#works[\s\S]{0,400}work-grid/.test(home) || /class="work-image-wrap"/.test(home)) {
+  fail("GiantWorkCards: home selected work must not restore giant 2-up cards");
+}
+if ((home.match(/class="work-row"/g) || []).length !== 6) {
+  fail("home selected work must be six compact rows");
 }
 if (!/\.work-grid[\s\S]{0,200}repeat\(12,\s*minmax\(0,\s*1fr\)\)/.test(css)) {
   fail("work grid must be a 12-column track");
@@ -295,11 +365,34 @@ if (!/mask-image:\s*linear-gradient\(to bottom,\s*transparent 0%,\s*#000 40%\)/.
 if (/height:\s*100%/.test(compactArt?.[0] || "")) {
   fail("NavyFlood: compact .footer-mesh-art must not stretch to height 100%");
 }
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
+  fail("NavyFlood: compact home mast navy must fade in below the highlights");
+}
+if (!/\.home-mast::after[\s\S]{0,240}radial-gradient[\s\S]{0,80}#0a1628/.test(css)) {
+  fail("NavyFlood: compact home mast must paint a bottom navy overlay under the type");
+}
+if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13px/.test(css)) {
+  fail("home kicker must stay 13px on compact, not inherit the 17px banner bump");
+}
+if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
+  fail("GrainWash: home mast must ship solid --mast-muted #2a2a2e");
+}
+if (!/\.home-mast \.hero-kicker[\s\S]{0,80}var\(--mast-muted\)/.test(css) ||
+    !/\.home-mast \.home-banner-area \.metric-context[\s\S]{0,80}var\(--mast-muted\)/.test(css)) {
+  fail("GrainWash: mast kicker and highlight label must use --mast-muted, not 62% --muted");
+}
+const homeMastPlate = css.match(/\.home-mast,\s*\n\.home-banner-wrap\.home-mast\s*\{[^}]+\}/);
+if (!homeMastPlate || !/background:\s*#d6d4ed/.test(homeMastPlate[0]) || /radial-gradient/.test(homeMastPlate[0])) {
+  fail("NavyFlood: .home-mast plate must be lilac without desktop navy radials");
+}
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");
 }
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");
+}
+if (/\.home-mast-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
+  fail("FogGrain: .home-mast-art must not add a second CSS blur");
 }
 if (/\.footer-mesh::after[\s\S]{0,240}opacity:\s*\.38/.test(css)) {
   fail("FogGrain: grain must not ship as a faint 0.38 multiply overlay");
@@ -338,6 +431,15 @@ if (!/\.footer-bar[\s\S]{0,200}border-top:\s*1px solid rgb\(17 17 17 \/ 62%\)/.t
 }
 if (/class="back-to-top-wrap"/.test(footerCanon[0]) || /aria-label="Back to top"/.test(footerCanon[0])) {
   fail("FooterBackToTop: copyright row must not restore a back-to-top control");
+}
+if (/(?:^|[,{}]\s*)\.work-title::after/.test(css)) {
+  fail("FooterHitSteal: .work-title::after must be scoped to .work-card or .work-row");
+}
+if (!/\.work-card \.work-title::after/.test(css) || !/\.work-row \.work-title::after/.test(css)) {
+  fail("FooterHitSteal: card and row title hit-areas must stay scoped");
+}
+if (!/\.footer-section\s*\{[\s\S]{0,480}z-index:\s*8/.test(css)) {
+  fail("FooterHitSteal: .footer-section must stack above page hit-areas (z-index 8)");
 }
 for (const page of footerPages) {
   const html = readFileSync(join(ROOT, page), "utf8");
@@ -417,6 +519,9 @@ if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes('["ano", 
     !navigationJs.includes('["pm", ".", "me"]') || !navigationJs.includes("button.footer-email") ||
     !navigationJs.includes("location.assign")) {
   fail("Email click must location.assign a href assembled from split parts");
+}
+if (!/querySelectorAll\(\s*["']a,\s*button\.footer-email["']\s*\)/.test(navigationJs)) {
+  fail("mobile nav must close on header Email as well as links");
 }
 if (/a\.footer-email/.test(navigationJs) || /setAttribute\(\s*["']href["']/.test(navigationJs)) {
   fail("MailtoInHtml: do not write mailto onto href or use a fake Email link");
