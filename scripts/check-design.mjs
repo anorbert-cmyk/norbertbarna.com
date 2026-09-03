@@ -123,8 +123,29 @@ if (worksLd) {
 if (!/"jobTitle": "Product VP"/.test(home)) {
   fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
 }
-if (!/"name": "Norbert Barna — Product VP"/.test(home)) {
-  fail("JobTitleDrift: ProfilePage and Person name must include Product VP");
+const homeLdRaw = home.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
+let homeLd;
+try {
+  homeLd = JSON.parse(homeLdRaw);
+} catch {
+  homeLd = null;
+  fail("home JSON-LD must parse");
+}
+if (homeLd?.["@type"] !== "ProfilePage" || homeLd?.name !== "Norbert Barna — Product VP") {
+  fail("JobTitleDrift: ProfilePage name must be Norbert Barna — Product VP");
+}
+if (homeLd?.mainEntity?.["@type"] !== "Person" || homeLd?.mainEntity?.name !== "Norbert Barna") {
+  fail("JobTitleDrift: Person name must be Norbert Barna, not a job title");
+}
+const engage = home.slice(home.indexOf("Open for engagements"), home.indexOf('id="works"'));
+if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"/.test(engage)) {
+  fail("engage LinkedIn must use the same new-tab accessible name as nav/footer");
+}
+if (!/<button type="button" class="footer-email hero-work-link">Email<\/button>/.test(engage)) {
+  fail("engage Email must reuse footer-email as type=button, not a mailto link");
+}
+if (/class="footer-cta"/.test(engage)) {
+  fail("engage block must not use footer-cta");
 }
 const homeHead = home.slice(0, home.indexOf("</head>"));
 if (/AI Product Design Lead|product design lead/i.test(homeHead)) {

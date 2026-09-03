@@ -21,23 +21,23 @@ copy. Never stuffed.
 ### / (home)
 | Tier | Keywords |
 |---|---|
-| Primary | AI product design lead, AI product designer portfolio |
-| Secondary | fintech UX designer, product design lead portfolio, senior product designer |
-| Long-tail | product design lead for AI and fintech products; senior product designer for regulated industries; AI-driven product design portfolio; hire product design lead with banking experience |
+| Primary | Product VP, AI product portfolio |
+| Secondary | fintech Product VP, AI products in regulated systems |
+| Long-tail | Product VP for AI and fintech products; Product VP for regulated industries; AI product portfolio; hire Product VP with banking experience |
 
-Implemented in: title, meta description, H1 + hero copy, and `Person` JSON-LD
-(`knowsAbout`, `alternateName`). `jobTitle` is `Product VP` so it matches the
-footer lock, not the H1.
+Implemented in: title, meta description, H1 + hero copy, and JSON-LD.
+`jobTitle` and ProfilePage `name` use Product VP. Person `name` is
+`Norbert Barna`.
 
 ### /works
 | Tier | Keywords |
 |---|---|
-| Primary | product design case studies |
-| Secondary | UX design portfolio, UX case studies |
-| Long-tail | fintech and AI product design case studies; enterprise UX design case studies; crypto and banking UX portfolio |
+| Primary | selected work |
+| Secondary | UX design portfolio, product case studies |
+| Long-tail | fintech and AI selected work; enterprise UX case studies; crypto and banking UX portfolio |
 
-Implemented in: title, matching H1 (`Product Design Case Studies`), meta
-description, `CollectionPage` + `ItemList` JSON-LD.
+Implemented in: title, matching H1 (`Selected work`), meta description,
+`CollectionPage` + `ItemList` JSON-LD.
 
 ### /work/benker
 | Tier | Keywords |
@@ -118,7 +118,7 @@ author to the site's canonical `Person` entity.
    operators", "What explainable AI means in EdTech UX".
    Link each article to its case study (internal link with descriptive anchor).
 2. **About/services copy on the home page** targeting "hire" intent phrases
-   naturally (e.g. "available for AI product design leadership roles").
+   naturally (e.g. "available for Product VP and AI product engagements").
 3. **Backlinks:** case studies pitched to design newsletters/galleries
    (bestfolios, Muzli, Sidebar), talk/podcast appearances, LinkedIn articles
    pointing at the studies.
