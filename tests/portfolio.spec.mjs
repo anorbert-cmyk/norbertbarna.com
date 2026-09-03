@@ -1168,22 +1168,32 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     height: 14,
   });
   expect(outcomesBand.luminance, "highlights stay on lilac, not the navy félkör").toBeGreaterThan(130);
+  await page.evaluate(() => {
+    const mastEl = document.querySelector(".home-mast");
+    const box = mastEl.getBoundingClientRect();
+    window.scrollTo(0, Math.max(0, window.scrollY + box.bottom - window.innerHeight));
+  });
+  const lower = await page.evaluate(() => {
+    const mastBox = document.querySelector(".home-mast").getBoundingClientRect();
+    const last = document.querySelector(".home-banner-outcomes li:last-child").getBoundingClientRect();
+    return {
+      x: mastBox.x,
+      width: mastBox.width,
+      bottom: mastBox.bottom,
+      lastBottom: last.bottom,
+    };
+  });
   const dome = await screenshotClip(page, {
-    x: Math.max(0, mast.x + mast.width * 0.72 - 24),
-    y: mast.y + mast.height - 70,
+    x: Math.max(0, lower.x + lower.width * 0.72 - 24),
+    y: Math.max(0, lower.bottom - 70),
     width: 48,
     height: 36,
   });
   expect(dome.luminance, "navy félkör must occupy the lower field").toBeLessThan(70);
   expect(dome.b, "dome is navy, not yellow").toBeGreaterThan(dome.r - 20);
-  const lastHighlight = await page.evaluate(() => {
-    const last = document.querySelector(".home-banner-outcomes li:last-child").getBoundingClientRect();
-    const mastBox = document.querySelector(".home-mast").getBoundingClientRect();
-    return { lastBottom: last.bottom, mastBottom: mastBox.bottom };
-  });
   const domeRise = await screenshotClip(page, {
-    x: Math.max(0, mast.x + mast.width * 0.74 - 24),
-    y: Math.min(lastHighlight.mastBottom - 80, lastHighlight.lastBottom + 28),
+    x: Math.max(0, lower.x + lower.width * 0.74 - 24),
+    y: Math.max(0, Math.min(lower.bottom - 80, lower.lastBottom + 28)),
     width: 48,
     height: 36,
   });
