@@ -98,7 +98,7 @@ if (/FilledEmailPill/.test(design) === false) fail("design.md must name the Fill
 if (/ContactColumn/.test(design) === false) fail("design.md must name the ContactColumn anti-pattern");
 if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoInHtml anti-pattern");
 if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
-if (/MeshParallaxCircus/.test(design) === false) fail("design.md must name the MeshParallaxCircus anti-pattern");
+if (/CompactMeshClip/.test(design) === false) fail("design.md must name the CompactMeshClip anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -280,6 +280,13 @@ if ((footerCanon[0].match(/class="footer-mesh-olive"/g) || []).length < 2) {
 if (/\.footer-mesh-(?:navy|olive|yellow)[\s\S]{0,240}rotate\(/.test(css) ||
     /@keyframes[\s\S]{0,200}footer-mesh-(?:navy|olive|yellow)/.test(css)) {
   fail("MeshParallaxCircus: mesh mass CSS must not rotate or keyframe-loop");
+}
+if (/inset:\s*auto 0 0 0/.test(css) && /min\(145vw,\s*580px\)/.test(css)) {
+  fail("CompactMeshClip: compact mesh SVG must fill the footer, not pin a short field through the ident");
+}
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,160}inset:\s*0/.test(css) ||
+    !/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,200}height:\s*100%/.test(css)) {
+  fail("CompactMeshClip: compact .footer-mesh-art must be inset 0 / height 100%");
 }
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");

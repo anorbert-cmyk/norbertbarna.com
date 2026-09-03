@@ -858,6 +858,34 @@ test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top"
     height: 14,
   });
   expect(workBand.luminance, "390 Work must sit on the pale lilac band, not the navy horizon").toBeGreaterThan(140);
+
+  const seam = await page.evaluate(() => {
+    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
+    const work = document.querySelector(".footer-col-title").getBoundingClientRect();
+    return {
+      x: 180,
+      y: cta.bottom - 12,
+      width: 80,
+      height: Math.max(8, Math.round(work.top - cta.bottom + 24)),
+    };
+  });
+  const seamBuf = await page.screenshot({ clip: seam, type: "png" });
+  const seamPng = readPng(seamBuf);
+  let maxJump = 0;
+  for (let y = 1; y < seamPng.height; y += 1) {
+    const row = (yy) => {
+      let sum = 0;
+      let count = 0;
+      for (let x = 0; x < seamPng.width; x += 1) {
+        const i = (yy * seamPng.width + x) * 4;
+        sum += 0.2126 * seamPng.pixels[i] + 0.7152 * seamPng.pixels[i + 1] + 0.0722 * seamPng.pixels[i + 2];
+        count += 1;
+      }
+      return sum / count;
+    };
+    maxJump = Math.max(maxJump, Math.abs(row(y) - row(y - 1)));
+  }
+  expect(maxJump, "compact mesh must not clip a hard seam through the Email / Work stack").toBeLessThan(12);
 });
 
 test("1280 home selected work: Kineticare present, 7/5 grid, no stagger hole, stable title color", async ({ page }) => {
