@@ -99,6 +99,7 @@ if (/ContactColumn/.test(design) === false) fail("design.md must name the Contac
 if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoInHtml anti-pattern");
 if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
 if (/MeshParallaxCircus/.test(design) === false) fail("design.md must name the MeshParallaxCircus anti-pattern");
+if (/CompactMeshClip/.test(design) === false) fail("design.md must name the CompactMeshClip anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -280,6 +281,19 @@ if ((footerCanon[0].match(/class="footer-mesh-olive"/g) || []).length < 2) {
 if (/\.footer-mesh-(?:navy|olive|yellow)[\s\S]{0,240}rotate\(/.test(css) ||
     /@keyframes[\s\S]{0,200}footer-mesh-(?:navy|olive|yellow)/.test(css)) {
   fail("MeshParallaxCircus: mesh mass CSS must not rotate or keyframe-loop");
+}
+if (!/\.footer-mesh\s*\{[\s\S]{0,180}background:\s*#d6d4ed/.test(css)) {
+  fail("CompactMeshClip: .footer-mesh must paint the lilac plate behind the compact SVG fade");
+}
+const compactArt = css.match(/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art\s*\{[^}]+\}/);
+if (!compactArt || !/inset:\s*auto 0 0 0/.test(compactArt[0]) || !/min\(145vw,\s*580px\)/.test(compactArt[0])) {
+  fail("NavyFlood: compact .footer-mesh-art must stay bottom-pinned at min(145vw, 580px)");
+}
+if (!/mask-image:\s*linear-gradient\(to bottom,\s*transparent 0%,\s*#000 40%\)/.test(compactArt?.[0] || "")) {
+  fail("CompactMeshClip: compact mesh SVG must fade its top edge into the lilac plate");
+}
+if (/height:\s*100%/.test(compactArt?.[0] || "")) {
+  fail("NavyFlood: compact .footer-mesh-art must not stretch to height 100%");
 }
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");

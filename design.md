@@ -191,7 +191,11 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    barely-there idle. Type, Work, Email, LinkedIn, copyright, and the
    hairline stay still. `prefers-reduced-motion: reduce` is the current
    static mesh. No rotation, no lava-lamp travel. Grain does not crawl. Do
-   not restore a yellow `<rect>` slab.
+   not restore a yellow `<rect>` slab. On compact viewports keep the mesh
+   SVG bottom-pinned (`min(145vw, 580px)`) so Work stays on the lilac band,
+   and fade the SVG’s top edge into the `.footer-mesh` lilac plate so the
+   ident / Email row is not a clip. Do not stretch that SVG to the full
+   footer height — that is NavyFlood.
 4. Work column, right, dark type: Raiffeisen, Instructure, Bitpanda,
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
@@ -334,6 +338,7 @@ English-wash the screenshot.
 | SausageBand | Navy is a thin full-width ellipse (~8% of field height, `ry` ≪ field) then a flat yellow rectangle | Taller ~3:2 field; navy is a left-weighted horizon mass, not a crushed stripe |
 | YellowBalloon | Centered yellow ellipse (`cx` at field center, sitting as an island / smiley) | Yellow is right-weighted (onset left 94% / center 84% / right 73%); left at 80% stays dark |
 | HardMeshSeam | Visible ellipse contours or hard-ish bands between lilac / navy / olive / yellow | Larger overlapping masses + `feGaussianBlur` ≥ 48 so the lock reads as analog bleed |
+| CompactMeshClip | A hard horizontal seam through the compact ident / Email row where a short bottom-pinned mesh SVG begins | Keep the pin (Work on lilac). Fade the SVG top into the `.footer-mesh` `#D6D4ED` plate; do not stretch the field to `height: 100%` |
 | MeshParallaxCircus | Mesh masses rotate, travel tens of pixels, loop like a GIF, or drag type/chrome | Navy / olive / yellow translate a few pixels at different depths; chrome stays still; reduced-motion is static |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
