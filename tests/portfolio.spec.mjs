@@ -1236,7 +1236,9 @@ test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => 
     return {
       h1: document.querySelector(".home-mast h1")?.textContent.trim() || "",
       h1Count: document.querySelectorAll("h1").length,
-      engage: document.querySelector(".home-service-section h2.section-title")?.textContent.trim() || "",
+      engage: [...document.querySelectorAll("h2")].map((el) => el.textContent.trim()).includes("Open for engagements")
+        ? "Open for engagements"
+        : ([...document.querySelectorAll("h2, h3")].find((el) => /Open for engagements/.test(el.textContent))?.tagName || "missing"),
       jobTitle: person?.jobTitle || "",
       profileName: profile?.name || "",
       personName: person?.name || "",

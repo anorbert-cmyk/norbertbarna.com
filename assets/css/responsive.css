@@ -777,14 +777,6 @@ html.no-motion .footer-mesh-yellow {
   gap: 9px;
 }
 
-.home-service-section .footer-cta {
-  margin: 12px 0 56px;
-}
-
-.home-service-section .footer-cta .hero-work-link {
-  margin-top: 0;
-}
-
 .footer-section a.footer-contact-link,
 .navbar a.footer-contact-link {
   display: inline-flex;
