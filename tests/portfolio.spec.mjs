@@ -1060,14 +1060,32 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
   });
   expect(lilac.luminance, "copy sits on the pale lilac band").toBeGreaterThan(150);
   expect(lilac.b, "type band stays cool-lilac").toBeGreaterThan(lilac.r - 12);
+  const outcomes = await page.evaluate(() => {
+    const list = document.querySelector(".home-banner-outcomes").getBoundingClientRect();
+    return { x: list.x, y: list.y };
+  });
+  const outcomesBand = await screenshotClip(page, {
+    x: Math.max(0, outcomes.x - 20),
+    y: outcomes.y + 4,
+    width: 18,
+    height: 14,
+  });
+  expect(outcomesBand.luminance, "highlights stay on lilac, not the navy félkör").toBeGreaterThan(130);
   const dome = await screenshotClip(page, {
-    x: Math.max(0, mast.x + mast.width * 0.68 - 24),
+    x: Math.max(0, mast.x + mast.width * 0.72 - 24),
     y: mast.y + mast.height - 70,
     width: 48,
     height: 36,
   });
-  expect(dome.luminance, "navy félkör must occupy the lower field").toBeLessThan(90);
+  expect(dome.luminance, "navy félkör must occupy the lower field").toBeLessThan(70);
   expect(dome.b, "dome is navy, not yellow").toBeGreaterThan(dome.r - 20);
+  const domeRise = await screenshotClip(page, {
+    x: Math.max(0, mast.x + mast.width * 0.74 - 24),
+    y: mast.y + mast.height * 0.78,
+    width: 48,
+    height: 36,
+  });
+  expect(domeRise.luminance, "félkör rises through the lower field, not a thin horizon").toBeLessThan(110);
   const grain = await screenshotClip(page, {
     x: Math.max(0, mast.x + 80),
     y: mast.y + 80,

@@ -57,9 +57,9 @@ if (!/id="home-mast-blur"/.test(homeMast) || !/stdDeviation="56"/.test(homeMast)
 if (!/#D6D4ED/.test(homeMast) || !/#0A1628/.test(homeMast)) {
   fail("home mast must use lock lilac and navy");
 }
-const homeNavyRy = [...homeMast.matchAll(/ry="([0-9.]+)" fill="#0A1628"/g)].map((m) => Number(m[1]));
-if (!homeNavyRy.some((ry) => ry >= 480)) {
-  fail("WeakNavyDome: home mast navy félkör must be a large mass (ry ≥ 480)");
+const homeNavy = [...homeMast.matchAll(/<ellipse cx="([0-9.]+)" cy="([0-9.]+)" rx="([0-9.]+)" ry="([0-9.]+)" fill="#0A1628"/g)];
+if (!homeNavy.some((m) => Number(m[4]) >= 700 && Number(m[1]) >= 1080)) {
+  fail("WeakNavyDome: home mast navy félkör must be a large center-right mass (ry ≥ 700, cx ≥ 1080)");
 }
 if (/hero-proof|insights-feed|Canvas Career|hero-proof-caption/.test(homeMast)) {
   fail("CanvasFold: homepage header must not ship a product screenshot");
@@ -342,6 +342,9 @@ if (/inset:\s*auto 0 0 0/.test(css) && /min\(145vw,\s*580px\)/.test(css)) {
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,160}inset:\s*0/.test(css) ||
     !/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,200}height:\s*100%/.test(css)) {
   fail("CompactMeshClip: compact .footer-mesh-art must be inset 0 / height 100%");
+}
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
+  fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");

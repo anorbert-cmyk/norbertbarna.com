@@ -1415,6 +1415,17 @@ html.no-motion .footer-mesh-yellow {
     aspect-ratio: auto;
   }
 
+  /* CompactMeshClip still fills the field. Compact NavyFlood: navy fades in
+   * below Work so the title sits on lilac; yellow/olive stay unmasked. */
+  .footer-mesh-navy {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 40%, #000 62%);
+    mask-image: linear-gradient(to bottom, transparent 40%, #000 62%);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
   .footer-nav {
     flex-direction: column;
     width: 100%;
@@ -2466,8 +2477,8 @@ body.home .navbar {
   margin-top: -64px;
   padding-top: 64px;
   background:
-    radial-gradient(120% 70% at 68% 118%, #0a1628 0 28%, transparent 72%),
-    radial-gradient(90% 58% at 58% 128%, #0a1628 0 22%, transparent 78%),
+    radial-gradient(78% 92% at 76% 108%, #0a1628 0 36%, transparent 70%),
+    radial-gradient(62% 74% at 86% 118%, #0a1628 0 30%, transparent 76%),
     #d6d4ed;
 }
 
