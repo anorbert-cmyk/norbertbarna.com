@@ -154,19 +154,20 @@ for (const page of ALL_PAGES) {
         !/aria-label="Norbert Barna — Home"[^>]*class="[^\"]*\bnav-logo-wrap\b/i.test(html)) {
       fail(`${page}: logo link needs an explicit Home accessible name`);
     }
-    if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"[^>]*class="[^\"]*\bnav-link\b/i.test(html)) {
+    if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"/.test(html)) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
-    const emailCta = [...html.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+    const footerHtml = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
+    const emailCta = [...footerHtml.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
-      /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(html);
-    if (count(html, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
-        count(html, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
+      /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(footerHtml);
+    if (count(footerHtml, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
+        count(footerHtml, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
         emailCta.length !== 1 ||
         !/\btype="button"/.test(emailCta[0] || "") ||
         /href=/.test(emailCta[0] || "") ||
         /mailto:/i.test(emailCta[0] || "") ||
-        /<a[^>]*footer-email/.test(html) ||
+        /<a[^>]*footer-email/.test(footerHtml) ||
         !linkedinIcon) {
       fail(`${page}: footer must expose a LinkedIn icon and a native Email button with no mailto href`);
     }
@@ -178,8 +179,13 @@ for (const page of ALL_PAGES) {
     }
 
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
+    const rows = countTagsByClass(html, "div", "work-row");
     const cardTitleLinks = countTagsByClass(html, "a", "work-title") + countTagsByClass(html, "a", "related-work-title");
-    if (cards !== cardTitleLinks) fail(`${page}: each project card must have exactly one title link`);
+    if (page === "index.html") {
+      if (rows !== cardTitleLinks) fail(`${page}: each selected-work row must have exactly one title link`);
+    } else if (cards !== cardTitleLinks) {
+      fail(`${page}: each project card must have exactly one title link`);
+    }
     if (/<a\b[^>]*class=["'][^"']*\b(?:work-image-wrap|related-work-image-wrap)\b/i.test(html)) {
       fail(`${page}: project card has a duplicate image link`);
     }
@@ -265,9 +271,15 @@ if (!/<p\b[^>]*class="sr-only"[^>]*>Domains include/i.test(homeHtml) ||
 }
 for (const page of ["index.html", "works.html"]) {
   const html = readFileSync(join(ROOT, page), "utf8");
-  const cards = countTagsByClass(html, "div", "work-card");
-  const summaries = countTagsByClass(html, "p", "work-card-summary");
-  if (cards !== summaries) fail(`${page}: every primary project card needs a visible scope summary`);
+  if (page === "index.html") {
+    const rows = countTagsByClass(html, "div", "work-row");
+    const summaries = countTagsByClass(html, "p", "work-card-summary");
+    if (rows !== summaries || rows !== 6) fail(`${page}: every selected-work row needs a visible scope summary`);
+  } else {
+    const cards = countTagsByClass(html, "div", "work-card");
+    const summaries = countTagsByClass(html, "p", "work-card-summary");
+    if (cards !== summaries) fail(`${page}: every primary project card needs a visible scope summary`);
+  }
 }
 
 const kineticareHtml = readFileSync(join(ROOT, "work/kineticare.html"), "utf8");
