@@ -83,6 +83,9 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
+if (/SausageBand/.test(design) === false) fail("design.md must name the SausageBand anti-pattern");
+if (/YellowBalloon/.test(design) === false) fail("design.md must name the YellowBalloon anti-pattern");
+if (/HardMeshSeam/.test(design) === false) fail("design.md must name the HardMeshSeam anti-pattern");
 if (/FlatDuneGrain/.test(design) === false) fail("design.md must name the FlatDuneGrain anti-pattern");
 if (/SaaSFooter/.test(design) === false) fail("design.md must name the SaaSFooter anti-pattern");
 if (/FogGrain/.test(design) === false) fail("design.md must name the FogGrain anti-pattern");
@@ -95,6 +98,7 @@ if (/FilledEmailPill/.test(design) === false) fail("design.md must name the Fill
 if (/ContactColumn/.test(design) === false) fail("design.md must name the ContactColumn anti-pattern");
 if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoInHtml anti-pattern");
 if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
+if (/MeshParallaxCircus/.test(design) === false) fail("design.md must name the MeshParallaxCircus anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
 if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
@@ -220,9 +224,65 @@ if (!/footer-mesh/.test(footerCanon[0]) || !/mesh-blur/.test(footerCanon[0])) {
 if (!/#D6D4ED/.test(footerCanon[0]) || !/#0A1628/.test(footerCanon[0]) || !/#BDB414/.test(footerCanon[0])) {
   fail("mesh blobs must use lock lilac, navy, and olive-chartreuse");
 }
+if (!/viewBox="0 0 1600 1067"/.test(footerCanon[0])) {
+  fail("SausageBand: mesh viewBox must be ~3:2 (1600×1067) so the left-weighted navy horizon and right-weighted yellow can exist");
+}
+if (/ry="72"/.test(footerCanon[0]) || /rx="1800"[\s\S]{0,80}fill="#0A1628"/.test(footerCanon[0])) {
+  fail("SausageBand: navy must be a left-weighted horizon mass, not a thin rx=1800 ry=72 stripe");
+}
+if (/<rect[^>]*fill="#BDB414"/.test(footerCanon[0])) {
+  fail("SausageBand: yellow must be right-weighted ellipses, not a rectangle slab");
+}
+const navyRy = Number((footerCanon[0].match(/<ellipse[^>]*ry="([0-9.]+)" fill="#0A1628"/) || [])[1]);
+if (!navyRy || navyRy < 180) {
+  fail("SausageBand: navy ellipse ry must be a horizon mass (≥ 180 in the 1067-tall viewBox)");
+}
+const navyCenters = [...footerCanon[0].matchAll(/<ellipse cx="([0-9.]+)"[^>]*fill="#0A1628"/g)].map((m) => Number(m[1]));
+if (!navyCenters.some((cx) => cx < 600)) {
+  fail("SausageBand: navy must include a left-weighted ellipse (cx < 600)");
+}
+if (navyCenters.some((cx) => cx >= 750 && cx <= 850)) {
+  fail("YellowBalloon/SausageBand: navy must not be a centered blob (cx ≈ 800)");
+}
+const yellowEllipses = [...footerCanon[0].matchAll(/<ellipse cx="([0-9.]+)" cy="([0-9.]+)" rx="([0-9.]+)" ry="([0-9.]+)" fill="#BDB414"/g)];
+if (yellowEllipses.length === 0) {
+  fail("YellowBalloon: olive-chartreuse must be painted with ellipses, not a missing field");
+}
+for (const [, cx, , , ry] of yellowEllipses) {
+  if (Number(cx) < 1200) {
+    fail(`YellowBalloon: yellow ellipse cx=${cx} must be right-weighted (cx ≥ 1200), not a centered balloon`);
+  }
+}
+const yellowRyMax = Math.max(...yellowEllipses.map((m) => Number(m[4])));
+if (yellowRyMax < 200) {
+  fail("YellowBalloon: yellow must include a substantial right-weighted bite (ry ≥ 200)");
+}
+if (!/min-height:\s*min\(66\.667vw,\s*960px\)/.test(css)) {
+  fail("SausageBand: desktop footer field must be ~3:2 (min(66.667vw, 960px)), not a 680px crush");
+}
 const blurMatch = footerCanon[0].match(/<feGaussianBlur stdDeviation="([0-9.]+)"/);
-if (!blurMatch || Number(blurMatch[1]) > 28) {
-  fail("NavyFlood: mesh SVG blur must stay ≤ 28 so the navy horizon does not flood the type band");
+const blur = Number(blurMatch?.[1]);
+if (!blurMatch || blur < 48) {
+  fail("HardMeshSeam: mesh SVG blur must be ≥ 48 so lilac/navy/yellow seams wash like the lock");
+}
+if (blur > 72) {
+  fail("NavyFlood: mesh SVG blur must stay ≤ 72 so the navy horizon does not flood the type band");
+}
+if (!/class="footer-mesh-lilac"/.test(footerCanon[0]) ||
+    !/class="footer-mesh-navy"/.test(footerCanon[0]) ||
+    !/class="footer-mesh-olive"/.test(footerCanon[0]) ||
+    !/class="footer-mesh-yellow"/.test(footerCanon[0])) {
+  fail("mesh masses must be separate lilac/navy/olive/yellow groups inside the same blur");
+}
+if ((footerCanon[0].match(/class="footer-mesh-olive"/g) || []).length < 2) {
+  fail("olive must stay two groups so the left overlay still paints after yellow");
+}
+if (/\.footer-mesh-(?:navy|olive|yellow)[\s\S]{0,240}rotate\(/.test(css) ||
+    /@keyframes[\s\S]{0,200}footer-mesh-(?:navy|olive|yellow)/.test(css)) {
+  fail("MeshParallaxCircus: mesh mass CSS must not rotate or keyframe-loop");
+}
+if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
+  fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");
 }
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");

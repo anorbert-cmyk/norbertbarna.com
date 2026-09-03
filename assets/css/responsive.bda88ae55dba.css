@@ -610,22 +610,6 @@ main {
   filter: none;
 }
 
-.footer-mesh-lilac {
-  transform: none;
-}
-
-.footer-mesh-navy,
-.footer-mesh-olive,
-.footer-mesh-yellow {
-  transform: none;
-}
-
-html.no-motion .footer-mesh-navy,
-html.no-motion .footer-mesh-olive,
-html.no-motion .footer-mesh-yellow {
-  transform: none !important;
-}
-
 .footer-mesh::before,
 .footer-mesh::after {
   content: "";
@@ -1936,10 +1920,7 @@ html.no-motion .footer-mesh-yellow {
   .awards-card,
   .section-title,
   .summary h2,
-  .summary h3,
-  .footer-mesh-navy,
-  .footer-mesh-olive,
-  .footer-mesh-yellow {
+  .summary h3 {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;

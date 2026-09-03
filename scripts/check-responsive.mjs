@@ -290,7 +290,7 @@ const cssContracts = [
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
   [/\.footer-contact-link[\s\S]*?min-height:\s*44px/i, "footer LinkedIn is missing its 44px lock height"],
   [/\.footer-email[\s\S]*?min-height:\s*44px/i, "footer Email is not 44px tall"],
-  [/\.footer-section[\s\S]*?min-height:/i, "footer mesh field must reserve height"],
+  [/\.footer-section[\s\S]*?min-height:\s*min\(66\.667vw,\s*960px\)/i, "desktop footer field must be ~3:2 so the dome is not crushed"],
   [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer LinkedIn must share 12px outlined chrome"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
@@ -354,8 +354,16 @@ if (/new\s+(?:window\.)?Lenis\b/i.test(animationJs)) fail("custom smooth scrolli
 if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("enforceReducedMotion") ||
     !animationJs.includes("window.ScrollTrigger.getAll()") ||
-    !animationJs.includes("function initFooterDunes()")) {
-  fail("runtime reduced-motion changes must stop active motion and media (mesh footer stays still)");
+    !animationJs.includes("function initFooterMeshField()") ||
+    !animationJs.includes("stopFooterMeshField()")) {
+  fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
+}
+if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
+  fail("Ironclad dunes: do not revive the footer dune pointer field");
+}
+if (!/MESH_POINTER_RANGE\s*=\s*[1-8](?:\.\d+)?/.test(animationJs) ||
+    /rotate\(/.test(animationJs.slice(animationJs.indexOf("function initFooterMeshField()")))) {
+  fail("MeshParallaxCircus: mesh pointer travel must stay a few pixels with no rotation");
 }
 if (/html:not\(\.nav-enhanced\)/i.test(responsiveCss)) fail("pre-enhancement navigation must not cause layout shift");
 if (animationJs.includes("enhanceVideoControls")) fail("the old click-to-play controller returned");

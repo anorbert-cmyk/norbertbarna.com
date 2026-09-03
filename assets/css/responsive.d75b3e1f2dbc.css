@@ -581,13 +581,13 @@ main {
   width: 100%;
   min-height: min(66.667vw, 960px);
   background:
-    radial-gradient(220% 88% at 50% -10%, #d6d4ed 0%, #d6d4ed 36%, transparent 78%),
-    radial-gradient(210% 78% at 26% 62%, #0a1628 0 18%, transparent 86%),
-    radial-gradient(160% 62% at 44% 70%, #0a1628 0 14%, transparent 82%),
-    radial-gradient(90% 52% at 12% 86%, #1b3a32 0 22%, transparent 82%),
-    radial-gradient(120% 70% at 94% 108%, #bdb414 0 28%, transparent 80%),
-    radial-gradient(96% 48% at 82% 116%, #bdb414 0 32%, transparent 78%),
-    radial-gradient(180% 32% at 80% 120%, #bdb414 0 40%, transparent 82%),
+    radial-gradient(180% 68% at 50% -4%, #d6d4ed 0%, #d6d4ed 44%, transparent 72%),
+    radial-gradient(170% 54% at 24% 58%, #0a1628 0 34%, transparent 74%),
+    radial-gradient(120% 42% at 44% 66%, #0a1628 0 22%, transparent 70%),
+    radial-gradient(62% 36% at 12% 84%, #1b3a32 0 32%, transparent 70%),
+    radial-gradient(88% 52% at 94% 104%, #bdb414 0 38%, transparent 70%),
+    radial-gradient(70% 32% at 82% 114%, #bdb414 0 44%, transparent 66%),
+    radial-gradient(160% 22% at 78% 118%, #bdb414 0 50%, transparent 72%),
     #d6d4ed;
   color: var(--footer-ink);
   padding: 0;
@@ -608,22 +608,6 @@ main {
   height: 100%;
   margin: 0;
   filter: none;
-}
-
-.footer-mesh-lilac {
-  transform: none;
-}
-
-.footer-mesh-navy,
-.footer-mesh-olive,
-.footer-mesh-yellow {
-  transform: none;
-}
-
-html.no-motion .footer-mesh-navy,
-html.no-motion .footer-mesh-olive,
-html.no-motion .footer-mesh-yellow {
-  transform: none !important;
 }
 
 .footer-mesh::before,
@@ -1936,10 +1920,7 @@ html.no-motion .footer-mesh-yellow {
   .awards-card,
   .section-title,
   .summary h2,
-  .summary h3,
-  .footer-mesh-navy,
-  .footer-mesh-olive,
-  .footer-mesh-yellow {
+  .summary h3 {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;

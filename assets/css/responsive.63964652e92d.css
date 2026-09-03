@@ -567,8 +567,8 @@ main {
 }
 
 /* Locked footer: one full-bleed mesh. Type sits on greyer-lilac. LinkedIn
- * and Email share outlined 44px / 12px chrome. Navy is a left-weighted
- * horizon; yellow is right-weighted — not a centered balloon. */
+ * and Email share outlined 44px / 12px chrome. Mesh is a ~3:2 field so
+ * the navy dome and yellow semicircle can exist — not a crushed stripe. */
 .footer-section {
   --footer-lavender: #d6d4ed;
   --footer-navy: #0a1628;
@@ -581,13 +581,10 @@ main {
   width: 100%;
   min-height: min(66.667vw, 960px);
   background:
-    radial-gradient(220% 88% at 50% -10%, #d6d4ed 0%, #d6d4ed 36%, transparent 78%),
-    radial-gradient(210% 78% at 26% 62%, #0a1628 0 18%, transparent 86%),
-    radial-gradient(160% 62% at 44% 70%, #0a1628 0 14%, transparent 82%),
-    radial-gradient(90% 52% at 12% 86%, #1b3a32 0 22%, transparent 82%),
-    radial-gradient(120% 70% at 94% 108%, #bdb414 0 28%, transparent 80%),
-    radial-gradient(96% 48% at 82% 116%, #bdb414 0 32%, transparent 78%),
-    radial-gradient(180% 32% at 80% 120%, #bdb414 0 40%, transparent 82%),
+    radial-gradient(160% 58% at 50% -6%, #d6d4ed 0%, #d6d4ed 52%, transparent 74%),
+    radial-gradient(92% 44% at 44% 68%, #0a1628 0%, transparent 72%),
+    radial-gradient(40% 26% at 18% 74%, #1b3a32 0%, transparent 70%),
+    radial-gradient(58% 48% at 50% 100%, #bdb414 0%, #bdb414 40%, transparent 70%),
     #d6d4ed;
   color: var(--footer-ink);
   padding: 0;
@@ -608,22 +605,6 @@ main {
   height: 100%;
   margin: 0;
   filter: none;
-}
-
-.footer-mesh-lilac {
-  transform: none;
-}
-
-.footer-mesh-navy,
-.footer-mesh-olive,
-.footer-mesh-yellow {
-  transform: none;
-}
-
-html.no-motion .footer-mesh-navy,
-html.no-motion .footer-mesh-olive,
-html.no-motion .footer-mesh-yellow {
-  transform: none !important;
 }
 
 .footer-mesh::before,
@@ -1936,10 +1917,7 @@ html.no-motion .footer-mesh-yellow {
   .awards-card,
   .section-title,
   .summary h2,
-  .summary h3,
-  .footer-mesh-navy,
-  .footer-mesh-olive,
-  .footer-mesh-yellow {
+  .summary h3 {
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
