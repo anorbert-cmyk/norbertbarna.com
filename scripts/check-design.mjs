@@ -384,6 +384,19 @@ if (!/\.home-mast \.hero-kicker[\s\S]{0,80}--mast-muted/.test(css)) {
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast \.metric-context[\s\S]{0,160}--mast-muted/.test(css)) {
   fail("GrainWash: compact highlights label must use --mast-muted, not 62% --muted");
 }
+if (!/TightAwardVideo/.test(design)) {
+  fail("design.md must name the TightAwardVideo anti-pattern");
+}
+if (!/\.awards-bg-video > video[\s\S]{0,200}inset:\s*0/.test(css) ||
+    !/\.awards-bg-video > video[\s\S]{0,240}object-fit:\s*cover/.test(css)) {
+  fail("TightAwardVideo: award video must fill the card (inset 0 / cover)");
+}
+if (/@media\s*\(max-width:\s*991px\)[\s\S]*\.awards-bg-video-wrap[\s\S]{0,80}display:\s*none/.test(css)) {
+  fail("TightAwardVideo: compact must not hide the award video wrap");
+}
+if (/\.awards-card[\s\S]{0,80}\.awards-bg-video-wrap[\s\S]{0,60}opacity:\s*0\s*!important/.test(css)) {
+  fail("TightAwardVideo: coarse/hover-none must not force the award video off");
+}
 if (!/--mast-on-navy:\s*#f4f5f7/.test(css)) {
   fail("InkOnNavy: --mast-on-navy must be near-white #F4F5F7");
 }
