@@ -278,7 +278,10 @@ or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
    (`#0A1628`) rising from the bottom toward center-right, `feGaussianBlur` 56.
    Not the weaker/smaller navy of the text-only crop. Not the footer’s
    right-weighted yellow. Type on the pale band. Empty right is mesh.
-2. Kicker: `Norbert Barna` (sentence case, no tracking)
+   On compact, navy fades in below the highlights (`mask-image`) so ink
+   stays on lilac — same NavyFlood rule as the footer.
+2. Kicker: `Norbert Barna` (sentence case, no tracking). Stay 13px on
+   compact; do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
 3. H1: `AI Product Design Lead`
 4. One-line dek (existing positioning, not a slogan)
 5. Primary action: `View selected work` → `/works` (outlined 12px chrome,
@@ -368,7 +371,7 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type. Compact: fade `.footer-mesh-navy` in below Work (`mask-image`); do not clip the mesh SVG short |
+| NavyFlood | Navy mesh blob bleeds up under Work or home highlights so ink contrast dies | Keep type on the pale lilac band; navy is a horizon under the type. Compact footer: fade `.footer-mesh-navy` in below Work (`mask-image`). Compact home: fade `.home-mast-navy` in below the highlights; drop the desktop CSS navy radials |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |

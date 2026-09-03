@@ -24,8 +24,8 @@
     menuButton.addEventListener("click", function () {
       setMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
     });
-    primaryNavigation.querySelectorAll("a").forEach(function (link) {
-      link.addEventListener("click", function () {
+    primaryNavigation.querySelectorAll("a, button.footer-email").forEach(function (control) {
+      control.addEventListener("click", function () {
         setMenuOpen(false);
       });
     });

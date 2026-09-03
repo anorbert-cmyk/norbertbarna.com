@@ -290,6 +290,12 @@ for (const width of [360, 768, 991]) {
     await button.focus();
     await page.keyboard.press("Space");
     await expect(button).toHaveAttribute("aria-expanded", "true");
+    const mailRequest = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
+    await page.locator(".navbar button.footer-email").click();
+    expect((await mailRequest).url()).toBe("mailto:anorbert@pm.me");
+    await expect(button).toHaveAttribute("aria-expanded", "false");
+    await button.click();
+    await expect(button).toHaveAttribute("aria-expanded", "true");
     await page.setViewportSize({ width: 992, height: 900 });
     await expect(button).toHaveAttribute("aria-expanded", "false");
   });
@@ -1105,6 +1111,62 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     height: 48,
   });
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
+});
+
+test("390 home header: highlights stay on lilac, kicker stays 13px, navy sits under the type", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openStable(page, "/");
+  const fold = await page.evaluate(() => {
+    const kicker = document.querySelector(".hero-kicker");
+    const last = document.querySelector(".home-banner-outcomes li:last-child");
+    const mast = document.querySelector(".home-mast");
+    return {
+      kickerSize: kicker ? getComputedStyle(kicker).fontSize : "",
+      lastBox: last ? last.getBoundingClientRect() : null,
+      mastBox: mast ? mast.getBoundingClientRect() : null,
+    };
+  });
+  expect(fold.kickerSize, "compact kicker must stay 13px").toBe("13px");
+  expect(fold.lastBox).toBeTruthy();
+  expect(fold.mastBox).toBeTruthy();
+  expect(fold.lastBox.bottom, "mast must extend past the highlights so navy can sit under type").toBeLessThan(fold.mastBox.bottom - 80);
+
+  const kickerBand = await screenshotClip(page, { x: 20, y: 90, width: 20, height: 14 });
+  expect(kickerBand.luminance, "kicker sits on lilac").toBeGreaterThan(150);
+  const outcomes = await page.evaluate(() => {
+    const list = document.querySelector(".home-banner-outcomes").getBoundingClientRect();
+    const last = document.querySelector(".home-banner-outcomes li:last-child").getBoundingClientRect();
+    return { x: list.x, y: list.y, lastY: last.y, lastH: last.height };
+  });
+  const outcomesTop = await screenshotClip(page, {
+    x: Math.max(0, outcomes.x - 12),
+    y: outcomes.y + 4,
+    width: 16,
+    height: 12,
+  });
+  expect(outcomesTop.luminance, "highlights stay on lilac, not the navy félkör").toBeGreaterThan(130);
+  const outcomesLast = await screenshotClip(page, {
+    x: Math.max(0, outcomes.x - 12),
+    y: outcomes.lastY + Math.min(8, outcomes.lastH / 2),
+    width: 16,
+    height: 12,
+  });
+  expect(outcomesLast.luminance, "last highlight stays on lilac").toBeGreaterThan(130);
+  await page.evaluate(() => {
+    const mast = document.querySelector(".home-mast");
+    window.scrollTo(0, Math.max(0, mast.getBoundingClientRect().height - window.innerHeight));
+  });
+  const domeBox = await page.evaluate(() => {
+    const mast = document.querySelector(".home-mast").getBoundingClientRect();
+    return { x: mast.x, width: mast.width, bottom: mast.bottom };
+  });
+  const dome = await screenshotClip(page, {
+    x: Math.max(0, domeBox.x + domeBox.width * 0.72 - 20),
+    y: Math.max(0, domeBox.bottom - 40),
+    width: 36,
+    height: 24,
+  });
+  expect(dome.luminance, "navy félkör still occupies the compact lower field").toBeLessThan(90);
 });
 
 for (const [width, expected] of [[1280, 64], [390, 56]]) {

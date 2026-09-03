@@ -1169,6 +1169,11 @@ html.no-motion .footer-mesh-yellow {
     font-size: 17px;
   }
 
+  .home-mast .banner-left-wrap > p.hero-kicker {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
   .home-banner-title {
     max-width: 18ch;
     font-size: clamp(48px, 7vw, 64px);
@@ -1687,7 +1692,7 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .home-banner-outcomes li {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.68;
   }
 
@@ -2619,11 +2624,40 @@ body.home .navbar {
 }
 
 @media (max-width: 991px) {
+  /* NavyFlood: drop the desktop CSS navy radials and keep type on lilac.
+   * Extra bottom pad gives the félkör a place to sit under the highlights. */
   .home-mast,
   .home-banner-wrap.home-mast {
     margin-top: -56px;
     padding-top: 56px;
     min-height: min(100svh, 820px);
+    background: #d6d4ed;
+  }
+
+  .home-mast::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 28%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(120% 90% at 70% 110%, #0a1628 0 50%, transparent 76%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%);
+    mask-image: linear-gradient(to bottom, transparent, #000 42%);
+  }
+
+  .home-mast .home-banner-section,
+  .home-mast .home-banner-section.raiffeisen-header-black {
+    padding-bottom: min(48vw, 280px);
+  }
+
+  .home-mast-navy {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 72%, #000 88%);
+    mask-image: linear-gradient(to bottom, transparent 72%, #000 88%);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
   }
 
   body.home .navbar .nav-menu-area {

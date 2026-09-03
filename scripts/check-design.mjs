@@ -101,6 +101,19 @@ if (homeOrder.length < 6) {
 if (JSON.stringify(worksOrder) !== JSON.stringify(hiring)) {
   fail(`/works order is ${worksOrder.join(", ")}`);
 }
+const worksLd = works.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
+if (worksLd) {
+  const items = JSON.parse(worksLd).mainEntity?.itemListElement || [];
+  const ldOrder = [...items].sort((a, b) => a.position - b.position).map((item) =>
+    String(item.url || "").replace("https://www.barnanorbert.com/work/", "")
+  );
+  if (JSON.stringify(ldOrder) !== JSON.stringify(hiring)) {
+    fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
+  }
+}
+if (!/"jobTitle": "AI Product Design Lead"/.test(home)) {
+  fail("home JSON-LD jobTitle must match the locked H1");
+}
 if (/These aren.t mockups/i.test(works)) fail("/works still has the defensive manifesto");
 if (!works.includes("Hungarian product")) fail("Kineticare card must flag the Hungarian product");
 if (/The Value Provided|Gain insights through user interviews/i.test(home)) {
@@ -347,6 +360,15 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,160}inset
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
   fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
+  fail("NavyFlood: compact home mast navy must fade in below the highlights");
+}
+if (!/\.home-mast::after[\s\S]{0,240}radial-gradient[\s\S]{0,80}#0a1628/.test(css)) {
+  fail("NavyFlood: compact home mast must paint a bottom navy overlay under the type");
+}
+if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13px/.test(css)) {
+  fail("home kicker must stay 13px on compact, not inherit the 17px banner bump");
+}
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");
 }
@@ -481,6 +503,9 @@ if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes('["ano", 
     !navigationJs.includes('["pm", ".", "me"]') || !navigationJs.includes("button.footer-email") ||
     !navigationJs.includes("location.assign")) {
   fail("Email click must location.assign a href assembled from split parts");
+}
+if (!/querySelectorAll\(\s*["']a,\s*button\.footer-email["']\s*\)/.test(navigationJs)) {
+  fail("mobile nav must close on header Email as well as links");
 }
 if (/a\.footer-email/.test(navigationJs) || /setAttribute\(\s*["']href["']/.test(navigationJs)) {
   fail("MailtoInHtml: do not write mailto onto href or use a fake Email link");
