@@ -1193,7 +1193,7 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
   expect(dome.b, "dome is navy, not yellow").toBeGreaterThan(dome.r - 20);
   const domeRise = await screenshotClip(page, {
     x: Math.max(0, lower.x + lower.width * 0.74 - 24),
-    y: Math.max(0, Math.min(lower.bottom - 80, lower.lastBottom + 28)),
+    y: Math.max(0, Math.min(lower.bottom - 90, lower.lastBottom + 150)),
     width: 48,
     height: 36,
   });
