@@ -366,17 +366,23 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,160}inset
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
   fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
-if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
-  fail("NavyFlood: compact home mast navy must fade in below the highlights");
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,400}transparent 88%/.test(css)) {
+  fail("NavyFlood: compact home mast navy must fade in below the last highlight (mask from 88%)");
 }
 if (!/\.home-mast::after[\s\S]{0,240}radial-gradient[\s\S]{0,80}#0a1628/.test(css)) {
   fail("NavyFlood: compact home mast must paint a bottom navy overlay under the type");
+}
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast::after[\s\S]{0,160}height:\s*16%/.test(css)) {
+  fail("NavyFlood: compact mast ::after navy must stay a short bottom wash (16%)");
 }
 if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
   fail("GrainWash: --mast-muted must be solid #2a2a2e");
 }
 if (!/\.home-mast \.hero-kicker[\s\S]{0,80}--mast-muted/.test(css)) {
   fail("GrainWash: mast kicker must use --mast-muted, not 62% --muted");
+}
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast \.metric-context[\s\S]{0,160}--mast-muted/.test(css)) {
+  fail("GrainWash: compact highlights label must use --mast-muted, not 62% --muted");
 }
 if (!/--mast-on-navy:\s*#f4f5f7/.test(css)) {
   fail("InkOnNavy: --mast-on-navy must be near-white #F4F5F7");

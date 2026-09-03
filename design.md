@@ -280,17 +280,22 @@ or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
    (`#0A1628`) rising from the bottom toward center-right, `feGaussianBlur` 56.
    Not the weaker/smaller navy of the text-only crop. Not the footer’s
    right-weighted yellow. Type on the pale band. Empty right is mesh.
-   On compact, navy fades in below the highlights (`mask-image`) so ink
-   stays on lilac — same NavyFlood rule as the footer.
+   On compact, navy fades in below the last highlight (`mask-image` starts
+   at 88%) so ink stays on lilac — same NavyFlood rule as the footer.
+   Compact `::after` navy is a short bottom wash (≤ 16% of the mast), not a
+   28% overlay through the list. The highlights label uses `--mast-muted`,
+   not 62% `--muted`. Playwright samples pixels **behind glyphs** at 390.
    On desktop the highlights column sits on the navy félkör: use light ink
    (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
    dome (still inside the mast). Do not shrink the dome to dodge contrast.
    Do not move the list down onto About.
 2. Kicker: `Norbert Barna` (sentence case, no tracking). Stay 13px on
    compact; do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
-   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Fold type
-   must meet WCAG AA against the live grain: 4.5:1 normal, 3:1 large / UI
-   stroke. Left column stays dark ink on lilac.
+   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Compact
+   highlights label uses the same token. Fold type must meet WCAG AA
+   against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
+   UI stroke. Left column stays dark ink on lilac. Compact highlights stay
+   dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
 3. H1: `AI Product Design Lead`
 4. One-line dek (existing positioning, not a slogan)
 5. Primary action: `View selected work` → `/works` (outlined 12px chrome,
@@ -380,9 +385,9 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the type. Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
+| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last highlight (mask from 88%). Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
 | InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
-| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker uses solid `--mast-muted` `#2a2a2e` |
+| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
 | JobTitleDrift | JSON-LD `jobTitle` is still Design Lead while the footer says Product VP | `jobTitle` is `Product VP`; H1 stays `AI Product Design Lead` |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |

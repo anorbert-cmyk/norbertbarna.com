@@ -1335,45 +1335,77 @@ test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => 
   expect(ratios).toMatch(/label .+ = [4-9]|1[0-9]/);
 });
 
-test("390 home header: highlights stay on lilac, kicker stays 13px, navy sits under the type", async ({ page }) => {
+test("390 home mast type meets WCAG AA on lilac, navy sits under the last highlight", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
+
+  const kicker = page.locator(".home-mast .hero-kicker").first();
+  const h1 = page.locator(".home-mast h1").first();
+  const dek = page.locator(".home-mast .home-banner-subtitle").first();
+  const label = page.locator(".home-mast .metric-context").first();
+  const firstBullet = page.locator(".home-mast .home-banner-outcomes li").first();
+  const lastBullet = page.locator(".home-mast .home-banner-outcomes li").last();
+
   const fold = await page.evaluate(() => {
-    const kicker = document.querySelector(".hero-kicker");
+    const kickerEl = document.querySelector(".hero-kicker");
     const last = document.querySelector(".home-banner-outcomes li:last-child");
     const mast = document.querySelector(".home-mast");
     return {
-      kickerSize: kicker ? getComputedStyle(kicker).fontSize : "",
-      lastBox: last ? last.getBoundingClientRect() : null,
-      mastBox: mast ? mast.getBoundingClientRect() : null,
+      kickerSize: kickerEl ? getComputedStyle(kickerEl).fontSize : "",
+      lastBottom: last ? last.getBoundingClientRect().bottom : 0,
+      mastBottom: mast ? mast.getBoundingClientRect().bottom : 0,
     };
   });
   expect(fold.kickerSize, "compact kicker must stay 13px").toBe("13px");
-  expect(fold.lastBox).toBeTruthy();
-  expect(fold.mastBox).toBeTruthy();
-  expect(fold.lastBox.bottom, "mast must extend past the highlights so navy can sit under type").toBeLessThan(fold.mastBox.bottom - 80);
+  expect(fold.lastBottom, "mast must extend past the highlights so navy can sit under type").toBeLessThan(fold.mastBottom - 140);
 
-  const kickerBand = await screenshotClip(page, { x: 20, y: 90, width: 20, height: 14 });
-  expect(kickerBand.luminance, "kicker sits on lilac").toBeGreaterThan(150);
-  const outcomes = await page.evaluate(() => {
-    const list = document.querySelector(".home-banner-outcomes").getBoundingClientRect();
-    const last = document.querySelector(".home-banner-outcomes li:last-child").getBoundingClientRect();
-    return { x: list.x, y: list.y, lastY: last.y, lastH: last.height };
-  });
-  const outcomesTop = await screenshotClip(page, {
-    x: Math.max(0, outcomes.x - 12),
-    y: outcomes.y + 4,
-    width: 16,
-    height: 12,
-  });
-  expect(outcomesTop.luminance, "highlights stay on lilac, not the navy félkör").toBeGreaterThan(130);
-  const outcomesLast = await screenshotClip(page, {
-    x: Math.max(0, outcomes.x - 12),
-    y: outcomes.lastY + Math.min(8, outcomes.lastH / 2),
-    width: 16,
-    height: 12,
-  });
-  expect(outcomesLast.luminance, "last highlight stays on lilac").toBeGreaterThan(130);
+  const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
+  const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
+  const dekRgb = parseCssColor(await dek.evaluate((el) => getComputedStyle(el).color));
+  const labelRgb = parseCssColor(await label.evaluate((el) => getComputedStyle(el).color));
+  const bulletRgb = parseCssColor(await firstBullet.evaluate((el) => getComputedStyle(el).color));
+  const lastRgb = parseCssColor(await lastBullet.evaluate((el) => getComputedStyle(el).color));
+
+  expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
+  expect(labelRgb.a, "compact highlights label must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
+  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(160);
+  expect(labelRgb.r + labelRgb.g + labelRgb.b, "compact label stays dark on lilac, not --mast-on-navy").toBeLessThan(160);
+  expect(h1Rgb.r + h1Rgb.g + h1Rgb.b, "H1 stays dark ink on lilac").toBeLessThan(80);
+  expect(bulletRgb.r + bulletRgb.g + bulletRgb.b, "compact highlights stay dark ink").toBeLessThan(80);
+  expect(lastRgb.r + lastRgb.g + lastRgb.b, "last compact highlight stays dark ink").toBeLessThan(80);
+
+  const kickerBg = await sampleBehindGlyphs(page, kicker);
+  const h1Bg = await sampleBehindGlyphs(page, h1);
+  const dekBg = await sampleBehindGlyphs(page, dek);
+  const labelBg = await sampleBehindGlyphs(page, label);
+  const firstBg = await sampleBehindGlyphs(page, firstBullet);
+  const lastBg = await sampleBehindGlyphs(page, lastBullet);
+
+  expect(kickerBg.median.l, "kicker must stay on lilac").toBeGreaterThan(0.5);
+  expect(h1Bg.median.l, "H1 must stay on lilac").toBeGreaterThan(0.5);
+  expect(dekBg.median.l, "dek must stay on lilac").toBeGreaterThan(0.5);
+  expect(labelBg.median.l, "highlights label must stay on lilac").toBeGreaterThan(0.5);
+  expect(firstBg.median.l, "first highlight must stay on lilac").toBeGreaterThan(0.5);
+  expect(lastBg.median.l, "last highlight must stay on lilac, not the navy fade").toBeGreaterThan(0.5);
+  expect(lastBg.darkest.l, "navy must not reach the last highlight glyphs").toBeGreaterThan(0.35);
+
+  const pairs = [
+    ["kicker vs lightest grain", contrastAgainst(kickerRgb, kickerBg.lightest)],
+    ["kicker vs darkest grain", contrastAgainst(kickerRgb, kickerBg.darkest)],
+    ["H1 vs lightest grain", contrastAgainst(h1Rgb, h1Bg.lightest)],
+    ["dek vs lightest grain", contrastAgainst(dekRgb, dekBg.lightest)],
+    ["label vs lightest grain", contrastAgainst(labelRgb, labelBg.lightest)],
+    ["label vs darkest grain", contrastAgainst(labelRgb, labelBg.darkest)],
+    ["first highlight vs lightest grain", contrastAgainst(bulletRgb, firstBg.lightest)],
+    ["last highlight vs lightest grain", contrastAgainst(lastRgb, lastBg.lightest)],
+    ["last highlight vs darkest under glyphs", contrastAgainst(lastRgb, lastBg.darkest)],
+  ];
+  const ratios = pairs.map(([name, value]) => `${name} = ${value.toFixed(2)}`).join("\n");
+  console.log(ratios);
+  for (const [name, value] of pairs) {
+    expect(value, `${name} ${value.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  }
+
   await page.evaluate(() => {
     const mast = document.querySelector(".home-mast");
     window.scrollTo(0, Math.max(0, mast.getBoundingClientRect().height - window.innerHeight));
