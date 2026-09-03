@@ -211,14 +211,28 @@ async function contrastBehind(page, selector) {
     };
   }, selector);
   if (!meta) return null;
+  await page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    el.style.color = "transparent";
+    el.querySelectorAll("*").forEach((node) => {
+      node.style.color = "transparent";
+    });
+  }, selector);
   const viewport = page.viewportSize();
   const clip = {
-    x: Math.max(0, Math.min(viewport.width - 10, meta.x + 6)),
-    y: Math.max(0, Math.min(viewport.height - 8, meta.y + Math.min(6, meta.height / 2))),
-    width: 8,
-    height: 6,
+    x: Math.max(0, Math.min(viewport.width - 12, meta.x + Math.min(8, meta.width / 3))),
+    y: Math.max(0, Math.min(viewport.height - 10, meta.y + Math.min(8, meta.height / 2))),
+    width: 10,
+    height: 8,
   };
   const sample = await screenshotClip(page, clip);
+  await page.evaluate((sel) => {
+    const el = document.querySelector(sel);
+    el.style.color = "";
+    el.querySelectorAll("*").forEach((node) => {
+      node.style.color = "";
+    });
+  }, selector);
   const parsed = parseCssColor(meta.color);
   const fg = parsed.alpha < 1
     ? parsed.rgb.map((channel, index) => channel * parsed.alpha + [sample.r, sample.g, sample.b][index] * (1 - parsed.alpha))
