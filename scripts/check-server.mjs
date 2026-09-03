@@ -156,6 +156,13 @@ try {
 
   for (const [legacyPath, expectedLocation] of [
     ["/favicon.ico", "/assets/icons/68f923d010d274634c966a6e_favicon.png"],
+    ["/raiffeisen", "/work/raiffeisen"],
+    ["/instructure", "/work/instructure"],
+    ["/bitpanda", "/work/bitpanda"],
+    ["/benker", "/work/benker"],
+    ["/sportsgambit", "/work/sportsgambit"],
+    ["/kineticare", "/work/kineticare"],
+    ["/onrobot", "/work/onrobot"],
     ["/works/?utm_source=portfolio", "/works?utm_source=portfolio"],
     ["/work/benker/?ref=case", "/work/benker?ref=case"],
     ["/work/raiffesen?utm_campaign=legacy", "/work/raiffeisen?utm_campaign=legacy"],
@@ -165,6 +172,15 @@ try {
     assert(redirect.status === 301, `${legacyPath} did not return a permanent redirect`);
     assert(redirect.headers.get("location") === expectedLocation, `${legacyPath} lost its canonical path or query`);
   }
+
+  const apexWithoutFlag = await rawGet(address.port, "/works", {
+    host: "barnanorbert.com",
+  });
+  assert(apexWithoutFlag.statusCode === 301, "apex must catch-all redirect to www without CANONICAL_REDIRECT");
+  assert(
+    apexWithoutFlag.headers.location === "https://www.barnanorbert.com/works",
+    "apex /works must 301 to www /works, not homepage-only"
+  );
 
   const previousCanonicalRedirect = process.env.CANONICAL_REDIRECT;
   process.env.CANONICAL_REDIRECT = "1";
