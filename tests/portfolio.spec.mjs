@@ -167,7 +167,13 @@ async function screenshotClip(page, clip) {
 
 async function openStable(page, route) {
   await page.goto(route, { waitUntil: "load" });
+  await page.evaluate(() => (document.fonts ? document.fonts.ready : Promise.resolve()));
   await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
+  await page.waitForFunction(() => {
+    if (!document.fonts?.check) return true;
+    return document.fonts.check('700 48px "Funnel Display"')
+      || document.documentElement.classList.contains("wf-active");
+  }, { timeout: 8000 }).catch(() => {});
   await page.waitForTimeout(100);
 }
 
@@ -421,8 +427,13 @@ function isTransparentFill(color) {
 }
 
 function isInkWash(color) {
-  const match = color.match(/rgba\(\s*17,\s*17,\s*17,\s*([0-9.]+)\s*\)/);
-  return Boolean(match && Number(match[1]) > 0 && Number(match[1]) <= 0.12);
+  const legacy = color.match(/rgba\(\s*17,\s*17,\s*17,\s*([0-9.]+)\s*\)/);
+  if (legacy && Number(legacy[1]) > 0 && Number(legacy[1]) <= 0.12) return true;
+  const modern = color.match(/rgba?\(\s*17[\s,]+17[\s,]+17\s*\/\s*([0-9.]+%?)\s*\)/);
+  if (!modern) return false;
+  const raw = modern[1];
+  const alpha = String(raw).endsWith("%") ? Number(raw.slice(0, -1)) / 100 : Number(raw);
+  return alpha > 0 && alpha <= 0.12;
 }
 
 for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
@@ -553,13 +564,15 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
 
     const email = page.locator("footer button.footer-email");
     const linkedin = page.locator("footer a.footer-contact-link");
-    await email.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
-    await email.hover({ force: true });
-    await expect.poll(async () => isInkWash(await email.evaluate((el) => getComputedStyle(el).backgroundColor))).toBe(true);
+    const hoverWash = async (locator) => {
+      await locator.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
+      await locator.hover({ force: true });
+      return isInkWash(await locator.evaluate((el) => getComputedStyle(el).backgroundColor));
+    };
+    await expect.poll(() => hoverWash(email)).toBe(true);
     await expect.poll(() => email.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(17, 17, 17)");
     await expect.poll(() => email.evaluate((el) => getComputedStyle(el).borderRadius)).toBe("12px");
-    await linkedin.hover({ force: true });
-    await expect.poll(async () => isInkWash(await linkedin.evaluate((el) => getComputedStyle(el).backgroundColor))).toBe(true);
+    await expect.poll(() => hoverWash(linkedin)).toBe(true);
     await expect.poll(() => linkedin.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(17, 17, 17)");
 
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -569,8 +582,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
       const transform = getComputedStyle(mesh).transform;
       return transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)";
     })).toBe(true);
-    await email.hover({ force: true });
-    await expect.poll(async () => isInkWash(await email.evaluate((el) => getComputedStyle(el).backgroundColor))).toBe(true);
+    await expect.poll(() => hoverWash(email)).toBe(true);
   });
 }
 

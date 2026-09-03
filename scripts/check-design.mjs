@@ -132,6 +132,7 @@ if (/CompactMeshClip/.test(design) === false) fail("design.md must name the Comp
 if (/CanvasFold/.test(design) === false) fail("design.md must name the CanvasFold anti-pattern");
 if (/WeakNavyDome/.test(design) === false) fail("design.md must name the WeakNavyDome anti-pattern");
 if (/GiantWorkCards/.test(design) === false) fail("design.md must name the GiantWorkCards anti-pattern");
+if (/FooterHitSteal/.test(design) === false) fail("design.md must name the FooterHitSteal anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/home-mast/.test(design) === false) fail("design.md must document the home mast");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
@@ -392,6 +393,15 @@ if (!/\.footer-bar[\s\S]{0,200}border-top:\s*1px solid rgb\(17 17 17 \/ 62%\)/.t
 }
 if (/class="back-to-top-wrap"/.test(footerCanon[0]) || /aria-label="Back to top"/.test(footerCanon[0])) {
   fail("FooterBackToTop: copyright row must not restore a back-to-top control");
+}
+if (/(?:^|[,{}]\s*)\.work-title::after/.test(css)) {
+  fail("FooterHitSteal: .work-title::after must be scoped to .work-card or .work-row");
+}
+if (!/\.work-card \.work-title::after/.test(css) || !/\.work-row \.work-title::after/.test(css)) {
+  fail("FooterHitSteal: card and row title hit-areas must stay scoped");
+}
+if (!/\.footer-section\s*\{[\s\S]{0,480}z-index:\s*8/.test(css)) {
+  fail("FooterHitSteal: .footer-section must stack above page hit-areas (z-index 8)");
 }
 for (const page of footerPages) {
   const html = readFileSync(join(ROOT, page), "utf8");

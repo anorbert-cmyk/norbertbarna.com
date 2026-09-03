@@ -176,6 +176,9 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    `<button type="button" class="footer-email">` — native Space/Enter, not a
    fake link. Hover is a light ink wash; keep the outline and black ink. Do
    not draw a mouse cursor. Do not make Email a 44px square with tiny type.
+   Page card/row hit-areas (`.work-title::after`) stay scoped to the card or
+   row. The footer stacks above them (`z-index: 8`) so Email and LinkedIn
+   keep their hover wash.
 3. Mesh field: greyer-lilac `#D6D4ED` type band. Navy `#0A1628` is a wide
    **left-weighted horizon** under the type — already spanning the width by
    mid-height, stronger on the left. Not a centered blob with lilac still at
@@ -348,6 +351,7 @@ English-wash the screenshot.
 | CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Empty right is mesh |
 | WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080); blur 56; lock saturation `#0A1628` on `#D6D4ED` |
 | GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
+| FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
 | DualIndex | Home **list** order ≠ `/works` order | One list, hiring-first |
 | BlogHero | “Written by / Published / Updated” anywhere on the page | Facts + UI; authorship stays in meta and JSON-LD |
 | CoverPoster | Campaign headline + clustered devices, site URL in the corner, or any artboard that already crops the phones | One complete product screen; `contain` |

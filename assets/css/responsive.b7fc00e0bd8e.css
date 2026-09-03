@@ -430,8 +430,9 @@ main {
   position: relative;
 }
 
-.work-title::after,
-.related-work-title::after {
+.work-card .work-title::after,
+.related-work-card .related-work-title::after,
+.work-row .work-title::after {
   content: "";
   z-index: 5;
   position: absolute;
@@ -583,6 +584,7 @@ main {
   --footer-ink: #111111;
   position: relative;
   isolation: isolate;
+  z-index: 8;
   overflow: hidden;
   width: 100%;
   min-height: min(66.667vw, 960px);
