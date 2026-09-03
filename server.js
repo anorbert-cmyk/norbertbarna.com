@@ -42,6 +42,7 @@ app.use((req, res, next) => {
 const WORK_SLUGS = ["benker", "bitpanda", "instructure", "kineticare", "onrobot", "raiffeisen", "sportsgambit"];
 const REDIRECTS = {
   "/index.html": "/",
+  "/index": "/",
   "/favicon.ico": "/assets/icons/68f923d010d274634c966a6e_favicon.png",
   "/works.html": "/works",
   "/works/": "/works",
@@ -62,10 +63,9 @@ function querySuffix(req) {
   return queryIndex >= 0 ? req.originalUrl.slice(queryIndex) : "";
 }
 
-// Canonical host: www.barnanorbert.com. Apex is catch-all whenever this
-// process sees Host: barnanorbert.com (any path, not homepage-only).
-// Railway preview hosts stay on *.up.railway.app unless CANONICAL_REDIRECT=1.
-// Live apex /works 404s today hit a different server (DNS/ELB), not this app.
+// Canonical host: www.barnanorbert.com. Apex always 301s to www (any path,
+// not homepage-only). Railway preview hosts stay on *.up.railway.app unless
+// CANONICAL_REDIRECT=1. Localhost never redirects.
 const CANONICAL_HOST = "www.barnanorbert.com";
 
 function redirectToCanonical(req, res) {
@@ -87,8 +87,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Redirects: legacy .html URLs -> canonical clean URLs, plus the fixed
-// /work/raiffesen misspelling. Keeps one canonical URL per page.
+// Redirects: legacy .html URLs, /index, and bare /{slug} → /work/{slug}.
+// Also the fixed /work/raiffesen misspelling. One canonical URL per page.
 app.use((req, res, next) => {
   const target = REDIRECTS[req.path];
   if (target) {

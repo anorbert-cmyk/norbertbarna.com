@@ -161,6 +161,11 @@ if (!/InkOnNight/.test(design) || !/MotionCover/.test(design)) {
 if (/InkOnNavy/.test(design) === false) fail("design.md must name the InkOnNavy anti-pattern");
 if (/GrainWash/.test(design) === false) fail("design.md must name the GrainWash anti-pattern");
 if (/JobTitleDrift/.test(design) === false) fail("design.md must name the JobTitleDrift anti-pattern");
+if (/MeshParallaxCircus/.test(design) === false) fail("design.md must name the MeshParallaxCircus anti-pattern");
+if (/BareWorkSlug/.test(design) === false) fail("design.md must name the BareWorkSlug anti-pattern");
+if (/DualHome/.test(design) === false) fail("design.md must name the DualHome anti-pattern");
+if (/TitleDrift/.test(design) === false) fail("design.md must name the TitleDrift anti-pattern");
+if (/InventedSocial/.test(design) === false) fail("design.md must name the InventedSocial anti-pattern");
 
 if (!/\.home-banner-title[\s\S]{0,160}64px/.test(css)) fail("display size is not locked to 56–64");
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {

@@ -26,7 +26,8 @@ copy. Never stuffed.
 | Long-tail | product design lead for AI and fintech products; senior product designer for regulated industries; AI-driven product design portfolio; hire product design lead with banking experience |
 
 Implemented in: title, meta description, H1 + hero copy, and `Person` JSON-LD
-(`jobTitle`, `knowsAbout`, `alternateName`).
+(`knowsAbout`, `alternateName`). `jobTitle` is `Product VP` so it matches the
+footer lock, not the H1.
 
 ### /works
 | Tier | Keywords |
@@ -35,7 +36,8 @@ Implemented in: title, meta description, H1 + hero copy, and `Person` JSON-LD
 | Secondary | UX design portfolio, UX case studies |
 | Long-tail | fintech and AI product design case studies; enterprise UX design case studies; crypto and banking UX portfolio |
 
-Implemented in: title, meta description, `CollectionPage` + `ItemList` JSON-LD.
+Implemented in: title, matching H1 (`Product Design Case Studies`), meta
+description, `CollectionPage` + `ItemList` JSON-LD.
 
 ### /work/benker
 | Tier | Keywords |
@@ -98,8 +100,9 @@ author to the site's canonical `Person` entity.
   (105 to 155 chars, with the primary keyword) per page.
 - Exactly one H1 per page, matching the page's subject (hidden duplicate
   Webflow CMS banners were removed).
-- Canonical URL = clean URL (`/works`, `/work/benker`); `.html` variants and
-  the old `/work/raiffesen` misspelling 301-redirect to it (server.js).
+- Canonical URL = clean URL (`/works`, `/work/benker`); `.html` variants,
+  `/index`, bare `/{slug}` roots, and the old `/work/raiffesen` misspelling
+  301-redirect to it (server.js). Apex `barnanorbert.com` always 301s to www.
 - `BreadcrumbList` JSON-LD on every case study; `keywords` on every `Article`.
 - robots.txt no longer blocks CSS/JS, so Google can render the pages.
 - House editorial standard: direct, human phrasing without filler adjectives or

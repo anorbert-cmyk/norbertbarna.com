@@ -94,6 +94,30 @@ for (const page of PAGES) {
   else if (titles.has(title)) fail(`${page}: duplicate title (also on ${titles.get(title)})`);
   else titles.set(title, page);
 
+  const h1 = visibleText(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "");
+  if (page === "works.html") {
+    if (h1 !== "Product Design Case Studies") {
+      fail("TitleDrift: /works H1 must be Product Design Case Studies");
+    } else if (!title.startsWith(h1)) {
+      fail("TitleDrift: /works <title> must start with the H1");
+    }
+  }
+  if (page.startsWith("work/") && h1) {
+    if (!title.startsWith(`${h1} — `)) {
+      fail(`TitleDrift: ${page} <title> must start with the case H1`);
+    }
+    const ogTitle = metaContent(html, "property", "og:title");
+    const twitterTitle = metaContent(html, "name", "twitter:title");
+    if (ogTitle !== title) fail(`${page}: og:title must match <title>`);
+    if (twitterTitle !== title) fail(`${page}: twitter:title must match <title>`);
+  }
+  if (!is404 && metaContent(html, "name", "twitter:site")) {
+    fail("InventedSocial: twitter:site must stay omitted until a documented X handle exists");
+  }
+  if (!is404 && metaContent(html, "name", "google-site-verification")) {
+    fail("InventedSocial: do not invent a Google Search Console token");
+  }
+
   const desc = html.match(/<meta content="([^"]*)" name="description"\/>/)?.[1];
   if (!desc) fail(`${page}: missing meta description`);
   else if (descriptions.has(desc)) fail(`${page}: duplicate description (also on ${descriptions.get(desc)})`);
@@ -258,12 +282,35 @@ if (!existsSync(llmsPath)) {
   }
 }
 
-// sitemap URLs must map to real pages
+const robots = readFileSync(join(ROOT, "robots.txt"), "utf8");
+if (!/^Allow:\s*\/llms\.txt$/m.test(robots)) {
+  fail("robots.txt must list /llms.txt");
+}
+if (!/Sitemap:\s*https:\/\/www\.barnanorbert\.com\/sitemap\.xml/.test(robots)) {
+  fail("robots.txt must list the canonical sitemap");
+}
+
+// sitemap URLs must map to real pages, in hiring order
 const sitemap = readFileSync(join(ROOT, "sitemap.xml"), "utf8");
-for (const [, loc] of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+const sitemapPaths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => {
   const path = new URL(loc).pathname.replace(/\/$/, "") || "/";
   const file = CLEAN_URLS[path];
   if (!file || !existsSync(join(ROOT, file))) fail(`sitemap.xml: ${loc} does not resolve to a page`);
+  return path;
+});
+const hiringSitemap = [
+  "/",
+  "/works",
+  "/work/raiffeisen",
+  "/work/instructure",
+  "/work/bitpanda",
+  "/work/benker",
+  "/work/sportsgambit",
+  "/work/kineticare",
+  "/work/onrobot",
+];
+if (JSON.stringify(sitemapPaths) !== JSON.stringify(hiringSitemap)) {
+  fail(`sitemap.xml order is ${sitemapPaths.join(", ")} (must be hiring-first)`);
 }
 
 if (failures) {

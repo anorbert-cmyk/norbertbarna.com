@@ -309,8 +309,9 @@ Small 72–96px thumbs (crops of existing case images), live titles + live
 one-liners, hairline between rows, quiet arrow. Do not use invented years or
 invented descriptions from the compact-row mock.
 
-**Works fold:** H1 `Works`, two-line intro max, first card (Raiffeisen)
-visible in a 900px-tall desktop viewport. No “these aren’t mockups” line.
+**Works fold:** H1 `Product Design Case Studies` (same subject as `<title>`),
+two-line intro max, first card (Raiffeisen) visible in a 900px-tall desktop
+viewport. No “these aren’t mockups” line.
 
 **Home professional experience:** paper cards until hover (fine pointer) or
 tap / Enter (coarse and keyboard). Then the existing award video fills the
@@ -411,6 +412,11 @@ English-wash the screenshot.
 | BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined `Email` button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
+| MeshParallaxCircus | Mesh masses rotate, travel tens of pixels, loop like a GIF, or drag type/chrome | Navy / olive / yellow translate a few pixels at different depths; chrome stays still; reduced-motion is static |
+| BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
+| DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
+| TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Product Design Case Studies`; case titles start `{H1} —` |
+| InventedSocial | A made-up `twitter:site` handle or GSC verification token | Omit both until a real handle or token is documented |
 | TightAwardVideo | Professional-experience hover/tap shows a 500px Webflow strip or `inset: -100%` file, or compact hides the wrap | `.awards-bg-video > video` fills the card (`inset: 0; object-fit: cover`). Hover, focus, and tap (`.is-award-on`) all reveal the same full-bleed fill. Do not `display: none` the wrap on compact. Reduced motion keeps the paper card |
 
 ## Reject generated-design reflexes
