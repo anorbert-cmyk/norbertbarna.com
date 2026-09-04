@@ -38,8 +38,9 @@ WebPage/Service pages, not portfolio Articles. Use self canonicals and reciproca
 en/hu hreflang; x-default points to the English offer. The Hungarian body is
 Hungarian; retained English navigation/footer chrome is explicitly `lang="en"`.
 Do not imply all linked cases were AI-integrations, or invent technical stacks,
-certifications, pricing, service levels or an OpenAI partnership. The home
-engagement paragraph links both entries without replacing its existing actions.
+certifications, pricing, service levels or an OpenAI partnership. The existing
+home `AI products` card heading links to the English entry; its visible language
+switch leads to Hungarian. Do not restore a separate home acquisition pitch.
 
 The reader in the first five seconds is a VP / hiring manager or a client
 for AI product and web work in regulated or high-trust systems. They need:
@@ -71,7 +72,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify a Product VP and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a project conversation | Nav LinkedIn link; footer LinkedIn `in` icon + **Discuss your project**, sharing outlined 44px / 12px chrome. The same project action also appears in the home engagements block. No Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a project conversation | Nav LinkedIn link; footer LinkedIn `in` icon + **Discuss your project**, sharing outlined 44px / 12px chrome. No duplicate home engagement block and no Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -225,8 +226,8 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    Kineticare — existing case URLs only. Do not invent AI Governance or
    add Benker / SportsGambit / OnRobot / BlackRock here.
 5. No Contact column and no empty Contact heading. Footer Email stays in
-   the ident row. Home also has Email in the engagements block after the
-   services cards. Do not add LinkedIn again in the nav. `/contact` stays
+   the ident row. Home has Email only in its navigation and footer, not
+   after the services cards. Do not add LinkedIn again in the nav. `/contact` stays
    404; no `/contact` link, no form, no captcha, no send endpoint.
 6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Sharp 1px
    dark hairline on the yellow. No back-to-top control. The approved privacy
@@ -379,12 +380,14 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 6. `SELECTED PORTFOLIO HIGHLIGHTS` plus the four live bullets (Raiffeisen /
    Instructure / Bitpanda / Balabit). Do not invent a Canvas Career mock.
    Do not put any product screenshot in the header.
-7. After the services cards, still in `.home-service-section`: secondary
-   block `Open for engagements` (H2, never a second H1). Short offer for
-   AI product / web / similar work in fintech, regulated, and high-trust
-   environments. LinkedIn (`aria-label="Find me on LinkedIn (opens in a
-   new tab)"`) plus the existing Email `button.footer-email`. Do not put
-   `.footer-cta` on this block. No `/contact` page.
+7. User-requested removal (2026-09-04): no `Open for engagements` block,
+   company-solicitation paragraph or duplicate LinkedIn/Email actions after
+   the services cards. Do not hide this copy in CSS, HTML comments, metadata
+   or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
+   native link to `/ai-integration`, with a visible keyboard focus ring. This
+   preserves factual service discovery without a replacement promotional block.
+   All five service headings use ink on paper, never the inherited white
+   `--font-color--dark` from the old template. Test their revealed-state contrast.
 
 **Home selected work (E):** compact rows, not giant 2-up rounded color cards.
 Small 72–96px thumbs (crops of existing case images), live titles + live
@@ -442,7 +445,7 @@ send a message, book a meeting or create a confirmed lead. This explicit
 copy update supersedes the older literal `Email` label/72–76px width lock,
 not the outlined 44px / 12px chrome or the split-address handler.
 
-- Shared English footer, home navigation/engagement, English service CTA:
+- Shared English footer, home navigation, English service CTA:
   `Discuss your project`; title `Opens your email app to discuss your project`.
 - Hungarian service main CTA: `Beszéljünk a projektedről`, `lang="hu"`;
   title `Megnyitja a leveleződet, hogy a projektedről írhass.`.
@@ -456,8 +459,10 @@ label or an unrelated aria-label. Labels must fit at 320px without clipping.
 
 Home About opens on Product VP ownership (strategy → ship, teams,
 regulated), not “I’ve spent the last 16 years designing”. Do not invent
-metrics. The client offer is an H2 (`Open for engagements`), never a
-second H1, and does not add `/contact`.
+metrics. Home descriptions for search and social previews summarize the actual
+portfolio and expertise, not availability for engagements. The dedicated service
+pages retain their visible offers; do not move a home-only solicitation into
+structured data. The home has one H1 and does not add `/contact`.
 
 Forbidden template strings:
 
@@ -506,7 +511,7 @@ English-wash the screenshot.
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
 | LinkedInHitSquare | Footer LinkedIn is a grey-filled ~32px chip, or Email is a filled black pill | Both share 44px height, 12px radius, 1px black stroke, transparent fill, black ink |
 | FilledEmailPill | Email is a solid black pill (radius 999) with white type | Outlined rounded-square chrome; project CTA in black Inter 15/500 |
-| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Email in nav, footer ident, and home engagements; Work column only |
+| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Email in nav and footer ident; Work column only |
 | MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML (before or after click), or the complete address is one JS string | `location.assign` the assembled href; never write it onto `href` or into the DOM |
 | FakeEmailLink | Email is an `<a role="link">` without href | Native `<button type="button" class="footer-email">`; Space/Enter come for free |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | Outlined LinkedIn + Email; Work on the mesh; no Contact column; no sitemap |

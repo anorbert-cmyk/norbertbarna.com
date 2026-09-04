@@ -1053,7 +1053,8 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/);
   expect(html).not.toMatch(/<a[^>]*footer-email/);
   expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(2);
-  expect((html.match(/<button\b[^>]*class="footer-email[^"]*"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(3);
+  expect((html.match(/<button\b[^>]*class="footer-email[^"]*"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(2);
+  expect(html).not.toMatch(/open for engagements|open to client engagements|I[’']m open for enterprise/i);
   expect(html).not.toMatch(/footer-col-title">Contact/);
   expect(html).not.toMatch(/href="\/contact"/);
   expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
@@ -1077,11 +1078,31 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
 
   const email = page.locator("footer button.footer-email");
   const headerEmail = page.locator(".navbar button.footer-email");
-  const engageEmail = page.locator(".home-service-section button.footer-email");
+  await expect(page.locator(".home-service-section button.footer-email, .home-service-section a.hero-work-link")).toHaveCount(0);
+  await expect(page.locator(".home-service-section h2")).toHaveText(["The Work I Drive"]);
+  const serviceLink = page.locator('.home-service-card-title a[href="/ai-integration"]');
+  await expect(serviceLink).toBeVisible();
+  await expect(serviceLink).toHaveAccessibleName("AI products");
+  const serviceHeadings = page.locator(".home-service-card-title");
+  await expect(serviceHeadings).toHaveCount(5);
+  for (let index = 0; index < await serviceHeadings.count(); index += 1) {
+    const heading = serviceHeadings.nth(index);
+    await heading.scrollIntoViewIfNeeded();
+    // Evaluate the revealed state, not the intentional off-screen entry fade.
+    await expect.poll(() => heading.evaluate((element) => {
+      let opacity = 1;
+      for (let node = element; node; node = node.parentElement) opacity *= Number(getComputedStyle(node).opacity);
+      return opacity;
+    })).toBeGreaterThan(.99);
+    await expectHeaderTextAA(page, heading, `service heading ${index + 1}`);
+  }
+  await serviceLink.focus();
+  await expect(serviceLink).toHaveCSS("text-decoration-line", "underline");
+  await expect(serviceLink).toHaveCSS("outline-style", "solid");
+  await expect(serviceLink).toHaveCSS("outline-width", "3px");
   await expect(email).toBeVisible();
   await expect(headerEmail).toBeVisible();
-  await expect(engageEmail).toBeVisible();
-  for (const locator of [email, headerEmail, engageEmail]) {
+  for (const locator of [email, headerEmail]) {
     await expect(locator).toHaveText(PROJECT_LABEL);
     await expect(locator).toHaveAccessibleName(PROJECT_LABEL);
     await expect(locator).toHaveAttribute("title", PROJECT_TITLE);
@@ -1089,12 +1110,10 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   await expect(email).toHaveJSProperty("tagName", "BUTTON");
   expect(await email.getAttribute("type")).toBe("button");
   expect(await headerEmail.getAttribute("type")).toBe("button");
-  expect(await engageEmail.getAttribute("type")).toBe("button");
   expect(await email.getAttribute("href")).toBeNull();
   expect(await headerEmail.getAttribute("href")).toBeNull();
-  expect(await engageEmail.getAttribute("href")).toBeNull();
 
-  for (const locator of [headerEmail, email, engageEmail]) {
+  for (const locator of [headerEmail, email]) {
     const mailRequestPromise = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
     await locator.click();
     expect((await mailRequestPromise).url()).toBe("mailto:anorbert@pm.me");
@@ -1607,23 +1626,17 @@ test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => 
     return {
       h1: document.querySelector(".home-mast h1")?.textContent.trim() || "",
       h1Count: document.querySelectorAll("h1").length,
-      engage: [...document.querySelectorAll("h2")].map((el) => el.textContent.trim()).includes("Open for engagements")
-        ? "Open for engagements"
-        : ([...document.querySelectorAll("h2, h3")].find((el) => /Open for engagements/.test(el.textContent))?.tagName || "missing"),
       jobTitle: person?.jobTitle || "",
       profileName: profile?.name || "",
       personName: person?.name || "",
       personDescription: person?.description || "",
-      engageLinkedIn: document.querySelector('.home-service-section a.hero-work-link[href*="linkedin"]')?.getAttribute("aria-label") || "",
     };
   });
   expect(schema.h1).toBe("Product VP");
   expect(schema.h1Count).toBe(1);
-  expect(schema.engage).toBe("Open for engagements");
   expect(schema.jobTitle).toBe("Product VP");
   expect(schema.profileName).toBe("Norbert Barna — Product VP");
   expect(schema.personName).toBe("Norbert Barna");
-  expect(schema.engageLinkedIn).toBe("Find me on LinkedIn (opens in a new tab)");
   expect(schema.personDescription).toMatch(/Product VP/);
   expect(schema.personDescription).not.toMatch(/design lead/i);
 

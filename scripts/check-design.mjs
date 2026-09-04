@@ -65,11 +65,10 @@ if (home.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1] !== "Product VP") {
 if ((home.match(/<h1\b/g) || []).length !== 1) {
   fail("home must keep exactly one H1");
 }
-if (!/<h2\b[^>]*>Open for engagements<\/h2>/.test(home)) {
-  fail("home must keep a secondary Open for engagements heading");
-}
-if (/<h1\b[^>]*>Open for engagements/.test(home)) {
-  fail("client offer must not be a second H1");
+// The removed solicitation must not return as visible copy, metadata,
+// a hidden DOM node, an HTML comment or structured data.
+if (/open for engagements|open to client engagements|I[’']m open for enterprise/i.test(home)) {
+  fail("home must not restore the removed company-solicitation copy, including hidden source text");
 }
 if (!home.includes('class="hero-kicker">Norbert Barna')) {
   fail("home fold must name Norbert Barna in the kicker");
@@ -159,16 +158,12 @@ if (homeLd?.["@type"] !== "ProfilePage" || homeLd?.name !== "Norbert Barna — P
 if (homeLd?.mainEntity?.["@type"] !== "Person" || homeLd?.mainEntity?.name !== "Norbert Barna") {
   fail("JobTitleDrift: Person name must be Norbert Barna, not a job title");
 }
-const engage = home.slice(home.indexOf("Open for engagements"), home.indexOf('id="works"'));
-if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"/.test(engage)) {
-  fail("engage LinkedIn must use the same new-tab accessible name as nav/footer");
+const homeServices = home.match(/<section\b[^>]*class="home-service-section\b[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
+if (!homeServices || /footer-email|hero-work-link|footer-cta|linkedin\.com/.test(homeServices)) {
+  fail("home services must remain a professional overview without the removed engagement actions");
 }
-checkProjectContact(engage, "home engagements");
-if (!/<button\b[^>]*class="footer-email hero-work-link"/.test(engage)) {
-  fail("engage project contact must reuse footer-email hero-work-link chrome");
-}
-if (/class="footer-cta"/.test(engage)) {
-  fail("engage block must not use footer-cta");
+if (contactButtons(home).length !== 2) {
+  fail("home keeps project contact only in the navigation and footer");
 }
 const homeHead = home.slice(0, home.indexOf("</head>"));
 if (/AI Product Design Lead|product design lead/i.test(homeHead)) {

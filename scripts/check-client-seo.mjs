@@ -31,7 +31,10 @@ for (const file of SERVICE_PAGES) {
   const canonical = links.filter(tag => attr(tag, "rel") === "canonical");
   assert.equal(canonical.length, 1, `${file}: one canonical`);
   assert.equal(attr(canonical[0], "href"), url, `${file}: self canonical, not English canonical for Hungarian content`);
-  assert(home.includes(`href="/${file.replace(/\.html$/, "")}"`), `${file}: crawlable home entry link`);
+  // The homepage has no acquisition pitch. Its existing AI-products heading
+  // provides the English entry; the equivalent Hungarian offer is one visible
+  // language-switch link away, checked in both directions below.
+  assert(/<h3\b[^>]*class="home-service-card-title"[^>]*><a\b[^>]*href="\/ai-integration"[^>]*>AI products<\/a><\/h3>/.test(home), `${file}: factual, crawlable AI-products entry`);
   const other = language === "en" ? "/hu/ai-integracio" : "/ai-integration";
   assert(body.includes(`href="${other}"`), `${file}: visible language switch`);
   for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
