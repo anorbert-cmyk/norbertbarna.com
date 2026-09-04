@@ -437,7 +437,10 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
 
 for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", "WCAG text spacing"].map((adjustment) => ({ width, adjustment })))) {
   test(`${width} home: ${adjustment} preserves header text contrast`, async ({ page }, testInfo) => {
-    test.slow();
+    // Pixel-level AA sampling takes about 105 seconds on the slowest hosted
+    // runner. Keep every assertion and give the deliberate reflow cleanup
+    // enough time to finish before the shared CLS guard runs.
+    test.setTimeout(180_000);
     await page.setViewportSize({ width, height: 900 });
     await page.route(/posthog\.com/, (route) => route.abort());
     await openStable(page, "/");
