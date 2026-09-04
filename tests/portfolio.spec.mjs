@@ -174,6 +174,64 @@ async function screenshotClip(page, clip) {
   return sampleStats(readPng(buffer));
 }
 
+async function footerSeamClip(page) {
+  const sample = await page.evaluate(() => {
+    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
+    const work = document.querySelector(".footer-col-title").getBoundingClientRect();
+    const controls = [...document.querySelectorAll(".footer-cta a, .footer-cta button")].map((control) => {
+      const box = control.getBoundingClientRect();
+      return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
+    });
+    const viewport = { width: document.documentElement.clientWidth, height: window.innerHeight };
+    const gutter = 12;
+    const x = Math.ceil(Math.max(...controls.map((control) => control.right)) + gutter);
+    const y = Math.max(0, Math.floor(cta.bottom - 12));
+    return {
+      controls, viewport, gutter,
+      clip: {
+        x, y,
+        width: Math.min(80, Math.floor(viewport.width - gutter - x)),
+        height: Math.min(viewport.height, Math.ceil(work.top + 12)) - y,
+      },
+    };
+  });
+  const { clip, controls, viewport, gutter } = sample;
+  expect(controls).toHaveLength(2);
+  expect(clip.width, "the empty background sample must remain useful").toBeGreaterThanOrEqual(32);
+  expect(clip.width).toBeLessThanOrEqual(80);
+  expect(clip.height).toBeGreaterThanOrEqual(8);
+  expect(clip.x).toBeGreaterThanOrEqual(0);
+  expect(clip.y).toBeGreaterThanOrEqual(0);
+  expect(clip.x + clip.width).toBeLessThanOrEqual(viewport.width);
+  expect(clip.y + clip.height).toBeLessThanOrEqual(viewport.height);
+  for (const control of controls) {
+    expect(clip.x).toBeGreaterThanOrEqual(control.right + gutter);
+    const intersects = clip.x < control.right && clip.x + clip.width > control.left &&
+      clip.y < control.bottom && clip.y + clip.height > control.top;
+    expect(intersects, "mesh sample must not contain a contact control or its border").toBe(false);
+  }
+  return clip;
+}
+
+async function footerSeamJump(page, clip) {
+  const png = readPng(await page.screenshot({ clip, type: "png" }));
+  expect(png.width).toBe(clip.width);
+  expect(png.height).toBe(clip.height);
+  const row = (y) => {
+    let sum = 0;
+    for (let x = 0; x < png.width; x += 1) {
+      const i = (y * png.width + x) * 4;
+      sum += 0.2126 * png.pixels[i] + 0.7152 * png.pixels[i + 1] + 0.0722 * png.pixels[i + 2];
+    }
+    return sum / png.width;
+  };
+  let maxJump = 0;
+  for (let y = 1; y < png.height; y += 1) {
+    maxJump = Math.max(maxJump, Math.abs(row(y) - row(y - 1)));
+  }
+  return maxJump;
+}
+
 function srgbToLin(channel) {
   const value = channel / 255;
   return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
@@ -1019,33 +1077,33 @@ test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top"
   });
   expect(workBand.luminance, "390 Work must sit on the pale lilac band, not the navy horizon").toBeGreaterThan(140);
 
-  const seam = await page.evaluate(() => {
-    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
-    const work = document.querySelector(".footer-col-title").getBoundingClientRect();
-    return {
-      x: 180,
-      y: cta.bottom - 12,
-      width: 80,
-      height: Math.max(8, Math.round(work.top - cta.bottom + 24)),
-    };
-  });
-  const seamBuf = await page.screenshot({ clip: seam, type: "png" });
-  const seamPng = readPng(seamBuf);
-  let maxJump = 0;
-  for (let y = 1; y < seamPng.height; y += 1) {
-    const row = (yy) => {
-      let sum = 0;
-      let count = 0;
-      for (let x = 0; x < seamPng.width; x += 1) {
-        const i = (yy * seamPng.width + x) * 4;
-        sum += 0.2126 * seamPng.pixels[i] + 0.7152 * seamPng.pixels[i + 1] + 0.0722 * seamPng.pixels[i + 2];
-        count += 1;
-      }
-      return sum / count;
-    };
-    maxJump = Math.max(maxJump, Math.abs(row(y) - row(y - 1)));
-  }
+  const seam = await footerSeamClip(page);
+  const maxJump = await footerSeamJump(page, seam);
   expect(maxJump, "compact mesh must not clip a hard seam through the Email / Work stack").toBeLessThan(12);
+  console.log("Empty footer seam sample:", JSON.stringify({ ...seam, maxJump }));
+});
+
+test("390 footer seam guard detects a synthetic full-width hard seam", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openStable(page, "/");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const seam = await footerSeamClip(page);
+  await page.evaluate((y) => {
+    // Negative control exists only in this test document, not in site assets.
+    const line = document.createElement("div");
+    line.setAttribute("data-test-hard-seam", "");
+    Object.assign(line.style, {
+      position: "fixed", left: "0", right: "0", top: `${y}px`, height: "2px",
+      background: "#000", zIndex: "2147483647", pointerEvents: "none",
+    });
+    document.body.appendChild(line);
+  }, Math.floor(seam.y + seam.height / 2));
+  const line = await page.locator("[data-test-hard-seam]").boundingBox();
+  expect(line.x).toBe(0);
+  expect(line.width).toBe(390);
+  const maxJump = await footerSeamJump(page, seam);
+  expect(maxJump, "a real full-width seam must still violate the unchanged <12 guard").toBeGreaterThanOrEqual(12);
+  console.log("Synthetic footer seam negative control:", maxJump);
 });
 
 test("1280 home selected work: compact rows, small thumbs, hiring order, stable title color", async ({ page }) => {
