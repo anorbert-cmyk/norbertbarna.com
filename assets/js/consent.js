@@ -118,7 +118,7 @@
     }
   }
 
-  function render() {
+  function render(restoreOnClose) {
     if (!banner) return;
     var visible = opened || decision === "unset";
     var wasVisible = !banner.hidden;
@@ -137,7 +137,9 @@
       button.setAttribute("aria-expanded", String(visible));
     });
     syncSpace();
-    if (!visible && wasVisible && focusWasInside && returnFocus && returnFocus.isConnected) {
+    // WebKit can move focus to body before a pointer-clicked Close fires.
+    // Explicit closing must still return to the control that opened settings.
+    if (!visible && wasVisible && (focusWasInside || restoreOnClose === true) && returnFocus && returnFocus.isConnected) {
       returnFocus.focus({ preventScroll: true });
     }
     if (!visible) returnFocus = null;
@@ -214,9 +216,11 @@
     }
   }
 
-  function open() {
+  function open(trigger) {
     refresh(true);
-    if (banner && !banner.contains(document.activeElement)) returnFocus = document.activeElement;
+    // A mouse-clicked button is not necessarily document.activeElement.
+    if (trigger instanceof Element && trigger.matches("button[data-consent-settings]")) returnFocus = trigger;
+    else if (banner && !banner.contains(document.activeElement)) returnFocus = document.activeElement;
     opened = true;
     render();
     // Focus moves only after an explicit settings request, never on initial load.
@@ -276,7 +280,7 @@
     closeButton.type = "button";
     closeButton.addEventListener("click", function () {
       opened = false;
-      render();
+      render(true);
     });
     actions.appendChild(closeButton);
     inner.appendChild(actions);
@@ -301,7 +305,8 @@
   });
 
   document.addEventListener("click", function (event) {
-    if (event.target instanceof Element && event.target.closest("button[data-consent-settings]")) open();
+    var trigger = event.target instanceof Element ? event.target.closest("button[data-consent-settings]") : null;
+    if (trigger) open(trigger);
   });
   document.addEventListener("focusin", keepFocusClear);
   window.addEventListener("resize", syncSpace);
