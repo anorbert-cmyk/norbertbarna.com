@@ -259,9 +259,10 @@ if (/class="[^"]*\bhome-service-grid\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
 if (/class="[^"]*\bhome-work-wrap\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
   fail("index.html: the selected-work CTA must not be an invalid child of an ARIA list");
 }
-if (!/<ul\b[^>]*class="[^"]*\bhome-banner-outcomes\b/i.test(homeHtml) ||
+if (!/<ul\b[^>]*class="[^"]*\bhome-proof-chips\b/i.test(homeHtml) ||
+    !/<ul\b[^>]*class="[^"]*\bhome-employer-list\b/i.test(homeHtml) ||
     !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="\/works"/i.test(homeHtml)) {
-  fail("index.html: hero outcomes must be a semantic list with a selected-work action");
+  fail("index.html: hero must keep proof chips, an employer list, and a selected-work action");
 }
 if (/home-banner-details-wrap[^>]*><\/div>[\s\S]{0,80}home-work-divider-line[\s\S]{0,80}home-work-divider-line/i.test(homeHtml)) {
   fail("index.html: empty hero details and duplicate divider must not return");

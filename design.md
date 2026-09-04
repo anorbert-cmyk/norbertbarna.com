@@ -69,7 +69,7 @@ When requirements compete, protect them in this order:
 
 | Surface | Job in the first viewport | Proof they should see |
 |---|---|---|
-| `/` | Identify a Product VP and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
+| `/` | Identify a Product VP and open work | Role in H1; two proof chips; employer list on navy; CTA to `/works`. Analog mesh mast, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
 | Footer / nav | Start a project conversation | Nav LinkedIn link; footer LinkedIn `in` icon + **Discuss your project**, sharing outlined 44px / 12px chrome. No duplicate home engagement block and no Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
@@ -80,8 +80,9 @@ If a change helps a designer-flex and hurts one of those jobs, reject it.
 
 ### 1. Frame the reader’s job
 
-The executive path on `/` is: name, role, live proof in the highlights,
-how to see the work, how to reach him. The audit path is the case studies.
+The executive path on `/` is: name, role, live proof in two compact chips,
+employer names on the navy, how to see the work, how to reach him. The audit
+path is the case studies.
 
 Do not invent metrics or emails. The one real contact address is
 `anorbert@pm.me`. HTML must not contain `mailto:` or that address as
@@ -101,10 +102,10 @@ The first viewport is the argument, not a masthead plus setup.
 - The name is a plain kicker, not an all-caps tracked eyebrow.
 - The first viewport is an analog mesh mast (greyer-lilac grain, a **large
   navy félkör** from the bottom toward center-right, blur 56 family). Live
-  copy sits left on the lilac. The right side is mesh — not Canvas Career,
-  not any product screenshot.
-- Fold proof on `/` is the live highlights list, not DualIndex: the **work
-  list** still opens with Raiffeisen.
+  copy sits left on the lilac. The right side is a quiet employer list on the
+  navy — not Canvas Career, not any product screenshot, not long highlight bullets.
+- Fold proof on `/` is two compact chips plus that employer list, not DualIndex:
+  the **work list** still opens with Raiffeisen.
 - One primary action: `View selected work` → `/works`. Outlined 12px chrome,
   not a black pill.
 
@@ -331,7 +332,7 @@ The header contact row can wrap; it must not overlap LinkedIn. Long opening
 headings may break within a word only when needed to avoid clipping. The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
-Keep desktop highlights below the pale/navy transition (164–190px top offset),
+Keep desktop employers below the pale/navy transition (164–190px top offset),
 without a boxed background. The Kineticare video scrim is owned by the shared
 stylesheet, including its mobile direction; it must preserve white-text AA
 even against a synthetic all-white frame, not only a sampled poster.
@@ -356,38 +357,48 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 1. Analog mesh mast: greyer-lilac `#D6D4ED` grain, a **large navy félkör**
    (`#0A1628`) rising from the bottom toward center-right, `feGaussianBlur` 56.
    Not the weaker/smaller navy of the text-only crop. Not the footer’s
-   right-weighted yellow. Type on the pale band. Empty right is mesh.
-   On compact, navy fades in below the last highlight (`mask-image` starts
+   right-weighted yellow. Type on the pale band. Desktop right is the employer
+   list on navy, never a product screenshot.
+   On compact, navy fades in below the last employer (`mask-image` starts
    at 88%) so ink stays on lilac — same NavyFlood rule as the footer.
    Compact `::after` navy is a short bottom wash (≤ 16% of the mast), not a
-   28% overlay through the list. The highlights label uses `--mast-muted`,
-   not 62% `--muted`. Playwright samples pixels **behind glyphs** at 390.
-   On desktop the highlights column sits on the navy félkör: use light ink
+   28% overlay through the list. Playwright samples pixels **behind glyphs**
+   at 390.
+   On desktop the employer column sits on the navy félkör: use light ink
    (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
    dome (still inside the mast). Do not shrink the dome to dodge contrast.
    Do not move the list down onto About.
 2. Kicker: `Norbert Barna` (sentence case, no tracking). Stay 13px on
    compact; do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
-   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Compact
-   highlights label uses the same token. Fold type must meet WCAG AA
-   against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
-   UI stroke. Left column stays dark ink on lilac. Compact highlights stay
-   dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
+   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Fold type must
+   meet WCAG AA against the live grain (pixels behind glyphs): 4.5:1 normal,
+   3:1 large / UI stroke. Left column stays dark ink on lilac. Compact
+   employers stay dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
 3. H1: `Product VP`
-4. One-line dek (existing positioning, not a slogan)
-5. Primary action: `View selected work` → `/works` (outlined 12px chrome,
-   not a filled black pill)
-6. `SELECTED PORTFOLIO HIGHLIGHTS` plus the four live bullets (Raiffeisen /
-   Instructure / Bitpanda / Balabit). Do not invent a Canvas Career mock.
-   Do not put any product screenshot in the header.
-7. User-requested removal (2026-09-04): no `Open for engagements` block,
-   company-solicitation paragraph or duplicate LinkedIn/Email actions after
-   the services cards. Do not hide this copy in CSS, HTML comments, metadata
-   or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
-   native link to `/ai-integration`, with a visible keyboard focus ring. This
-   preserves factual service discovery without a replacement promotional block.
-   All five service headings use ink on paper, never the inherited white
-   `--font-color--dark` from the old template. Test their revealed-state contrast.
+4. One-line dek: `AI products for fintech, Web3, regulated teams — strategy
+   to ship.` Existing positioning, not a slogan.
+5. Two compact proof chips in a row (`.home-proof-chips` / `.home-proof-chip`),
+   not a long bullet list. Copy is portfolio-reported from LinkedIn About —
+   do not invent new numbers:
+   `$52M+ features · Instructure` and `1.8→4.8 · Raiffeisen`. Use the arrow
+   (not mixed en-dashes). Thin ink border, light translucent fill, radius 10px
+   — not a black pill and not radius 999. No generated chart icons.
+6. Primary action: `View selected work` → `/works` (outlined 12px chrome,
+   not a filled black pill). Do not restore an `Open for engagements` block
+   in the mast or after the services cards.
+7. Quiet vertical employer list only (`.home-employer-list`) on the navy:
+   BlackRock · Instructure · Raiffeisen · Bitpanda · Balabit. Light ink on
+   navy for AA. No long descriptions, no `Selected portfolio highlights`
+   label, no four highlight bullets.
+
+User-requested removal (2026-09-04): no `Open for engagements` block,
+company-solicitation paragraph or duplicate LinkedIn/Email actions after
+the services cards. Do not hide this copy in CSS, HTML comments, metadata
+or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
+native link to `/ai-integration`, with a visible keyboard focus ring. This
+preserves factual service discovery without a replacement promotional block.
+All five service headings use ink on paper, never the inherited white
+`--font-color--dark` from the old template. Test their revealed-state contrast.
 
 **Home selected work (E):** compact rows, not giant 2-up rounded color cards.
 Small 72–96px thumbs (crops of existing case images), live titles + live
@@ -481,8 +492,8 @@ English-wash the screenshot.
 
 | Name | What it looks like | Fix |
 |---|---|---|
-| EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + live highlights on the analog mast; product UI lives in Selected work rows and case pages |
-| CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Empty right is mesh |
+| EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + two proof chips + employer list on the analog mast; product UI lives in Selected work rows and case pages |
+| CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Right column is the employer list on navy |
 | WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080); blur 56; lock saturation `#0A1628` on `#D6D4ED` |
 | GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
 | FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
@@ -502,9 +513,9 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last highlight (mask from 88%). Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
-| InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
-| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
+| NavyFlood | Navy mesh blob bleeds up under Work or compact home employers so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last employer (mask from 88%). Desktop home employers may sit on the félkör — then use light ink, do not shrink the dome |
+| InkOnNavy | `--ink` / `--muted` on the desktop mast employer list over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column (kicker, H1, dek, chips) stays `--ink` on lilac |
+| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker uses solid `--mast-muted` `#2a2a2e` |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
@@ -555,7 +566,8 @@ Agents compose pages from these names. Do not invent parallel components.
 
 **Home:** `.home-mast` `.home-mast-mesh` `.home-mast-art` `.home-mast-lilac`
 `.home-mast-navy` `.home-banner-section` `.hero-kicker` `.home-banner-title`
-`.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link`
+`.home-banner-subtitle` `.home-proof-chips` `.home-proof-chip`
+`.home-employer-list` `.hero-work-link`
 `.about-section-title` `.home-about-area` `.work-list` `.work-row`
 `.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
 `.work-card-summary` `.home-work-footer` `.nav-cta`

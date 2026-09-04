@@ -105,8 +105,22 @@ if (/footer-col-title">Work|footer-copyright|© 2026 Norbert Barna/.test(homeMas
 if (/#BDB414|#FFE000/.test(homeMast)) {
   fail("home mast must not paint the footer yellow into the header");
 }
-if (/home-banner-outcomes/.test(home) === false) {
-  fail("home fold must keep the four live portfolio highlights");
+if (/home-banner-outcomes|Selected portfolio highlights|multi-country mobile banking ecosystem/.test(home)) {
+  fail("home fold must not restore the four highlight bullets");
+}
+if (!/\$52M\+ features · Instructure/.test(home) || !/1\.8→4\.8 · Raiffeisen/.test(home)) {
+  fail("home fold must keep the two LinkedIn About proof chips (do not invent new numbers)");
+}
+if (!/class="home-proof-chips"/.test(home) || (home.match(/class="home-proof-chip"/g) || []).length !== 2) {
+  fail("home fold must show exactly two compact proof chips, not a long bullet list");
+}
+const homeEmployers = [...home.matchAll(/<ul class="home-employer-list"[^>]*>([\s\S]*?)<\/ul>/g)][0]?.[1] || "";
+const employerNames = [...homeEmployers.matchAll(/<li>([^<]*)/g)].map((m) => m[1].replace(/\s+/g, " ").trim());
+if (JSON.stringify(employerNames) !== JSON.stringify(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"])) {
+  fail(`home fold employer list must be BlackRock, Instructure, Raiffeisen, Bitpanda, Balabit (got ${employerNames.join(", ")})`);
+}
+if (!/AI products for fintech, Web3, regulated teams/.test(home)) {
+  fail("home dek must be the Version B one-liner");
 }
 if (/4M\+|Redesigning banking for/.test(home)) {
   fail("do not replace live work copy with invented mock one-liners");
@@ -434,7 +448,7 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask
   fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,400}transparent 88%/.test(css)) {
-  fail("NavyFlood: compact home mast navy must fade in below the last highlight (mask from 88%)");
+  fail("NavyFlood: compact home mast navy must fade in below the last employer (mask from 88%)");
 }
 if (!/\.home-mast::after[\s\S]{0,240}radial-gradient[\s\S]{0,80}#0a1628/.test(css)) {
   fail("NavyFlood: compact home mast must paint a bottom navy overlay under the type");
@@ -448,8 +462,8 @@ if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
 if (!/\.home-mast \.hero-kicker[\s\S]{0,80}--mast-muted/.test(css)) {
   fail("GrainWash: mast kicker must use --mast-muted, not 62% --muted");
 }
-if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast \.metric-context[\s\S]{0,160}--mast-muted/.test(css)) {
-  fail("GrainWash: compact highlights label must use --mast-muted, not 62% --muted");
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast \.home-employer-list[\s\S]{0,160}--ink/.test(css)) {
+  fail("NavyFlood: compact employer list must stay --ink on lilac, not --mast-on-navy");
 }
 if (!/TightAwardVideo/.test(design)) {
   fail("design.md must name the TightAwardVideo anti-pattern");
@@ -467,8 +481,13 @@ if (/\.awards-card[\s\S]{0,80}\.awards-bg-video-wrap[\s\S]{0,60}opacity:\s*0\s*!
 if (!/--mast-on-navy:\s*#f4f5f7/.test(css)) {
   fail("InkOnNavy: --mast-on-navy must be near-white #F4F5F7");
 }
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-outcomes[\s\S]{0,160}--mast-on-navy/.test(css)) {
-  fail("InkOnNavy: desktop mast highlights must use --mast-on-navy");
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-employer-list[\s\S]{0,160}--mast-on-navy/.test(css)) {
+  fail("InkOnNavy: desktop mast employer list must use --mast-on-navy");
+}
+if (!/\.home-proof-chip[\s\S]{0,200}--ink/.test(css) ||
+    /\.home-proof-chip[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    /\.home-proof-chip[\s\S]{0,200}background:\s*#111/.test(css)) {
+  fail("proof chips must be compact ink-on-lilac rounded-rects, not pills");
 }
 if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13px/.test(css)) {
   fail("home kicker must stay 13px on compact, not inherit the 17px banner bump");
