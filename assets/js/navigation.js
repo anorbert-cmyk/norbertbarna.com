@@ -107,21 +107,38 @@
     var kicker = mast.querySelector(".hero-kicker");
     if (!copy || !kicker) return;
     mast.dataset.reflowReady = "true";
+    function numericLength(style, property) {
+      var value = parseFloat(style[property]);
+      return Number.isFinite(value) ? value : 0;
+    }
+    function typographySnapshot(element) {
+      var style = getComputedStyle(element);
+      return {
+        size: numericLength(style, "fontSize"),
+        letter: numericLength(style, "letterSpacing"),
+        word: numericLength(style, "wordSpacing"),
+      };
+    }
+    // Compare later changes with the authored mast typography. This keeps the
+    // deliberate tracked name treatment from masquerading as user text spacing.
+    var baseCopy = typographySnapshot(copy);
+    var baseKicker = typographySnapshot(kicker);
     function updateTextReflow() {
       var copyStyle = getComputedStyle(copy);
       var kickerStyle = getComputedStyle(kicker);
       // User text enlargement/spacing needs the same single-column reading
       // surface as compact screens. These typography checks do not depend on
       // the resulting column height, so the observer cannot oscillate layouts.
-      var spaced = [copyStyle, kickerStyle].some(function (style) {
-        var size = parseFloat(style.fontSize);
-        return parseFloat(style.letterSpacing) > size * .08 ||
-          parseFloat(style.wordSpacing) > size * .12;
+      var spaced = [[copyStyle, baseCopy], [kickerStyle, baseKicker]].some(function (entry) {
+        var style = entry[0];
+        var baseline = entry[1];
+        var size = numericLength(style, "fontSize");
+        return numericLength(style, "letterSpacing") > baseline.letter + size * .08 ||
+          numericLength(style, "wordSpacing") > baseline.word + size * .12;
       });
-      // Shipped CSS is 13px for the kicker and 20–22px for the deck. Allow
-      // subpixel rounding, but reflow even modest user enlargement.
-      var enlarged = parseFloat(copyStyle.fontSize) > 22.1 ||
-        parseFloat(kickerStyle.fontSize) > 13.1;
+      // Reflow on actual user enlargement, independent of the authored scale.
+      var enlarged = numericLength(copyStyle, "fontSize") > baseCopy.size * 1.18 ||
+        numericLength(kickerStyle, "fontSize") > baseKicker.size * 1.18;
       mast.toggleAttribute("data-text-reflow", enlarged || spaced);
     }
     updateTextReflow();

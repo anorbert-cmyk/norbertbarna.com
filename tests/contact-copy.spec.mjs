@@ -351,11 +351,13 @@ for (const viewport of viewports) {
         }));
         const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
         const language = scope.main && route === "/hu/ai-integracio" ? "hu" : "en";
-        const label = privacyContact ? "Email" : projectCopy[language].label;
+        const homeNav = scope.nav && route === "/";
+        const label = privacyContact || homeNav ? "Email" : projectCopy[language].label;
+        const accessibleName = homeNav ? "Email — discuss a project" : label;
         if (scope.nav && viewport.width < 992) await page.locator(".menu-button").click();
         await expect(button).toBeVisible();
         await expect(button).toHaveText(label);
-        await expect(button).toHaveAccessibleName(label);
+        await expect(button).toHaveAccessibleName(accessibleName);
         await expect(button).toHaveAttribute("type", "button");
         await expect(button).not.toHaveAttribute("href");
         if (privacyContact) {
@@ -378,9 +380,13 @@ for (const viewport of viewports) {
             overflow: element.scrollWidth - element.clientWidth,
           };
         });
-        expect(size.height).toBe(44);
+        expect(size.height).toBe(homeNav && viewport.width < 992 ? 48 : 44);
         expect(size.width).toBeGreaterThanOrEqual(44);
-        expect(Math.abs(size.width - size.expected), "button width must fit its actual label").toBeLessThanOrEqual(2);
+        if (homeNav && viewport.width < 992) {
+          expect(size.width, "compact menu action may fill its available row").toBeGreaterThanOrEqual(size.expected);
+        } else {
+          expect(Math.abs(size.width - size.expected), "button width must fit its actual label").toBeLessThanOrEqual(2);
+        }
         expect(size.overflow).toBeLessThanOrEqual(1);
         expect(size.left).toBeGreaterThanOrEqual(-1);
         expect(size.right).toBeLessThanOrEqual(viewport.width + 1);
