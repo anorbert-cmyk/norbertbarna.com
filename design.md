@@ -22,7 +22,24 @@ Do not hand-tune a single page and leave the rule unwritten.
 ## Scope
 
 Hiring portfolio for Norbert Barna, Product VP.
-English site. Self-hosted static HTML. Canonical host: `www.barnanorbert.com`.
+English portfolio with an English/Hungarian client-service entry pair.
+Self-hosted static HTML. Canonical host: `www.barnanorbert.com`.
+
+User-confirmed acquisition priority (2026-09-04): larger AI-integration clients
+first, Hungarian AI and development service clients second. Hiring discovery
+remains supported, but is not the primary acquisition KPI. Preserve the home
+Product VP mast, work order, shipped evidence and visual locks below.
+
+`/ai-integration` and `/hu/ai-integracio` explain the same core service offer in
+English and Hungarian. Compose from existing type and reading-width primitives;
+no new palette, imagery, cards or motion. One service H1, scoped offer, linked
+case evidence, engagement questions and the native Email action. These are
+WebPage/Service pages, not portfolio Articles. Use self canonicals and reciprocal
+en/hu hreflang; x-default points to the English offer. The Hungarian body is
+Hungarian; retained English navigation/footer chrome is explicitly `lang="en"`.
+Do not imply all linked cases were AI-integrations, or invent technical stacks,
+certifications, pricing, service levels or an OpenAI partnership. The home
+engagement paragraph links both entries without replacing its existing actions.
 
 The reader in the first five seconds is a VP / hiring manager or a client
 for AI product and web work in regulated or high-trust systems. They need:

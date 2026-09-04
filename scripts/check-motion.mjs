@@ -11,13 +11,14 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { SERVICE_PAGES, assetPrefix } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const ANIMATED_PAGES = ["index.html", "works.html", ...WORK_PAGES];
+const ANIMATED_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...SERVICE_PAGES];
 const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
 
 let failures = 0;
@@ -132,7 +133,7 @@ for (const page of ALL_PAGES) {
   const responsiveRefs = [...html.matchAll(/<link\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "href"))
     .filter((href) => /\/responsive(?:\.[a-f0-9]+)?\.css$/i.test(href));
-  const expectedResponsiveRef = `${page === "404.html" ? "/" : page.startsWith("work/") ? "../" : ""}assets/css/${responsiveFile}`;
+  const expectedResponsiveRef = `${assetPrefix(page)}assets/css/${responsiveFile}`;
 
   if (responsiveRefs.length !== 1) {
     fail(`${page}: expected one active content-hashed responsive stylesheet, found ${responsiveRefs.length}`);
@@ -145,7 +146,7 @@ for (const page of ANIMATED_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
   const animationRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/animations(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
     .map((match) => match[1]);
-  const expectedAnimationRef = `${page.startsWith("work/") ? "../" : ""}assets/js/${animationsFile}`;
+  const expectedAnimationRef = `${assetPrefix(page)}assets/js/${animationsFile}`;
 
   if (animationRefs.length !== 1) {
     fail(`${page}: expected one active content-hashed animations script, found ${animationRefs.length}`);

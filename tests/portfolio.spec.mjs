@@ -13,6 +13,8 @@ const viewports = [
 const contentRoutes = [
   "/",
   "/works",
+  "/ai-integration",
+  "/hu/ai-integracio",
   "/work/benker",
   "/work/bitpanda",
   "/work/instructure",

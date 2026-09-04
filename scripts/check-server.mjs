@@ -133,7 +133,7 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  for (const pagePath of ["/", "/works", "/work/instructure"]) {
+  for (const pagePath of ["/", "/works", "/work/instructure", "/ai-integration", "/hu/ai-integracio"]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -155,6 +155,10 @@ try {
   assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
 
   for (const [legacyPath, expectedLocation] of [
+    ["/ai-integration.html?utm_source=test", "/ai-integration?utm_source=test"],
+    ["/ai-integration/", "/ai-integration"],
+    ["/hu/ai-integracio.html", "/hu/ai-integracio"],
+    ["/hu/ai-integracio/?utm_campaign=ai", "/hu/ai-integracio?utm_campaign=ai"],
     ["/favicon.ico", "/assets/icons/68f923d010d274634c966a6e_favicon.png"],
     ["/index", "/"],
     ["/index?utm_source=home", "/?utm_source=home"],
