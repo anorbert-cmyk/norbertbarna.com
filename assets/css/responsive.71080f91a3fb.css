@@ -2792,14 +2792,9 @@ body.home .navbar {
 }
 
 @media (min-width: 992px) {
-  /* Version B mast: compact left stack (not a viewport-wide dek),
-   * employer type on the solid navy — matching the chips+employers lock. */
-  .home-mast .home-banner-section,
-  .home-mast .home-banner-section.raiffeisen-header-black {
-    padding-top: clamp(88px, 10vw, 160px);
-    padding-bottom: clamp(88px, 10vw, 140px);
-  }
-
+  /* Version B mast: compact left stack on the lilac band (not a viewport-wide
+   * dek), employer type mid-mast on the solid navy. Do not add extra top
+   * padding — that slides dek/CTA onto the félkör (NavyFlood). */
   .home-mast .home-banner-area {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -2817,10 +2812,6 @@ body.home .navbar {
     max-width: 46rem;
   }
 
-  .home-mast .banner-left-wrap > p.hero-kicker {
-    margin-bottom: 18px;
-  }
-
   .home-mast .home-banner-title {
     font-size: clamp(64px, 6.4vw, 92px);
     line-height: 1.02;
@@ -2830,15 +2821,6 @@ body.home .navbar {
 
   .home-mast .home-banner-subtitle {
     max-width: 36ch;
-    margin-top: 28px;
-  }
-
-  .home-mast .home-proof-chips {
-    margin-top: 32px;
-  }
-
-  .home-mast .home-mast-actions {
-    margin-top: 40px;
   }
 
   .home-mast .home-banner-area > .home-banner-content-wrap {
