@@ -338,7 +338,7 @@ for (const viewport of viewports) {
       const response = await page.goto(route);
       expect(response.status()).toBe(200);
       await page.waitForFunction(() => document.fonts.status === "loaded");
-      const expectedCount = route === "/" ? 3 : 2;
+      const expectedCount = 2;
       const buttons = page.locator("button.footer-email");
       await expect(buttons).toHaveCount(expectedCount);
 
