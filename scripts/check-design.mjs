@@ -120,6 +120,12 @@ if (!/\$52M\+ features · Instructure/.test(home) || !/1\.8→4\.8 · Raiffeisen
 if (!/class="home-proof-chips"/.test(home) || (home.match(/class="home-proof-chip"/g) || []).length !== 2) {
   fail("home fold must show exactly two compact proof chips, not a long bullet list");
 }
+if ((homeMast.match(/class="home-proof-mark"/g) || []).length !== 2) {
+  fail("Version B chips must include two inline SVG marks, not generated images");
+}
+if (/<img\b/.test(homeMast.match(/home-proof-chips[\s\S]*?<\/ul>/)?.[0] || "")) {
+  fail("CanvasFold: proof chips must not use <img> marks");
+}
 const homeEmployers = [...home.matchAll(/<ul class="home-employer-list"[^>]*>([\s\S]*?)<\/ul>/g)][0]?.[1] || "";
 const employerNames = [...homeEmployers.matchAll(/<li>([^<]*)/g)].map((m) => m[1].replace(/\s+/g, " ").trim());
 if (JSON.stringify(employerNames) !== JSON.stringify(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"])) {
@@ -258,8 +264,14 @@ if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
   fail("PROJECT FLOW rail is not hidden");
 }
 if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must wrap");
-if (/\.hero-kicker[\s\S]{0,160}text-transform:\s*uppercase/.test(css)) {
-  fail("TrackedKicker: name kicker must not be all-caps tracked");
+if (/(?:^|[,{}]\s*)\.hero-kicker\s*\{[\s\S]{0,200}text-transform:\s*uppercase/.test(css) ||
+    !/(?:^|[,{}]\s*)\.hero-kicker\s*\{[\s\S]{0,200}letter-spacing:\s*0/.test(css) ||
+    !/(?:^|[,{}]\s*)\.hero-kicker\s*\{[\s\S]{0,200}text-transform:\s*none/.test(css)) {
+  fail("TrackedKicker: shared .hero-kicker must stay sentence case with no tracking");
+}
+if (!/\.home-mast \.hero-kicker[\s\S]{0,200}text-transform:\s*uppercase/.test(css) ||
+    !/\.home-mast \.hero-kicker[\s\S]{0,200}letter-spacing:\s*\.16em/.test(css)) {
+  fail("Version B mast kicker must be CSS uppercase + .16em tracking; HTML stays Norbert Barna");
 }
 if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {
   fail("home outcomes must stay ink on paper after leaving the .black wrap");
@@ -294,10 +306,15 @@ if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(h
 if (!/body\.home \.navbar[\s\S]{0,240}background:\s*transparent/.test(css)) {
   fail("home mast: navbar must sit on the mesh, not a white slab");
 }
-if (!/\.hero-work-link[\s\S]{0,360}border-radius:\s*12px/.test(css) ||
-    /\.hero-work-link[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
-    /\.hero-work-link[\s\S]{0,240}background:\s*#111/.test(css)) {
-  fail("home CTA must be outlined 12px chrome, not a black pill");
+if (!/(?:^|[,{}]\s*)\.hero-work-link\s*\{[\s\S]{0,360}border-radius:\s*12px/.test(css) ||
+    /(?:^|[,{}]\s*)\.hero-work-link\s*\{[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    /(?:^|[,{}]\s*)\.hero-work-link\s*\{[\s\S]{0,240}background:\s*#111/.test(css)) {
+  fail("shared .hero-work-link must stay outlined 12px chrome, not a black pill");
+}
+if (!/\.home-mast \.hero-work-link\s*\{[\s\S]{0,360}background:\s*#0a1628/.test(css) ||
+    !/\.home-mast \.hero-work-link\s*\{[\s\S]{0,360}color:\s*#f4f5f7/.test(css) ||
+    /\.home-mast \.hero-work-link\s*\{[\s\S]{0,360}border-radius:\s*999px/.test(css)) {
+  fail("Version B mast CTA must be filled navy with light type and 12px corners, not a 999 pill");
 }
 if (!/\.work-list[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
   fail("home selected work must be a stacked row list");
@@ -509,9 +526,12 @@ if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-employer-list[\s\
   fail("desktop employer names must be 24–32px, not an 18px whisper");
 }
 if (!/\.home-proof-chip[\s\S]{0,200}--ink/.test(css) ||
-    /\.home-proof-chip[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
+    !/\.home-proof-chip[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
     /\.home-proof-chip[\s\S]{0,200}background:\s*#111/.test(css)) {
-  fail("proof chips must be compact ink-on-lilac rounded-rects, not pills");
+  fail("proof chips must be compact ink-on-lilac pills (radius 999), not filled black");
+}
+if (!/\.home-proof-mark[\s\S]{0,160}#5c4f9a/.test(css)) {
+  fail("proof chip marks must use the Version B purple token, not generated images");
 }
 if (!/@media\s*\(max-width:\s*479px\)[\s\S]*\.home-proof-chips[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
   fail("compact proof chips must stack at ≤479px so webfont load cannot wrap-flip a row");

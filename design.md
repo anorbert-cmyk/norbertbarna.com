@@ -99,17 +99,24 @@ Do not restore removed SportsGambit figures (`35% first-day activation`,
 The first viewport is the argument, not a masthead plus setup.
 
 - H1 is the role (`Product VP`), not the name.
-- The name is a plain kicker, not an all-caps tracked eyebrow.
+- Shared name kickers stay sentence case with no tracking. The home mast
+  Version B kicker is the CSS exception: `uppercase` + `0.16em` tracking on
+  `.home-mast .hero-kicker`. HTML stays `Norbert Barna`. Color stays
+  `--mast-muted` (the lock’s lilac-purple fails AA on grain).
 - The first viewport is an analog mesh mast (greyer-lilac grain, a **large
   navy félkör** from the bottom toward center-right, blur 56 family). Live
   copy sits left on the lilac. The right side is a quiet employer list on the
   navy — not Canvas Career, not any product screenshot, not long highlight bullets.
-- Fold proof on `/` is two compact chips plus that employer list, not DualIndex:
-  the **work list** still opens with Raiffeisen.
-- One primary action: `View selected work` → `/works`. Outlined 12px chrome,
-  not a black pill. A quiet text link `Open for AI/web engagements` may sit
-  beside it and go to `/ai-integration`. Do not restore the services-section
-  solicitation paragraph or duplicate LinkedIn/Email actions.
+- Fold proof on `/` is two compact pills plus that employer list, not DualIndex:
+  the **work list** still opens with Raiffeisen. Each chip has one inline SVG
+  mark (sparkline / bars) using `currentColor` — not a generated image.
+- One primary action: `View selected work` → `/works`. On the home mast this
+  is **filled navy** (`#0A1628`) with light type and 12px corners, not outlined
+  ink and not radius 999 (that is FilledEmailPill). Shared `.hero-work-link`
+  on other pages stays outlined 12px. A quiet text link
+  `Open for AI/web engagements` may sit beside it and go to `/ai-integration`.
+  Do not restore the services-section solicitation paragraph or duplicate
+  LinkedIn/Email actions.
 
 Before adding a block, name the generic layout this page type would suggest
 (centered manifesto, card grid, 16:9 cover). Reject it unless the material
@@ -131,8 +138,9 @@ Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
 2. Is every product crop a complete UI (`object-fit: contain`), not a
    CoverPoster or a Figma leftover?
 3. Do `/` and `/works` use the same case order?
-4. Can any tracked kicker, icon tile, or marquee motion be removed without
-   losing meaning? Prefer stillness. Do not add marquees.
+4. Can any unsolicited tracked kicker (not the Version B home mast), icon tile,
+   or marquee motion be removed without losing meaning? Prefer stillness.
+   Do not add marquees.
 5. On Kineticare at 390: is the dek white on the dark field, and does Role
    wrap cleanly under the sticky bar?
 6. Does `npm test` still pass?
@@ -277,7 +285,8 @@ artboard already crops the phones.
 | Kicker | 13px | 600 Inter | 1.2 | `.hero-kicker`, `.work-category` |
 
 Do not use 89px display or 38px/300 dek. Do not bold a whole dek to fake a
-missing middle size. Do not uppercase-track the name kicker.
+missing middle size. Do not uppercase-track shared name kickers. The home
+mast Version B kicker is the CSS exception documented in composition §2.
 
 ## Information architecture
 
@@ -327,7 +336,8 @@ keyboard focus uses the existing ink/paper palette: a 3px ink outline with a
 white inner halo so it remains distinct on the mesh, paper and dark fields.
 Do not remove breadcrumb-link focus merely because it is not `.nav-link`.
 
-At normal text size the outlined contact and primary actions remain 44px tall.
+At normal text size the outlined contact actions remain 44px tall. The home
+mast primary CTA is the filled 56px navy exception.
 At 200% text size or user-defined text spacing they may wrap and grow vertically
 (44px minimum), while keeping their full visible labels and existing action.
 The header contact row can wrap; it must not overlap LinkedIn. Long opening
@@ -371,12 +381,14 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
    dome (still inside the mast). Do not shrink the dome to dodge contrast.
    Do not move the list down onto About.
-2. Kicker: `Norbert Barna` (sentence case, no tracking). Stay 13px on
-   compact; do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
-   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Fold type must
-   meet WCAG AA against the live grain (pixels behind glyphs): 4.5:1 normal,
-   3:1 large / UI stroke. Left column stays dark ink on lilac. Compact
-   employers stay dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
+2. Kicker: HTML `Norbert Barna`. On the home mast, CSS `text-transform:
+   uppercase` and `letter-spacing: 0.16em` match the Version B lock. Stay 13px
+   on compact; do not inherit the 17px `.banner-left-wrap > p:first-child`
+   bump. Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted` and not
+   the lock’s light purple (~1.8:1 on grain). Fold type must meet WCAG AA
+   against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
+   UI stroke. Left column stays dark ink on lilac. Compact employers stay
+   dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
 3. H1: `Product VP`
 4. Dek (one sentence): `AI products for fintech, Web3, regulated teams — strategy
    to ship.` Reading-width stack (`max-width: 36ch`) so it wraps after Web3
@@ -385,17 +397,20 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    not a long bullet list. Copy is portfolio-reported from LinkedIn About —
    do not invent new numbers:
    `$52M+ features · Instructure` and `1.8→4.8 · Raiffeisen`. Use the arrow
-   (not mixed en-dashes). Thin ink border, light translucent fill, radius 10px
-   — not a black pill and not radius 999. No generated chart icons. Keep the
-   pair in one row from 480px up. At ≤479px stack them (`flex-direction:
-   column`) so Inter loading cannot wrap-flip a row that only fitted the
-   fallback metrics.
-6. Primary action: `View selected work` → `/works` (outlined 12px chrome,
-   not a filled black pill). Desktop mast is a compact left stack
-   (`max-width: 46rem`) plus a narrow right-aligned employer stack hugging
-   the navy (`grid-template-columns: minmax(0, 1fr) auto`). Display H1 is
-   64–92px Funnel. Employer type is 24–32px Inter, mid-mast on the solid
-   navy, not an 18px whisper in the blur. A quiet text link
+   (not mixed en-dashes). Thin ink border, light translucent fill, radius 999
+   (pills). Two inline SVG marks (`.home-proof-mark`, `currentColor`, purple
+   `#5c4f9a`): sparkline on Instructure, bars on Raiffeisen. Not generated
+   PNGs, not `<img>`, not a black fill. Keep the pair in one row from 480px
+   up. At ≤479px stack them (`flex-direction: column`) so Inter loading
+   cannot wrap-flip a row that only fitted the fallback metrics.
+6. Primary action: `View selected work` → `/works`. Home mast CTA is filled
+   navy `#0A1628`, light type `#F4F5F7`, min-height 56px, radius **12px**
+   (not 999 / FilledEmailPill). Shared `.hero-work-link` elsewhere stays
+   outlined 12px. Desktop mast is a compact left stack (`max-width: 46rem`)
+   plus a narrow right-aligned employer stack hugging the navy
+   (`grid-template-columns: minmax(0, 1fr) auto`). Display H1 is 64–92px
+   Funnel. Employer type is 24–32px Inter, mid-mast on the solid navy, not
+   an 18px whisper in the blur. A quiet text link
    `Open for AI/web engagements` → `/ai-integration` sits beside the CTA
    (`.home-mast-actions` / `.hero-engage-link`). Do not restore the
    services-section solicitation paragraph or duplicate LinkedIn/Email.
@@ -519,7 +534,7 @@ English-wash the screenshot.
 | FakePII | Invented names, emails, `+123%` in comps we author | Shipped UI only, no unaudited % in our chrome |
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
-| TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
+| TrackedKicker | All-caps, letter-spaced name/eyebrow on shared `.hero-kicker` | Shared kicker stays sentence-case 13px Inter, no tracking. Home mast Version B is the CSS exception (`uppercase` + `0.16em`); HTML remains `Norbert Barna`; color stays `--mast-muted` for AA |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays on the lock crop (greyer-lilac, left-weighted navy horizon, right-weighted olive-chartreuse) — never Ironclad dunes, candy pink, or a third palette |
 | YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
 | SausageBand | Navy is a thin full-width ellipse (~8% of field height, `ry` ≪ field) then a flat yellow rectangle | Taller ~3:2 field; navy is a left-weighted horizon mass, not a crushed stripe |
@@ -583,6 +598,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.home-mast-navy` `.home-banner-section` `.hero-kicker` `.home-banner-title`
 `.home-banner-subtitle` `.home-proof-chips` `.home-proof-chip`
 `.home-employer-list` `.home-mast-actions` `.hero-work-link` `.hero-engage-link`
+`.home-proof-mark`
 `.about-section-title` `.home-about-area` `.work-list` `.work-row`
 `.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
 `.work-card-summary` `.home-work-footer` `.nav-cta`
@@ -593,7 +609,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. Home nav reuses that LinkedIn square + email chrome. Home `View selected work` is the same outlined 12px language, not a black pill.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. Home nav reuses that LinkedIn square + email chrome. Home mast `View selected work` is filled navy 12px (light type), not outlined ink and not a 999 pill. Other `.hero-work-link` actions stay outlined 12px.
 
 ## Motion
 

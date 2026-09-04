@@ -1450,7 +1450,7 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
   expect(colorAfter, "title color must not jump on hover").toBe(colorBefore);
 });
 
-test("1440 home header: analog mast, live copy, no product screenshot, outlined chrome", async ({ page }) => {
+test("1440 home header: analog mast, live copy, no product screenshot, filled navy CTA", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
   const fold = await page.evaluate(() => {
@@ -1484,6 +1484,10 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
       h1Size: getComputedStyle(document.querySelector(".home-banner-title")).fontSize,
       employerY: document.querySelector(".home-employer-list")?.getBoundingClientRect().y || 0,
       chips: [...document.querySelectorAll(".home-proof-chip")].map((li) => li.textContent.trim()),
+      chipMarks: document.querySelectorAll(".home-proof-mark").length,
+      chipRadius: getComputedStyle(document.querySelector(".home-proof-chip")).borderRadius,
+      kickerTransform: getComputedStyle(document.querySelector(".hero-kicker")).textTransform,
+      kickerTracking: getComputedStyle(document.querySelector(".hero-kicker")).letterSpacing,
       employers: [...document.querySelectorAll(".home-employer-list li")].map((li) => li.textContent.replace(/\s+/g, " ").trim()),
       mesh: Boolean(document.querySelector(".home-mast-mesh") && document.querySelector("#home-mast-blur")),
       dunes: Boolean(document.querySelector(".footer-dunes, .home-mast-dunes")),
@@ -1536,6 +1540,10 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
   expect(fold.leftWidth, "left stack stays a reading column, not the full fold").toBeLessThan(800);
   expect(fold.employerY, "employers sit mid-mast on solid navy, not the lilac fade").toBeGreaterThan(400);
   expect(fold.chips).toEqual(["$52M+ features · Instructure", "1.8→4.8 · Raiffeisen"]);
+  expect(fold.chipMarks, "Version B chips keep two inline SVG marks").toBe(2);
+  expect(fold.chipRadius).toBe("999px");
+  expect(fold.kickerTransform).toBe("uppercase");
+  expect(Number.parseFloat(fold.kickerTracking), "Version B kicker is tracked").toBeGreaterThan(1);
   expect(fold.employers).toEqual(["BlackRock ·", "Instructure ·", "Raiffeisen ·", "Bitpanda ·", "Balabit ·"]);
   expect(fold.mesh).toBe(true);
   expect(fold.dunes).toBe(false);
@@ -1560,10 +1568,12 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
   expect(fold.linkedinSize.h).toBe(44);
   expect(fold.linkedinSize.radius).toBe("12px");
   expect(isTransparentFill(fold.linkedinSize.bg)).toBe(true);
-  expect(fold.ctaChrome.h).toBe(44);
+  expect(fold.ctaChrome.h).toBeGreaterThanOrEqual(52);
+  expect(fold.ctaChrome.h).toBeLessThanOrEqual(72);
   expect(fold.ctaChrome.radius).toBe("12px");
-  expect(isTransparentFill(fold.ctaChrome.bg)).toBe(true);
-  expect(fold.ctaChrome.color).toBe("rgb(17, 17, 17)");
+  expect(isTransparentFill(fold.ctaChrome.bg)).toBe(false);
+  expect(fold.ctaChrome.bg).toBe("rgb(10, 22, 40)");
+  expect(fold.ctaChrome.color).toBe("rgb(244, 245, 247)");
   expect(fold.ctaChrome.weight).toBe("500");
   expect(fold.ctaChrome.size).toBe("15px");
 
