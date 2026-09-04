@@ -7,16 +7,19 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { createHash } from "node:crypto";
+import { SERVICE_PAGES, assetPrefix } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [
   "index.html",
   "works.html",
+  ...SERVICE_PAGES,
   "404.html",
   ...readdirSync(join(ROOT, "work")).filter((f) => f.endsWith(".html")).map((f) => `work/${f}`),
 ];
 
 const CLEAN_URLS = { "/": "index.html", "/works": "works.html" };
+for (const page of SERVICE_PAGES) CLEAN_URLS[`/${page.replace(/\.html$/, "")}`] = page;
 for (const f of readdirSync(join(ROOT, "work"))) {
   if (f.endsWith(".html")) CLEAN_URLS[`/work/${f.replace(".html", "")}`] = `work/${f}`;
 }
@@ -118,7 +121,7 @@ for (const page of PAGES) {
     fail("InventedSocial: do not invent a Google Search Console token");
   }
 
-  const desc = html.match(/<meta content="([^"]*)" name="description"\/>/)?.[1];
+  const desc = metaContent(html, "name", "description");
   if (!desc) fail(`${page}: missing meta description`);
   else if (descriptions.has(desc)) fail(`${page}: duplicate description (also on ${descriptions.get(desc)})`);
   else descriptions.set(desc, page);
@@ -133,7 +136,7 @@ for (const page of PAGES) {
     const animationScripts = [
       ...html.matchAll(/<script[^>]*src="([^"]*assets\/js\/animations[^"]*)"[^>]*><\/script>/g),
     ];
-    const expectedSrc = `${page.startsWith("work/") ? "../" : ""}assets/js/${animationsFile}`;
+    const expectedSrc = `${assetPrefix(page)}assets/js/${animationsFile}`;
     if (animationScripts.length !== 1) {
       fail(`${page}: expected exactly one versioned custom animation script`);
     } else if (animationScripts[0][1] !== expectedSrc) {
@@ -142,7 +145,7 @@ for (const page of PAGES) {
     const responsiveLinks = [
       ...html.matchAll(/<link[^>]*href="([^"]*assets\/css\/responsive[^"]*)"[^>]*>/g),
     ];
-    const expectedResponsiveHref = `${page.startsWith("work/") ? "../" : ""}assets/css/${responsiveFile}`;
+    const expectedResponsiveHref = `${assetPrefix(page)}assets/css/${responsiveFile}`;
     if (responsiveLinks.length !== 1) {
       fail(`${page}: expected exactly one versioned responsive stylesheet`);
     } else if (responsiveLinks[0][1] !== expectedResponsiveHref) {
@@ -189,6 +192,15 @@ for (const page of PAGES) {
       fail(`${page}: ProfilePage must link to the canonical WebSite entity`);
     if (profile?.name !== "Norbert Barna — Product VP")
       fail(`${page}: ProfilePage name must be Norbert Barna — Product VP`);
+    // Google ProfilePage expects DateTime, unlike schema.org's broader Date range.
+    // Omit this optional field when the exact profile modification time is unknown.
+    // https://developers.google.com/search/docs/appearance/structured-data/profile-page
+    if (profile && Object.hasOwn(profile, "dateModified")) {
+      const modified = profile.dateModified;
+      const fullDateTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+      if (typeof modified !== "string" || !fullDateTime.test(modified) || !Number.isFinite(Date.parse(modified)))
+        fail(`${page}: ProfilePage dateModified must be a full ISO 8601 DateTime with timezone, or omitted; date-only values are invalid`);
+    }
     const person = nodes.find((node) => node["@type"] === "Person");
     if (person?.name !== "Norbert Barna")
       fail(`${page}: Person name must be Norbert Barna, not a job title`);
@@ -315,6 +327,7 @@ const hiringSitemap = [
   "/work/sportsgambit",
   "/work/kineticare",
   "/work/onrobot",
+  ...SERVICE_PAGES.map(page => `/${page.replace(/\.html$/, "")}`),
 ];
 if (JSON.stringify(sitemapPaths) !== JSON.stringify(hiringSitemap)) {
   fail(`sitemap.xml order is ${sitemapPaths.join(", ")} (must be hiring-first)`);

@@ -2,12 +2,14 @@
 
 > Norbert Barna is a Product VP focused on AI products in regulated and high-trust systems. Case studies on this site are authored by Norbert and describe his role, methods, decisions, trade-offs and selected outcomes.
 
-This file is a concise guide to the canonical, English-language portfolio at https://www.barnanorbert.com/. Case studies are authored by Norbert Barna and describe his role, methods, design decisions, trade-offs and selected project outcomes.
+This file is a concise guide to the canonical portfolio at https://www.barnanorbert.com/, with English and Hungarian service pages. Case studies are authored by Norbert Barna and describe his role, methods, design decisions, trade-offs and selected project outcomes. This optional guide is not a search submission or a guarantee of AI citations.
 
 ## Primary pages
 
 - [Home](https://www.barnanorbert.com/): profile, expertise, selected work and professional experience
 - [Selected work](https://www.barnanorbert.com/works): complete portfolio index
+- [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and relevant evidence
+- [AI-integráció vállalkozásoknak](https://www.barnanorbert.com/hu/ai-integracio): Hungarian version of the AI integration and development offer
 
 ## Case studies
 

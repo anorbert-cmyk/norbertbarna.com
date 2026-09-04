@@ -6,13 +6,14 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { SERVICE_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const CONTENT_PAGES = ["index.html", "works.html", ...WORK_PAGES];
+const CONTENT_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...SERVICE_PAGES];
 const ALL_PAGES = [...CONTENT_PAGES, "404.html"];
 const CARD_SIZES = {
   "index.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(40vw - 25.6px), (max-width: 1439px) 37.6vw, (max-width: 1829px) 30.08vw, (max-width: 1919px) 550.4px, 516px",

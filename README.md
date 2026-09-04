@@ -60,8 +60,17 @@ npm run test:e2e  # Chromium scroll, layout, navigation, CLS and accessibility c
 └── railway.json        # Railway config
 ```
 
+## SEO planning and evidence
+
+- [Candidate keyword map](docs/seo-keywords.md): current page topics and required demand validation.
+- [Client acquisition, SEO/GEO and ChatGPT Ads plan](docs/client-acquisition-seo-geo-2026-09-04.md): enterprise-first EN/HU service strategy, evidence-led article briefs, implementation record and remaining gates.
+- [Source-backed SEO research and execution plan, 2026-09-04](docs/seo-research-playbook-2026-09-04.md): Google, Semrush, Ahrefs, web.dev and Bing guidance applied to this portfolio; open live redirect issue, measurement requirements and acceptance checks.
+
+These documents distinguish shipped code, observed live behavior and proposed work.
+Passing local checks does not prove indexing, rankings or completed analytics setup.
+
 ## URL conventions
 
-- Canonical URLs are extension-less: `/works`, `/work/benker`.
+- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/hu/ai-integracio`.
 - `.html` variants and the old `/work/raiffesen` misspelling 301-redirect
   to the canonical URL (see `server.js`).
