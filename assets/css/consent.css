@@ -1,0 +1,217 @@
+/* Optional analytics uses the portfolio's existing ink/paper/Inter chrome. */
+.consent-banner {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 1100;
+  box-sizing: border-box;
+  max-height: calc(100vh - 160px);
+  max-height: calc(100dvh - 160px);
+  overflow: auto;
+  border-top: 1px solid rgb(17 17 17 / 24%);
+  background: var(--paper-full, #fff);
+  color: var(--ink, #111111);
+  font-family: Inter, sans-serif;
+  text-align: left;
+}
+
+.consent-banner [hidden],
+.consent-banner[hidden],
+.consent-space[hidden],
+.footer-privacy [hidden] {
+  display: none !important;
+}
+
+.consent-space {
+  pointer-events: none;
+  overflow-anchor: none;
+}
+
+.consent-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px 32px;
+  align-items: center;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 20px var(--site-gutter, 24px);
+}
+
+.consent-copy {
+  min-width: 0;
+  max-width: 76ch;
+}
+
+.consent-banner .consent-title {
+  margin: 0 0 4px;
+  color: inherit;
+  font: 600 20px/1.25 Inter, sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+
+.consent-banner .consent-title:focus {
+  outline: none;
+}
+
+.consent-banner p {
+  margin: 0;
+  color: inherit;
+  font: 400 15px/1.5 Inter, sans-serif;
+  overflow-wrap: anywhere;
+}
+
+.consent-banner .consent-retention,
+.consent-banner .consent-status {
+  margin-top: 8px;
+}
+
+.consent-banner .consent-status,
+.consent-banner .consent-current {
+  font-weight: 600;
+}
+
+.consent-banner .consent-current {
+  margin-bottom: 4px;
+}
+
+.consent-details {
+  margin-top: 4px;
+}
+
+.consent-details:not([open]) {
+  display: inline-block;
+}
+
+.consent-details summary {
+  display: list-item;
+  width: fit-content;
+  min-height: 44px;
+  padding: 11px 0;
+  box-sizing: border-box;
+  color: inherit;
+  font: 400 15px/1.5 Inter, sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.consent-privacy {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-inline-start: 16px;
+  font: 400 15px/1.5 Inter, sans-serif;
+}
+
+.consent-details[open] + .consent-privacy {
+  margin-inline-start: 0;
+}
+
+.consent-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 300px;
+}
+
+.consent-banner .consent-choice {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--ink, #111111);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink, #111111);
+  font: 500 15px/1.35 Inter, sans-serif;
+  text-align: center;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.consent-banner .consent-choice:hover,
+.consent-banner .consent-choice:focus-visible {
+  background: rgb(17 17 17 / 6%);
+}
+
+.consent-privacy,
+.consent-banner .consent-close,
+.footer-privacy a,
+.footer-privacy button {
+  color: var(--ink, #111111);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.consent-banner .consent-close {
+  appearance: none;
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  font: 400 15px/1.5 Inter, sans-serif;
+  cursor: pointer;
+}
+
+.consent-banner a:focus-visible,
+.consent-banner button:focus-visible,
+.consent-banner summary:focus-visible,
+.footer-privacy a:focus-visible,
+.footer-privacy button:focus-visible {
+  outline: 3px solid var(--site-focus, #5b45ff);
+  outline-offset: 4px;
+}
+
+.footer-privacy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  max-width: 100%;
+  color: var(--ink, #111111);
+  font-family: Inter, sans-serif;
+}
+
+.footer-privacy a,
+.footer-privacy button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: 400 14px/1.5 Inter, sans-serif;
+  white-space: normal;
+  cursor: pointer;
+}
+
+@media (max-width: 991px) {
+  .consent-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px var(--site-gutter, 24px);
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .consent-actions {
+    min-width: 0;
+  }
+}
+
+@media print {
+  .consent-banner,
+  .consent-space {
+    display: none;
+  }
+}

@@ -228,8 +228,29 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    services cards. Do not add LinkedIn again in the nav. `/contact` stays
    404; no `/contact` link, no form, no captcha, no send endpoint.
 6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Sharp 1px
-   dark hairline on the yellow. The right side of that row is empty — do not
-   restore a back-to-top control.
+   dark hairline on the yellow. No back-to-top control. The approved privacy
+   exception adds only a wrapping `.footer-privacy` utility row: English and
+   Hungarian privacy links plus a native analytics-settings button. No new
+   columns, brand styling or contact form. This row uses the existing ink and
+   Inter and does not restyle the mesh.
+
+**Optional analytics (2026-09-04):** `/privacy` and `/hu/adatvedelem` are paired
+utility pages. This release is explicitly OFF via the first-loaded, static
+`analytics-config.js`; both consumers must return before any side effects unless
+the value is exactly `true`. Settings are hidden in HTML and no consent banner
+is shown while OFF. The notice, metadata and JSON-LD describe this inactive state.
+Activation is a separate reviewed release after processor/retention confirmation,
+with updated notices and a fresh consent version (old preferences cannot opt in).
+The active-mode component below is preparation, not enabled production tracking.
+
+The two pages are paired
+WebPage notices, composed from existing reading-width and type primitives, not
+Service or Article pages. A small non-modal consent banner uses ink on paper,
+equal 44px / 12px outlined accept/reject buttons, no initial autofocus and no
+new motion. `assets/css/consent.css` is a narrow, revalidated utility stylesheet;
+it may style only this consent component and `.footer-privacy`, not the brand.
+No PostHog request before consent or after withdrawal. No replay, autocapture,
+person profiles or arbitrary URLs/text. Email works independently of analytics.
 
 **Logo:** existing `NB.svg`. Do not generate a new mark. Do not put
 `BARNANORBERT.COM` in the case hero.

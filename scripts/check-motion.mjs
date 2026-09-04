@@ -11,14 +11,14 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SERVICE_PAGES, assetPrefix } from "./service-pages.mjs";
+import { UTILITY_PAGES, assetPrefix } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const ANIMATED_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...SERVICE_PAGES];
+const ANIMATED_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...UTILITY_PAGES];
 const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
 
 let failures = 0;

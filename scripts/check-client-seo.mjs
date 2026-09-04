@@ -53,4 +53,4 @@ for (const file of SERVICE_PAGES) {
   assert(!graph.some(node => ["Article", "FAQPage", "AggregateRating", "Review"].includes(node["@type"])), `${file}: not a case article or fabricated review/rich result`);
 }
 
-console.log("OK: two client landing pages have reciprocal languages, visible service data, proof links and untracked native contact actions");
+console.log("OK: two client landing pages have reciprocal languages, visible service data, proof links and native contact actions with separate consent-gated analytics");
