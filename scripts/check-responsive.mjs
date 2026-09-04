@@ -371,6 +371,20 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("stopFooterMeshField()")) {
   fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
 }
+if (!animationJs.includes("function addHomeMastField(signal)") ||
+    !animationJs.includes('gsap.quickTo(back, "x"') ||
+    !animationJs.includes('gsap.quickTo(front, "x"') ||
+    !animationJs.includes("new IntersectionObserver") ||
+    !animationJs.includes("removeHomeMastField")) {
+  fail("home mast motion must use an independently scoped, offscreen-paused GSAP controller");
+}
+const mastFieldStart = animationJs.indexOf("function addHomeMastField(signal)");
+const mastFieldEnd = animationJs.indexOf("function createCaseRail()", mastFieldStart);
+const mastField = animationJs.slice(mastFieldStart, mastFieldEnd);
+if (/rotate(?:X|Y|Z)?\s*:|rotation(?:X|Y|Z)?\s*:/.test(mastField) ||
+    !/\*\s*13\b/.test(mastField) || !/\*\s*9\.2\b/.test(mastField)) {
+  fail("home mast pointer field must stay within a few pixels and never rotate");
+}
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");
 }

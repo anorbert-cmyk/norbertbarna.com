@@ -23,6 +23,11 @@ const PROJECT_CONTACT = {
   en: { label: "Discuss your project", title: "Opens your email app to discuss your project" },
   hu: { label: "Beszéljünk a projektedről", title: "Megnyitja a leveleződet, hogy a projektedről írhass." },
 };
+const HOME_CONTACT = {
+  label: "Email",
+  accessibleName: "Email — discuss a project",
+  title: "Opens your email app to discuss your project",
+};
 const contactButtons = (html) => [...html.matchAll(/(<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/button>/g)];
 function checkProjectContact(html, scope, language = "en") {
   const buttons = contactButtons(html);
@@ -106,7 +111,7 @@ if (/#BDB414|#FFE000/.test(homeMast)) {
   fail("home mast must not paint the footer yellow into the header");
 }
 if (/home-banner-outcomes/.test(home) === false) {
-  fail("home fold must keep the four live portfolio highlights");
+  fail("home fold must keep the selected-experience rail");
 }
 if (/4M\+|Redesigning banking for/.test(home)) {
   fail("do not replace live work copy with invented mock one-liners");
@@ -116,11 +121,33 @@ if (!/class="nav-link[^"]*"[^>]*href="\/works">Works<\/a>/.test(homeNav)) {
   fail("home top bar must keep the Works text link");
 }
 if (!/class="footer-contact-link"/.test(homeNav) || !/linkedin\.com\/in\/barna-norbert/.test(homeNav)) {
-  fail("home top bar must use the outlined LinkedIn square");
+  fail("home top bar must keep the LinkedIn destination");
 }
-checkProjectContact(homeNav, "home top bar");
+const homeContact = contactButtons(homeNav);
+if (homeContact.length !== 1 || homeContact[0][2].trim() !== HOME_CONTACT.label ||
+    !/\btype="button"/.test(homeContact[0][1]) || /\bhref=/.test(homeContact[0][1]) ||
+    !homeContact[0][1].includes(`aria-label="${HOME_CONTACT.accessibleName}"`) ||
+    !homeContact[0][1].includes(`title="${HOME_CONTACT.title}"`)) {
+  fail("home top bar: Email must stay a native, securely assembled project-contact action");
+}
 if (/href="[^"]*mailto:/.test(homeNav) || /anorbert@pm\.me/.test(homeNav)) {
   fail("MailtoInHtml: home Email must not expose mailto or the address");
+}
+if (!/class="home-nav-monogram"[^>]*>NB<\/span>/.test(homeNav) ||
+    !/class="home-nav-label">LinkedIn<\/span>/.test(homeNav)) {
+  fail("home top bar must use the approved right-clustered NB / Works / LinkedIn / Email text treatment");
+}
+if (!/class="home-mast-proof-chips"/.test(homeMast) ||
+    !/Multi-country banking/.test(homeMast) || !/Enterprise EdTech AI/.test(homeMast)) {
+  fail("home mast must keep the two truthful screenshot-directed proof chips");
+}
+for (const employer of ["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]) {
+  if (!new RegExp(`home-highlight-company[^>]*>${employer}<`).test(homeMast)) {
+    fail(`home mast experience rail is missing ${employer}`);
+  }
+}
+if (/\$52M\+|1\.8\s*(?:→|-&gt;)\s*4\.8|VERSION B/i.test(homeMast)) {
+  fail("home mast must not copy unsupported numbers or design annotations from the reference image");
 }
 if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 6))) {
   fail(`home selected-work order is ${homeOrder.join(", ")} (must be hiring 1–6 incl. Kineticare)`);
@@ -212,8 +239,8 @@ if (/FooterHitSteal/.test(design) === false) fail("design.md must name the Foote
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/home-mast/.test(design) === false) fail("design.md must document the home mast");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
-if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
-  fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
+if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedBody/.test(design)) {
+  fail("design.md must name CoverPoster, FigmaLeftover, and TrackedBody");
 }
 if (!/InkOnNight/.test(design) || !/MotionCover/.test(design)) {
   fail("design.md must name InkOnNight and MotionCover");
@@ -227,7 +254,9 @@ if (/DualHome/.test(design) === false) fail("design.md must name the DualHome an
 if (/TitleDrift/.test(design) === false) fail("design.md must name the TitleDrift anti-pattern");
 if (/InventedSocial/.test(design) === false) fail("design.md must name the InventedSocial anti-pattern");
 
-if (!/\.home-banner-title[\s\S]{0,160}64px/.test(css)) fail("display size is not locked to 56–64");
+if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-banner-title[\s\S]{0,180}94px[\s\S]{0,80}128px/.test(css)) {
+  fail("home display size is not locked to the approved 94–128px desktop scale");
+}
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
   fail("product crops must use object-fit contain");
 }
@@ -238,8 +267,8 @@ if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
   fail("PROJECT FLOW rail is not hidden");
 }
 if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must wrap");
-if (/\.hero-kicker[\s\S]{0,160}text-transform:\s*uppercase/.test(css)) {
-  fail("TrackedKicker: name kicker must not be all-caps tracked");
+if (!/\.home-mast \.hero-kicker[\s\S]{0,140}letter-spacing:\s*\.16em[\s\S]{0,80}text-transform:\s*uppercase/.test(css)) {
+  fail("home kicker must use the approved screenshot-directed uppercase tracking");
 }
 if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {
   fail("home outcomes must stay ink on paper after leaving the .black wrap");
@@ -274,10 +303,9 @@ if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(h
 if (!/body\.home \.navbar[\s\S]{0,240}background:\s*transparent/.test(css)) {
   fail("home mast: navbar must sit on the mesh, not a white slab");
 }
-if (!/\.hero-work-link[\s\S]{0,360}border-radius:\s*12px/.test(css) ||
-    /\.hero-work-link[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
-    /\.hero-work-link[\s\S]{0,240}background:\s*#111/.test(css)) {
-  fail("home CTA must be outlined 12px chrome, not a black pill");
+if (!/\.home-mast \.hero-work-link[\s\S]{0,220}border-color:\s*#0a1628[\s\S]{0,80}background:\s*#0a1628[\s\S]{0,80}color:\s*#fff/.test(css) ||
+    /\.hero-work-link[\s\S]{0,240}border-radius:\s*999px/.test(css)) {
+  fail("home CTA must be a 12px navy action with white text, not a generic black pill");
 }
 if (!/\.work-list[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
   fail("home selected work must be a stacked row list");
@@ -475,6 +503,10 @@ if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13
 }
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");
+}
+if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.home-mast-navy[\s\S]{0,160}transform:\s*none\s*!important/.test(css) ||
+    !/html\.no-motion \.home-mast-navy[\s\S]{0,120}transform:\s*none\s*!important/.test(css)) {
+  fail("home mast navy motion must have static reduced-motion and runtime fallbacks");
 }
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");

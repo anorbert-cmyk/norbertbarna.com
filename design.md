@@ -98,15 +98,16 @@ Do not restore removed SportsGambit figures (`35% first-day activation`,
 The first viewport is the argument, not a masthead plus setup.
 
 - H1 is the role (`Product VP`), not the name.
-- The name is a plain kicker, not an all-caps tracked eyebrow.
+- The name stays plain text in the DOM and is rendered as the screenshot-directed
+  uppercase, tracked kicker.
 - The first viewport is an analog mesh mast (greyer-lilac grain, a **large
   navy félkör** from the bottom toward center-right, blur 56 family). Live
   copy sits left on the lilac. The right side is mesh — not Canvas Career,
   not any product screenshot.
 - Fold proof on `/` is the live highlights list, not DualIndex: the **work
   list** still opens with Raiffeisen.
-- One primary action: `View selected work` → `/works`. Outlined 12px chrome,
-  not a black pill.
+- One primary action: `View selected work` → `/works`. Filled navy 12px chrome,
+  not a generic black pill.
 
 Before adding a block, name the generic layout this page type would suggest
 (centered manifesto, card grid, 16:9 cover). Reject it unless the material
@@ -266,15 +267,19 @@ artboard already crops the phones.
 
 | Role | Size | Weight | Line-height | Class |
 |---|---|---|---|---|
-| Display H1 | 56–64px desktop; 40–56px compact | 700 Funnel | 1.05 | `.home-banner-title`, `.banner-title` |
+| Home display H1 | 94–128px desktop; 40–56px compact | 700 Funnel | .94 desktop / 1.05 compact | `.home-banner-title` |
+| Case display H1 | 56–64px desktop; 40–56px compact | 700 Funnel | 1.05 | `.banner-title` |
 | Dek | 20–22px | 400 Inter | ~1.45 | `.home-banner-subtitle`, `.banner-text` |
 | Body | 17–18px | 400 Inter | ~1.5 | `body`, `.summary` |
 | Section H2 | 28–32px | 700 Funnel | 1.15 | `.summary h2`, `.section-title` |
 | Card title | 22–24px | 700 Funnel | 1.2 | `.work-title` |
-| Kicker | 13px | 600 Inter | 1.2 | `.hero-kicker`, `.work-category` |
+| Kicker | 13px | 600–700 Inter | 1.2 | `.hero-kicker`, `.work-category` |
 
-Do not use 89px display or 38px/300 dek. Do not bold a whole dek to fake a
-missing middle size. Do not uppercase-track the name kicker.
+Do not use the oversized home display scale on case pages or use a 38px/300
+dek. Do not bold a whole dek to fake a missing middle size. The home name kicker
+is the one screenshot-directed uppercase/tracked exception; its DOM copy remains
+`Norbert Barna` and user text-spacing detection compares against that authored
+baseline.
 
 ## Information architecture
 
@@ -299,11 +304,12 @@ path.
 **Header (locked):**
 
 - **Home:** the bar sits **on the analog mast** — transparent fill, no white
-  slab, no `#e6e8e9` border. Contents: `nb` left; right: Works text + outlined
-  LinkedIn 44px square + outlined Email (`<button type="button" class="footer-email">`,
-  same 1px black / radius 12 / Inter 15/500 chrome as the footer). Email is
-  assign-only; no `mailto:` / address in HTML. Not a footer clone: no Work
-  column, no copyright in the header. No Motion control.
+  slab, no `#e6e8e9` border. Desktop is one right-aligned text group in this
+  order: `NB` home link, Works, LinkedIn, Email. Each has a 44px minimum target
+  and the existing ink/halo focus treatment. Email remains a native
+  `<button type="button" class="footer-email">`, assign-only, with no `mailto:`
+  or address in HTML. Compact keeps the accessible disclosure. Not a footer
+  clone: no Work column or copyright in the header. No Motion control.
 - **`/works` and case pages:** one sticky white bar, 64px desktop / 56px compact,
   `#fff` fill, 1px `#e6e8e9` bottom border. Contents in order: logo →
   (case pages only) breadcrumb `Works / {Project}` in the bar → LinkedIn link
@@ -366,21 +372,26 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
    dome (still inside the mast). Do not shrink the dome to dodge contrast.
    Do not move the list down onto About.
-2. Kicker: `Norbert Barna` (sentence case, no tracking). Stay 13px on
-   compact; do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
-   Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted`. Compact
+2. Kicker: DOM text `Norbert Barna`, visually uppercase with restrained tracking
+   to match the approved screenshot. Stay 13px on compact; do not inherit the
+   17px `.banner-left-wrap > p:first-child` bump.
+   Color is solid screenshot-directed `#403B73`, not translucent `--muted`. Compact
    highlights label uses the same token. Fold type must meet WCAG AA
    against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
    UI stroke. Left column stays dark ink on lilac. Compact highlights stay
    dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
 3. H1: `Product VP`
 4. One-line dek (existing positioning, not a slogan)
-5. Primary action: `View selected work` → `/works` (outlined 12px chrome,
-   not a filled black pill)
-6. `SELECTED PORTFOLIO HIGHLIGHTS` plus the four live bullets (Raiffeisen /
-   Instructure / Bitpanda / Balabit). Do not invent a Canvas Career mock.
-   Do not put any product screenshot in the header.
-7. User-requested removal (2026-09-04): no `Open for engagements` block,
+5. Two compact proof chips reuse supported statements only: multi-country
+   banking / Raiffeisen and enterprise EdTech AI / Instructure. Never restore
+   the unsupported `$52M+` or `1.8→4.8` numbers from the reference comp.
+6. Primary action: `View selected work` → `/works`; navy `#0A1628`, white text,
+   12px radius and at least 44px high. It is not a generic black pill.
+7. A slim `SELECTED EXPERIENCE` rail on the navy field: BlackRock, Instructure,
+   Raiffeisen, Bitpanda and Balabit as plain semantic list items, not fake links.
+   Their deeper factual proof remains in the selected-work and experience
+   sections below. Do not invent a Canvas Career mock or put product UI here.
+8. User-requested removal (2026-09-04): no `Open for engagements` block,
    company-solicitation paragraph or duplicate LinkedIn/Email actions after
    the services cards. Do not hide this copy in CSS, HTML comments, metadata
    or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
@@ -445,8 +456,11 @@ send a message, book a meeting or create a confirmed lead. This explicit
 copy update supersedes the older literal `Email` label/72–76px width lock,
 not the outlined 44px / 12px chrome or the split-address handler.
 
-- Shared English footer, home navigation, English service CTA:
-  `Discuss your project`; title `Opens your email app to discuss your project`.
+- Shared English footer and English service CTA: `Discuss your project`; title
+  `Opens your email app to discuss your project`.
+- Screenshot-directed home navigation exception: visible `Email`; accessible
+  name `Email — discuss a project`; the same explanatory title and secure
+  split-address handler remain.
 - Hungarian service main CTA: `Beszéljünk a projektedről`, `lang="hu"`;
   title `Megnyitja a leveleződet, hogy a projektedről írhass.`.
 - Privacy-page main contact buttons remain `Email`: data-rights enquiries
@@ -493,7 +507,7 @@ English-wash the screenshot.
 | FakePII | Invented names, emails, `+123%` in comps we author | Shipped UI only, no unaudited % in our chrome |
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
-| TrackedKicker | All-caps, letter-spaced name/eyebrow above the H1 | Sentence-case name, 13px Inter, no tracking |
+| TrackedBody | Uppercase/tracking applied to the dek or evidence body | Tracking is limited to the 13px home name kicker and small labels |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays on the lock crop (greyer-lilac, left-weighted navy horizon, right-weighted olive-chartreuse) — never Ironclad dunes, candy pink, or a third palette |
 | YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
 | SausageBand | Navy is a thin full-width ellipse (~8% of field height, `ry` ≪ field) then a flat yellow rectangle | Taller ~3:2 field; navy is a left-weighted horizon mass, not a crushed stripe |
@@ -554,8 +568,11 @@ Agents compose pages from these names. Do not invent parallel components.
 `.footer-copyright` `.footer-bar`
 
 **Home:** `.home-mast` `.home-mast-mesh` `.home-mast-art` `.home-mast-lilac`
-`.home-mast-navy` `.home-banner-section` `.hero-kicker` `.home-banner-title`
-`.home-banner-subtitle` `.home-banner-outcomes` `.hero-work-link`
+`.home-mast-navy` `.home-mast-navy-back` `.home-mast-navy-front`
+`.home-mast-navy-drift` `.home-banner-section` `.hero-kicker`
+`.home-banner-title` `.home-banner-subtitle` `.home-mast-proof-chips`
+`.home-banner-outcomes` `.home-highlight-company`
+`.hero-work-link` `.home-nav-monogram` `.home-nav-label`
 `.about-section-title` `.home-about-area` `.work-list` `.work-row`
 `.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
 `.work-card-summary` `.home-work-footer` `.nav-cta`
@@ -566,7 +583,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. Home nav reuses that LinkedIn square + email chrome. Home `View selected work` is the same outlined 12px language, not a black pill.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. The home nav is a text-only 44px-target exception. Home `View selected work` is filled navy with white text and a 12px radius.
 
 ## Motion
 
@@ -577,9 +594,14 @@ Hide `.case-motion-rail`. Default to stillness for anything new. The locked
 footer mesh may translate navy / olive / yellow a few pixels under the
 pointer (yellow closer, navy deeper) with an easy-to-miss idle. Type,
 Work, Email, LinkedIn, copyright, and the hairline do not move.
-The **home mast is static** — no pointer parallax, no Motion control.
-`prefers-reduced-motion: reduce` is the static wash. No dunes, no header
-Motion control, no rotation circus.
+The home mast may echo the footer through its two nested navy SVG groups only.
+On desktop fine pointers, GSAP `quickTo()` caps pointer drift at 6.5px and two
+separate inner groups carry a 1–1.5px, roughly 22-second idle. Navigation, grain,
+copy, proof chips, CTA and experience rail stay still. Its controller is scoped
+to the existing desktop `gsap.matchMedia()` context, pauses offscreen, cleans up
+on breakpoint changes, and shares no state with the footer controller.
+`prefers-reduced-motion: reduce`, touch/coarse input, unavailable GSAP and compact
+layouts use the static wash. No dunes, no header Motion control, no rotation circus.
 
 ### Selected-work field and experience clarity
 
