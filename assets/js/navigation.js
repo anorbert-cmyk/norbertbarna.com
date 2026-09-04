@@ -110,18 +110,21 @@
     function updateTextReflow() {
       var copyStyle = getComputedStyle(copy);
       var kickerStyle = getComputedStyle(kicker);
+      var copySize = parseFloat(copyStyle.fontSize);
+      var kickerSize = parseFloat(kickerStyle.fontSize);
       // User text enlargement/spacing needs the same single-column reading
       // surface as compact screens. These typography checks do not depend on
       // the resulting column height, so the observer cannot oscillate layouts.
-      var spaced = [copyStyle, kickerStyle].some(function (style) {
-        var size = parseFloat(style.fontSize);
-        return parseFloat(style.letterSpacing) > size * .08 ||
-          parseFloat(style.wordSpacing) > size * .12;
-      });
+      // Version B ships the kicker at .16em tracking. That is not user spacing.
+      // Extra tracking (above .20em) or dek tracking still switches layout.
+      var spaced =
+        parseFloat(copyStyle.letterSpacing) > copySize * .08 ||
+        parseFloat(copyStyle.wordSpacing) > copySize * .12 ||
+        parseFloat(kickerStyle.letterSpacing) > kickerSize * .20 ||
+        parseFloat(kickerStyle.wordSpacing) > kickerSize * .12;
       // Shipped CSS is 13px for the kicker and 20–22px for the deck. Allow
       // subpixel rounding, but reflow even modest user enlargement.
-      var enlarged = parseFloat(copyStyle.fontSize) > 22.1 ||
-        parseFloat(kickerStyle.fontSize) > 13.1;
+      var enlarged = copySize > 22.1 || kickerSize > 13.1;
       mast.toggleAttribute("data-text-reflow", enlarged || spaced);
     }
     updateTextReflow();

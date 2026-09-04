@@ -680,6 +680,10 @@ for (const page of PRIVACY_PAGES) {
 }
 
 const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8");
+if (!/kickerSize \* \.20/.test(navigationJs) ||
+    /\[copyStyle, kickerStyle\]\.some/.test(navigationJs)) {
+  fail("mast text-reflow must not treat Version B kicker tracking (.16em) as user spacing");
+}
 if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }

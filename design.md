@@ -353,6 +353,8 @@ Enlarged or user-spaced desktop mast text switches to the existing compact,
 single-column lilac reading surface (`data-text-reflow`), keeping the navy
 shape below the copy. ResizeObserver checks computed typography, not layout
 height, to avoid feedback loops; restoring normal text restores the two columns.
+Do not treat the Version B kicker’s shipped `.16em` tracking as user spacing
+(threshold for the kicker is `.20em`; the dek still uses `.08em`).
 The decorative Kineticare header video starts automatically but has a single
 4.5-second preview window, then stays paused for that document visit. Scrolling,
 tab/lifecycle changes and media refresh must not restart an expired preview.
