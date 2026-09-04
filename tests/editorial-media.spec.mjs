@@ -52,6 +52,120 @@ async function resumeMotion(page) {
   await page.evaluate(() => window.PortfolioMedia.setPaused(false));
 }
 
+async function recordHeaderPreview(page) {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.addInitScript(() => {
+    window.__headerPreview = { firstPlaying: null, pauses: [], playingCount: 0 };
+    document.addEventListener('playing', event => {
+      if (!event.target.matches('.case-study-header video[data-autoplay-video]')) return;
+      const evidence = window.__headerPreview;
+      if (evidence.firstPlaying === null) evidence.firstPlaying = performance.now();
+      evidence.playingCount++;
+    }, true);
+    document.addEventListener('pause', event => {
+      if (event.target.matches('.case-study-header video[data-autoplay-video]')) {
+        window.__headerPreview.pauses.push(performance.now());
+      }
+    }, true);
+  });
+}
+
+async function expectHeaderPreviewStopped(video, page) {
+  await expect.poll(() => video.evaluate(v => v.paused), { timeout: 5500, intervals: [50] }).toBe(true);
+  const elapsed = await page.evaluate(() => {
+    const evidence = window.__headerPreview;
+    return evidence.pauses.at(-1) - evidence.firstPlaying;
+  });
+  // Allow event-loop scheduling margin, but never accept five seconds of motion.
+  expect(elapsed).toBeGreaterThanOrEqual(4400);
+  expect(elapsed).toBeLessThan(5000);
+  await expect(video).toHaveAttribute('data-media-state', 'paused');
+  expect(await video.evaluate(v => !v.autoplay && !v.controls)).toBe(true);
+}
+
+test('header autoplay preview stops within five seconds and cannot restart after expiry', async ({ page }) => {
+  await recordHeaderPreview(page);
+  await open(page, '/work/kineticare');
+  const video = page.locator('.kineticare-hero-bg > video');
+  await playing(video);
+  await expectHeaderPreviewStopped(video, page);
+  const stoppedTime = await video.evaluate(v => v.currentTime);
+  const playingCount = await page.evaluate(() => window.__headerPreview.playingCount);
+
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await intoView(video);
+  await page.evaluate(() => {
+    window.PortfolioMedia.refresh();
+    window.PortfolioMedia.setPaused(true);
+    window.PortfolioMedia.setPaused(false);
+    window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true }));
+    window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+  });
+  await page.waitForTimeout(250);
+  expect(await video.evaluate(v => v.paused && !v.autoplay)).toBe(true);
+  expect(await video.evaluate(v => v.currentTime)).toBe(stoppedTime);
+  expect(await page.evaluate(() => window.__headerPreview.playingCount)).toBe(playingCount);
+
+  // This is a header-only budget, not a new limit on the product walkthrough.
+  const walkthrough = page.locator('.kineticare-browser-frame > video');
+  await intoView(walkthrough);
+  await playing(walkthrough);
+  await page.waitForTimeout(5000);
+  await playing(walkthrough);
+});
+
+test('header preview deadline is not reset by pause, scrolling or page lifecycle', async ({ page }) => {
+  await recordHeaderPreview(page);
+  await open(page, '/work/kineticare');
+  const video = page.locator('.kineticare-hero-bg > video');
+  await playing(video);
+  await pauseMotion(page);
+  expect(await video.evaluate(v => v.paused)).toBe(true);
+  await resumeMotion(page);
+  await playing(video);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect.poll(() => video.evaluate(v => v.paused)).toBe(true);
+  await intoView(video);
+  await playing(video);
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })));
+  expect(await video.evaluate(v => v.paused)).toBe(true);
+  await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })));
+  await playing(video);
+  await expectHeaderPreviewStopped(video, page);
+});
+
+test('a late header play promise cannot restart an expired preview', async ({ page }) => {
+  await recordHeaderPreview(page);
+  await page.addInitScript(() => {
+    const original = HTMLMediaElement.prototype.play;
+    window.__releaseHeaderPreview = [];
+    let headerAttempts = 0;
+    HTMLMediaElement.prototype.play = function () {
+      if (!this.matches('.case-study-header video[data-autoplay-video]') || ++headerAttempts === 1) {
+        return original.call(this);
+      }
+      const video = this;
+      return new Promise((resolve, reject) => {
+        window.__releaseHeaderPreview.push(() => original.call(video).then(resolve, reject));
+      });
+    };
+  });
+  await open(page, '/work/kineticare');
+  const video = page.locator('.kineticare-hero-bg > video');
+  await playing(video);
+  await pauseMotion(page);
+  const stoppedTime = await video.evaluate(v => v.currentTime);
+  await resumeMotion(page);
+  await expect.poll(() => page.evaluate(() => window.__releaseHeaderPreview.length)).toBe(1);
+  // Real elapsed time, not a mocked clock or a synthetic playing event.
+  await page.waitForFunction(() => performance.now() - window.__headerPreview.firstPlaying >= 4600);
+  await page.evaluate(() => window.__releaseHeaderPreview.splice(0).forEach(release => release()));
+  await page.waitForTimeout(250);
+  expect(await video.evaluate(v => v.paused && !v.autoplay)).toBe(true);
+  expect(await video.evaluate(v => v.currentTime)).toBeLessThanOrEqual(stoppedTime + .1);
+  await expect(video).toHaveAttribute('data-media-state', 'paused');
+});
+
 for (const viewport of [
   { name: 'desktop', width: 1366, height: 900, mobile: false },
   { name: 'touch', width: 390, height: 844, mobile: true },

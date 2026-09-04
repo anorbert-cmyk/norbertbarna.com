@@ -290,7 +290,7 @@ function hexRgb({ r, g, b }) {
   return `#${[r, g, b].map((n) => Math.round(n).toString(16).padStart(2, "0")).join("")}`;
 }
 
-async function sampleBehindGlyphs(page, locator) {
+async function sampleBehindGlyphs(page, locator, { includePixels = false } = {}) {
   const box = await locator.boundingBox();
   if (!box || box.width < 4 || box.height < 4) throw new Error("no glyph box");
   await locator.evaluate((el) => {
@@ -320,8 +320,250 @@ async function sampleBehindGlyphs(page, locator) {
     show(el);
     el.querySelectorAll("*").forEach(show);
   });
-  return pixelStats(png);
+  const stats = pixelStats(png);
+  return includePixels ? { ...stats, png, x: Math.max(0, box.x), y: Math.max(0, box.y) } : stats;
 }
+
+async function expectHeaderTextAA(page, locator, label, { raster = false } = {}) {
+  await locator.scrollIntoViewIfNeeded();
+  const runs = await locator.evaluate((element) => {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const result = [];
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (!node.textContent.trim()) continue;
+      const style = getComputedStyle(node.parentElement);
+      if (style.visibility !== "visible") continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0)
+        .map(({ left, right, top, bottom }) => ({ left, right, top, bottom }));
+      if (!rects.length) continue;
+      let opacity = 1;
+      const backgrounds = [];
+      for (let parent = node.parentElement; parent; parent = parent.parentElement) {
+        const parentStyle = getComputedStyle(parent);
+        opacity *= Number(parentStyle.opacity);
+        backgrounds.push({ color: parentStyle.backgroundColor, image: parentStyle.backgroundImage });
+      }
+      result.push({
+        text: node.textContent.replace(/\s+/g, " ").trim(), color: style.color,
+        size: parseFloat(style.fontSize), weight: parseInt(style.fontWeight, 10),
+        opacity, backgrounds, rects,
+      });
+    }
+    return result;
+  });
+  expect(runs.length, `${label}: visible text must actually be measured`).toBeGreaterThan(0);
+  const needsRaster = raster || runs.some((run) => run.opacity !== 1 || run.backgrounds.some((layer) => layer.image !== "none"));
+  // Range fragments exclude the empty area to the right of wrapped lines.
+  // Unlike the legacy 5/95-percentile summaries, every pixel in each text
+  // fragment participates in this conservative worst-background comparison.
+  const sample = needsRaster ? await sampleBehindGlyphs(page, locator, { includePixels: true }) : null;
+  const mix = (foreground, background, alpha) => ({
+    r: foreground.r * alpha + background.r * (1 - alpha),
+    g: foreground.g * alpha + background.g * (1 - alpha),
+    b: foreground.b * alpha + background.b * (1 - alpha),
+  });
+  for (const run of runs) {
+    const color = parseCssColor(run.color);
+    const alpha = color.a * run.opacity;
+    const required = run.size >= 24 || (run.size >= 18.6667 && run.weight >= 700) ? 3 : 4.5;
+    let worst = Infinity;
+    let measured = 0;
+    const compare = (background) => {
+      worst = Math.min(worst, contrastRatio(colorLuminance(mix(color, background, alpha)), colorLuminance(background)));
+      measured += 1;
+    };
+    if (sample) {
+      for (const rect of run.rects) {
+        const left = Math.max(0, Math.floor(rect.left - sample.x));
+        const right = Math.min(sample.png.width, Math.ceil(rect.right - sample.x));
+        const top = Math.max(0, Math.floor(rect.top - sample.y));
+        const bottom = Math.min(sample.png.height, Math.ceil(rect.bottom - sample.y));
+        for (let y = top; y < bottom; y += 1) {
+          for (let x = left; x < right; x += 1) {
+            const index = (y * sample.png.width + x) * 4;
+            compare({ r: sample.png.pixels[index], g: sample.png.pixels[index + 1], b: sample.png.pixels[index + 2] });
+          }
+        }
+      }
+    } else {
+      // Flat-field pages need no screenshots: composite every actual ancestor
+      // background and the text alpha instead of treating rgba ink as opaque.
+      let background = { r: 255, g: 255, b: 255 };
+      for (const layer of [...run.backgrounds].reverse()) {
+        const fill = parseCssColor(layer.color);
+        background = mix(fill, background, fill.a);
+      }
+      compare(background);
+    }
+    expect(measured, `${label}: no relevant background pixels for ${run.text}`).toBeGreaterThan(0);
+    expect.soft(worst, `${label}: “${run.text}” ${run.size}px/${run.weight}, alpha ${alpha.toFixed(2)}, worst ${worst.toFixed(2)}:1; requires ${required}:1`)
+      .toBeGreaterThanOrEqual(required);
+  }
+}
+
+for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
+  test(`${width} home: every header text meets AA on its worst relevant background`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.route(/posthog\.com/, (route) => route.abort());
+    await openStable(page, "/");
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(8);
+    for (let index = 0; index < await text.count(); index += 1) {
+      await expectHeaderTextAA(page, text.nth(index), `${width} home text ${index + 1}`, { raster: true });
+    }
+    const controls = page.locator(".home-mast a.hero-work-link, .navbar a.nav-link, .navbar button.footer-email");
+    await expect(controls).toHaveCount(3);
+    for (let index = 0; index < await controls.count(); index += 1) {
+      const control = controls.nth(index);
+      if (!await control.isVisible()) await page.locator(".menu-button").click();
+      for (const state of ["default", "hover", "focus"]) {
+        await control.evaluate((element) => element.blur());
+        await page.mouse.move(0, 899);
+        if (state === "hover") await control.hover();
+        if (state === "focus") await control.focus();
+        await page.waitForTimeout(220);
+        await expectHeaderTextAA(page, control, `${width} home control ${index + 1} ${state}`, { raster: true });
+      }
+    }
+  });
+}
+
+for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", "WCAG text spacing"].map((adjustment) => ({ width, adjustment })))) {
+  test(`${width} home: ${adjustment} preserves header text contrast`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.route(/posthog\.com/, (route) => route.abort());
+    await openStable(page, "/");
+    expect(await page.evaluate(() => window.__cumulativeLayoutShift || 0)).toBeLessThan(0.1);
+    const mast = page.locator(".home-mast");
+    await expect(mast).not.toHaveAttribute("data-text-reflow");
+    await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", width < 992 ? "block" : "grid");
+    let spacingStyle;
+    if (adjustment === "text 200%") {
+      const snapshot = await page.evaluate(() => {
+        const entries = [...document.querySelectorAll(".navbar, .navbar *, .home-banner-section, .home-banner-section *")]
+          .filter((element) => element instanceof HTMLElement)
+          .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
+        window.__headerContrastFonts = entries.map(({ element }) => ({
+          element, value: element.style.getPropertyValue("font-size"),
+          priority: element.style.getPropertyPriority("font-size"),
+        }));
+        for (const { element, size } of entries) element.style.setProperty("font-size", `${size * 2}px`, "important");
+        return entries.map(({ element, size }) => ({
+          element: `${element.tagName}.${element.className}`, before: size,
+          after: parseFloat(getComputedStyle(element).fontSize),
+        }));
+      });
+      expect(snapshot.length).toBeGreaterThan(10);
+      for (const entry of snapshot) expect(entry.after, entry.element).toBeCloseTo(entry.before * 2, 2);
+      await testInfo.attach("contrast-text-resize-snapshot", { body: JSON.stringify(snapshot, null, 2), contentType: "application/json" });
+    } else {
+      spacingStyle = await page.addStyleTag({ content: "* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-block-end: 2em !important; }" });
+    }
+    await expect(mast).toHaveAttribute("data-text-reflow", "");
+    await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", "block");
+    // An intentional user text adjustment is not an unexpected site shift.
+    // The normal initial CLS was checked above; retain the shared final guard
+    // for any subsequent shifts after the adjustment has been laid out.
+    await page.waitForTimeout(100);
+    await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(8);
+    for (let index = 0; index < await text.count(); index += 1) {
+      await expectHeaderTextAA(page, text.nth(index), `${width} ${adjustment} home text ${index + 1}`, { raster: true });
+    }
+    const controls = page.locator(".home-mast a.hero-work-link, .navbar a.nav-link, .navbar button.footer-email");
+    await expect(controls).toHaveCount(3);
+    for (let index = 0; index < await controls.count(); index += 1) {
+      const control = controls.nth(index);
+      const toggle = page.locator(".menu-button");
+      if (await control.evaluate((element) => Boolean(element.closest(".navbar")))) {
+        if (!await control.isVisible()) await toggle.click();
+      } else if (await toggle.getAttribute("aria-expanded") === "true") {
+        await toggle.click();
+      }
+      for (const state of ["default", "hover", "focus"]) {
+        await control.evaluate((element) => element.blur());
+        await page.mouse.move(0, 899);
+        if (state === "hover") await control.hover();
+        if (state === "focus") await control.focus();
+        await page.waitForTimeout(220);
+        await expectHeaderTextAA(page, control, `${width} ${adjustment} home control ${index + 1} ${state}`, { raster: true });
+      }
+    }
+    expect(await page.evaluate(() => window.__cumulativeLayoutShift || 0)).toBeLessThan(0.1);
+    if (spacingStyle) await spacingStyle.evaluate((style) => style.remove());
+    else await page.evaluate(() => {
+      for (const { element, value, priority } of window.__headerContrastFonts) {
+        if (value) element.style.setProperty("font-size", value, priority);
+        else element.style.removeProperty("font-size");
+      }
+      delete window.__headerContrastFonts;
+    });
+    await expect(mast).not.toHaveAttribute("data-text-reflow");
+    await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", width < 992 ? "block" : "grid");
+    // Removing the deliberate user adjustment is another expected reflow.
+    await page.waitForTimeout(100);
+    await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
+    await expectHeaderTextAA(page, page.locator(".home-mast .metric-context"), `${width} ${adjustment} restored highlights label`, { raster: true });
+  });
+}
+
+for (const route of contentRoutes.filter((route) => route !== "/")) {
+  test(`${route}: header and project facts meet AA on the rendered field`, async ({ page }) => {
+    await page.route(/posthog\.com/, (request) => request.abort());
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      await openStable(page, route);
+      const isCase = route.startsWith("/work/");
+      if (isCase) {
+        const separator = await page.locator(".nav-breadcrumb li + li").evaluate((element) => ({
+          color: getComputedStyle(element, "::before").color,
+          background: getComputedStyle(element.closest(".navbar")).backgroundColor,
+        }));
+        const foreground = parseCssColor(separator.color);
+        const background = parseCssColor(separator.background);
+        expect(background.a, "breadcrumb is on an opaque navigation field").toBe(1);
+        const painted = ["r", "g", "b"].map((channel) => foreground[channel] * foreground.a + background[channel] * (1 - foreground.a));
+        expect.soft(contrastRatio(relativeLuminance(...painted), colorLuminance(background)), `${width} ${route} breadcrumb separator text contrast`).toBeGreaterThanOrEqual(4.5);
+      }
+      const selectors = isCase
+        ? ".case-study-header h1, .case-study-header .work-category, .case-study-header .banner-text, .case-facts dt, .case-facts dd"
+        : route.includes("privacy") || route.includes("adatvedelem")
+          ? "main h1, main .summary > p:nth-of-type(-n+2)"
+          : "main header h1, main header p";
+      const text = page.locator(selectors);
+      if (isCase) await expect(text).toHaveCount(11);
+      else expect(await text.count()).toBeGreaterThanOrEqual(2);
+      for (let index = 0; index < await text.count(); index += 1) {
+        const target = text.nth(index);
+        const videoBehind = route === "/work/kineticare" && await target.evaluate((element) => Boolean(element.closest(".case-study-header")));
+        if (videoBehind) await page.locator(".kineticare-hero video").evaluate((video) => video.pause());
+        await expectHeaderTextAA(page, target, `${width} ${route} text ${index + 1}`, { raster: videoBehind });
+      }
+    }
+  });
+}
+
+test("Kineticare header: overlay protects text against a synthetic white video frame", async ({ page }) => {
+  await page.route(/posthog\.com/, (route) => route.abort());
+  for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await openStable(page, "/work/kineticare");
+    // This is an explicit upper-luminance stress control, not a claim that the
+    // shipped video contains a white frame. Leave the real overlay untouched.
+    await page.addStyleTag({ content: ".kineticare-hero-bg{background:#fff!important}.kineticare-hero-bg video{visibility:hidden!important}" });
+    const text = page.locator(".case-study-header h1, .case-study-header .work-category, .case-study-header .banner-text");
+    await expect(text).toHaveCount(3);
+    await expect(page.locator(".kineticare-hero-bg")).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(page.locator(".kineticare-hero-bg video")).toHaveCSS("visibility", "hidden");
+    for (let index = 0; index < await text.count(); index += 1) {
+      await expectHeaderTextAA(page, text.nth(index), `${width} Kineticare synthetic white frame text ${index + 1}`, { raster: true });
+    }
+  }
+});
 
 async function openStable(page, route) {
   await page.goto(route, { waitUntil: "load" });
@@ -537,6 +779,34 @@ for (const viewport of [viewports[0], viewports[4]]) {
       const results = await new AxeBuilder({ page }).analyze();
       const blockers = results.violations.filter(({ impact }) => impact === "serious" || impact === "critical");
       expect(blockers, blockers.map(({ id, help }) => `${id}: ${help}`).join("\n")).toEqual([]);
+      // Reuse the same scan: severity is not a WCAG conformance level. Header
+      // A/AA violations also block when axe rates their impact moderate/minor.
+      const wcagTags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+      const headerBlockers = await page.evaluate((violations) => {
+        const failures = [];
+        for (const { id, impact, nodes } of violations) {
+          for (const { target, failureSummary } of nodes) {
+            const evidence = { id, impact, target, failureSummary };
+            // This static portfolio has no frame/shadow-root header paths.
+            // Fail explicitly if the selector format cannot prove its scope.
+            if (target.length !== 1 || typeof target[0] !== "string") {
+              failures.push({ ...evidence, reason: "unsupported frame/shadow or compound axe target" });
+              continue;
+            }
+            let element;
+            try {
+              element = document.querySelector(target[0]);
+            } catch {
+              failures.push({ ...evidence, reason: "invalid CSS axe target" });
+              continue;
+            }
+            if (!element) failures.push({ ...evidence, reason: "axe target did not resolve; header scope unknown" });
+            else if (element.closest(".navbar, .home-mast, main header")) failures.push(evidence);
+          }
+        }
+        return failures;
+      }, results.violations.filter(({ tags }) => tags.some((tag) => wcagTags.includes(tag))));
+      expect(headerBlockers, "WCAG A/AA header violations at every impact, or unresolved target scope").toEqual([]);
     });
   }
 }

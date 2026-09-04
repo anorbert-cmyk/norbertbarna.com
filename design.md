@@ -315,6 +315,41 @@ the footer. Autoplay and GSAP already honor `prefers-reduced-motion`. The old
 is `anorbert@pm.me`; do not invent additional addresses. Do not put `mailto:`
 or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
 
+**Header accessibility (WCAG 2.2 AA):** validate shared navigation and opening
+content at narrow, breakpoint and desktop widths, not just one screenshot.
+Normal text must reach 4.5:1; large text and meaningful control visuals 3:1,
+including hover/focus states and the actual background behind the text. Header
+keyboard focus uses the existing ink/paper palette: a 3px ink outline with a
+white inner halo so it remains distinct on the mesh, paper and dark fields.
+Do not remove breadcrumb-link focus merely because it is not `.nav-link`.
+
+At normal text size the outlined contact and primary actions remain 44px tall.
+At 200% text size or user-defined text spacing they may wrap and grow vertically
+(44px minimum), while keeping their full visible labels and existing action.
+The header contact row can wrap; it must not overlap LinkedIn. Long opening
+headings may break within a word only when needed to avoid clipping. The menu
+icon stays centered and the open disclosure is vertically scrollable on short
+screens. Do not apply these header fixes to unrelated footer typography.
+Keep desktop highlights below the pale/navy transition (164–190px top offset),
+without a boxed background. The Kineticare video scrim is owned by the shared
+stylesheet, including its mobile direction; it must preserve white-text AA
+even against a synthetic all-white frame, not only a sampled poster.
+Enlarged or user-spaced desktop mast text switches to the existing compact,
+single-column lilac reading surface (`data-text-reflow`), keeping the navy
+shape below the copy. ResizeObserver checks computed typography, not layout
+height, to avoid feedback loops; restoring normal text restores the two columns.
+The decorative Kineticare header video starts automatically but has a single
+4.5-second preview window, then stays paused for that document visit. Scrolling,
+tab/lifecycle changes and media refresh must not restart an expired preview.
+This keeps header motion below WCAG 2.2.2's five-second threshold without adding
+a Play overlay or motion switch. Non-header media retains its existing behavior.
+
+The navigation is a non-modal disclosure, not an ARIA menu or focus trap.
+Its button reflects expanded state. Closing it must not leave focus on a hidden
+external-link/mail control. When a breakpoint hides the focused nav item or
+toggle, transfer focus to the corresponding visible navigation control. Escape
+returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
+
 **Home fold**
 
 1. Analog mesh mast: greyer-lilac `#D6D4ED` grain, a **large navy félkör**
