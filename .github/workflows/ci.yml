@@ -26,6 +26,9 @@ jobs:
           node --check assets/js/animations.js
           node --check assets/js/media.js
           node --check assets/js/navigation.js
+          node --check assets/js/consent.js
+          node --check assets/js/analytics-config.js
+          node --check assets/js/analytics.js
       - name: Site invariants
         run: npm test
       - name: Install Chromium

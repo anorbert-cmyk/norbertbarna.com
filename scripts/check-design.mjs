@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SERVICE_PAGES } from "./service-pages.mjs";
+import { UTILITY_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK = readdirSync(join(ROOT, "work"))
@@ -305,13 +305,13 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
 // Locked footer: mesh field, outlined LinkedIn + Email, Work only.
 // No Contact column, no form, no sitemap, no Ironclad dunes, no
 // back-to-top on the copyright row. Mail href is assembled on click.
-const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`), ...SERVICE_PAGES];
+const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`), ...UTILITY_PAGES];
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
   const sameAssets = footer.replaceAll(/(?:\.\.\/|\/)assets\//g, "assets/");
   // Hungarian content retains the locked English chrome with an explicit language.
-  return page === "hu/ai-integracio.html" ? sameAssets.replace(' lang="en"', '') : sameAssets;
+  return page.startsWith("hu/") ? sameAssets.replace(' lang="en"', '') : sameAssets;
 });
 if (new Set(footerCanon).size !== 1) {
   fail("site-wide footer markup must match across pages (asset prefix aside)");

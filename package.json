@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node scripts/check-site.mjs && node scripts/check-responsive.mjs && node scripts/check-motion.mjs && node scripts/check-server.mjs && node scripts/check-editorial-media.mjs && node scripts/check-design.mjs && node scripts/check-client-seo.mjs",
+    "test": "node scripts/check-site.mjs && node scripts/check-responsive.mjs && node scripts/check-motion.mjs && node scripts/check-server.mjs && node scripts/check-editorial-media.mjs && node scripts/check-design.mjs && node scripts/check-client-seo.mjs && node scripts/check-analytics.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {

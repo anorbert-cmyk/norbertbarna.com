@@ -15,6 +15,8 @@ const contentRoutes = [
   "/works",
   "/ai-integration",
   "/hu/ai-integracio",
+  "/privacy",
+  "/hu/adatvedelem",
   "/work/benker",
   "/work/bitpanda",
   "/work/instructure",
@@ -33,6 +35,8 @@ test.beforeEach(async ({ page }) => {
     }
   });
   await page.addInitScript(() => {
+    // Existing visual locks test a returning visitor; consent has its own fresh-state suite.
+    localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
     window.__cumulativeLayoutShift = 0;
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
@@ -260,7 +264,7 @@ async function sampleBehindGlyphs(page, locator) {
 
 async function openStable(page, route) {
   await page.goto(route, { waitUntil: "load" });
-  await page.evaluate(() => (document.fonts ? document.fonts.ready : Promise.resolve()));
+  // Poll the FontFaceSet state; retaining its native promise through CDP can be garbage-collected.
   await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
   await page.waitForFunction(() => {
     if (!document.fonts?.check) return true;

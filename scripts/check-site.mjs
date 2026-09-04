@@ -7,19 +7,19 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { createHash } from "node:crypto";
-import { SERVICE_PAGES, assetPrefix } from "./service-pages.mjs";
+import { UTILITY_PAGES, assetPrefix } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [
   "index.html",
   "works.html",
-  ...SERVICE_PAGES,
+  ...UTILITY_PAGES,
   "404.html",
   ...readdirSync(join(ROOT, "work")).filter((f) => f.endsWith(".html")).map((f) => `work/${f}`),
 ];
 
 const CLEAN_URLS = { "/": "index.html", "/works": "works.html" };
-for (const page of SERVICE_PAGES) CLEAN_URLS[`/${page.replace(/\.html$/, "")}`] = page;
+for (const page of UTILITY_PAGES) CLEAN_URLS[`/${page.replace(/\.html$/, "")}`] = page;
 for (const f of readdirSync(join(ROOT, "work"))) {
   if (f.endsWith(".html")) CLEAN_URLS[`/work/${f.replace(".html", "")}`] = `work/${f}`;
 }
@@ -327,7 +327,7 @@ const hiringSitemap = [
   "/work/sportsgambit",
   "/work/kineticare",
   "/work/onrobot",
-  ...SERVICE_PAGES.map(page => `/${page.replace(/\.html$/, "")}`),
+  ...UTILITY_PAGES.map(page => `/${page.replace(/\.html$/, "")}`),
 ];
 if (JSON.stringify(sitemapPaths) !== JSON.stringify(hiringSitemap)) {
   fail(`sitemap.xml order is ${sitemapPaths.join(", ")} (must be hiring-first)`);
