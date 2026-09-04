@@ -67,8 +67,14 @@ if ((home.match(/<h1\b/g) || []).length !== 1) {
 }
 // The removed solicitation must not return as visible copy, metadata,
 // a hidden DOM node, an HTML comment or structured data.
-if (/open for engagements|open to client engagements|I[’']m open for enterprise/i.test(home)) {
+if (/open to client engagements|I[’']m open for enterprise/i.test(home)) {
   fail("home must not restore the removed company-solicitation copy, including hidden source text");
+}
+if (!/<a class="hero-engage-link" href="\/ai-integration">Open for AI\/web engagements<\/a>/.test(home)) {
+  fail("home mast must keep the Version B text link to /ai-integration");
+}
+if (/<section\b[^>]*class="home-service-section[\s\S]*Open for AI\/web engagements/.test(home)) {
+  fail("do not restore an engagements pitch inside the services section");
 }
 if (!home.includes('class="hero-kicker">Norbert Barna')) {
   fail("home fold must name Norbert Barna in the kicker");
@@ -483,6 +489,24 @@ if (!/--mast-on-navy:\s*#f4f5f7/.test(css)) {
 }
 if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-employer-list[\s\S]{0,160}--mast-on-navy/.test(css)) {
   fail("InkOnNavy: desktop mast employer list must use --mast-on-navy");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-area[\s\S]{0,200}grid-template-columns:\s*minmax\(0,\s*1fr\) auto/.test(css)) {
+  fail("desktop mast must be a wide left column and a narrow employer stack");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-area > \.banner-left-wrap[\s\S]{0,220}max-width:\s*46rem/.test(css)) {
+  fail("desktop mast left stack must stay a reading-width column (46rem), not span the fold");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-title[\s\S]{0,160}clamp\(64px/.test(css)) {
+  fail("desktop mast H1 must be display-size (64–92px), not the 64px case-title cap");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-subtitle[\s\S]{0,120}max-width:\s*36ch/.test(css)) {
+  fail("desktop mast dek must wrap at reading width (36ch), not span the fold");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-banner-content-wrap[\s\S]{0,280}clamp\(220px/.test(css)) {
+  fail("desktop employers must sit mid-mast on the solid navy (220–340px offset)");
+}
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-employer-list[\s\S]{0,280}clamp\(24px/.test(css)) {
+  fail("desktop employer names must be 24–32px, not an 18px whisper");
 }
 if (!/\.home-proof-chip[\s\S]{0,200}--ink/.test(css) ||
     /\.home-proof-chip[\s\S]{0,240}border-radius:\s*999px/.test(css) ||

@@ -1054,7 +1054,8 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   expect(html).not.toMatch(/<a[^>]*footer-email/);
   expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(2);
   expect((html.match(/<button\b[^>]*class="footer-email[^"]*"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(2);
-  expect(html).not.toMatch(/open for engagements|open to client engagements|I[’']m open for enterprise/i);
+  expect(html).not.toMatch(/open to client engagements|I[’']m open for enterprise/i);
+  expect(html).toMatch(/class="hero-engage-link" href="\/ai-integration">Open for AI\/web engagements</);
   expect(html).not.toMatch(/footer-col-title">Contact/);
   expect(html).not.toMatch(/href="\/contact"/);
   expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
@@ -1459,6 +1460,7 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     const email = navbar.querySelector("button.footer-email");
     const linkedin = navbar.querySelector("a.footer-contact-link");
     const cta = document.querySelector(".home-banner-section a.hero-work-link[href='/works']");
+    const engage = document.querySelector(".home-banner-section a.hero-engage-link[href='/ai-integration']");
     const headerImgs = [...header.querySelectorAll("img")].map((img) => img.getAttribute("src"));
     const emailStyle = email ? getComputedStyle(email) : null;
     const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
@@ -1470,6 +1472,17 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
       sub: document.querySelector(".home-banner-subtitle")?.textContent.trim() || "",
       cta: cta?.textContent.trim() || "",
       ctaHref: cta?.getAttribute("href") || "",
+      engage: engage?.textContent.trim() || "",
+      engageHref: engage?.getAttribute("href") || "",
+      dekLines: (() => {
+        const dek = document.querySelector(".home-banner-subtitle");
+        if (!dek) return 0;
+        return Math.round(dek.getBoundingClientRect().height / parseFloat(getComputedStyle(dek).lineHeight));
+      })(),
+      employerSize: getComputedStyle(document.querySelector(".home-employer-list")).fontSize,
+      leftWidth: document.querySelector(".home-mast .banner-left-wrap")?.getBoundingClientRect().width || 0,
+      h1Size: getComputedStyle(document.querySelector(".home-banner-title")).fontSize,
+      employerY: document.querySelector(".home-employer-list")?.getBoundingClientRect().y || 0,
       chips: [...document.querySelectorAll(".home-proof-chip")].map((li) => li.textContent.trim()),
       employers: [...document.querySelectorAll(".home-employer-list li")].map((li) => li.textContent.replace(/\s+/g, " ").trim()),
       mesh: Boolean(document.querySelector(".home-mast-mesh") && document.querySelector("#home-mast-blur")),
@@ -1515,6 +1528,13 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
   expect(fold.sub).toMatch(/AI products for fintech/);
   expect(fold.cta).toBe("View selected work");
   expect(fold.ctaHref).toBe("/works");
+  expect(fold.engage).toBe("Open for AI/web engagements");
+  expect(fold.engageHref).toBe("/ai-integration");
+  expect(fold.dekLines, "dek wraps at reading width like the Version B lock").toBe(2);
+  expect(Number.parseFloat(fold.employerSize), "employer names must read as a type stack").toBeGreaterThanOrEqual(24);
+  expect(Number.parseFloat(fold.h1Size), "mast H1 is display size, not the 64px case cap").toBeGreaterThanOrEqual(80);
+  expect(fold.leftWidth, "left stack stays a reading column, not the full fold").toBeLessThan(800);
+  expect(fold.employerY, "employers sit mid-mast on solid navy, not the lilac fade").toBeGreaterThan(400);
   expect(fold.chips).toEqual(["$52M+ features · Instructure", "1.8→4.8 · Raiffeisen"]);
   expect(fold.employers).toEqual(["BlackRock ·", "Instructure ·", "Raiffeisen ·", "Bitpanda ·", "Balabit ·"]);
   expect(fold.mesh).toBe(true);
@@ -1562,9 +1582,10 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
     return { x: list.x, y: list.y };
   });
   const outcomesBand = await screenshotClip(page, {
-    x: Math.max(0, outcomes.x + 8),
-    y: outcomes.y + 8,
-    width: 18,
+    // Sample navy *beside* the stack — glyphs are --mast-on-navy (light).
+    x: Math.max(0, outcomes.x - 20),
+    y: outcomes.y + 10,
+    width: 14,
     height: 14,
   });
   expect(outcomesBand.luminance, "desktop employers sit on the navy félkör, not a lilac dodge").toBeLessThan(90);

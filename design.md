@@ -107,7 +107,9 @@ The first viewport is the argument, not a masthead plus setup.
 - Fold proof on `/` is two compact chips plus that employer list, not DualIndex:
   the **work list** still opens with Raiffeisen.
 - One primary action: `View selected work` → `/works`. Outlined 12px chrome,
-  not a black pill.
+  not a black pill. A quiet text link `Open for AI/web engagements` may sit
+  beside it and go to `/ai-integration`. Do not restore the services-section
+  solicitation paragraph or duplicate LinkedIn/Email actions.
 
 Before adding a block, name the generic layout this page type would suggest
 (centered manifesto, card grid, 16:9 cover). Reject it unless the material
@@ -332,8 +334,9 @@ The header contact row can wrap; it must not overlap LinkedIn. Long opening
 headings may break within a word only when needed to avoid clipping. The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
-Keep desktop employers below the pale/navy transition (164–190px top offset),
-without a boxed background. The Kineticare video scrim is owned by the shared
+Keep desktop employers on the solid navy (220–340px top offset from the
+mast grid), without a boxed background. Do not sit the stack in the pale
+blur crown, and do not drop it onto About. The Kineticare video scrim is owned by the shared
 stylesheet, including its mobile direction; it must preserve white-text AA
 even against a synthetic all-white frame, not only a sampled poster.
 Enlarged or user-spaced desktop mast text switches to the existing compact,
@@ -375,8 +378,9 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    3:1 large / UI stroke. Left column stays dark ink on lilac. Compact
    employers stay dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
 3. H1: `Product VP`
-4. One-line dek: `AI products for fintech, Web3, regulated teams — strategy
-   to ship.` Existing positioning, not a slogan.
+4. Dek (one sentence): `AI products for fintech, Web3, regulated teams — strategy
+   to ship.` Reading-width stack (`max-width: 36ch`) so it wraps after Web3
+   on desktop, like the Version B lock — not a viewport-spanning single line.
 5. Two compact proof chips in a row (`.home-proof-chips` / `.home-proof-chip`),
    not a long bullet list. Copy is portfolio-reported from LinkedIn About —
    do not invent new numbers:
@@ -387,19 +391,27 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    column`) so Inter loading cannot wrap-flip a row that only fitted the
    fallback metrics.
 6. Primary action: `View selected work` → `/works` (outlined 12px chrome,
-   not a filled black pill). Do not restore an `Open for engagements` block
-   in the mast or after the services cards.
+   not a filled black pill). Desktop mast is a compact left stack
+   (`max-width: 46rem`) plus a narrow right-aligned employer stack hugging
+   the navy (`grid-template-columns: minmax(0, 1fr) auto`). Display H1 is
+   64–92px Funnel. Employer type is 24–32px Inter, mid-mast on the solid
+   navy, not an 18px whisper in the blur. A quiet text link
+   `Open for AI/web engagements` → `/ai-integration` sits beside the CTA
+   (`.home-mast-actions` / `.hero-engage-link`). Do not restore the
+   services-section solicitation paragraph or duplicate LinkedIn/Email.
 7. Quiet vertical employer list only (`.home-employer-list`) on the navy:
    BlackRock · Instructure · Raiffeisen · Bitpanda · Balabit. Light ink on
    navy for AA. No long descriptions, no `Selected portfolio highlights`
    label, no four highlight bullets.
 
-User-requested removal (2026-09-04): no `Open for engagements` block,
-company-solicitation paragraph or duplicate LinkedIn/Email actions after
-the services cards. Do not hide this copy in CSS, HTML comments, metadata
-or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
-native link to `/ai-integration`, with a visible keyboard focus ring. This
-preserves factual service discovery without a replacement promotional block.
+User-requested removal (2026-09-04): no company-solicitation paragraph or
+duplicate LinkedIn/Email actions after the services cards. The Version B
+mast may keep a quiet text link `Open for AI/web engagements` →
+`/ai-integration`. Do not hide removed services-section copy in CSS, HTML
+comments, metadata or JSON-LD. The existing `AI products` heading is an
+underlined, ink-colored native link to `/ai-integration`, with a visible
+keyboard focus ring. This preserves factual service discovery without a
+replacement promotional block.
 All five service headings use ink on paper, never the inherited white
 `--font-color--dark` from the old template. Test their revealed-state contrast.
 
@@ -570,7 +582,7 @@ Agents compose pages from these names. Do not invent parallel components.
 **Home:** `.home-mast` `.home-mast-mesh` `.home-mast-art` `.home-mast-lilac`
 `.home-mast-navy` `.home-banner-section` `.hero-kicker` `.home-banner-title`
 `.home-banner-subtitle` `.home-proof-chips` `.home-proof-chip`
-`.home-employer-list` `.hero-work-link`
+`.home-employer-list` `.home-mast-actions` `.hero-work-link` `.hero-engage-link`
 `.about-section-title` `.home-about-area` `.work-list` `.work-row`
 `.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
 `.work-card-summary` `.home-work-footer` `.nav-cta`

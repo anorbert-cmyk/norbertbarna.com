@@ -261,8 +261,9 @@ if (/class="[^"]*\bhome-work-wrap\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
 }
 if (!/<ul\b[^>]*class="[^"]*\bhome-proof-chips\b/i.test(homeHtml) ||
     !/<ul\b[^>]*class="[^"]*\bhome-employer-list\b/i.test(homeHtml) ||
-    !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="\/works"/i.test(homeHtml)) {
-  fail("index.html: hero must keep proof chips, an employer list, and a selected-work action");
+    !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="\/works"/i.test(homeHtml) ||
+    !/class="[^"]*\bhero-engage-link\b[^"]*"[^>]*href="\/ai-integration"/i.test(homeHtml)) {
+  fail("index.html: hero must keep proof chips, an employer list, selected-work CTA and AI/web text link");
 }
 if (/home-banner-details-wrap[^>]*><\/div>[\s\S]{0,80}home-work-divider-line[\s\S]{0,80}home-work-divider-line/i.test(homeHtml)) {
   fail("index.html: empty hero details and duplicate divider must not return");
