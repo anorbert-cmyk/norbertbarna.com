@@ -410,7 +410,7 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
     await page.route(/posthog\.com/, (route) => route.abort());
     await openStable(page, "/");
     const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .home-proof-chip, .home-mast .home-employer-list li");
-    await expect(text).toHaveCount(9);
+    await expect(text).toHaveCount(10);
     for (let index = 0; index < await text.count(); index += 1) {
       await expectHeaderTextAA(page, text.nth(index), `${width} home text ${index + 1}`, { raster: true });
     }
@@ -470,7 +470,7 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     await page.waitForTimeout(100);
     await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
     const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .home-proof-chip, .home-mast .home-employer-list li");
-    await expect(text).toHaveCount(9);
+    await expect(text).toHaveCount(10);
     for (let index = 0; index < await text.count(); index += 1) {
       await expectHeaderTextAA(page, text.nth(index), `${width} ${adjustment} home text ${index + 1}`, { raster: true });
     }

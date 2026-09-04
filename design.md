@@ -382,7 +382,10 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    do not invent new numbers:
    `$52M+ features · Instructure` and `1.8→4.8 · Raiffeisen`. Use the arrow
    (not mixed en-dashes). Thin ink border, light translucent fill, radius 10px
-   — not a black pill and not radius 999. No generated chart icons.
+   — not a black pill and not radius 999. No generated chart icons. Keep the
+   pair in one row from 480px up. At ≤479px stack them (`flex-direction:
+   column`) so Inter loading cannot wrap-flip a row that only fitted the
+   fallback metrics.
 6. Primary action: `View selected work` → `/works` (outlined 12px chrome,
    not a filled black pill). Do not restore an `Open for engagements` block
    in the mast or after the services cards.

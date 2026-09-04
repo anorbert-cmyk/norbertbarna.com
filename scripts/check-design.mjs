@@ -489,6 +489,9 @@ if (!/\.home-proof-chip[\s\S]{0,200}--ink/.test(css) ||
     /\.home-proof-chip[\s\S]{0,200}background:\s*#111/.test(css)) {
   fail("proof chips must be compact ink-on-lilac rounded-rects, not pills");
 }
+if (!/@media\s*\(max-width:\s*479px\)[\s\S]*\.home-proof-chips[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
+  fail("compact proof chips must stack at ≤479px so webfont load cannot wrap-flip a row");
+}
 if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13px/.test(css)) {
   fail("home kicker must stay 13px on compact, not inherit the 17px banner bump");
 }
