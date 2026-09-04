@@ -71,7 +71,7 @@ When requirements compete, protect them in this order:
 | `/` | Identify a Product VP and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
-| Footer / nav | Start a conversation | Nav LinkedIn link; footer LinkedIn `in` icon + word **Email**, sharing outlined 44px / 12px chrome. Email also appears in the home engagements block. No Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
+| Footer / nav | Start a project conversation | Nav LinkedIn link; footer LinkedIn `in` icon + **Discuss your project**, sharing outlined 44px / 12px chrome. The same project action also appears in the home engagements block. No Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -190,9 +190,10 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
 2. Controls under the lede, left: LinkedIn and Email share chrome — height
    44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
-   (~17px) at `https://www.linkedin.com/in/barna-norbert/`. Email is the word
-   `Email` (Inter 15/500, black), width hug, padding 0 14, min-width 44,
-   ~72–76px wide, same height as LinkedIn, gap 8–10px. Email is
+   (~17px) at `https://www.linkedin.com/in/barna-norbert/`. The project email
+   label is `Discuss your project` (Inter 15/500, black), width hug,
+   padding 0 14, min-width 44, same height as LinkedIn, gap 8–10px.
+   Do not constrain its width to the former one-word Email label. Email is
    `<button type="button" class="footer-email">` — native Space/Enter, not a
    fake link. Hover is a light ink wash; keep the outline and black ink. Do
    not draw a mouse cursor. Do not make Email a 44px square with tiny type.
@@ -400,6 +401,24 @@ the 16:9 frame (`inset: 0; z-index: 0`). Webflow background-video CSS
 
 Use the shipped case copy. Do not rewrite claims.
 
+User-requested project contact copy (2026-09-04): the existing native
+`button.footer-email` opens an email app for a project enquiry; it does not
+send a message, book a meeting or create a confirmed lead. This explicit
+copy update supersedes the older literal `Email` label/72–76px width lock,
+not the outlined 44px / 12px chrome or the split-address handler.
+
+- Shared English footer, home navigation/engagement, English service CTA:
+  `Discuss your project`; title `Opens your email app to discuss your project`.
+- Hungarian service main CTA: `Beszéljünk a projektedről`, `lang="hu"`;
+  title `Megnyitja a leveleződet, hogy a projektedről írhass.`.
+- Privacy-page main contact buttons remain `Email`: data-rights enquiries
+  must not be presented as project enquiries. The shared English footer
+  retains the project CTA and its existing English language scope.
+
+Keep the visible label as the accessible name. The title only clarifies
+the email-app action; do not replace the visible text with a tooltip-only
+label or an unrelated aria-label. Labels must fit at 320px without clipping.
+
 Home About opens on Product VP ownership (strategy → ship, teams,
 regulated), not “I’ve spent the last 16 years designing”. Do not invent
 metrics. The client offer is an H2 (`Open for engagements`), never a
@@ -451,7 +470,7 @@ English-wash the screenshot.
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
 | LinkedInHitSquare | Footer LinkedIn is a grey-filled ~32px chip, or Email is a filled black pill | Both share 44px height, 12px radius, 1px black stroke, transparent fill, black ink |
-| FilledEmailPill | Email is a solid black pill (radius 999) with white type | Outlined rounded-square chrome; word `Email` in black Inter 15/500 |
+| FilledEmailPill | Email is a solid black pill (radius 999) with white type | Outlined rounded-square chrome; project CTA in black Inter 15/500 |
 | ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Email in nav, footer ident, and home engagements; Work column only |
 | MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML (before or after click), or the complete address is one JS string | `location.assign` the assembled href; never write it onto `href` or into the DOM |
 | FakeEmailLink | Email is an `<a role="link">` without href | Native `<button type="button" class="footer-email">`; Space/Enter come for free |
@@ -461,7 +480,7 @@ English-wash the screenshot.
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
-| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined `Email` button; mail opens via `location.assign`; no form; no Contact column |
+| BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined project enquiry button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 | MeshParallaxCircus | Mesh masses rotate, travel tens of pixels, loop like a GIF, or drag type/chrome | Navy / olive / yellow translate a few pixels at different depths; chrome stays still; reduced-motion is static |
@@ -507,7 +526,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); Email is the word `Email`. Home nav reuses that LinkedIn square + Email chrome. Home `View selected work` is the same outlined 12px language, not a black pill.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. Home nav reuses that LinkedIn square + email chrome. Home `View selected work` is the same outlined 12px language, not a black pill.
 
 ## Motion
 

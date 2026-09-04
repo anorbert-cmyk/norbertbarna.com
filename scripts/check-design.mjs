@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES } from "./service-pages.mjs";
+import { PRIVACY_PAGES, SERVICE_PAGES, UTILITY_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK = readdirSync(join(ROOT, "work"))
@@ -19,6 +19,29 @@ const fail = (message) => {
   failures += 1;
   console.error(`FAIL: ${message}`);
 };
+const PROJECT_CONTACT = {
+  en: { label: "Discuss your project", title: "Opens your email app to discuss your project" },
+  hu: { label: "Beszéljünk a projektedről", title: "Megnyitja a leveleződet, hogy a projektedről írhass." },
+};
+const contactButtons = (html) => [...html.matchAll(/(<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/button>/g)];
+function checkProjectContact(html, scope, language = "en") {
+  const buttons = contactButtons(html);
+  const copy = PROJECT_CONTACT[language];
+  if (buttons.length !== 1) {
+    fail(`${scope}: expected one native project-contact button (got ${buttons.length})`);
+    return;
+  }
+  const [, tag, text] = buttons[0];
+  if (!/\btype="button"/.test(tag) || /\bhref=/.test(tag)) {
+    fail(`${scope}: project contact must remain a type=button with no href`);
+  }
+  if (text.trim() !== copy.label || !tag.includes(`title="${copy.title}"`)) {
+    fail(`${scope}: project contact must say “${copy.label}” and explain that it opens the email app`);
+  }
+  if (language === "hu" && !/\blang="hu"/.test(tag)) {
+    fail(`${scope}: the Hungarian project-contact button must declare lang=hu`);
+  }
+}
 
 const home = readFileSync(join(ROOT, "index.html"), "utf8");
 const works = readFileSync(join(ROOT, "works.html"), "utf8");
@@ -96,9 +119,7 @@ if (!/class="nav-link[^"]*"[^>]*href="\/works">Works<\/a>/.test(homeNav)) {
 if (!/class="footer-contact-link"/.test(homeNav) || !/linkedin\.com\/in\/barna-norbert/.test(homeNav)) {
   fail("home top bar must use the outlined LinkedIn square");
 }
-if (!/<button type="button" class="footer-email">Email<\/button>/.test(homeNav)) {
-  fail("home top bar Email must be type=button assign-only, same class as footer");
-}
+checkProjectContact(homeNav, "home top bar");
 if (/href="[^"]*mailto:/.test(homeNav) || /anorbert@pm\.me/.test(homeNav)) {
   fail("MailtoInHtml: home Email must not expose mailto or the address");
 }
@@ -142,8 +163,9 @@ const engage = home.slice(home.indexOf("Open for engagements"), home.indexOf('id
 if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"/.test(engage)) {
   fail("engage LinkedIn must use the same new-tab accessible name as nav/footer");
 }
-if (!/<button type="button" class="footer-email hero-work-link">Email<\/button>/.test(engage)) {
-  fail("engage Email must reuse footer-email as type=button, not a mailto link");
+checkProjectContact(engage, "home engagements");
+if (!/<button\b[^>]*class="footer-email hero-work-link"/.test(engage)) {
+  fail("engage project contact must reuse footer-email hero-work-link chrome");
 }
 if (/class="footer-cta"/.test(engage)) {
   fail("engage block must not use footer-cta");
@@ -535,9 +557,7 @@ for (const page of footerPages) {
   if (!footer.includes("© 2026 Norbert Barna") || /All rights reserved/.test(footer)) {
     fail(`${page}: copyright must be © 2026 Norbert Barna`);
   }
-  if (!/>Email<\/button>/.test(footer)) {
-    fail(`${page}: Email CTA must be visible text “Email”`);
-  }
+  checkProjectContact(footer, `${page}: footer`);
   const emailTag = [...footer.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
   if (emailTag.length !== 1) {
     fail(`${page}: footer needs exactly one Email button (got ${emailTag.length})`);
@@ -579,6 +599,22 @@ for (const page of footerPages) {
   }
   if (html.includes("data-motion-toggle") || html.includes("site-motion-toggle")) {
     fail(`MotionNav: ${page} still renders a Motion control`);
+  }
+}
+
+for (const page of SERVICE_PAGES) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
+  checkProjectContact(main, `${page}: main`, page.startsWith("hu/") ? "hu" : "en");
+}
+for (const page of PRIVACY_PAGES) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
+  const buttons = contactButtons(main);
+  if (buttons.length !== 1 || buttons[0][2].trim() !== "Email" ||
+      !/\btype="button"/.test(buttons[0][1]) || /\bhref=/.test(buttons[0][1]) ||
+      Object.values(PROJECT_CONTACT).some((copy) => buttons[0][1].includes(copy.title))) {
+    fail(`${page}: privacy main contact must stay a native Email button, not a project enquiry`);
   }
 }
 

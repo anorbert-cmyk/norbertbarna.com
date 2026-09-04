@@ -2,6 +2,9 @@ import { inflateSync } from "node:zlib";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+const PROJECT_LABEL = "Discuss your project";
+const PROJECT_TITLE = "Opens your email app to discuss your project";
+
 const viewports = [
   { name: "mobile-360", width: 360, height: 800 },
   { name: "tablet-768", width: 768, height: 1024 },
@@ -171,6 +174,64 @@ async function screenshotClip(page, clip) {
   return sampleStats(readPng(buffer));
 }
 
+async function footerSeamClip(page) {
+  const sample = await page.evaluate(() => {
+    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
+    const work = document.querySelector(".footer-col-title").getBoundingClientRect();
+    const controls = [...document.querySelectorAll(".footer-cta a, .footer-cta button")].map((control) => {
+      const box = control.getBoundingClientRect();
+      return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
+    });
+    const viewport = { width: document.documentElement.clientWidth, height: window.innerHeight };
+    const gutter = 12;
+    const x = Math.ceil(Math.max(...controls.map((control) => control.right)) + gutter);
+    const y = Math.max(0, Math.floor(cta.bottom - 12));
+    return {
+      controls, viewport, gutter,
+      clip: {
+        x, y,
+        width: Math.min(80, Math.floor(viewport.width - gutter - x)),
+        height: Math.min(viewport.height, Math.ceil(work.top + 12)) - y,
+      },
+    };
+  });
+  const { clip, controls, viewport, gutter } = sample;
+  expect(controls).toHaveLength(2);
+  expect(clip.width, "the empty background sample must remain useful").toBeGreaterThanOrEqual(32);
+  expect(clip.width).toBeLessThanOrEqual(80);
+  expect(clip.height).toBeGreaterThanOrEqual(8);
+  expect(clip.x).toBeGreaterThanOrEqual(0);
+  expect(clip.y).toBeGreaterThanOrEqual(0);
+  expect(clip.x + clip.width).toBeLessThanOrEqual(viewport.width);
+  expect(clip.y + clip.height).toBeLessThanOrEqual(viewport.height);
+  for (const control of controls) {
+    expect(clip.x).toBeGreaterThanOrEqual(control.right + gutter);
+    const intersects = clip.x < control.right && clip.x + clip.width > control.left &&
+      clip.y < control.bottom && clip.y + clip.height > control.top;
+    expect(intersects, "mesh sample must not contain a contact control or its border").toBe(false);
+  }
+  return clip;
+}
+
+async function footerSeamJump(page, clip) {
+  const png = readPng(await page.screenshot({ clip, type: "png" }));
+  expect(png.width).toBe(clip.width);
+  expect(png.height).toBe(clip.height);
+  const row = (y) => {
+    let sum = 0;
+    for (let x = 0; x < png.width; x += 1) {
+      const i = (y * png.width + x) * 4;
+      sum += 0.2126 * png.pixels[i] + 0.7152 * png.pixels[i + 1] + 0.0722 * png.pixels[i + 2];
+    }
+    return sum / png.width;
+  };
+  let maxJump = 0;
+  for (let y = 1; y < png.height; y += 1) {
+    maxJump = Math.max(maxJump, Math.abs(row(y) - row(y - 1)));
+  }
+  return maxJump;
+}
+
 function srgbToLin(channel) {
   const value = channel / 255;
   return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
@@ -272,6 +333,30 @@ async function openStable(page, route) {
       || document.documentElement.classList.contains("wf-active");
   }, { timeout: 8000 }).catch(() => {});
   await page.waitForTimeout(100);
+}
+
+async function expectContactLabelFit(locator) {
+  const size = await locator.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const box = element.getBoundingClientRect();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return {
+      width: box.width,
+      expected: Math.max(44, range.getBoundingClientRect().width +
+        parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) +
+        parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth)),
+      overflow: element.scrollWidth - element.clientWidth,
+      left: box.left,
+      right: box.right,
+      viewport: document.documentElement.clientWidth,
+    };
+  });
+  expect(size.width).toBeGreaterThanOrEqual(44);
+  expect(Math.abs(size.width - size.expected), "contact width must hug its rendered label and padding").toBeLessThanOrEqual(2);
+  expect(size.overflow, "contact label must not clip").toBeLessThanOrEqual(1);
+  expect(size.left).toBeGreaterThanOrEqual(-1);
+  expect(size.right).toBeLessThanOrEqual(size.viewport + 1);
 }
 
 for (const viewport of viewports) {
@@ -570,6 +655,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
         form: Boolean(root.querySelector("form, .footer-hp, [data-contact-form]")),
         emailHref: email ? email.getAttribute("href") : "missing",
         emailText: email ? email.textContent.trim() : "",
+        emailTitle: email ? email.getAttribute("title") : "",
         emailTag: email ? email.tagName : "",
         emailType: email ? email.getAttribute("type") : "",
         linkedinHref: linkedin ? linkedin.getAttribute("href") : "",
@@ -616,7 +702,8 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     expect(footer.lede).toBe("Product VP — I lead AI products in regulated finance and high-trust systems.");
     expect(footer.copyright).toBe("© 2026 Norbert Barna");
     expect(footer.emailHref).toBeNull();
-    expect(footer.emailText).toBe("Email");
+    expect(footer.emailText).toBe(PROJECT_LABEL);
+    expect(footer.emailTitle).toBe(PROJECT_TITLE);
     expect(footer.emailTag).toBe("BUTTON");
     expect(footer.emailType).toBe("button");
     expect(footer.emailCount).toBe(1);
@@ -624,8 +711,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     expect(footer.linkedinHref).toBe("https://www.linkedin.com/in/barna-norbert/");
     expect(footer.linkedinCount).toBe(1);
     expect(footer.emailSize.h).toBe(44);
-    expect(footer.emailSize.w).toBeGreaterThanOrEqual(68);
-    expect(footer.emailSize.w).toBeLessThanOrEqual(80);
+    await expectContactLabelFit(page.locator("footer button.footer-email"));
     expect(isTransparentFill(footer.emailSize.bg)).toBe(true);
     expect(footer.emailSize.color).toBe("rgb(17, 17, 17)");
     expect(footer.emailSize.radius).toBe("12px");
@@ -694,10 +780,10 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   const html = await (await request.get("/")).text();
   expect(html).not.toMatch(/mailto:/i);
   expect(html).not.toMatch(/anorbert@pm\.me/i);
-  expect(html).toMatch(/<button type="button" class="footer-email">Email<\/button>/);
+  expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/);
   expect(html).not.toMatch(/<a[^>]*footer-email/);
-  expect((html.match(/<button type="button" class="footer-email">Email<\/button>/g) || []).length).toBe(2);
-  expect((html.match(/<button type="button" class="footer-email[^"]*">Email<\/button>/g) || []).length).toBe(3);
+  expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(2);
+  expect((html.match(/<button\b[^>]*class="footer-email[^"]*"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(3);
   expect(html).not.toMatch(/footer-col-title">Contact/);
   expect(html).not.toMatch(/href="\/contact"/);
   expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
@@ -725,9 +811,11 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   await expect(email).toBeVisible();
   await expect(headerEmail).toBeVisible();
   await expect(engageEmail).toBeVisible();
-  await expect(email).toHaveText("Email");
-  await expect(headerEmail).toHaveText("Email");
-  await expect(engageEmail).toHaveText("Email");
+  for (const locator of [email, headerEmail, engageEmail]) {
+    await expect(locator).toHaveText(PROJECT_LABEL);
+    await expect(locator).toHaveAccessibleName(PROJECT_LABEL);
+    await expect(locator).toHaveAttribute("title", PROJECT_TITLE);
+  }
   await expect(email).toHaveJSProperty("tagName", "BUTTON");
   expect(await email.getAttribute("type")).toBe("button");
   expect(await headerEmail.getAttribute("type")).toBe("button");
@@ -989,33 +1077,33 @@ test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top"
   });
   expect(workBand.luminance, "390 Work must sit on the pale lilac band, not the navy horizon").toBeGreaterThan(140);
 
-  const seam = await page.evaluate(() => {
-    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
-    const work = document.querySelector(".footer-col-title").getBoundingClientRect();
-    return {
-      x: 180,
-      y: cta.bottom - 12,
-      width: 80,
-      height: Math.max(8, Math.round(work.top - cta.bottom + 24)),
-    };
-  });
-  const seamBuf = await page.screenshot({ clip: seam, type: "png" });
-  const seamPng = readPng(seamBuf);
-  let maxJump = 0;
-  for (let y = 1; y < seamPng.height; y += 1) {
-    const row = (yy) => {
-      let sum = 0;
-      let count = 0;
-      for (let x = 0; x < seamPng.width; x += 1) {
-        const i = (yy * seamPng.width + x) * 4;
-        sum += 0.2126 * seamPng.pixels[i] + 0.7152 * seamPng.pixels[i + 1] + 0.0722 * seamPng.pixels[i + 2];
-        count += 1;
-      }
-      return sum / count;
-    };
-    maxJump = Math.max(maxJump, Math.abs(row(y) - row(y - 1)));
-  }
+  const seam = await footerSeamClip(page);
+  const maxJump = await footerSeamJump(page, seam);
   expect(maxJump, "compact mesh must not clip a hard seam through the Email / Work stack").toBeLessThan(12);
+  console.log("Empty footer seam sample:", JSON.stringify({ ...seam, maxJump }));
+});
+
+test("390 footer seam guard detects a synthetic full-width hard seam", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openStable(page, "/");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const seam = await footerSeamClip(page);
+  await page.evaluate((y) => {
+    // Negative control exists only in this test document, not in site assets.
+    const line = document.createElement("div");
+    line.setAttribute("data-test-hard-seam", "");
+    Object.assign(line.style, {
+      position: "fixed", left: "0", right: "0", top: `${y}px`, height: "2px",
+      background: "#000", zIndex: "2147483647", pointerEvents: "none",
+    });
+    document.body.appendChild(line);
+  }, Math.floor(seam.y + seam.height / 2));
+  const line = await page.locator("[data-test-hard-seam]").boundingBox();
+  expect(line.x).toBe(0);
+  expect(line.width).toBe(390);
+  const maxJump = await footerSeamJump(page, seam);
+  expect(maxJump, "a real full-width seam must still violate the unchanged <12 guard").toBeGreaterThanOrEqual(12);
+  console.log("Synthetic footer seam negative control:", maxJump);
 });
 
 test("1280 home selected work: compact rows, small thumbs, hiring order, stable title color", async ({ page }) => {
@@ -1104,6 +1192,7 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
       emailHref: email ? email.getAttribute("href") : "missing",
       emailType: email ? email.getAttribute("type") : "",
       emailText: email ? email.textContent.trim() : "",
+      emailTitle: email ? email.getAttribute("title") : "",
       works: Boolean(navbar.querySelector('a.nav-link[href="/works"]')),
       emailSize: email ? {
         w: Math.round(email.getBoundingClientRect().width),
@@ -1151,10 +1240,10 @@ test("1440 home header: analog mast, live copy, no product screenshot, outlined 
   expect(fold.navBorder).toBe("0px");
   expect(fold.emailHref).toBeNull();
   expect(fold.emailType).toBe("button");
-  expect(fold.emailText).toBe("Email");
+  expect(fold.emailText).toBe(PROJECT_LABEL);
+  expect(fold.emailTitle).toBe(PROJECT_TITLE);
   expect(fold.emailSize.h).toBe(44);
-  expect(fold.emailSize.w).toBeGreaterThanOrEqual(68);
-  expect(fold.emailSize.w).toBeLessThanOrEqual(80);
+  await expectContactLabelFit(page.locator(".navbar button.footer-email"));
   expect(isTransparentFill(fold.emailSize.bg)).toBe(true);
   expect(fold.emailSize.color).toBe("rgb(17, 17, 17)");
   expect(fold.emailSize.radius).toBe("12px");
