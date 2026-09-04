@@ -1449,6 +1449,191 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
   expect(colorAfter, "title color must not jump on hover").toBe(colorBefore);
 });
 
+const workAccents = ["#fee500", "#0c1b2f", "#203d36", "#d9daf2", "#aaed15", "#0c1b2e"];
+
+async function workRowSnapshot(page) {
+  return page.locator(".work-row").evaluateAll((rows) => rows.map((row) =>
+    [row, ...row.querySelectorAll(".work-row-thumb, .work-title, .work-card-summary, .work-row-arrow")].map((element) => {
+      const box = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return {
+        text: element.textContent.trim(), href: element.getAttribute("href"), src: element.getAttribute("src"),
+        geometry: [box.x, box.y + scrollY, box.width, box.height].map((value) => Math.round(value * 100) / 100),
+        transform: style.transform, color: style.color,
+      };
+    })
+  ));
+}
+
+async function workHighlightState(page, index) {
+  return page.locator(".work-row").nth(index).evaluate((row) => {
+    const highlight = row.closest(".work-list").querySelector(".work-list-highlight");
+    if (!highlight) return null;
+    const box = row.getBoundingClientRect();
+    const field = highlight.getBoundingClientRect();
+    const style = getComputedStyle(highlight);
+    return {
+      topDelta: Math.abs(field.top - box.top), heightDelta: Math.abs(field.height - box.height),
+      xDelta: field.left - box.left, widthDelta: field.width - box.width,
+      opacity: Number(style.opacity), color: style.backgroundColor,
+      pointerEvents: style.pointerEvents,
+    };
+  });
+}
+
+async function expectWorkHighlightAt(page, index) {
+  await expect.poll(() => workHighlightState(page, index).then((state) =>
+    state && Math.max(state.topDelta, state.heightDelta)))
+    .toBeLessThan(1.5);
+  const state = await workHighlightState(page, index);
+  expect(Math.abs(state.xDelta), "pointer drift stays within six pixels").toBeLessThanOrEqual(6.1);
+  expect(Math.abs(state.widthDelta), "the decoration follows the row width").toBeLessThanOrEqual(1.5);
+  expect(state.opacity).toBeCloseTo(0.1, 2);
+  expect(hexRgb(parseCssColor(state.color))).toBe(workAccents[index]);
+  expect(parseCssColor(state.color).a, "use the unmodified case color, with opacity on the field").toBe(1);
+  expect(state.pointerEvents).toBe("none");
+}
+
+for (const width of [992, 1440]) {
+  test(`${width} selected-work hover: one decorative field follows all six rows without moving content`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await openStable(page, "/");
+    const list = page.locator(".work-list");
+    await expect(list).toHaveAttribute("data-work-hover");
+    await expect(list.locator(":scope > .work-list-surface")).toHaveCount(1);
+    await expect(list.locator(".work-list-surface")).toHaveAttribute("aria-hidden", "true");
+    await expect(list.locator(".work-list-surface > .work-list-highlight")).toHaveCount(1);
+    await expect(list.locator(".work-list-surface a, .work-list-surface button, .work-list-surface [tabindex]")).toHaveCount(0);
+    await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
+    const before = await workRowSnapshot(page);
+    for (let index = 0; index < 6; index += 1) {
+      const row = page.locator(".work-row").nth(index);
+      await row.hover();
+      await expectWorkHighlightAt(page, index);
+      await expectHeaderTextAA(page, row.locator(".work-title"), `${width} row ${index + 1} hovered title`, { raster: true });
+      await expectHeaderTextAA(page, row.locator(".work-card-summary"), `${width} row ${index + 1} hovered summary`, { raster: true });
+    }
+    expect(await workRowSnapshot(page), "hover must not transform or recolor any text, thumbnail or link hit area").toEqual(before);
+    const focused = page.locator(".work-row").nth(2);
+    await focused.locator(".work-title").focus();
+    await expect(focused.locator(".work-title")).toBeFocused();
+    await expect(list.locator(".work-list-surface")).toHaveCSS("opacity", "0");
+    expect(await focused.evaluate((element) => Number(getComputedStyle(element, "::before").opacity))).toBe(0.1);
+    await expectHeaderTextAA(page, focused.locator(".work-title"), `${width} static keyboard focus`, { raster: true });
+    await focused.hover();
+    await expect(list.locator(".work-list-surface")).toHaveCSS("visibility", "hidden");
+    await expect(focused.locator(".work-title")).toBeFocused();
+    expect(await focused.evaluate((element) => Number(getComputedStyle(element, "::before").opacity))).toBe(0.1);
+    await expectHeaderTextAA(page, focused.locator(".work-card-summary"), `${width} mixed pointer/focus keeps one static tint`, { raster: true });
+    await focused.locator(".work-title").evaluate((element) => element.blur());
+    await page.locator(".work-row").nth(4).hover();
+    await expectWorkHighlightAt(page, 4);
+    await expect(list.locator(".work-list-surface")).toHaveCSS("visibility", "visible");
+    await expect(list.locator(".work-list-surface")).toHaveCSS("opacity", "1");
+    await page.mouse.move(1, 1);
+    await expect.poll(() => list.locator(".work-list-highlight").evaluate((element) => {
+      let opacity = 1;
+      for (let node = element; node; node = node.parentElement) opacity *= Number(getComputedStyle(node).opacity);
+      return opacity;
+    })).toBeLessThan(0.005);
+  });
+}
+
+test("selected-work hover reuses its tweens and cleans up repeated reduced-motion and breakpoint transitions", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await openStable(page, "/");
+  const list = page.locator(".work-list");
+  await expect(list).toHaveAttribute("data-work-hover");
+  const allocated = await page.evaluate(() => {
+    window.__workHoverNodes = [...document.querySelectorAll(".work-list-surface, .work-list-highlight")];
+    window.__workHoverTweens = new Set(gsap.getTweensOf(window.__workHoverNodes));
+    return window.__workHoverTweens.size;
+  });
+  expect(allocated, "the enhancement has a bounded preallocated animation set").toBeGreaterThan(0);
+  expect(allocated).toBeLessThanOrEqual(6);
+  await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
+  await page.locator(".work-row").first().hover();
+  await expectWorkHighlightAt(page, 0);
+  const rows = await page.locator(".work-row").all();
+  for (let step = 0; step < 18; step += 1) {
+    const box = await rows[step % rows.length].boundingBox();
+    await page.mouse.move(step % 2 ? box.x + 20 : box.x + box.width - 20, box.y + box.height / 2);
+    expect(await page.evaluate(() => gsap.getTweensOf(window.__workHoverNodes)
+      .every((tween) => window.__workHoverTweens.has(tween))), "rapid hover reuses, rather than allocates, animation objects").toBe(true);
+  }
+  await expectWorkHighlightAt(page, 5);
+  for (const mode of ["reduce", "breakpoint", "reduce", "breakpoint"]) {
+    await page.evaluate(() => { window.__workHoverNodes = [...document.querySelectorAll(".work-list-surface, .work-list-highlight")]; });
+    if (mode === "reduce") await page.emulateMedia({ reducedMotion: "reduce" });
+    else await page.setViewportSize({ width: 991, height: 1000 });
+    await expect(list).not.toHaveAttribute("data-work-hover");
+    await expect(page.locator(".work-list-surface, .work-list-highlight")).toHaveCount(0);
+    expect(await page.evaluate(() => ({
+      detached: window.__workHoverNodes.every((node) => !node.isConnected),
+      liveTweens: gsap.getTweensOf(window.__workHoverNodes).length,
+    }))).toEqual({ detached: true, liveTweens: 0 });
+    if (mode === "reduce") await page.emulateMedia({ reducedMotion: "no-preference" });
+    else await page.setViewportSize({ width: 992, height: 1000 });
+    await expect(list).toHaveAttribute("data-work-hover");
+    await expect(page.locator(".work-list-surface")).toHaveCount(1);
+    await expect(page.locator(".work-list-highlight")).toHaveCount(1);
+    await page.locator(".work-row").first().hover();
+    await expectWorkHighlightAt(page, 0);
+  }
+});
+
+for (const fallback of [
+  { name: "390 compact", width: 390 },
+  { name: "reduced motion", width: 1440, reducedMotion: "reduce" },
+  { name: "blocked GSAP", width: 1440, blockGsap: true },
+  { name: "no JavaScript", width: 1440, javaScriptEnabled: false },
+]) {
+  test.describe(`selected-work fallback: ${fallback.name}`, () => {
+    test.use({ viewport: { width: fallback.width, height: 1000 }, javaScriptEnabled: fallback.javaScriptEnabled !== false });
+    test("retains the native whole-row link and static keyboard focus", async ({ page }) => {
+      if (fallback.blockGsap) await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
+      await page.emulateMedia({ reducedMotion: fallback.reducedMotion || "no-preference" });
+      await openStable(page, "/");
+      expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches))
+        .toBe(fallback.reducedMotion === "reduce");
+      await expect(page.locator(".work-list")).not.toHaveAttribute("data-work-hover");
+      await expect(page.locator(".work-list-surface")).toHaveCount(0);
+      const row = page.locator(".work-row").first();
+      const link = row.locator("a.work-title");
+      await link.focus();
+      await expect(link).toBeFocused();
+      const focus = await row.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return { width: parseFloat(style.outlineWidth), style: style.outlineStyle };
+      });
+      expect(focus.width).toBeGreaterThanOrEqual(3);
+      expect(focus.style).toBe("solid");
+      await expectHeaderTextAA(page, link, `${fallback.name} focus title`, { raster: true });
+      await link.press("Enter");
+      await expect(page).toHaveURL(/\/work\/raiffeisen$/);
+      await openStable(page, "/");
+      const second = page.locator(".work-row").nth(1);
+      await second.scrollIntoViewIfNeeded();
+      const box = await second.boundingBox();
+      await second.click({ position: { x: box.width - 8, y: box.height / 2 } });
+      await expect(page).toHaveURL(/\/work\/instructure$/);
+    });
+  });
+}
+
+for (const width of [390, 1440]) test.describe(`${width} selected-work touch fallback`, () => {
+  test.use({ viewport: { width, height: 844 }, hasTouch: true, isMobile: true });
+  test("the first tap follows a whole-row link without arming a hover state", async ({ page }) => {
+    await openStable(page, "/");
+    await expect(page.locator(".work-list-surface")).toHaveCount(0);
+    const row = page.locator(".work-row").first();
+    await row.scrollIntoViewIfNeeded();
+    const box = await row.boundingBox();
+    await row.tap({ position: { x: box.width - 8, y: box.height / 2 } });
+    await expect(page).toHaveURL(/\/work\/raiffeisen$/);
+  });
+});
+
 test("1440 home header: analog mast, live copy, no product screenshot, outlined chrome", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
@@ -1845,12 +2030,30 @@ async function awardFill(page, card) {
       videoFill: cover(videoBox, cardBox),
       inset: style.inset,
       objectFit: style.objectFit,
+      videoFilter: style.filter,
+      videoBlend: style.mixBlendMode,
+      videoOpacity: Number(style.opacity),
+      layerEffects: [el, wrap, frame, video].map((node) => {
+        const layer = getComputedStyle(node);
+        return { filter: layer.filter, backdropFilter: layer.backdropFilter, blend: layer.mixBlendMode };
+      }),
+      scrimContent: getComputedStyle(el, "::after").content,
+      dotOverlays: el.querySelectorAll(".award-bg-dot-image-wrap, .award-bg-dot-image").length,
       cardW: cardBox.width,
       cardH: cardBox.height,
       videoW: videoBox.width,
       videoH: videoBox.height,
     };
   });
+}
+
+function expectAwardClear(info) {
+  expect({ scrim: info.scrimContent, dots: info.dotOverlays, filter: info.videoFilter, blend: info.videoBlend },
+    "experience footage stays unobscured: no full-card scrim, dot overlay, filter or blend")
+    .toEqual({ scrim: "none", dots: 0, filter: "none", blend: "normal" });
+  expect(info.videoOpacity).toBe(1);
+  expect(info.layerEffects, "no ancestor may reintroduce grading or blending")
+    .toEqual(Array.from({ length: 4 }, () => ({ filter: "none", backdropFilter: "none", blend: "normal" })));
 }
 
 test("1440 experience card hover fills the card with the award video", async ({ page }) => {
@@ -1869,6 +2072,7 @@ test("1440 experience card hover fills the card with the award video", async ({ 
   expect(hot.videoFill, "video file must cover the card").toBeGreaterThan(0.98);
   expect(hot.inset).toMatch(/^(0px|0)$/);
   expect(hot.objectFit).toBe("cover");
+  expectAwardClear(hot);
 });
 
 test.describe("compact award tap", () => {
@@ -1890,8 +2094,75 @@ test.describe("compact award tap", () => {
     expect(hot.videoFill, "compact video file must cover the card").toBeGreaterThan(0.98);
     expect(hot.inset).toMatch(/^(0px|0)$/);
     expect(hot.objectFit).toBe("cover");
+    expectAwardClear(hot);
   });
 });
+
+for (const width of [390, 1440]) {
+  for (const frameColor of ["white", "black"]) {
+    test(`${width} experience video clarity: all five cards preserve ${frameColor} frames and paper-backed text contrast`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await openStable(page, "/");
+      const cards = page.locator(".awards-card");
+      await expect(cards).toHaveCount(5);
+      for (let index = 0; index < 5; index += 1) {
+        const card = cards.nth(index);
+        await card.hover();
+        await expect(card).toHaveCSS("opacity", "1");
+        await expect.poll(() => awardFill(page, card).then((info) => info.wrapOpacity)).toBe(1);
+        expectAwardClear(await awardFill(page, card));
+        // Replace only the video pixels, not any of the actual card/text CSS.
+        // These are luminance-bound controls, not a claim about a sampled movie frame.
+        await card.evaluate((element, color) => {
+          element.querySelector("video").style.visibility = "hidden";
+          element.querySelector(".awards-bg-video").style.background = color;
+        }, frameColor);
+        const paper = await card.evaluate((element) => {
+          const box = element.getBoundingClientRect();
+          const plates = [...element.querySelectorAll(".awards-title-wrap, .awards-year")].map((plate) => {
+            const rect = plate.getBoundingClientRect();
+            const style = getComputedStyle(plate);
+            // Include the eight-pixel opaque spread around the title when
+            // measuring both coverage and a truly unobstructed sample patch.
+            const spread = plate.matches(".awards-title-wrap") ? 8 : 0;
+            return {
+              background: style.backgroundColor, opacity: Number(style.opacity),
+              left: rect.left - spread, right: rect.right + spread,
+              top: rect.top - spread, bottom: rect.bottom + spread,
+            };
+          });
+          let clip = null;
+          for (let y = Math.ceil(box.top + 12); !clip && y + 16 < box.bottom - 12; y += 8) {
+            for (let x = Math.ceil(box.left + 12); !clip && x + 16 < box.right - 12; x += 8) {
+              if (plates.every((plate) => x + 16 <= plate.left || x >= plate.right || y + 16 <= plate.top || y >= plate.bottom)) {
+                clip = { x, y, width: 16, height: 16 };
+              }
+            }
+          }
+          return { plates, clip, area: box.width * box.height };
+        });
+        expect(paper.plates).toHaveLength(2);
+        for (const plate of paper.plates) {
+          const color = parseCssColor(plate.background);
+          expect(color.a, "each label plate is opaque, not a frame-dependent translucent scrim").toBe(1);
+          expect(colorLuminance(color), "the text uses the existing light paper surface").toBeGreaterThan(0.8);
+          expect(plate.opacity).toBe(1);
+        }
+        const coverage = paper.plates.reduce((area, plate) => area + (plate.right - plate.left) * (plate.bottom - plate.top), 0) / paper.area;
+        expect(coverage, "text backplates must leave substantial footage visible, not cover the full card").toBeLessThan(0.75);
+        expect(paper.clip, "there must be a clear video region outside the text backplates").not.toBeNull();
+        const clearFrame = await screenshotClip(page, paper.clip);
+        for (const channel of ["r", "g", "b"]) {
+          expect(Math.abs(clearFrame[channel] - (frameColor === "white" ? 255 : 0)),
+            `${width} card ${index + 1}: unobstructed ${frameColor} footage must not be graded or washed out`).toBeLessThan(4);
+        }
+        for (const selector of [".awards-card-title", ".awards-card-text", ".awards-year"]) {
+          await expectHeaderTextAA(page, card.locator(selector), `${width} card ${index + 1} ${frameColor} ${selector}`, { raster: true });
+        }
+      }
+    });
+  }
+}
 
 for (const [width, expected] of [[1280, 64], [390, 56]]) {
   test(`${width}: header is a sticky white ${expected}px bar with the locked border`, async ({ page }) => {

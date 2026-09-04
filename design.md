@@ -581,6 +581,29 @@ The **home mast is static** — no pointer parallax, no Motion control.
 `prefers-reduced-motion: reduce` is the static wash. No dunes, no header
 Motion control, no rotation circus.
 
+### Selected-work field and experience clarity
+
+The compact home reference list has one decorative, shared GSAP background
+field on desktop (at least 992px, fine pointer with hover). It follows rows
+using transform/opacity only; pointer drift is capped at 6px. Existing case
+colors are shown at 10% opacity over paper. Text, thumbnails, arrows and
+native link hit areas never follow the pointer. No loops, new plugins,
+cursor replacements, animated gradients or layout-property animation.
+
+Create the field and reusable `quickTo` controllers inside the existing
+responsive motion context. Remove the field and its listeners on breakpoint
+or reduced-motion changes; never kill unrelated GSAP timelines. Keyboard
+focus uses an immediate CSS field and the existing visible outline. Touch,
+reduced motion and unavailable GSAP keep native links and static feedback.
+
+Professional-experience video fills stay full-bleed with their original
+brightness: no full-card scrim, dot overlay, filter or blend grading. Only
+the title/company text has a small opaque white backplate on hover, focus
+or tap; the year keeps its white pill. Ink text must meet AA over both white
+and black test frames. `media.js` remains the sole playback owner; reduced
+motion retains the static paper cards. This exception does not remove the
+separately verified Kineticare header contrast protection.
+
 ## Eval rubric (first attempt must pass)
 
 1. Facts that were on the page are still on the page.
