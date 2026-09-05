@@ -188,7 +188,9 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    systems.` Em dash. Do not use “AI Product Design Lead” in the footer,
    title, H1, meta, or JSON-LD name. JSON-LD `jobTitle`, ProfilePage
    `name`, and visible H1 use Product VP. Person `name` stays
-   `Norbert Barna`.
+   `Norbert Barna`. Home Person JSON-LD must include `image` using the
+   existing OG portrait `assets/images/og/norbert-barna.jpg`. Do not generate
+   a new headshot.
 2. Controls under the lede, left: LinkedIn and Email share chrome — height
    44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
@@ -523,6 +525,8 @@ English-wash the screenshot.
 | InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
 | GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
+| PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
+| HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |

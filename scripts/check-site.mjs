@@ -120,7 +120,11 @@ for (const page of PAGES) {
   const robotsMeta = metaContent(html, "name", "robots");
   if (is404) {
     if (!/noindex/i.test(robotsMeta || "")) fail(`${page}: error document must noindex`);
-  } else if (/noindex/i.test(robotsMeta || "")) {
+  } else if (!robotsMeta) {
+    fail(`${page}: content page must include robots meta`);
+  } else if (!/\bindex\b/i.test(robotsMeta) || !/\bfollow\b/i.test(robotsMeta)) {
+    fail(`${page}: content page robots must include index,follow`);
+  } else if (/\bnoindex\b/i.test(robotsMeta)) {
     fail(`${page}: content page must not noindex`);
   }
 
@@ -213,15 +217,29 @@ for (const page of PAGES) {
       fail(`${page}: Person name must be Norbert Barna, not a job title`);
     if (person?.jobTitle !== "Product VP")
       fail(`${page}: Person jobTitle must be Product VP`);
+    const personImage = typeof person?.image === "string" ? person.image : person?.image?.url;
+    const ogImage = metaContent(html, "property", "og:image");
+    if (personImage !== ogImage || personImage !== "https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg")
+      fail(`${page}: Person image must be the existing OG portrait, not a generated asset`);
   }
 
   if (page.startsWith("work/")) {
     const nodes = parsedSchemas.flatMap((schema) => schemaNodes(schema));
-    const article = nodes.find((node) => node["@type"] === "Article");
+    const schemaTypes = (node) => {
+      const value = node["@type"];
+      return Array.isArray(value) ? value : [value];
+    };
+    const article = nodes.find((node) => schemaTypes(node).includes("Article"));
+    const creativeWorks = nodes.filter((node) =>
+      schemaTypes(node).some((type) => type === "Article" || type === "CreativeWork"));
     if (!article) {
       fail(`${page}: missing Article schema`);
     } else {
       if (article.inLanguage !== "en") fail(`${page}: Article inLanguage must be en`);
+      for (const work of creativeWorks) {
+        if (Object.hasOwn(work, "headline") && work.headline !== title)
+          fail(`${page}: Article/CreativeWork headline must match <title>`);
+      }
       if (!/^\d{4}-\d{2}-\d{2}$/.test(article.datePublished || ""))
         fail(`${page}: Article datePublished must use YYYY-MM-DD`);
       if (!/^\d{4}-\d{2}-\d{2}$/.test(article.dateModified || ""))
@@ -265,6 +283,8 @@ for (const page of PAGES) {
             fail(`${page}: FAQ schema answer drifts from visible content: ${question}`);
         }
       }
+    } else if (nodes.some((node) => node["@type"] === "FAQPage")) {
+      fail(`${page}: FAQPage is reserved for Kineticare while a visible FAQ remains`);
     }
   }
 
@@ -305,8 +325,15 @@ if (!existsSync(llmsPath)) {
       !llms.includes("portfolio case-study statements") ||
       !llms.includes("https://www.linkedin.com/in/barna-norbert/") ||
       !llms.includes("https://www.barnanorbert.com/privacy") ||
-      !llms.includes("https://www.barnanorbert.com/hu/adatvedelem")) {
+      !llms.includes("https://www.barnanorbert.com/hu/adatvedelem") ||
+      !llms.includes("Product VP") ||
+      !llms.includes("https://www.barnanorbert.com/ai-integration") ||
+      !llms.includes("https://www.barnanorbert.com/hu/ai-integracio") ||
+      !llms.includes("https://www.barnanorbert.com/work/kineticare")) {
     fail("llms.txt is missing canonical portfolio, attribution, privacy or contact guidance");
+  }
+  if (/barnanorbert\.com\/contact\b/.test(llms) || existsSync(join(ROOT, "contact.html"))) {
+    fail("llms.txt and the site must not invent a /contact page");
   }
 }
 
