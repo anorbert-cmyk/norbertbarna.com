@@ -2489,14 +2489,27 @@ body.home .navbar {
 /* Selected work (E′ Weighted): 12-column track. Row 1 is 7/5 (Raiffeisen /
  * Instructure) with flush tops and equal band height. Row 2 is three equal
  * 4-span columns. Kineticare / OnRobot remain a 7/5 pair. Compact stacks;
- * do not keep a broken 7/5. A/B/C/D/Mesh stay HOLD. */
+ * do not keep a broken 7/5. A/B/C/D/Mesh stay HOLD.
+ * RowClearfixHole: Webflow `.w-row::before/::after` use grid-area 1/1, which
+ * occupies column 1 and wraps a 7/5 pair onto two rows. Kill those pseudos
+ * on this grid only. */
+.work-section .w-dyn-items.work-grid::before,
+.work-section .w-dyn-items.work-grid::after {
+  content: none;
+  display: none;
+  grid-area: auto;
+}
+
 @media (min-width: 992px) {
   .work-grid,
-  .work-section .w-dyn-items.work-grid {
+  .work-section .w-dyn-items.work-grid,
+  .work-section .w-dyn-items.w-row.work-grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     align-items: start;
     gap: 48px 28px;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .work-section .w-dyn-items.work-grid > .work-collection-item {
@@ -2505,6 +2518,7 @@ body.home .navbar {
     max-width: none;
     margin-top: 0;
     padding: 0;
+    float: none;
   }
 
   .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(1),
@@ -2611,7 +2625,9 @@ body.home .navbar {
     grid-column: auto;
     width: auto;
     min-width: 0;
+    max-width: none;
     margin: 0;
+    float: none;
   }
 
   .work-section .work-card {

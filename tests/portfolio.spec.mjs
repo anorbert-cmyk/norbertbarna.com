@@ -765,10 +765,14 @@ test("works E′ Weighted grid is 7/5 then 3-up with aligned tops", async ({ pag
         bandHeight: band.height,
       };
     });
+    const grid = document.querySelector(".work-section .w-dyn-items.work-grid");
+    const gridStyle = getComputedStyle(grid);
     return {
       items,
       pills: [...document.querySelectorAll(".work-section .work-category-text")].map((el) => el.textContent.trim()),
       titles: [...document.querySelectorAll(".work-section .work-title")].map((el) => el.textContent.trim()),
+      columns: gridStyle.gridTemplateColumns.split(" ").filter(Boolean).length,
+      beforeContent: getComputedStyle(grid, "::before").content,
     };
   });
   expect(layout.titles).toEqual([
@@ -789,12 +793,17 @@ test("works E′ Weighted grid is 7/5 then 3-up with aligned tops", async ({ pag
     "Hungarian product",
     "Product design",
   ]);
+  expect(layout.columns).toBe(12);
+  expect(layout.beforeContent).toMatch(/^(none|""|'')$/);
   expect(Math.abs(layout.items[0].bandTop - layout.items[1].bandTop)).toBeLessThan(2);
   expect(Math.abs(layout.items[0].bandHeight - layout.items[1].bandHeight)).toBeLessThan(2);
   expect(layout.items[0].width).toBeGreaterThan(layout.items[1].width * 1.2);
   const threeUp = [layout.items[2].width, layout.items[3].width, layout.items[4].width];
   expect(Math.abs(threeUp[0] - threeUp[1])).toBeLessThan(4);
   expect(Math.abs(threeUp[1] - threeUp[2])).toBeLessThan(4);
+  expect(Math.abs(layout.items[2].bandTop - layout.items[3].bandTop)).toBeLessThan(2);
+  expect(Math.abs(layout.items[3].bandTop - layout.items[4].bandTop)).toBeLessThan(2);
+  expect(Math.abs(layout.items[5].bandTop - layout.items[6].bandTop)).toBeLessThan(2);
   expect(layout.items[0].bandTop).toBeGreaterThan(64);
   expect(layout.items[0].bandTop).toBeLessThan(900);
 

@@ -552,6 +552,7 @@ English-wash the screenshot.
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) or unequal row-1 band heights | E′ Weighted 7/5 then 3-up; flush tops; equal band height; no dummy column |
+| RowClearfixHole | Webflow `.w-row::before/::after` (`grid-area: 1 / 1`) occupy column 1 so a 7/5 pair cannot share a row | `content: none` on `.work-section .work-grid` pseudos; do not restyle every `.w-row` |
 | WorksDomainChip | `/works` labels restore domain chips, card summaries, or invented metrics | Name + light grey `Product design` pill; Kineticare `Hungarian product`; no summaries |
 | BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined project enquiry button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |

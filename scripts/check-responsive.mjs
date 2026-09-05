@@ -311,6 +311,7 @@ const cssContracts = [
   [/\.work-image-wrap[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/i, "portfolio cover ratio is not reserved"],
   [/\.work-section \.work-image-wrap \.work-image[\s\S]*?object-fit:\s*contain/i, "works stills must use contain, not cover-crop"],
   [/\.work-section \.w-dyn-items\.work-grid > \.work-collection-item:nth-child\(3\)[\s\S]*?span 4/i, "E′ Weighted three-up columns are missing"],
+  [/\.work-section \.w-dyn-items\.work-grid::before[\s\S]*?content:\s*none/i, "RowClearfixHole: /works grid must disable Webflow clearfix"],
   [/\.home-about-video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "homepage video ratio is not reserved"],
   [/\.kineticare-browser-frame video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "Kineticare video ratio is not reserved"],
   [/\.summary \.kineticare-video-caption[\s\S]*?color:\s*#d8e2ec/i, "Kineticare video caption contrast is not guaranteed"],

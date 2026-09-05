@@ -237,6 +237,9 @@ if (/Alexandra|1\.500,00 EUR|1,8→4\.8|\$52M/i.test(works)) {
 if (!/E′ Weighted/.test(design) || /WorksDomainChip/.test(design) === false) {
   fail("design.md must lock E′ Weighted and name WorksDomainChip");
 }
+if (/RowClearfixHole/.test(design) === false) {
+  fail("design.md must name the RowClearfixHole anti-pattern");
+}
 if (/The Value Provided|Gain insights through user interviews/i.test(home)) {
   fail("template about copy returned");
 }
@@ -378,6 +381,9 @@ if (!/\.work-section \.work-card\[data-case="raiffeisen"\][\s\S]{0,80}#fee500/.t
 }
 if (/\.home-work-card-wrap\.top-space[\s\S]{0,80}margin-top:\s*1\d{2}px/.test(css)) {
   fail("StaggerHole: the 140px stagger offset must not return");
+}
+if (!/\.work-grid::before[\s\S]{0,160}content:\s*none/.test(css)) {
+  fail("RowClearfixHole: /works grid must disable Webflow .w-row clearfix pseudos");
 }
 if (!/--site-readable:\s*720px/.test(css)) {
   fail("body lock: reading measure must be 720px");
