@@ -65,7 +65,7 @@ dated search observations, article briefs, ChatGPT discovery and advertising lim
 
 Implemented in: title, meta description, H1 + hero copy, and JSON-LD.
 `jobTitle` and ProfilePage `name` use Product VP. Person `name` is
-`Norbert Barna`.
+`Norbert Barna`. Person `image` is the existing OG portrait URL.
 
 ### /works
 

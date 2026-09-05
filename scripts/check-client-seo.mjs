@@ -51,9 +51,13 @@ for (const file of SERVICE_PAGES) {
   assert.equal(pages[0].inLanguage, language, `${file}: schema language`);
   assert.equal(pages[0].isPartOf?.["@id"], `${origin}/#website`, `${file}: shared website identity`);
   assert.equal(services[0].provider?.["@id"], `${origin}/#person`, `${file}: real provider identity`);
+  assert.equal(services[0].provider?.["@type"], "Person", `${file}: provider is the home Person`);
+  assert.equal(services[0].provider?.jobTitle, "Product VP", `${file}: provider jobTitle lock`);
+  assert(!Object.hasOwn(services[0], "offers"), `${file}: do not invent Offer or pricing`);
+  assert(!/"@type":\s*"(?:Aggregate)?Offer"|priceCurrency|"price"\s*:/.test(JSON.stringify(services[0])), `${file}: no invented price`);
   assert(text(body).includes(services[0].name), `${file}: Service name must be visible`);
   assert(text(body).includes(services[0].description), `${file}: Service description must match visible copy`);
-  assert(!graph.some(node => ["Article", "FAQPage", "AggregateRating", "Review"].includes(node["@type"])), `${file}: not a case article or fabricated review/rich result`);
+  assert(!graph.some(node => ["Article", "FAQPage", "AggregateRating", "Review", "Offer", "AggregateOffer"].includes(node["@type"])), `${file}: not a case article or fabricated review/rich result`);
 }
 
 console.log("OK: two client landing pages have reciprocal languages, visible service data, proof links and native contact actions with separate consent-gated analytics");

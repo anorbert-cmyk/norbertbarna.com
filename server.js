@@ -1,6 +1,31 @@
 const express = require("express");
 const compression = require("compression");
+const fs = require("fs");
 const path = require("path");
+
+const GOOGLE_SITE_VERIFICATION = "";
+const GSC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,100}$/;
+const GSC_PLACEHOLDER = /replace_with|placeholder|example_token|your_gsc|changeme/i;
+
+function googleSiteVerificationToken() {
+  const token = String(
+    process.env.GOOGLE_SITE_VERIFICATION ||
+      process.env.GSC_VERIFICATION ||
+      GOOGLE_SITE_VERIFICATION ||
+      ""
+  ).trim();
+  if (!GSC_TOKEN_PATTERN.test(token) || GSC_PLACEHOLDER.test(token)) return "";
+  return token;
+}
+
+function injectGoogleSiteVerification(html) {
+  const token = googleSiteVerificationToken();
+  if (!token || /name=["']google-site-verification["']/i.test(html)) return html;
+  return html.replace(
+    /<meta charset="utf-8"\s*\/>/i,
+    `<meta charset="utf-8"/>\n<meta name="google-site-verification" content="${token}"/>`
+  );
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +53,7 @@ app.use((req, res, next) => {
       "font-src 'self' fonts.gstatic.com data:",
       "img-src 'self' data:",
       "media-src 'self'",
-      "connect-src 'self' fonts.googleapis.com",
+      "connect-src 'self' fonts.googleapis.com https://eu.i.posthog.com",
       "object-src 'none'",
       "base-uri 'self'",
       "frame-ancestors 'self'",
@@ -157,6 +182,15 @@ app.use(
 app.use((req, res, next) => {
   if (req.path === "/404" || req.path === "/404.html") return sendNotFound(res);
   next();
+});
+
+app.get("/", (req, res, next) => {
+  if (!googleSiteVerificationToken()) return next();
+  fs.readFile(path.join(__dirname, "index.html"), "utf8", (err, html) => {
+    if (err) return next(err);
+    res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    res.type("html").send(injectGoogleSiteVerification(html));
+  });
 });
 
 // Serve pages; extensions:["html"] maps clean URLs (/works, /work/benker)

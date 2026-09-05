@@ -188,7 +188,9 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    systems.` Em dash. Do not use “AI Product Design Lead” in the footer,
    title, H1, meta, or JSON-LD name. JSON-LD `jobTitle`, ProfilePage
    `name`, and visible H1 use Product VP. Person `name` stays
-   `Norbert Barna`.
+   `Norbert Barna`. Home Person JSON-LD must include `image` using the
+   existing OG portrait `assets/images/og/norbert-barna.jpg`. Do not generate
+   a new headshot.
 2. Controls under the lede, left: LinkedIn and Email share chrome — height
    44px, radius 12px, 1px black stroke, transparent fill, black ink. Not
    grey fill. Not radius 999. Not a filled pill. LinkedIn is the `in` icon
@@ -237,14 +239,20 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    columns, brand styling or contact form. This row uses the existing ink and
    Inter and does not restyle the mesh.
 
-**Optional analytics (2026-09-04):** `/privacy` and `/hu/adatvedelem` are paired
-utility pages. This release is explicitly OFF via the first-loaded, static
-`analytics-config.js`; both consumers must return before any side effects unless
-the value is exactly `true`. Settings are hidden in HTML and no consent banner
-is shown while OFF. The notice, metadata and JSON-LD describe this inactive state.
-Activation is a separate reviewed release after processor/retention confirmation,
-with updated notices and a fresh consent version (old preferences cannot opt in).
-The active-mode component below is preparation, not enabled production tracking.
+**Optional analytics (2026-09-05):** `/privacy` and `/hu/adatvedelem` are paired
+utility pages. This release is ON via the first-loaded, static
+`analytics-config.js` (`enabled: true`). Both consumers still return before any
+side effects unless the value is exactly `true`. Settings start hidden in HTML
+and are revealed by the consent owner. A first visit shows the existing non-modal
+banner; notices, metadata and JSON-LD describe optional, consent-gated PostHog EU
+capture of page views and Email-button clicks. Insights lock: project **265707**
+only, public write-only key in `analytics.js`, host `https://eu.i.posthog.com`.
+Consent before any capture. Do not add PostHog dashboards or the official snippet
+to this repo. The official `posthog-js` snippet
+is not used, so CSP allows `https://eu.i.posthog.com` on `connect-src` only — not
+`eu-assets.i.posthog.com` on `script-src` (asset host not needed). Google Search Console HTML verification is
+injected by `server.js` from `GOOGLE_SITE_VERIFICATION` or `GSC_VERIFICATION`
+when a real token is present. Never invent a token in HTML.
 
 The two pages are paired
 WebPage notices, composed from existing reading-width and type primitives, not
@@ -520,6 +528,8 @@ English-wash the screenshot.
 | InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
 | GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
+| PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
+| HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |

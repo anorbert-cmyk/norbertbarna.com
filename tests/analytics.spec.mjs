@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 const endpoint = 'https://eu.i.posthog.com/i/v0/e/';
-// Explicit active-mode fixture; the shipped configuration is always OFF.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     window.PortfolioAnalyticsConfig = Object.freeze({ enabled: true });

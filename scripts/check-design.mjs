@@ -185,6 +185,9 @@ if (homeLd?.["@type"] !== "ProfilePage" || homeLd?.name !== "Norbert Barna — P
 if (homeLd?.mainEntity?.["@type"] !== "Person" || homeLd?.mainEntity?.name !== "Norbert Barna") {
   fail("JobTitleDrift: Person name must be Norbert Barna, not a job title");
 }
+if (homeLd?.mainEntity?.image !== "https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg") {
+  fail("PersonImageMissing: home Person image must be the existing OG portrait");
+}
 const homeServices = home.match(/<section\b[^>]*class="home-service-section\b[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
 if (!homeServices || /footer-email|hero-work-link|footer-cta|linkedin\.com/.test(homeServices)) {
   fail("home services must remain a professional overview without the removed engagement actions");

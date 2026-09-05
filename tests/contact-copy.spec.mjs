@@ -14,6 +14,12 @@ const viewports = [
 
 test.use({ reducedMotion: "reduce" });
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
+  });
+});
+
 // These are text-only resize checks, not CSS zoom or a narrower screenshot.
 // Snapshot every header/hero computed size before changing any ancestor so
 // nested elements inherit neither an accidental 4x nor an untested 1x size.
@@ -408,7 +414,7 @@ for (const viewport of viewports) {
         enabled: window.PortfolioAnalyticsConfig.enabled,
         consent: typeof window.PortfolioConsent,
         analytics: typeof window.PortfolioAnalyticsReady,
-      }))).toEqual({ enabled: false, consent: "undefined", analytics: "undefined" });
+      }))).toEqual({ enabled: true, consent: "object", analytics: "boolean" });
       expect(vendorRequests).toEqual([]);
     });
   }

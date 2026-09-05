@@ -142,10 +142,11 @@ try {
     assert(pageCache.get("max-age") === "0", `${pagePath} must use max-age=0`);
     assert(pageCache.has("must-revalidate"), `${pagePath} must revalidate after a deploy`);
     assert(
-      /connect-src\s+'self'\s+fonts\.googleapis\.com(?:;|$)/i.test(contentSecurityPolicy),
-      `${pagePath} blocks the WebFont stylesheet request`
+      /connect-src\s+'self'\s+fonts\.googleapis\.com\s+https:\/\/eu\.i\.posthog\.com(?:;|$)/i.test(contentSecurityPolicy),
+      `${pagePath} must keep Fonts and the EU PostHog capture host`
     );
-    assert(!contentSecurityPolicy.includes('posthog.com'), `${pagePath}: OFF release must not permit vendor capture`);
+    assert(!contentSecurityPolicy.includes("eu-assets"), `${pagePath}: must not allow the PostHog JS SDK asset host`);
+    assert(!/script-src[^;]*posthog/i.test(contentSecurityPolicy), `${pagePath}: PostHog must not be on script-src`);
   }
 
   const llms = await fetch(`${baseUrl}/llms.txt`);
@@ -154,6 +155,51 @@ try {
   assert(/text\/plain/i.test(llms.headers.get("content-type") || ""), "/llms.txt is not text/plain");
   assert((await llms.text()).includes("Norbert Barna — Product VP Portfolio"), "/llms.txt content is incomplete");
   assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
+
+  const homeWithoutToken = await fetch(`${baseUrl}/`);
+  assert(homeWithoutToken.ok, "homepage without GSC token did not return 200");
+  assert(
+    !/google-site-verification/i.test(await homeWithoutToken.text()),
+    "empty GSC config must not invent a verification token"
+  );
+
+  const previousGsc = process.env.GOOGLE_SITE_VERIFICATION;
+  const previousGscAlias = process.env.GSC_VERIFICATION;
+  delete process.env.GSC_VERIFICATION;
+  process.env.GOOGLE_SITE_VERIFICATION = "abcdefghijklmnopqrstuvwxyz0123456789abcd";
+  try {
+    const verified = await fetch(`${baseUrl}/`);
+    const verifiedHtml = await verified.text();
+    assert(verified.ok, "homepage with GSC token did not return 200");
+    assert(
+      verifiedHtml.includes(
+        '<meta name="google-site-verification" content="abcdefghijklmnopqrstuvwxyz0123456789abcd"/>'
+      ),
+      "valid GSC token must be injected on the homepage"
+    );
+    const verifiedCache = cacheDirectives(verified.headers.get("cache-control") || "");
+    assert(verifiedCache.get("max-age") === "0", "GSC homepage must revalidate");
+    assert(verifiedCache.has("must-revalidate"), "GSC homepage must revalidate after a deploy");
+  } finally {
+    if (previousGsc === undefined) delete process.env.GOOGLE_SITE_VERIFICATION;
+    else process.env.GOOGLE_SITE_VERIFICATION = previousGsc;
+    if (previousGscAlias === undefined) delete process.env.GSC_VERIFICATION;
+    else process.env.GSC_VERIFICATION = previousGscAlias;
+  }
+
+  process.env.GOOGLE_SITE_VERIFICATION = "REPLACE_WITH_GSC_TOKEN";
+  try {
+    const placeholder = await fetch(`${baseUrl}/`);
+    assert(
+      !/google-site-verification/i.test(await placeholder.text()),
+      "placeholder GSC values must not be injected"
+    );
+  } finally {
+    if (previousGsc === undefined) delete process.env.GOOGLE_SITE_VERIFICATION;
+    else process.env.GOOGLE_SITE_VERIFICATION = previousGsc;
+    if (previousGscAlias === undefined) delete process.env.GSC_VERIFICATION;
+    else process.env.GSC_VERIFICATION = previousGscAlias;
+  }
 
   for (const [legacyPath, expectedLocation] of [
     ["/ai-integration.html?utm_source=test", "/ai-integration?utm_source=test"],
@@ -183,6 +229,15 @@ try {
     assert(redirect.status === 301, `${legacyPath} did not return a permanent redirect`);
     assert(redirect.headers.get("location") === expectedLocation, `${legacyPath} lost its canonical path or query`);
   }
+
+  const apexRobots = await rawGet(address.port, "/robots.txt", {
+    host: "barnanorbert.com",
+  });
+  assert(apexRobots.statusCode === 301, "apex robots.txt must catch-all redirect to www");
+  assert(
+    apexRobots.headers.location === "https://www.barnanorbert.com/robots.txt",
+    "apex robots.txt must keep its path on www"
+  );
 
   const apexWorks = await rawGet(address.port, "/works", {
     host: "barnanorbert.com",

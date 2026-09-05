@@ -17,6 +17,10 @@ const examples = [
 test.beforeEach(async ({ page }) => {
   page.__mediaErrors = [];
   page.on('pageerror', error => page.__mediaErrors.push(error.message));
+  await page.addInitScript(() => {
+    localStorage.setItem('bn-analytics-consent-v1', JSON.stringify({ version: 1, decision: 'rejected', timestamp: Date.now() }));
+  });
+  await page.route(/posthog\.com/, route => route.abort());
 });
 test.afterEach(async ({ page }) => {
   expect(page.__mediaErrors).toEqual([]);
