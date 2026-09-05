@@ -1,7 +1,4 @@
 /* Consent-gated, minimal PostHog Capture API transport. No SDK, queue or replay.
- * Insights lock: EU project 265707 only. Host https://eu.i.posthog.com.
- * Consent before any capture. Official snippet and its asset host stay unused.
- * Do not add PostHog dashboards to this repo.
  * API/session contract: https://posthog.com/docs/api/capture
  * https://posthog.com/docs/data/sessions#custom-session-ids
  * Delivery is best effort. A completed transmission cannot be recalled.

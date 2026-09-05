@@ -3,9 +3,6 @@ const compression = require("compression");
 const fs = require("fs");
 const path = require("path");
 
-// Google Search Console HTML-tag token. Paste once here, or set Railway
-// env GOOGLE_SITE_VERIFICATION / GSC_VERIFICATION. Leave empty until issued.
-// Do not invent a token. Google only needs this on the homepage.
 const GOOGLE_SITE_VERIFICATION = "";
 const GSC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,100}$/;
 const GSC_PLACEHOLDER = /replace_with|placeholder|example_token|your_gsc|changeme/i;
@@ -56,8 +53,6 @@ app.use((req, res, next) => {
       "font-src 'self' fonts.gstatic.com data:",
       "img-src 'self' data:",
       "media-src 'self'",
-      // First-party analytics.js POSTs to the EU Capture API after consent.
-      // Do not allowlist the official snippet asset host: this site does not load posthog-js.
       "connect-src 'self' fonts.googleapis.com https://eu.i.posthog.com",
       "object-src 'none'",
       "base-uri 'self'",
@@ -189,8 +184,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Inject GSC verification only when a real token is configured. Empty or
-// placeholder values leave static HTML unchanged.
 app.get("/", (req, res, next) => {
   if (!googleSiteVerificationToken()) return next();
   fs.readFile(path.join(__dirname, "index.html"), "utf8", (err, html) => {
