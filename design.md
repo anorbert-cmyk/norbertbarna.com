@@ -304,10 +304,17 @@ baseline.
 Home selected work shows 1–6 as compact stacked rows (`.work-list` / `.work-row`):
 72–96px thumbs cropped from existing case images, live titles, live one-liners,
 hairline between rows, quiet arrow. Never giant 2-up color cards.
-`/works` shows all seven in that order on the 12-column **7/5** grid; the seventh
-card stays span 7. Do not lead the **list** with a
-prediction-market MVP or a Hungarian product on an otherwise English hiring
-path.
+`/works` shows all seven in that order as the locked **E′ Weighted** grid
+(A/B/C/D/Mesh remain HOLD). Row 1 is **7/5** (Raiffeisen wider / Instructure
+narrower) with flush tops and equal band height. Row 2 is three equal 4-span
+columns (Bitpanda, Benker, SportsGambit). Kineticare and OnRobot stay a 7/5
+pair. Labels under each band are the project name plus a light grey pill:
+`Product design` on six cards; Kineticare keeps `Hungarian product`. No domain
+chips, no card summaries, no invented metrics. Color bands use the shipped
+case fields. Stills are existing complete UI with `object-fit: contain`.
+Compact stacks to one column below 600px and a 2-up below 992px — never a
+broken 7/5. Do not lead the **list** with a prediction-market MVP or a
+Hungarian product on an otherwise English hiring path.
 
 **Header (locked):**
 
@@ -415,7 +422,8 @@ invented descriptions from the compact-row mock.
 
 **Works fold:** H1 `Selected work` (same subject as `<title>`),
 two-line intro max, first card (Raiffeisen) visible in a 900px-tall desktop
-viewport. No “these aren’t mockups” line. No “Design Case Studies” as the
+viewport. E′ Weighted color bands sit under the title — not 4:5 CoverPoster
+crops. No “these aren’t mockups” line. No “Design Case Studies” as the
 primary title.
 
 **Home professional experience:** paper cards until hover (fine pointer) or
@@ -543,7 +551,8 @@ English-wash the screenshot.
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
-| StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) | 12-column 7/5 rhythm; tops aligned; no dummy column |
+| StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) or unequal row-1 band heights | E′ Weighted 7/5 then 3-up; flush tops; equal band height; no dummy column |
+| WorksDomainChip | `/works` labels restore domain chips, card summaries, or invented metrics | Name + light grey `Product design` pill; Kineticare `Hungarian product`; no summaries |
 | BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined project enquiry button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
@@ -587,7 +596,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
 `.work-card-summary` `.home-work-footer` `.nav-cta`
 
-**Works:** `.work-grid` `.work-card` `.work-image`; `.home-banner-text` max two sentences.
+**Works:** `.work-grid` `.work-card` `.work-image` `.work-category-text` (light grey Product design / Hungarian product pill on `/works`). `.home-banner-text` max two sentences.
 
 **Case:** `article.case-study-article` `h1#case-title` `.case-hero-media`
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`

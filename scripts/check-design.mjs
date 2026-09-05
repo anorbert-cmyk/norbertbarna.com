@@ -221,6 +221,22 @@ if (!/Product VP/.test(llmsOpener) || /product design leader/i.test(llmsOpener))
 }
 if (/These aren.t mockups/i.test(works)) fail("/works still has the defensive manifesto");
 if (!works.includes("Hungarian product")) fail("Kineticare card must flag the Hungarian product");
+if (/work-card-summary/.test(works)) fail("WorksDomainChip: /works must not restore card summaries");
+if (/Full Ecosystem Redesign|App-Web Design|AI-Based Prediction Market|Product Design · Robotics UI/.test(works)) {
+  fail("WorksDomainChip: /works labels must not restore domain chips");
+}
+if ((works.match(/Product design/g) || []).length !== 6) {
+  fail("E′ Weighted: six /works cards use the Product design pill");
+}
+if (!/data-case="raiffeisen"/.test(works) || !/student\.6dddfe157d/.test(works) || !/insights-feed\.bd3d5a6af0/.test(works)) {
+  fail("E′ Weighted: Raiffeisen and Instructure must reuse complete contain stills");
+}
+if (/Alexandra|1\.500,00 EUR|1,8→4\.8|\$52M/i.test(works)) {
+  fail("FakePII: /works must not invent balances, names, or metrics");
+}
+if (!/E′ Weighted/.test(design) || /WorksDomainChip/.test(design) === false) {
+  fail("design.md must lock E′ Weighted and name WorksDomainChip");
+}
 if (/The Value Provided|Gain insights through user interviews/i.test(home)) {
   fail("template about copy returned");
 }
@@ -338,8 +354,27 @@ if ((home.match(/class="work-row"/g) || []).length !== 6) {
 if (!/\.work-grid[\s\S]{0,200}repeat\(12,\s*minmax\(0,\s*1fr\)\)/.test(css)) {
   fail("work grid must be a 12-column track");
 }
-if (!/:nth-child\(odd\)[\s\S]{0,80}span 7/.test(css) || !/:nth-child\(even\)[\s\S]{0,80}span 5/.test(css)) {
-  fail("work grid must keep the 7/5 rhythm");
+if (!/:nth-child\(1\)[\s\S]{0,200}span 7/.test(css) || !/:nth-child\(2\)[\s\S]{0,200}span 5/.test(css)) {
+  fail("E′ Weighted: row 1 must be 7/5 (Raiffeisen / Instructure)");
+}
+if (!/:nth-child\(3\)[\s\S]{0,220}span 4/.test(css) || !/:nth-child\(5\)[\s\S]{0,80}span 4/.test(css)) {
+  fail("E′ Weighted: row 2 must be three equal 4-span columns");
+}
+if (!/:nth-child\(6\)[\s\S]{0,80}span 7/.test(css) || !/:nth-child\(7\)[\s\S]{0,80}span 5/.test(css)) {
+  fail("E′ Weighted: Kineticare / OnRobot must remain a 7/5 pair");
+}
+if (/:nth-child\(odd\)[\s\S]{0,80}span 7/.test(css)) {
+  fail("E′ Weighted: do not restore odd/even 7/5 on every card");
+}
+if (!/\.work-section \.work-image-wrap \.work-image[\s\S]{0,80}object-fit:\s*contain/.test(css)) {
+  fail("E′ Weighted: /works bands must contain complete UI, not cover-crop");
+}
+if (!/\.work-section \.work-card\[data-case="raiffeisen"\][\s\S]{0,80}#fee500/.test(css) ||
+    !/\.work-section \.work-card\[data-case="instructure"\][\s\S]{0,80}#0c1b2f/.test(css) ||
+    !/\.work-section \.work-card\[data-case="bitpanda"\][\s\S]{0,80}#203d36/.test(css) ||
+    !/\.work-section \.work-card\[data-case="benker"\][\s\S]{0,80}#d9daf2/.test(css) ||
+    !/\.work-section \.work-card\[data-case="sportsgambit"\][\s\S]{0,80}#aaed15/.test(css)) {
+  fail("E′ Weighted: color bands must use the shipped case fields");
 }
 if (/\.home-work-card-wrap\.top-space[\s\S]{0,80}margin-top:\s*1\d{2}px/.test(css)) {
   fail("StaggerHole: the 140px stagger offset must not return");

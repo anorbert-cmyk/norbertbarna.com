@@ -750,6 +750,66 @@ test("skip link and full-card project action work without hover", async ({ page 
   await expect(page).toHaveURL(/\/work\/raiffeisen$/);
 });
 
+test("works E′ Weighted grid is 7/5 then 3-up with aligned tops", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await openStable(page, "/works");
+  const layout = await page.evaluate(() => {
+    const items = [...document.querySelectorAll(".work-section .work-collection-item")].map((el) => {
+      const box = el.getBoundingClientRect();
+      const band = el.querySelector(".work-image-wrap").getBoundingClientRect();
+      return {
+        left: box.left,
+        width: box.width,
+        bandTop: band.top,
+        bandHeight: band.height,
+      };
+    });
+    return {
+      items,
+      pills: [...document.querySelectorAll(".work-section .work-category-text")].map((el) => el.textContent.trim()),
+      titles: [...document.querySelectorAll(".work-section .work-title")].map((el) => el.textContent.trim()),
+    };
+  });
+  expect(layout.titles).toEqual([
+    "Raiffeisen",
+    "Instructure",
+    "Bitpanda",
+    "Benker",
+    "SportsGambit",
+    "Kineticare",
+    "OnRobot",
+  ]);
+  expect(layout.pills).toEqual([
+    "Product design",
+    "Product design",
+    "Product design",
+    "Product design",
+    "Product design",
+    "Hungarian product",
+    "Product design",
+  ]);
+  expect(Math.abs(layout.items[0].bandTop - layout.items[1].bandTop)).toBeLessThan(2);
+  expect(Math.abs(layout.items[0].bandHeight - layout.items[1].bandHeight)).toBeLessThan(2);
+  expect(layout.items[0].width).toBeGreaterThan(layout.items[1].width * 1.2);
+  const threeUp = [layout.items[2].width, layout.items[3].width, layout.items[4].width];
+  expect(Math.abs(threeUp[0] - threeUp[1])).toBeLessThan(4);
+  expect(Math.abs(threeUp[1] - threeUp[2])).toBeLessThan(4);
+  expect(layout.items[0].bandTop).toBeGreaterThan(64);
+  expect(layout.items[0].bandTop).toBeLessThan(900);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const stacked = await page.evaluate(() => {
+    const items = [...document.querySelectorAll(".work-section .work-collection-item")].map((el) => el.getBoundingClientRect());
+    return {
+      widths: items.map((box) => box.width),
+      stacked: items.every((box, index, all) => index === 0 || box.top >= all[index - 1].bottom - 2),
+    };
+  });
+  expect(stacked.stacked).toBe(true);
+  expect(Math.max(...stacked.widths) - Math.min(...stacked.widths)).toBeLessThan(8);
+});
+
 test("reduced-motion preference stops active animation and video", async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 900 });
   await page.emulateMedia({ reducedMotion: "no-preference" });

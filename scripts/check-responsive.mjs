@@ -17,7 +17,7 @@ const CONTENT_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...UTILITY_PAG
 const ALL_PAGES = [...CONTENT_PAGES, "404.html"];
 const CARD_SIZES = {
   "index.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(40vw - 25.6px), (max-width: 1439px) 37.6vw, (max-width: 1829px) 30.08vw, (max-width: 1919px) 550.4px, 516px",
-  "works.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(48.5vw - 32px), (max-width: 1276px) 45.5vw, (max-width: 1599px) calc(600px - 1.5vw), 576px",
+  "works.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 991px) calc(50vw - 28px), (max-width: 1279px) 58vw, 680px",
   related: "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(50vw - 42px), (max-width: 1276px) calc(47vw - 10px), 590px",
 };
 let failures = 0;
@@ -77,20 +77,31 @@ for (const page of ALL_PAGES) {
       const height = Number(attribute(image, "height"));
       const src = attribute(image, "src");
       const srcset = attribute(image, "srcset");
-      const expectedSizes = page.startsWith("work/") ? CARD_SIZES.related : CARD_SIZES[page];
-      if (width * 5 !== height * 4) fail(`${page}: project cover is not an intrinsic 4:5 crop`);
-      if (!/assets\/images\/responsive\/card-[a-z]+\.\d+\.webp$/i.test(src)) {
-        fail(`${page}: project cover does not use a dedicated WebP crop`);
-      }
-      if (attribute(image, "sizes") !== expectedSizes) fail(`${page}: project cover sizes does not match its layout`);
       if (attribute(image, "decoding") !== "async") fail(`${page}: project cover must decode asynchronously`);
       const candidates = srcset.split(",").map((candidate) => candidate.trim().split(/\s+/)[0]).filter(Boolean);
-      if (candidates.length < 3 || candidates.some((candidate) => !/card-[a-z]+\.\d+\.webp$/i.test(candidate))) {
-        fail(`${page}: project cover srcset is incomplete`);
-      }
+      if (candidates.length < 3) fail(`${page}: project cover srcset is incomplete`);
       for (const candidate of candidates) {
         const local = join(ROOT, dirname(page), candidate);
         if (!existsSync(local)) fail(`${page}: project cover candidate is missing: ${candidate}`);
+      }
+      if (page === "works.html") {
+        if (!/assets\/images\/responsive\//.test(src) || /banking-experience|student-comp-set|data-insights/i.test(src)) {
+          fail(`${page}: E′ Weighted stills must be existing complete UI, not a CoverPoster or Figma leftover`);
+        }
+        if (attribute(image, "sizes") !== CARD_SIZES["works.html"]) fail(`${page}: project cover sizes does not match its layout`);
+        if (candidates.some((candidate) => !/assets\/images\/responsive\//.test(candidate))) {
+          fail(`${page}: project cover srcset is incomplete`);
+        }
+      } else {
+        const expectedSizes = page.startsWith("work/") ? CARD_SIZES.related : CARD_SIZES[page];
+        if (width * 5 !== height * 4) fail(`${page}: project cover is not an intrinsic 4:5 crop`);
+        if (!/assets\/images\/responsive\/card-[a-z]+\.\d+\.webp$/i.test(src)) {
+          fail(`${page}: project cover does not use a dedicated WebP crop`);
+        }
+        if (attribute(image, "sizes") !== expectedSizes) fail(`${page}: project cover sizes does not match its layout`);
+        if (candidates.some((candidate) => !/card-[a-z]+\.\d+\.webp$/i.test(candidate))) {
+          fail(`${page}: project cover srcset is incomplete`);
+        }
       }
     }
   }
@@ -279,7 +290,10 @@ for (const page of ["index.html", "works.html"]) {
   } else {
     const cards = countTagsByClass(html, "div", "work-card");
     const summaries = countTagsByClass(html, "p", "work-card-summary");
-    if (cards !== summaries) fail(`${page}: every primary project card needs a visible scope summary`);
+    const pills = countTagsByClass(html, "p", "work-category-text");
+    if (cards !== 7) fail(`${page}: E′ Weighted keeps all seven hiring-order cards`);
+    if (summaries !== 0) fail(`${page}: E′ Weighted labels are name + pill only — no card summaries`);
+    if (pills !== cards) fail(`${page}: every primary project card needs a Product design or Hungarian product pill`);
   }
 }
 
@@ -295,6 +309,8 @@ const cssContracts = [
   [/@media\s*\(max-width:\s*991px\)/i, "tablet/mobile layout breakpoint is missing"],
   [/@media\s*\(max-width:\s*599px\)/i, "compact mobile layout breakpoint is missing"],
   [/\.work-image-wrap[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/i, "portfolio cover ratio is not reserved"],
+  [/\.work-section \.work-image-wrap \.work-image[\s\S]*?object-fit:\s*contain/i, "works stills must use contain, not cover-crop"],
+  [/\.work-section \.w-dyn-items\.work-grid > \.work-collection-item:nth-child\(3\)[\s\S]*?span 4/i, "E′ Weighted three-up columns are missing"],
   [/\.home-about-video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "homepage video ratio is not reserved"],
   [/\.kineticare-browser-frame video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "Kineticare video ratio is not reserved"],
   [/\.summary \.kineticare-video-caption[\s\S]*?color:\s*#d8e2ec/i, "Kineticare video caption contrast is not guaranteed"],
