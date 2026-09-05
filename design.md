@@ -237,14 +237,17 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    columns, brand styling or contact form. This row uses the existing ink and
    Inter and does not restyle the mesh.
 
-**Optional analytics (2026-09-04):** `/privacy` and `/hu/adatvedelem` are paired
-utility pages. This release is explicitly OFF via the first-loaded, static
-`analytics-config.js`; both consumers must return before any side effects unless
-the value is exactly `true`. Settings are hidden in HTML and no consent banner
-is shown while OFF. The notice, metadata and JSON-LD describe this inactive state.
-Activation is a separate reviewed release after processor/retention confirmation,
-with updated notices and a fresh consent version (old preferences cannot opt in).
-The active-mode component below is preparation, not enabled production tracking.
+**Optional analytics (2026-09-05):** `/privacy` and `/hu/adatvedelem` are paired
+utility pages. This release is ON via the first-loaded, static
+`analytics-config.js` (`enabled: true`). Both consumers still return before any
+side effects unless the value is exactly `true`. Settings start hidden in HTML
+and are revealed by the consent owner. A first visit shows the existing non-modal
+banner; notices, metadata and JSON-LD describe optional, consent-gated PostHog EU
+capture of page views and Email-button clicks. The official `posthog-js` snippet
+is not used, so CSP allows `https://eu.i.posthog.com` on `connect-src` only — not
+`eu-assets.i.posthog.com` on `script-src`. Google Search Console HTML verification is
+injected by `server.js` from `GOOGLE_SITE_VERIFICATION` or `GSC_VERIFICATION`
+when a real token is present. Never invent a token in HTML.
 
 The two pages are paired
 WebPage notices, composed from existing reading-width and type primitives, not

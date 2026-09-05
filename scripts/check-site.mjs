@@ -117,6 +117,13 @@ for (const page of PAGES) {
   if (!is404 && metaContent(html, "name", "twitter:site")) {
     fail("InventedSocial: twitter:site must stay omitted until a documented X handle exists");
   }
+  const robotsMeta = metaContent(html, "name", "robots");
+  if (is404) {
+    if (!/noindex/i.test(robotsMeta || "")) fail(`${page}: error document must noindex`);
+  } else if (/noindex/i.test(robotsMeta || "")) {
+    fail(`${page}: content page must not noindex`);
+  }
+
   if (!is404 && metaContent(html, "name", "google-site-verification")) {
     fail("InventedSocial: do not invent a Google Search Console token");
   }
@@ -296,8 +303,10 @@ if (!existsSync(llmsPath)) {
   const llms = readFileSync(llmsPath, "utf8");
   if (!llms.includes("https://www.barnanorbert.com/works") ||
       !llms.includes("portfolio case-study statements") ||
-      !llms.includes("https://www.linkedin.com/in/barna-norbert/")) {
-    fail("llms.txt is missing canonical portfolio, attribution or contact guidance");
+      !llms.includes("https://www.linkedin.com/in/barna-norbert/") ||
+      !llms.includes("https://www.barnanorbert.com/privacy") ||
+      !llms.includes("https://www.barnanorbert.com/hu/adatvedelem")) {
+    fail("llms.txt is missing canonical portfolio, attribution, privacy or contact guidance");
   }
 }
 

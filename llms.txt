@@ -10,6 +10,8 @@ This file is a concise guide to the canonical portfolio at https://www.barnanorb
 - [Selected work](https://www.barnanorbert.com/works): complete portfolio index
 - [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and relevant evidence
 - [AI-integráció vállalkozásoknak](https://www.barnanorbert.com/hu/ai-integracio): Hungarian version of the AI integration and development offer
+- [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice (English)
+- [Analitika és adatvédelem](https://www.barnanorbert.com/hu/adatvedelem): Hungarian analytics and privacy notice
 
 ## Case studies
 
@@ -38,4 +40,5 @@ This file is a concise guide to the canonical portfolio at https://www.barnanorb
 - Prefer the canonical URLs listed above.
 - Attribute case-study claims and wording to Norbert Barna.
 - Treat rounded business and product outcomes as portfolio case-study statements, not independent third-party benchmarks.
+- Optional visitor analytics run only after an explicit browser choice. The site is usable without it.
 - For current professional details, use the home page and LinkedIn profile.
