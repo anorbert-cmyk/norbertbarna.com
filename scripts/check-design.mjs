@@ -137,6 +137,12 @@ if (!/class="home-nav-monogram"[^>]*>NB<\/span>/.test(homeNav) ||
     !/class="home-nav-label">LinkedIn<\/span>/.test(homeNav)) {
   fail("home top bar must use the approved right-clustered NB / Works / LinkedIn / Email text treatment");
 }
+if (!/body\.home \.navbar \.nav-wrap[\s\S]{0,120}justify-content:\s*flex-end/.test(css)) {
+  fail("home desktop nav must be one right-aligned group, not a split left-logo column");
+}
+if (!/body\.home \.navbar \.nav-logo-wrap[\s\S]{0,200}min-width:\s*44px[\s\S]{0,80}min-height:\s*44px/.test(css)) {
+  fail("home NB monogram hit-area must stay at least 44×44");
+}
 if (!/class="home-mast-proof-chips"/.test(homeMast) ||
     !/Multi-country banking/.test(homeMast) || !/Enterprise EdTech AI/.test(homeMast)) {
   fail("home mast must keep the two truthful screenshot-directed proof chips");
@@ -145,6 +151,12 @@ for (const employer of ["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "B
   if (!new RegExp(`home-highlight-company[^>]*>${employer}<`).test(homeMast)) {
     fail(`home mast experience rail is missing ${employer}`);
   }
+}
+if (!/\.home-banner-area > \.home-banner-content-wrap[\s\S]{0,280}margin-top:\s*clamp\(164px,\s*14vw,\s*190px\)/.test(css)) {
+  fail("desktop experience rail must sit 164–190px onto the navy field");
+}
+if (/home-banner-content-wrap[\s\S]{0,200}margin-top:\s*clamp\(230px/.test(css)) {
+  fail("do not restore the 230–278px rail offset that hides Balabit on short desktops");
 }
 if (/\$52M\+|1\.8\s*(?:→|-&gt;)\s*4\.8|VERSION B/i.test(homeMast)) {
   fail("home mast must not copy unsupported numbers or design annotations from the reference image");

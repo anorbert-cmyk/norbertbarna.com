@@ -1820,6 +1820,33 @@ test("1440 home header: reference composition, truthful proof and text navigatio
     { claim: "Enterprise EdTech AI", company: "Instructure" },
   ]);
   expect(fold.highlights).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  const chrome = await page.evaluate(() => {
+    const wrap = document.querySelector(".nav-wrap").getBoundingClientRect();
+    const logo = document.querySelector(".nav-logo-wrap").getBoundingClientRect();
+    const works = document.querySelector('a.nav-link[href="/works"]').getBoundingClientRect();
+    const linkedin = document.querySelector(".navbar a.footer-contact-link").getBoundingClientRect();
+    const items = [...document.querySelectorAll(".home-banner-outcomes li")].map((li) => {
+      const box = li.getBoundingClientRect();
+      return { name: li.textContent.trim(), top: box.top, bottom: box.bottom };
+    });
+    return {
+      logoW: Math.round(logo.width),
+      logoH: Math.round(logo.height),
+      leftGap: Math.round(logo.left - wrap.left),
+      nbToWorks: Math.round(works.left - logo.right),
+      worksToLi: Math.round(linkedin.left - works.right),
+      items,
+    };
+  });
+  expect(chrome.logoW).toBeGreaterThanOrEqual(44);
+  expect(chrome.logoH).toBeGreaterThanOrEqual(44);
+  expect(chrome.leftGap, "NB sits in the right cluster, not a left logo column").toBeGreaterThan(400);
+  expect(chrome.nbToWorks, "no huge empty gap between NB and Works").toBeLessThan(56);
+  expect(Math.abs(chrome.nbToWorks - chrome.worksToLi)).toBeLessThan(16);
+  for (const item of chrome.items) {
+    expect(item.top, `${item.name} stays in the first viewport`).toBeGreaterThanOrEqual(0);
+    expect(item.bottom, `${item.name} stays in the first viewport`).toBeLessThanOrEqual(900);
+  }
   expect(fold.mesh).toBe(true);
   expect(fold.dunes).toBe(false);
   expect(fold.canvas).toBe(false);
@@ -1894,6 +1921,33 @@ test("1440 home header: reference composition, truthful proof and text navigatio
     height: 48,
   });
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
+});
+
+test("1280 first-visit fold keeps five employers above the consent banner", async ({ page }) => {
+  await page.addInitScript(() => localStorage.removeItem("bn-analytics-consent-v1"));
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await openStable(page, "/");
+  await page.waitForSelector("#portfolio-consent, [data-consent-banner]", { state: "visible", timeout: 5000 }).catch(() => {});
+  const fold = await page.evaluate(() => {
+    const banner = document.querySelector("[data-consent-banner], .consent-banner, #portfolio-consent");
+    const bannerBox = banner && !banner.hidden ? banner.getBoundingClientRect() : null;
+    const items = [...document.querySelectorAll(".home-banner-outcomes li")].map((li) => {
+      const box = li.getBoundingClientRect();
+      return {
+        name: li.textContent.trim(),
+        top: box.top,
+        bottom: box.bottom,
+        covered: Boolean(bannerBox && box.bottom > bannerBox.top + 2),
+      };
+    });
+    return { items, bannerTop: bannerBox ? bannerBox.top : null };
+  });
+  expect(fold.items.map((item) => item.name)).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  for (const item of fold.items) {
+    expect(item.covered, `${item.name} must stay above the consent banner`).toBe(false);
+    expect(item.top).toBeGreaterThanOrEqual(0);
+    expect(item.bottom).toBeLessThanOrEqual(720);
+  }
 });
 
 test("1440 home mast and text navigation meet WCAG AA on their live backgrounds", async ({ page }) => {
