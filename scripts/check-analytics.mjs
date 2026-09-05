@@ -32,9 +32,10 @@ assert(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon|document\.cookie/.test(consent),
 assert(!/sendBeacon|XMLHttpRequest|localStorage|captureException|sessionRecording|setInterval/.test(analytics), 'no background SDK queue or persistent analytics ID');
 assert(analytics.includes('$process_person_profile: false') && analytics.includes('$geoip_disable: true'), 'fixed privacy sentinels');
 assert(analytics.includes("credentials: 'omit'") && analytics.includes("referrerPolicy: 'no-referrer'") && analytics.includes('keepalive: false'), 'bounded transport');
-assert(analytics.includes('EU project 265707'), 'Insights lock: PostHog EU project 265707 only');
+assert(analytics.includes('var PROJECT_ID = 265707'), 'Insights lock: PostHog EU project 265707 only');
 assert(analytics.includes("var ENDPOINT = 'https://eu.i.posthog.com/i/v0/e/'"), 'Capture API host is EU only');
 assert(analytics.includes("var PROJECT_KEY = 'phc_A6NZzdAmwhiRd9yXKevru3nqDWX5eqmNvzhxMHCn4T3Q'"), 'Insights lock: public write-only token for 265707');
+assert(read('design.md').includes('project **265707**'), 'Insights lock stays in design.md');
 assert.equal((analytics.match(/phc_[A-Za-z0-9]+/g) || []).length, 1, 'one public project ingestion key');
 assert(analytics.includes('window.PortfolioConsent.hasConsent() === true'), 'consent before capture');
 assert(!analytics.includes('eu-assets.i.posthog.com'), 'do not load the official snippet asset host');

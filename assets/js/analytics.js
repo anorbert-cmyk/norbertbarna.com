@@ -9,7 +9,7 @@
   if (window.PortfolioAnalyticsReady) return;
   window.PortfolioAnalyticsReady = true;
   var ENDPOINT = 'https://eu.i.posthog.com/i/v0/e/';
-  // Public, write-only ingestion key, NOT a personal/secret API key.
+  var PROJECT_ID = 265707;
   var PROJECT_KEY = 'phc_A6NZzdAmwhiRd9yXKevru3nqDWX5eqmNvzhxMHCn4T3Q';
   var SESSION_KEY = 'bn-analytics-session-v1';
   var RELEASE = 'consent-v1-20260905';
