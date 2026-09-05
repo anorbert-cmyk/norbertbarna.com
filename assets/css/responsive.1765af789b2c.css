@@ -273,100 +273,25 @@ main {
 /* Header focus stays identifiable on both the paper and the mesh. The white
  * inner halo separates the ink ring from any dark part of the background. */
 .navbar :is(a, button):focus-visible,
-.home-mast .hero-engage-link:focus-visible {
+.home-mast .hero-work-link:focus-visible {
   outline: 3px solid #111 !important;
   outline-offset: 3px;
   box-shadow: 0 0 0 3px #fff;
 }
 
-.home-mast .hero-work-link:focus-visible {
-  outline: 3px solid #f4f5f7 !important;
-  outline-offset: 3px;
-  box-shadow: 0 0 0 3px #0a1628;
-}
-
-.home-proof-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 20px 0 0;
-  padding: 0;
-  list-style: none;
-  max-width: 40rem;
-}
-
-.home-proof-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  color: var(--ink);
-  border: 1px solid rgb(17 17 17 / 14%);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 62%);
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.3;
-  max-width: 100%;
-  white-space: nowrap;
-}
-
-.home-proof-mark {
-  display: block;
-  flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  color: #5c4f9a;
-}
-
-.home-employer-list {
-  display: flex;
-  flex-direction: column;
+.home-banner-outcomes {
+  display: grid;
+  max-width: 76ch;
   gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  color: var(--ink);
+  margin: 22px 0 0;
+  padding-left: 1.25em;
+}
+
+.home-banner-outcomes li {
+  padding-left: 4px;
   font-size: 18px;
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-.home-employer-list li {
-  margin: 0;
-}
-
-.home-mast-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 22px;
-  margin-top: 26px;
-}
-
-.home-mast-actions .hero-work-link {
-  margin-top: 0;
-}
-
-.hero-engage-link {
-  color: var(--ink);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.3;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.hero-engage-link:hover,
-.hero-engage-link:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: .14em;
-}
-
-.home-mast .hero-work-link::after,
-.hero-engage-link::after {
-  content: " →";
+  line-height: 1.58;
+  text-wrap: pretty;
 }
 
 .hero-work-link {
@@ -399,26 +324,14 @@ main {
   color: #111;
 }
 
-/* Version B lock: filled navy CTA on the lilac band. Shared .hero-work-link
- * stays outlined 12px. Do not use radius 999 — that is the Email pill failure. */
+/* Text enlargement may add a line; the normal 44px outlined action is kept. */
 .home-mast .hero-work-link {
   max-width: 100%;
-  min-height: 56px;
   height: auto;
-  padding: 16px 24px;
-  border-color: #0a1628;
-  background: #0a1628;
-  color: #f4f5f7;
+  padding-block: 10px;
   white-space: normal;
   overflow-wrap: anywhere;
   text-align: center;
-}
-
-.home-mast .hero-work-link:hover,
-.home-mast .hero-work-link:focus-visible {
-  border-color: #15233a;
-  background: #15233a;
-  color: #f4f5f7;
 }
 
 /* Keep enlarged project names readable instead of clipping long words. */
@@ -725,29 +638,30 @@ main {
   height: 100%;
   margin: 0;
   object-fit: cover;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
 }
 
 .awards-card::after {
-  content: "";
-  z-index: 2;
-  background: linear-gradient(90deg, rgb(7 10 13 / 84%), rgb(7 10 13 / 68%));
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  transition: opacity .4s ease;
+  content: none;
 }
 
-.awards-card:hover::after,
-.awards-card:focus-within::after,
-.awards-card.is-award-on::after {
-  opacity: 1;
+/* Leave the video ungraded. Only the text gets an opaque paper backplate,
+ * so contrast never depends on a particular frame or a full-card scrim. */
+.awards-card:hover .awards-title-wrap,
+.awards-card:focus-within .awards-title-wrap,
+.awards-card.is-award-on .awards-title-wrap {
+  background: #fff;
+  box-shadow: 0 0 0 8px #fff;
+  border-radius: 4px;
 }
 
 .awards-card:hover,
 .awards-card:focus-within,
 .awards-card.is-award-on {
-  color: var(--bg-color--white, #fff);
+  color: #111;
+  transition: none;
 }
 
 .awards-card:hover .awards-bg-video-wrap,
@@ -759,14 +673,16 @@ main {
 .awards-card:hover .awards-card-text,
 .awards-card:focus-within .awards-card-text,
 .awards-card.is-award-on .awards-card-text {
-  color: rgb(255 255 255 / 82%);
+  color: #111;
+  transition: none;
 }
 
 .awards-card:hover .awards-year,
 .awards-card:focus-within .awards-year,
 .awards-card.is-award-on .awards-year {
-  background: #111;
-  color: #fff;
+  background: #fff;
+  color: #111;
+  transition: none;
 }
 
 .work-card .work-title-line,
@@ -1379,15 +1295,17 @@ html.no-motion .footer-mesh-yellow {
     line-height: 1.75;
   }
 
-  .home-proof-chips {
+  .home-banner-outcomes {
+    max-width: 72ch;
     margin-top: 18px;
+    border-top: 1px solid rgb(17 17 17 / 16%);
+    padding-top: 20px;
+    font-size: 16px;
   }
 
-  .home-employer-list {
-    margin-top: 8px;
+  .home-banner-outcomes li {
     font-size: 16px;
-    line-height: 1.5;
-    text-align: left;
+    line-height: 1.68;
   }
 
   .home-about-section,
@@ -1861,9 +1779,9 @@ html.no-motion .footer-mesh-yellow {
     line-height: 1.72;
   }
 
-  .home-employer-list {
+  .home-banner-outcomes li {
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.68;
   }
 
   .hero-work-link {
@@ -2073,25 +1991,6 @@ html.no-motion .footer-mesh-yellow {
   }
 }
 
-  /* Inter is wider than the fallback. A 390px chip row that fits Arial wrap-flips
-   * after webfonts (~41px) and fails the 0.1 CLS budget. Stack from first paint. */
-@media (max-width: 479px) {
-  .home-proof-chips {
-    flex-direction: column;
-    align-items: flex-start;
-    min-height: 74px;
-  }
-
-  .home-mast-actions {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .hero-engage-link {
-    white-space: normal;
-  }
-}
-
 @media (hover: none), (pointer: coarse) {
   .work-image-wrap:hover,
   .related-work-image-wrap:hover,
@@ -2288,8 +2187,9 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
 }
 
 .home-banner-content-wrap,
-.home-employer-list,
-.home-employer-list li {
+.home-banner-outcomes,
+.home-banner-outcomes li,
+.home-banner-outcomes strong {
   color: var(--ink);
 }
 
@@ -2674,8 +2574,7 @@ body.home .navbar {
 }
 
 /* Home mast (C): analog lilac grain + large navy félkör. Not a footer clone.
- * Type sits on the pale band. Desktop right is the quiet employer list on the
- * navy félkör, never a product screenshot.
+ * Type sits on the pale band. Empty right is mesh, never a product screenshot.
  * Selected work (E): compact rows, 84px thumbs, hairlines. */
 .home-mast,
 .home-banner-wrap.home-mast {
@@ -2752,8 +2651,6 @@ body.home .navbar {
 
 .home-mast .hero-kicker {
   color: var(--mast-muted);
-  letter-spacing: .16em;
-  text-transform: uppercase;
 }
 
 .home-mast .home-banner-content-wrap {
@@ -2761,6 +2658,8 @@ body.home .navbar {
 }
 
 .work-list {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -2769,6 +2668,9 @@ body.home .navbar {
 }
 
 .work-row {
+  --work-accent: #d6d4ed;
+  z-index: 1;
+  isolation: isolate;
   display: grid;
   grid-template-columns: 84px minmax(0, 1fr) auto;
   gap: 12px 20px;
@@ -2778,6 +2680,57 @@ body.home .navbar {
   padding: 14px 0;
   border-bottom: 1px solid rgb(17 17 17 / 12%);
 }
+
+/* One shared field glides between rows; case art, text and hit areas stay put.
+ * These accents are the existing case-study palette, not new brand colors. */
+.work-row:has(.work-title[href="/work/raiffeisen"]) { --work-accent: #fee500; }
+.work-row:has(.work-title[href="/work/instructure"]) { --work-accent: #0c1b2f; }
+.work-row:has(.work-title[href="/work/bitpanda"]) { --work-accent: #203d36; }
+.work-row:has(.work-title[href="/work/benker"]) { --work-accent: #d9daf2; }
+.work-row:has(.work-title[href="/work/sportsgambit"]) { --work-accent: #aaed15; }
+.work-row:has(.work-title[href="/work/kineticare"]) { --work-accent: #0c1b2e; }
+
+.work-list-surface {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.work-list-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  transform-origin: 0 0;
+  opacity: .1;
+}
+
+.work-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--work-accent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .work-row:hover::before { opacity: .1; }
+  .work-list[data-work-hover] .work-row:hover::before { opacity: 0; }
+}
+
+.work-row:focus-within::before,
+.work-list[data-work-hover] .work-row:focus-within::before { opacity: .1; }
+
+/* Mixed keyboard/mouse input must not stack two tints under focused text. */
+.work-list:focus-within .work-list-surface { visibility: hidden; }
+
+html.no-motion .work-list-surface { display: none; }
 
 .work-row-thumb {
   display: block;
@@ -2820,15 +2773,14 @@ body.home .navbar {
 }
 
 @media (min-width: 992px) {
-  /* Version B mast: compact left stack on the lilac band (not a viewport-wide
-   * dek), employer type mid-mast on the solid navy. Do not add extra top
-   * padding — that slides dek/CTA onto the félkör (NavyFlood). */
+  /* C mast: role on lilac, highlights on the navy félkör. Do not stack the
+   * list down onto About to dodge contrast, and do not shrink the dome. */
   .home-mast .home-banner-area {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
     grid-template-rows: auto;
     align-items: start;
-    gap: 16px 64px;
+    gap: 16px 48px;
     max-width: none;
   }
 
@@ -2836,47 +2788,27 @@ body.home .navbar {
   .home-mast .banner-left-wrap.black {
     grid-column: 1;
     grid-row: 1;
-    justify-self: start;
-    max-width: 46rem;
-  }
-
-  .home-mast .home-banner-title {
-    font-size: clamp(64px, 6.4vw, 92px);
-    line-height: 1.02;
-    letter-spacing: -.04em;
-    max-width: 12ch;
-  }
-
-  .home-mast .home-banner-subtitle {
-    max-width: 36ch;
+    max-width: none;
   }
 
   .home-mast .home-banner-area > .home-banner-content-wrap {
     grid-column: 2;
     grid-row: 1;
-    justify-self: end;
-    width: max-content;
-    max-width: 22rem;
-    /* Mid-mast on the solid félkör (Version B lock), not the lilac fade. */
-    margin-top: clamp(220px, 22vw, 340px);
+    /* Sit on the félkör, not the lilac crown. Do not drop this onto About. */
+    margin-top: clamp(164px, 14vw, 190px);
     color: var(--mast-on-navy);
   }
 
   .home-mast .home-banner-content-wrap,
-  .home-mast .home-employer-list,
-  .home-mast .home-employer-list li {
+  .home-mast .home-banner-content-wrap .metric-context,
+  .home-mast .home-banner-outcomes,
+  .home-mast .home-banner-outcomes li,
+  .home-mast .home-banner-outcomes strong {
     color: var(--mast-on-navy);
   }
 
-  .home-mast .home-employer-list {
-    align-items: flex-end;
-    width: max-content;
-    text-align: right;
-    font-size: clamp(24px, 2vw, 32px);
-    font-weight: 500;
-    line-height: 1.28;
-    letter-spacing: -.02em;
-    gap: 16px;
+  .home-mast .home-banner-outcomes {
+    border-top-color: rgb(244 245 247 / 48%);
   }
 }
 
@@ -2899,14 +2831,14 @@ body.home .navbar {
   padding-bottom: min(62vw, 360px);
 }
 
-.home-mast[data-text-reflow] .home-employer-list,
-.home-mast[data-text-reflow] .home-employer-list li {
+.home-mast[data-text-reflow] .home-banner-outcomes,
+.home-mast[data-text-reflow] .home-banner-outcomes li,
+.home-mast[data-text-reflow] .home-banner-outcomes strong {
   color: var(--ink);
 }
 
-.home-mast[data-text-reflow] .home-employer-list {
-  align-items: flex-start;
-  text-align: left;
+.home-mast[data-text-reflow] .home-banner-content-wrap .metric-context {
+  color: var(--mast-muted);
 }
 
 .home-mast[data-text-reflow] .home-mast-navy {
@@ -2916,7 +2848,7 @@ body.home .navbar {
 
 @media (max-width: 991px) {
   /* NavyFlood: drop the desktop CSS navy radials and keep type on lilac.
-   * Extra bottom pad gives the félkör a place to sit under the employer list. */
+   * Extra bottom pad gives the félkör a place to sit under the highlights. */
   .home-mast,
   .home-banner-wrap.home-mast {
     margin-top: -56px;
@@ -2942,12 +2874,11 @@ body.home .navbar {
     padding-bottom: min(62vw, 360px);
   }
 
-  /* NavyFlood: compact employers stay dark ink on lilac — never --mast-on-navy. */
-  .home-mast .home-employer-list,
-  .home-mast .home-employer-list li {
-    color: var(--ink);
-    text-align: left;
-    align-items: flex-start;
+  /* GrainWash: compact highlights label is 13px on lilac grain — 62% --muted
+   * fails AA. Solid charcoal, same token as the kicker. */
+  .home-mast .metric-context,
+  .home-mast .home-banner-content-wrap .metric-context {
+    color: var(--mast-muted);
   }
 
   .home-mast-navy {
@@ -2981,3 +2912,341 @@ body.home .navbar {
 }
 
 /* Footer CTAs: matching outlined rounded squares. Mail opens via assign on click. */
+
+/* Screenshot-directed home mast (2026-09-04): an editorial first viewport with
+ * a right-aligned text nav, oversized role, truthful proof chips and a slim
+ * experience rail. Only the two decorative navy SVG masses may move. */
+.home-nav-monogram {
+  display: inline-block;
+  color: #111;
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -.035em;
+  line-height: 1;
+}
+
+.home-nav-label {
+  display: none;
+}
+
+.home-mast-proof-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-mast-proof-chips li {
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgb(10 22 40 / 30%);
+  border-radius: 12px;
+  background: rgb(214 212 237 / 18%);
+  color: #172238;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.home-mast-proof-chips li > span:first-child {
+  color: #403b73;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.home-mast-proof-chips li > strong {
+  font-weight: 700;
+}
+
+.home-mast-proof-chips li > strong + span::before {
+  content: "·";
+  margin-right: 8px;
+  color: #585d67;
+}
+
+.home-highlight-company {
+  display: block;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+html.no-motion .home-mast-navy,
+html.no-motion .home-mast-navy-drift {
+  transform: none !important;
+}
+
+@media (min-width: 992px) {
+  body.home .navbar .nav-wrap,
+  body.home .navbar .nav-wrap.dark {
+    min-height: 88px;
+  }
+
+  body.home .navbar .nav-wrap,
+  body.home .navbar .nav-wrap.dark {
+    justify-content: flex-end;
+    gap: 41px;
+  }
+
+  body.home .navbar .nav-logo-wrap {
+    display: inline-flex;
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 7px;
+  }
+
+  body.home .navbar .nav-menu,
+  body.home .navbar .nav-menu.grey {
+    flex: 0 0 auto;
+    width: auto;
+    margin-left: 0;
+  }
+
+  body.home .navbar .nav-menu-area,
+  body.home .navbar .nav-cta {
+    gap: clamp(30px, 3.4vw, 43px);
+  }
+
+  body.home .navbar .nav-link,
+  body.home .navbar .nav-link.white,
+  body.home .navbar a.footer-contact-link,
+  body.home .navbar button.footer-email {
+    display: inline-flex;
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #111;
+    padding: 10px 6px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+
+  body.home .navbar :is(.nav-link, a.footer-contact-link, button.footer-email):hover {
+    background: rgb(17 17 17 / 6%);
+    color: #111;
+  }
+
+  body.home .navbar .footer-icon {
+    display: none;
+  }
+
+  body.home .navbar .home-nav-label {
+    display: inline;
+  }
+
+  .home-mast .home-banner-section,
+  .home-mast .home-banner-section.raiffeisen-header-black {
+    padding-top: clamp(96px, 8.45vw, 122px);
+    padding-bottom: clamp(72px, 7vw, 100px);
+  }
+
+  .home-mast,
+  .home-banner-wrap.home-mast {
+    margin-top: -88px;
+    padding-top: 88px;
+    background: #d6d4ed;
+  }
+
+  .home-mast .home-banner-section > .container-large {
+    width: calc(100% - (2 * clamp(56px, 5.7vw, 76px)));
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-area {
+    grid-template-columns: minmax(0, 1.52fr) minmax(280px, .48fr);
+    gap: 32px clamp(56px, 6vw, 96px);
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-title {
+    max-width: none;
+    font-size: clamp(94px, 9.7vw, 128px);
+    line-height: .94;
+    letter-spacing: -.055em;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-subtitle {
+    max-width: 43rem;
+    margin-top: 24px;
+    font-size: clamp(22px, 1.9vw, 24px);
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-area > .home-banner-content-wrap {
+    width: 100%;
+    max-width: 112px;
+    justify-self: end;
+    margin-top: clamp(230px, 20vw, 278px);
+    margin-right: 0;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-content-wrap .metric-context {
+    display: none;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-outcomes {
+    display: grid;
+    gap: 25px;
+    margin: 14px 0 0;
+    border: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-outcomes li {
+    position: relative;
+    padding: 0 18px 0 0;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-outcomes li::after {
+    content: "";
+    position: absolute;
+    top: .56em;
+    right: 2px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-highlight-company {
+    color: var(--mast-on-navy);
+  }
+
+  .home-mast .hero-kicker {
+    margin-bottom: 20px;
+    color: #403b73;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  .home-mast .hero-work-link {
+    min-height: 56px;
+    margin-top: 36px;
+    border-color: #0a1628;
+    background: #0a1628;
+    color: #fff;
+    padding: 12px 38px;
+  }
+
+  .home-mast-proof-chips {
+    margin-top: 40px;
+  }
+
+  .home-mast .hero-work-link:hover,
+  .home-mast .hero-work-link:focus-visible {
+    border-color: #162a49;
+    background: #162a49;
+    color: #fff;
+  }
+}
+
+@media (max-width: 991px) {
+  body.home .navbar .home-nav-label {
+    display: inline;
+  }
+
+  body.home .navbar .footer-icon {
+    display: none;
+  }
+
+  body.home .navbar a.footer-contact-link,
+  body.home .navbar button.footer-email {
+    display: flex;
+    width: 100%;
+    min-height: 48px;
+    height: auto;
+    justify-content: flex-start;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    padding: 11px 14px;
+    color: #111;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  .home-mast .hero-kicker {
+    color: #403b73;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  .home-mast-proof-chips {
+    margin-top: 24px;
+  }
+
+  .home-mast .hero-work-link {
+    min-height: 48px;
+    border-color: #0a1628;
+    background: #0a1628;
+    color: #fff;
+    padding: 11px 18px;
+  }
+
+  .home-mast .hero-work-link:hover,
+  .home-mast .hero-work-link:focus-visible {
+    border-color: #162a49;
+    background: #162a49;
+    color: #fff;
+  }
+
+  .home-mast .home-banner-content-wrap {
+    margin-top: 42px;
+  }
+
+  .home-mast .home-banner-outcomes {
+    display: grid;
+    gap: 18px;
+    margin: 14px 0 0;
+    border-top: 1px solid rgb(17 17 17 / 24%);
+    padding: 20px 0 0;
+    list-style: none;
+  }
+
+  .home-mast .home-banner-outcomes li {
+    padding: 0;
+  }
+
+  .home-mast .home-highlight-company {
+    color: var(--ink);
+  }
+}
+
+@media (max-width: 599px) {
+  .home-mast-proof-chips {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-mast-proof-chips li {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-mast-navy,
+  .home-mast-navy-drift {
+    transform: none !important;
+  }
+}

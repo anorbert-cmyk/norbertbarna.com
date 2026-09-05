@@ -2,7 +2,7 @@
  * Norbert Barna Portfolio — stable GSAP motion system
  *
  * Motion contract:
- * - Small native handlers own navigation and media; GSAP owns reveals and decorative depth.
+ * - Small native handlers own navigation and media; GSAP exclusively owns reveals.
  * - Desktop cinematic motion starts at 992px with a fine pointer.
  * - Every viewport uses native scrolling; tablet/mobile use restrained reveals.
  * - Only transform and opacity are animated.
@@ -646,112 +646,6 @@
     };
   }
 
-  /**
-   * Give the home mast the footer's barely-there depth without sharing the
-   * footer controller's global state. Pointer response and idle drift live on
-   * nested SVG groups so two animations never compete for the same transform.
-   */
-  function addHomeMastField(signal) {
-    var mast = document.querySelector(".home-mast");
-    if (!mast) return function () {};
-    var back = mast.querySelector(".home-mast-navy-back");
-    var front = mast.querySelector(".home-mast-navy-front");
-    var drifts = Array.from(mast.querySelectorAll(".home-mast-navy-drift"));
-    if (!back || !front || drifts.length !== 2) return function () {};
-
-    var layers = [
-      {
-        el: back,
-        depth: 0.38,
-        xTo: gsap.quickTo(back, "x", { duration: 0.82, ease: "power3.out" }),
-        yTo: gsap.quickTo(back, "y", { duration: 0.82, ease: "power3.out" }),
-      },
-      {
-        el: front,
-        depth: 0.72,
-        xTo: gsap.quickTo(front, "x", { duration: 0.72, ease: "power3.out" }),
-        yTo: gsap.quickTo(front, "y", { duration: 0.72, ease: "power3.out" }),
-      },
-    ];
-    var idleTweens = [
-      gsap.to(drifts[0], {
-        x: 1.1,
-        y: -0.7,
-        duration: 11,
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        paused: true,
-      }),
-      gsap.to(drifts[1], {
-        x: -1.5,
-        y: 1,
-        duration: 12.4,
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        paused: true,
-      }),
-    ];
-    var visible = false;
-    var observer = null;
-
-    function resetPointerDepth() {
-      layers.forEach(function (layer) {
-        layer.xTo(0);
-        layer.yTo(0);
-      });
-    }
-
-    function handlePointer(event) {
-      if (!visible || reducedMotion) return;
-      var rect = mast.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      var x = ((event.clientX - rect.left) / rect.width - 0.5) * 13;
-      var y = ((event.clientY - rect.top) / rect.height - 0.5) * 9.2;
-      layers.forEach(function (layer) {
-        layer.xTo(x * layer.depth);
-        layer.yTo(y * layer.depth);
-      });
-    }
-
-    mast.addEventListener("pointermove", handlePointer, { signal: signal });
-    mast.addEventListener("pointerleave", resetPointerDepth, { signal: signal });
-
-    function setVisible(nextVisible) {
-      visible = nextVisible;
-      idleTweens.forEach(function (tween) {
-        if (visible) tween.play();
-        else tween.pause();
-      });
-      if (!visible) resetPointerDepth();
-    }
-
-    if (typeof IntersectionObserver === "function") {
-      observer = new IntersectionObserver(function (entries) {
-        setVisible(entries.some(function (entry) {
-          return entry.isIntersecting;
-        }));
-      }, { root: null, threshold: 0.01 });
-      observer.observe(mast);
-    } else {
-      setVisible(true);
-    }
-
-    return function () {
-      visible = false;
-      if (observer) observer.disconnect();
-      idleTweens.forEach(function (tween) {
-        tween.kill();
-      });
-      layers.forEach(function (layer) {
-        layer.xTo.tween.kill();
-        layer.yTo.tween.kill();
-      });
-      gsap.set([back, front].concat(drifts), { clearProps: "transform" });
-    };
-  }
-
   function createCaseRail() {
     if (!caseStudyHeadings.length) return null;
     var rail = document.createElement("div");
@@ -774,7 +668,6 @@
     var rail = null;
     var hoverTargets = [];
     var removeWorkListHover = null;
-    var removeHomeMastField = null;
 
     document.querySelectorAll(".section-title").forEach(function (title) {
       revealWords(title, splits, {
@@ -792,7 +685,6 @@
     addCardHover(hoverTargets, listeners.signal);
 
     if (isHome) {
-      removeHomeMastField = addHomeMastField(listeners.signal);
       removeWorkListHover = addWorkListHover(listeners.signal);
       var aboutArea = document.querySelector(".home-about-area");
       if (aboutArea) revealCollection(aboutArea.children, aboutArea, { y: 34, stagger: 0.12, duration: 0.86 });
@@ -885,7 +777,6 @@
 
     return function () {
       listeners.abort();
-      if (removeHomeMastField) removeHomeMastField();
       if (removeWorkListHover) removeWorkListHover();
       if (rail) rail.remove();
       hoverTargets.forEach(function (card) {

@@ -23,6 +23,11 @@ const PROJECT_CONTACT = {
   en: { label: "Discuss your project", title: "Opens your email app to discuss your project" },
   hu: { label: "Beszéljünk a projektedről", title: "Megnyitja a leveleződet, hogy a projektedről írhass." },
 };
+const HOME_CONTACT = {
+  label: "Email",
+  accessibleName: "Email — discuss a project",
+  title: "Opens your email app to discuss your project",
+};
 const contactButtons = (html) => [...html.matchAll(/(<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/button>/g)];
 function checkProjectContact(html, scope, language = "en") {
   const buttons = contactButtons(html);
@@ -67,14 +72,8 @@ if ((home.match(/<h1\b/g) || []).length !== 1) {
 }
 // The removed solicitation must not return as visible copy, metadata,
 // a hidden DOM node, an HTML comment or structured data.
-if (/open to client engagements|I[’']m open for enterprise/i.test(home)) {
+if (/open for engagements|open to client engagements|I[’']m open for enterprise/i.test(home)) {
   fail("home must not restore the removed company-solicitation copy, including hidden source text");
-}
-if (!/<a class="hero-engage-link" href="\/ai-integration">Open for AI\/web engagements<\/a>/.test(home)) {
-  fail("home mast must keep the Version B text link to /ai-integration");
-}
-if (/<section\b[^>]*class="home-service-section[\s\S]*Open for AI\/web engagements/.test(home)) {
-  fail("do not restore an engagements pitch inside the services section");
 }
 if (!home.includes('class="hero-kicker">Norbert Barna')) {
   fail("home fold must name Norbert Barna in the kicker");
@@ -111,28 +110,8 @@ if (/footer-col-title">Work|footer-copyright|© 2026 Norbert Barna/.test(homeMas
 if (/#BDB414|#FFE000/.test(homeMast)) {
   fail("home mast must not paint the footer yellow into the header");
 }
-if (/home-banner-outcomes|Selected portfolio highlights|multi-country mobile banking ecosystem/.test(home)) {
-  fail("home fold must not restore the four highlight bullets");
-}
-if (!/\$52M\+ features · Instructure/.test(home) || !/1\.8→4\.8 · Raiffeisen/.test(home)) {
-  fail("home fold must keep the two LinkedIn About proof chips (do not invent new numbers)");
-}
-if (!/class="home-proof-chips"/.test(home) || (home.match(/class="home-proof-chip"/g) || []).length !== 2) {
-  fail("home fold must show exactly two compact proof chips, not a long bullet list");
-}
-if ((homeMast.match(/class="home-proof-mark"/g) || []).length !== 2) {
-  fail("Version B chips must include two inline SVG marks, not generated images");
-}
-if (/<img\b/.test(homeMast.match(/home-proof-chips[\s\S]*?<\/ul>/)?.[0] || "")) {
-  fail("CanvasFold: proof chips must not use <img> marks");
-}
-const homeEmployers = [...home.matchAll(/<ul class="home-employer-list"[^>]*>([\s\S]*?)<\/ul>/g)][0]?.[1] || "";
-const employerNames = [...homeEmployers.matchAll(/<li>([^<]*)/g)].map((m) => m[1].replace(/\s+/g, " ").trim());
-if (JSON.stringify(employerNames) !== JSON.stringify(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"])) {
-  fail(`home fold employer list must be BlackRock, Instructure, Raiffeisen, Bitpanda, Balabit (got ${employerNames.join(", ")})`);
-}
-if (!/AI products for fintech, Web3, regulated teams/.test(home)) {
-  fail("home dek must be the Version B one-liner");
+if (/home-banner-outcomes/.test(home) === false) {
+  fail("home fold must keep the selected-experience rail");
 }
 if (/4M\+|Redesigning banking for/.test(home)) {
   fail("do not replace live work copy with invented mock one-liners");
@@ -142,11 +121,33 @@ if (!/class="nav-link[^"]*"[^>]*href="\/works">Works<\/a>/.test(homeNav)) {
   fail("home top bar must keep the Works text link");
 }
 if (!/class="footer-contact-link"/.test(homeNav) || !/linkedin\.com\/in\/barna-norbert/.test(homeNav)) {
-  fail("home top bar must use the outlined LinkedIn square");
+  fail("home top bar must keep the LinkedIn destination");
 }
-checkProjectContact(homeNav, "home top bar");
+const homeContact = contactButtons(homeNav);
+if (homeContact.length !== 1 || homeContact[0][2].trim() !== HOME_CONTACT.label ||
+    !/\btype="button"/.test(homeContact[0][1]) || /\bhref=/.test(homeContact[0][1]) ||
+    !homeContact[0][1].includes(`aria-label="${HOME_CONTACT.accessibleName}"`) ||
+    !homeContact[0][1].includes(`title="${HOME_CONTACT.title}"`)) {
+  fail("home top bar: Email must stay a native, securely assembled project-contact action");
+}
 if (/href="[^"]*mailto:/.test(homeNav) || /anorbert@pm\.me/.test(homeNav)) {
   fail("MailtoInHtml: home Email must not expose mailto or the address");
+}
+if (!/class="home-nav-monogram"[^>]*>NB<\/span>/.test(homeNav) ||
+    !/class="home-nav-label">LinkedIn<\/span>/.test(homeNav)) {
+  fail("home top bar must use the approved right-clustered NB / Works / LinkedIn / Email text treatment");
+}
+if (!/class="home-mast-proof-chips"/.test(homeMast) ||
+    !/Multi-country banking/.test(homeMast) || !/Enterprise EdTech AI/.test(homeMast)) {
+  fail("home mast must keep the two truthful screenshot-directed proof chips");
+}
+for (const employer of ["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]) {
+  if (!new RegExp(`home-highlight-company[^>]*>${employer}<`).test(homeMast)) {
+    fail(`home mast experience rail is missing ${employer}`);
+  }
+}
+if (/\$52M\+|1\.8\s*(?:→|-&gt;)\s*4\.8|VERSION B/i.test(homeMast)) {
+  fail("home mast must not copy unsupported numbers or design annotations from the reference image");
 }
 if (JSON.stringify(homeOrder) !== JSON.stringify(hiring.slice(0, 6))) {
   fail(`home selected-work order is ${homeOrder.join(", ")} (must be hiring 1–6 incl. Kineticare)`);
@@ -238,8 +239,8 @@ if (/FooterHitSteal/.test(design) === false) fail("design.md must name the Foote
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
 if (/home-mast/.test(design) === false) fail("design.md must document the home mast");
 if (/footer-dunes/.test(design) === false) fail("design.md must reject footer-dunes by name");
-if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedKicker/.test(design)) {
-  fail("design.md must name CoverPoster, FigmaLeftover, and TrackedKicker");
+if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedBody/.test(design)) {
+  fail("design.md must name CoverPoster, FigmaLeftover, and TrackedBody");
 }
 if (!/InkOnNight/.test(design) || !/MotionCover/.test(design)) {
   fail("design.md must name InkOnNight and MotionCover");
@@ -253,7 +254,9 @@ if (/DualHome/.test(design) === false) fail("design.md must name the DualHome an
 if (/TitleDrift/.test(design) === false) fail("design.md must name the TitleDrift anti-pattern");
 if (/InventedSocial/.test(design) === false) fail("design.md must name the InventedSocial anti-pattern");
 
-if (!/\.home-banner-title[\s\S]{0,160}64px/.test(css)) fail("display size is not locked to 56–64");
+if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-banner-title[\s\S]{0,180}94px[\s\S]{0,80}128px/.test(css)) {
+  fail("home display size is not locked to the approved 94–128px desktop scale");
+}
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
   fail("product crops must use object-fit contain");
 }
@@ -264,14 +267,8 @@ if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
   fail("PROJECT FLOW rail is not hidden");
 }
 if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must wrap");
-if (/(?:^|[,{}]\s*)\.hero-kicker\s*\{[\s\S]{0,200}text-transform:\s*uppercase/.test(css) ||
-    !/(?:^|[,{}]\s*)\.hero-kicker\s*\{[\s\S]{0,200}letter-spacing:\s*0/.test(css) ||
-    !/(?:^|[,{}]\s*)\.hero-kicker\s*\{[\s\S]{0,200}text-transform:\s*none/.test(css)) {
-  fail("TrackedKicker: shared .hero-kicker must stay sentence case with no tracking");
-}
-if (!/\.home-mast \.hero-kicker[\s\S]{0,200}text-transform:\s*uppercase/.test(css) ||
-    !/\.home-mast \.hero-kicker[\s\S]{0,200}letter-spacing:\s*\.16em/.test(css)) {
-  fail("Version B mast kicker must be CSS uppercase + .16em tracking; HTML stays Norbert Barna");
+if (!/\.home-mast \.hero-kicker[\s\S]{0,140}letter-spacing:\s*\.16em[\s\S]{0,80}text-transform:\s*uppercase/.test(css)) {
+  fail("home kicker must use the approved screenshot-directed uppercase tracking");
 }
 if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {
   fail("home outcomes must stay ink on paper after leaving the .black wrap");
@@ -306,15 +303,9 @@ if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(h
 if (!/body\.home \.navbar[\s\S]{0,240}background:\s*transparent/.test(css)) {
   fail("home mast: navbar must sit on the mesh, not a white slab");
 }
-if (!/(?:^|[,{}]\s*)\.hero-work-link\s*\{[\s\S]{0,360}border-radius:\s*12px/.test(css) ||
-    /(?:^|[,{}]\s*)\.hero-work-link\s*\{[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
-    /(?:^|[,{}]\s*)\.hero-work-link\s*\{[\s\S]{0,240}background:\s*#111/.test(css)) {
-  fail("shared .hero-work-link must stay outlined 12px chrome, not a black pill");
-}
-if (!/\.home-mast \.hero-work-link\s*\{[\s\S]{0,360}background:\s*#0a1628/.test(css) ||
-    !/\.home-mast \.hero-work-link\s*\{[\s\S]{0,360}color:\s*#f4f5f7/.test(css) ||
-    /\.home-mast \.hero-work-link\s*\{[\s\S]{0,360}border-radius:\s*999px/.test(css)) {
-  fail("Version B mast CTA must be filled navy with light type and 12px corners, not a 999 pill");
+if (!/\.home-mast \.hero-work-link[\s\S]{0,220}border-color:\s*#0a1628[\s\S]{0,80}background:\s*#0a1628[\s\S]{0,80}color:\s*#fff/.test(css) ||
+    /\.hero-work-link[\s\S]{0,240}border-radius:\s*999px/.test(css)) {
+  fail("home CTA must be a 12px navy action with white text, not a generic black pill");
 }
 if (!/\.work-list[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
   fail("home selected work must be a stacked row list");
@@ -471,7 +462,7 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask
   fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,400}transparent 88%/.test(css)) {
-  fail("NavyFlood: compact home mast navy must fade in below the last employer (mask from 88%)");
+  fail("NavyFlood: compact home mast navy must fade in below the last highlight (mask from 88%)");
 }
 if (!/\.home-mast::after[\s\S]{0,240}radial-gradient[\s\S]{0,80}#0a1628/.test(css)) {
   fail("NavyFlood: compact home mast must paint a bottom navy overlay under the type");
@@ -485,8 +476,8 @@ if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
 if (!/\.home-mast \.hero-kicker[\s\S]{0,80}--mast-muted/.test(css)) {
   fail("GrainWash: mast kicker must use --mast-muted, not 62% --muted");
 }
-if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast \.home-employer-list[\s\S]{0,160}--ink/.test(css)) {
-  fail("NavyFlood: compact employer list must stay --ink on lilac, not --mast-on-navy");
+if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast \.metric-context[\s\S]{0,160}--mast-muted/.test(css)) {
+  fail("GrainWash: compact highlights label must use --mast-muted, not 62% --muted");
 }
 if (!/TightAwardVideo/.test(design)) {
   fail("design.md must name the TightAwardVideo anti-pattern");
@@ -504,43 +495,18 @@ if (/\.awards-card[\s\S]{0,80}\.awards-bg-video-wrap[\s\S]{0,60}opacity:\s*0\s*!
 if (!/--mast-on-navy:\s*#f4f5f7/.test(css)) {
   fail("InkOnNavy: --mast-on-navy must be near-white #F4F5F7");
 }
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-employer-list[\s\S]{0,160}--mast-on-navy/.test(css)) {
-  fail("InkOnNavy: desktop mast employer list must use --mast-on-navy");
-}
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-area[\s\S]{0,200}grid-template-columns:\s*minmax\(0,\s*1fr\) auto/.test(css)) {
-  fail("desktop mast must be a wide left column and a narrow employer stack");
-}
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-area > \.banner-left-wrap[\s\S]{0,220}max-width:\s*46rem/.test(css)) {
-  fail("desktop mast left stack must stay a reading-width column (46rem), not span the fold");
-}
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-title[\s\S]{0,160}clamp\(64px/.test(css)) {
-  fail("desktop mast H1 must be display-size (64–92px), not the 64px case-title cap");
-}
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-subtitle[\s\S]{0,120}max-width:\s*36ch/.test(css)) {
-  fail("desktop mast dek must wrap at reading width (36ch), not span the fold");
-}
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-banner-content-wrap[\s\S]{0,280}clamp\(220px/.test(css)) {
-  fail("desktop employers must sit mid-mast on the solid navy (220–340px offset)");
-}
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-employer-list[\s\S]{0,280}clamp\(24px/.test(css)) {
-  fail("desktop employer names must be 24–32px, not an 18px whisper");
-}
-if (!/\.home-proof-chip[\s\S]{0,200}--ink/.test(css) ||
-    !/\.home-proof-chip[\s\S]{0,240}border-radius:\s*999px/.test(css) ||
-    /\.home-proof-chip[\s\S]{0,200}background:\s*#111/.test(css)) {
-  fail("proof chips must be compact ink-on-lilac pills (radius 999), not filled black");
-}
-if (!/\.home-proof-mark[\s\S]{0,160}#5c4f9a/.test(css)) {
-  fail("proof chip marks must use the Version B purple token, not generated images");
-}
-if (!/@media\s*\(max-width:\s*479px\)[\s\S]*\.home-proof-chips[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
-  fail("compact proof chips must stack at ≤479px so webfont load cannot wrap-flip a row");
+if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-outcomes[\s\S]{0,160}--mast-on-navy/.test(css)) {
+  fail("InkOnNavy: desktop mast highlights must use --mast-on-navy");
 }
 if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13px/.test(css)) {
   fail("home kicker must stay 13px on compact, not inherit the 17px banner bump");
 }
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");
+}
+if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.home-mast-navy[\s\S]{0,160}transform:\s*none\s*!important/.test(css) ||
+    !/html\.no-motion \.home-mast-navy[\s\S]{0,120}transform:\s*none\s*!important/.test(css)) {
+  fail("home mast navy motion must have static reduced-motion and runtime fallbacks");
 }
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");
@@ -680,10 +646,6 @@ for (const page of PRIVACY_PAGES) {
 }
 
 const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8");
-if (!/kickerSize \* \.20/.test(navigationJs) ||
-    /\[copyStyle, kickerStyle\]\.some/.test(navigationJs)) {
-  fail("mast text-reflow must not treat Version B kicker tracking (.16em) as user spacing");
-}
 if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }

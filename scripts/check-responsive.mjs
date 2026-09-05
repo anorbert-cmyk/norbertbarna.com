@@ -259,11 +259,9 @@ if (/class="[^"]*\bhome-service-grid\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
 if (/class="[^"]*\bhome-work-wrap\b[^"]*"[^>]*role="list"/i.test(homeHtml)) {
   fail("index.html: the selected-work CTA must not be an invalid child of an ARIA list");
 }
-if (!/<ul\b[^>]*class="[^"]*\bhome-proof-chips\b/i.test(homeHtml) ||
-    !/<ul\b[^>]*class="[^"]*\bhome-employer-list\b/i.test(homeHtml) ||
-    !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="\/works"/i.test(homeHtml) ||
-    !/class="[^"]*\bhero-engage-link\b[^"]*"[^>]*href="\/ai-integration"/i.test(homeHtml)) {
-  fail("index.html: hero must keep proof chips, an employer list, selected-work CTA and AI/web text link");
+if (!/<ul\b[^>]*class="[^"]*\bhome-banner-outcomes\b/i.test(homeHtml) ||
+    !/class="[^"]*\bhero-work-link\b[^"]*"[^>]*href="\/works"/i.test(homeHtml)) {
+  fail("index.html: hero outcomes must be a semantic list with a selected-work action");
 }
 if (/home-banner-details-wrap[^>]*><\/div>[\s\S]{0,80}home-work-divider-line[\s\S]{0,80}home-work-divider-line/i.test(homeHtml)) {
   fail("index.html: empty hero details and duplicate divider must not return");
@@ -372,6 +370,20 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("function initFooterMeshField()") ||
     !animationJs.includes("stopFooterMeshField()")) {
   fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
+}
+if (!animationJs.includes("function addHomeMastField(signal)") ||
+    !animationJs.includes('gsap.quickTo(back, "x"') ||
+    !animationJs.includes('gsap.quickTo(front, "x"') ||
+    !animationJs.includes("new IntersectionObserver") ||
+    !animationJs.includes("removeHomeMastField")) {
+  fail("home mast motion must use an independently scoped, offscreen-paused GSAP controller");
+}
+const mastFieldStart = animationJs.indexOf("function addHomeMastField(signal)");
+const mastFieldEnd = animationJs.indexOf("function createCaseRail()", mastFieldStart);
+const mastField = animationJs.slice(mastFieldStart, mastFieldEnd);
+if (/rotate(?:X|Y|Z)?\s*:|rotation(?:X|Y|Z)?\s*:/.test(mastField) ||
+    !/\*\s*13\b/.test(mastField) || !/\*\s*9\.2\b/.test(mastField)) {
+  fail("home mast pointer field must stay within a few pixels and never rotate");
 }
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");

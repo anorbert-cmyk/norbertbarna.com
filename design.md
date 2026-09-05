@@ -69,7 +69,7 @@ When requirements compete, protect them in this order:
 
 | Surface | Job in the first viewport | Proof they should see |
 |---|---|---|
-| `/` | Identify a Product VP and open work | Role in H1; two proof chips; employer list on navy; CTA to `/works`. Analog mesh mast, **no** product screenshot |
+| `/` | Identify a Product VP and open work | Role in H1; live highlights; CTA to `/works`. Analog mesh mast, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
 | Footer / nav | Start a project conversation | Nav LinkedIn link; footer LinkedIn `in` icon + **Discuss your project**, sharing outlined 44px / 12px chrome. No duplicate home engagement block and no Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
@@ -80,9 +80,8 @@ If a change helps a designer-flex and hurts one of those jobs, reject it.
 
 ### 1. Frame the reader’s job
 
-The executive path on `/` is: name, role, live proof in two compact chips,
-employer names on the navy, how to see the work, how to reach him. The audit
-path is the case studies.
+The executive path on `/` is: name, role, live proof in the highlights,
+how to see the work, how to reach him. The audit path is the case studies.
 
 Do not invent metrics or emails. The one real contact address is
 `anorbert@pm.me`. HTML must not contain `mailto:` or that address as
@@ -99,24 +98,16 @@ Do not restore removed SportsGambit figures (`35% first-day activation`,
 The first viewport is the argument, not a masthead plus setup.
 
 - H1 is the role (`Product VP`), not the name.
-- Shared name kickers stay sentence case with no tracking. The home mast
-  Version B kicker is the CSS exception: `uppercase` + `0.16em` tracking on
-  `.home-mast .hero-kicker`. HTML stays `Norbert Barna`. Color stays
-  `--mast-muted` (the lock’s lilac-purple fails AA on grain).
+- The name stays plain text in the DOM and is rendered as the screenshot-directed
+  uppercase, tracked kicker.
 - The first viewport is an analog mesh mast (greyer-lilac grain, a **large
   navy félkör** from the bottom toward center-right, blur 56 family). Live
-  copy sits left on the lilac. The right side is a quiet employer list on the
-  navy — not Canvas Career, not any product screenshot, not long highlight bullets.
-- Fold proof on `/` is two compact pills plus that employer list, not DualIndex:
-  the **work list** still opens with Raiffeisen. Each chip has one inline SVG
-  mark (sparkline / bars) using `currentColor` — not a generated image.
-- One primary action: `View selected work` → `/works`. On the home mast this
-  is **filled navy** (`#0A1628`) with light type and 12px corners, not outlined
-  ink and not radius 999 (that is FilledEmailPill). Shared `.hero-work-link`
-  on other pages stays outlined 12px. A quiet text link
-  `Open for AI/web engagements` may sit beside it and go to `/ai-integration`.
-  Do not restore the services-section solicitation paragraph or duplicate
-  LinkedIn/Email actions.
+  copy sits left on the lilac. The right side is mesh — not Canvas Career,
+  not any product screenshot.
+- Fold proof on `/` is the live highlights list, not DualIndex: the **work
+  list** still opens with Raiffeisen.
+- One primary action: `View selected work` → `/works`. Filled navy 12px chrome,
+  not a generic black pill.
 
 Before adding a block, name the generic layout this page type would suggest
 (centered manifesto, card grid, 16:9 cover). Reject it unless the material
@@ -138,9 +129,8 @@ Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
 2. Is every product crop a complete UI (`object-fit: contain`), not a
    CoverPoster or a Figma leftover?
 3. Do `/` and `/works` use the same case order?
-4. Can any unsolicited tracked kicker (not the Version B home mast), icon tile,
-   or marquee motion be removed without losing meaning? Prefer stillness.
-   Do not add marquees.
+4. Can any tracked kicker, icon tile, or marquee motion be removed without
+   losing meaning? Prefer stillness. Do not add marquees.
 5. On Kineticare at 390: is the dek white on the dark field, and does Role
    wrap cleanly under the sticky bar?
 6. Does `npm test` still pass?
@@ -277,16 +267,19 @@ artboard already crops the phones.
 
 | Role | Size | Weight | Line-height | Class |
 |---|---|---|---|---|
-| Display H1 | 56–64px desktop; 40–56px compact | 700 Funnel | 1.05 | `.home-banner-title`, `.banner-title` |
+| Home display H1 | 94–128px desktop; 40–56px compact | 700 Funnel | .94 desktop / 1.05 compact | `.home-banner-title` |
+| Case display H1 | 56–64px desktop; 40–56px compact | 700 Funnel | 1.05 | `.banner-title` |
 | Dek | 20–22px | 400 Inter | ~1.45 | `.home-banner-subtitle`, `.banner-text` |
 | Body | 17–18px | 400 Inter | ~1.5 | `body`, `.summary` |
 | Section H2 | 28–32px | 700 Funnel | 1.15 | `.summary h2`, `.section-title` |
 | Card title | 22–24px | 700 Funnel | 1.2 | `.work-title` |
-| Kicker | 13px | 600 Inter | 1.2 | `.hero-kicker`, `.work-category` |
+| Kicker | 13px | 600–700 Inter | 1.2 | `.hero-kicker`, `.work-category` |
 
-Do not use 89px display or 38px/300 dek. Do not bold a whole dek to fake a
-missing middle size. Do not uppercase-track shared name kickers. The home
-mast Version B kicker is the CSS exception documented in composition §2.
+Do not use the oversized home display scale on case pages or use a 38px/300
+dek. Do not bold a whole dek to fake a missing middle size. The home name kicker
+is the one screenshot-directed uppercase/tracked exception; its DOM copy remains
+`Norbert Barna` and user text-spacing detection compares against that authored
+baseline.
 
 ## Information architecture
 
@@ -311,11 +304,12 @@ path.
 **Header (locked):**
 
 - **Home:** the bar sits **on the analog mast** — transparent fill, no white
-  slab, no `#e6e8e9` border. Contents: `nb` left; right: Works text + outlined
-  LinkedIn 44px square + outlined Email (`<button type="button" class="footer-email">`,
-  same 1px black / radius 12 / Inter 15/500 chrome as the footer). Email is
-  assign-only; no `mailto:` / address in HTML. Not a footer clone: no Work
-  column, no copyright in the header. No Motion control.
+  slab, no `#e6e8e9` border. Desktop is one right-aligned text group in this
+  order: `NB` home link, Works, LinkedIn, Email. Each has a 44px minimum target
+  and the existing ink/halo focus treatment. Email remains a native
+  `<button type="button" class="footer-email">`, assign-only, with no `mailto:`
+  or address in HTML. Compact keeps the accessible disclosure. Not a footer
+  clone: no Work column or copyright in the header. No Motion control.
 - **`/works` and case pages:** one sticky white bar, 64px desktop / 56px compact,
   `#fff` fill, 1px `#e6e8e9` bottom border. Contents in order: logo →
   (case pages only) breadcrumb `Works / {Project}` in the bar → LinkedIn link
@@ -336,25 +330,21 @@ keyboard focus uses the existing ink/paper palette: a 3px ink outline with a
 white inner halo so it remains distinct on the mesh, paper and dark fields.
 Do not remove breadcrumb-link focus merely because it is not `.nav-link`.
 
-At normal text size the outlined contact actions remain 44px tall. The home
-mast primary CTA is the filled 56px navy exception.
+At normal text size the outlined contact and primary actions remain 44px tall.
 At 200% text size or user-defined text spacing they may wrap and grow vertically
 (44px minimum), while keeping their full visible labels and existing action.
 The header contact row can wrap; it must not overlap LinkedIn. Long opening
 headings may break within a word only when needed to avoid clipping. The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
-Keep desktop employers on the solid navy (220–340px top offset from the
-mast grid), without a boxed background. Do not sit the stack in the pale
-blur crown, and do not drop it onto About. The Kineticare video scrim is owned by the shared
+Keep desktop highlights below the pale/navy transition (164–190px top offset),
+without a boxed background. The Kineticare video scrim is owned by the shared
 stylesheet, including its mobile direction; it must preserve white-text AA
 even against a synthetic all-white frame, not only a sampled poster.
 Enlarged or user-spaced desktop mast text switches to the existing compact,
 single-column lilac reading surface (`data-text-reflow`), keeping the navy
 shape below the copy. ResizeObserver checks computed typography, not layout
 height, to avoid feedback loops; restoring normal text restores the two columns.
-Do not treat the Version B kicker’s shipped `.16em` tracking as user spacing
-(threshold for the kicker is `.20em`; the dek still uses `.08em`).
 The decorative Kineticare header video starts automatically but has a single
 4.5-second preview window, then stays paused for that document visit. Scrolling,
 tab/lifecycle changes and media refresh must not restart an expired preview.
@@ -372,65 +362,43 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 1. Analog mesh mast: greyer-lilac `#D6D4ED` grain, a **large navy félkör**
    (`#0A1628`) rising from the bottom toward center-right, `feGaussianBlur` 56.
    Not the weaker/smaller navy of the text-only crop. Not the footer’s
-   right-weighted yellow. Type on the pale band. Desktop right is the employer
-   list on navy, never a product screenshot.
-   On compact, navy fades in below the last employer (`mask-image` starts
+   right-weighted yellow. Type on the pale band. Empty right is mesh.
+   On compact, navy fades in below the last highlight (`mask-image` starts
    at 88%) so ink stays on lilac — same NavyFlood rule as the footer.
    Compact `::after` navy is a short bottom wash (≤ 16% of the mast), not a
-   28% overlay through the list. Playwright samples pixels **behind glyphs**
-   at 390.
-   On desktop the employer column sits on the navy félkör: use light ink
+   28% overlay through the list. The highlights label uses `--mast-muted`,
+   not 62% `--muted`. Playwright samples pixels **behind glyphs** at 390.
+   On desktop the highlights column sits on the navy félkör: use light ink
    (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
    dome (still inside the mast). Do not shrink the dome to dodge contrast.
    Do not move the list down onto About.
-2. Kicker: HTML `Norbert Barna`. On the home mast, CSS `text-transform:
-   uppercase` and `letter-spacing: 0.16em` match the Version B lock. Stay 13px
-   on compact; do not inherit the 17px `.banner-left-wrap > p:first-child`
-   bump. Color is solid `--mast-muted` `#2a2a2e`, not 62% `--muted` and not
-   the lock’s light purple (~1.8:1 on grain). Fold type must meet WCAG AA
+2. Kicker: DOM text `Norbert Barna`, visually uppercase with restrained tracking
+   to match the approved screenshot. Stay 13px on compact; do not inherit the
+   17px `.banner-left-wrap > p:first-child` bump.
+   Color is solid screenshot-directed `#403B73`, not translucent `--muted`. Compact
+   highlights label uses the same token. Fold type must meet WCAG AA
    against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
-   UI stroke. Left column stays dark ink on lilac. Compact employers stay
+   UI stroke. Left column stays dark ink on lilac. Compact highlights stay
    dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
 3. H1: `Product VP`
-4. Dek (one sentence): `AI products for fintech, Web3, regulated teams — strategy
-   to ship.` Reading-width stack (`max-width: 36ch`) so it wraps after Web3
-   on desktop, like the Version B lock — not a viewport-spanning single line.
-5. Two compact proof chips in a row (`.home-proof-chips` / `.home-proof-chip`),
-   not a long bullet list. Copy is portfolio-reported from LinkedIn About —
-   do not invent new numbers:
-   `$52M+ features · Instructure` and `1.8→4.8 · Raiffeisen`. Use the arrow
-   (not mixed en-dashes). Thin ink border, light translucent fill, radius 999
-   (pills). Two inline SVG marks (`.home-proof-mark`, `currentColor`, purple
-   `#5c4f9a`): sparkline on Instructure, bars on Raiffeisen. Not generated
-   PNGs, not `<img>`, not a black fill. Keep the pair in one row from 480px
-   up. At ≤479px stack them (`flex-direction: column`) so Inter loading
-   cannot wrap-flip a row that only fitted the fallback metrics.
-6. Primary action: `View selected work` → `/works`. Home mast CTA is filled
-   navy `#0A1628`, light type `#F4F5F7`, min-height 56px, radius **12px**
-   (not 999 / FilledEmailPill). Shared `.hero-work-link` elsewhere stays
-   outlined 12px. Desktop mast is a compact left stack (`max-width: 46rem`)
-   plus a narrow right-aligned employer stack hugging the navy
-   (`grid-template-columns: minmax(0, 1fr) auto`). Display H1 is 64–92px
-   Funnel. Employer type is 24–32px Inter, mid-mast on the solid navy, not
-   an 18px whisper in the blur. A quiet text link
-   `Open for AI/web engagements` → `/ai-integration` sits beside the CTA
-   (`.home-mast-actions` / `.hero-engage-link`). Do not restore the
-   services-section solicitation paragraph or duplicate LinkedIn/Email.
-7. Quiet vertical employer list only (`.home-employer-list`) on the navy:
-   BlackRock · Instructure · Raiffeisen · Bitpanda · Balabit. Light ink on
-   navy for AA. No long descriptions, no `Selected portfolio highlights`
-   label, no four highlight bullets.
-
-User-requested removal (2026-09-04): no company-solicitation paragraph or
-duplicate LinkedIn/Email actions after the services cards. The Version B
-mast may keep a quiet text link `Open for AI/web engagements` →
-`/ai-integration`. Do not hide removed services-section copy in CSS, HTML
-comments, metadata or JSON-LD. The existing `AI products` heading is an
-underlined, ink-colored native link to `/ai-integration`, with a visible
-keyboard focus ring. This preserves factual service discovery without a
-replacement promotional block.
-All five service headings use ink on paper, never the inherited white
-`--font-color--dark` from the old template. Test their revealed-state contrast.
+4. One-line dek (existing positioning, not a slogan)
+5. Two compact proof chips reuse supported statements only: multi-country
+   banking / Raiffeisen and enterprise EdTech AI / Instructure. Never restore
+   the unsupported `$52M+` or `1.8→4.8` numbers from the reference comp.
+6. Primary action: `View selected work` → `/works`; navy `#0A1628`, white text,
+   12px radius and at least 44px high. It is not a generic black pill.
+7. A slim `SELECTED EXPERIENCE` rail on the navy field: BlackRock, Instructure,
+   Raiffeisen, Bitpanda and Balabit as plain semantic list items, not fake links.
+   Their deeper factual proof remains in the selected-work and experience
+   sections below. Do not invent a Canvas Career mock or put product UI here.
+8. User-requested removal (2026-09-04): no `Open for engagements` block,
+   company-solicitation paragraph or duplicate LinkedIn/Email actions after
+   the services cards. Do not hide this copy in CSS, HTML comments, metadata
+   or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
+   native link to `/ai-integration`, with a visible keyboard focus ring. This
+   preserves factual service discovery without a replacement promotional block.
+   All five service headings use ink on paper, never the inherited white
+   `--font-color--dark` from the old template. Test their revealed-state contrast.
 
 **Home selected work (E):** compact rows, not giant 2-up rounded color cards.
 Small 72–96px thumbs (crops of existing case images), live titles + live
@@ -488,8 +456,11 @@ send a message, book a meeting or create a confirmed lead. This explicit
 copy update supersedes the older literal `Email` label/72–76px width lock,
 not the outlined 44px / 12px chrome or the split-address handler.
 
-- Shared English footer, home navigation, English service CTA:
-  `Discuss your project`; title `Opens your email app to discuss your project`.
+- Shared English footer and English service CTA: `Discuss your project`; title
+  `Opens your email app to discuss your project`.
+- Screenshot-directed home navigation exception: visible `Email`; accessible
+  name `Email — discuss a project`; the same explanatory title and secure
+  split-address handler remain.
 - Hungarian service main CTA: `Beszéljünk a projektedről`, `lang="hu"`;
   title `Megnyitja a leveleződet, hogy a projektedről írhass.`.
 - Privacy-page main contact buttons remain `Email`: data-rights enquiries
@@ -524,8 +495,8 @@ English-wash the screenshot.
 
 | Name | What it looks like | Fix |
 |---|---|---|
-| EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + two proof chips + employer list on the analog mast; product UI lives in Selected work rows and case pages |
-| CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Right column is the employer list on navy |
+| EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + live highlights on the analog mast; product UI lives in Selected work rows and case pages |
+| CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Empty right is mesh |
 | WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080); blur 56; lock saturation `#0A1628` on `#D6D4ED` |
 | GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
 | FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
@@ -536,7 +507,7 @@ English-wash the screenshot.
 | FakePII | Invented names, emails, `+123%` in comps we author | Shipped UI only, no unaudited % in our chrome |
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
-| TrackedKicker | All-caps, letter-spaced name/eyebrow on shared `.hero-kicker` | Shared kicker stays sentence-case 13px Inter, no tracking. Home mast Version B is the CSS exception (`uppercase` + `0.16em`); HTML remains `Norbert Barna`; color stays `--mast-muted` for AA |
+| TrackedBody | Uppercase/tracking applied to the dek or evidence body | Tracking is limited to the 13px home name kicker and small labels |
 | AIDecor | Glow blobs, generated shapes, fake words, new palettes | Existing color tokens + real UI. Footer mesh stays on the lock crop (greyer-lilac, left-weighted navy horizon, right-weighted olive-chartreuse) — never Ironclad dunes, candy pink, or a third palette |
 | YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
 | SausageBand | Navy is a thin full-width ellipse (~8% of field height, `ry` ≪ field) then a flat yellow rectangle | Taller ~3:2 field; navy is a left-weighted horizon mass, not a crushed stripe |
@@ -545,9 +516,9 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work or compact home employers so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last employer (mask from 88%). Desktop home employers may sit on the félkör — then use light ink, do not shrink the dome |
-| InkOnNavy | `--ink` / `--muted` on the desktop mast employer list over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column (kicker, H1, dek, chips) stays `--ink` on lilac |
-| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker uses solid `--mast-muted` `#2a2a2e` |
+| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last highlight (mask from 88%). Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
+| InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
+| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
@@ -597,10 +568,11 @@ Agents compose pages from these names. Do not invent parallel components.
 `.footer-copyright` `.footer-bar`
 
 **Home:** `.home-mast` `.home-mast-mesh` `.home-mast-art` `.home-mast-lilac`
-`.home-mast-navy` `.home-banner-section` `.hero-kicker` `.home-banner-title`
-`.home-banner-subtitle` `.home-proof-chips` `.home-proof-chip`
-`.home-employer-list` `.home-mast-actions` `.hero-work-link` `.hero-engage-link`
-`.home-proof-mark`
+`.home-mast-navy` `.home-mast-navy-back` `.home-mast-navy-front`
+`.home-mast-navy-drift` `.home-banner-section` `.hero-kicker`
+`.home-banner-title` `.home-banner-subtitle` `.home-mast-proof-chips`
+`.home-banner-outcomes` `.home-highlight-company`
+`.hero-work-link` `.home-nav-monogram` `.home-nav-label`
 `.about-section-title` `.home-about-area` `.work-list` `.work-row`
 `.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
 `.work-card-summary` `.home-work-footer` `.nav-cta`
@@ -611,7 +583,7 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. Home nav reuses that LinkedIn square + email chrome. Home mast `View selected work` is filled navy 12px (light type), not outlined ink and not a 999 pill. Other `.hero-work-link` actions stay outlined 12px.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. The home nav is a text-only 44px-target exception. Home `View selected work` is filled navy with white text and a 12px radius.
 
 ## Motion
 
@@ -622,9 +594,37 @@ Hide `.case-motion-rail`. Default to stillness for anything new. The locked
 footer mesh may translate navy / olive / yellow a few pixels under the
 pointer (yellow closer, navy deeper) with an easy-to-miss idle. Type,
 Work, Email, LinkedIn, copyright, and the hairline do not move.
-The **home mast is static** — no pointer parallax, no Motion control.
-`prefers-reduced-motion: reduce` is the static wash. No dunes, no header
-Motion control, no rotation circus.
+The home mast may echo the footer through its two nested navy SVG groups only.
+On desktop fine pointers, GSAP `quickTo()` caps pointer drift at 6.5px and two
+separate inner groups carry a 1–1.5px, roughly 22-second idle. Navigation, grain,
+copy, proof chips, CTA and experience rail stay still. Its controller is scoped
+to the existing desktop `gsap.matchMedia()` context, pauses offscreen, cleans up
+on breakpoint changes, and shares no state with the footer controller.
+`prefers-reduced-motion: reduce`, touch/coarse input, unavailable GSAP and compact
+layouts use the static wash. No dunes, no header Motion control, no rotation circus.
+
+### Selected-work field and experience clarity
+
+The compact home reference list has one decorative, shared GSAP background
+field on desktop (at least 992px, fine pointer with hover). It follows rows
+using transform/opacity only; pointer drift is capped at 6px. Existing case
+colors are shown at 10% opacity over paper. Text, thumbnails, arrows and
+native link hit areas never follow the pointer. No loops, new plugins,
+cursor replacements, animated gradients or layout-property animation.
+
+Create the field and reusable `quickTo` controllers inside the existing
+responsive motion context. Remove the field and its listeners on breakpoint
+or reduced-motion changes; never kill unrelated GSAP timelines. Keyboard
+focus uses an immediate CSS field and the existing visible outline. Touch,
+reduced motion and unavailable GSAP keep native links and static feedback.
+
+Professional-experience video fills stay full-bleed with their original
+brightness: no full-card scrim, dot overlay, filter or blend grading. Only
+the title/company text has a small opaque white backplate on hover, focus
+or tap; the year keeps its white pill. Ink text must meet AA over both white
+and black test frames. `media.js` remains the sole playback owner; reduced
+motion retains the static paper cards. This exception does not remove the
+separately verified Kineticare header contrast protection.
 
 ## Eval rubric (first attempt must pass)
 

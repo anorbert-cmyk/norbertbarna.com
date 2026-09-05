@@ -4,6 +4,8 @@ import { expect, test } from "@playwright/test";
 
 const PROJECT_LABEL = "Discuss your project";
 const PROJECT_TITLE = "Opens your email app to discuss your project";
+const HOME_EMAIL_LABEL = "Email";
+const HOME_EMAIL_NAME = "Email — discuss a project";
 
 const viewports = [
   { name: "mobile-360", width: 360, height: 800 },
@@ -409,13 +411,15 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.route(/posthog\.com/, (route) => route.abort());
     await openStable(page, "/");
-    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .home-proof-chip, .home-mast .home-employer-list li");
-    await expect(text).toHaveCount(10);
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(11);
     for (let index = 0; index < await text.count(); index += 1) {
-      await expectHeaderTextAA(page, text.nth(index), `${width} home text ${index + 1}`, { raster: true });
+      if (await text.nth(index).isVisible()) {
+        await expectHeaderTextAA(page, text.nth(index), `${width} home text ${index + 1}`, { raster: true });
+      }
     }
-    const controls = page.locator(".home-mast a.hero-work-link, .navbar a.nav-link, .navbar button.footer-email");
-    await expect(controls).toHaveCount(3);
+    const controls = page.locator(".home-mast a.hero-work-link, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
+    await expect(controls).toHaveCount(5);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
       if (!await control.isVisible()) await page.locator(".menu-button").click();
@@ -433,6 +437,10 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
 
 for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", "WCAG text spacing"].map((adjustment) => ({ width, adjustment })))) {
   test(`${width} home: ${adjustment} preserves header text contrast`, async ({ page }, testInfo) => {
+    // Pixel-level AA sampling takes about 105 seconds on the slowest hosted
+    // runner. Keep every assertion and give the deliberate reflow cleanup
+    // enough time to finish before the shared CLS guard runs.
+    test.setTimeout(180_000);
     await page.setViewportSize({ width, height: 900 });
     await page.route(/posthog\.com/, (route) => route.abort());
     await openStable(page, "/");
@@ -469,13 +477,13 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     // for any subsequent shifts after the adjustment has been laid out.
     await page.waitForTimeout(100);
     await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
-    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .home-proof-chip, .home-mast .home-employer-list li");
-    await expect(text).toHaveCount(10);
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(11);
     for (let index = 0; index < await text.count(); index += 1) {
       await expectHeaderTextAA(page, text.nth(index), `${width} ${adjustment} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast a.hero-work-link, .navbar a.nav-link, .navbar button.footer-email");
-    await expect(controls).toHaveCount(3);
+    const controls = page.locator(".home-mast a.hero-work-link, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
+    await expect(controls).toHaveCount(5);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
       const toggle = page.locator(".menu-button");
@@ -507,7 +515,9 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     // Removing the deliberate user adjustment is another expected reflow.
     await page.waitForTimeout(100);
     await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
-    await expectHeaderTextAA(page, page.locator(".home-mast .home-employer-list li").first(), `${width} ${adjustment} restored employer list`, { raster: true });
+    const restoredLabel = page.locator(".home-mast .metric-context");
+    const restoredProof = await restoredLabel.isVisible() ? restoredLabel : page.locator(".home-mast .home-banner-outcomes li").first();
+    await expectHeaderTextAA(page, restoredProof, `${width} ${adjustment} restored experience proof`, { raster: true });
   });
 }
 
@@ -1051,11 +1061,11 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   expect(html).not.toMatch(/mailto:/i);
   expect(html).not.toMatch(/anorbert@pm\.me/i);
   expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/);
+  expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*aria-label="Email — discuss a project"[^>]*>Email<\/button>/);
   expect(html).not.toMatch(/<a[^>]*footer-email/);
-  expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(2);
-  expect((html.match(/<button\b[^>]*class="footer-email[^"]*"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(2);
-  expect(html).not.toMatch(/open to client engagements|I[’']m open for enterprise/i);
-  expect(html).toMatch(/class="hero-engage-link" href="\/ai-integration">Open for AI\/web engagements</);
+  expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(1);
+  expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Email<\/button>/g) || []).length).toBe(1);
+  expect(html).not.toMatch(/open for engagements|open to client engagements|I[’']m open for enterprise/i);
   expect(html).not.toMatch(/footer-col-title">Contact/);
   expect(html).not.toMatch(/href="\/contact"/);
   expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
@@ -1103,11 +1113,11 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   await expect(serviceLink).toHaveCSS("outline-width", "3px");
   await expect(email).toBeVisible();
   await expect(headerEmail).toBeVisible();
-  for (const locator of [email, headerEmail]) {
-    await expect(locator).toHaveText(PROJECT_LABEL);
-    await expect(locator).toHaveAccessibleName(PROJECT_LABEL);
-    await expect(locator).toHaveAttribute("title", PROJECT_TITLE);
-  }
+  await expect(email).toHaveText(PROJECT_LABEL);
+  await expect(email).toHaveAccessibleName(PROJECT_LABEL);
+  await expect(headerEmail).toHaveText(HOME_EMAIL_LABEL);
+  await expect(headerEmail).toHaveAccessibleName(HOME_EMAIL_NAME);
+  for (const locator of [email, headerEmail]) await expect(locator).toHaveAttribute("title", PROJECT_TITLE);
   await expect(email).toHaveJSProperty("tagName", "BUTTON");
   expect(await email.getAttribute("type")).toBe("button");
   expect(await headerEmail.getAttribute("type")).toBe("button");
@@ -1272,6 +1282,99 @@ async function readFooterMeshMotion(page) {
     };
   });
 }
+
+async function readHomeMastMotion(page) {
+  return page.evaluate(() => {
+    const offset = (selector) => {
+      const element = document.querySelector(selector);
+      const transform = element ? getComputedStyle(element).transform : "none";
+      if (!transform || transform === "none") return { x: 0, y: 0 };
+      const matrix = new DOMMatrixReadOnly(transform);
+      return { x: matrix.e, y: matrix.f };
+    };
+    const rect = (selector) => {
+      const box = document.querySelector(selector)?.getBoundingClientRect();
+      return box ? { x: box.x, y: box.y, width: box.width, height: box.height } : null;
+    };
+    const back = offset(".home-mast-navy-back");
+    const front = offset(".home-mast-navy-front");
+    return {
+      back,
+      front,
+      backTravel: Math.hypot(back.x, back.y),
+      frontTravel: Math.hypot(front.x, front.y),
+      groups: {
+        back: document.querySelectorAll(".home-mast-navy-back").length,
+        front: document.querySelectorAll(".home-mast-navy-front").length,
+        drifts: document.querySelectorAll(".home-mast-navy-drift").length,
+      },
+      nav: rect(".navbar .nav-wrap"),
+      h1: rect(".home-banner-title"),
+      proof: rect(".home-mast-proof-chips"),
+      rail: rect(".home-banner-outcomes"),
+      cta: rect(".hero-work-link"),
+    };
+  });
+}
+
+test("1440 home mast: pointer gives the navy field restrained depth while all content stays still", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openStable(page, "/");
+  const mast = await page.locator(".home-mast").boundingBox();
+  expect(mast).toBeTruthy();
+
+  await page.mouse.move(mast.x + mast.width * 0.06, mast.y + mast.height * 0.18);
+  await expect.poll(async () => (await readHomeMastMotion(page)).front.x, { timeout: 2500 }).toBeLessThan(-2);
+  const left = await readHomeMastMotion(page);
+  expect(left.groups).toEqual({ back: 1, front: 1, drifts: 2 });
+
+  await page.mouse.move(mast.x + mast.width * 0.94, mast.y + mast.height * 0.72);
+  await expect.poll(async () => (await readHomeMastMotion(page)).front.x, { timeout: 2500 }).toBeGreaterThan(2);
+  const right = await readHomeMastMotion(page);
+  expect(right.front.x - left.front.x, "front layer has more pointer depth").toBeGreaterThan(right.back.x - left.back.x + 2);
+  expect(right.frontTravel, "front travel stays below the 6.5px motion cap").toBeLessThanOrEqual(6.5);
+  expect(right.backTravel, "back travel stays quieter than the front").toBeLessThan(right.frontTravel);
+  for (const key of ["nav", "h1", "proof", "rail", "cta"]) {
+    expect(right[key], `${key} exists`).toBeTruthy();
+    for (const axis of ["x", "y", "width", "height"]) {
+      expect(Math.abs(right[key][axis] - left[key][axis]), `${key} ${axis} must not parallax`).toBeLessThan(0.1);
+    }
+  }
+
+  await page.evaluate(() => window.scrollTo(0, document.querySelector(".home-about-section").offsetTop + 200));
+  await expect.poll(async () => (await readHomeMastMotion(page)).frontTravel, { timeout: 3000 }).toBeLessThan(0.2);
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.setViewportSize({ width: 991, height: 900 });
+  await expect.poll(async () => (await readHomeMastMotion(page)).frontTravel).toBeLessThan(0.05);
+  expect((await readHomeMastMotion(page)).backTravel, "breakpoint cleanup clears the back transform").toBeLessThan(0.05);
+});
+
+test("reduced-motion keeps the home mast static under the pointer", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openStable(page, "/");
+  const mast = await page.locator(".home-mast").boundingBox();
+  await page.mouse.move(mast.x + mast.width * 0.92, mast.y + mast.height * 0.75);
+  await page.waitForTimeout(500);
+  const state = await readHomeMastMotion(page);
+  expect(state.backTravel).toBeLessThan(0.05);
+  expect(state.frontTravel).toBeLessThan(0.05);
+});
+
+test("the home mast remains readable and static when GSAP is unavailable", async ({ page }) => {
+  await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openStable(page, "/");
+  const mast = await page.locator(".home-mast").boundingBox();
+  await page.mouse.move(mast.x + mast.width * 0.9, mast.y + mast.height * 0.7);
+  await page.waitForTimeout(300);
+  const state = await readHomeMastMotion(page);
+  expect(state.backTravel).toBeLessThan(0.05);
+  expect(state.frontTravel).toBeLessThan(0.05);
+  await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
+  await expect(page.locator(".home-mast-proof-chips")).toBeVisible();
+});
 
 test("1440 footer mesh: pointer moves masses a little; type and chrome stay still", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
@@ -1450,7 +1553,192 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
   expect(colorAfter, "title color must not jump on hover").toBe(colorBefore);
 });
 
-test("1440 home header: analog mast, live copy, no product screenshot, filled navy CTA", async ({ page }) => {
+const workAccents = ["#fee500", "#0c1b2f", "#203d36", "#d9daf2", "#aaed15", "#0c1b2e"];
+
+async function workRowSnapshot(page) {
+  return page.locator(".work-row").evaluateAll((rows) => rows.map((row) =>
+    [row, ...row.querySelectorAll(".work-row-thumb, .work-title, .work-card-summary, .work-row-arrow")].map((element) => {
+      const box = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return {
+        text: element.textContent.trim(), href: element.getAttribute("href"), src: element.getAttribute("src"),
+        geometry: [box.x, box.y + scrollY, box.width, box.height].map((value) => Math.round(value * 100) / 100),
+        transform: style.transform, color: style.color,
+      };
+    })
+  ));
+}
+
+async function workHighlightState(page, index) {
+  return page.locator(".work-row").nth(index).evaluate((row) => {
+    const highlight = row.closest(".work-list").querySelector(".work-list-highlight");
+    if (!highlight) return null;
+    const box = row.getBoundingClientRect();
+    const field = highlight.getBoundingClientRect();
+    const style = getComputedStyle(highlight);
+    return {
+      topDelta: Math.abs(field.top - box.top), heightDelta: Math.abs(field.height - box.height),
+      xDelta: field.left - box.left, widthDelta: field.width - box.width,
+      opacity: Number(style.opacity), color: style.backgroundColor,
+      pointerEvents: style.pointerEvents,
+    };
+  });
+}
+
+async function expectWorkHighlightAt(page, index) {
+  await expect.poll(() => workHighlightState(page, index).then((state) =>
+    state && Math.max(state.topDelta, state.heightDelta)))
+    .toBeLessThan(1.5);
+  const state = await workHighlightState(page, index);
+  expect(Math.abs(state.xDelta), "pointer drift stays within six pixels").toBeLessThanOrEqual(6.1);
+  expect(Math.abs(state.widthDelta), "the decoration follows the row width").toBeLessThanOrEqual(1.5);
+  expect(state.opacity).toBeCloseTo(0.1, 2);
+  expect(hexRgb(parseCssColor(state.color))).toBe(workAccents[index]);
+  expect(parseCssColor(state.color).a, "use the unmodified case color, with opacity on the field").toBe(1);
+  expect(state.pointerEvents).toBe("none");
+}
+
+for (const width of [992, 1440]) {
+  test(`${width} selected-work hover: one decorative field follows all six rows without moving content`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await openStable(page, "/");
+    const list = page.locator(".work-list");
+    await expect(list).toHaveAttribute("data-work-hover");
+    await expect(list.locator(":scope > .work-list-surface")).toHaveCount(1);
+    await expect(list.locator(".work-list-surface")).toHaveAttribute("aria-hidden", "true");
+    await expect(list.locator(".work-list-surface > .work-list-highlight")).toHaveCount(1);
+    await expect(list.locator(".work-list-surface a, .work-list-surface button, .work-list-surface [tabindex]")).toHaveCount(0);
+    await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
+    const before = await workRowSnapshot(page);
+    for (let index = 0; index < 6; index += 1) {
+      const row = page.locator(".work-row").nth(index);
+      await row.hover();
+      await expectWorkHighlightAt(page, index);
+      await expectHeaderTextAA(page, row.locator(".work-title"), `${width} row ${index + 1} hovered title`, { raster: true });
+      await expectHeaderTextAA(page, row.locator(".work-card-summary"), `${width} row ${index + 1} hovered summary`, { raster: true });
+    }
+    expect(await workRowSnapshot(page), "hover must not transform or recolor any text, thumbnail or link hit area").toEqual(before);
+    const focused = page.locator(".work-row").nth(2);
+    await focused.locator(".work-title").focus();
+    await expect(focused.locator(".work-title")).toBeFocused();
+    await expect(list.locator(".work-list-surface")).toHaveCSS("opacity", "0");
+    expect(await focused.evaluate((element) => Number(getComputedStyle(element, "::before").opacity))).toBe(0.1);
+    await expectHeaderTextAA(page, focused.locator(".work-title"), `${width} static keyboard focus`, { raster: true });
+    await focused.hover();
+    await expect(list.locator(".work-list-surface")).toHaveCSS("visibility", "hidden");
+    await expect(focused.locator(".work-title")).toBeFocused();
+    expect(await focused.evaluate((element) => Number(getComputedStyle(element, "::before").opacity))).toBe(0.1);
+    await expectHeaderTextAA(page, focused.locator(".work-card-summary"), `${width} mixed pointer/focus keeps one static tint`, { raster: true });
+    await focused.locator(".work-title").evaluate((element) => element.blur());
+    await page.locator(".work-row").nth(4).hover();
+    await expectWorkHighlightAt(page, 4);
+    await expect(list.locator(".work-list-surface")).toHaveCSS("visibility", "visible");
+    await expect(list.locator(".work-list-surface")).toHaveCSS("opacity", "1");
+    await page.mouse.move(1, 1);
+    await expect.poll(() => list.locator(".work-list-highlight").evaluate((element) => {
+      let opacity = 1;
+      for (let node = element; node; node = node.parentElement) opacity *= Number(getComputedStyle(node).opacity);
+      return opacity;
+    })).toBeLessThan(0.005);
+  });
+}
+
+test("selected-work hover reuses its tweens and cleans up repeated reduced-motion and breakpoint transitions", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await openStable(page, "/");
+  const list = page.locator(".work-list");
+  await expect(list).toHaveAttribute("data-work-hover");
+  const allocated = await page.evaluate(() => {
+    window.__workHoverNodes = [...document.querySelectorAll(".work-list-surface, .work-list-highlight")];
+    window.__workHoverTweens = new Set(gsap.getTweensOf(window.__workHoverNodes));
+    return window.__workHoverTweens.size;
+  });
+  expect(allocated, "the enhancement has a bounded preallocated animation set").toBeGreaterThan(0);
+  expect(allocated).toBeLessThanOrEqual(6);
+  await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
+  await page.locator(".work-row").first().hover();
+  await expectWorkHighlightAt(page, 0);
+  const rows = await page.locator(".work-row").all();
+  for (let step = 0; step < 18; step += 1) {
+    const box = await rows[step % rows.length].boundingBox();
+    await page.mouse.move(step % 2 ? box.x + 20 : box.x + box.width - 20, box.y + box.height / 2);
+    expect(await page.evaluate(() => gsap.getTweensOf(window.__workHoverNodes)
+      .every((tween) => window.__workHoverTweens.has(tween))), "rapid hover reuses, rather than allocates, animation objects").toBe(true);
+  }
+  await expectWorkHighlightAt(page, 5);
+  for (const mode of ["reduce", "breakpoint", "reduce", "breakpoint"]) {
+    await page.evaluate(() => { window.__workHoverNodes = [...document.querySelectorAll(".work-list-surface, .work-list-highlight")]; });
+    if (mode === "reduce") await page.emulateMedia({ reducedMotion: "reduce" });
+    else await page.setViewportSize({ width: 991, height: 1000 });
+    await expect(list).not.toHaveAttribute("data-work-hover");
+    await expect(page.locator(".work-list-surface, .work-list-highlight")).toHaveCount(0);
+    expect(await page.evaluate(() => ({
+      detached: window.__workHoverNodes.every((node) => !node.isConnected),
+      liveTweens: gsap.getTweensOf(window.__workHoverNodes).length,
+    }))).toEqual({ detached: true, liveTweens: 0 });
+    if (mode === "reduce") await page.emulateMedia({ reducedMotion: "no-preference" });
+    else await page.setViewportSize({ width: 992, height: 1000 });
+    await expect(list).toHaveAttribute("data-work-hover");
+    await expect(page.locator(".work-list-surface")).toHaveCount(1);
+    await expect(page.locator(".work-list-highlight")).toHaveCount(1);
+    await page.locator(".work-row").first().hover();
+    await expectWorkHighlightAt(page, 0);
+  }
+});
+
+for (const fallback of [
+  { name: "390 compact", width: 390 },
+  { name: "reduced motion", width: 1440, reducedMotion: "reduce" },
+  { name: "blocked GSAP", width: 1440, blockGsap: true },
+  { name: "no JavaScript", width: 1440, javaScriptEnabled: false },
+]) {
+  test.describe(`selected-work fallback: ${fallback.name}`, () => {
+    test.use({ viewport: { width: fallback.width, height: 1000 }, javaScriptEnabled: fallback.javaScriptEnabled !== false });
+    test("retains the native whole-row link and static keyboard focus", async ({ page }) => {
+      if (fallback.blockGsap) await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
+      await page.emulateMedia({ reducedMotion: fallback.reducedMotion || "no-preference" });
+      await openStable(page, "/");
+      expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches))
+        .toBe(fallback.reducedMotion === "reduce");
+      await expect(page.locator(".work-list")).not.toHaveAttribute("data-work-hover");
+      await expect(page.locator(".work-list-surface")).toHaveCount(0);
+      const row = page.locator(".work-row").first();
+      const link = row.locator("a.work-title");
+      await link.focus();
+      await expect(link).toBeFocused();
+      const focus = await row.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return { width: parseFloat(style.outlineWidth), style: style.outlineStyle };
+      });
+      expect(focus.width).toBeGreaterThanOrEqual(3);
+      expect(focus.style).toBe("solid");
+      await expectHeaderTextAA(page, link, `${fallback.name} focus title`, { raster: true });
+      await link.press("Enter");
+      await expect(page).toHaveURL(/\/work\/raiffeisen$/);
+      await openStable(page, "/");
+      const second = page.locator(".work-row").nth(1);
+      await second.scrollIntoViewIfNeeded();
+      const box = await second.boundingBox();
+      await second.click({ position: { x: box.width - 8, y: box.height / 2 } });
+      await expect(page).toHaveURL(/\/work\/instructure$/);
+    });
+  });
+}
+
+for (const width of [390, 1440]) test.describe(`${width} selected-work touch fallback`, () => {
+  test.use({ viewport: { width, height: 844 }, hasTouch: true, isMobile: true });
+  test("the first tap follows a whole-row link without arming a hover state", async ({ page }) => {
+    await openStable(page, "/");
+    await expect(page.locator(".work-list-surface")).toHaveCount(0);
+    const row = page.locator(".work-row").first();
+    await row.scrollIntoViewIfNeeded();
+    const box = await row.boundingBox();
+    await row.tap({ position: { x: box.width - 8, y: box.height / 2 } });
+    await expect(page).toHaveURL(/\/work\/raiffeisen$/);
+  });
+});
+
+test("1440 home header: reference composition, truthful proof and text navigation", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
   const fold = await page.evaluate(() => {
@@ -1460,7 +1748,6 @@ test("1440 home header: analog mast, live copy, no product screenshot, filled na
     const email = navbar.querySelector("button.footer-email");
     const linkedin = navbar.querySelector("a.footer-contact-link");
     const cta = document.querySelector(".home-banner-section a.hero-work-link[href='/works']");
-    const engage = document.querySelector(".home-banner-section a.hero-engage-link[href='/ai-integration']");
     const headerImgs = [...header.querySelectorAll("img")].map((img) => img.getAttribute("src"));
     const emailStyle = email ? getComputedStyle(email) : null;
     const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
@@ -1472,23 +1759,17 @@ test("1440 home header: analog mast, live copy, no product screenshot, filled na
       sub: document.querySelector(".home-banner-subtitle")?.textContent.trim() || "",
       cta: cta?.textContent.trim() || "",
       ctaHref: cta?.getAttribute("href") || "",
-      engage: engage?.textContent.trim() || "",
-      engageHref: engage?.getAttribute("href") || "",
-      dekLines: (() => {
-        const dek = document.querySelector(".home-banner-subtitle");
-        if (!dek) return 0;
-        return Math.round(dek.getBoundingClientRect().height / parseFloat(getComputedStyle(dek).lineHeight));
-      })(),
-      employerSize: getComputedStyle(document.querySelector(".home-employer-list")).fontSize,
-      leftWidth: document.querySelector(".home-mast .banner-left-wrap")?.getBoundingClientRect().width || 0,
-      h1Size: getComputedStyle(document.querySelector(".home-banner-title")).fontSize,
-      employerY: document.querySelector(".home-employer-list")?.getBoundingClientRect().y || 0,
-      chips: [...document.querySelectorAll(".home-proof-chip")].map((li) => li.textContent.trim()),
-      chipMarks: document.querySelectorAll(".home-proof-mark").length,
-      chipRadius: getComputedStyle(document.querySelector(".home-proof-chip")).borderRadius,
-      kickerTransform: getComputedStyle(document.querySelector(".hero-kicker")).textTransform,
-      kickerTracking: getComputedStyle(document.querySelector(".hero-kicker")).letterSpacing,
-      employers: [...document.querySelectorAll(".home-employer-list li")].map((li) => li.textContent.replace(/\s+/g, " ").trim()),
+      navItems: [
+        navbar.querySelector(".home-nav-monogram")?.textContent.trim(),
+        navbar.querySelector('a.nav-link[href="/works"]')?.textContent.trim(),
+        linkedin?.textContent.trim(),
+        email?.textContent.trim(),
+      ],
+      proof: [...document.querySelectorAll(".home-mast-proof-chips li")].map((li) => ({
+        claim: li.querySelector("strong")?.textContent.trim() || "",
+        company: li.querySelector("strong + span")?.textContent.trim() || "",
+      })),
+      highlights: [...document.querySelectorAll(".home-banner-outcomes li")].map((li) => li.textContent.trim()),
       mesh: Boolean(document.querySelector(".home-mast-mesh") && document.querySelector("#home-mast-blur")),
       dunes: Boolean(document.querySelector(".footer-dunes, .home-mast-dunes")),
       canvas: Boolean(document.querySelector(".hero-proof, .home-mast img[src*='insights-feed']")),
@@ -1499,6 +1780,7 @@ test("1440 home header: analog mast, live copy, no product screenshot, filled na
       emailHref: email ? email.getAttribute("href") : "missing",
       emailType: email ? email.getAttribute("type") : "",
       emailText: email ? email.textContent.trim() : "",
+      emailName: email ? email.getAttribute("aria-label") : "",
       emailTitle: email ? email.getAttribute("title") : "",
       works: Boolean(navbar.querySelector('a.nav-link[href="/works"]')),
       emailSize: email ? {
@@ -1529,22 +1811,15 @@ test("1440 home header: analog mast, live copy, no product screenshot, filled na
   });
   expect(fold.kicker).toBe("Norbert Barna");
   expect(fold.h1).toBe("Product VP");
-  expect(fold.sub).toMatch(/AI products for fintech/);
-  expect(fold.cta).toBe("View selected work");
+  expect(fold.sub).toMatch(/AI-driven, secure/);
+  expect(fold.cta).toBe("View selected work →");
   expect(fold.ctaHref).toBe("/works");
-  expect(fold.engage).toBe("Open for AI/web engagements");
-  expect(fold.engageHref).toBe("/ai-integration");
-  expect(fold.dekLines, "dek wraps at reading width like the Version B lock").toBe(2);
-  expect(Number.parseFloat(fold.employerSize), "employer names must read as a type stack").toBeGreaterThanOrEqual(24);
-  expect(Number.parseFloat(fold.h1Size), "mast H1 is display size, not the 64px case cap").toBeGreaterThanOrEqual(80);
-  expect(fold.leftWidth, "left stack stays a reading column, not the full fold").toBeLessThan(800);
-  expect(fold.employerY, "employers sit mid-mast on solid navy, not the lilac fade").toBeGreaterThan(400);
-  expect(fold.chips).toEqual(["$52M+ features · Instructure", "1.8→4.8 · Raiffeisen"]);
-  expect(fold.chipMarks, "Version B chips keep two inline SVG marks").toBe(2);
-  expect(fold.chipRadius).toBe("999px");
-  expect(fold.kickerTransform).toBe("uppercase");
-  expect(Number.parseFloat(fold.kickerTracking), "Version B kicker is tracked").toBeGreaterThan(1);
-  expect(fold.employers).toEqual(["BlackRock ·", "Instructure ·", "Raiffeisen ·", "Bitpanda ·", "Balabit ·"]);
+  expect(fold.navItems).toEqual(["NB", "Works", "LinkedIn", "Email"]);
+  expect(fold.proof).toEqual([
+    { claim: "Multi-country banking", company: "Raiffeisen" },
+    { claim: "Enterprise EdTech AI", company: "Instructure" },
+  ]);
+  expect(fold.highlights).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
   expect(fold.mesh).toBe(true);
   expect(fold.dunes).toBe(false);
   expect(fold.canvas).toBe(false);
@@ -1555,25 +1830,24 @@ test("1440 home header: analog mast, live copy, no product screenshot, filled na
   expect(fold.navBorder).toBe("0px");
   expect(fold.emailHref).toBeNull();
   expect(fold.emailType).toBe("button");
-  expect(fold.emailText).toBe(PROJECT_LABEL);
+  expect(fold.emailText).toBe(HOME_EMAIL_LABEL);
+  expect(fold.emailName).toBe(HOME_EMAIL_NAME);
   expect(fold.emailTitle).toBe(PROJECT_TITLE);
   expect(fold.emailSize.h).toBe(44);
   await expectContactLabelFit(page.locator(".navbar button.footer-email"));
   expect(isTransparentFill(fold.emailSize.bg)).toBe(true);
   expect(fold.emailSize.color).toBe("rgb(17, 17, 17)");
-  expect(fold.emailSize.radius).toBe("12px");
-  expect(fold.emailSize.size).toBe("15px");
-  expect(fold.emailSize.weight).toBe("500");
-  expect(fold.linkedinSize.w).toBe(44);
+  expect(fold.emailSize.radius).toBe("8px");
+  expect(fold.emailSize.size).toBe("16px");
+  expect(fold.emailSize.weight).toBe("400");
+  expect(fold.linkedinSize.w).toBeGreaterThan(44);
   expect(fold.linkedinSize.h).toBe(44);
-  expect(fold.linkedinSize.radius).toBe("12px");
+  expect(fold.linkedinSize.radius).toBe("8px");
   expect(isTransparentFill(fold.linkedinSize.bg)).toBe(true);
-  expect(fold.ctaChrome.h).toBeGreaterThanOrEqual(52);
-  expect(fold.ctaChrome.h).toBeLessThanOrEqual(72);
+  expect(fold.ctaChrome.h).toBeGreaterThanOrEqual(56);
   expect(fold.ctaChrome.radius).toBe("12px");
-  expect(isTransparentFill(fold.ctaChrome.bg)).toBe(false);
   expect(fold.ctaChrome.bg).toBe("rgb(10, 22, 40)");
-  expect(fold.ctaChrome.color).toBe("rgb(244, 245, 247)");
+  expect(fold.ctaChrome.color).toBe("rgb(255, 255, 255)");
   expect(fold.ctaChrome.weight).toBe("500");
   expect(fold.ctaChrome.size).toBe("15px");
 
@@ -1588,17 +1862,16 @@ test("1440 home header: analog mast, live copy, no product screenshot, filled na
   expect(lilac.luminance, "copy sits on the pale lilac band").toBeGreaterThan(150);
   expect(lilac.b, "type band stays cool-lilac").toBeGreaterThan(lilac.r - 12);
   const outcomes = await page.evaluate(() => {
-    const list = document.querySelector(".home-employer-list").getBoundingClientRect();
+    const list = document.querySelector(".home-banner-outcomes").getBoundingClientRect();
     return { x: list.x, y: list.y };
   });
   const outcomesBand = await screenshotClip(page, {
-    // Sample navy *beside* the stack — glyphs are --mast-on-navy (light).
-    x: Math.max(0, outcomes.x - 20),
-    y: outcomes.y + 10,
-    width: 14,
+    x: Math.max(0, outcomes.x + 8),
+    y: outcomes.y + 8,
+    width: 18,
     height: 14,
   });
-  expect(outcomesBand.luminance, "desktop employers sit on the navy félkör, not a lilac dodge").toBeLessThan(90);
+  expect(outcomesBand.luminance, "desktop highlights sit on the dark navy transition, not the lilac field").toBeLessThan(135);
   const dome = await screenshotClip(page, {
     x: Math.max(0, mast.x + mast.width * 0.72 - 24),
     y: mast.y + mast.height - 70,
@@ -1623,16 +1896,14 @@ test("1440 home header: analog mast, live copy, no product screenshot, filled na
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
 });
 
-test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => {
+test("1440 home mast and text navigation meet WCAG AA on their live backgrounds", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
 
   const kicker = page.locator(".home-mast .hero-kicker").first();
   const h1 = page.locator(".home-mast h1").first();
-  const dek = page.locator(".home-mast .home-banner-subtitle").first();
-  const chip = page.locator(".home-mast .home-proof-chip").first();
-  const firstEmployer = page.locator(".home-mast .home-employer-list li").first();
-  const lastEmployer = page.locator(".home-mast .home-employer-list li").last();
+  const firstBullet = page.locator(".home-mast .home-banner-outcomes li").first();
+  const lastBullet = page.locator(".home-mast .home-banner-outcomes li").last();
   const email = page.locator(".navbar button.footer-email").first();
   const linkedin = page.locator(".navbar a.footer-contact-link").first();
 
@@ -1671,102 +1942,72 @@ test("1440 home mast type meets WCAG AA on navy and lilac", async ({ page }) => 
 
   const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
   const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
-  const dekRgb = parseCssColor(await dek.evaluate((el) => getComputedStyle(el).color));
-  const chipRgb = parseCssColor(await chip.evaluate((el) => getComputedStyle(el).color));
-  const employerRgb = parseCssColor(await firstEmployer.evaluate((el) => getComputedStyle(el).color));
-  const lastEmployerRgb = parseCssColor(await lastEmployer.evaluate((el) => getComputedStyle(el).color));
-  const emailBorder = parseCssColor(await email.evaluate((el) => getComputedStyle(el).borderTopColor));
-  const linkedinBorder = parseCssColor(await linkedin.evaluate((el) => getComputedStyle(el).borderTopColor));
+  const bulletRgb = parseCssColor(await firstBullet.evaluate((el) => getComputedStyle(el).color));
+  const emailRgb = parseCssColor(await email.evaluate((el) => getComputedStyle(el).color));
+  const linkedinRgb = parseCssColor(await linkedin.evaluate((el) => getComputedStyle(el).color));
 
   expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
-  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(160);
+  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(260);
   expect(h1Rgb.r + h1Rgb.g + h1Rgb.b, "H1 stays dark ink on lilac").toBeLessThan(80);
-  expect(dekRgb.r + dekRgb.g + dekRgb.b, "dek stays dark ink on lilac").toBeLessThan(80);
-  expect(chipRgb.r + chipRgb.g + chipRgb.b, "proof chips stay dark ink on lilac").toBeLessThan(80);
-  expect(employerRgb.r + employerRgb.g + employerRgb.b, "InkOnNavy: employers must be light ink").toBeGreaterThan(600);
-  expect(lastEmployerRgb.r + lastEmployerRgb.g + lastEmployerRgb.b, "InkOnNavy: last employer must be light ink").toBeGreaterThan(600);
+  expect(bulletRgb.r + bulletRgb.g + bulletRgb.b, "InkOnNavy: highlights body must be light ink").toBeGreaterThan(600);
 
   const kickerBg = await sampleBehindGlyphs(page, kicker);
   const h1Bg = await sampleBehindGlyphs(page, h1);
-  const dekBg = await sampleBehindGlyphs(page, dek);
-  const chipBg = await sampleBehindGlyphs(page, chip);
-  const employerBg = await sampleBehindGlyphs(page, firstEmployer);
-  const lastBg = await sampleBehindGlyphs(page, lastEmployer);
+  const bulletBg = await sampleBehindGlyphs(page, firstBullet);
+  const lastBg = await sampleBehindGlyphs(page, lastBullet);
+  const emailBg = await sampleBehindGlyphs(page, email);
+  const linkedinBg = await sampleBehindGlyphs(page, linkedin);
 
-  expect(employerBg.median.l, "employers must sit on the navy félkör, not a lilac dodge").toBeLessThan(0.2);
-  expect(lastBg.median.l, "last employer must sit on the navy félkör").toBeLessThan(0.2);
+  expect(bulletBg.median.l, "highlights body must sit on the navy félkör").toBeLessThan(0.2);
+  expect(lastBg.median.l, "last highlight must sit on the navy félkör").toBeLessThan(0.2);
   expect(h1Bg.median.l, "H1 must stay on lilac").toBeGreaterThan(0.5);
   expect(kickerBg.median.l, "kicker must stay on lilac").toBeGreaterThan(0.5);
-  expect(dekBg.median.l, "dek must stay on lilac").toBeGreaterThan(0.5);
-  expect(chipBg.median.l, "proof chips must stay on lilac").toBeGreaterThan(0.5);
 
   const kickerVsLight = contrastAgainst(kickerRgb, kickerBg.lightest);
   const kickerVsDark = contrastAgainst(kickerRgb, kickerBg.darkest);
   const h1VsLilac = contrastAgainst(h1Rgb, h1Bg.median);
-  const dekVsLight = contrastAgainst(dekRgb, dekBg.lightest);
-  const chipVsLight = contrastAgainst(chipRgb, chipBg.lightest);
-  const employerVsNavy = contrastAgainst(employerRgb, employerBg.darkest);
-  const employerVsLight = contrastAgainst(employerRgb, employerBg.lightest);
-  const lastVsNavy = contrastAgainst(lastEmployerRgb, lastBg.darkest);
+  const bulletVsNavy = contrastAgainst(bulletRgb, bulletBg.darkest);
+  const bulletVsLight = contrastAgainst(bulletRgb, bulletBg.lightest);
+  const lastVsNavy = contrastAgainst(bulletRgb, lastBg.darkest);
+  const emailVsLilac = contrastAgainst(emailRgb, emailBg.median);
+  const linkedinVsLilac = contrastAgainst(linkedinRgb, linkedinBg.median);
 
   expect(kickerVsLight, `kicker vs lightest grain ${kickerVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
   expect(kickerVsDark, `kicker vs darkest grain ${kickerVsDark.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
   expect(h1VsLilac, `H1 vs lilac ${h1VsLilac.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(dekVsLight, `dek vs lightest grain ${dekVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(chipVsLight, `chip vs lightest grain ${chipVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(employerVsNavy, `employer vs darkest navy ${employerVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(employerVsLight, `employer vs lightest under glyphs ${employerVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(lastVsNavy, `last employer vs darkest navy ${lastVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-
-  const emailBox = await email.boundingBox();
-  const linkedinBox = await linkedin.boundingBox();
-  const emailFill = await screenshotClip(page, {
-    x: emailBox.x + 10,
-    y: emailBox.y + 12,
-    width: 16,
-    height: 10,
-  });
-  const linkedinFill = await screenshotClip(page, {
-    x: linkedinBox.x + 12,
-    y: linkedinBox.y + 12,
-    width: 12,
-    height: 10,
-  });
-  const emailStroke = contrastRatio(colorLuminance(emailBorder), relativeLuminance(emailFill.r, emailFill.g, emailFill.b));
-  const linkedinStroke = contrastRatio(colorLuminance(linkedinBorder), relativeLuminance(linkedinFill.r, linkedinFill.g, linkedinFill.b));
-  expect(emailStroke, `Email 1px stroke ${emailStroke.toFixed(2)}`).toBeGreaterThanOrEqual(3);
-  expect(linkedinStroke, `LinkedIn 1px stroke ${linkedinStroke.toFixed(2)}`).toBeGreaterThanOrEqual(3);
+  expect(bulletVsNavy, `highlights body vs darkest navy ${bulletVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(bulletVsLight, `highlights body vs lightest under glyphs ${bulletVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(lastVsNavy, `last highlight vs darkest navy ${lastVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(emailVsLilac, `Email vs lilac ${emailVsLilac.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  expect(linkedinVsLilac, `LinkedIn vs lilac ${linkedinVsLilac.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
 
   const ratios = [
     `kicker ${hexRgb(kickerRgb)} vs light ${hexRgb(kickerBg.lightest)} = ${kickerVsLight.toFixed(2)}`,
     `kicker ${hexRgb(kickerRgb)} vs dark ${hexRgb(kickerBg.darkest)} = ${kickerVsDark.toFixed(2)}`,
     `H1 ${hexRgb(h1Rgb)} vs ${hexRgb(h1Bg.median)} = ${h1VsLilac.toFixed(2)}`,
-    `dek vs lightest = ${dekVsLight.toFixed(2)}`,
-    `chip vs lightest = ${chipVsLight.toFixed(2)}`,
-    `employer ${hexRgb(employerRgb)} vs darkest ${hexRgb(employerBg.darkest)} = ${employerVsNavy.toFixed(2)}`,
-    `employer ${hexRgb(employerRgb)} vs lightest ${hexRgb(employerBg.lightest)} = ${employerVsLight.toFixed(2)}`,
-    `last employer vs darkest navy = ${lastVsNavy.toFixed(2)}`,
-    `Email stroke = ${emailStroke.toFixed(2)}`,
-    `LinkedIn stroke = ${linkedinStroke.toFixed(2)}`,
+    `bullet ${hexRgb(bulletRgb)} vs darkest ${hexRgb(bulletBg.darkest)} = ${bulletVsNavy.toFixed(2)}`,
+    `bullet ${hexRgb(bulletRgb)} vs lightest ${hexRgb(bulletBg.lightest)} = ${bulletVsLight.toFixed(2)}`,
+    `Email vs lilac = ${emailVsLilac.toFixed(2)}`,
+    `LinkedIn vs lilac = ${linkedinVsLilac.toFixed(2)}`,
   ].join("\n");
   console.log(ratios);
-  expect(ratios).toMatch(/employer .+ = ([4-9]|1[0-9])/);
+  expect(ratios).toMatch(/bullet .+ = [4-9]|1[0-9]/);
 });
 
-test("390 home mast type meets WCAG AA on lilac, navy sits under the last employer", async ({ page }) => {
+test("390 home mast type meets WCAG AA on lilac, navy sits under the last highlight", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
 
   const kicker = page.locator(".home-mast .hero-kicker").first();
   const h1 = page.locator(".home-mast h1").first();
   const dek = page.locator(".home-mast .home-banner-subtitle").first();
-  const chip = page.locator(".home-mast .home-proof-chip").first();
-  const firstEmployer = page.locator(".home-mast .home-employer-list li").first();
-  const lastEmployer = page.locator(".home-mast .home-employer-list li").last();
+  const label = page.locator(".home-mast .metric-context").first();
+  const firstBullet = page.locator(".home-mast .home-banner-outcomes li").first();
+  const lastBullet = page.locator(".home-mast .home-banner-outcomes li").last();
 
   const fold = await page.evaluate(() => {
     const kickerEl = document.querySelector(".hero-kicker");
-    const last = document.querySelector(".home-employer-list li:last-child");
+    const last = document.querySelector(".home-banner-outcomes li:last-child");
     const mast = document.querySelector(".home-mast");
     return {
       kickerSize: kickerEl ? getComputedStyle(kickerEl).fontSize : "",
@@ -1775,46 +2016,48 @@ test("390 home mast type meets WCAG AA on lilac, navy sits under the last employ
     };
   });
   expect(fold.kickerSize, "compact kicker must stay 13px").toBe("13px");
-  expect(fold.lastBottom, "mast must extend past the employers so navy can sit under type").toBeLessThan(fold.mastBottom - 140);
+  expect(fold.lastBottom, "mast must extend past the highlights so navy can sit under type").toBeLessThan(fold.mastBottom - 140);
 
   const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
   const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
   const dekRgb = parseCssColor(await dek.evaluate((el) => getComputedStyle(el).color));
-  const chipRgb = parseCssColor(await chip.evaluate((el) => getComputedStyle(el).color));
-  const employerRgb = parseCssColor(await firstEmployer.evaluate((el) => getComputedStyle(el).color));
-  const lastRgb = parseCssColor(await lastEmployer.evaluate((el) => getComputedStyle(el).color));
+  const labelRgb = parseCssColor(await label.evaluate((el) => getComputedStyle(el).color));
+  const bulletRgb = parseCssColor(await firstBullet.evaluate((el) => getComputedStyle(el).color));
+  const lastRgb = parseCssColor(await lastBullet.evaluate((el) => getComputedStyle(el).color));
 
   expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
-  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(160);
+  expect(labelRgb.a, "compact highlights label must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
+  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(260);
+  expect(labelRgb.r + labelRgb.g + labelRgb.b, "compact label stays dark on lilac, not --mast-on-navy").toBeLessThan(260);
   expect(h1Rgb.r + h1Rgb.g + h1Rgb.b, "H1 stays dark ink on lilac").toBeLessThan(80);
-  expect(chipRgb.r + chipRgb.g + chipRgb.b, "compact chips stay dark ink").toBeLessThan(80);
-  expect(employerRgb.r + employerRgb.g + employerRgb.b, "compact employers stay dark ink").toBeLessThan(80);
-  expect(lastRgb.r + lastRgb.g + lastRgb.b, "last compact employer stays dark ink").toBeLessThan(80);
+  expect(bulletRgb.r + bulletRgb.g + bulletRgb.b, "compact highlights stay dark ink").toBeLessThan(80);
+  expect(lastRgb.r + lastRgb.g + lastRgb.b, "last compact highlight stays dark ink").toBeLessThan(80);
 
   const kickerBg = await sampleBehindGlyphs(page, kicker);
   const h1Bg = await sampleBehindGlyphs(page, h1);
   const dekBg = await sampleBehindGlyphs(page, dek);
-  const chipBg = await sampleBehindGlyphs(page, chip);
-  const firstBg = await sampleBehindGlyphs(page, firstEmployer);
-  const lastBg = await sampleBehindGlyphs(page, lastEmployer);
+  const labelBg = await sampleBehindGlyphs(page, label);
+  const firstBg = await sampleBehindGlyphs(page, firstBullet);
+  const lastBg = await sampleBehindGlyphs(page, lastBullet);
 
   expect(kickerBg.median.l, "kicker must stay on lilac").toBeGreaterThan(0.5);
   expect(h1Bg.median.l, "H1 must stay on lilac").toBeGreaterThan(0.5);
   expect(dekBg.median.l, "dek must stay on lilac").toBeGreaterThan(0.5);
-  expect(chipBg.median.l, "chips must stay on lilac").toBeGreaterThan(0.5);
-  expect(firstBg.median.l, "first employer must stay on lilac").toBeGreaterThan(0.5);
-  expect(lastBg.median.l, "last employer must stay on lilac, not the navy fade").toBeGreaterThan(0.5);
-  expect(lastBg.darkest.l, "navy must not reach the last employer glyphs").toBeGreaterThan(0.35);
+  expect(labelBg.median.l, "highlights label must stay on lilac").toBeGreaterThan(0.5);
+  expect(firstBg.median.l, "first highlight must stay on lilac").toBeGreaterThan(0.5);
+  expect(lastBg.median.l, "last highlight must stay on lilac, not the navy fade").toBeGreaterThan(0.5);
+  expect(lastBg.darkest.l, "navy must not reach the last highlight glyphs").toBeGreaterThan(0.35);
 
   const pairs = [
     ["kicker vs lightest grain", contrastAgainst(kickerRgb, kickerBg.lightest)],
     ["kicker vs darkest grain", contrastAgainst(kickerRgb, kickerBg.darkest)],
     ["H1 vs lightest grain", contrastAgainst(h1Rgb, h1Bg.lightest)],
     ["dek vs lightest grain", contrastAgainst(dekRgb, dekBg.lightest)],
-    ["chip vs lightest grain", contrastAgainst(chipRgb, chipBg.lightest)],
-    ["first employer vs lightest grain", contrastAgainst(employerRgb, firstBg.lightest)],
-    ["last employer vs lightest grain", contrastAgainst(lastRgb, lastBg.lightest)],
-    ["last employer vs darkest under glyphs", contrastAgainst(lastRgb, lastBg.darkest)],
+    ["label vs lightest grain", contrastAgainst(labelRgb, labelBg.lightest)],
+    ["label vs darkest grain", contrastAgainst(labelRgb, labelBg.darkest)],
+    ["first highlight vs lightest grain", contrastAgainst(bulletRgb, firstBg.lightest)],
+    ["last highlight vs lightest grain", contrastAgainst(lastRgb, lastBg.lightest)],
+    ["last highlight vs darkest under glyphs", contrastAgainst(lastRgb, lastBg.darkest)],
   ];
   const ratios = pairs.map(([name, value]) => `${name} = ${value.toFixed(2)}`).join("\n");
   console.log(ratios);
@@ -1864,12 +2107,30 @@ async function awardFill(page, card) {
       videoFill: cover(videoBox, cardBox),
       inset: style.inset,
       objectFit: style.objectFit,
+      videoFilter: style.filter,
+      videoBlend: style.mixBlendMode,
+      videoOpacity: Number(style.opacity),
+      layerEffects: [el, wrap, frame, video].map((node) => {
+        const layer = getComputedStyle(node);
+        return { filter: layer.filter, backdropFilter: layer.backdropFilter, blend: layer.mixBlendMode };
+      }),
+      scrimContent: getComputedStyle(el, "::after").content,
+      dotOverlays: el.querySelectorAll(".award-bg-dot-image-wrap, .award-bg-dot-image").length,
       cardW: cardBox.width,
       cardH: cardBox.height,
       videoW: videoBox.width,
       videoH: videoBox.height,
     };
   });
+}
+
+function expectAwardClear(info) {
+  expect({ scrim: info.scrimContent, dots: info.dotOverlays, filter: info.videoFilter, blend: info.videoBlend },
+    "experience footage stays unobscured: no full-card scrim, dot overlay, filter or blend")
+    .toEqual({ scrim: "none", dots: 0, filter: "none", blend: "normal" });
+  expect(info.videoOpacity).toBe(1);
+  expect(info.layerEffects, "no ancestor may reintroduce grading or blending")
+    .toEqual(Array.from({ length: 4 }, () => ({ filter: "none", backdropFilter: "none", blend: "normal" })));
 }
 
 test("1440 experience card hover fills the card with the award video", async ({ page }) => {
@@ -1888,6 +2149,7 @@ test("1440 experience card hover fills the card with the award video", async ({ 
   expect(hot.videoFill, "video file must cover the card").toBeGreaterThan(0.98);
   expect(hot.inset).toMatch(/^(0px|0)$/);
   expect(hot.objectFit).toBe("cover");
+  expectAwardClear(hot);
 });
 
 test.describe("compact award tap", () => {
@@ -1909,8 +2171,75 @@ test.describe("compact award tap", () => {
     expect(hot.videoFill, "compact video file must cover the card").toBeGreaterThan(0.98);
     expect(hot.inset).toMatch(/^(0px|0)$/);
     expect(hot.objectFit).toBe("cover");
+    expectAwardClear(hot);
   });
 });
+
+for (const width of [390, 1440]) {
+  for (const frameColor of ["white", "black"]) {
+    test(`${width} experience video clarity: all five cards preserve ${frameColor} frames and paper-backed text contrast`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await openStable(page, "/");
+      const cards = page.locator(".awards-card");
+      await expect(cards).toHaveCount(5);
+      for (let index = 0; index < 5; index += 1) {
+        const card = cards.nth(index);
+        await card.hover();
+        await expect(card).toHaveCSS("opacity", "1");
+        await expect.poll(() => awardFill(page, card).then((info) => info.wrapOpacity)).toBe(1);
+        expectAwardClear(await awardFill(page, card));
+        // Replace only the video pixels, not any of the actual card/text CSS.
+        // These are luminance-bound controls, not a claim about a sampled movie frame.
+        await card.evaluate((element, color) => {
+          element.querySelector("video").style.visibility = "hidden";
+          element.querySelector(".awards-bg-video").style.background = color;
+        }, frameColor);
+        const paper = await card.evaluate((element) => {
+          const box = element.getBoundingClientRect();
+          const plates = [...element.querySelectorAll(".awards-title-wrap, .awards-year")].map((plate) => {
+            const rect = plate.getBoundingClientRect();
+            const style = getComputedStyle(plate);
+            // Include the eight-pixel opaque spread around the title when
+            // measuring both coverage and a truly unobstructed sample patch.
+            const spread = plate.matches(".awards-title-wrap") ? 8 : 0;
+            return {
+              background: style.backgroundColor, opacity: Number(style.opacity),
+              left: rect.left - spread, right: rect.right + spread,
+              top: rect.top - spread, bottom: rect.bottom + spread,
+            };
+          });
+          let clip = null;
+          for (let y = Math.ceil(box.top + 12); !clip && y + 16 < box.bottom - 12; y += 8) {
+            for (let x = Math.ceil(box.left + 12); !clip && x + 16 < box.right - 12; x += 8) {
+              if (plates.every((plate) => x + 16 <= plate.left || x >= plate.right || y + 16 <= plate.top || y >= plate.bottom)) {
+                clip = { x, y, width: 16, height: 16 };
+              }
+            }
+          }
+          return { plates, clip, area: box.width * box.height };
+        });
+        expect(paper.plates).toHaveLength(2);
+        for (const plate of paper.plates) {
+          const color = parseCssColor(plate.background);
+          expect(color.a, "each label plate is opaque, not a frame-dependent translucent scrim").toBe(1);
+          expect(colorLuminance(color), "the text uses the existing light paper surface").toBeGreaterThan(0.8);
+          expect(plate.opacity).toBe(1);
+        }
+        const coverage = paper.plates.reduce((area, plate) => area + (plate.right - plate.left) * (plate.bottom - plate.top), 0) / paper.area;
+        expect(coverage, "text backplates must leave substantial footage visible, not cover the full card").toBeLessThan(0.75);
+        expect(paper.clip, "there must be a clear video region outside the text backplates").not.toBeNull();
+        const clearFrame = await screenshotClip(page, paper.clip);
+        for (const channel of ["r", "g", "b"]) {
+          expect(Math.abs(clearFrame[channel] - (frameColor === "white" ? 255 : 0)),
+            `${width} card ${index + 1}: unobstructed ${frameColor} footage must not be graded or washed out`).toBeLessThan(4);
+        }
+        for (const selector of [".awards-card-title", ".awards-card-text", ".awards-year"]) {
+          await expectHeaderTextAA(page, card.locator(selector), `${width} card ${index + 1} ${frameColor} ${selector}`, { raster: true });
+        }
+      }
+    });
+  }
+}
 
 for (const [width, expected] of [[1280, 64], [390, 56]]) {
   test(`${width}: header is a sticky white ${expected}px bar with the locked border`, async ({ page }) => {
