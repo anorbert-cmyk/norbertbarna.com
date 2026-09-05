@@ -245,9 +245,12 @@ utility pages. This release is ON via the first-loaded, static
 side effects unless the value is exactly `true`. Settings start hidden in HTML
 and are revealed by the consent owner. A first visit shows the existing non-modal
 banner; notices, metadata and JSON-LD describe optional, consent-gated PostHog EU
-capture of page views and Email-button clicks. The official `posthog-js` snippet
+capture of page views and Email-button clicks. Insights lock: project **265707**
+only, public write-only key in `analytics.js`, host `https://eu.i.posthog.com`.
+Consent before any capture. Do not add PostHog dashboards or the official snippet
+to this repo. The official `posthog-js` snippet
 is not used, so CSP allows `https://eu.i.posthog.com` on `connect-src` only — not
-`eu-assets.i.posthog.com` on `script-src`. Google Search Console HTML verification is
+`eu-assets.i.posthog.com` on `script-src` (asset host not needed). Google Search Console HTML verification is
 injected by `server.js` from `GOOGLE_SITE_VERIFICATION` or `GSC_VERIFICATION`
 when a real token is present. Never invent a token in HTML.
 

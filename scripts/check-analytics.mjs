@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { UTILITY_PAGES } from './service-pages.mjs';
 const root = new URL('../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
@@ -32,8 +32,16 @@ assert(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon|document\.cookie/.test(consent),
 assert(!/sendBeacon|XMLHttpRequest|localStorage|captureException|sessionRecording|setInterval/.test(analytics), 'no background SDK queue or persistent analytics ID');
 assert(analytics.includes('$process_person_profile: false') && analytics.includes('$geoip_disable: true'), 'fixed privacy sentinels');
 assert(analytics.includes("credentials: 'omit'") && analytics.includes("referrerPolicy: 'no-referrer'") && analytics.includes('keepalive: false'), 'bounded transport');
+assert(analytics.includes('EU project 265707'), 'Insights lock: PostHog EU project 265707 only');
+assert(analytics.includes("var ENDPOINT = 'https://eu.i.posthog.com/i/v0/e/'"), 'Capture API host is EU only');
+assert(analytics.includes("var PROJECT_KEY = 'phc_A6NZzdAmwhiRd9yXKevru3nqDWX5eqmNvzhxMHCn4T3Q'"), 'Insights lock: public write-only token for 265707');
 assert.equal((analytics.match(/phc_[A-Za-z0-9]+/g) || []).length, 1, 'one public project ingestion key');
+assert(analytics.includes('window.PortfolioConsent.hasConsent() === true'), 'consent before capture');
+assert(!analytics.includes('eu-assets.i.posthog.com'), 'do not load the official snippet asset host');
 assert(!/phx_|phs_|lead_received|lead_qualified|meeting_booked/.test(analytics), 'no secret or fabricated business conversion');
+for (const extra of ['.posthog', 'posthog.json', 'posthog-dashboards.json', 'insights.json']) {
+  assert(!existsSync(new URL(extra, root)), `do not build PostHog dashboards in-repo (${extra})`);
+}
 for (const [page, lang, route] of [['privacy.html', 'en', '/privacy'], ['hu/adatvedelem.html', 'hu', '/hu/adatvedelem']]) {
   const html = read(page);
   assert(html.includes(`<html lang="${lang}">`), `${page}: language`);
