@@ -2940,10 +2940,6 @@ html.no-motion .work-list-surface { display: none; }
   padding-bottom: min(62vw, 360px);
 }
 
-.home-mast[data-text-reflow] .home-banner-subtitle br {
-  display: none;
-}
-
 .home-mast[data-text-reflow] .home-banner-outcomes,
 .home-mast[data-text-reflow] .home-banner-outcomes li,
 .home-mast[data-text-reflow] .home-banner-outcomes strong {
@@ -3396,10 +3392,6 @@ html.no-motion .home-mast-navy-drift {
 
   .home-mast .home-highlight-company {
     color: var(--ink);
-  }
-
-  .home-mast .home-banner-subtitle br {
-    display: none;
   }
 
   /* Compact poster: retain the curve and place the narrow rail inside it. */

@@ -100,8 +100,8 @@ The first viewport is the argument, not a masthead plus setup.
 - H1 is the role (`Product VP`), not the name.
 - The name stays plain text in the DOM and is rendered as the screenshot-directed
   uppercase, tracked kicker.
-- The first viewport is an analog mesh mast (greyer-lilac grain, a **large
-  navy félkör** from the bottom toward center-right, blur 56 family). Live
+- The first viewport follows the supplied reference: pale lavender grain, a **large
+  navy félkör** from the bottom toward center-right, and a defined blue-violet edge. Live
   copy sits left on the lilac. The right side is mesh — not Canvas Career,
   not any product screenshot.
 - Fold proof on `/` is the live highlights list, not DualIndex: the **work
@@ -139,7 +139,8 @@ Keep this review internal. Deliver the implementation, not a scorecard.
 
 ## Locked brand (do not regenerate)
 
-**Type:** Funnel Display 700 for display; Inter for UI, dek, and body.
+**Type:** Funnel Display 700 for case and section display; Inter for UI, dek,
+and body. The reference-directed home H1 uses the existing Inter 700 face.
 Do not add a third family. Do not generate letterforms.
 
 **Ink / paper**
@@ -163,7 +164,8 @@ Do not add a third family. Do not generate letterforms.
 | OnRobot | `#ecf2f5` | `#111` |
 | Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
-Site chrome (nav, home) stays ink on cool paper. Case color is the case
+Site chrome stays ink on cool paper; the home mast has the reference exception
+below. Case color is the case
 header field. The footer mesh **pixel-matches the accepted lock crop**, not
 the raw case hexes: greyer-lilac `#D6D4ED` on the type band, Instructure navy
 `#0A1628` as a **left-weighted horizon mass** (in across the width by mid-
@@ -275,17 +277,18 @@ artboard already crops the phones.
 
 | Role | Size | Weight | Line-height | Class |
 |---|---|---|---|---|
-| Home display H1 | 94–128px desktop; 40–56px compact | 700 Funnel | .94 desktop / 1.05 compact | `.home-banner-title` |
+| Home display H1 | 94–128px desktop; 44–56px compact | 700 Inter | .94 desktop / ~1.04 compact | `.home-banner-title` |
 | Case display H1 | 56–64px desktop; 40–56px compact | 700 Funnel | 1.05 | `.banner-title` |
-| Dek | 20–22px | 400 Inter | ~1.45 | `.home-banner-subtitle`, `.banner-text` |
+| Home dek | 24–28px desktop; 20–22px compact/short screens | 400 Inter | ~1.45 | `.home-banner-subtitle` |
+| Case dek | 20–22px | 400 Inter | ~1.45 | `.banner-text` |
 | Body | 17–18px | 400 Inter | ~1.5 | `body`, `.summary` |
 | Section H2 | 28–32px | 700 Funnel | 1.15 | `.summary h2`, `.section-title` |
 | Card title | 22–24px | 700 Funnel | 1.2 | `.work-title` |
-| Kicker | 13px | 600–700 Inter | 1.2 | `.hero-kicker`, `.work-category` |
+| Kicker | 13px compact; 18px home desktop | 600–700 Inter | 1.2 | `.hero-kicker`, `.work-category` |
 
 Do not use the oversized home display scale on case pages or use a 38px/300
 dek. Do not bold a whole dek to fake a missing middle size. The home name kicker
-is the one screenshot-directed uppercase/tracked exception; its DOM copy remains
+is the screenshot-directed uppercase/tracked exception; its DOM copy remains
 `Norbert Barna` and user text-spacing detection compares against that authored
 baseline.
 
@@ -376,36 +379,46 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 
 **Home fold**
 
-1. Analog mesh mast: greyer-lilac `#D6D4ED` grain, a **large navy félkör**
-   (`#0A1628`) rising from the bottom toward center-right. The 2026-09-12
-   reference correction uses a broad ellipse, blur 56 behind a blur 12 edge,
-   and `preserveAspectRatio="none"` so wide screens do not crop away the arc.
-   Not the weaker/smaller navy of the text-only crop. Not the footer’s
-   right-weighted yellow. Type on the pale band. Empty right is mesh.
-   On compact, the arc occupies its own 260–420px lower-right field with
-   180px bottom space after the content, preserving the curve rather than
-   masking it into a horizontal stripe. Ink stays on lilac. The highlights label uses `--mast-muted`,
-   not 62% `--muted`. Playwright samples pixels **behind glyphs** at 390.
-   On desktop the highlights column sits on the navy félkör: use light ink
-   (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
-   dome (still inside the mast). Do not shrink the dome to dodge contrast.
-   Do not move the list down onto About.
+1. Follow the supplied original design, not the footer's numeric palette:
+   pale lavender, a **large navy félkör** rising from the bottom toward
+   center-right, and a visible blue-violet edge grading into a deep blue interior.
+   The 2026-09-12 user correction supersedes the former home `#D6D4ED` /
+   `#0A1628` and Funnel H1 locks. Footer and case colors remain unchanged.
+   Use a broad ellipse with a restrained blurred back layer and a defined soft
+   front edge, plus `preserveAspectRatio="none"` so wide screens retain the arc.
+   The navy is a tonal gradient, not a flat dark disk with a gray fog halo.
+   Keep a clearly visible analog grain pattern related to the footer while
+   preserving the lavender light and blue shadows; do not copy neutral overlay
+   strengths that turn the reference gray. Grain stays static and unblurred.
+   On compact, keep a generous visible lower-right arc and the narrow,
+   right-aligned light employer rail inside its dark area. The normal-size rail
+   has no separate label or hairline. On desktop the rail also sits on navy.
+   Keep every employer inside the mast and verify AA behind every glyph.
+   With `data-text-reflow`, restore the stacked dark-on-pale list, visible label,
+   and bounded lower field; enlarged or user-spaced text must not inherit the
+   narrow light rail. Do not move the list onto About or shrink the curve merely
+   to avoid contrast work.
+   Ordinary width or height changes must preserve the normal composition,
+   including compact-to-desktop and short-to-tall laptop resizing. Compare user
+   text adjustments against the current authored responsive size and tracking,
+   not a snapshot from page load; keep these baselines independent of reflow.
 2. Kicker: DOM text `Norbert Barna`, visually uppercase with restrained tracking
-   to match the approved screenshot. Stay 13px on compact; do not inherit the
-   17px `.banner-left-wrap > p:first-child` bump.
-   Color is solid screenshot-directed `#403B73`, not translucent `--muted`. Compact
-   highlights label uses the same token. Fold type must meet WCAG AA
+   to match the approved screenshot. Use 18px on desktop and 13px on compact;
+   do not inherit the 17px `.banner-left-wrap > p:first-child` bump.
+   Color is solid violet ink, not translucent `--muted`. The reflow highlights
+   label uses solid dark ink. Fold type must meet WCAG AA
    against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
-   UI stroke. Left column stays dark navy on lilac, including the Product VP title. Compact highlights stay
-   dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
-3. H1: `Product VP`
-4. One-line dek (existing positioning, not a slogan)
+   UI stroke. The left column stays dark navy on lavender, including Product VP.
+3. H1: `Product VP`, set in existing Inter 700 to match the reference proportions;
+   retain this family when user text settings activate the reflow fallback.
+4. Short reference dek: `AI products for fintech, Web3, regulated teams — strategy to ship.`
+   Preserve the deliberate desktop break after `Web3,` while allowing compact reflow.
 5. Two compact proof chips reuse supported statements only: multi-country
    banking / Raiffeisen and enterprise EdTech AI / Instructure. Never restore
    the unsupported `$52M+` or `1.8→4.8` numbers from the reference comp.
-6. Primary action: `View selected work` → `/works`; navy `#0A1628`, white text,
-   12px radius and at least 44px high. It is not a generic black pill.
-7. A slim `SELECTED EXPERIENCE` rail on the navy field: BlackRock, Instructure,
+6. Primary action: `View selected work` → `/works`; deep reference navy, white text,
+   Inter 19/400 on desktop, 12px radius and at least 44px high.
+7. A slim employer rail on the navy field: BlackRock, Instructure,
    Raiffeisen, Bitpanda and Balabit as plain semantic list items, not fake links.
    Their deeper factual proof remains in the selected-work and experience
    sections below. Do not invent a Canvas Career mock or put product UI here.
@@ -516,7 +529,8 @@ English-wash the screenshot.
 |---|---|---|
 | EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + live highlights on the analog mast; product UI lives in Selected work rows and case pages |
 | CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Empty right is mesh |
-| WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080); blur 56; lock saturation `#0A1628` on `#D6D4ED` |
+| WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080), pale lavender and a blue-violet edge grading into deep blue |
+| ReferenceByToken | Footer hex reuse or green functional tests are treated as proof that the header matches the supplied design | Compare rendered reference composition, Inter H1 proportions, lavender, blue depth and visible grain; use pixel relationships as regression evidence, then independent visual review |
 | GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
 | FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
 | DualIndex | Home **list** order ≠ `/works` order | One list, hiring-first |
@@ -534,10 +548,10 @@ English-wash the screenshot.
 | HardMeshSeam | Visible ellipse contours or hard-ish bands between lilac / navy / olive / yellow | Larger overlapping masses + `feGaussianBlur` ≥ 48 so the lock reads as analog bleed |
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
-| FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact footer: fade navy below type. Compact home: use the bounded lower-right arc below the reading column. Enlarged desktop text retains the 88% mask. Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
-| InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
-| GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
+| FogGrain | A blurred grain layer or broad neutral haze flattens the field | Visible static speckle with retained lavender and blue depth; home gradient edge stays distinct from its deep interior; footer retains its existing material |
+| NavyFlood | Navy reaches dark reading text and destroys contrast | Compact footer: fade navy below type. Normal home: light rail sits inside the arc; `data-text-reflow` restores dark-on-pale stacking and the bounded lower field |
+| InkOnNavy | Dark ink on the home employer rail inside the navy form | Light lavender ink on the normal desktop and compact rail; left copy and the reflow fallback stay dark on pale lavender |
+| GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid violet/dark ink on lavender and light ink on navy; sample worst relevant pixels behind glyphs, including reflow |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
 | PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
 | HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |
@@ -617,12 +631,12 @@ Hide `.case-motion-rail`. Default to stillness for anything new. The locked
 footer mesh may translate navy / olive / yellow a few pixels under the
 pointer (yellow closer, navy deeper) with an easy-to-miss idle. Type,
 Work, Email, LinkedIn, copyright, and the hairline do not move.
-The home mast may echo the footer through its two nested navy SVG groups only.
+The home mast responds through its two nested navy SVG groups only.
 On desktop fine pointers, GSAP `quickTo()` caps pointer drift at 24px horizontally
 and 18px vertically. Two separate inner groups translate with native scroll
 (up to 34px / 56px vertically). These are user-requested, visible responses to
-hover and scroll; no idle loop. The broad right-hand arc retains the footer
-palette and static grain while its nearer edge stays more defined. Navigation, grain,
+hover and scroll; no idle loop. The broad right-hand arc retains the reference
+lavender/blue material and static analog pattern while its nearer edge stays defined. Navigation, grain,
 copy, proof chips, CTA and experience rail stay still. Its controller is scoped
 to the existing desktop `gsap.matchMedia()` context, pauses offscreen, cleans up
 on breakpoint changes, and shares no state with the footer controller.

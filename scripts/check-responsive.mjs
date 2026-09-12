@@ -304,6 +304,14 @@ if (!/<video\b[^>]*\bdata-autoplay-video\b[^>]*aria-label="Kineticare platform w
 }
 
 const responsiveCss = readFileSync(join(ROOT, "assets/css/responsive.css"), "utf8");
+if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-banner-content-wrap[^}]*max-width:[^}]*text-align:\s*right/.test(responsiveCss) ||
+    !/\.home-mast:not\(\[data-text-reflow\]\) \.metric-context[^}]*display:\s*none/.test(responsiveCss)) {
+  fail("home compact reference rail must stay narrow and right-aligned without an extra visible label");
+}
+if (!/\.home-mast\[data-text-reflow\] \.home-banner-outcomes[^}]*color:\s*var\(--ink\)/.test(responsiveCss) ||
+    !/\.home-mast\[data-text-reflow\] \.home-banner-content-wrap \.metric-context[^}]*color:\s*var\(--mast-muted\)/.test(responsiveCss)) {
+  fail("home enlarged/spaced text must retain the dark-on-pale list and solid label fallback");
+}
 const cssContracts = [
   [/\.summary[\s\S]*?height:\s*auto\s*!important/i, "rich-text images must keep intrinsic ratio"],
   [/@media\s*\(max-width:\s*991px\)/i, "tablet/mobile layout breakpoint is missing"],
