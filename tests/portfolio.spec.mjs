@@ -435,6 +435,45 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
   });
 }
 
+for (const resize of [
+  { name: "compact to desktop", start: { width: 390, height: 844 }, wide: { width: 1280, height: 853 } },
+  { name: "short to tall desktop", start: { width: 1280, height: 720 }, wide: { width: 1280, height: 853 } },
+]) {
+  test(`home authored typography survives ${resize.name} resizing without false text reflow`, async ({ page }) => {
+    await page.setViewportSize(resize.start);
+    await openStable(page, "/");
+    const mast = page.locator(".home-mast");
+    await expect(mast).toHaveAttribute("data-reflow-ready", "true");
+    await expect(mast).not.toHaveAttribute("data-text-reflow");
+    expect(await page.evaluate(() => window.__cumulativeLayoutShift || 0)).toBeLessThan(0.1);
+    await mast.evaluate((element) => {
+      window.__headerResizeReflowChanges = [];
+      window.__headerResizeObserver = new MutationObserver((records) => {
+        window.__headerResizeReflowChanges.push(...records.map((record) => record.oldValue));
+      });
+      window.__headerResizeObserver.observe(element, {
+        attributes: true, attributeFilter: ["data-text-reflow"], attributeOldValue: true,
+      });
+    });
+    for (const viewport of [resize.start, resize.wide, resize.start, resize.wide]) {
+      await page.setViewportSize(viewport);
+      // ResizeObserver and its scheduled typography check must both settle.
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      await expect(mast).not.toHaveAttribute("data-text-reflow");
+      await expect(page.locator(".home-mast .home-banner-title")).toHaveCSS("font-family", /Inter/);
+      await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", viewport.width < 992 ? "block" : "grid");
+      await expect(page.locator(".home-mast .metric-context")).toBeHidden();
+    }
+    // These are intentional viewport changes; the initial load was checked above.
+    await page.waitForTimeout(100);
+    expect(await page.evaluate(() => {
+      window.__headerResizeObserver.disconnect();
+      return window.__headerResizeReflowChanges;
+    }), "ordinary resizing must not trigger even a transient reflow toggle").toEqual([]);
+    await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
+  });
+}
+
 for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", "WCAG text spacing"].map((adjustment) => ({ width, adjustment })))) {
   test(`${width} home: ${adjustment} preserves header text contrast`, async ({ page }, testInfo) => {
     // Pixel-level AA sampling takes about 105 seconds on the slowest hosted
@@ -472,6 +511,7 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     }
     await expect(mast).toHaveAttribute("data-text-reflow", "");
     await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", "block");
+    await expect(page.locator(".home-mast .home-banner-title")).toHaveCSS("font-family", /Inter/);
     const proofBounds = await page.locator(".home-mast-proof-chips li").evaluateAll((chips) => chips.map((chip) => {
       const box = chip.getBoundingClientRect();
       return {
@@ -1896,7 +1936,9 @@ test("1440 home header: reference composition, truthful proof and text navigatio
   });
   expect(fold.kicker).toBe("Norbert Barna");
   expect(fold.h1).toBe("Product VP");
-  expect(fold.sub).toMatch(/AI-driven, secure/);
+  expect(fold.sub).toMatch(/AI products for fintech, Web3,\s*regulated teams — strategy to ship\./);
+  await expect(page.locator(".home-banner-title")).toHaveCSS("font-family", /Inter/);
+  await expect(page.locator(".home-banner-title")).toHaveCSS("font-weight", "700");
   expect(fold.cta).toBe("View selected work →");
   expect(fold.ctaHref).toBe("/works");
   expect(fold.navItems).toEqual(["NB", "Works", "LinkedIn", "Email"]);
@@ -1958,10 +2000,13 @@ test("1440 home header: reference composition, truthful proof and text navigatio
   expect(isTransparentFill(fold.linkedinSize.bg)).toBe(true);
   expect(fold.ctaChrome.h).toBeGreaterThanOrEqual(56);
   expect(fold.ctaChrome.radius).toBe("12px");
-  expect(fold.ctaChrome.bg).toBe("rgb(10, 22, 40)");
+  const ctaInk = parseCssColor(fold.ctaChrome.bg);
+  expect(colorLuminance(ctaInk), "primary action uses deep reference navy").toBeLessThan(0.04);
+  expect(ctaInk.b - ctaInk.r, "navy retains its blue color").toBeGreaterThan(15);
   expect(fold.ctaChrome.color).toBe("rgb(255, 255, 255)");
-  expect(fold.ctaChrome.weight).toBe("500");
-  expect(fold.ctaChrome.size).toBe("15px");
+  expect(fold.ctaChrome.weight).toBe("400");
+  expect(parseFloat(fold.ctaChrome.size)).toBeGreaterThanOrEqual(18);
+  expect(parseFloat(fold.ctaChrome.size)).toBeLessThanOrEqual(20);
 
   const mast = fold.mastBox;
   expect(mast).toBeTruthy();
@@ -2006,6 +2051,50 @@ test("1440 home header: reference composition, truthful proof and text navigatio
     height: 48,
   });
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
+});
+
+test("home material preserves reference lavender, blue depth and visible grain across desktop and compact", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const paleSamples = [];
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await openStable(page, "/");
+    const samples = await page.evaluate(() => {
+      const mast = document.querySelector(".home-mast").getBoundingClientRect();
+      window.scrollTo(0, Math.max(0, mast.height - innerHeight));
+      const svg = document.querySelector(".home-mast-art");
+      const ellipse = svg.querySelector(".home-mast-navy-front ellipse");
+      const at = (inset) => {
+        const point = svg.createSVGPoint();
+        point.x = ellipse.cx.baseVal.value - ellipse.rx.baseVal.value * inset;
+        point.y = ellipse.cy.baseVal.value - ellipse.ry.baseVal.value * 0.1;
+        const screen = point.matrixTransform(svg.getScreenCTM());
+        return { x: screen.x - 12, y: screen.y - 12, width: 24, height: 24 };
+      };
+      return { edge: at(0.91), deep: at(0.35) };
+    });
+    const edge = await screenshotClip(page, samples.edge);
+    const deep = await screenshotClip(page, samples.deep);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const kicker = await page.locator(".hero-kicker").boundingBox();
+    const pale = await screenshotClip(page, { x: kicker.x + 40, y: kicker.y - 44, width: 64, height: 36 });
+    paleSamples.push(pale);
+
+    expect(pale.luminance, `${width}: lavender light stays pale instead of gray`).toBeGreaterThan(185);
+    expect(pale.luminance, `${width}: lavender retains color instead of washing to white`).toBeLessThan(240);
+    expect(pale.b - pale.r, `${width}: pale field retains its lavender blue`).toBeGreaterThan(10);
+    expect(pale.r - pale.g, `${width}: pale field retains its violet warmth`).toBeGreaterThan(5);
+    expect(pale.stddev, `${width}: the requested analog pattern remains visible`).toBeGreaterThan(2.5);
+    expect(pale.stddev, `${width}: coarse dark grain must not overpower the pale field`).toBeLessThan(18);
+    expect(deep.luminance, `${width}: the form retains a deep interior`).toBeLessThan(65);
+    expect(deep.b - deep.r, `${width}: the interior is blue, not a neutral black disk`).toBeGreaterThan(25);
+    expect(edge.luminance - deep.luminance, `${width}: violet edge and navy interior remain distinct`).toBeGreaterThan(20);
+    expect(edge.luminance, `${width}: the inner edge remains separate from pale fog`).toBeLessThan(pale.luminance - 40);
+    expect(edge.b - edge.r, `${width}: the inner edge remains blue-violet`).toBeGreaterThan(25);
+  }
+  for (const channel of ["r", "g", "b"]) {
+    expect(Math.abs(paleSamples[0][channel] - paleSamples[1][channel]), `${channel}: compact grain uses the same lavender backdrop`).toBeLessThan(16);
+  }
 });
 
 for (const width of [992, 1280]) {
@@ -2091,9 +2180,9 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   const linkedinRgb = parseCssColor(await linkedin.evaluate((el) => getComputedStyle(el).color));
 
   expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
-  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(260);
-  expect(h1Rgb.r + h1Rgb.g + h1Rgb.b, "H1 stays dark ink on lilac").toBeLessThan(80);
-  expect(bulletRgb.r + bulletRgb.g + bulletRgb.b, "InkOnNavy: highlights body must be light ink").toBeGreaterThan(600);
+  expect(colorLuminance(kickerRgb), "kicker stays dark violet on lavender").toBeLessThan(0.2);
+  expect(colorLuminance(h1Rgb), "H1 stays deep navy on lavender").toBeLessThan(0.04);
+  expect(colorLuminance(bulletRgb), "InkOnNavy: highlights body must be light ink").toBeGreaterThan(0.5);
 
   const kickerBg = await sampleBehindGlyphs(page, kicker);
   const h1Bg = await sampleBehindGlyphs(page, h1);
@@ -2138,7 +2227,7 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   expect(ratios).toMatch(/bullet .+ = [4-9]|1[0-9]/);
 });
 
-test("390 home mast type meets WCAG AA on lilac, navy sits under the last highlight", async ({ page }) => {
+test("390 home mast type meets WCAG AA with the light employer rail inside navy", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
 
@@ -2146,8 +2235,8 @@ test("390 home mast type meets WCAG AA on lilac, navy sits under the last highli
   const h1 = page.locator(".home-mast h1").first();
   const dek = page.locator(".home-mast .home-banner-subtitle").first();
   const label = page.locator(".home-mast .metric-context").first();
-  const firstBullet = page.locator(".home-mast .home-banner-outcomes li").first();
-  const lastBullet = page.locator(".home-mast .home-banner-outcomes li").last();
+  const firstBullet = page.locator(".home-mast .home-highlight-company").first();
+  const lastBullet = page.locator(".home-mast .home-highlight-company").last();
 
   const fold = await page.evaluate(() => {
     const kickerEl = document.querySelector(".hero-kicker");
@@ -2160,45 +2249,42 @@ test("390 home mast type meets WCAG AA on lilac, navy sits under the last highli
     };
   });
   expect(fold.kickerSize, "compact kicker must stay 13px").toBe("13px");
-  expect(fold.lastBottom, "mast must extend past the highlights so navy can sit under type").toBeLessThan(fold.mastBottom - 140);
+  expect(fold.lastBottom, "employers remain inside the mast with breathing room").toBeLessThan(fold.mastBottom - 32);
+  await expect(label).toBeHidden();
+  await expect(page.locator(".home-banner-outcomes")).toHaveCSS("border-top-width", "0px");
+  const rail = await page.locator(".home-banner-content-wrap").boundingBox();
+  expect(rail.width, "compact rail stays narrow").toBeLessThanOrEqual(180);
+  expect(rail.x, "compact rail is right-aligned").toBeGreaterThan(390 / 2);
 
   const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
   const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
   const dekRgb = parseCssColor(await dek.evaluate((el) => getComputedStyle(el).color));
-  const labelRgb = parseCssColor(await label.evaluate((el) => getComputedStyle(el).color));
   const bulletRgb = parseCssColor(await firstBullet.evaluate((el) => getComputedStyle(el).color));
   const lastRgb = parseCssColor(await lastBullet.evaluate((el) => getComputedStyle(el).color));
 
   expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
-  expect(labelRgb.a, "compact highlights label must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
   expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(260);
-  expect(labelRgb.r + labelRgb.g + labelRgb.b, "compact label stays dark on lilac, not --mast-on-navy").toBeLessThan(260);
-  expect(h1Rgb.r + h1Rgb.g + h1Rgb.b, "H1 stays dark ink on lilac").toBeLessThan(80);
-  expect(bulletRgb.r + bulletRgb.g + bulletRgb.b, "compact highlights stay dark ink").toBeLessThan(80);
-  expect(lastRgb.r + lastRgb.g + lastRgb.b, "last compact highlight stays dark ink").toBeLessThan(80);
+  expect(colorLuminance(h1Rgb), "H1 stays deep navy on lavender").toBeLessThan(0.04);
+  expect(colorLuminance(bulletRgb), "compact highlights use light ink on navy").toBeGreaterThan(0.5);
+  expect(colorLuminance(lastRgb), "last compact highlight uses light ink").toBeGreaterThan(0.5);
 
   const kickerBg = await sampleBehindGlyphs(page, kicker);
   const h1Bg = await sampleBehindGlyphs(page, h1);
   const dekBg = await sampleBehindGlyphs(page, dek);
-  const labelBg = await sampleBehindGlyphs(page, label);
   const firstBg = await sampleBehindGlyphs(page, firstBullet);
   const lastBg = await sampleBehindGlyphs(page, lastBullet);
 
   expect(kickerBg.median.l, "kicker must stay on lilac").toBeGreaterThan(0.5);
   expect(h1Bg.median.l, "H1 must stay on lilac").toBeGreaterThan(0.5);
   expect(dekBg.median.l, "dek must stay on lilac").toBeGreaterThan(0.5);
-  expect(labelBg.median.l, "highlights label must stay on lilac").toBeGreaterThan(0.5);
-  expect(firstBg.median.l, "first highlight must stay on lilac").toBeGreaterThan(0.5);
-  expect(lastBg.median.l, "last highlight must stay on lilac, not the navy fade").toBeGreaterThan(0.5);
-  expect(lastBg.darkest.l, "navy must not reach the last highlight glyphs").toBeGreaterThan(0.35);
+  expect(firstBg.median.l, "first highlight sits inside navy").toBeLessThan(0.2);
+  expect(lastBg.median.l, "last highlight sits inside navy").toBeLessThan(0.2);
 
   const pairs = [
     ["kicker vs lightest grain", contrastAgainst(kickerRgb, kickerBg.lightest)],
     ["kicker vs darkest grain", contrastAgainst(kickerRgb, kickerBg.darkest)],
     ["H1 vs lightest grain", contrastAgainst(h1Rgb, h1Bg.lightest)],
     ["dek vs lightest grain", contrastAgainst(dekRgb, dekBg.lightest)],
-    ["label vs lightest grain", contrastAgainst(labelRgb, labelBg.lightest)],
-    ["label vs darkest grain", contrastAgainst(labelRgb, labelBg.darkest)],
     ["first highlight vs lightest grain", contrastAgainst(bulletRgb, firstBg.lightest)],
     ["last highlight vs lightest grain", contrastAgainst(lastRgb, lastBg.lightest)],
     ["last highlight vs darkest under glyphs", contrastAgainst(lastRgb, lastBg.darkest)],

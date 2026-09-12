@@ -88,13 +88,18 @@ const homeMast = home.slice(
 if (!/class="home-mast-mesh"/.test(homeMast) || !/home-mast-navy/.test(homeMast)) {
   fail("home fold must open on the analog mesh mast (lilac + navy félkör)");
 }
-if (!/id="home-mast-blur"/.test(homeMast) || !/stdDeviation="56"/.test(homeMast)) {
-  fail("home mast must use the blur 56 family, not a second CSS fog");
+const homeBlur = Number(homeMast.match(/<filter\b[^>]*id="home-mast-blur"[^>]*>\s*<feGaussianBlur stdDeviation="([\d.]+)"/)?.[1]);
+const homeEdge = Number(homeMast.match(/<filter\b[^>]*id="home-mast-edge"[^>]*>\s*<feGaussianBlur stdDeviation="([\d.]+)"/)?.[1]);
+if (!(homeBlur >= 20 && homeBlur <= 48 && homeEdge >= 0 && homeEdge <= 6 && homeEdge < homeBlur)) {
+  fail("ReferenceByToken: home needs a restrained soft back and a defined front edge, not the footer's broad blur");
 }
-if (!/#D6D4ED/.test(homeMast) || !/#0A1628/.test(homeMast)) {
-  fail("home mast must use lock lilac and navy");
+const homeDepth = homeMast.match(/<radialGradient\b[^>]*id="home-mast-depth"[^>]*>[\s\S]*?<\/radialGradient>/)?.[0] || "";
+const depthColors = [...homeDepth.matchAll(/stop-color="(#[\da-f]{6})"/gi)].map((match) => match[1].toLowerCase());
+if (!/class="home-mast-lilac"/.test(homeMast) || new Set(depthColors).size < 3 ||
+    !/fill="url\(#home-mast-depth\)"/.test(homeMast)) {
+  fail("ReferenceByToken: home needs pale lavender and a tonal blue-violet-to-navy form, not two solid footer-color ellipses");
 }
-const homeNavy = [...homeMast.matchAll(/<ellipse cx="([0-9.]+)" cy="([0-9.]+)" rx="([0-9.]+)" ry="([0-9.]+)" fill="#0A1628"/g)];
+const homeNavy = [...homeMast.matchAll(/<ellipse cx="([0-9.]+)" cy="([0-9.]+)" rx="([0-9.]+)" ry="([0-9.]+)" fill="[^"]+"/g)];
 if (!homeNavy.some((m) => Number(m[4]) >= 700 && Number(m[1]) >= 1080)) {
   fail("WeakNavyDome: home mast navy félkör must be a large center-right mass (ry ≥ 700, cx ≥ 1080)");
 }
@@ -301,8 +306,13 @@ if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
   fail("PROJECT FLOW rail is not hidden");
 }
 if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must wrap");
-if (!/\.home-mast \.hero-kicker[\s\S]{0,140}letter-spacing:\s*\.16em[\s\S]{0,80}text-transform:\s*uppercase/.test(css)) {
+if (!/\.home-mast \.hero-kicker[^}]{0,200}letter-spacing:\s*(?:\.(?:1\d|2\d)em|var\(--mast-kicker-tracking\))[^}]{0,80}text-transform:\s*uppercase/.test(css) ||
+    (/letter-spacing:\s*var\(--mast-kicker-tracking\)/.test(css) &&
+      !/--mast-kicker-tracking:\s*\.(?:1\d|2\d)em/.test(css))) {
   fail("home kicker must use the approved screenshot-directed uppercase tracking");
+}
+if (!/\.home-mast \.home-banner-title\s*\{[^}]*font-family:\s*Inter,\s*sans-serif/.test(css)) {
+  fail("ReferenceByToken: home H1 must retain the existing Inter face through text reflow; Funnel remains the case/section display family");
 }
 if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {
   fail("home outcomes must stay ink on paper after leaving the .black wrap");
@@ -337,7 +347,7 @@ if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(h
 if (!/body\.home \.navbar[\s\S]{0,240}background:\s*transparent/.test(css)) {
   fail("home mast: navbar must sit on the mesh, not a white slab");
 }
-if (!/\.home-mast \.hero-work-link[\s\S]{0,220}border-color:\s*#0a1628[\s\S]{0,80}background:\s*#0a1628[\s\S]{0,80}color:\s*#fff/.test(css) ||
+if (!/\.home-mast \.hero-work-link[^}]{0,220}border-color:\s*#[\da-f]{6}[^}]{0,80}background:\s*#[\da-f]{6}[^}]{0,80}color:\s*#fff/i.test(css) ||
     /\.hero-work-link[\s\S]{0,240}border-radius:\s*999px/.test(css)) {
   fail("home CTA must be a 12px navy action with white text, not a generic black pill");
 }
@@ -517,8 +527,9 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,160}inset
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
   fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
-if (!/\.home-mast \.home-mast-art[\s\S]{0,100}inset:\s*auto 0 0[\s\S]{0,100}height:\s*clamp\(260px,\s*48vw,\s*420px\)/.test(css)) {
-  fail("compact home arc must have a bounded lower-right field below readable content");
+if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-mast-art[^}]*inset:\s*auto[^}]*height:\s*\d+px/.test(css) ||
+    !/\.home-mast\[data-text-reflow\] \.home-mast-navy[^}]*mask-image:\s*linear-gradient/.test(css)) {
+  fail("compact home must preserve the visible reference arc and the separate accessible text-reflow fallback");
 }
 if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
   fail("GrainWash: --mast-muted must be solid #2a2a2e");
@@ -542,8 +553,10 @@ if (/@media\s*\(max-width:\s*991px\)[\s\S]*\.awards-bg-video-wrap[\s\S]{0,80}dis
 if (/\.awards-card[\s\S]{0,80}\.awards-bg-video-wrap[\s\S]{0,60}opacity:\s*0\s*!important/.test(css)) {
   fail("TightAwardVideo: coarse/hover-none must not force the award video off");
 }
-if (!/--mast-on-navy:\s*#f4f5f7/.test(css)) {
-  fail("InkOnNavy: --mast-on-navy must be near-white #F4F5F7");
+const railColor = css.match(/--mast-on-navy:\s*#([\da-f]{6})/i)?.[1];
+const railChannels = railColor ? railColor.match(/../g).map((part) => parseInt(part, 16)) : [];
+if (railChannels.length !== 3 || Math.min(...railChannels) < 170 || railChannels[2] < railChannels[0]) {
+  fail("InkOnNavy: the normal home employer rail needs light lavender ink; rendered AA is checked in the browser");
 }
 if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-outcomes[\s\S]{0,160}--mast-on-navy/.test(css)) {
   fail("InkOnNavy: desktop mast highlights must use --mast-on-navy");

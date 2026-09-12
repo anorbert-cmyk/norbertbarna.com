@@ -111,19 +111,20 @@
       var value = parseFloat(style[property]);
       return Number.isFinite(value) ? value : 0;
     }
-    function typographySnapshot(element) {
-      var style = getComputedStyle(element);
+    function typographySnapshot(element, pseudo) {
+      var style = getComputedStyle(element, pseudo);
       return {
         size: numericLength(style, "fontSize"),
         letter: numericLength(style, "letterSpacing"),
         word: numericLength(style, "wordSpacing"),
       };
     }
-    // Compare later changes with the authored mast typography. This keeps the
-    // deliberate tracked name treatment from masquerading as user text spacing.
-    var baseCopy = typographySnapshot(copy);
-    var baseKicker = typographySnapshot(kicker);
     function updateTextReflow() {
+      // The hidden pseudo-elements resolve the current authored CSS scale.
+      // A viewport change must not be compared with the previous breakpoint,
+      // while overrides on real text still require the accessible layout.
+      var baseCopy = typographySnapshot(copy, "::before");
+      var baseKicker = typographySnapshot(kicker, "::before");
       var copyStyle = getComputedStyle(copy);
       var kickerStyle = getComputedStyle(kicker);
       // User text enlargement/spacing needs the same single-column reading
