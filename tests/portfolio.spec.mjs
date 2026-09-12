@@ -472,6 +472,22 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     }
     await expect(mast).toHaveAttribute("data-text-reflow", "");
     await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", "block");
+    const proofBounds = await page.locator(".home-mast-proof-chips li").evaluateAll((chips) => chips.map((chip) => {
+      const box = chip.getBoundingClientRect();
+      return {
+        label: chip.textContent.trim(),
+        clientWidth: chip.clientWidth,
+        scrollWidth: chip.scrollWidth,
+        inside: [...chip.children].every((part) => {
+          const child = part.getBoundingClientRect();
+          return child.left >= box.left && child.right <= box.right && child.bottom <= box.bottom;
+        }),
+      };
+    }));
+    for (const proof of proofBounds) {
+      expect(proof.scrollWidth, proof.label).toBeLessThanOrEqual(proof.clientWidth + 1);
+      expect(proof.inside, `${proof.label} must remain inside its chip`).toBe(true);
+    }
     // An intentional user text adjustment is not an unexpected site shift.
     // The normal initial CLS was checked above; retain the shared final guard
     // for any subsequent shifts after the adjustment has been laid out.
@@ -1401,7 +1417,7 @@ test("1440 home mast: pointer gives the navy field restrained depth while all co
   await expect.poll(async () => (await readHomeMastMotion(page)).front.x, { timeout: 2500 }).toBeGreaterThan(2);
   const right = await readHomeMastMotion(page);
   expect(right.front.x - left.front.x, "front layer has more pointer depth").toBeGreaterThan(right.back.x - left.back.x + 2);
-  expect(right.frontTravel, "front travel stays below the 6.5px motion cap").toBeLessThanOrEqual(6.5);
+  expect(right.frontTravel, "front travel stays within the 24px by 18px pointer envelope").toBeLessThanOrEqual(30);
   expect(right.backTravel, "back travel stays quieter than the front").toBeLessThan(right.frontTravel);
   for (const key of ["nav", "h1", "proof", "rail", "cta"]) {
     expect(right[key], `${key} exists`).toBeTruthy();
@@ -1992,9 +2008,10 @@ test("1440 home header: reference composition, truthful proof and text navigatio
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
 });
 
-test("1280 first-visit fold keeps five employers above the consent banner", async ({ page }) => {
+for (const width of [992, 1280]) {
+test(`${width} first-visit fold keeps employers and primary action above the consent banner`, async ({ page }) => {
   await page.addInitScript(() => localStorage.removeItem("bn-analytics-consent-v1"));
-  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.setViewportSize({ width, height: 720 });
   await openStable(page, "/");
   await page.waitForSelector("#portfolio-consent, [data-consent-banner]", { state: "visible", timeout: 5000 }).catch(() => {});
   const fold = await page.evaluate(() => {
@@ -2009,15 +2026,17 @@ test("1280 first-visit fold keeps five employers above the consent banner", asyn
         covered: Boolean(bannerBox && box.bottom > bannerBox.top + 2),
       };
     });
-    return { items, bannerTop: bannerBox ? bannerBox.top : null };
+    return { items, bannerTop: bannerBox ? bannerBox.top : null, ctaBottom: document.querySelector(".hero-work-link").getBoundingClientRect().bottom };
   });
   expect(fold.items.map((item) => item.name)).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  expect(fold.ctaBottom + 8, "primary action and focus outline must remain above consent").toBeLessThanOrEqual(fold.bannerTop ?? 720);
   for (const item of fold.items) {
     expect(item.covered, `${item.name} must stay above the consent banner`).toBe(false);
     expect(item.top).toBeGreaterThanOrEqual(0);
     expect(item.bottom).toBeLessThanOrEqual(720);
   }
 });
+}
 
 test("1440 home mast and text navigation meet WCAG AA on their live backgrounds", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });

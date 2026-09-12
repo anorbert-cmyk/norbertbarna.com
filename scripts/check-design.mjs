@@ -152,11 +152,11 @@ for (const employer of ["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "B
     fail(`home mast experience rail is missing ${employer}`);
   }
 }
-if (!/\.home-banner-area > \.home-banner-content-wrap[\s\S]{0,280}margin-top:\s*clamp\(164px,\s*14vw,\s*190px\)/.test(css)) {
-  fail("desktop experience rail must sit 164–190px onto the navy field");
+if (!/\.home-banner-area > \.home-banner-content-wrap[\s\S]{0,280}margin-top:\s*clamp\(230px,\s*20vw,\s*278px\)/.test(css)) {
+  fail("desktop experience rail must sit 230–278px onto the navy field");
 }
-if (/home-banner-content-wrap[\s\S]{0,200}margin-top:\s*clamp\(230px/.test(css)) {
-  fail("do not restore the 230–278px rail offset that hides Balabit on short desktops");
+if (!/preserveAspectRatio="none"/.test(homeMast) || !/id="home-mast-edge"/.test(homeMast)) {
+  fail("home reference arc must retain its broad geometry across aspect ratios and a defined soft edge");
 }
 if (/\$52M\+|1\.8\s*(?:→|-&gt;)\s*4\.8|VERSION B/i.test(homeMast)) {
   fail("home mast must not copy unsupported numbers or design annotations from the reference image");
@@ -517,14 +517,8 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,160}inset
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
   fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
-if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast-navy[\s\S]{0,400}transparent 88%/.test(css)) {
-  fail("NavyFlood: compact home mast navy must fade in below the last highlight (mask from 88%)");
-}
-if (!/\.home-mast::after[\s\S]{0,240}radial-gradient[\s\S]{0,80}#0a1628/.test(css)) {
-  fail("NavyFlood: compact home mast must paint a bottom navy overlay under the type");
-}
-if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast::after[\s\S]{0,160}height:\s*16%/.test(css)) {
-  fail("NavyFlood: compact mast ::after navy must stay a short bottom wash (16%)");
+if (!/\.home-mast \.home-mast-art[\s\S]{0,100}inset:\s*auto 0 0[\s\S]{0,100}height:\s*clamp\(260px,\s*48vw,\s*420px\)/.test(css)) {
+  fail("compact home arc must have a bounded lower-right field below readable content");
 }
 if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
   fail("GrainWash: --mast-muted must be solid #2a2a2e");

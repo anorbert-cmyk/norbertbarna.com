@@ -224,7 +224,8 @@ for (const viewport of [
       await page.waitForTimeout(200);
       expect(await walkthrough.evaluate(v => v.paused)).toBe(true);
       await open(page, '/work/instructure');
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      // Finish reload scroll restoration before placing the video in view.
+      await page.reload({ waitUntil: 'load' });
       await expect.poll(() => page.evaluate(() => window.PortfolioMedia?.isReduced())).toBe(true);
       const demo = page.locator('.background-video > video');
       await intoView(demo);
