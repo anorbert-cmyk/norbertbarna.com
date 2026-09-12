@@ -648,8 +648,8 @@ Hide `.case-motion-rail`. Default to stillness for anything new. The locked
 footer mesh may translate navy / olive / yellow a few pixels under the
 pointer (yellow closer, navy deeper) with an easy-to-miss idle. Type,
 Work, Email, LinkedIn, copyright, and the hairline do not move.
-The home mast responds through its two nested navy SVG groups only.
-On desktop fine pointers, GSAP `quickTo()` caps pointer drift at 24px horizontally
+On desktop fine pointers, the home mast responds through its two nested navy
+SVG groups. GSAP `quickTo()` caps pointer drift at 24px horizontally
 and 18px vertically. Two separate inner groups translate with native scroll
 (up to 34px / 56px vertically). These are user-requested, visible responses to
 hover and scroll; no idle loop. The broad right-hand arc retains the reference
@@ -658,10 +658,12 @@ copy, proof chips, CTA and experience rail stay still. Its controller is scoped
 to the existing responsive `gsap.matchMedia()` contexts, pauses offscreen, cleans up
 on breakpoint changes, and shares no state with the footer controller.
 Compact layouts and touch/coarse input use the same scoped controller with
-native scroll only: the back and front navy layers move upward by at most
-28px / 44px in actual screen pixels, eased over 0.48s. Normalize these distances
-by the SVG's current screen scale, including wide touch screens. This direction
-preserves navy behind the light employer labels; verify text AA at middle and
+native scroll only: translate the whole root SVG upward by at most 44 CSS pixels,
+eased over 0.48s with `force3D: true`. Keep the filtered inner groups static so
+scrolling reuses the painted surface. Bound visible overflow with a static
+`clip-path: inset(0 0 -48px 0)` to cover the upward travel. Preserve all existing
+filters, gradients and grain. This direction preserves navy behind the light
+employer labels; verify text AA at middle and
 near-end scroll positions. Portable mode adds no pointer handlers or touch
 capture. It pauses offscreen and cleans up when changing responsive modes.
 `prefers-reduced-motion: reduce`, unavailable GSAP and no JavaScript use the

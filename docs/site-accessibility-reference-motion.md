@@ -36,13 +36,38 @@ The first touch follows the native link. Reduced motion and missing JavaScript
 or GSAP produce static readable rows. No new dependencies are needed.
 
 The home mast also responds to native scrolling on compact and touch screens.
-Its two navy layers rise by at most 28px / 44px in screen coordinates, with a
-0.48s ease. SVG scale normalization makes the depth consistent on narrow phones
-and wide touch screens. The upward direction retains the dark background behind
+Its whole root SVG rises by at most 44 CSS pixels with a 0.48s ease. The filtered
+inner groups stay static while a CSS `translate3d` moves their painted surface.
+A static clip allows 48px of bottom overflow without allocating the entire SVG
+filter bounds. The upward direction retains the dark background behind
 light employer labels. Text, navigation, grain and link targets stay still;
 there are no touch handlers, scroll capture or idle loops. The existing scoped
 controller pauses offscreen, cleans up on responsive changes and returns to the
 static mast for reduced motion or unavailable JavaScript/GSAP.
+
+### Mobile mast raster regression
+
+The reported stutter came with repeated filtered-SVG raster work during scroll.
+The earlier functional checks verified geometry and contrast, but did not detect
+that rendering cost. Translating the root follows the compositor guidance in
+[Chrome's animation guide](https://web.dev/articles/animations-guide) and
+[GSAP CSSPlugin](https://gsap.com/docs/v3/GSAP/CorePlugins/CSS/#force3D).
+
+On 2026-09-12, identical four-swipe Chromium runs at 390×844, DPR 3 and 4×/6× CPU
+throttling compared the previous release with the integrated served assets
+`animations.2ef060d9bbc2.js` / `responsive.fc29614658a8.css`. No prototype patch
+was injected into the final runs. Over approximately 5.3 seconds:
+
+| CPU throttle | Aggregate raster-task time, before → after | Layout events, before → after |
+| --- | --- | --- |
+| 4× | 3164ms → 36ms | 524 → 2 |
+| 6× | 3264ms → 28ms | 532 → 2 |
+
+This is about 99% less measured raster work on the test machine, not a physical
+phone FPS claim. The durable browser guard observes trusted touch scrolling,
+visible root CSS movement and zero inner SVG group attribute mutations. It also
+checks the bounded overflow, composition hint and absence of an SVG root
+transform attribute; lifecycle tests cover cleanup of the root and its marker.
 
 ## Findings and acceptance evidence
 

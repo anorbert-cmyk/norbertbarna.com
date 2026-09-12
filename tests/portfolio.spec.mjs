@@ -455,14 +455,14 @@ test.describe("portable header contrast", () => {
       const readState = () => page.evaluate(() => {
         const mast = document.querySelector(".home-mast");
         const trigger = ScrollTrigger.getAll().find((entry) => entry.trigger === mast);
-        const scaleMatrix = mast.querySelector(".home-mast-art").getScreenCTM();
-        const scale = Math.hypot(scaleMatrix.c, scaleMatrix.d);
-        const transforms = [...mast.querySelectorAll(".home-mast-navy-drift")]
+        const transform = getComputedStyle(mast.querySelector(".home-mast-art")).transform;
+        const innerTransforms = [...mast.querySelectorAll(".home-mast-navy-drift")]
           .map((element) => getComputedStyle(element).transform);
         return {
           progress: trigger.progress,
-          transforms,
-          pixels: transforms.map((transform) => new DOMMatrixReadOnly(transform === "none" ? undefined : transform).f * scale),
+          transform,
+          pixels: new DOMMatrixReadOnly(transform === "none" ? undefined : transform).f,
+          innerPixels: innerTransforms.map((value) => new DOMMatrixReadOnly(value === "none" ? undefined : value).f),
         };
       });
       for (const progress of [0.5, 0.95]) {
@@ -478,9 +478,8 @@ test.describe("portable header contrast", () => {
         await expect(async () => {
           const state = await readState();
           expect(state.progress).toBeCloseTo(progress, 2);
-          for (const [index, cap] of [-28, -44].entries()) {
-            expect(Math.abs(state.pixels[index] - cap * state.progress)).toBeLessThan(0.15);
-          }
+          expect(Math.abs(state.pixels - -44 * state.progress)).toBeLessThan(0.15);
+          expect(state.innerPixels).toEqual([0, 0]);
         }).toPass();
         const settled = await readState();
         snapshots.push(settled);
@@ -488,8 +487,7 @@ test.describe("portable header contrast", () => {
         // into view. Otherwise the contrast helper's native scroll would reset
         // the mast and silently measure only the resting background.
         await page.addStyleTag({ content: `
-          .home-mast-navy-back .home-mast-navy-drift { transform: ${settled.transforms[0]} !important; }
-          .home-mast-navy-front .home-mast-navy-drift { transform: ${settled.transforms[1]} !important; }
+          .home-mast-art { transform: ${settled.transform} !important; }
         ` });
         await page.evaluate(() => window.scrollTo(0, 0));
         const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li, .home-mast a.hero-work-link");
@@ -499,7 +497,7 @@ test.describe("portable header contrast", () => {
             await expectHeaderTextAA(page, text.nth(index), `${width} touch, scroll ${progress}, text ${index + 1}`, { raster: true });
           }
         }
-        expect((await readState()).transforms, "the sampled background must retain its actual scrolled pose").toEqual(settled.transforms);
+        expect((await readState()).transform, "the sampled background must retain its actual scrolled pose").toEqual(settled.transform);
       }
       await testInfo.attach("portable-header-rendered-scroll-states", { body: JSON.stringify(snapshots, null, 2), contentType: "application/json" });
     });

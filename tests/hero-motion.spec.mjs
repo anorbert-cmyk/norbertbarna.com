@@ -21,9 +21,7 @@ async function openHome(page) {
 async function heroState(page) {
   return page.evaluate(() => {
     const mast = document.querySelector(".home-mast");
-    const targets = [...mast.querySelectorAll(".home-mast-navy, .home-mast-navy-drift")];
-    const svgMatrix = mast.querySelector(".home-mast-art").getScreenCTM();
-    const screenScale = Math.hypot(svgMatrix.c, svgMatrix.d);
+    const targets = [...mast.querySelectorAll(".home-mast-art, .home-mast-navy, .home-mast-navy-drift")];
     const translation = (element) => {
       const transform = getComputedStyle(element).transform;
       const matrix = new DOMMatrixReadOnly(transform === "none" ? undefined : transform);
@@ -34,9 +32,10 @@ async function heroState(page) {
       return { x: rect.x, y: rect.y + scrollY, width: rect.width, height: rect.height };
     };
     return {
+      root: translation(mast.querySelector(".home-mast-art")),
+      portable: mast.getAttribute("data-mast-motion"),
       pointer: [".home-mast-navy-back", ".home-mast-navy-front"].map((selector) => translation(mast.querySelector(selector))),
       scroll: [...mast.querySelectorAll(".home-mast-navy-drift")].map(translation),
-      scrollPixels: [...mast.querySelectorAll(".home-mast-navy-drift")].map((element) => translation(element).y * screenScale),
       content: [".hero-kicker", ".home-banner-title", ".home-banner-subtitle", ".home-mast-proof-chips", ".home-banner-outcomes", ".hero-work-link"].map(position),
       nav: position(".navbar .nav-wrap"),
       navTransform: getComputedStyle(document.querySelector(".navbar .nav-wrap")).transform,
@@ -56,7 +55,7 @@ async function heroState(page) {
 async function rememberHeroController(page) {
   await page.evaluate(() => {
     const mast = document.querySelector(".home-mast");
-    window.__oldHeroTweens = gsap.getTweensOf(mast.querySelectorAll(".home-mast-navy, .home-mast-navy-drift"));
+    window.__oldHeroTweens = gsap.getTweensOf(mast.querySelectorAll(".home-mast-art, .home-mast-navy, .home-mast-navy-drift"));
     window.__oldHeroTriggers = ScrollTrigger.getAll().filter((trigger) => trigger.trigger === mast);
   });
 }
@@ -76,7 +75,8 @@ async function expectStaticHero(page) {
     const state = await heroState(page);
     expect(state.triggers).toBe(0);
     expect(state.tweens, "the old controller retains no animated SVG targets").toBe(0);
-    for (const offset of state.pointer.concat(state.scroll)) {
+    expect(state.portable).toBeNull();
+    for (const offset of state.pointer.concat(state.scroll, [state.root])) {
       expect(Math.hypot(offset.x, offset.y), "static mode clears every decorative transform").toBeLessThan(0.05);
     }
   }).toPass({ timeout: 2000 });
@@ -175,6 +175,7 @@ test("hero motion settles at rest and pauses its decorative tweens offscreen", a
   const offscreen = await heroState(page);
   await page.waitForTimeout(400);
   expect((await heroState(page)).scroll).toEqual(offscreen.scroll);
+  expect((await heroState(page)).root).toEqual(offscreen.root);
 
   await page.evaluate(() => window.scrollTo(0, 0));
   await expect.poll(() => heroState(page).then((state) => state.scroll[1].y)).toBeLessThan(0.1);
@@ -196,14 +197,16 @@ test("hero controller cleans up and resumes across repeated reduced-motion and b
     if (mode === "reduce") await expectStaticHero(page);
     else {
       await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
-      await expect.poll(() => heroState(page).then((state) => state.scrollPixels[1])).toBeLessThan(-10);
+      await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-10);
       const portable = await heroState(page);
-      expect(portable.tweens).toBeLessThanOrEqual(2);
+      expect(portable.tweens).toBeLessThanOrEqual(1);
+      expect(portable.portable).toBe("portable");
+      for (const offset of portable.scroll) expect(offset).toEqual({ x: 0, y: 0 });
       for (const offset of portable.pointer) expect(Math.hypot(offset.x, offset.y)).toBeLessThan(0.05);
     }
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.mouse.move(900, 200);
-    await expect.poll(() => heroState(page).then((state) => Math.abs(state.scrollPixels[1]))).toBeLessThan(0.1);
+    await expect.poll(() => heroState(page).then((state) => Math.abs(state.root.y))).toBeLessThan(0.1);
     for (const offset of (await heroState(page)).pointer) expect(Math.hypot(offset.x, offset.y)).toBeLessThan(0.05);
 
     if (mode === "reduce") await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -228,14 +231,14 @@ for (const width of [390, 1440]) test.describe(width + " touch header", () => {
     // A real browser touch gesture must scroll the document without being captured.
     await swipeHeader(page, Math.round(start.height * 0.55));
     await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(start.height * 0.35);
-    await expect.poll(() => heroState(page).then((state) => state.scrollPixels[1])).toBeLessThan(-15);
+    await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-15);
     await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
     const scrolled = await heroState(page);
     const progress = Math.min(1, scrolled.scrollY / start.height);
-    expect(scrolled.scrollPixels[0]).toBeCloseTo(-28 * progress, 0);
-    expect(scrolled.scrollPixels[1]).toBeCloseTo(-44 * progress, 0);
-    expect(scrolled.scrollPixels[0] - scrolled.scrollPixels[1]).toBeGreaterThan(5);
-    expect(scrolled.tweens).toBeLessThanOrEqual(2);
+    expect(scrolled.root.y).toBeCloseTo(-44 * progress, 0);
+    expect(scrolled.portable).toBe("portable");
+    for (const offset of scrolled.pointer.concat(scrolled.scroll)) expect(offset).toEqual({ x: 0, y: 0 });
+    expect(scrolled.tweens).toBeLessThanOrEqual(1);
     expectStillContent(start.content, scrolled.content);
     expect(scrolled.grain).toEqual(start.grain);
     expect(scrolled.navTransform).toBe(start.navTransform);
@@ -247,20 +250,20 @@ for (const width of [390, 1440]) test.describe(width + " touch header", () => {
     await page.evaluate((height) => window.scrollTo(0, height * 0.9), start.height);
     // A settled previous pose also has zero active tweens. First observe the
     // newly requested native-scroll response, then wait for that response to rest.
-    await expect.poll(() => heroState(page).then((state) => state.scrollPixels[1])).toBeLessThan(-35);
+    await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-35);
     await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
     const nearEnd = await heroState(page);
-    expect(nearEnd.scrollPixels[0]).toBeGreaterThanOrEqual(-28.1);
-    expect(nearEnd.scrollPixels[1]).toBeGreaterThanOrEqual(-44.1);
-    expect(nearEnd.scrollPixels[1]).toBeLessThan(-35);
+    expect(nearEnd.root.y).toBeGreaterThanOrEqual(-44.1);
+    expect(nearEnd.root.y).toBeLessThan(-35);
 
     await page.evaluate((height) => window.scrollTo(0, height + 300), start.height);
     await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
     const offscreen = await heroState(page);
     await page.waitForTimeout(300);
     expect((await heroState(page)).scroll).toEqual(offscreen.scroll);
+    expect((await heroState(page)).root).toEqual(offscreen.root);
     await page.evaluate(() => window.scrollTo(0, 0));
-    await expect.poll(() => heroState(page).then((state) => Math.abs(state.scrollPixels[1]))).toBeLessThan(0.1);
+    await expect.poll(() => heroState(page).then((state) => Math.abs(state.root.y))).toBeLessThan(0.1);
     expectStillContent(start.content, (await heroState(page)).content);
     await page.waitForTimeout(150);
     expect((await heroState(page)).activeTweens).toBe(0);
@@ -269,17 +272,54 @@ for (const width of [390, 1440]) test.describe(width + " touch header", () => {
 
 test.describe("portable header lifecycle", () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  test("native scrolling moves a compositable root while every inner SVG drawing group stays static", async ({ page }) => {
+    await openHome(page);
+    await expect(page.locator(".home-mast")).toHaveAttribute("data-mast-motion", "portable");
+    await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
+    await page.evaluate(() => {
+      const art = document.querySelector(".home-mast-art");
+      window.__heroDrawingMutations = [];
+      window.__heroRootWrites = 0;
+      new MutationObserver((records) => {
+        for (const record of records) {
+          if (record.target === art && record.attributeName === "style") window.__heroRootWrites += 1;
+          if (record.target.tagName.toLowerCase() === "g") {
+            window.__heroDrawingMutations.push({ className: record.target.getAttribute("class"), attribute: record.attributeName });
+          }
+        }
+      }).observe(art, { attributes: true, subtree: true });
+    });
+    await swipeHeader(page, 400);
+    await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(300);
+    await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-15);
+    await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
+    const paint = await page.locator(".home-mast-art").evaluate((art) => ({
+      mutations: window.__heroDrawingMutations, writes: window.__heroRootWrites,
+      inlineTransform: art.style.transform, svgTransform: art.getAttribute("transform"),
+      willChange: getComputedStyle(art).willChange, overflow: getComputedStyle(art).overflow,
+      clip: getComputedStyle(art).clipPath,
+    }));
+    expect(paint.mutations, "changing inner SVG groups would restart expensive filtered rasterization").toEqual([]);
+    expect(paint.writes, "the visible motion must actually update the CSS root").toBeGreaterThan(1);
+    expect(paint.inlineTransform).toMatch(/^translate3d\(/);
+    expect(paint.svgTransform, "the root uses CSS composition, not SVG geometry transforms").toBeNull();
+    expect(paint.willChange).toContain("transform");
+    expect(paint.overflow).toBe("visible");
+    expect(paint.clip).toBe("inset(0px 0px -48px)");
+    const state = await heroState(page);
+    for (const offset of state.pointer.concat(state.scroll)) expect(offset).toEqual({ x: 0, y: 0 });
+  });
   test("repeated wide-touch and reduced-motion transitions retain one scroll controller", async ({ page }) => {
     await openHome(page);
     for (const width of [1440, 390, 1440, 390]) {
       const { height } = await heroState(page);
       await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.45), height);
-      await expect.poll(() => heroState(page).then((state) => state.scrollPixels[1])).toBeLessThan(-15);
+      await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-15);
       await rememberHeroController(page);
       await page.setViewportSize({ width, height: 844 });
       await expectOldHeroControllerRemoved(page);
       await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
-      expect((await heroState(page)).tweens).toBeLessThanOrEqual(2);
+      expect((await heroState(page)).tweens).toBeLessThanOrEqual(1);
       await rememberHeroController(page);
       await page.emulateMedia({ reducedMotion: "reduce" });
       await expectOldHeroControllerRemoved(page);
@@ -325,7 +365,7 @@ test("unavailable GSAP leaves both hover and scroll layers static and the CTA us
   const { height } = await heroState(page);
   await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.4), height);
   const state = await heroState(page);
-  for (const offset of state.pointer.concat(state.scroll)) expect(offset).toEqual({ x: 0, y: 0 });
+  for (const offset of state.pointer.concat(state.scroll, [state.root])) expect(offset).toEqual({ x: 0, y: 0 });
   expect(state.triggers).toBe(0);
   await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
 });
