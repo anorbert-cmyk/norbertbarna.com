@@ -234,12 +234,16 @@ on the pale top of the mesh — not on a separate paper chrome slab, not
    the ident row. Home has Email only in its navigation and footer, not
    after the services cards. Do not add LinkedIn again in the nav. `/contact` stays
    404; no `/contact` link, no form, no captcha, no send endpoint.
-6. Copyright bottom-left: `© 2026 Norbert Barna` in dark charcoal. Sharp 1px
+6. Copyright bottom-left: `© 2026 Norbert Barna`. Sharp 1px
    dark hairline on the yellow. No back-to-top control. The approved privacy
    exception adds only a wrapping `.footer-privacy` utility row: English and
    Hungarian privacy links plus a native analytics-settings button. No new
-   columns, brand styling or contact form. This row uses the existing ink and
-   Inter and does not restyle the mesh.
+   columns or contact form. For site-wide AA, its content area has one shared
+   64% navy reading surface with white Inter text, retaining the existing
+   hairline and spacing. This protects small type across the navy/olive
+   transition without separate label chips. Compact colored mesh groups sit
+   90px lower, with a 760px minimum field height, so the full Work list remains on the pale field; the full-bleed
+   grain stays fixed. Work links underline without lowering ink opacity.
 
 **Optional analytics (2026-09-05):** `/privacy` and `/hu/adatvedelem` are paired
 utility pages. This release is ON via the first-loaded, static
@@ -339,6 +343,16 @@ the footer. Autoplay and GSAP already honor `prefers-reduced-motion`. The old
 57px breadcrumb strip under the nav is retired. The one real contact address
 is `anorbert@pm.me`; do not invent additional addresses. Do not put `mailto:`
 or the address in HTML. `/contact` stays 404. `/cv` stays unpublished.
+
+**Site-wide text accessibility (WCAG 2.2 AA):** normal text must reach 4.5:1;
+large text (24px regular or 18.667px bold) must reach 3:1. Apply this to every
+route, including the footer, disclosures, hover/focus states and the 404 page.
+Use actual composited backgrounds for grain, images and video; an automated
+contrast result marked incomplete is not a pass. Remove overlays that fade
+sector labels, and keep the How I work heading on its existing black card
+even when the underlying video is entirely white. Text inherits antialiasing
+on WebKit/macOS and grayscale smoothing on Firefox/macOS where supported;
+other platforms use their native font rasterizer. Do not thin text with opacity.
 
 **Header accessibility (WCAG 2.2 AA):** validate shared navigation and opening
 content at narrow, breakpoint and desktop widths, not just one screenshot.
@@ -646,20 +660,23 @@ on breakpoint changes, and shares no state with the footer controller.
 `prefers-reduced-motion: reduce`, touch/coarse input, unavailable GSAP and compact
 layouts use the static wash. No dunes, no header Motion control, no rotation circus.
 
-### Selected-work field and experience clarity
+### Selected-work motion and experience clarity
 
-The compact home reference list has one decorative, shared GSAP background
-field on desktop (at least 992px, fine pointer with hover). It follows rows
-using transform/opacity only; pointer drift is capped at 6px. Existing case
-colors are shown at 10% opacity over paper. Text, thumbnails, arrows and
-native link hit areas never follow the pointer. No loops, new plugins,
-cursor replacements, animated gradients or layout-property animation.
+The home reference rows stay on paper, with no hover background field. On
+desktop fine pointers, animate the existing thumbnail frame to 1.06 scale and
+-2px y while its arrow moves 4px right (0.36s power3.out in, 0.28s power2.out
+out). Keyboard focus has priority over pointer exit and preserves the instant
+visible outline. Keep text, row geometry, separators and native link targets
+still. Scale the complete frame without introducing another image crop.
 
-Create the field and reusable `quickTo` controllers inside the existing
-responsive motion context. Remove the field and its listeners on breakpoint
-or reduced-motion changes; never kill unrelated GSAP timelines. Keyboard
-focus uses an immediate CSS field and the existing visible outline. Touch,
-reduced motion and unavailable GSAP keep native links and static feedback.
+On compact layouts or coarse pointers, use native scroll through each row:
+thumbnail 1 → 1.04 → 1 scale, 0 → -1 → 0px y, arrow 0 → 3 → 0px x. The range
+runs from top 82% to bottom 28% with 0.2s scrub. A first tap follows the native
+link immediately. No pinning, snap, scroll hijacking, loops or new plugins.
+Create reusable controllers inside the existing responsive motion context;
+remove only their own listeners, transforms and ScrollTriggers on breakpoint
+or motion-preference changes. Reduced motion, no JavaScript and unavailable
+GSAP leave static readable rows and native links.
 
 Professional-experience video fills stay full-bleed with their original
 brightness: no full-card scrim, dot overlay, filter or blend grading. Only
