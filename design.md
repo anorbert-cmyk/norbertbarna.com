@@ -657,17 +657,20 @@ gray/blue material and static analog pattern while its nearer edge stays defined
 copy, proof chips, CTA and experience rail stay still. Its controller is scoped
 to the existing responsive `gsap.matchMedia()` contexts, pauses offscreen, cleans up
 on breakpoint changes, and shares no state with the footer controller.
-Compact layouts and touch/coarse input use the same scoped controller with
-native scroll only: translate the whole root SVG upward by at most 44 CSS pixels,
-eased over 0.48s with `force3D: true`. Keep the filtered inner groups static so
-scrolling reuses the painted surface. Bound visible overflow with a static
-`clip-path: inset(0 0 -48px 0)` to cover the upward travel. Preserve all existing
-filters, gradients and grain. This direction preserves navy behind the light
-employer labels; verify text AA at middle and
-near-end scroll positions. Portable mode adds no pointer handlers or touch
-capture. It pauses offscreen and cleans up when changing responsive modes.
-`prefers-reduced-motion: reduce`, unavailable GSAP and no JavaScript use the
-static wash. No dunes, no header Motion control, no rotation circus.
+Compact layouts and touch/coarse input use native CSS scroll-driven animation.
+The mast owns `--home-mast-scroll`, a block-axis view timeline with zero inset.
+Its root SVG translates from 0 to -44 CSS pixels over
+`exit-crossing 0% exit-crossing 100%`, linearly and without delayed easing.
+This maps the mast's top-to-bottom passage even when enlarged text makes it
+taller than the viewport. Keep filtered inner groups static; bound visible
+overflow with `clip-path: inset(0 0 -48px 0)`. Preserve the existing filters,
+gradients and grain, and verify text AA at middle and near-end positions.
+Portable header motion has no GSAP tween, ScrollTrigger, input handler or
+JavaScript style updates. CSS owns breakpoint changes and the bounded endpoint.
+Supported browsers animate even without JavaScript or GSAP. Unsupported
+scroll-timeline browsers, reduced motion and the existing `html.no-motion`
+preference use the static wash. Desktop still requires GSAP. No dunes, no
+header Motion control, no idle loop or rotation circus.
 
 ### Selected-work motion and experience clarity
 

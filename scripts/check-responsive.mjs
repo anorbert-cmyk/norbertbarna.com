@@ -401,7 +401,11 @@ if (!animationJs.includes("function addHomeMastField(") ||
     !animationJs.includes('gsap.quickTo(layer.el, "y"') ||
     !animationJs.includes("new IntersectionObserver") ||
     !animationJs.includes("removeHomeMastField")) {
-  fail("home mast motion must use an independently scoped, offscreen-paused GSAP controller");
+  fail("desktop home mast motion must use an independently scoped, offscreen-paused GSAP controller");
+}
+const portableMotion = animationJs.slice(animationJs.indexOf("function initPortableMotion()"), animationJs.indexOf("var started = false;"));
+if (/addHomeMastField\(/.test(portableMotion) || animationJs.includes('data-mast-motion')) {
+  fail("portable mast animation belongs to CSS and must not mount a JavaScript scroll controller");
 }
 const mastFieldStart = animationJs.indexOf("function addHomeMastField(");
 const mastFieldEnd = animationJs.indexOf("function createCaseRail()", mastFieldStart);

@@ -36,38 +36,52 @@ The first touch follows the native link. Reduced motion and missing JavaScript
 or GSAP produce static readable rows. No new dependencies are needed.
 
 The home mast also responds to native scrolling on compact and touch screens.
-Its whole root SVG rises by at most 44 CSS pixels with a 0.48s ease. The filtered
-inner groups stay static while a CSS `translate3d` moves their painted surface.
+Its whole root SVG rises by at most 44 CSS pixels on a native CSS view timeline.
+The mast is the timeline subject; `exit-crossing` maps its top-to-bottom passage
+even when enlarged text makes it taller than the viewport. Linear progress
+follows scrolling directly, without the previous 0.48s JavaScript after-motion.
+The filtered inner groups stay static while CSS `translate3d` moves their surface.
 A static clip allows 48px of bottom overflow without allocating the entire SVG
 filter bounds. The upward direction retains the dark background behind
 light employer labels. Text, navigation, grain and link targets stay still;
-there are no touch handlers, scroll capture or idle loops. The existing scoped
-controller pauses offscreen, cleans up on responsive changes and returns to the
-static mast for reduced motion or unavailable JavaScript/GSAP.
+there are no header touch handlers, scroll capture, GSAP tweens, ScrollTriggers,
+JavaScript style updates or idle loops. CSS handles responsive changes and the
+reduced-motion/static fallback. The supported CSS effect works without JavaScript
+or GSAP; browsers without the required CSS timeline/range support remain static.
 
-### Mobile mast raster regression
+[WebKit's range guide](https://webkit.org/blog/17184/so-many-ranges-so-little-time-a-cheatsheet-of-animation-ranges-for-your-next-scroll-driven-animation/)
+and the [scroll-animation specification](https://www.w3.org/TR/scroll-animations-1/#view-timelines-ranges)
+define this full-height range. `view-timeline-inset: 0` avoids inherited scroll
+padding affecting its endpoints; timeline and range declarations follow the
+animation shorthand so it cannot reset them. Safari added the feature in 26;
+[Safari 26.4](https://webkit.org/blog/17862/webkit-features-for-safari-26-4/#threaded-scroll-driven-animations)
+added its threaded implementation. Syntax support alone is not a phone smoothness
+measurement.
 
-The reported stutter came with repeated filtered-SVG raster work during scroll.
+### Earlier mobile mast raster investigation
+
+The initial stutter investigation found repeated filtered-SVG raster work during scroll.
 The earlier functional checks verified geometry and contrast, but did not detect
 that rendering cost. Translating the root follows the compositor guidance in
 [Chrome's animation guide](https://web.dev/articles/animations-guide) and
 [GSAP CSSPlugin](https://gsap.com/docs/v3/GSAP/CorePlugins/CSS/#force3D).
 
 On 2026-09-12, identical four-swipe Chromium runs at 390×844, DPR 3 and 4×/6× CPU
-throttling compared the previous release with the integrated served assets
+throttling compared that earlier release with the then-served JavaScript-driven assets
 `animations.2ef060d9bbc2.js` / `responsive.fc29614658a8.css`. No prototype patch
-was injected into the final runs. Over approximately 5.3 seconds:
+was injected into those runs. Over approximately 5.3 seconds:
 
 | CPU throttle | Aggregate raster-task time, before → after | Layout events, before → after |
 | --- | --- | --- |
 | 4× | 3164ms → 36ms | 524 → 2 |
 | 6× | 3264ms → 28ms | 532 → 2 |
 
-This is about 99% less measured raster work on the test machine, not a physical
-phone FPS claim. The durable browser guard observes trusted touch scrolling,
-visible root CSS movement and zero inner SVG group attribute mutations. It also
-checks the bounded overflow, composition hint and absence of an SVG root
-transform attribute; lifecycle tests cover cleanup of the root and its marker.
+That was about 99% less measured raster work on the test machine, but the user
+still reported stutter. Those numbers did not establish acceptable phone motion.
+The current CSS implementation removes the JavaScript scroll controller itself.
+Its durable guard requires actual native CSS movement with zero root or inner
+SVG attribute writes and zero hero GSAP tweens/ScrollTriggers. It also checks
+the timeline subject, full-height range, bounded overflow and static preferences.
 
 ## Findings and acceptance evidence
 
