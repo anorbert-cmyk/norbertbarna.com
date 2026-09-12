@@ -352,7 +352,7 @@ The header contact row can wrap; it must not overlap LinkedIn. Long opening
 headings may break within a word only when needed to avoid clipping. The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
-Keep desktop highlights below the pale/navy transition (164–190px top offset),
+Keep desktop highlights below the pale/navy transition (230–278px top offset),
 without a boxed background. The Kineticare video scrim is owned by the shared
 stylesheet, including its mobile direction; it must preserve white-text AA
 even against a synthetic all-white frame, not only a sampled poster.
@@ -375,13 +375,14 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 **Home fold**
 
 1. Analog mesh mast: greyer-lilac `#D6D4ED` grain, a **large navy félkör**
-   (`#0A1628`) rising from the bottom toward center-right, `feGaussianBlur` 56.
+   (`#0A1628`) rising from the bottom toward center-right. The 2026-09-12
+   reference correction uses a broad ellipse, blur 56 behind a blur 12 edge,
+   and `preserveAspectRatio="none"` so wide screens do not crop away the arc.
    Not the weaker/smaller navy of the text-only crop. Not the footer’s
    right-weighted yellow. Type on the pale band. Empty right is mesh.
-   On compact, navy fades in below the last highlight (`mask-image` starts
-   at 88%) so ink stays on lilac — same NavyFlood rule as the footer.
-   Compact `::after` navy is a short bottom wash (≤ 16% of the mast), not a
-   28% overlay through the list. The highlights label uses `--mast-muted`,
+   On compact, the arc occupies its own 260–420px lower-right field with
+   180px bottom space after the content, preserving the curve rather than
+   masking it into a horizontal stripe. Ink stays on lilac. The highlights label uses `--mast-muted`,
    not 62% `--muted`. Playwright samples pixels **behind glyphs** at 390.
    On desktop the highlights column sits on the navy félkör: use light ink
    (`--mast-on-navy` `#F4F5F7`), not `--ink`. Offset that column onto the
@@ -393,7 +394,7 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    Color is solid screenshot-directed `#403B73`, not translucent `--muted`. Compact
    highlights label uses the same token. Fold type must meet WCAG AA
    against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
-   UI stroke. Left column stays dark ink on lilac. Compact highlights stay
+   UI stroke. Left column stays dark navy on lilac, including the Product VP title. Compact highlights stay
    dark ink on lilac — never `--mast-on-navy` at ≤ 991px.
 3. H1: `Product VP`
 4. One-line dek (existing positioning, not a slogan)
@@ -532,7 +533,7 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | Faint multiply grain (~0.38) plus extra CSS/SVG blur so the field reads as fog | Heavy analog speckle; do not blur the grain layer |
-| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact: keep type on the pale lilac band; fade navy in below the last highlight (mask from 88%). Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
+| NavyFlood | Navy mesh blob bleeds up under Work or compact home highlights so ink contrast dies | Compact footer: fade navy below type. Compact home: use the bounded lower-right arc below the reading column. Enlarged desktop text retains the 88% mask. Desktop home highlights may sit on the félkör — then use light ink, do not shrink the dome |
 | InkOnNavy | `--ink` / `--muted` on the desktop mast highlights over `#0A1628` | `--mast-on-navy` `#F4F5F7` on that column; left column stays `--ink` on lilac |
 | GrainWash | 62% `--muted` on analog mast grain samples below WCAG AA 4.5:1 | Home-mast kicker **and compact highlights label** use solid `--mast-muted` `#2a2a2e` |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
@@ -557,7 +558,7 @@ English-wash the screenshot.
 | BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined project enquiry button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
-| MeshParallaxCircus | Mesh masses rotate, travel tens of pixels, loop like a GIF, or drag type/chrome | Navy / olive / yellow translate a few pixels at different depths; chrome stays still; reduced-motion is static |
+| MeshParallaxCircus | Mesh masses rotate, loop like a GIF, or drag type/chrome | Footer masses translate a few pixels; the home reference exception responds to hover/scroll within its documented bounds. Chrome stays still; reduced-motion is static |
 | BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
 | DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
 | TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Selected work`; case titles start `{H1} —` |
@@ -615,8 +616,11 @@ footer mesh may translate navy / olive / yellow a few pixels under the
 pointer (yellow closer, navy deeper) with an easy-to-miss idle. Type,
 Work, Email, LinkedIn, copyright, and the hairline do not move.
 The home mast may echo the footer through its two nested navy SVG groups only.
-On desktop fine pointers, GSAP `quickTo()` caps pointer drift at 6.5px and two
-separate inner groups carry a 1–1.5px, roughly 22-second idle. Navigation, grain,
+On desktop fine pointers, GSAP `quickTo()` caps pointer drift at 24px horizontally
+and 18px vertically. Two separate inner groups translate with native scroll
+(up to 34px / 56px vertically). These are user-requested, visible responses to
+hover and scroll; no idle loop. The broad right-hand arc retains the footer
+palette and static grain while its nearer edge stays more defined. Navigation, grain,
 copy, proof chips, CTA and experience rail stay still. Its controller is scoped
 to the existing desktop `gsap.matchMedia()` context, pauses offscreen, cleans up
 on breakpoint changes, and shares no state with the footer controller.

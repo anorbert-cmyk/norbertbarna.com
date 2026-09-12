@@ -472,6 +472,22 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     }
     await expect(mast).toHaveAttribute("data-text-reflow", "");
     await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", "block");
+    const proofBounds = await page.locator(".home-mast-proof-chips li").evaluateAll((chips) => chips.map((chip) => {
+      const box = chip.getBoundingClientRect();
+      return {
+        label: chip.textContent.trim(),
+        clientWidth: chip.clientWidth,
+        scrollWidth: chip.scrollWidth,
+        inside: [...chip.children].every((part) => {
+          const child = part.getBoundingClientRect();
+          return child.left >= box.left && child.right <= box.right && child.bottom <= box.bottom;
+        }),
+      };
+    }));
+    for (const proof of proofBounds) {
+      expect(proof.scrollWidth, proof.label).toBeLessThanOrEqual(proof.clientWidth + 1);
+      expect(proof.inside, `${proof.label} must remain inside its chip`).toBe(true);
+    }
     // An intentional user text adjustment is not an unexpected site shift.
     // The normal initial CLS was checked above; retain the shared final guard
     // for any subsequent shifts after the adjustment has been laid out.
@@ -1401,7 +1417,7 @@ test("1440 home mast: pointer gives the navy field restrained depth while all co
   await expect.poll(async () => (await readHomeMastMotion(page)).front.x, { timeout: 2500 }).toBeGreaterThan(2);
   const right = await readHomeMastMotion(page);
   expect(right.front.x - left.front.x, "front layer has more pointer depth").toBeGreaterThan(right.back.x - left.back.x + 2);
-  expect(right.frontTravel, "front travel stays below the 6.5px motion cap").toBeLessThanOrEqual(6.5);
+  expect(right.frontTravel, "front travel stays within the 24px by 18px pointer envelope").toBeLessThanOrEqual(30);
   expect(right.backTravel, "back travel stays quieter than the front").toBeLessThan(right.frontTravel);
   for (const key of ["nav", "h1", "proof", "rail", "cta"]) {
     expect(right[key], `${key} exists`).toBeTruthy();

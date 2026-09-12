@@ -399,8 +399,8 @@ const mastFieldStart = animationJs.indexOf("function addHomeMastField(signal)");
 const mastFieldEnd = animationJs.indexOf("function createCaseRail()", mastFieldStart);
 const mastField = animationJs.slice(mastFieldStart, mastFieldEnd);
 if (/rotate(?:X|Y|Z)?\s*:|rotation(?:X|Y|Z)?\s*:/.test(mastField) ||
-    !/\*\s*13\b/.test(mastField) || !/\*\s*9\.2\b/.test(mastField)) {
-  fail("home mast pointer field must stay within a few pixels and never rotate");
+    !/ScrollTrigger\.create/.test(mastField) || /repeat:\s*-1/.test(mastField)) {
+  fail("home mast must respond to native scroll without rotation or an idle loop");
 }
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");
