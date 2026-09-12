@@ -86,7 +86,7 @@ const homeMast = home.slice(
   home.indexOf("home-about-section")
 );
 if (!/class="home-mast-mesh"/.test(homeMast) || !/home-mast-navy/.test(homeMast)) {
-  fail("home fold must open on the analog mesh mast (lilac + navy félkör)");
+  fail("home fold must open on the analog mesh mast (light gray + navy félkör)");
 }
 const homeBlur = Number(homeMast.match(/<filter\b[^>]*id="home-mast-blur"[^>]*>\s*<feGaussianBlur stdDeviation="([\d.]+)"/)?.[1]);
 const homeEdge = Number(homeMast.match(/<filter\b[^>]*id="home-mast-edge"[^>]*>\s*<feGaussianBlur stdDeviation="([\d.]+)"/)?.[1]);
@@ -97,7 +97,7 @@ const homeDepth = homeMast.match(/<radialGradient\b[^>]*id="home-mast-depth"[^>]
 const depthColors = [...homeDepth.matchAll(/stop-color="(#[\da-f]{6})"/gi)].map((match) => match[1].toLowerCase());
 if (!/class="home-mast-lilac"/.test(homeMast) || new Set(depthColors).size < 3 ||
     !/fill="url\(#home-mast-depth\)"/.test(homeMast)) {
-  fail("ReferenceByToken: home needs pale lavender and a tonal blue-violet-to-navy form, not two solid footer-color ellipses");
+  fail("ReferenceByToken: home needs footer-matched light gray and a tonal blue-violet-to-navy form");
 }
 const homeNavy = [...homeMast.matchAll(/<ellipse cx="([0-9.]+)" cy="([0-9.]+)" rx="([0-9.]+)" ry="([0-9.]+)" fill="[^"]+"/g)];
 if (!homeNavy.some((m) => Number(m[4]) >= 700 && Number(m[1]) >= 1080)) {

@@ -2084,7 +2084,7 @@ test("1440 home header: reference composition, truthful proof and text navigatio
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
 });
 
-test("home material preserves reference lavender, blue depth and visible grain across desktop and compact", async ({ page }) => {
+test("home material matches the footer light gray with blue depth and visible grain across desktop and compact", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   const paleSamples = [];
   for (const width of [1280, 390]) {
@@ -2111,10 +2111,14 @@ test("home material preserves reference lavender, blue depth and visible grain a
     const pale = await screenshotClip(page, { x: kicker.x + 40, y: kicker.y - 44, width: 64, height: 36 });
     paleSamples.push(pale);
 
-    expect(pale.luminance, `${width}: lavender light stays pale instead of gray`).toBeGreaterThan(185);
-    expect(pale.luminance, `${width}: lavender retains color instead of washing to white`).toBeLessThan(240);
-    expect(pale.b - pale.r, `${width}: pale field retains its lavender blue`).toBeGreaterThan(10);
-    expect(pale.r - pale.g, `${width}: pale field retains its violet warmth`).toBeGreaterThan(5);
+    await page.evaluate(() => window.scrollTo(0, document.querySelector(".footer-section").getBoundingClientRect().top + scrollY));
+    const footer = await page.locator(".footer-section").boundingBox();
+    const footerPale = await screenshotClip(page, { x: footer.x + Math.floor(footer.width * .55), y: footer.y + 25, width: 32, height: 24 });
+    for (const channel of ["r", "g", "b"]) {
+      expect(Math.abs(pale[channel] - footerPale[channel]), `${width}: ${channel} matches the footer's rendered light gray`).toBeLessThan(4);
+    }
+    expect(pale.luminance, `${width}: the light gray stays pale`).toBeGreaterThan(185);
+    expect(pale.luminance, `${width}: the light gray does not wash to white`).toBeLessThan(240);
     expect(pale.stddev, `${width}: the requested analog pattern remains visible`).toBeGreaterThan(2.5);
     expect(pale.stddev, `${width}: coarse dark grain must not overpower the pale field`).toBeLessThan(18);
     expect(deep.luminance, `${width}: the form retains a deep interior`).toBeLessThan(65);
@@ -2124,7 +2128,7 @@ test("home material preserves reference lavender, blue depth and visible grain a
     expect(edge.b - edge.r, `${width}: the inner edge remains blue-violet`).toBeGreaterThan(25);
   }
   for (const channel of ["r", "g", "b"]) {
-    expect(Math.abs(paleSamples[0][channel] - paleSamples[1][channel]), `${channel}: compact grain uses the same lavender backdrop`).toBeLessThan(16);
+    expect(Math.abs(paleSamples[0][channel] - paleSamples[1][channel]), `${channel}: compact grain uses the same light gray backdrop`).toBeLessThan(16);
   }
 });
 

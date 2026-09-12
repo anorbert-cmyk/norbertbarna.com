@@ -100,9 +100,9 @@ The first viewport is the argument, not a masthead plus setup.
 - H1 is the role (`Product VP`), not the name.
 - The name stays plain text in the DOM and is rendered as the screenshot-directed
   uppercase, tracked kicker.
-- The first viewport follows the supplied reference: pale lavender grain, a **large
+- The first viewport follows the supplied reference with the requested footer-matched light gray grain, a **large
   navy félkör** from the bottom toward center-right, and a defined blue-violet edge. Live
-  copy sits left on the lilac. The right side is mesh — not Canvas Career,
+  copy sits left on the light gray. The right side is mesh — not Canvas Career,
   not any product screenshot.
 - Fold proof on `/` is the live highlights list, not DualIndex: the **work
   list** still opens with Raiffeisen.
@@ -379,17 +379,20 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 
 **Home fold**
 
-1. Follow the supplied original design, not the footer's numeric palette:
-   pale lavender, a **large navy félkör** rising from the bottom toward
+1. Follow the supplied original composition with the user's footer-matched background:
+   light gray, a **large navy félkör** rising from the bottom toward
    center-right, and a visible blue-violet edge grading into a deep blue interior.
-   The 2026-09-12 user correction supersedes the former home `#D6D4ED` /
-   `#0A1628` and Funnel H1 locks. Footer and case colors remain unchanged.
+   The 2026-09-12 background follow-up replaces the purple home base with `#CECDE1`,
+   matching the footer's rendered pale field after its grain blend. The header's
+   existing centered grain retains that shade; copying the footer's raw `#D6D4ED`
+   token would render differently. Keep the approved Inter H1 and navy gradient.
+   Footer and case colors remain unchanged.
    Use a broad ellipse with a restrained blurred back layer and a defined soft
    front edge, plus `preserveAspectRatio="none"` so wide screens retain the arc.
    The navy is a tonal gradient, not a flat dark disk with a gray fog halo.
    Keep a clearly visible analog grain pattern related to the footer while
-   preserving the lavender light and blue shadows; do not copy neutral overlay
-   strengths that turn the reference gray. Grain stays static and unblurred.
+   preserving the footer-matched light gray and blue shadows. Grain stays static
+   and unblurred; the requested background match must not wash out the navy.
    On compact, keep a generous visible lower-right arc and the narrow,
    right-aligned light employer rail inside its dark area. The normal-size rail
    has no separate label or hairline. On desktop the rail also sits on navy.
@@ -408,7 +411,7 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    Color is solid violet ink, not translucent `--muted`. The reflow highlights
    label uses solid dark ink. Fold type must meet WCAG AA
    against the live grain (pixels behind glyphs): 4.5:1 normal, 3:1 large /
-   UI stroke. The left column stays dark navy on lavender, including Product VP.
+   UI stroke. The left column stays dark navy on light gray, including Product VP.
 3. H1: `Product VP`, set in existing Inter 700 to match the reference proportions;
    retain this family when user text settings activate the reflow fallback.
 4. Short reference dek: `AI products for fintech, Web3, regulated teams — strategy to ship.`
@@ -529,8 +532,8 @@ English-wash the screenshot.
 |---|---|---|
 | EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + live highlights on the analog mast; product UI lives in Selected work rows and case pages |
 | CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Empty right is mesh |
-| WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080), pale lavender and a blue-violet edge grading into deep blue |
-| ReferenceByToken | Footer hex reuse or green functional tests are treated as proof that the header matches the supplied design | Compare rendered reference composition, Inter H1 proportions, lavender, blue depth and visible grain; use pixel relationships as regression evidence, then independent visual review |
+| WeakNavyDome | Home mast navy is a thin horizon or the smaller text-crop dome | Large félkör from the bottom toward center-right (ry ≥ 700, cx ≥ 1080), footer-matched light gray and a blue-violet edge grading into deep blue |
+| ReferenceByToken | Footer hex reuse or green functional tests are treated as proof that the header matches the supplied design | Compare rendered reference composition, Inter H1 proportions, the footer's visible light gray, blue depth and grain; use pixel relationships as regression evidence, then independent visual review |
 | GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
 | FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
 | DualIndex | Home **list** order ≠ `/works` order | One list, hiring-first |
@@ -548,10 +551,10 @@ English-wash the screenshot.
 | HardMeshSeam | Visible ellipse contours or hard-ish bands between lilac / navy / olive / yellow | Larger overlapping masses + `feGaussianBlur` ≥ 48 so the lock reads as analog bleed |
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
-| FogGrain | A blurred grain layer or broad neutral haze flattens the field | Visible static speckle with retained lavender and blue depth; home gradient edge stays distinct from its deep interior; footer retains its existing material |
+| FogGrain | A blurred grain layer or broad neutral haze flattens the field | Visible static speckle with retained light gray and blue depth; home gradient edge stays distinct from its deep interior; footer retains its existing material |
 | NavyFlood | Navy reaches dark reading text and destroys contrast | Compact footer: fade navy below type. Normal home: light rail sits inside the arc; `data-text-reflow` restores dark-on-pale stacking and the bounded lower field |
-| InkOnNavy | Dark ink on the home employer rail inside the navy form | Light lavender ink on the normal desktop and compact rail; left copy and the reflow fallback stay dark on pale lavender |
-| GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid violet/dark ink on lavender and light ink on navy; sample worst relevant pixels behind glyphs, including reflow |
+| InkOnNavy | Dark ink on the home employer rail inside the navy form | Light lavender ink on the normal desktop and compact rail; left copy and the reflow fallback stay dark on pale gray |
+| GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid violet/dark ink on light gray and light ink on navy; sample worst relevant pixels behind glyphs, including reflow |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
 | PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
 | HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |
