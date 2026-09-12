@@ -454,12 +454,12 @@ test.describe("portable header contrast", () => {
       const snapshots = [];
       const readState = () => page.evaluate(() => {
         const mast = document.querySelector(".home-mast");
-        const trigger = ScrollTrigger.getAll().find((entry) => entry.trigger === mast);
+        const rect = mast.getBoundingClientRect();
         const transform = getComputedStyle(mast.querySelector(".home-mast-art")).transform;
         const innerTransforms = [...mast.querySelectorAll(".home-mast-navy-drift")]
           .map((element) => getComputedStyle(element).transform);
         return {
-          progress: trigger.progress,
+          progress: Math.max(0, Math.min(1, -rect.top / rect.height)),
           transform,
           pixels: new DOMMatrixReadOnly(transform === "none" ? undefined : transform).f,
           innerPixels: innerTransforms.map((value) => new DOMMatrixReadOnly(value === "none" ? undefined : value).f),
@@ -469,11 +469,12 @@ test.describe("portable header contrast", () => {
         await openStable(page, "/");
         expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
         expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: no-preference)").matches)).toBe(true);
-        await expect.poll(() => page.evaluate(() => window.ScrollTrigger?.getAll()
-          .filter((entry) => entry.trigger === document.querySelector(".home-mast")).length)).toBe(1);
+        await expect(page.locator(".home-mast-art")).toHaveCSS("animation-name", "home-mast-native-depth");
+        expect(await page.evaluate(() => window.ScrollTrigger?.getAll()
+          .filter((entry) => entry.trigger === document.querySelector(".home-mast")).length)).toBe(0);
         await page.evaluate((target) => {
-          const trigger = ScrollTrigger.getAll().find((entry) => entry.trigger === document.querySelector(".home-mast"));
-          window.scrollTo(0, trigger.start + (trigger.end - trigger.start) * target);
+          const rect = document.querySelector(".home-mast").getBoundingClientRect();
+          window.scrollTo(0, scrollY + rect.top + rect.height * target);
         }, progress);
         await expect(async () => {
           const state = await readState();

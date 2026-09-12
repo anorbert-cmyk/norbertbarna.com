@@ -15,12 +15,16 @@ async function openHome(page) {
   await page.goto("/", { waitUntil: "load" });
   await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
   await expect(page.locator("html")).toHaveClass(/gsap-ready/);
-  await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
+  const portable = (await heroState(page)).portableViewport;
+  await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(portable ? 0 : 1);
 }
 
 async function heroState(page) {
   return page.evaluate(() => {
     const mast = document.querySelector(".home-mast");
+    const art = mast.querySelector(".home-mast-art");
+    const mastRect = mast.getBoundingClientRect();
+    const artStyle = getComputedStyle(art);
     const targets = [...mast.querySelectorAll(".home-mast-art, .home-mast-navy, .home-mast-navy-drift")];
     const translation = (element) => {
       const transform = getComputedStyle(element).transform;
@@ -32,8 +36,30 @@ async function heroState(page) {
       return { x: rect.x, y: rect.y + scrollY, width: rect.width, height: rect.height };
     };
     return {
-      root: translation(mast.querySelector(".home-mast-art")),
+      root: translation(art),
       portable: mast.getAttribute("data-mast-motion"),
+      portableViewport: matchMedia("(max-width: 991px), (hover: none), (pointer: coarse)").matches,
+      supportsNative: CSS.supports("view-timeline-name: --home-mast-scroll") &&
+        CSS.supports("animation-timeline: --home-mast-scroll") &&
+        CSS.supports("animation-range: exit-crossing 0% exit-crossing 100%"),
+      progress: Math.max(0, Math.min(1, -mastRect.top / mastRect.height)),
+      mastTop: mastRect.top,
+      viewportHeight: innerHeight,
+      inlineTransform: art.style.transform,
+      svgTransform: art.getAttribute("transform"),
+      css: art.getAnimations().map((animation) => ({
+        type: animation.constructor.name, name: animation.animationName,
+        viewTimeline: typeof ViewTimeline === "function" && animation.timeline instanceof ViewTimeline,
+        subjectIsMast: animation.timeline?.subject === mast,
+        axis: animation.timeline?.axis,
+        rangeStart: { name: animation.rangeStart?.rangeName, offset: String(animation.rangeStart?.offset) },
+        rangeEnd: { name: animation.rangeEnd?.rangeName, offset: String(animation.rangeEnd?.offset) },
+        progress: animation.effect.getComputedTiming().progress,
+      })),
+      cssDuration: artStyle.animationDuration,
+      cssEasing: artStyle.animationTimingFunction,
+      cssFill: artStyle.animationFillMode,
+      timelineInset: getComputedStyle(mast).viewTimelineInset,
       pointer: [".home-mast-navy-back", ".home-mast-navy-front"].map((selector) => translation(mast.querySelector(selector))),
       scroll: [...mast.querySelectorAll(".home-mast-navy-drift")].map(translation),
       content: [".hero-kicker", ".home-banner-title", ".home-banner-subtitle", ".home-mast-proof-chips", ".home-banner-outcomes", ".hero-work-link"].map(position),
@@ -43,7 +69,7 @@ async function heroState(page) {
         const style = getComputedStyle(mast.querySelector(".home-mast-mesh"), pseudo);
         return [style.transform, style.backgroundPosition, style.backgroundSize, style.opacity];
       }),
-      height: mast.offsetHeight,
+      height: mastRect.height,
       scrollY,
       activeTweens: window.gsap ? gsap.getTweensOf(targets, true).length : 0,
       tweens: window.gsap ? gsap.getTweensOf(targets).length : 0,
@@ -75,11 +101,58 @@ async function expectStaticHero(page) {
     const state = await heroState(page);
     expect(state.triggers).toBe(0);
     expect(state.tweens, "the old controller retains no animated SVG targets").toBe(0);
+    expect(state.css, "static mode has no CSS animation either").toEqual([]);
     expect(state.portable).toBeNull();
+    expect(state.inlineTransform).toBe("");
     for (const offset of state.pointer.concat(state.scroll, [state.root])) {
       expect(Math.hypot(offset.x, offset.y), "static mode clears every decorative transform").toBeLessThan(0.05);
     }
   }).toPass({ timeout: 2000 });
+}
+
+async function nextRenderedFrame(page) {
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+}
+
+async function expectNativeHero(page, { javaScriptEnabled = true } = {}) {
+  // View timelines update during rendering. Two frames allow that update, but
+  // deliberately do not wait through the former 0.48s JavaScript easing.
+  if (javaScriptEnabled) await nextRenderedFrame(page);
+  // Disabled page JavaScript also suppresses injected rAF callbacks. Give the
+  // browser its rendering interval while CSS continues without script execution.
+  else await page.waitForTimeout(50);
+  const state = await heroState(page);
+  expect(state.supportsNative).toBe(true);
+  expect(state.portable).toBeNull();
+  expect(state.triggers, "portable hero creates no GSAP ScrollTrigger").toBe(0);
+  expect(state.tweens, "portable hero creates no GSAP tween").toBe(0);
+  expect(state.activeTweens).toBe(0);
+  expect(state.inlineTransform, "CSS owns the root transform").toBe("");
+  expect(state.svgTransform).toBeNull();
+  expect(state.css).toHaveLength(1);
+  expect(state.css[0]).toMatchObject({
+    type: "CSSAnimation", name: "home-mast-native-depth", viewTimeline: true,
+    subjectIsMast: true, axis: "block",
+    rangeStart: { name: "exit-crossing", offset: "0%" },
+    rangeEnd: { name: "exit-crossing", offset: "100%" },
+  });
+  expect(state.cssDuration).toBe("auto");
+  expect(state.cssEasing).toBe("linear");
+  expect(state.cssFill).toBe("both");
+  expect(state.timelineInset).toBe("0px");
+  expect(state.css[0].progress).toBeCloseTo(state.progress, 3);
+  expect(state.root.x).toBeCloseTo(0, 2);
+  expect(Math.abs(state.root.y + 44 * state.progress), "depth tracks the actual mast range without time-based lag").toBeLessThan(0.15);
+  for (const offset of state.pointer.concat(state.scroll)) expect(offset).toEqual({ x: 0, y: 0 });
+  return state;
+}
+
+async function scrollMastTo(page, progress) {
+  await page.evaluate((fraction) => {
+    const rect = document.querySelector(".home-mast").getBoundingClientRect();
+    window.scrollTo(0, window.scrollY + rect.top + rect.height * fraction);
+  }, progress);
+  return expectNativeHero(page);
 }
 
 function expectStillContent(before, after) {
@@ -96,8 +169,8 @@ async function hoverRight(page) {
   await expect.poll(() => heroState(page).then((state) => state.pointer[1].x)).toBeGreaterThan(19);
 }
 
-async function swipeHeader(page, distance) {
-  await page.evaluate(() => {
+async function swipeHeader(page, distance, { javaScriptEnabled = true } = {}) {
+  if (javaScriptEnabled) await page.evaluate(() => {
     window.__heroTouchEvents = [];
     for (const type of ["touchstart", "touchmove", "touchend", "touchcancel", "pointercancel"]) {
       document.addEventListener(type, (event) => {
@@ -127,9 +200,13 @@ async function swipeHeader(page, distance) {
   } finally {
     await session.detach();
   }
-  const events = await page.evaluate(() => window.__heroTouchEvents);
-  for (const type of ["touchstart", "touchmove", "touchend"]) {
-    expect(events.some((event) => event.type === type && event.trusted), type + " must reach the page as browser input").toBe(true);
+  // JavaScript-disabled pages cannot execute these observer callbacks. The
+  // same native CDP input still has to produce the asserted document scroll.
+  if (javaScriptEnabled) {
+    const events = await page.evaluate(() => window.__heroTouchEvents);
+    for (const type of ["touchstart", "touchmove", "touchend"]) {
+      expect(events.some((event) => event.type === type && event.trusted), type + " must reach the page as browser input").toBe(true);
+    }
   }
 }
 
@@ -196,13 +273,8 @@ test("hero controller cleans up and resumes across repeated reduced-motion and b
     await expectOldHeroControllerRemoved(page);
     if (mode === "reduce") await expectStaticHero(page);
     else {
-      await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
-      await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-10);
-      const portable = await heroState(page);
-      expect(portable.tweens).toBeLessThanOrEqual(1);
-      expect(portable.portable).toBe("portable");
-      for (const offset of portable.scroll) expect(offset).toEqual({ x: 0, y: 0 });
-      for (const offset of portable.pointer) expect(Math.hypot(offset.x, offset.y)).toBeLessThan(0.05);
+      const portable = await expectNativeHero(page);
+      expect(portable.root.y).toBeLessThan(-10);
     }
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.mouse.move(900, 200);
@@ -216,6 +288,7 @@ test("hero controller cleans up and resumes across repeated reduced-motion and b
       await expectOldHeroControllerRemoved(page);
     }
     await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
+    expect((await heroState(page)).css).toEqual([]);
     // Leaving before re-entry guarantees a real pointermove after each restart.
     await page.mouse.move(1, 1);
   }
@@ -224,47 +297,33 @@ test("hero controller cleans up and resumes across repeated reduced-motion and b
 
 for (const width of [390, 1440]) test.describe(width + " touch header", () => {
   test.use({ viewport: { width, height: 844 }, hasTouch: true, isMobile: true });
-  test("native touch scroll gives visible bounded depth, keeps reading content still, and returns to rest", async ({ page }) => {
+  test("native touch scroll gives visible bounded CSS depth, keeps reading content still, and returns to rest", async ({ page }) => {
     await openHome(page);
     expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
-    const start = await heroState(page);
+    const start = await expectNativeHero(page);
     // A real browser touch gesture must scroll the document without being captured.
     await swipeHeader(page, Math.round(start.height * 0.55));
     await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(start.height * 0.35);
-    await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-15);
-    await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
-    const scrolled = await heroState(page);
-    const progress = Math.min(1, scrolled.scrollY / start.height);
-    expect(scrolled.root.y).toBeCloseTo(-44 * progress, 0);
-    expect(scrolled.portable).toBe("portable");
-    for (const offset of scrolled.pointer.concat(scrolled.scroll)) expect(offset).toEqual({ x: 0, y: 0 });
-    expect(scrolled.tweens).toBeLessThanOrEqual(1);
+    const scrolled = await expectNativeHero(page);
+    expect(scrolled.root.y).toBeLessThan(-15);
     expectStillContent(start.content, scrolled.content);
     expect(scrolled.grain).toEqual(start.grain);
     expect(scrolled.navTransform).toBe(start.navTransform);
 
     // Portable input never adds desktop pointer depth, even with a connected mouse.
     await page.mouse.move(width * 0.9, 160);
-    await page.waitForTimeout(100);
-    for (const offset of (await heroState(page)).pointer) expect(offset).toEqual({ x: 0, y: 0 });
-    await page.evaluate((height) => window.scrollTo(0, height * 0.9), start.height);
-    // A settled previous pose also has zero active tweens. First observe the
-    // newly requested native-scroll response, then wait for that response to rest.
-    await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-35);
-    await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
-    const nearEnd = await heroState(page);
+    await expectNativeHero(page);
+    const nearEnd = await scrollMastTo(page, 0.9);
     expect(nearEnd.root.y).toBeGreaterThanOrEqual(-44.1);
     expect(nearEnd.root.y).toBeLessThan(-35);
 
-    await page.evaluate((height) => window.scrollTo(0, height + 300), start.height);
-    await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
-    const offscreen = await heroState(page);
+    const offscreen = await scrollMastTo(page, 1.3);
+    expect(offscreen.root.y).toBeCloseTo(-44, 2);
     await page.waitForTimeout(300);
-    expect((await heroState(page)).scroll).toEqual(offscreen.scroll);
     expect((await heroState(page)).root).toEqual(offscreen.root);
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await expect.poll(() => heroState(page).then((state) => Math.abs(state.root.y))).toBeLessThan(0.1);
-    expectStillContent(start.content, (await heroState(page)).content);
+    const returned = await scrollMastTo(page, 0);
+    expect(Math.abs(returned.root.y)).toBeLessThan(0.1);
+    expectStillContent(start.content, returned.content);
     await page.waitForTimeout(150);
     expect((await heroState(page)).activeTweens).toBe(0);
   });
@@ -272,63 +331,115 @@ for (const width of [390, 1440]) test.describe(width + " touch header", () => {
 
 test.describe("portable header lifecycle", () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-  test("native scrolling moves a compositable root while every inner SVG drawing group stays static", async ({ page }) => {
+  test("native CSS scrolling moves the root without any root or inner SVG attribute writes", async ({ page }) => {
     await openHome(page);
-    await expect(page.locator(".home-mast")).toHaveAttribute("data-mast-motion", "portable");
-    await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
+    const start = await expectNativeHero(page);
     await page.evaluate(() => {
       const art = document.querySelector(".home-mast-art");
       window.__heroDrawingMutations = [];
-      window.__heroRootWrites = 0;
-      new MutationObserver((records) => {
+      window.__heroDrawingObserver = new MutationObserver((records) => {
         for (const record of records) {
-          if (record.target === art && record.attributeName === "style") window.__heroRootWrites += 1;
-          if (record.target.tagName.toLowerCase() === "g") {
-            window.__heroDrawingMutations.push({ className: record.target.getAttribute("class"), attribute: record.attributeName });
-          }
+          window.__heroDrawingMutations.push({ tag: record.target.tagName, attribute: record.attributeName });
         }
-      }).observe(art, { attributes: true, subtree: true });
+      });
+      window.__heroDrawingObserver.observe(art, { attributes: true, subtree: true });
     });
     await swipeHeader(page, 400);
     await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(300);
-    await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-15);
-    await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
-    const paint = await page.locator(".home-mast-art").evaluate((art) => ({
-      mutations: window.__heroDrawingMutations, writes: window.__heroRootWrites,
-      inlineTransform: art.style.transform, svgTransform: art.getAttribute("transform"),
-      willChange: getComputedStyle(art).willChange, overflow: getComputedStyle(art).overflow,
-      clip: getComputedStyle(art).clipPath,
-    }));
-    expect(paint.mutations, "changing inner SVG groups would restart expensive filtered rasterization").toEqual([]);
-    expect(paint.writes, "the visible motion must actually update the CSS root").toBeGreaterThan(1);
-    expect(paint.inlineTransform).toMatch(/^translate3d\(/);
-    expect(paint.svgTransform, "the root uses CSS composition, not SVG geometry transforms").toBeNull();
+    const moved = await expectNativeHero(page);
+    expect(moved.root.y).toBeLessThan(-15);
+    expect(moved.root.y).toBeLessThan(start.root.y - 15);
+    // An immediate jump must also resolve through the CSS range in two frames,
+    // with no old quickTo easing period or JavaScript transform writes.
+    await scrollMastTo(page, 0.75);
+    await scrollMastTo(page, 0.25);
+    const paint = await page.locator(".home-mast-art").evaluate((art) => {
+      window.__heroDrawingObserver.disconnect();
+      return {
+        mutations: window.__heroDrawingMutations,
+        inlineTransform: art.style.transform, svgTransform: art.getAttribute("transform"),
+        willChange: getComputedStyle(art).willChange, overflow: getComputedStyle(art).overflow,
+        clip: getComputedStyle(art).clipPath,
+      };
+    });
+    expect(paint.mutations, "native CSS motion writes no root or inner drawing attributes").toEqual([]);
+    expect(paint.inlineTransform).toBe("");
+    expect(paint.svgTransform).toBeNull();
     expect(paint.willChange).toContain("transform");
     expect(paint.overflow).toBe("visible");
     expect(paint.clip).toBe("inset(0px 0px -48px)");
-    const state = await heroState(page);
-    for (const offset of state.pointer.concat(state.scroll)) expect(offset).toEqual({ x: 0, y: 0 });
   });
-  test("repeated wide-touch and reduced-motion transitions retain one scroll controller", async ({ page }) => {
+
+  test("repeated wide-touch, reduced-motion and no-motion transitions retain one native CSS animation", async ({ page }) => {
     await openHome(page);
     for (const width of [1440, 390, 1440, 390]) {
-      const { height } = await heroState(page);
-      await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.45), height);
-      await expect.poll(() => heroState(page).then((state) => state.root.y)).toBeLessThan(-15);
+      await scrollMastTo(page, 0.45);
       await rememberHeroController(page);
       await page.setViewportSize({ width, height: 844 });
       await expectOldHeroControllerRemoved(page);
-      await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
-      expect((await heroState(page)).tweens).toBeLessThanOrEqual(1);
-      await rememberHeroController(page);
+      await expectNativeHero(page);
       await page.emulateMedia({ reducedMotion: "reduce" });
-      await expectOldHeroControllerRemoved(page);
       await expectStaticHero(page);
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.emulateMedia({ reducedMotion: "no-preference" });
-      await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
-      for (const offset of (await heroState(page)).pointer) expect(offset).toEqual({ x: 0, y: 0 });
+      await expectNativeHero(page);
+      await page.locator("html").evaluate((html) => html.classList.add("no-motion"));
+      await expectStaticHero(page);
+      await page.locator("html").evaluate((html) => html.classList.remove("no-motion"));
+      await expectNativeHero(page);
     }
+  });
+
+  for (const enlarged of [false, true]) test(`native CSS range follows the actual ${enlarged ? "200% text-reflow tall" : "normal"} mast height`, async ({ page }, testInfo) => {
+    await openHome(page);
+    const mast = page.locator(".home-mast");
+    await expect(mast).not.toHaveAttribute("data-text-reflow");
+    if (enlarged) {
+      const sizes = await page.evaluate(() => {
+        const entries = [...document.querySelectorAll(".navbar, .navbar *, .home-banner-section, .home-banner-section *")]
+          .filter((element) => element instanceof HTMLElement)
+          .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
+        for (const { element, size } of entries) element.style.setProperty("font-size", `${size * 2}px`, "important");
+        return entries.map(({ element, size }) => ({
+          element: `${element.tagName}.${element.className}`, before: size,
+          after: parseFloat(getComputedStyle(element).fontSize),
+        }));
+      });
+      expect(sizes.length).toBeGreaterThan(10);
+      for (const entry of sizes) expect(entry.after, entry.element).toBeCloseTo(entry.before * 2, 2);
+      await testInfo.attach("native-range-real-text-resize", { body: JSON.stringify(sizes, null, 2), contentType: "application/json" });
+      await expect(mast).toHaveAttribute("data-text-reflow", "");
+    }
+    const initial = await expectNativeHero(page);
+    if (enlarged) expect(initial.height).toBeGreaterThan(initial.viewportHeight + 100);
+    else expect(initial.height).toBeLessThan(initial.viewportHeight);
+    const positions = [];
+    for (const fraction of [0.25, 0.5, 0.9, 1, 0]) {
+      const state = await scrollMastTo(page, fraction);
+      expect(state.progress).toBeCloseTo(fraction, 2);
+      expectStillContent(initial.content, state.content);
+      positions.push({ requested: fraction, height: state.height, top: state.mastTop, actual: state.progress, y: state.root.y });
+    }
+    await testInfo.attach("native-range-geometry", { body: JSON.stringify(positions, null, 2), contentType: "application/json" });
+  });
+
+  test("unsupported view-timeline enhancement keeps the header static and the native CTA usable", async ({ page }) => {
+    // Make this one CSS feature query false rather than disabling JavaScript or
+    // replacing the animation itself: the authored progressive fallback must win.
+    await page.route("**/assets/css/responsive.*.css", async (route) => {
+      const response = await route.fetch();
+      const css = await response.text();
+      const featureQuery = "@supports (view-timeline-name: --home-mast-scroll) and";
+      expect(css.split(featureQuery)).toHaveLength(2);
+      await route.fulfill({ response, body: css.replace(featureQuery, "@supports (codex-unsupported-scroll-timeline: unavailable) and") });
+    });
+    await openHome(page);
+    expect(await page.evaluate(() => CSS.supports("codex-unsupported-scroll-timeline: unavailable"))).toBe(false);
+    await swipeHeader(page, 400);
+    await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(300);
+    await expectStaticHero(page);
+    await page.locator(".hero-work-link").tap();
+    await expect(page).toHaveURL(/\/works$/);
   });
 });
 
@@ -339,19 +450,31 @@ for (const fallback of [
 ]) test.describe("mobile header fallback: " + fallback.name, () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     javaScriptEnabled: fallback.javaScriptEnabled !== false });
-  test("keeps the decorative layers static and the native CTA usable", async ({ page }) => {
+  test(fallback.reducedMotion ? "keeps the decorative layers static and the native CTA usable" : "keeps native CSS motion and the native CTA usable without GSAP", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: fallback.reducedMotion || "no-preference" });
     expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(fallback.reducedMotion === "reduce");
     if (fallback.blockGsap) await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
     await page.goto("/", { waitUntil: "load" });
+    await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
     await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
     if (fallback.javaScriptEnabled !== false) {
       await expect.poll(() => page.evaluate(() => window.PortfolioMedia?.isReduced())).toBe(fallback.reducedMotion === "reduce");
     }
     if (fallback.reducedMotion === "reduce") await expect(page.locator("html")).toHaveClass(/no-motion/);
-    const { height } = await heroState(page);
-    await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.5), height);
-    await expectStaticHero(page);
+    const scripting = { javaScriptEnabled: fallback.javaScriptEnabled !== false };
+    const start = await heroState(page);
+    // Without navigation JavaScript, the expanded native menu precedes the
+    // mast. Include that document offset so the same visible depth is reached.
+    const distance = scripting.javaScriptEnabled ? 400 :
+      Math.min(600, Math.round(Math.max(0, start.mastTop) + start.height * 0.55));
+    await swipeHeader(page, distance, scripting);
+    await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(300);
+    if (fallback.reducedMotion) await expectStaticHero(page);
+    else {
+      expect(await page.evaluate(() => typeof window.gsap)).toBe("undefined");
+      const state = await expectNativeHero(page, scripting);
+      expect(state.root.y).toBeLessThan(-15);
+    }
     await page.locator(".hero-work-link").tap();
     await expect(page).toHaveURL(/\/works$/);
   });
