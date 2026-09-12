@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: "no-preference" });
+test.use({ viewport: { width: 1440, height: 900 } });
 
 test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.addInitScript(() => {
     localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({
       version: 1, decision: "rejected", timestamp: Date.now(),
@@ -93,6 +94,43 @@ async function hoverRight(page) {
   const mast = await page.locator(".home-mast").boundingBox();
   await page.mouse.move(mast.x + mast.width * 0.96, Math.min(500, mast.y + mast.height * 0.55));
   await expect.poll(() => heroState(page).then((state) => state.pointer[1].x)).toBeGreaterThan(19);
+}
+
+async function swipeHeader(page, distance) {
+  await page.evaluate(() => {
+    window.__heroTouchEvents = [];
+    for (const type of ["touchstart", "touchmove", "touchend", "touchcancel", "pointercancel"]) {
+      document.addEventListener(type, (event) => {
+        window.__heroTouchEvents.push({ type, trusted: event.isTrusted });
+      }, { capture: true, passive: true });
+    }
+  });
+  const viewport = page.viewportSize();
+  const x = Math.min(300, viewport.width * 0.5);
+  const y = Math.min(680, viewport.height - 40);
+  const session = await page.context().newCDPSession(page);
+  try {
+    // Dispatch actual touch input: DOM-dispatched TouchEvents have no native
+    // scroll action, and the experimental gesture synthesizer was inert in CI.
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchStart", touchPoints: [{ x, y, id: 1 }],
+    });
+    for (let step = 1; step <= 24; step += 1) {
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchMove", touchPoints: [{ x, y: y - distance * step / 24, id: 1 }],
+      });
+      await page.waitForTimeout(24);
+    }
+    // Stop the finger before lifting so momentum cannot carry the mast offscreen.
+    await page.waitForTimeout(160);
+    await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+  } finally {
+    await session.detach();
+  }
+  const events = await page.evaluate(() => window.__heroTouchEvents);
+  for (const type of ["touchstart", "touchmove", "touchend"]) {
+    expect(events.some((event) => event.type === type && event.trusted), type + " must reach the page as browser input").toBe(true);
+  }
 }
 
 test("desktop hero responds visibly to hover and scroll without moving its content", async ({ page }) => {
@@ -187,13 +225,8 @@ for (const width of [390, 1440]) test.describe(width + " touch header", () => {
     await openHome(page);
     expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
     const start = await heroState(page);
-    const session = await page.context().newCDPSession(page);
     // A real browser touch gesture must scroll the document without being captured.
-    await session.send("Input.synthesizeScrollGesture", {
-      x: Math.min(300, width * 0.5), y: 680, yDistance: -Math.round(start.height * 0.55),
-      gestureSourceType: "touch", preventFling: true, speed: 900,
-    });
-    await session.detach();
+    await swipeHeader(page, Math.round(start.height * 0.55));
     await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(start.height * 0.35);
     await expect.poll(() => heroState(page).then((state) => state.scrollPixels[1])).toBeLessThan(-15);
     await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
@@ -212,6 +245,9 @@ for (const width of [390, 1440]) test.describe(width + " touch header", () => {
     await page.waitForTimeout(100);
     for (const offset of (await heroState(page)).pointer) expect(offset).toEqual({ x: 0, y: 0 });
     await page.evaluate((height) => window.scrollTo(0, height * 0.9), start.height);
+    // A settled previous pose also has zero active tweens. First observe the
+    // newly requested native-scroll response, then wait for that response to rest.
+    await expect.poll(() => heroState(page).then((state) => state.scrollPixels[1])).toBeLessThan(-35);
     await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
     const nearEnd = await heroState(page);
     expect(nearEnd.scrollPixels[0]).toBeGreaterThanOrEqual(-28.1);
@@ -262,11 +298,17 @@ for (const fallback of [
   { name: "no JavaScript", javaScriptEnabled: false },
 ]) test.describe("mobile header fallback: " + fallback.name, () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
-    reducedMotion: fallback.reducedMotion || "no-preference", javaScriptEnabled: fallback.javaScriptEnabled !== false });
+    javaScriptEnabled: fallback.javaScriptEnabled !== false });
   test("keeps the decorative layers static and the native CTA usable", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: fallback.reducedMotion || "no-preference" });
+    expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(fallback.reducedMotion === "reduce");
     if (fallback.blockGsap) await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
     await page.goto("/", { waitUntil: "load" });
     await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
+    if (fallback.javaScriptEnabled !== false) {
+      await expect.poll(() => page.evaluate(() => window.PortfolioMedia?.isReduced())).toBe(fallback.reducedMotion === "reduce");
+    }
+    if (fallback.reducedMotion === "reduce") await expect(page.locator("html")).toHaveClass(/no-motion/);
     const { height } = await heroState(page);
     await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.5), height);
     await expectStaticHero(page);

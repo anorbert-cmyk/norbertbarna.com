@@ -443,12 +443,13 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
 }
 
 test.describe("portable header contrast", () => {
-  test.use({ hasTouch: true, isMobile: true, reducedMotion: "no-preference" });
+  test.use({ hasTouch: true, isMobile: true });
   for (const width of [320, 390, 768, 991, 1440]) {
     test(`${width}: native-scroll middle and end states preserve text AA`, async ({ page }, testInfo) => {
       // Sample two complete rendered states, including every employer label.
       test.setTimeout(90_000);
       await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
       await page.route(/posthog\.com/, (route) => route.abort());
       const snapshots = [];
       const readState = () => page.evaluate(() => {
@@ -467,6 +468,7 @@ test.describe("portable header contrast", () => {
       for (const progress of [0.5, 0.95]) {
         await openStable(page, "/");
         expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
+        expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: no-preference)").matches)).toBe(true);
         await expect.poll(() => page.evaluate(() => window.ScrollTrigger?.getAll()
           .filter((entry) => entry.trigger === document.querySelector(".home-mast")).length)).toBe(1);
         await page.evaluate((target) => {
