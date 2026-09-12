@@ -2008,9 +2008,10 @@ test("1440 home header: reference composition, truthful proof and text navigatio
   expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
 });
 
-test("1280 first-visit fold keeps five employers above the consent banner", async ({ page }) => {
+for (const width of [992, 1280]) {
+test(`${width} first-visit fold keeps employers and primary action above the consent banner`, async ({ page }) => {
   await page.addInitScript(() => localStorage.removeItem("bn-analytics-consent-v1"));
-  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.setViewportSize({ width, height: 720 });
   await openStable(page, "/");
   await page.waitForSelector("#portfolio-consent, [data-consent-banner]", { state: "visible", timeout: 5000 }).catch(() => {});
   const fold = await page.evaluate(() => {
@@ -2025,15 +2026,17 @@ test("1280 first-visit fold keeps five employers above the consent banner", asyn
         covered: Boolean(bannerBox && box.bottom > bannerBox.top + 2),
       };
     });
-    return { items, bannerTop: bannerBox ? bannerBox.top : null };
+    return { items, bannerTop: bannerBox ? bannerBox.top : null, ctaBottom: document.querySelector(".hero-work-link").getBoundingClientRect().bottom };
   });
   expect(fold.items.map((item) => item.name)).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  expect(fold.ctaBottom + 8, "primary action and focus outline must remain above consent").toBeLessThanOrEqual(fold.bannerTop ?? 720);
   for (const item of fold.items) {
     expect(item.covered, `${item.name} must stay above the consent banner`).toBe(false);
     expect(item.top).toBeGreaterThanOrEqual(0);
     expect(item.bottom).toBeLessThanOrEqual(720);
   }
 });
+}
 
 test("1440 home mast and text navigation meet WCAG AA on their live backgrounds", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });

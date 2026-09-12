@@ -3246,6 +3246,34 @@ html.no-motion .home-mast-navy-drift {
   }
 }
 
+/* Short laptops keep the primary action and the employer rail above consent. */
+@media (min-width: 992px) and (max-height: 780px) {
+  .home-mast .home-banner-section {
+    padding-top: 32px;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-subtitle {
+    font-size: 20px;
+  }
+
+  .home-mast-proof-chips {
+    margin-top: 24px;
+  }
+
+  .home-mast .hero-work-link {
+    min-height: 48px;
+    margin-top: 24px;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-area > .home-banner-content-wrap {
+    margin-top: 164px;
+  }
+
+  .home-mast:not([data-text-reflow]) .home-banner-outcomes {
+    gap: 14px;
+  }
+}
+
 @media (max-width: 991px) {
   body.home .navbar .home-nav-label {
     display: inline;

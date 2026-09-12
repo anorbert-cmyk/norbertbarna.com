@@ -353,7 +353,9 @@ headings may break within a word only when needed to avoid clipping. The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
 Keep desktop highlights below the pale/navy transition (230–278px top offset),
-without a boxed background. The Kineticare video scrim is owned by the shared
+without a boxed background. On short desktops (height ≤780px), reduce the
+opening spacing and rail offset to 164px so the primary action and all employers
+remain above the first-visit consent banner at 720px height. The Kineticare video scrim is owned by the shared
 stylesheet, including its mobile direction; it must preserve white-text AA
 even against a synthetic all-white frame, not only a sampled poster.
 Enlarged or user-spaced desktop mast text switches to the existing compact,
