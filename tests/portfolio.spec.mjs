@@ -435,6 +435,37 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
   });
 }
 
+test("home subtitle uses the reference break only on normal desktop text", async ({ page }) => {
+  for (const mode of [
+    { width: 1280, spacing: false, display: "inline" },
+    { width: 390, spacing: false, display: "none" },
+    { width: 1280, spacing: true, display: "none" },
+  ]) {
+    await page.setViewportSize({ width: mode.width, height: 900 });
+    await openStable(page, "/");
+    const mast = page.locator(".home-mast");
+    const subtitle = mast.locator(".home-banner-subtitle");
+    await expect(mast).not.toHaveAttribute("data-text-reflow");
+    let spacingStyle;
+    if (mode.spacing) {
+      spacingStyle = await page.addStyleTag({ content: "* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-block-end: 2em !important; }" });
+      await expect(mast).toHaveAttribute("data-text-reflow", "");
+    }
+    await expect(subtitle.locator("br")).toHaveCount(1);
+    await expect(subtitle.locator("br")).toHaveCSS("display", mode.display);
+    expect(await subtitle.textContent(), "hiding the break must not join the two words").toMatch(/Web3,\s+regulated/);
+    expect(await subtitle.innerText()).toMatch(mode.display === "none" ? /Web3, +regulated/ : /Web3,\n\s*regulated/);
+    if (spacingStyle) {
+      await spacingStyle.evaluate((style) => style.remove());
+      await expect(mast).not.toHaveAttribute("data-text-reflow");
+      await expect(subtitle.locator("br")).toHaveCSS("display", "inline");
+      // Applying and removing user spacing intentionally changes line wrapping.
+      await page.waitForTimeout(100);
+      await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
+    }
+  }
+});
+
 for (const resize of [
   { name: "compact to desktop", start: { width: 390, height: 844 }, wide: { width: 1280, height: 853 } },
   { name: "short to tall desktop", start: { width: 1280, height: 720 }, wide: { width: 1280, height: 853 } },
