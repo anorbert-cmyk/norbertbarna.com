@@ -35,6 +35,15 @@ to the selected project without adding a background wash or covering its UI.
 The first touch follows the native link. Reduced motion and missing JavaScript
 or GSAP produce static readable rows. No new dependencies are needed.
 
+The home mast also responds to native scrolling on compact and touch screens.
+Its two navy layers rise by at most 28px / 44px in screen coordinates, with a
+0.48s ease. SVG scale normalization makes the depth consistent on narrow phones
+and wide touch screens. The upward direction retains the dark background behind
+light employer labels. Text, navigation, grain and link targets stay still;
+there are no touch handlers, scroll capture or idle loops. The existing scoped
+controller pauses offscreen, cleans up on responsive changes and returns to the
+static mast for reduced motion or unavailable JavaScript/GSAP.
+
 ## Findings and acceptance evidence
 
 An initial axe contrast scan across 13 content routes plus 404 at mobile and
@@ -60,5 +69,11 @@ backgrounds from rendered pixels, and checks inherited smoothing where the
 browser supports it. Dedicated regressions exercise the faded sector labels,
 an all-white video frame, pointer/focus/touch list states, bounded transforms,
 first-tap navigation and cleanup after resize or a motion-preference change.
+Header regressions exercise actual touch scrolling, stable text geometry and
+grain, bounded screen-pixel depth, offscreen pause and repeated mode changes.
+At 320, 390, 768, 991 and 1440px with coarse input, rendered-background sampling
+checks every visible mast text at native-scroll middle and near-end positions.
+The tests preserve each observed painted pose while bringing text into view,
+so sampling cannot accidentally reset the animation to its resting state.
 Provider CI, independent review and the live deployment canary supply the
 release evidence; a local screenshot alone is not a release check.

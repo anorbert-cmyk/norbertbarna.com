@@ -442,6 +442,70 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
   });
 }
 
+test.describe("portable header contrast", () => {
+  test.use({ hasTouch: true, isMobile: true });
+  for (const width of [320, 390, 768, 991, 1440]) {
+    test(`${width}: native-scroll middle and end states preserve text AA`, async ({ page }, testInfo) => {
+      // Sample two complete rendered states, including every employer label.
+      test.setTimeout(90_000);
+      await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.route(/posthog\.com/, (route) => route.abort());
+      const snapshots = [];
+      const readState = () => page.evaluate(() => {
+        const mast = document.querySelector(".home-mast");
+        const trigger = ScrollTrigger.getAll().find((entry) => entry.trigger === mast);
+        const scaleMatrix = mast.querySelector(".home-mast-art").getScreenCTM();
+        const scale = Math.hypot(scaleMatrix.c, scaleMatrix.d);
+        const transforms = [...mast.querySelectorAll(".home-mast-navy-drift")]
+          .map((element) => getComputedStyle(element).transform);
+        return {
+          progress: trigger.progress,
+          transforms,
+          pixels: transforms.map((transform) => new DOMMatrixReadOnly(transform === "none" ? undefined : transform).f * scale),
+        };
+      });
+      for (const progress of [0.5, 0.95]) {
+        await openStable(page, "/");
+        expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
+        expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: no-preference)").matches)).toBe(true);
+        await expect.poll(() => page.evaluate(() => window.ScrollTrigger?.getAll()
+          .filter((entry) => entry.trigger === document.querySelector(".home-mast")).length)).toBe(1);
+        await page.evaluate((target) => {
+          const trigger = ScrollTrigger.getAll().find((entry) => entry.trigger === document.querySelector(".home-mast"));
+          window.scrollTo(0, trigger.start + (trigger.end - trigger.start) * target);
+        }, progress);
+        await expect(async () => {
+          const state = await readState();
+          expect(state.progress).toBeCloseTo(progress, 2);
+          for (const [index, cap] of [-28, -44].entries()) {
+            expect(Math.abs(state.pixels[index] - cap * state.progress)).toBeLessThan(0.15);
+          }
+        }).toPass();
+        const settled = await readState();
+        snapshots.push(settled);
+        // Capture the actual scroll-produced paint before bringing text back
+        // into view. Otherwise the contrast helper's native scroll would reset
+        // the mast and silently measure only the resting background.
+        await page.addStyleTag({ content: `
+          .home-mast-navy-back .home-mast-navy-drift { transform: ${settled.transforms[0]} !important; }
+          .home-mast-navy-front .home-mast-navy-drift { transform: ${settled.transforms[1]} !important; }
+        ` });
+        await page.evaluate(() => window.scrollTo(0, 0));
+        const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li, .home-mast a.hero-work-link");
+        await expect(text).toHaveCount(12);
+        for (let index = 0; index < await text.count(); index += 1) {
+          if (await text.nth(index).isVisible()) {
+            await expectHeaderTextAA(page, text.nth(index), `${width} touch, scroll ${progress}, text ${index + 1}`, { raster: true });
+          }
+        }
+        expect((await readState()).transforms, "the sampled background must retain its actual scrolled pose").toEqual(settled.transforms);
+      }
+      await testInfo.attach("portable-header-rendered-scroll-states", { body: JSON.stringify(snapshots, null, 2), contentType: "application/json" });
+    });
+  }
+});
+
 test("home subtitle uses the reference break only on normal desktop text", async ({ page }) => {
   for (const mode of [
     { width: 1280, spacing: false, display: "inline" },

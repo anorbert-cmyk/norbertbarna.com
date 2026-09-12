@@ -653,12 +653,19 @@ On desktop fine pointers, GSAP `quickTo()` caps pointer drift at 24px horizontal
 and 18px vertically. Two separate inner groups translate with native scroll
 (up to 34px / 56px vertically). These are user-requested, visible responses to
 hover and scroll; no idle loop. The broad right-hand arc retains the reference
-lavender/blue material and static analog pattern while its nearer edge stays defined. Navigation, grain,
+gray/blue material and static analog pattern while its nearer edge stays defined. Navigation, grain,
 copy, proof chips, CTA and experience rail stay still. Its controller is scoped
-to the existing desktop `gsap.matchMedia()` context, pauses offscreen, cleans up
+to the existing responsive `gsap.matchMedia()` contexts, pauses offscreen, cleans up
 on breakpoint changes, and shares no state with the footer controller.
-`prefers-reduced-motion: reduce`, touch/coarse input, unavailable GSAP and compact
-layouts use the static wash. No dunes, no header Motion control, no rotation circus.
+Compact layouts and touch/coarse input use the same scoped controller with
+native scroll only: the back and front navy layers move upward by at most
+28px / 44px in actual screen pixels, eased over 0.48s. Normalize these distances
+by the SVG's current screen scale, including wide touch screens. This direction
+preserves navy behind the light employer labels; verify text AA at middle and
+near-end scroll positions. Portable mode adds no pointer handlers or touch
+capture. It pauses offscreen and cleans up when changing responsive modes.
+`prefers-reduced-motion: reduce`, unavailable GSAP and no JavaScript use the
+static wash. No dunes, no header Motion control, no rotation circus.
 
 ### Selected-work motion and experience clarity
 
