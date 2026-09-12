@@ -115,12 +115,17 @@ test("hero controller cleans up and resumes across repeated reduced-motion and b
 
     if (mode === "reduce") await page.emulateMedia({ reducedMotion: "reduce" });
     else await page.setViewportSize({ width: 991, height: 900 });
-    await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(0);
-    const stopped = await heroState(page);
-    expect(stopped.tweens, "the old controller retains no animated SVG targets").toBe(0);
-    for (const offset of stopped.pointer.concat(stopped.scroll)) {
-      expect(Math.hypot(offset.x, offset.y), `${mode} clears all decorative transforms`).toBeLessThan(0.05);
-    }
+    // SVG computed styles can settle one frame after the JS registry is cleared.
+    // Wait for the complete rendered cleanup, keeping every teardown assertion.
+    let stopped;
+    await expect(async () => {
+      stopped = await heroState(page);
+      expect(stopped.triggers).toBe(0);
+      expect(stopped.tweens, "the old controller retains no animated SVG targets").toBe(0);
+      for (const offset of stopped.pointer.concat(stopped.scroll)) {
+        expect(Math.hypot(offset.x, offset.y), `${mode} clears all decorative transforms`).toBeLessThan(0.05);
+      }
+    }).toPass({ timeout: 2000 });
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.mouse.move(900, 200);
     await page.waitForTimeout(100);
