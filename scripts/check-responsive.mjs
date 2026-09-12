@@ -396,14 +396,14 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("stopFooterMeshField()")) {
   fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
 }
-if (!animationJs.includes("function addHomeMastField(signal)") ||
-    !animationJs.includes('gsap.quickTo(back, "x"') ||
-    !animationJs.includes('gsap.quickTo(front, "x"') ||
+if (!animationJs.includes("function addHomeMastField(") ||
+    !animationJs.includes('gsap.quickTo(layer.el, "x"') ||
+    !animationJs.includes('gsap.quickTo(layer.el, "y"') ||
     !animationJs.includes("new IntersectionObserver") ||
     !animationJs.includes("removeHomeMastField")) {
   fail("home mast motion must use an independently scoped, offscreen-paused GSAP controller");
 }
-const mastFieldStart = animationJs.indexOf("function addHomeMastField(signal)");
+const mastFieldStart = animationJs.indexOf("function addHomeMastField(");
 const mastFieldEnd = animationJs.indexOf("function createCaseRail()", mastFieldStart);
 const mastField = animationJs.slice(mastFieldStart, mastFieldEnd);
 if (/rotate(?:X|Y|Z)?\s*:|rotation(?:X|Y|Z)?\s*:/.test(mastField) ||
