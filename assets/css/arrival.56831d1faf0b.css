@@ -1,0 +1,147 @@
+/* Original sliced-letter motion, inspired by KODE's typographic arrival. */
+.site-arrival {
+  --arrival-fidelity: 1;
+  --arrival-word-size: 6.25vw;
+  --arrival-progress: 0;
+  --arrival-assembly-duration: 3666.667ms;
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #0A1628;
+  color: #D6D4ED;
+  pointer-events: none;
+  animation: none;
+  clip-path: inset(0 0 0 0);
+}
+.site-arrival__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.site-arrival__wordmark {
+  display: flex;
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  color: inherit;
+  font-family: Inter, sans-serif;
+  font-size: var(--arrival-word-size);
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -.065em;
+  line-height: .9;
+  white-space: nowrap;
+}
+.site-arrival__letter {
+  position: relative;
+  display: block;
+  flex: none;
+}
+.site-arrival__measure { visibility: hidden; }
+.site-arrival__slice {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  animation-duration: calc(var(--arrival-assembly-duration) - var(--letter-index) * 18ms);
+  animation-delay: calc(var(--letter-index) * 18ms);
+  animation-timing-function: cubic-bezier(.65, 0, .2, 1);
+  animation-fill-mode: both;
+}
+.site-arrival__slice--upper {
+  clip-path: inset(0 0 47% 0);
+  animation-name: arrival-letter-upper;
+}
+.site-arrival__slice--lower {
+  clip-path: inset(50% 0 0 0);
+  animation-name: arrival-letter-lower;
+}
+.site-arrival__meter {
+  position: absolute;
+  top: 14px;
+  left: 22px;
+  width: calc(100% - 44px);
+  height: 24px;
+  color: #D6D4ED;
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+  line-height: 24px;
+}
+.site-arrival__counter {
+  position: absolute;
+  left: calc(var(--arrival-progress) * (100% - 3ch));
+  width: 3ch;
+  text-align: center;
+  transition: left 180ms ease-out;
+}
+.site-arrival__enter {
+  position: absolute;
+  top: calc(100% + 24px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  width: max-content;
+  min-width: 110px;
+  min-height: 44px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 12px 14px;
+  background: transparent;
+  color: #D6D4ED;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .035em;
+  line-height: 20px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.site-arrival__enter[hidden] { display: none; }
+.site-arrival__enter:hover { color: #BDB414; }
+.site-arrival__enter:focus-visible { outline: 2px solid #D6D4ED; outline-offset: 4px; }
+.site-arrival__enter:disabled { pointer-events: none; }
+.site-arrival__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+@keyframes arrival-letter-upper {
+  0%, 10% { opacity: 0; transform: translate3d(var(--slice-x), var(--slice-y), 0) skewX(-18deg) scaleX(.25); }
+  30% { opacity: 1; transform: translate3d(calc(var(--slice-x) * -.5), .26em, 0) skewX(12deg) scaleX(.7); }
+  57% { transform: translate3d(.04em, -.15em, 0) skewX(-8deg) scaleX(1.08); }
+  78% { transform: translate3d(-.015em, .035em, 0) skewX(2deg) scaleX(.99); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) skewX(0) scaleX(1); }
+}
+@keyframes arrival-letter-lower {
+  0%, 16% { opacity: 0; transform: translate3d(calc(var(--slice-x) * -1), calc(var(--slice-y) * -1), 0) skewX(18deg) scaleX(.3); }
+  36% { opacity: 1; transform: translate3d(var(--slice-x), -.3em, 0) skewX(-14deg) scaleX(.75); }
+  64% { transform: translate3d(-.04em, .12em, 0) skewX(6deg) scaleX(1.05); }
+  84% { transform: translate3d(.015em, -.025em, 0) skewX(-2deg) scaleX(.995); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) skewX(0) scaleX(1); }
+}
+@media (max-width: 767px) {
+  .site-arrival { --arrival-word-size: 11.2vw; }
+  .site-arrival__meter { top: 14px; }
+  .site-arrival__enter { font-size: 13px; }
+}
+html.no-motion .site-arrival { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .site-arrival { display: none; }
+  .site-arrival__slice { animation: none; }
+}

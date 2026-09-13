@@ -390,9 +390,15 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("stopFooterMeshField()")) {
   fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
 }
-if (!/view-timeline(?:-name)?:\s*--home-fold-scroll/.test(responsiveCss) ||
-    !responsiveCss.includes("animation-timeline: --home-fold-scroll")) {
-  fail("home decorative scroll should progressively enhance native scrolling");
+const sceneJs = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
+const journeyJs = readFileSync(join(ROOT, "assets/js/immersive-navigation.js"), "utf8");
+if (!sceneJs.includes("PortfolioHeroScene") || !sceneJs.includes("webglcontextlost") ||
+    !sceneJs.includes('listeners.abort()') || !sceneJs.includes("portfolio:arrivalstart")) {
+  fail("hero scene must coordinate the arrival and retain context-loss and lifecycle cleanup");
+}
+if (!journeyJs.includes("scrollY / limit") || !journeyJs.includes("prefers-reduced-motion") ||
+    /preventDefault\(/.test(journeyJs)) {
+  fail("header journey must reflect native page progress while preserving native scroll and motion preferences");
 }
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");

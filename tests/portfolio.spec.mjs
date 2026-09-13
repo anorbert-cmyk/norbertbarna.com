@@ -41,7 +41,7 @@ test.beforeEach(async ({ page }) => {
   });
   await page.addInitScript(() => {
     // Visual and accessibility tests use a returning visitor; arrival has its own fresh-session suite.
-    sessionStorage.setItem("nb-arrival-seen-v1", "1");
+    sessionStorage.setItem("nb-arrival-seen-v2", "1");
     localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
     window.__cumulativeLayoutShift = 0;
     new PerformanceObserver((list) => {
@@ -350,16 +350,18 @@ async function expectHeaderTextAA(page, locator, label, { raster = false } = {})
         .map(({ left, right, top, bottom }) => ({ left, right, top, bottom }));
       if (!rects.length) continue;
       let opacity = 1;
+      let blend = "normal";
       const backgrounds = [];
       for (let parent = node.parentElement; parent; parent = parent.parentElement) {
         const parentStyle = getComputedStyle(parent);
         opacity *= Number(parentStyle.opacity);
+        if (parentStyle.mixBlendMode !== "normal") blend = parentStyle.mixBlendMode;
         backgrounds.push({ color: parentStyle.backgroundColor, image: parentStyle.backgroundImage });
       }
       result.push({
         text: node.textContent.replace(/\s+/g, " ").trim(), color: style.color,
         size: parseFloat(style.fontSize), weight: parseInt(style.fontWeight, 10),
-        opacity, backgrounds, rects,
+        opacity, blend, backgrounds, rects,
       });
     }
     return result;
@@ -376,13 +378,17 @@ async function expectHeaderTextAA(page, locator, label, { raster = false } = {})
     b: foreground.b * alpha + background.b * (1 - alpha),
   });
   for (const run of runs) {
+    expect(["normal", "difference"], `${label}: the checker must understand the actual blend mode`).toContain(run.blend);
     const color = parseCssColor(run.color);
     const alpha = color.a * run.opacity;
     const required = run.size >= 24 || (run.size >= 18.6667 && run.weight >= 700) ? 3 : 4.5;
     let worst = Infinity;
     let measured = 0;
     const compare = (background) => {
-      worst = Math.min(worst, contrastRatio(colorLuminance(mix(color, background, alpha)), colorLuminance(background)));
+      const painted = run.blend === "difference" ? {
+        r: Math.abs(background.r - color.r), g: Math.abs(background.g - color.g), b: Math.abs(background.b - color.b),
+      } : color;
+      worst = Math.min(worst, contrastRatio(colorLuminance(mix(painted, background, alpha)), colorLuminance(background)));
       measured += 1;
     };
     if (sample) {
@@ -414,6 +420,31 @@ async function expectHeaderTextAA(page, locator, label, { raster = false } = {})
   }
 }
 
+async function expectBreadcrumbSeparatorAA(page, label) {
+  const separator = page.locator(".nav-breadcrumb li + li");
+  const state = await separator.evaluate((element) => ({
+    color: getComputedStyle(element, "::before").color,
+    content: getComputedStyle(element, "::before").content,
+    blend: getComputedStyle(element.closest(".navbar")).mixBlendMode,
+  }));
+  expect(state.content).toBe('"/"');
+  expect(["normal", "difference"]).toContain(state.blend);
+  const hiding = await page.addStyleTag({ content: ".nav-breadcrumb li + li::before { color: transparent !important; }" });
+  const sample = await sampleBehindGlyphs(page, separator, { includePixels: true });
+  await hiding.evaluate((element) => element.remove());
+  const ink = parseCssColor(state.color);
+  let worst = Infinity;
+  for (let index = 0; index < sample.png.pixels.length; index += 4) {
+    const background = { r: sample.png.pixels[index], g: sample.png.pixels[index + 1], b: sample.png.pixels[index + 2] };
+    const foreground = Object.fromEntries(["r", "g", "b"].map((channel) => {
+      const painted = state.blend === "difference" ? Math.abs(background[channel] - ink[channel]) : ink[channel];
+      return [channel, painted * ink.a + background[channel] * (1 - ink.a)];
+    }));
+    worst = Math.min(worst, contrastRatio(colorLuminance(foreground), colorLuminance(background)));
+  }
+  expect(worst, `${label}: visible breadcrumb separator must meet AA on its actual blended field`).toBeGreaterThanOrEqual(4.5);
+}
+
 for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
   test(`${width} home: every header text meets AA on its worst relevant background`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -443,61 +474,20 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
   });
 }
 
-test.describe("portable header contrast", () => {
+test.describe("native intro contrast", () => {
   test.use({ hasTouch: true, isMobile: true });
   for (const width of [320, 390, 768, 991, 1440]) {
-    test(`${width}: native-scroll middle and end states preserve text AA`, async ({ page }, testInfo) => {
-      // Sample two complete rendered states, including every employer label.
-      test.setTimeout(90_000);
-      await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
-      await page.emulateMedia({ reducedMotion: "no-preference" });
-      await page.route(/posthog\.com/, (route) => route.abort());
-      const snapshots = [];
-      const readState = () => page.evaluate(() => {
-        const mast = document.querySelector(".home-mast");
-        const rect = mast.getBoundingClientRect();
-        const transform = getComputedStyle(mast.querySelector(".home-mast-art")).transform;
-        return {
-          progress: Math.max(0, Math.min(1, -rect.top / rect.height)),
-          transform,
-          pixels: new DOMMatrixReadOnly(transform === "none" ? undefined : transform).f,
-        };
-      });
-      for (const progress of [0.5, 0.95]) {
-        await openStable(page, "/");
-        expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
-        expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: no-preference)").matches)).toBe(true);
-        await expect(page.locator(".home-mast-art")).toHaveCSS("animation-name", "home-fold-scroll");
-        expect(await page.evaluate(() => window.ScrollTrigger?.getAll()
-          .filter((entry) => entry.trigger === document.querySelector(".home-mast")).length)).toBe(0);
-        await page.evaluate((target) => {
-          const rect = document.querySelector(".home-mast").getBoundingClientRect();
-          window.scrollTo(0, scrollY + rect.top + rect.height * target);
-        }, progress);
-        await expect(async () => {
-          const state = await readState();
-          expect(state.progress).toBeCloseTo(progress, 2);
-          expect(Math.abs(state.pixels), "the sampled scroll pose must differ visibly from rest").toBeGreaterThan(1);
-        }).toPass();
-        const settled = await readState();
-        snapshots.push(settled);
-        // Capture the actual scroll-produced paint before bringing text back
-        // into view. Otherwise the contrast helper's native scroll would reset
-        // the mast and silently measure only the resting background.
-        await page.addStyleTag({ content: `
-          .home-mast-art { transform: ${settled.transform} !important; }
-        ` });
-        await page.evaluate(() => window.scrollTo(0, 0));
-        const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li, .home-mast a.hero-work-link");
-        await expect(text).toHaveCount(12);
-        for (let index = 0; index < await text.count(); index += 1) {
-          if (await text.nth(index).isVisible()) {
-            await expectHeaderTextAA(page, text.nth(index), `${width} touch, scroll ${progress}, text ${index + 1}`, { raster: true });
-          }
-        }
-        expect((await readState()).transform, "the sampled background must retain its actual scrolled pose").toEqual(settled.transform);
+    test(`${width}: scrolled introduction preserves every proof and text AA`, async ({ page }) => {
+      test.setTimeout(90000);
+      await page.setViewportSize({ width, height: 900 });
+      await openStable(page, "/");
+      await page.locator(".home-mast-intro").scrollIntoViewIfNeeded();
+      await page.mouse.wheel(0, 180);
+      const text = page.locator(".home-mast-intro .hero-kicker, .home-mast-intro .home-banner-subtitle, .home-mast-intro .metric-context, .home-mast-proof-chips li, .home-banner-outcomes li, .home-intro-work");
+      await expect(text).toHaveCount(11);
+      for (let index = 0; index < await text.count(); index += 1) {
+        await expectHeaderTextAA(page, text.nth(index), `${width} scrolled intro text ${index}`, { raster: true });
       }
-      await testInfo.attach("portable-header-rendered-scroll-states", { body: JSON.stringify(snapshots, null, 2), contentType: "application/json" });
     });
   }
 });
@@ -683,15 +673,25 @@ for (const route of contentRoutes.filter((route) => route !== "/")) {
       await openStable(page, route);
       const isCase = route.startsWith("/work/");
       if (isCase) {
-        const separator = await page.locator(".nav-breadcrumb li + li").evaluate((element) => ({
-          color: getComputedStyle(element, "::before").color,
-          background: getComputedStyle(element.closest(".navbar")).backgroundColor,
-        }));
-        const foreground = parseCssColor(separator.color);
-        const background = parseCssColor(separator.background);
-        expect(background.a, "breadcrumb is on an opaque navigation field").toBe(1);
-        const painted = ["r", "g", "b"].map((channel) => foreground[channel] * foreground.a + background[channel] * (1 - foreground.a));
-        expect.soft(contrastRatio(relativeLuminance(...painted), colorLuminance(background)), `${width} ${route} breadcrumb separator text contrast`).toBeGreaterThanOrEqual(4.5);
+        await page.evaluate(() => window.PortfolioCaseOpening.finish());
+        await expect(page.locator(".case-study-header .banner-section")).toHaveCSS("background-color", "rgb(214, 212, 237)");
+        const stage = await page.locator(".case-study-header").boundingBox();
+        const facts = await page.locator(".case-facts-section").boundingBox();
+        expect(stage.height, "the original product has a complete viewport opening").toBeGreaterThanOrEqual(899);
+        expect(facts.y, "the four factual keys follow the opening stage").toBeGreaterThanOrEqual(stage.y + stage.height - 1);
+        const breadcrumb = page.locator(".nav-breadcrumb");
+        if (width >= 992) {
+          await expect(breadcrumb).toBeVisible();
+          await expectHeaderTextAA(page, breadcrumb, `${width} ${route} breadcrumb text`, { raster: true });
+          await expectBreadcrumbSeparatorAA(page, `${width} ${route}`);
+        } else {
+          await expect(breadcrumb).toBeHidden();
+          await page.locator(".menu-button").click();
+          const works = page.locator('.navbar a.nav-link[href="/works"]');
+          await expect(works).toBeVisible();
+          await expectHeaderTextAA(page, works, `${width} ${route} compact Works destination`, { raster: true });
+          await page.locator(".menu-button").click();
+        }
       }
       const selectors = isCase
         ? ".case-study-header h1, .case-study-header .work-category, .case-study-header .banner-text, .case-facts dt, .case-facts dd"
@@ -711,13 +711,14 @@ for (const route of contentRoutes.filter((route) => route !== "/")) {
   });
 }
 
-test("Kineticare header: overlay protects text against a synthetic white video frame", async ({ page }) => {
+test("Kineticare adapted stage: separate text stays AA against a synthetic white video frame", async ({ page }) => {
   await page.route(/posthog\.com/, (route) => route.abort());
   for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await openStable(page, "/work/kineticare");
+    await page.evaluate(() => window.PortfolioCaseOpening.finish());
     // This is an explicit upper-luminance stress control, not a claim that the
-    // shipped video contains a white frame. Leave the real overlay untouched.
+    // shipped video contains a white frame. Keep the production text layout.
     await page.addStyleTag({ content: ".kineticare-hero-bg{background:#fff!important}.kineticare-hero-bg video{visibility:hidden!important}" });
     const text = page.locator(".case-study-header h1, .case-study-header .work-category, .case-study-header .banner-text");
     await expect(text).toHaveCount(3);
@@ -1096,14 +1097,15 @@ for (const viewport of [viewports[0], viewports[4]]) {
   }
 }
 
-test("Kineticare compact fold: white dek and unclipped facts, no Motion chip", async ({ page }) => {
+test("Kineticare adapted compact stage: navy dek and unclipped facts, no Motion chip", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await openStable(page, "/work/kineticare");
 
   const dekColor = await page.locator(".kineticare-hero .banner-text").evaluate(
     (element) => getComputedStyle(element).color
   );
-  expect(dekColor).toBe("rgb(255, 255, 255)");
+  expect(dekColor).toBe("rgb(10, 22, 40)");
+  await expect(page.locator(".kineticare-hero")).toHaveCSS("background-color", "rgb(214, 212, 237)");
 
   const layout = await page.evaluate(() => {
     const role = document.querySelector(".case-facts dd");
@@ -1166,6 +1168,13 @@ test("Kineticare case header contains exactly one media node and it autoplays", 
   }), { timeout: 15000 }).toMatch(/playing|loading/);
 });
 
+async function alignFooterBottom(page) {
+  // The brand landing follows the footer; keep its original field aligned to
+  // the viewport when sampling footer geometry, palette and pointer motion.
+  await page.locator("footer.footer-section").evaluate((footer) =>
+    footer.scrollIntoView({ block: "end", inline: "nearest", behavior: "instant" }));
+}
+
 function isTransparentFill(color) {
   return /rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)|transparent/.test(color);
 }
@@ -1212,7 +1221,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
   test(`${route}: footer lock — mesh field, outlined Email, Work cases, no form`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openStable(page, route);
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await alignFooterBottom(page);
     const footer = await page.evaluate(() => {
       const root = document.querySelector("footer.footer-section");
       const chrome = root.querySelector(".footer-chrome");
@@ -1444,7 +1453,7 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
 test("1280 home footer: type stays on the pale band, olive bottom, analog grain", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await alignFooterBottom(page);
   await page.waitForTimeout(80);
   const boxes = await page.evaluate(() => {
     const footer = document.querySelector("footer.footer-section").getBoundingClientRect();
@@ -1496,7 +1505,7 @@ test("1280 home footer: type stays on the pale band, olive bottom, analog grain"
 test("1440 home footer: yellow is right-weighted, navy is a left horizon, not a balloon", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await alignFooterBottom(page);
   await page.waitForTimeout(80);
   const footer = await page.evaluate(() => {
     const box = document.querySelector("footer.footer-section").getBoundingClientRect();
@@ -1617,7 +1626,7 @@ test("1440 footer mesh: pointer moves masses a little; type and chrome stay stil
   await page.setViewportSize({ width: 1440, height: 1100 });
   await openStable(page, "/");
   await page.mouse.move(8, 8);
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await alignFooterBottom(page);
   await page.waitForTimeout(80);
 
   const rest = await readFooterMeshMotion(page);
@@ -1652,7 +1661,7 @@ test("reduced-motion keeps the footer mesh static under the pointer", async ({ p
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 1440, height: 1100 });
   await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await alignFooterBottom(page);
   const box = await page.locator("footer.footer-section").boundingBox();
   expect(box).toBeTruthy();
   await page.mouse.move(box.x + box.width * 0.92, box.y + box.height * 0.86);
@@ -1672,7 +1681,7 @@ test("/contact stays unpublished", async ({ request }) => {
 test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await alignFooterBottom(page);
   const stack = await page.evaluate(() => {
     const ident = document.querySelector(".footer-ident").getBoundingClientRect();
     const work = document.querySelector(".footer-nav .footer-col").getBoundingClientRect();
@@ -1716,7 +1725,7 @@ test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top"
 test("390 footer seam guard detects a synthetic full-width hard seam", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await alignFooterBottom(page);
   const seam = await footerSeamClip(page);
   await page.evaluate((y) => {
     // Negative control exists only in this test document, not in site assets.
@@ -2101,182 +2110,46 @@ for (const width of [390, 1440]) test.describe(width + " selected-work touch", (
   });
 });
 
-test("1440 home header: immersive composition, truthful proof and native text navigation", async ({ page }) => {
+test("1440 home header: central artwork, role and native Works action precede truthful proof", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
-  const fold = await page.evaluate(() => {
-    const mast = document.querySelector(".home-mast");
-    const header = document.querySelector(".home-banner-section");
-    const navbar = document.querySelector(".navbar");
-    const email = navbar.querySelector("button.footer-email");
-    const linkedin = navbar.querySelector("a.footer-contact-link");
-    const cta = document.querySelector(".home-banner-section a.hero-work-link[href='/works']");
-    const headerImgs = [...header.querySelectorAll("img")].map((img) => img.getAttribute("src"));
-    const emailStyle = email ? getComputedStyle(email) : null;
-    const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
-    const ctaStyle = cta ? getComputedStyle(cta) : null;
-    const navStyle = getComputedStyle(navbar);
-    return {
-      kicker: document.querySelector(".hero-kicker")?.textContent.trim() || "",
-      h1: document.querySelector(".home-banner-title")?.textContent.trim() || "",
-      sub: document.querySelector(".home-banner-subtitle")?.textContent.trim() || "",
-      cta: cta?.textContent.trim() || "",
-      ctaHref: cta?.getAttribute("href") || "",
-      navItems: [
-        navbar.querySelector(".home-nav-monogram")?.textContent.trim(),
-        navbar.querySelector('a.nav-link[href="/works"]')?.textContent.trim(),
-        linkedin?.textContent.trim(),
-        email?.textContent.trim(),
-      ],
-      proof: [...document.querySelectorAll(".home-mast-proof-chips li")].map((li) => ({
-        claim: li.querySelector("strong")?.textContent.trim() || "",
-        company: li.querySelector("strong + span")?.textContent.trim() || "",
-      })),
-      highlights: [...document.querySelectorAll(".home-banner-outcomes li")].map((li) => li.textContent.trim()),
-      sculpture: Boolean(document.querySelector(".home-mast-sculpture[aria-hidden=\"true\"] .home-mast-art")),
-      dunes: Boolean(document.querySelector(".footer-dunes, .home-mast-dunes")),
-      canvas: Boolean(document.querySelector(".hero-proof, .home-mast img[src*='insights-feed']")),
-      headerImgs,
-      motion: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
-      navBg: navStyle.backgroundColor,
-      navBorder: navStyle.borderBottomWidth,
-      emailHref: email ? email.getAttribute("href") : "missing",
-      emailType: email ? email.getAttribute("type") : "",
-      emailText: email ? email.textContent.trim() : "",
-      emailName: email ? email.getAttribute("aria-label") : "",
-      emailTitle: email ? email.getAttribute("title") : "",
-      works: Boolean(navbar.querySelector('a.nav-link[href="/works"]')),
-      emailSize: email ? {
-        w: Math.round(email.getBoundingClientRect().width),
-        h: Math.round(email.getBoundingClientRect().height),
-        radius: emailStyle.borderRadius,
-        bg: emailStyle.backgroundColor,
-        color: emailStyle.color,
-        size: emailStyle.fontSize,
-        weight: emailStyle.fontWeight,
-      } : null,
-      linkedinSize: linkedin ? {
-        w: Math.round(linkedin.getBoundingClientRect().width),
-        h: Math.round(linkedin.getBoundingClientRect().height),
-        radius: linkedinStyle.borderRadius,
-        bg: linkedinStyle.backgroundColor,
-      } : null,
-      ctaChrome: ctaStyle ? {
-        h: Math.round(cta.getBoundingClientRect().height),
-        radius: ctaStyle.borderRadius,
-        bg: ctaStyle.backgroundColor,
-        color: ctaStyle.color,
-        weight: ctaStyle.fontWeight,
-        size: ctaStyle.fontSize,
-      } : null,
-      mastBox: mast ? mast.getBoundingClientRect() : null,
-    };
-  });
-  expect(fold.kicker).toBe("Norbert Barna");
-  expect(fold.h1).toBe("Product VP");
-  expect(fold.sub).toMatch(/AI products for fintech, Web3,\s*regulated teams — strategy to ship\./);
+  await expect(page.locator(".home-mast h1")).toHaveText("Product VP");
+  await expect(page.locator(".home-mast-statement")).toHaveText("Product with purpose.");
+  await expect(page.locator(".home-mast-lettering")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator(".home-mast-sculpture")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator(".home-mast-canvas")).toHaveCount(1);
+  await expect(page.locator(".home-mast-fallback")).toHaveAttribute("src", /hero-chevron\.svg$/);
+  await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
+  await expect(page.locator(".home-mast-scroll")).toHaveAttribute("href", "#home-introduction");
   await expect(page.locator(".home-banner-title")).toHaveCSS("font-family", /Inter/);
-  await expect(page.locator(".home-banner-title")).toHaveCSS("font-weight", "700");
-  expect(fold.cta).toBe("View selected work →");
-  expect(fold.ctaHref).toBe("/works");
-  expect(fold.navItems).toEqual(["NB", "Works", "LinkedIn", "Email"]);
-  expect(fold.proof).toEqual([
-    { claim: "Multi-country banking", company: "Raiffeisen" },
-    { claim: "Enterprise EdTech AI", company: "Instructure" },
-  ]);
-  expect(fold.highlights).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
-  const chrome = await page.evaluate(() => {
-    const wrap = document.querySelector(".nav-wrap").getBoundingClientRect();
-    const logo = document.querySelector(".nav-logo-wrap").getBoundingClientRect();
-    const works = document.querySelector('a.nav-link[href="/works"]').getBoundingClientRect();
-    const linkedin = document.querySelector(".navbar a.footer-contact-link").getBoundingClientRect();
-    const items = [...document.querySelectorAll(".home-banner-outcomes li")].map((li) => {
-      const box = li.getBoundingClientRect();
-      return { name: li.textContent.trim(), top: box.top, bottom: box.bottom };
-    });
-    return {
-      logoW: Math.round(logo.width),
-      logoH: Math.round(logo.height),
-      leftGap: Math.round(logo.left - wrap.left),
-      nbToWorks: Math.round(works.left - logo.right),
-      worksToLi: Math.round(linkedin.left - works.right),
-      items,
-    };
-  });
-  expect(chrome.logoW).toBeGreaterThanOrEqual(44);
-  expect(chrome.logoH).toBeGreaterThanOrEqual(44);
-  expect(chrome.leftGap, "NB anchors the left of the navigation").toBeLessThan(80);
-  for (const item of chrome.items) {
-    expect(item.top, `${item.name} stays in the first viewport`).toBeGreaterThanOrEqual(0);
-    expect(item.bottom, `${item.name} stays in the first viewport`).toBeLessThanOrEqual(900);
-  }
-  expect(fold.sculpture).toBe(true);
-  expect(fold.dunes).toBe(false);
-  expect(fold.canvas).toBe(false);
-  expect(fold.headerImgs).toEqual([]);
-  expect(fold.motion).toBe(false);
-  expect(fold.works).toBe(true);
-  expect(fold.navBg).toBe(await page.locator(".home-mast").evaluate((element) => getComputedStyle(element).backgroundColor));
-  expect(fold.navBorder).toBe("0px");
-  expect(fold.emailHref).toBeNull();
-  expect(fold.emailType).toBe("button");
-  expect(fold.emailText).toBe(HOME_EMAIL_LABEL);
-  expect(fold.emailName).toBe(HOME_EMAIL_NAME);
-  expect(fold.emailTitle).toBe(PROJECT_TITLE);
-  expect(fold.emailSize.h).toBe(44);
-  await expectContactLabelFit(page.locator(".navbar button.footer-email"));
-  expect(isTransparentFill(fold.emailSize.bg)).toBe(true);
-  expect(contrastRatio(colorLuminance(parseCssColor(fold.emailSize.color)), colorLuminance(parseCssColor(fold.navBg)))).toBeGreaterThanOrEqual(4.5);
-  expect(fold.emailSize.radius).toBe("8px");
-  expect(parseFloat(fold.emailSize.size)).toBeGreaterThanOrEqual(14);
-  expect(fold.emailSize.weight).toBe("400");
-  expect(fold.linkedinSize.w).toBeGreaterThan(44);
-  expect(fold.linkedinSize.h).toBe(44);
-  expect(fold.linkedinSize.radius).toBe("8px");
-  expect(isTransparentFill(fold.linkedinSize.bg)).toBe(true);
-  expect(fold.ctaChrome.h).toBeGreaterThanOrEqual(44);
-  expect(fold.ctaChrome.radius).toBe("12px");
-  const ctaInk = parseCssColor(fold.ctaChrome.bg);
-  expect(colorLuminance(ctaInk), "primary action uses deep reference navy").toBeLessThan(0.04);
-  expect(ctaInk.b - ctaInk.r, "navy retains its blue color").toBeGreaterThan(15);
-  expect(contrastRatio(colorLuminance(parseCssColor(fold.ctaChrome.color)), colorLuminance(ctaInk))).toBeGreaterThanOrEqual(4.5);
-  expect(parseFloat(fold.ctaChrome.size)).toBeGreaterThanOrEqual(16);
-
-  const sculpture = page.locator(".home-mast-sculpture");
-  await expect(sculpture).toHaveAttribute("aria-hidden", "true");
-  await expect(sculpture).toHaveCSS("pointer-events", "none");
   const layout = await page.evaluate(() => {
+    const stage = document.querySelector(".home-mast-scene").getBoundingClientRect();
     const art = document.querySelector(".home-mast-sculpture").getBoundingClientRect();
-    const title = document.querySelector(".home-banner-title").getBoundingClientRect();
-    return { artWidth: art.width, artHeight: art.height, rightWeighted: art.left + art.width / 2 > title.left + title.width / 2,
-      overflow: document.documentElement.scrollWidth - innerWidth };
+    const intro = document.querySelector(".home-mast-intro").getBoundingClientRect();
+    return { stageHeight: stage.height, centered: Math.abs(art.left + art.width / 2 - innerWidth / 2),
+      introTop: intro.top, stageBottom: stage.bottom, overflow: document.documentElement.scrollWidth - innerWidth };
   });
-  expect(layout.artWidth).toBeGreaterThan(250);
-  expect(layout.artHeight).toBeGreaterThan(250);
-  expect(layout.rightWeighted, "desktop sculpture balances the title on the right").toBe(true);
+  expect(layout.stageHeight).toBeCloseTo(900, 0);
+  expect(layout.centered).toBeLessThan(1);
+  expect(layout.introTop).toBeGreaterThanOrEqual(layout.stageBottom - 1);
   expect(layout.overflow).toBeLessThanOrEqual(1);
+  await expect(page.locator(".home-banner-title")).toBeInViewport();
+  await expect(page.locator(".hero-work-link")).toBeInViewport();
+  await expect(page.locator(".home-mast .hero-kicker")).toHaveText("Norbert Barna");
+  await expect(page.locator(".home-banner-subtitle")).toHaveText(/AI products for fintech, Web3,\s*regulated teams — strategy to ship\./);
+  await expect(page.locator(".home-mast-proof-chips li")).toHaveText(["Multi-country bankingRaiffeisen", "Enterprise EdTech AIInstructure"]);
+  await expect(page.locator(".home-banner-outcomes li")).toHaveText(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  const email = page.locator(".navbar button.footer-email");
+  await expect(email).toHaveAttribute("type", "button");
+  await expect(email).not.toHaveAttribute("href");
+  await expect(email).toHaveAttribute("aria-label", HOME_EMAIL_NAME);
+  await expect(email).toHaveAttribute("title", PROJECT_TITLE);
+  await expect(page.locator(".navbar .home-nav-wordmark")).toHaveText("NORBERT.BARNA");
+  await expect(page.locator(".navbar .home-nav-progress")).toHaveAttribute("aria-hidden", "true");
 });
 
-test("immersive home uses the actual footer palette at desktop and compact sizes", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  for (const width of [1440, 390]) {
-    await page.setViewportSize({ width, height: 900 });
-    await openStable(page, "/");
-    const palette = await page.evaluate(() => {
-      const colors = (selector) => [...document.querySelectorAll(selector)]
-        .flatMap((element) => [element.getAttribute("fill"), element.getAttribute("stop-color")])
-        .filter((value) => /^#[0-9a-f]{6}$/i.test(value || ""))
-        .map((value) => value.toLowerCase());
-      return { home: colors(".home-mast-art *"), footer: colors(".footer-mesh-art *") };
-    });
-    const shared = [...new Set(palette.home)].filter((color) => palette.footer.includes(color));
-    expect(shared.length, "the sculpture must reuse several footer colors").toBeGreaterThanOrEqual(3);
-    await expectHeaderTextAA(page, page.locator(".home-banner-title"), `${width} pale header title`, { raster: true });
-  }
-});
-
-for (const width of [992, 1280]) {
-test(`${width} first-visit fold keeps employers and primary action above the consent banner`, async ({ page }) => {
+for (const width of [390, 992, 1280]) {
+test(`${width} first-visit scene keeps role and primary action above the consent banner`, async ({ page }) => {
   await page.addInitScript(() => localStorage.removeItem("bn-analytics-consent-v1"));
   await page.setViewportSize({ width, height: 720 });
   await openStable(page, "/");
@@ -2293,14 +2166,20 @@ test(`${width} first-visit fold keeps employers and primary action above the con
         covered: Boolean(bannerBox && box.bottom > bannerBox.top + 2),
       };
     });
-    return { items, bannerTop: bannerBox ? bannerBox.top : null, ctaBottom: document.querySelector(".hero-work-link").getBoundingClientRect().bottom };
+    const action = document.querySelector(".hero-work-link");
+    const actionBox = action.getBoundingClientRect();
+    const actionHit = document.elementFromPoint(actionBox.left + actionBox.width / 2, actionBox.top + actionBox.height / 2);
+    return { items, bannerTop: bannerBox ? bannerBox.top : null, ctaBottom: actionBox.bottom, actionReceivesPointer: action.contains(actionHit),
+      roleBottom: document.querySelector(".home-banner-title").getBoundingClientRect().bottom,
+      introTop: document.querySelector(".home-mast-intro").getBoundingClientRect().top };
   });
   expect(fold.items.map((item) => item.name)).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  expect(fold.bannerTop, "this regression must exercise the actual first-visit consent banner").not.toBeNull();
   expect(fold.ctaBottom + 8, "primary action and focus outline must remain above consent").toBeLessThanOrEqual(fold.bannerTop ?? 720);
+  expect(fold.roleBottom + 8, "the Product VP role remains above consent").toBeLessThanOrEqual(fold.bannerTop ?? 720);
+  expect(fold.actionReceivesPointer, "the visible Works action receives the first pointer or touch input").toBe(true);
   for (const item of fold.items) {
-    expect(item.covered, `${item.name} must stay above the consent banner`).toBe(false);
-    expect(item.top).toBeGreaterThanOrEqual(0);
-    expect(item.bottom).toBeLessThanOrEqual(720);
+    expect(item.top, `${item.name} belongs to the following reading scene`).toBeGreaterThanOrEqual(fold.introTop);
   }
 });
 }
@@ -2537,8 +2416,8 @@ for (const width of [390, 1440]) {
   }
 }
 
-for (const [width, expected] of [[1280, 64], [390, 56]]) {
-  test(`${width}: header is a sticky white ${expected}px bar with the locked border`, async ({ page }) => {
+for (const width of [1280, 390]) {
+  test(`${width}: adapted case utility header follows native progress and keeps keyboard navigation stable`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await openStable(page, "/work/instructure");
     const bar = await page.evaluate(() => {
@@ -2547,26 +2426,32 @@ for (const [width, expected] of [[1280, 64], [390, 56]]) {
       const style = getComputedStyle(navbar);
       return {
         position: style.position,
-        background: style.backgroundColor,
-        border: style.borderBottomWidth + " " + style.borderBottomColor,
         height: Math.round(wrap.getBoundingClientRect().height),
         breadcrumb: navbar.querySelector(".nav-breadcrumb")?.textContent.replace(/\s+/g, " ").trim() || "",
         oldStrip: Boolean(document.querySelector(".case-breadcrumb")),
         motion: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
       };
     });
-    expect(bar.position).toBe("sticky");
-    expect(bar.background).toBe("rgb(255, 255, 255)");
-    expect(bar.border).toBe("1px rgb(230, 232, 233)");
-    expect(bar.height).toBe(expected);
+    expect(bar.position).toBe("fixed");
+    expect(bar.height).toBeGreaterThanOrEqual(44);
     expect(bar.breadcrumb).toContain("Works");
     expect(bar.breadcrumb).toContain("Instructure");
     expect(bar.oldStrip).toBe(false);
     expect(bar.motion).toBe(false);
 
     await page.evaluate(() => window.scrollTo(0, 1200));
-    await page.waitForTimeout(80);
-    const stuckTop = await page.evaluate(() => document.querySelector(".navbar").getBoundingClientRect().top);
-    expect(stuckTop).toBe(0);
+    const progress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
+    await expect(page.locator(".home-nav-progress span")).toHaveText(progress);
+    const travelled = await page.locator(".navbar").boundingBox();
+    expect(travelled.y, "case navigation follows native document progress").toBeGreaterThan(0);
+    expect(travelled.y + travelled.height).toBeLessThanOrEqual(900);
+    await page.keyboard.press("Tab");
+    await page.locator(".navbar .nav-logo-wrap").focus();
+    await expect.poll(() => page.locator(".navbar").evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
+    if (width < 992) await page.locator(".menu-button").click();
+    const works = page.locator(width < 992 ? '.navbar .nav-link[href="/works"]' : '.nav-breadcrumb a[href="/works"]');
+    await expect(works).toBeVisible();
+    await works.click();
+    await expect(page).toHaveURL(/\/works$/);
   });
 }

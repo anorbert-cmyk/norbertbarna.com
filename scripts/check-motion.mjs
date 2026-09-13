@@ -124,7 +124,12 @@ function checkRichTextImages(page, html) {
   });
 }
 
+const heroSceneFile = versionedAsset("assets/js/hero-scene.js", "hero-scene", "js");
+const immersiveNavigationFile = versionedAsset("assets/js/immersive-navigation.js", "immersive-navigation", "js");
+const arrivalCssFile = versionedAsset("assets/css/arrival.css", "arrival", "css");
 const arrivalFile = versionedAsset("assets/js/arrival.js", "arrival", "js");
+const caseOpeningCssFile = versionedAsset("assets/css/case-opening.css", "case-opening", "css");
+const caseOpeningFile = versionedAsset("assets/js/case-opening.js", "case-opening", "js");
 const animationsFile = versionedAsset("assets/js/animations.js", "animations", "js");
 const caseMotionFile = versionedAsset("assets/css/case-motion.css", "case-motion", "css");
 const responsiveFile = versionedAsset("assets/css/responsive.css", "responsive", "css");
@@ -162,6 +167,24 @@ for (const page of ANIMATED_PAGES) {
     if (arrivalRefs.length !== 1 || arrivalRefs[0] !== expectedArrivalRef) {
       fail(`${page}: expected one current content-hashed arrival script`);
     }
+    const arrivalStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
+      .map((match) => attribute(match[0], "href"))
+      .filter((href) => /\/arrival\./.test(href));
+    if (arrivalStyles.length !== 1 || arrivalStyles[0] !== `${assetPrefix(page)}assets/css/${arrivalCssFile}`) {
+      fail(`${page}: same-stem arrival CSS and JS must resolve to their own byte-matched asset type`);
+    }
+    const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map((match) => match[1]);
+    if (scripts.filter((src) => src === `${assetPrefix(page)}assets/js/${immersiveNavigationFile}`).length !== 1) {
+      fail(`${page}: expected the current utility-header journey script once`);
+    }
+    if (page === "index.html") {
+      const sceneIndex = scripts.indexOf(`assets/js/${heroSceneFile}`);
+      const arrivalIndex = scripts.indexOf(`assets/js/${arrivalFile}`);
+      const motionIndex = scripts.indexOf(`assets/js/${animationsFile}`);
+      if (sceneIndex < 0 || sceneIndex >= arrivalIndex || arrivalIndex >= motionIndex) {
+        fail("home scene readiness must initialize before arrival, followed by shared animation ownership");
+      }
+    }
     if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
       fail(`${page}: arrival must never leave the native page inert`);
     }
@@ -172,6 +195,15 @@ for (const page of ANIMATED_PAGES) {
   checkBackToTop(page, html);
 
   if (page.startsWith("work/")) {
+    const openingStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
+      .map((match) => attribute(match[0], "href"))
+      .filter((href) => /\/case-opening\./.test(href));
+    const openingScripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)]
+      .map((match) => match[1]).filter((src) => /\/case-opening\./.test(src));
+    if (openingStyles.length !== 1 || openingStyles[0] !== `../assets/css/${caseOpeningCssFile}` ||
+        openingScripts.length !== 1 || openingScripts[0] !== `../assets/js/${caseOpeningFile}`) {
+      fail(`${page}: case-opening CSS and JS must each load their own current byte-matched asset once`);
+    }
     const caseMotionRefs = [...html.matchAll(/<link\b[^>]*>/gi)]
       .map((match) => attribute(match[0], "href"))
       .filter((href) => /\/case-motion(?:\.[a-f0-9]+)?\.css$/i.test(href));

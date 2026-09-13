@@ -29,7 +29,7 @@ User-confirmed acquisition priority (2026-09-04): larger AI-integration clients
 first, Hungarian AI and development service clients second. Hiring discovery
 remains supported, but is not the primary acquisition KPI. Preserve the
 Product VP role, work order and shipped evidence. The 2026-09-13
-KODE-inspired header brief below replaces the earlier semicircle composition.
+KODE recreation brief below replaces the earlier semicircle composition.
 
 `/ai-integration` and `/hu/ai-integracio` explain the same core service offer in
 English and Hungarian. Compose from existing type and reading-width primitives;
@@ -45,7 +45,7 @@ switch leads to Hungarian. Do not restore a separate home acquisition pitch.
 
 The reader in the first five seconds is a VP / hiring manager or a client
 for AI product and web work in regulated or high-trust systems. They need:
-role, proof of shipped product, a contact close. They are not here for a
+role, access to shipped work, and a contact close. They are not here for a
 Webflow demo, a blog, or a Dribbble cover.
 
 Out of scope: live Webflow edits, ads, session deletion, invented metrics,
@@ -57,7 +57,7 @@ Vercel chrome, a third type family.
 When requirements compete, protect them in this order:
 
 1. Preserve shipped facts, case copy, claims, and the no-invented-email rule.
-2. Preserve Funnel Display + Inter, the shipped case colors, existing routes,
+2. Preserve Funnel Display + Inter, the footer palette, existing routes,
    and the class names in **Primitives**.
 3. Make the hiring question, the role, and how to reach him obvious in
    the first viewport of `/`. Product UI lives in Selected work and cases.
@@ -70,9 +70,9 @@ When requirements compete, protect them in this order:
 
 | Surface | Job in the first viewport | Proof they should see |
 |---|---|---|
-| `/` | Identify a Product VP and open work | Role in H1; live proof; CTA to `/works`. Immersive folded-form mast, **no** product screenshot |
+| `/` | Identify a Product VP and open work | Role in H1 and Works in the opening scene; proof in the following statement. Central 3D chevron and vector title, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
-| `/work/*` | Confirm role, period, and that the product is real | Complete UI beside H1; four facts; short dek |
+| `/work/*` | Identify the project and inspect real product evidence | Centered title and complete UI on the lilac stage; dek beneath; four facts follow the opening |
 | Footer / nav | Start a project conversation | Nav LinkedIn link; footer LinkedIn `in` icon + **Discuss your project**, sharing outlined 44px / 12px chrome. No duplicate home engagement block and no Contact column. Footer is one full-bleed analog-grain mesh: greyer-lilac type band, a **left-weighted navy horizon**, olive-chartreuse **right-weighted** (not a centered yellow balloon). Not stacked Ironclad dunes, not a dark void, not a SaaS Product/Legal sitemap. |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
@@ -98,33 +98,54 @@ Do not restore removed SportsGambit figures (`35% first-day activation`,
 
 The first viewport identifies Norbert as a Product VP and opens his work.
 
-The user explicitly requested a new KODE Immersive inspired loading sequence,
-header and scroll motion on 2026-09-13. This replaces the old navy semicircle
-and its exact geometry locks. Image-generated storyboards were explicitly
-requested before implementation; they are design proposals, never product
-screenshots or factual evidence. Their decorative microcopy and placeholder
-project imagery must not enter the site.
+The user explicitly escalated the 2026-09-13 brief from inspiration to faithful
+recreation of KODE's design and animations. The earlier left/right folded arch,
+automatic short curtain, scroll-only decoration and first-fold proof locks are
+superseded. The generated fidelity storyboard is a proposal; browser evidence
+must prove the actual implementation. Do not copy KODE text, logos or model files.
 
-- Use the actual footer palette: lilac `#D6D4ED`, navy `#0A1628`, forest
-  `#1B3A32`, muted olive-chartreuse `#BDB414`. Keep the footer itself unchanged.
-- Keep the existing Inter and Funnel Display families and the existing NB mark.
-- A short navy arrival curtain introduces the plain-text name and Product VP,
-  with a thin olive time-based rule. It opens upward automatically. Do not
-  describe its animation as network progress or require Enter or sound.
-- The home composition uses large Inter Product / VP typography, left-aligned
-  readable copy and an architectural folded open form on the right. Broad
-  matte forest and olive planes frame negative space; no glow, WebGL stack,
-  rotating logo, fake product UI or replacement portrait.
-- Decoration reacts to native scroll. Content,
-  links and navigation stay usable and do not follow decorative rotation.
-- Mobile puts role, supporting copy and the primary action first, and keeps
-  decoration clear of readable text. Employers form a quiet semantic list.
-- Cases share shorter reveals around their actual title and media, retaining
-  their own case colors and complete existing product images.
+- Preserve the exact footer palette: lilac `#D6D4ED`, navy `#0A1628`, forest
+  `#1B3A32`, olive `#BDB414`. Footer markup and factual product assets remain.
+- Keep Inter and Funnel Display for semantic text. The hero uses original SVG
+  angular display lettering for “PRODUCT / WITH / PURPOSE”, adapting the
+  reference's integrated vector title. This user-requested title artwork is the
+  narrow exception to the earlier no-generated-letterforms rule.
+- Opening stage: horizontal NORBERT.BARNA wordmark assembled over 220/60 seconds,
+  real prerequisite progress in a travelling top counter, then an Enter button.
+  Enter starts a one-second upward clip reveal. Asset failure and reduced motion
+  must leave the usable page accessible. No simulated network progress or audio.
+- Home: 100svh centered scene, three massive lines behind an independently
+  assembled, bevelled refractive-glass chevron with forest/olive reflections.
+  Geometry begins 200ms after Enter,
+  assembles in 2.3 seconds, responds to pointer tilt/nearby fragmentation and drag.
+  Use original dependency-free WebGL with a corresponding SVG fallback.
+- The real H1 remains Product VP, visible at the lower left. Works and the
+  native scroll affordance occupy the lower edge. Move original dek, proof and
+  selected experience into the following spacious reading scene; do not shrink
+  them to force them into the opening viewport.
+- Distributed utility header: NB left, central wordmark, real page-progress
+  counter and existing destinations. It travels down the viewport with native
+  page progress and the wordmark expands at the footer. Keyboard focus and the
+  mobile menu return navigation to a stable top position. Reading and product
+  evidence across the main content have a 12px clearance: chrome chooses a
+  free slot above/below neighbouring blocks, or
+  docks at the top on an opaque navy field when enlarged text fills the view.
+  Large changes between reading slots relocate invisibly and settle in 180ms
+  with opacity only; never translate the menu across the paragraph.
+  The terminal wordmark has its own landing after the unchanged footer links;
+  a screen-space offset keeps the scaled letters centred inside that landing.
+- The large intro statement resolves word positions with native scrolling.
+  Content reading order stays intact. No scroll hijack or touch capture.
+- All seven cases inherit the branded arrival/chrome vocabulary; complete real
+  product images and text remain. The lilac stage uses a large centered Funnel
+  title, four-slice media assembly, and a short native-scroll perspective settle.
+  Project-specific colors remain on work index cards and body evidence.
+  KODE provides no equivalent product-detail template to copy.
 
-Acceptance evidence: actual rendered desktop and mobile pages, motion and
-failure-path checks, 200% text and keyboard accessibility, and independent
-review. Generated storyboards demonstrate direction, not browser fidelity.
+Acceptance requires reference-vs-local desktop/mobile composition and sequence
+comparison, real pointer/drag and scroll behavior, failure/reduced-motion/history
+checks, semantic text and keyboard reflow, and independent implementation review.
+The earlier functional pass does not prove reference fidelity.
 
 ### 3. Use the locked visual system
 
@@ -144,8 +165,8 @@ Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
 3. Do `/` and `/works` use the same case order?
 4. Can any tracked kicker, icon tile, or marquee motion be removed without
    losing meaning? Prefer stillness. Do not add marquees.
-5. On Kineticare at 390: is the dek white on the dark field, and does Role
-   wrap cleanly under the sticky bar?
+5. On Kineticare at 390: is the dek navy on the lilac field, is the actual
+   video contained, and do the following facts wrap cleanly?
 6. Does `npm test` still pass?
 
 Keep this review internal. Deliver the implementation, not a scorecard.
@@ -153,8 +174,8 @@ Keep this review internal. Deliver the implementation, not a scorecard.
 ## Locked brand (do not regenerate)
 
 **Type:** Funnel Display 700 for case and section display; Inter for UI, dek,
-and body. The immersive home H1 uses the existing Inter 700 face.
-Do not add a third family. Do not generate letterforms.
+and body. The semantic home H1 uses Inter. Original SVG lettering is limited to the
+requested KODE-style decorative hero title; do not add a third font family.
 
 **Ink / paper**
 
@@ -178,8 +199,8 @@ Do not add a third family. Do not generate letterforms.
 | Kineticare | live dark field `#0c1b2e` / hand video | `#fff` |
 
 Site chrome stays ink on cool paper; the home mast uses the requested
-footer-lilac field below. Case color is the case
-header field. The footer mesh **pixel-matches the accepted lock crop**, not
+footer-lilac field below. Case colors remain on the work index cards; the immersive case
+opening now uses the shared footer-lilac field. The footer mesh **pixel-matches the accepted lock crop**, not
 the raw case hexes: greyer-lilac `#D6D4ED` on the type band, Instructure navy
 `#0A1628` as a **left-weighted horizon mass** (in across the width by mid-
 height; stronger and earlier on the left — not a blob with lilac gutters),
@@ -294,17 +315,18 @@ artboard already crops the phones.
 
 | Role | Size | Weight | Line-height | Class |
 |---|---|---|---|---|
-| Home display H1 | Oversized responsive Product / VP; retain fit at 320px and 200% text | 700 Inter | .94 desktop / ~1.04 compact | `.home-banner-title` |
-| Case display H1 | 56–64px desktop; 40–56px compact | 700 Funnel | 1.05 | `.banner-title` |
-| Home dek | 24–28px desktop; 20–22px compact/short screens | 400 Inter | ~1.45 | `.home-banner-subtitle` |
+| Home role H1 | 16px desktop; 12px compact; reflows at 200% | 400 Inter | 44px; 1.4 with enlarged text | `.home-banner-title` |
+| Case display H1 | clamp(64px, 10.5vw, 164px) desktop; 36–104px compact | 700 Funnel | .94 desktop / 1 compact | `.banner-title` |
+| Home intro statement | 30–72px desktop; 32–60px compact | 500 Funnel | 1.08 | `.home-banner-subtitle` |
 | Case dek | 20–22px | 400 Inter | ~1.45 | `.banner-text` |
 | Body | 17–18px | 400 Inter | ~1.5 | `body`, `.summary` |
 | Section H2 | 28–32px | 700 Funnel | 1.15 | `.summary h2`, `.section-title` |
 | Card title | 22–24px | 700 Funnel | 1.2 | `.work-title` |
 | Kicker | 13px compact; 18px home desktop | 600–700 Inter | 1.2 | `.hero-kicker`, `.work-category` |
 
-Do not use the oversized home display scale on case pages or use a 38px/300
-dek. Do not bold a whole dek to fake a missing middle size. The home name
+The decorative home display is vector artwork; the semantic home H1 remains
+a small role label. Case titles are deliberately oversized under the new brief.
+Keep body/dek weights readable and do not substitute oversized lightweight copy. The home name
 remains plain `Norbert Barna` in the DOM. User text-spacing
 detection compares against the authored responsive baseline.
 
@@ -340,8 +362,10 @@ Hungarian product on an otherwise English hiring path.
 - Home: NB home link on the left; Works, LinkedIn and Email on the right,
   on the pale mast. Native links and 44px minimum targets; compact keeps the
   accessible disclosure. Email remains a native assign-only button.
-- `/works` and cases keep a readable sticky bar and existing case breadcrumb
-  `Works / {Project}`. Shared entrances must never hide navigation indefinitely.
+- `/works` retains its sticky bar. Cases share the travelling wordmark header,
+  keeping `Works / {Project}` on desktop. Compact hides that duplicate
+  breadcrumb and includes a native Works link in the disclosure alongside
+  LinkedIn. Shared entrances must never hide navigation indefinitely.
 - No Motion control, sound requirement, Contact page, new form or invented
   address. `prefers-reduced-motion` controls decorative animation. Contact and
   privacy behavior retain their existing owners.
@@ -371,14 +395,14 @@ The header contact row can wrap; it must not overlap LinkedIn. Long opening
 headings may break within a word only when needed to avoid clipping. The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
-The home proof and employer list stay on a consistent pale reading surface,
-clear of the folded decoration. Short viewports preserve role and CTA before
+The home proof and employer list use solid lilac text on the separate navy
+reading scene, clear of the glass decoration. Short viewports preserve role and CTA before
 nonessential decoration. Enlarged or user-spaced mast text uses the existing
 `data-text-reflow` fallback and a single reading column. ResizeObserver checks
 computed typography rather than layout height; restoring authored text restores
 the normal composition. Ordinary viewport changes must not trigger false text
-reflow. Kineticare retains its shared white-text scrim, including over an
-all-white video frame.
+reflow. Kineticare uses navy text outside the contained video on the lilac
+stage, so even an all-white video frame cannot change its text contrast.
 The decorative Kineticare header video starts automatically but has a single
 4.5-second preview window, then stays paused for that document visit. Scrolling,
 tab/lifecycle changes and media refresh must not restart an expired preview.
@@ -393,19 +417,21 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 
 **Home fold — immersive direction (2026-09-13)**
 
-1. Pale footer-lilac stage, navy type, forest/olive architectural fold. Static
-   decoration never clips the page horizontally. No superseded navy semicircle.
-2. Plain name `Norbert Barna`, H1 `Product VP`, existing Inter 700. The visual
-   line break must not change the accessible H1 text.
-3. Preserve `AI products for fintech, Web3, regulated teams — strategy to ship.`
+1. Footer-lilac 100svh stage; original navy display lettering behind a
+   refractive forest/olive chevron. No horizontal overflow or old semicircle.
+2. Semantic H1 `Product VP` in Inter 400 at the lower left. The large
+   `PRODUCT / WITH / PURPOSE` artwork does not replace the accessible role.
+3. The next navy intro preserves the plain name `Norbert Barna` and
+   `AI products for fintech, Web3, regulated teams — strategy to ship.`
 4. Preserve proofs: multi-country banking / Raiffeisen and enterprise EdTech
    AI / Instructure. No invented results or metrics.
-5. `View selected work` links natively to `/works`; navy/white, at least 44px
-   high, usable with keyboard and on first touch.
+5. `[ Works ]` in the scene and `View selected work` in the intro link
+   natively to `/works`; at least 44px high and usable on first touch.
 6. BlackRock, Instructure, Raiffeisen, Bitpanda and Balabit remain semantic
-   employer items within the mast. Their detailed evidence remains below.
-7. Under text zoom/spacing decoration yields to content. Mobile keeps copy
-   and CTA ahead of the fold; no text against changing decorative surfaces.
+   employer items in the intro. Their detailed evidence remains below.
+7. Under text zoom/spacing the art and controls get separate rows. Decorative
+   header text and progress can yield space to native links. The original
+   consent component remains usable and the first-view role/Works stay clear.
 8. User-requested removal (2026-09-04): no `Open for engagements` block,
    company-solicitation paragraph or duplicate LinkedIn/Email actions after
    the services cards. Do not hide this copy in CSS, HTML comments, metadata
@@ -431,13 +457,14 @@ tap / Enter (coarse and keyboard). Then the existing award video fills the
 card (`inset: 0; object-fit: cover`). Not a 500px Webflow strip. Compact
 does not hide the wrap. Reduced motion keeps the paper card.
 
-**Case header (one template, color varies)**
+**Case opening (one centered lilac template)**
 
-1. Sticky site bar with the breadcrumb `Works / {Project}` inside it
-2. Hero row: left = kicker + responsive Funnel H1 + 1–2 line dek (regular);
-   right = `.case-hero-media` with a **complete** screenshot already on the
-   page, `object-fit: contain`. A short reveal may introduce that real media,
-   settling completely into its readable static layout.
+1. Shared travelling site bar; desktop breadcrumb and compact Works disclosure
+2. Opening grid: category, oversized responsive Funnel H1, centered complete
+   `.case-hero-media`, then the original regular dek. Images keep
+   `object-fit: contain`. Four alternating vertical masks reveal the actual
+   media over 2.3 seconds; title letters restore the original semantic nodes.
+   A separate 150–220px native-scroll interval settles the panel perspective.
 3. Fact band with four keys directly under the hero
 4. No visible byline. “Written by / Published / Updated” never appears on
    the page; authorship and dates live in meta tags and JSON-LD only.
@@ -512,8 +539,8 @@ English-wash the screenshot.
 
 | Name | What it looks like | Fix |
 |---|---|---|
-| EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + live proof on the immersive mast; product UI lives in Selected work rows and case pages |
-| CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Empty right is mesh |
+| EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + Works on the opening stage, live proof in the following intro; product UI stays in work rows and case pages |
+| CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Use the central original glass scene and title |
 | GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
 | FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
 | DualIndex | Home **list** order ≠ `/works` order | One list, hiring-first |
@@ -524,7 +551,7 @@ English-wash the screenshot.
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
 | TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedBody | Uppercase/tracking applied to the dek or evidence body | Tracking is limited to the 13px home name kicker and small labels |
-| AIDecor | Glow blobs, fake words, new palettes or generated product evidence | Existing color tokens + real UI; the requested folded motif is the header exception. Footer mesh stays on the lock crop (greyer-lilac, left-weighted navy horizon, right-weighted olive-chartreuse) — never Ironclad dunes, candy pink, or a third palette |
+| AIDecor | Glow blobs, fake words, new palettes or generated product evidence | Existing color tokens + real UI; the requested glass sculpture and original SVG title are the header exceptions. Footer mesh stays on the lock crop (greyer-lilac, left-weighted navy horizon, right-weighted olive-chartreuse) — never Ironclad dunes, candy pink, or a third palette |
 | YellowDuneSlab | Footer filled as a flat `#FFE000` rectangle or a stacked yellow dune ridge | Olive-chartreuse is the bottom of the mesh, not a ridge or a CSS slab |
 | SausageBand | Navy is a thin full-width ellipse (~8% of field height, `ry` ≪ field) then a flat yellow rectangle | Taller ~3:2 field; navy is a left-weighted horizon mass, not a crushed stripe |
 | YellowBalloon | Centered yellow ellipse (`cx` at field center, sitting as an island / smiley) | Yellow is right-weighted (onset left 94% / center 84% / right 73%); left at 80% stays dark |
@@ -532,8 +559,8 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | A blurred grain layer or broad neutral haze flattens the field | Visible static speckle with retained light gray and blue depth; home planes remain distinct; footer retains its existing material |
-| NavyFlood | Navy reaches dark reading text and destroys contrast | Compact footer: fade navy below type. Home: copy and employers stay on pale surfaces; text reflow yields decoration space to reading |
-| GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid violet/dark ink on light gray and pale ink only on dark arrival; sample worst relevant pixels behind glyphs, including reflow |
+| NavyFlood | Navy reaches dark reading text and destroys contrast | Compact footer: fade navy below type. Home: lilac copy and employers stay on the separate navy intro; text reflow separates the artwork from controls |
+| GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid navy ink on lilac, and lilac ink on the navy intro and dark arrival; sample worst relevant pixels behind glyphs, including reflow |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
 | PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
 | HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |
@@ -547,7 +574,7 @@ English-wash the screenshot.
 | FakeEmailLink | Email is an `<a role="link">` without href | Native `<button type="button" class="footer-email">`; Space/Enter come for free |
 | SaaSFooter | Product / Company / Resources / Legal columns, X/Instagram/YouTube tiles | Outlined LinkedIn + Email; Work on the mesh; no Contact column; no sitemap |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
-| InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | White dek on Kineticare; `:not(.kineticare-hero)` on the lime-field rule |
+| InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | Navy dek on the new lilac case stage; do not revive the superseded dark-video text override |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Selected-work grid leaving an empty offset column (`margin-top` stagger) or unequal row-1 band heights | E′ Weighted 7/5 then 3-up; flush tops; equal band height; no dummy column |
@@ -556,7 +583,7 @@ English-wash the screenshot.
 | BlogFooterCTA | Footer contact as a third-party form, a LinkedIn-only pill, or a multi-field email form | One outlined project enquiry button; mail opens via `location.assign`; no form; no Contact column |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
-| MeshParallaxCircus | Mesh masses rotate, loop like a GIF, or drag type/chrome | Footer masses translate a few pixels; the home folded motif responds to scroll within its documented bounds. Chrome stays still; reduced-motion is static |
+| MeshParallaxCircus | Mesh masses rotate, loop like a GIF, or drag type/chrome | Footer masses translate a few pixels; the original home glass responds within its documented pointer/drag bounds. Footer chrome stays still; the requested utility header travels through clear space; reduced-motion is static |
 | BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
 | DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
 | TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Selected work`; case titles start `{H1} —` |
@@ -601,28 +628,32 @@ Agents compose pages from these names. Do not invent parallel components.
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-evidence-note` `.summary` `.related-work-card`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. The home nav uses text-only 44px targets. Home `View selected work` is filled navy with white text and a 12px radius.
+**Buttons:** `.dark-button` `#000` on `#fff`. Footer LinkedIn is an outlined `<a>`; Email is `<button type="button" class="footer-email">`. Both share 44px / 12px chrome (1px black stroke, transparent fill). LinkedIn is the `in` icon (~17px); project contact labels follow the Copy contract above. The home nav uses text-only 44px targets. The scene Works action and intro View selected work use native underlined/text controls.
 
 ## Motion
 
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis),
 respect `prefers-reduced-motion`, `html.no-motion` and `PortfolioMedia.isReduced()`.
-No new runtime dependency, WebGL, sound requirement, generated Lottie or visible
-Motion control. Keep `.case-motion-rail` hidden.
+No new runtime dependency, sound requirement, generated Lottie or visible
+Motion control. Original raw WebGL is the user-requested central hero exception.
+Keep `.case-motion-rail` hidden.
 
-The home fold translates and rotates subtly with scroll.
-Animate composited outer geometry, not filtered grain or text. Mobile uses
-native CSS scroll timelines where supported and the existing GSAP fallback
-otherwise. Without either runtime, or under reduced motion, the form is static.
+The central glass form assembles once, then responds to pointer tilt,
+fragment hover and drag. Its raw WebGL renderer sleeps when idle/offscreen.
+The following intro resolves word transforms through GSAP/ScrollTrigger with
+native scroll. WebGL failure gives a single static SVG; reduced motion gives
+one static rendered form or the fallback, never both.
 One owner
 per animated target; responsive and preference changes remove obsolete GSAP
 contexts and restore the correct static/composited state. No pinning, snap,
 scroll hijack or infinite idle rotation.
 
-Arrival is a short first-session enhancement, approximately 1–2 seconds, with
-an automatic upward curtain. The line represents entrance duration, not network
-loading. Internal navigation skips the long curtain and cases get shorter
-inline reveals. Reduced motion, unavailable prerequisites, no JavaScript,
+First-session arrival assembles the horizontal brand for 220/60 seconds,
+waits for real fonts/critical images/scene readiness, then shows Enter. The
+counter reports completed real prerequisites; Enter additionally waits for
+the minimum name-assembly duration. It does not simulate bytes downloaded. Enter triggers a one-second upward curtain.
+Internal navigation skips it and cases retain their own bounded opening.
+Reduced motion, unavailable prerequisites, no JavaScript,
 restored scroll/hash navigation and user interaction must have prompt readable
 content. Bounded fail-open cleanup prevents an overlay trapping the page.
 Do not make the document inert or hide its only semantic copy as an animation
@@ -664,8 +695,8 @@ separately verified Kineticare header contrast protection.
 ## Eval rubric (first attempt must pass)
 
 1. Facts that were on the page are still on the page.
-2. A hiring reader can answer “who is this / what did they ship / how do I
-   reach them” from the first viewport of `/`.
+2. The opening identifies a Product VP and gives native access to work and
+   contact; the next reading scene preserves the shipped evidence.
 3. `/` and `/works` use the same case **list** order.
 4. Every case fold shows UI that is not clipped and is not a CoverPoster or
    Figma leftover.

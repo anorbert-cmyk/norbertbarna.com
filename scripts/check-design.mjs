@@ -85,17 +85,17 @@ const homeMast = home.slice(
   Math.max(0, home.indexOf("home-mast")),
   home.indexOf("home-about-section")
 );
-// The user replaced the navy dome with a folded sculpture. Protect semantics
-// and the shared palette; browser tests verify the rendered shape and contrast.
+// Protect the original scene's semantics and fallback. Browser checks verify
+// the rendered letter stage, interactions and contrast.
 if (!/class="home-mast-sculpture"[^>]*aria-hidden="true"/.test(homeMast) ||
-    !/class="home-mast-art"/.test(homeMast)) {
-  fail("home opening must include a decorative folded sculpture outside the reading content");
+    !/class="home-mast-canvas"/.test(homeMast) || !/class="home-mast-fallback"/.test(homeMast)) {
+  fail("home opening must include a decorative WebGL scene and its SVG fallback outside the reading content");
 }
 if (/hero-proof|insights-feed|Canvas Career|hero-proof-caption/.test(homeMast)) {
   fail("CanvasFold: homepage header must not ship a product screenshot");
 }
-if (/<img\b(?![^>]*NB\.svg)/.test(homeMast)) {
-  fail("CanvasFold: homepage header may only show the nb wordmark, not case UI");
+if ([...homeMast.matchAll(/<img\b[^>]*src="([^"]+)"/g)].some((match) => !/(?:NB|hero-lettering|hero-chevron)\.svg$/.test(match[1]))) {
+  fail("homepage opening artwork may only use original lettering/chevron SVGs, never generated product evidence");
 }
 if (/footer-col-title">Work|footer-copyright|© 2026 Norbert Barna/.test(homeMast)) {
   fail("home mast is not a footer clone: no Work column or copyright");
@@ -311,11 +311,9 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.navbar \.nav-wrap,\s*\.navbar \.n
 if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(home + works)) {
   fail("MotionNav: the Motion control must not appear on home or /works");
 }
-if (!/body\.home \.navbar\s*\{[^}]*background:\s*#D6D4ED/i.test(css)) {
-  fail("home navbar must continue the footer-lilac opening field; rendered palette matching is checked in the browser");
-}
-if (!/\.home-mast \.hero-work-link\s*\{[^}]*border-radius:\s*12px[^}]*background:\s*#0A1628/i.test(css)) {
-  fail("home primary action must retain the footer navy and an accessible visible boundary");
+if (!/body\.home \.navbar[^{]*\{[^}]*position:\s*fixed/.test(css) ||
+    !/\.home-mast-baseline/.test(css) || !/class="home-mast-scroll"[^>]*href="#home-introduction"/.test(home)) {
+  fail("immersive opening needs its distributed utility header and native lower-edge scroll action");
 }
 if (!/\.work-list[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
   fail("home selected work must be a stacked row list");
