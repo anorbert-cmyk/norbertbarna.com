@@ -124,6 +124,7 @@ function checkRichTextImages(page, html) {
   });
 }
 
+const arrivalFile = versionedAsset("assets/js/arrival.js", "arrival", "js");
 const animationsFile = versionedAsset("assets/js/animations.js", "animations", "js");
 const caseMotionFile = versionedAsset("assets/css/case-motion.css", "case-motion", "css");
 const responsiveFile = versionedAsset("assets/css/responsive.css", "responsive", "css");
@@ -154,6 +155,20 @@ for (const page of ANIMATED_PAGES) {
     fail(`${page}: expected ${expectedAnimationRef}, found ${animationRefs[0]}`);
   }
 
+  const arrivalRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/arrival(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
+    .map((match) => match[1]);
+  if (page === "index.html" || page.startsWith("work/")) {
+    const expectedArrivalRef = `${assetPrefix(page)}assets/js/${arrivalFile}`;
+    if (arrivalRefs.length !== 1 || arrivalRefs[0] !== expectedArrivalRef) {
+      fail(`${page}: expected one current content-hashed arrival script`);
+    }
+    if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
+      fail(`${page}: arrival must never leave the native page inert`);
+    }
+  } else if (arrivalRefs.length !== 0) {
+    fail(`${page}: arrival is scoped to the home and project openings`);
+  }
+
   checkBackToTop(page, html);
 
   if (page.startsWith("work/")) {
@@ -169,6 +184,9 @@ for (const page of ANIMATED_PAGES) {
     }
 
     checkRichTextImages(page, html);
+    if (!/class="case-opening-fold"[^>]*aria-hidden="true"/.test(html)) {
+      fail(`${page}: case opening fold must be decorative and hidden from assistive technology`);
+    }
   }
 }
 

@@ -64,7 +64,7 @@ const hiring = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit
 
 const caseHero = (html) => html.match(/class="case-hero-shot"[^>]*>/)?.[0] || "";
 
-if (home.match(/<h1[^>]*>([^<]*)<\/h1>/)?.[1] !== "Product VP") {
+if (home.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() !== "Product VP") {
   fail("home H1 must be Product VP, not the name and not Design Lead");
 }
 if ((home.match(/<h1\b/g) || []).length !== 1) {
@@ -85,23 +85,11 @@ const homeMast = home.slice(
   Math.max(0, home.indexOf("home-mast")),
   home.indexOf("home-about-section")
 );
-if (!/class="home-mast-mesh"/.test(homeMast) || !/home-mast-navy/.test(homeMast)) {
-  fail("home fold must open on the analog mesh mast (light gray + navy félkör)");
-}
-const homeBlur = Number(homeMast.match(/<filter\b[^>]*id="home-mast-blur"[^>]*>\s*<feGaussianBlur stdDeviation="([\d.]+)"/)?.[1]);
-const homeEdge = Number(homeMast.match(/<filter\b[^>]*id="home-mast-edge"[^>]*>\s*<feGaussianBlur stdDeviation="([\d.]+)"/)?.[1]);
-if (!(homeBlur >= 20 && homeBlur <= 48 && homeEdge >= 0 && homeEdge <= 6 && homeEdge < homeBlur)) {
-  fail("ReferenceByToken: home needs a restrained soft back and a defined front edge, not the footer's broad blur");
-}
-const homeDepth = homeMast.match(/<radialGradient\b[^>]*id="home-mast-depth"[^>]*>[\s\S]*?<\/radialGradient>/)?.[0] || "";
-const depthColors = [...homeDepth.matchAll(/stop-color="(#[\da-f]{6})"/gi)].map((match) => match[1].toLowerCase());
-if (!/class="home-mast-lilac"/.test(homeMast) || new Set(depthColors).size < 3 ||
-    !/fill="url\(#home-mast-depth\)"/.test(homeMast)) {
-  fail("ReferenceByToken: home needs footer-matched light gray and a tonal blue-violet-to-navy form");
-}
-const homeNavy = [...homeMast.matchAll(/<ellipse cx="([0-9.]+)" cy="([0-9.]+)" rx="([0-9.]+)" ry="([0-9.]+)" fill="[^"]+"/g)];
-if (!homeNavy.some((m) => Number(m[4]) >= 700 && Number(m[1]) >= 1080)) {
-  fail("WeakNavyDome: home mast navy félkör must be a large center-right mass (ry ≥ 700, cx ≥ 1080)");
+// The user replaced the navy dome with a folded sculpture. Protect semantics
+// and the shared palette; browser tests verify the rendered shape and contrast.
+if (!/class="home-mast-sculpture"[^>]*aria-hidden="true"/.test(homeMast) ||
+    !/class="home-mast-art"/.test(homeMast)) {
+  fail("home opening must include a decorative folded sculpture outside the reading content");
 }
 if (/hero-proof|insights-feed|Canvas Career|hero-proof-caption/.test(homeMast)) {
   fail("CanvasFold: homepage header must not ship a product screenshot");
@@ -111,9 +99,6 @@ if (/<img\b(?![^>]*NB\.svg)/.test(homeMast)) {
 }
 if (/footer-col-title">Work|footer-copyright|© 2026 Norbert Barna/.test(homeMast)) {
   fail("home mast is not a footer clone: no Work column or copyright");
-}
-if (/#BDB414|#FFE000/.test(homeMast)) {
-  fail("home mast must not paint the footer yellow into the header");
 }
 if (/home-banner-outcomes/.test(home) === false) {
   fail("home fold must keep the selected-experience rail");
@@ -140,10 +125,7 @@ if (/href="[^"]*mailto:/.test(homeNav) || /anorbert@pm\.me/.test(homeNav)) {
 }
 if (!/class="home-nav-monogram"[^>]*>NB<\/span>/.test(homeNav) ||
     !/class="home-nav-label">LinkedIn<\/span>/.test(homeNav)) {
-  fail("home top bar must use the approved right-clustered NB / Works / LinkedIn / Email text treatment");
-}
-if (!/body\.home \.navbar \.nav-wrap[\s\S]{0,120}justify-content:\s*flex-end/.test(css)) {
-  fail("home desktop nav must be one right-aligned group, not a split left-logo column");
+  fail("home top bar must use the NB / Works / LinkedIn / Email text treatment");
 }
 if (!/body\.home \.navbar \.nav-logo-wrap[\s\S]{0,200}min-width:\s*44px[\s\S]{0,80}min-height:\s*44px/.test(css)) {
   fail("home NB monogram hit-area must stay at least 44×44");
@@ -156,12 +138,6 @@ for (const employer of ["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "B
   if (!new RegExp(`home-highlight-company[^>]*>${employer}<`).test(homeMast)) {
     fail(`home mast experience rail is missing ${employer}`);
   }
-}
-if (!/\.home-banner-area > \.home-banner-content-wrap[\s\S]{0,280}margin-top:\s*clamp\(230px,\s*20vw,\s*278px\)/.test(css)) {
-  fail("desktop experience rail must sit 230–278px onto the navy field");
-}
-if (!/preserveAspectRatio="none"/.test(homeMast) || !/id="home-mast-edge"/.test(homeMast)) {
-  fail("home reference arc must retain its broad geometry across aspect ratios and a defined soft edge");
 }
 if (/\$52M\+|1\.8\s*(?:→|-&gt;)\s*4\.8|VERSION B/i.test(homeMast)) {
   fail("home mast must not copy unsupported numbers or design annotations from the reference image");
@@ -272,7 +248,7 @@ if (/MailtoInHtml/.test(design) === false) fail("design.md must name the MailtoI
 if (/FakeEmailLink/.test(design) === false) fail("design.md must name the FakeEmailLink anti-pattern");
 if (/CompactMeshClip/.test(design) === false) fail("design.md must name the CompactMeshClip anti-pattern");
 if (/CanvasFold/.test(design) === false) fail("design.md must name the CanvasFold anti-pattern");
-if (/WeakNavyDome/.test(design) === false) fail("design.md must name the WeakNavyDome anti-pattern");
+if (!/immersive|folded sculpture/i.test(design)) fail("design.md must document the new immersive opening");
 if (/GiantWorkCards/.test(design) === false) fail("design.md must name the GiantWorkCards anti-pattern");
 if (/FooterHitSteal/.test(design) === false) fail("design.md must name the FooterHitSteal anti-pattern");
 if (/footer-mesh/.test(design) === false) fail("design.md must document footer-mesh");
@@ -284,7 +260,6 @@ if (!/CoverPoster/.test(design) || !/FigmaLeftover/.test(design) || !/TrackedBod
 if (!/InkOnNight/.test(design) || !/MotionCover/.test(design)) {
   fail("design.md must name InkOnNight and MotionCover");
 }
-if (/InkOnNavy/.test(design) === false) fail("design.md must name the InkOnNavy anti-pattern");
 if (/GrainWash/.test(design) === false) fail("design.md must name the GrainWash anti-pattern");
 if (/JobTitleDrift/.test(design) === false) fail("design.md must name the JobTitleDrift anti-pattern");
 if (/MeshParallaxCircus/.test(design) === false) fail("design.md must name the MeshParallaxCircus anti-pattern");
@@ -293,9 +268,6 @@ if (/DualHome/.test(design) === false) fail("design.md must name the DualHome an
 if (/TitleDrift/.test(design) === false) fail("design.md must name the TitleDrift anti-pattern");
 if (/InventedSocial/.test(design) === false) fail("design.md must name the InventedSocial anti-pattern");
 
-if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-banner-title[\s\S]{0,180}94px[\s\S]{0,80}128px/.test(css)) {
-  fail("home display size is not locked to the approved 94–128px desktop scale");
-}
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
   fail("product crops must use object-fit contain");
 }
@@ -306,13 +278,8 @@ if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
   fail("PROJECT FLOW rail is not hidden");
 }
 if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must wrap");
-if (!/\.home-mast \.hero-kicker[^}]{0,200}letter-spacing:\s*(?:\.(?:1\d|2\d)em|var\(--mast-kicker-tracking\))[^}]{0,80}text-transform:\s*uppercase/.test(css) ||
-    (/letter-spacing:\s*var\(--mast-kicker-tracking\)/.test(css) &&
-      !/--mast-kicker-tracking:\s*\.(?:1\d|2\d)em/.test(css))) {
-  fail("home kicker must use the approved screenshot-directed uppercase tracking");
-}
 if (!/\.home-mast \.home-banner-title\s*\{[^}]*font-family:\s*Inter,\s*sans-serif/.test(css)) {
-  fail("ReferenceByToken: home H1 must retain the existing Inter face through text reflow; Funnel remains the case/section display family");
+  fail("home H1 must retain the existing Inter face through text reflow; Funnel remains the case/section display family");
 }
 if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {
   fail("home outcomes must stay ink on paper after leaving the .black wrap");
@@ -344,12 +311,11 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.navbar \.nav-wrap,\s*\.navbar \.n
 if (/data-motion-toggle/.test(home + works + css) || /site-motion-toggle/.test(home + works)) {
   fail("MotionNav: the Motion control must not appear on home or /works");
 }
-if (!/body\.home \.navbar[\s\S]{0,240}background:\s*transparent/.test(css)) {
-  fail("home mast: navbar must sit on the mesh, not a white slab");
+if (!/body\.home \.navbar\s*\{[^}]*background:\s*#D6D4ED/i.test(css)) {
+  fail("home navbar must continue the footer-lilac opening field; rendered palette matching is checked in the browser");
 }
-if (!/\.home-mast \.hero-work-link[^}]{0,220}border-color:\s*#[\da-f]{6}[^}]{0,80}background:\s*#[\da-f]{6}[^}]{0,80}color:\s*#fff/i.test(css) ||
-    /\.hero-work-link[\s\S]{0,240}border-radius:\s*999px/.test(css)) {
-  fail("home CTA must be a 12px navy action with white text, not a generic black pill");
+if (!/\.home-mast \.hero-work-link\s*\{[^}]*border-radius:\s*12px[^}]*background:\s*#0A1628/i.test(css)) {
+  fail("home primary action must retain the footer navy and an accessible visible boundary");
 }
 if (!/\.work-list[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
   fail("home selected work must be a stacked row list");
@@ -527,19 +493,6 @@ if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-art[\s\S]{0,160}inset
 if (!/@media\s*\(max-width:\s*991px\)[\s\S]*?\.footer-mesh-navy[\s\S]{0,280}mask-image:\s*linear-gradient/.test(css)) {
   fail("NavyFlood: compact navy must fade in below Work so the title stays on lilac");
 }
-if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-mast-art[^}]*inset:\s*auto[^}]*height:\s*\d+px/.test(css) ||
-    !/\.home-mast\[data-text-reflow\] \.home-mast-navy[^}]*mask-image:\s*linear-gradient/.test(css)) {
-  fail("compact home must preserve the visible reference arc and the separate accessible text-reflow fallback");
-}
-if (!/--mast-muted:\s*#2a2a2e/.test(css)) {
-  fail("GrainWash: --mast-muted must be solid #2a2a2e");
-}
-if (!/\.home-mast \.hero-kicker[\s\S]{0,80}--mast-muted/.test(css)) {
-  fail("GrainWash: mast kicker must use --mast-muted, not 62% --muted");
-}
-if (!/@media\s*\(max-width:\s*991px\)[\s\S]*\.home-mast \.metric-context[\s\S]{0,160}--mast-muted/.test(css)) {
-  fail("GrainWash: compact highlights label must use --mast-muted, not 62% --muted");
-}
 if (!/TightAwardVideo/.test(design)) {
   fail("design.md must name the TightAwardVideo anti-pattern");
 }
@@ -553,29 +506,11 @@ if (/@media\s*\(max-width:\s*991px\)[\s\S]*\.awards-bg-video-wrap[\s\S]{0,80}dis
 if (/\.awards-card[\s\S]{0,80}\.awards-bg-video-wrap[\s\S]{0,60}opacity:\s*0\s*!important/.test(css)) {
   fail("TightAwardVideo: coarse/hover-none must not force the award video off");
 }
-const railColor = css.match(/--mast-on-navy:\s*#([\da-f]{6})/i)?.[1];
-const railChannels = railColor ? railColor.match(/../g).map((part) => parseInt(part, 16)) : [];
-if (railChannels.length !== 3 || Math.min(...railChannels) < 170 || railChannels[2] < railChannels[0]) {
-  fail("InkOnNavy: the normal home employer rail needs light lavender ink; rendered AA is checked in the browser");
-}
-if (!/@media\s*\(min-width:\s*992px\)[\s\S]*\.home-mast \.home-banner-outcomes[\s\S]{0,160}--mast-on-navy/.test(css)) {
-  fail("InkOnNavy: desktop mast highlights must use --mast-on-navy");
-}
-if (!/\.home-mast \.banner-left-wrap > p\.hero-kicker[\s\S]{0,80}font-size:\s*13px/.test(css)) {
-  fail("home kicker must stay 13px on compact, not inherit the 17px banner bump");
-}
 if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.footer-mesh-navy[\s\S]{0,280}transform:\s*none\s*!important/.test(css)) {
   fail("prefers-reduced-motion must freeze navy/olive/yellow mesh transforms");
 }
-if (!/@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.home-mast-navy[\s\S]{0,160}transform:\s*none\s*!important/.test(css) ||
-    !/html\.no-motion \.home-mast-navy[\s\S]{0,120}transform:\s*none\s*!important/.test(css)) {
-  fail("home mast navy motion must have static reduced-motion and runtime fallbacks");
-}
 if (/\.footer-mesh-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
   fail("FogGrain: .footer-mesh-art must not add a second CSS blur");
-}
-if (/\.home-mast-art[\s\S]{0,160}filter:\s*blur\(/.test(css)) {
-  fail("FogGrain: .home-mast-art must not add a second CSS blur");
 }
 if (/\.footer-mesh::after[\s\S]{0,240}opacity:\s*\.38/.test(css)) {
   fail("FogGrain: grain must not ship as a faint 0.38 multiply overlay");

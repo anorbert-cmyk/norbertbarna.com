@@ -304,14 +304,8 @@ if (!/<video\b[^>]*\bdata-autoplay-video\b[^>]*aria-label="Kineticare platform w
 }
 
 const responsiveCss = readFileSync(join(ROOT, "assets/css/responsive.css"), "utf8");
-if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-banner-content-wrap[^}]*max-width:[^}]*text-align:\s*right/.test(responsiveCss) ||
-    !/\.home-mast:not\(\[data-text-reflow\]\) \.metric-context[^}]*display:\s*none/.test(responsiveCss)) {
-  fail("home compact reference rail must stay narrow and right-aligned without an extra visible label");
-}
-if (!/\.home-mast\[data-text-reflow\] \.home-banner-outcomes[^}]*color:\s*var\(--ink\)/.test(responsiveCss) ||
-    !/\.home-mast\[data-text-reflow\] \.home-banner-content-wrap \.metric-context[^}]*color:\s*var\(--mast-muted\)/.test(responsiveCss)) {
-  fail("home enlarged/spaced text must retain the dark-on-pale list and solid label fallback");
-}
+// Home placement is responsive artwork, not a fixed navy rail. Real 320px,
+// text-resize and worst-background AA regressions live in portfolio.spec.mjs.
 const cssContracts = [
   [/\.summary[\s\S]*?height:\s*auto\s*!important/i, "rich-text images must keep intrinsic ratio"],
   [/@media\s*\(max-width:\s*991px\)/i, "tablet/mobile layout breakpoint is missing"],
@@ -396,23 +390,9 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("stopFooterMeshField()")) {
   fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
 }
-if (!animationJs.includes("function addHomeMastField(") ||
-    !animationJs.includes('gsap.quickTo(layer.el, "x"') ||
-    !animationJs.includes('gsap.quickTo(layer.el, "y"') ||
-    !animationJs.includes("new IntersectionObserver") ||
-    !animationJs.includes("removeHomeMastField")) {
-  fail("desktop home mast motion must use an independently scoped, offscreen-paused GSAP controller");
-}
-const portableMotion = animationJs.slice(animationJs.indexOf("function initPortableMotion()"), animationJs.indexOf("var started = false;"));
-if (/addHomeMastField\(/.test(portableMotion) || animationJs.includes('data-mast-motion')) {
-  fail("portable mast animation belongs to CSS and must not mount a JavaScript scroll controller");
-}
-const mastFieldStart = animationJs.indexOf("function addHomeMastField(");
-const mastFieldEnd = animationJs.indexOf("function createCaseRail()", mastFieldStart);
-const mastField = animationJs.slice(mastFieldStart, mastFieldEnd);
-if (/rotate(?:X|Y|Z)?\s*:|rotation(?:X|Y|Z)?\s*:/.test(mastField) ||
-    !/ScrollTrigger\.create/.test(mastField) || /repeat:\s*-1/.test(mastField)) {
-  fail("home mast must respond to native scroll without rotation or an idle loop");
+if (!/view-timeline(?:-name)?:\s*--home-fold-scroll/.test(responsiveCss) ||
+    !responsiveCss.includes("animation-timeline: --home-fold-scroll")) {
+  fail("home decorative scroll should progressively enhance native scrolling");
 }
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");
