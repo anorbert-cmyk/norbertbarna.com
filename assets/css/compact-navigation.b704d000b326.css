@@ -1,0 +1,19 @@
+/* Compact controls keep one quiet, opaque field throughout every chapter. */
+.navbar[data-compact-nav] {
+  top: 0;
+  transform: none !important;
+  background: #D6D4ED !important;
+  color: #0A1628;
+  mix-blend-mode: normal !important;
+  --immersive-link-ink: #0A1628;
+}
+
+.navbar[data-compact-nav] :is(.nav-link, .footer-contact-link, .footer-email,
+  .home-nav-monogram, .home-nav-label, .menu-button, .w-icon-nav-menu) {
+  color: #0A1628 !important;
+}
+
+.navbar[data-compact-nav] .nav-logo-wrap img { filter: none !important; }
+.navbar[data-compact-nav] .menu-button { background: transparent !important; }
+.navbar[data-compact-nav] :is(.home-nav-wordmark, .home-nav-progress) { display: none !important; }
+body:has(.navbar[data-compact-nav]) .immersive-nav-landing { display: none; }

@@ -128,6 +128,7 @@ const heroSceneFile = versionedAsset("assets/js/hero-scene.js", "hero-scene", "j
 const homeCompositionCssFile = versionedAsset("assets/css/home-composition.css", "home-composition", "css");
 const homeCompositionFile = versionedAsset("assets/js/home-composition.js", "home-composition", "js");
 const immersiveNavigationFile = versionedAsset("assets/js/immersive-navigation.js", "immersive-navigation", "js");
+const editorialFiles = ["editorial-sections", "compact-navigation", "project-index"].map(stem => ({ stem, file: versionedAsset(`assets/css/${stem}.css`, stem, "css") }));
 const arrivalCssFile = versionedAsset("assets/css/arrival.css", "arrival", "css");
 const arrivalFile = versionedAsset("assets/js/arrival.js", "arrival", "js");
 const caseOpeningCssFile = versionedAsset("assets/css/case-opening.css", "case-opening", "css");
@@ -164,6 +165,11 @@ for (const page of ALL_PAGES) {
 
 for (const page of ANIMATED_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
+  for (const { stem, file } of editorialFiles) {
+    const required = stem !== "project-index" || page === "index.html" || page === "works.html";
+    const refs = [...html.matchAll(/<link\b[^>]*href="([^"]+)"/g)].map(m => m[1]).filter(href => href.includes(`/assets/css/${stem}.`) || href.startsWith(`assets/css/${stem}.`));
+    if (required && (refs.length !== 1 || refs[0] !== `${assetPrefix(page)}assets/css/${file}`)) fail(`${page}: expected one current ${stem} stylesheet`);
+  }
   const animationRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/animations(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
     .map((match) => match[1]);
   const expectedAnimationRef = `${assetPrefix(page)}assets/js/${animationsFile}`;
@@ -174,6 +180,10 @@ for (const page of ANIMATED_PAGES) {
     fail(`${page}: expected ${expectedAnimationRef}, found ${animationRefs[0]}`);
   }
 
+  const navigationRefs = [...html.matchAll(/<script\b[^>]*src="([^"]*assets\/js\/immersive-navigation(?:\.[a-f0-9]+)?\.js)"/g)].map(m => m[1]);
+  if (navigationRefs.length !== 1 || navigationRefs[0] !== `${assetPrefix(page)}assets/js/${immersiveNavigationFile}`) {
+    fail(`${page}: every route needs the current compact-header controller exactly once`);
+  }
   const arrivalRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/arrival(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
     .map((match) => match[1]);
   if (page === "index.html" || page.startsWith("work/")) {

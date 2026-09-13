@@ -101,12 +101,16 @@ for (const width of [320, 390]) {
         const copy = element.querySelector(".work-row-copy").getBoundingClientRect();
         const image = element.querySelector(".work-row-thumb");
         return { rowWidth: row.width, frame: frame.toJSON(), copyTop: copy.top,
-          fit: getComputedStyle(image).objectFit, complete: image.complete && image.naturalWidth > 0 };
+          fit: getComputedStyle(image).objectFit, complete: image.complete && image.naturalWidth > 0,
+          source: image.getAttribute("src"), alt: image.getAttribute("alt"), hidden: image.getAttribute("aria-hidden") };
       });
       expect(geometry.frame.width).toBeGreaterThan(geometry.rowWidth * .8);
       expect(geometry.frame.width / geometry.frame.height).toBeGreaterThan(1.5);
       expect(geometry.copyTop).toBeGreaterThanOrEqual(geometry.frame.bottom);
-      expect(geometry.fit).toBe("contain");
+      expect(geometry.fit).toBe("cover");
+      expect(geometry.source).toMatch(/\/geometry\/raiffeisen\.960\.webp$/);
+      expect(geometry.alt).toBe("");
+      expect(geometry.hidden).toBe("true");
       expect(geometry.complete).toBe(true);
       await expect(row.locator("a")).toHaveCount(1);
       const bounds = await row.boundingBox();

@@ -193,7 +193,7 @@ for (const page of ALL_PAGES) {
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
     const rows = countTagsByClass(html, "div", "work-row");
     const cardTitleLinks = countTagsByClass(html, "a", "work-title") + countTagsByClass(html, "a", "related-work-title");
-    if (page === "index.html") {
+    if (page === "index.html" || page === "works.html") {
       if (rows !== cardTitleLinks) fail(`${page}: each selected-work row must have exactly one title link`);
     } else if (cards !== cardTitleLinks) {
       fail(`${page}: each project card must have exactly one title link`);
@@ -288,12 +288,9 @@ for (const page of ["index.html", "works.html"]) {
     const summaries = countTagsByClass(html, "p", "work-card-summary");
     if (rows !== summaries || rows !== 6) fail(`${page}: every selected-work row needs a visible scope summary`);
   } else {
-    const cards = countTagsByClass(html, "div", "work-card");
+    const rows = countTagsByClass(html, "div", "work-row");
     const summaries = countTagsByClass(html, "p", "work-card-summary");
-    const pills = countTagsByClass(html, "p", "work-category-text");
-    if (cards !== 7) fail(`${page}: E′ Weighted keeps all seven hiring-order cards`);
-    if (summaries !== 0) fail(`${page}: E′ Weighted labels are name + pill only — no card summaries`);
-    if (pills !== cards) fail(`${page}: every primary project card needs a Product design or Hungarian product pill`);
+    if (rows !== 7 || summaries !== rows) fail(`${page}: all seven editorial rows need factual summaries`);
   }
 }
 
@@ -311,19 +308,12 @@ const cssContracts = [
   [/@media\s*\(max-width:\s*991px\)/i, "tablet/mobile layout breakpoint is missing"],
   [/@media\s*\(max-width:\s*599px\)/i, "compact mobile layout breakpoint is missing"],
   [/\.work-image-wrap[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/i, "portfolio cover ratio is not reserved"],
-  [/\.work-section \.work-image-wrap \.work-image[\s\S]*?object-fit:\s*contain/i, "works stills must use contain, not cover-crop"],
-  [/\.work-section \.w-dyn-items\.work-grid > \.work-collection-item:nth-child\(3\)[\s\S]*?span 4/i, "E′ Weighted three-up columns are missing"],
-  [/\.work-section \.w-dyn-items\.work-grid::before[\s\S]*?content:\s*none/i, "RowClearfixHole: /works grid must disable Webflow clearfix"],
   [/\.home-about-video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "homepage video ratio is not reserved"],
   [/\.kineticare-browser-frame video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "Kineticare video ratio is not reserved"],
   [/\.summary \.kineticare-video-caption[\s\S]*?color:\s*#d8e2ec/i, "Kineticare video caption contrast is not guaranteed"],
   [/\.case-facts[\s\S]*?grid-template-columns:\s*repeat\(4/i, "desktop project facts grid is missing"],
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
-  [/\.footer-contact-link[\s\S]*?min-height:\s*44px/i, "footer LinkedIn is missing its 44px lock height"],
-  [/\.footer-email[\s\S]*?min-height:\s*44px/i, "footer Email is not 44px tall"],
-  [/\.footer-section[\s\S]*?min-height:\s*min\(66\.667vw,\s*960px\)/i, "desktop footer field must be ~3:2 so the dome is not crushed"],
-  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer LinkedIn must share 12px outlined chrome"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
@@ -336,6 +326,12 @@ const cssContracts = [
   [/@media\s*\(prefers-reduced-motion:\s*reduce\)/i, "reduced-motion CSS is missing"],
 ];
 for (const [pattern, message] of cssContracts) if (!pattern.test(responsiveCss)) fail(message);
+const editorialCss = readFileSync(join(ROOT, "assets/css/editorial-sections.css"), "utf8");
+for (const selector of ["button\\.footer-email", "a\\.footer-contact-link"]) {
+  const rule = new RegExp(`\\.footer-section\\.editorial-footer ${selector}\\s*\\{([^}]+)\\}`).exec(editorialCss)?.[1] || "";
+  if (!/min-height:\s*48px/.test(rule) || !/height:\s*auto/.test(rule)) fail(`Editorial ${selector}: needs a 48px minimum with text reflow`);
+}
+
 
 const animationJs = readFileSync(join(ROOT, "assets/js/animations.js"), "utf8");
 const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8");

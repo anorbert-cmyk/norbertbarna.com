@@ -354,6 +354,7 @@ for (const viewport of viewports) {
         const scope = await button.evaluate((element) => ({
           main: Boolean(element.closest("main")),
           nav: Boolean(element.closest(".navbar")),
+          footer: Boolean(element.closest("footer")),
           lang: element.closest("[lang]")?.lang,
         }));
         const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
@@ -387,7 +388,8 @@ for (const viewport of viewports) {
             overflow: element.scrollWidth - element.clientWidth,
           };
         });
-        expect(size.height).toBe(homeNav && viewport.width < 992 ? 48 : 44);
+        if (scope.footer) expect(size.height, "editorial footer contact target").toBeGreaterThanOrEqual(48);
+        else expect(size.height).toBe(homeNav && viewport.width < 992 ? 48 : 44);
         expect(size.width).toBeGreaterThanOrEqual(44);
         if (homeNav && viewport.width < 992) {
           expect(size.width, "compact menu action may fill its available row").toBeGreaterThanOrEqual(size.expected);
