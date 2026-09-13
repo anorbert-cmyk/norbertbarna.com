@@ -82,8 +82,8 @@ if (!/class="hero-work-link"[^>]*href="\/works"/.test(home)) {
   fail("home CTA must go to /works");
 }
 const homeMast = home.slice(
-  Math.max(0, home.indexOf("home-mast")),
-  home.indexOf("home-about-section")
+  home.indexOf('<header class="home-banner-section"'),
+  home.indexOf("</header>") + "</header>".length
 );
 // Protect the original scene's semantics and fallback. Browser checks verify
 // the rendered letter stage, interactions and contrast.
@@ -94,8 +94,8 @@ if (!/class="home-mast-sculpture"[^>]*aria-hidden="true"/.test(homeMast) ||
 if (/hero-proof|insights-feed|Canvas Career|hero-proof-caption/.test(homeMast)) {
   fail("CanvasFold: homepage header must not ship a product screenshot");
 }
-if ([...homeMast.matchAll(/<img\b[^>]*src="([^"]+)"/g)].some((match) => !/(?:NB|hero-lettering|hero-chevron)\.svg$/.test(match[1]))) {
-  fail("homepage opening artwork may only use original lettering/chevron SVGs, never generated product evidence");
+if ([...homeMast.matchAll(/<img\b[^>]*src="([^"]+)"/g)].some((match) => !/(?:NB|hero-lettering|hero-chevron|hero-gate)\.svg$/.test(match[1]))) {
+  fail("homepage opening artwork may only use original lettering/sculpture SVGs, never generated product evidence");
 }
 if (/footer-col-title">Work|footer-copyright|© 2026 Norbert Barna/.test(homeMast)) {
   fail("home mast is not a footer clone: no Work column or copyright");
@@ -318,15 +318,17 @@ if (!/body\.home \.navbar[^{]*\{[^}]*position:\s*fixed/.test(css) ||
 if (!/\.work-list[\s\S]{0,200}flex-direction:\s*column/.test(css)) {
   fail("home selected work must be a stacked row list");
 }
-if (!/\.work-row-thumb[\s\S]{0,160}width:\s*84px/.test(css) ||
-    !/\.work-row-thumb[\s\S]{0,200}height:\s*84px/.test(css)) {
-  fail("home work thumbs must lock at 84px (72–96 family), not half-viewport cards");
-}
 if (/#works[\s\S]{0,400}work-grid/.test(home) || /class="work-image-wrap"/.test(home)) {
-  fail("GiantWorkCards: home selected work must not restore giant 2-up cards");
+  fail("home selected work must retain one ordered row list, separate from the /works grid");
 }
 if ((home.match(/class="work-row"/g) || []).length !== 6) {
-  fail("home selected work must be six compact rows");
+  fail("home selected work must retain all six project rows");
+}
+if (!/class="home-mast-track"/.test(homeMast) || !/class="home-mast-display"[^>]*aria-hidden="true"/.test(homeMast)) {
+  fail("home morph needs a native scroll track and a decorative display title alongside the semantic H1");
+}
+if (!(home.indexOf('id="works"') > home.indexOf("</header>") && home.indexOf('id="works"') < home.indexOf('class="home-about-section"'))) {
+  fail("Selected work must follow the home opening before About");
 }
 if (!/\.work-grid[\s\S]{0,200}repeat\(12,\s*minmax\(0,\s*1fr\)\)/.test(css)) {
   fail("work grid must be a 12-column track");

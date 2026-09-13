@@ -334,7 +334,36 @@ async function sampleBehindGlyphs(page, locator, { includePixels = false } = {})
   return includePixels ? { ...stats, png, x: Math.max(0, box.x), y: Math.max(0, box.y) } : stats;
 }
 
+async function readableHomeTarget(page, locator) {
+  const target = await locator.evaluate((element) => {
+    const mast = element.closest(".home-mast");
+    if (!mast) return null;
+    return { active: mast.hasAttribute("data-morph-active"),
+      role: element.matches(".home-banner-title"), baseline: Boolean(element.closest(".home-mast-baseline")),
+      intro: Boolean(element.closest(".home-mast-intro")), action: element.matches(".hero-work-link") };
+  });
+  if (!target) return locator;
+  // Each reading phase is reached by native document scrolling. Never reveal
+  // hidden text by changing its styles, opacity or the animation's progress.
+  if (target.active && (target.baseline || target.intro)) {
+    await page.locator(".home-mast-track").evaluate((track, end) => {
+      const box = track.getBoundingClientRect();
+      const scene = track.querySelector(".home-mast-scene").getBoundingClientRect();
+      scrollTo(0, box.top + scrollY + (end ? box.height - scene.height : 0));
+    }, target.intro);
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    await page.waitForTimeout(220);
+  } else if (!target.active && target.role) {
+    // Static/reflow modes keep one semantic H1 and paint the large role title.
+    locator = page.locator(".home-mast-display");
+  } else if (!target.active && target.action) {
+    locator = page.locator(".home-intro-work");
+  }
+  return locator;
+}
+
 async function expectHeaderTextAA(page, locator, label, { raster = false } = {}) {
+  locator = await readableHomeTarget(page, locator);
   await locator.scrollIntoViewIfNeeded();
   const runs = await locator.evaluate((element) => {
     const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
@@ -450,17 +479,18 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.route(/posthog\.com/, (route) => route.abort());
     await openStable(page, "/");
-    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
-    await expect(text).toHaveCount(11);
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-mast-display, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(12);
     for (let index = 0; index < await text.count(); index += 1) {
-      if (await text.nth(index).isVisible()) {
-        await expectHeaderTextAA(page, text.nth(index), `${width} home text ${index + 1}`, { raster: true });
-      }
+      const target = await readableHomeTarget(page, text.nth(index));
+      if (await target.evaluate((element) => element.matches(".metric-context") && getComputedStyle(element).display === "none")) continue;
+      await expect(target).toBeVisible();
+      await expectHeaderTextAA(page, target, `${width} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast a.hero-work-link, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
+    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
     await expect(controls).toHaveCount(5);
     for (let index = 0; index < await controls.count(); index += 1) {
-      const control = controls.nth(index);
+      const control = await readableHomeTarget(page, controls.nth(index));
       if (!await control.isVisible()) await page.locator(".menu-button").click();
       for (const state of ["default", "hover", "focus"]) {
         await control.evaluate((element) => element.blur());
@@ -483,10 +513,12 @@ test.describe("native intro contrast", () => {
       await openStable(page, "/");
       await page.locator(".home-mast-intro").scrollIntoViewIfNeeded();
       await page.mouse.wheel(0, 180);
-      const text = page.locator(".home-mast-intro .hero-kicker, .home-mast-intro .home-banner-subtitle, .home-mast-intro .metric-context, .home-mast-proof-chips li, .home-banner-outcomes li, .home-intro-work");
-      await expect(text).toHaveCount(11);
+      const text = page.locator(".home-mast-intro .hero-kicker, .home-mast-intro .home-mast-display, .home-mast-intro .home-banner-subtitle, .home-mast-intro .metric-context, .home-mast-proof-chips li, .home-banner-outcomes li, .home-intro-work");
+      await expect(text).toHaveCount(12);
       for (let index = 0; index < await text.count(); index += 1) {
-        await expectHeaderTextAA(page, text.nth(index), `${width} scrolled intro text ${index}`, { raster: true });
+        const target = await readableHomeTarget(page, text.nth(index));
+        if (await target.evaluate((element) => element.matches(".metric-context") && getComputedStyle(element).display === "none")) continue;
+        await expectHeaderTextAA(page, target, `${width} scrolled intro text ${index}`, { raster: true });
       }
     });
   }
@@ -550,7 +582,8 @@ for (const resize of [
       await expect(mast).not.toHaveAttribute("data-text-reflow");
       await expect(page.locator(".home-mast .home-banner-title")).toHaveCSS("font-family", /Inter/);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
-      await expect(page.locator(".home-mast .metric-context")).toBeVisible();
+      const employer = await readableHomeTarget(page, page.locator(".home-mast .home-highlight-company").first());
+      await expect(employer).toBeVisible();
     }
     // These are intentional viewport changes; the initial load was checked above.
     await page.waitForTimeout(100);
@@ -621,12 +654,14 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     // for any subsequent shifts after the adjustment has been laid out.
     await page.waitForTimeout(100);
     await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
-    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
-    await expect(text).toHaveCount(11);
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-mast-display, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(12);
     for (let index = 0; index < await text.count(); index += 1) {
-      await expectHeaderTextAA(page, text.nth(index), `${width} ${adjustment} home text ${index + 1}`, { raster: true });
+      const target = await readableHomeTarget(page, text.nth(index));
+      if (await target.evaluate((element) => element.matches(".metric-context") && getComputedStyle(element).display === "none")) continue;
+      await expectHeaderTextAA(page, target, `${width} ${adjustment} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast a.hero-work-link, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
+    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
     await expect(controls).toHaveCount(5);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
@@ -1618,6 +1653,7 @@ test("the immersive home remains readable when GSAP is unavailable", async ({ pa
   await openStable(page, "/");
   await expect(page.locator(".site-arrival")).toHaveCount(0);
   await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
+  await readableHomeTarget(page, page.locator(".home-mast-proof-chips"));
   await expect(page.locator(".home-mast-proof-chips")).toBeVisible();
   await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
 });
@@ -1745,7 +1781,7 @@ test("390 footer seam guard detects a synthetic full-width hard seam", async ({ 
   console.log("Synthetic footer seam negative control:", maxJump);
 });
 
-test("1280 home selected work: compact rows, small thumbs, hiring order, stable title color", async ({ page }) => {
+test("1280 home selected work: wide landscape media, hiring order and stable title color", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await openStable(page, "/");
   const list = await page.evaluate(() => {
@@ -1756,8 +1792,10 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
         href: row.querySelector(".work-title")?.getAttribute("href"),
         title: row.querySelector(".work-title")?.textContent.trim(),
         summary: row.querySelector(".work-card-summary")?.textContent.trim() || "",
-        thumbW: Math.round(box.width),
-        thumbH: Math.round(box.height),
+        thumbW: box.width,
+        thumbH: box.height,
+        rowW: row.getBoundingClientRect().width,
+        fit: getComputedStyle(thumb).objectFit,
       };
     });
     return {
@@ -1765,7 +1803,7 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
       giantCards: Boolean(document.querySelector("#works .work-image-wrap, #works .work-grid")),
     };
   });
-  expect(list.giantCards, "GiantWorkCards must not return").toBe(false);
+  expect(list.giantCards, "home keeps a single ordered list instead of the /works grid").toBe(false);
   expect(list.rows.map((row) => row.href)).toEqual([
     "/work/raiffeisen",
     "/work/instructure",
@@ -1784,10 +1822,9 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
   ]);
   expect(list.rows.some((row) => /4M\+|Redesigning banking for/.test(row.summary))).toBe(false);
   for (const row of list.rows) {
-    expect(row.thumbW).toBeGreaterThanOrEqual(72);
-    expect(row.thumbW).toBeLessThanOrEqual(96);
-    expect(row.thumbH).toBeGreaterThanOrEqual(72);
-    expect(row.thumbH).toBeLessThanOrEqual(96);
+    expect(row.thumbW, "the project image is a substantial landscape band").toBeGreaterThanOrEqual(row.rowW * .25);
+    expect(row.thumbW / row.thumbH).toBeGreaterThanOrEqual(1.5);
+    expect(row.fit, "the wider band preserves the complete product UI").toBe("contain");
   }
 
   const kineticareTitle = page.locator('#works .work-title[href="/work/kineticare"]');
@@ -1859,7 +1896,7 @@ async function expectWorkPaper(row) {
     pseudo: getComputedStyle(element, "::before").content,
   }));
   expect(isTransparentFill(paint.background) || colorLuminance(parseCssColor(paint.background)) > 0.99,
-    "the row keeps its white reading surface").toBe(true);
+    "the row keeps its quiet reading surface").toBe(true);
   expect(paint.pseudo, "the former colored hover/focus wash must not return").toMatch(/^(none|normal)$/);
 }
 
@@ -2110,7 +2147,7 @@ for (const width of [390, 1440]) test.describe(width + " selected-work touch", (
   });
 });
 
-test("1440 home header: central artwork, role and native Works action precede truthful proof", async ({ page }) => {
+test("1440 home opening: original centered artwork and semantic role lead into the split composition", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
   await expect(page.locator(".home-mast h1")).toHaveText("Product VP");
@@ -2125,13 +2162,14 @@ test("1440 home header: central artwork, role and native Works action precede tr
   const layout = await page.evaluate(() => {
     const stage = document.querySelector(".home-mast-scene").getBoundingClientRect();
     const art = document.querySelector(".home-mast-sculpture").getBoundingClientRect();
-    const intro = document.querySelector(".home-mast-intro").getBoundingClientRect();
+    const track = document.querySelector(".home-mast-track").getBoundingClientRect();
     return { stageHeight: stage.height, centered: Math.abs(art.left + art.width / 2 - innerWidth / 2),
-      introTop: intro.top, stageBottom: stage.bottom, overflow: document.documentElement.scrollWidth - innerWidth };
+      trackHeight: track.height, introInside: Boolean(document.querySelector(".home-mast-scene > .home-mast-intro")), overflow: document.documentElement.scrollWidth - innerWidth };
   });
   expect(layout.stageHeight).toBeCloseTo(900, 0);
   expect(layout.centered).toBeLessThan(1);
-  expect(layout.introTop).toBeGreaterThanOrEqual(layout.stageBottom - 1);
+  expect(layout.trackHeight, "the native track supplies scroll distance for the composition change").toBeGreaterThan(layout.stageHeight);
+  expect(layout.introInside).toBe(true);
   expect(layout.overflow).toBeLessThanOrEqual(1);
   await expect(page.locator(".home-banner-title")).toBeInViewport();
   await expect(page.locator(".hero-work-link")).toBeInViewport();
@@ -2166,11 +2204,13 @@ test(`${width} first-visit scene keeps role and primary action above the consent
         covered: Boolean(bannerBox && box.bottom > bannerBox.top + 2),
       };
     });
-    const action = document.querySelector(".hero-work-link");
+    const active = document.querySelector(".home-mast").hasAttribute("data-morph-active");
+    const action = document.querySelector(active ? ".hero-work-link" : ".home-intro-work");
+    const role = document.querySelector(active ? ".home-banner-title" : ".home-mast-display");
     const actionBox = action.getBoundingClientRect();
     const actionHit = document.elementFromPoint(actionBox.left + actionBox.width / 2, actionBox.top + actionBox.height / 2);
     return { items, bannerTop: bannerBox ? bannerBox.top : null, ctaBottom: actionBox.bottom, actionReceivesPointer: action.contains(actionHit),
-      roleBottom: document.querySelector(".home-banner-title").getBoundingClientRect().bottom,
+      roleBottom: role.getBoundingClientRect().bottom,
       introTop: document.querySelector(".home-mast-intro").getBoundingClientRect().top };
   });
   expect(fold.items.map((item) => item.name)).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
@@ -2179,7 +2219,7 @@ test(`${width} first-visit scene keeps role and primary action above the consent
   expect(fold.roleBottom + 8, "the Product VP role remains above consent").toBeLessThanOrEqual(fold.bannerTop ?? 720);
   expect(fold.actionReceivesPointer, "the visible Works action receives the first pointer or touch input").toBe(true);
   for (const item of fold.items) {
-    expect(item.top, `${item.name} belongs to the following reading scene`).toBeGreaterThanOrEqual(fold.introTop);
+    expect(item.top, `${item.name} stays inside the semantic introduction`).toBeGreaterThanOrEqual(fold.introTop);
   }
 });
 }
@@ -2238,8 +2278,9 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
 test("390 immersive header keeps every label readable and inside the content flow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
-  const labels = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-highlight-company");
-  await expect(labels).toHaveCount(9);
+  await readableHomeTarget(page, page.locator(".home-mast .hero-kicker"));
+  const labels = page.locator(".home-mast .hero-kicker, .home-mast .home-mast-display, .home-mast .home-banner-subtitle, .home-mast .home-highlight-company");
+  await expect(labels).toHaveCount(8);
   const bounds = await labels.evaluateAll((elements) => elements.map((element) => {
     const box = element.getBoundingClientRect();
     const mast = element.closest(".home-mast").getBoundingClientRect();

@@ -1,0 +1,146 @@
+/* The selected storyboard: one native-scroll scene resolves into an editorial
+   product introduction, then releases directly into the landscape work list. */
+body.home { --composition-gutter: clamp(24px, 4.8vw, 80px); }
+body.home .home-mast { --mast-copy-size: clamp(18px, 1.65vw, 26px); --mast-kicker-size: clamp(20px, 2vw, 30px); --mast-kicker-tracking: -.035em; }
+.home-mast-track { position: relative; }
+.home-mast-scene { height: auto; min-height: 100svh; }
+.home-mast-statement { display: none; }
+.home-mast-baseline { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.home-mast-baseline a { display: none; }
+.home-mast-intro { position: relative; display: grid; align-content: start; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto auto; gap: 28px 32px; min-height: 100svh; padding: clamp(100px, 13svh, 150px) var(--composition-gutter) 32px; background: transparent; color: #0A1628; }
+.home-mast .home-mast-intro > .banner-left-wrap { grid-column: 1; max-width: none; align-self: center; }
+.home-mast .hero-kicker { margin: 0 0 10px; color: #0A1628; font-size: var(--mast-kicker-size); letter-spacing: var(--mast-kicker-tracking); }
+.home-mast-display { color: #0A1628; font-family: Inter, sans-serif; font-size: clamp(74px, 11.7vw, 180px); font-weight: 750; letter-spacing: -.075em; line-height: .88; margin: 0 0 22px -0.045em; }
+.home-mast .home-banner-subtitle { max-width: 28ch; color: #0A1628; font-family: Inter, sans-serif; font-size: var(--mast-copy-size); font-weight: 400; letter-spacing: -.035em; line-height: 1.22; }
+.home-mast .home-banner-subtitle::before { letter-spacing: -.035em; }
+.home-mast .home-intro-work { gap: 24px; margin-top: 22px; min-height: 48px; padding: 12px 22px; border-radius: 99px; color: #D6D4ED; background: #0A1628; font-size: 14px; line-height: 1.4; text-decoration: none; }
+.home-mast .home-intro-work:hover { text-decoration: underline; text-underline-offset: 4px; }
+.home-mast .home-intro-work:focus-visible { outline: 3px solid var(--site-focus); outline-offset: 5px; }
+.home-mast-proof-chips { grid-column: 1; gap: 20px; border: 0; padding: 0; margin: 0; align-self: end; }
+.home-mast-proof-chips li { gap: 0; color: #0A1628; font-size: 13px; line-height: 1.4; }
+.home-mast-proof-chips li + li { border-left: 1px solid rgb(10 22 40 / 35%); padding-left: 24px; }
+.home-mast-proof-chips strong { font-weight: 400; }
+.home-mast .home-banner-content-wrap { grid-column: 1 / -1; gap: 20px; justify-content: space-between; border-top: 1px solid rgb(10 22 40 / 30%); padding-top: 24px; }
+.home-mast .metric-context { order: 2; max-width: 11ch; color: #0A1628; font-size: 10px; text-transform: uppercase; letter-spacing: .1em; }
+.home-mast .home-banner-outcomes { gap: clamp(16px, 4vw, 62px); }
+.home-mast .home-highlight-company { color: #0A1628; font-size: 14px; }
+.home-mast-sculpture { z-index: 1; }
+.home-mast-fallback { inset: 10% 2% auto auto; height: 48vw; max-height: 620px; max-width: 42%; transform: rotate(-90deg) scale(.8, 1.1); }
+.home-mast-intro { z-index: 2; }
+/* JS opts in only when the complete end composition fits. No-JS, text reflow,
+   short windows and reduced motion use the readable unpinned composition. */
+.home-mast[data-morph-active] .home-mast-track { height: 210svh; }
+.home-mast[data-morph-active] .home-mast-scene { position: sticky; top: 0; height: 100svh; min-height: 0; }
+.home-mast[data-morph-active] .home-mast-statement { display: grid; }
+.home-mast[data-morph-active] .home-mast-intro { position: absolute; inset: 0; min-height: 0; height: 100%; opacity: 0; }
+.home-mast[data-morph-active] .home-mast-baseline { inset: auto 22px 14px; width: auto; height: auto; overflow: visible; clip-path: none; }
+.home-mast[data-morph-active] .home-mast-baseline a { display: inline-flex; }
+.home-mast[data-morph-active] .home-mast-fallback { inset: 0; max-width: 72%; max-height: none; height: 64%; transform: none; }
+.home-mast[data-morph-active] .home-mast-intro[data-morph-hidden] { visibility: hidden; }
+.home-mast[data-morph-active] .home-mast-baseline[data-morph-hidden] a { visibility: hidden; }
+/* The same navigation becomes the quiet top rule in the opening chapter. */
+body.home .navbar[data-composition-nav] { transform: none; mix-blend-mode: normal; background: rgb(214 212 237 / 97%); color: #0A1628; }
+body.home .navbar[data-composition-nav] .nav-wrap { gap: 28px; }
+body.home .navbar[data-composition-nav] .home-nav-wordmark,
+body.home .navbar[data-composition-nav] .home-nav-progress { display: none; }
+body.home .navbar[data-composition-nav] :is(.nav-link, a.footer-contact-link, button.footer-email, .home-nav-monogram, .home-nav-label, .menu-button) { color: #0A1628; --immersive-link-ink: #0A1628; }
+body.home .navbar[data-composition-nav] :is(.nav-menu-area > .nav-link, .nav-cta > .footer-contact-link) { position: static; }
+body.home .navbar[data-composition-nav] :is(.nav-menu-area, .nav-cta) { gap: 28px; }
+body.home #works { background: #D6D4ED; color: #0A1628; padding: 28px var(--composition-gutter) 80px; }
+body.home #works > .container-large { width: 100%; max-width: none; padding: 0 !important; }
+body.home #works .home-work-title-wrap { margin: 0; justify-content: flex-start; padding: 22px 0 18px; border-top: 1px solid rgb(10 22 40 / 30%); }
+body.home #works .about-section-title { margin: 0; color: #485272; font-family: Inter, sans-serif; font-size: 11px; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; }
+body.home #works .home-work-wrap { margin-top: 0; }
+body.home .work-list { border-top: 0; }
+body.home .work-row { grid-template-columns: minmax(0, 35fr) 20px minmax(0, 46fr) minmax(80px, 13fr); gap: clamp(16px, 2vw, 32px); align-items: center; padding: 26px 0; border-color: rgb(10 22 40 / 30%); }
+.work-row-visual { grid-column: 1; grid-row: 1; overflow: hidden; aspect-ratio: 2.4; background: #c5c4db; }
+body.home .work-row-thumb { width: 100%; height: 100%; border-radius: 0; object-fit: contain; }
+.work-row-number { grid-column: 2; grid-row: 1; align-self: start; padding-top: 6px; font-size: 11px; }
+body.home .work-row-copy { grid-column: 3; grid-row: 1; }
+body.home .work-row .work-title { color: #0A1628; font-family: Inter, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 66px); letter-spacing: -.065em; line-height: 1.06; }
+body.home .work-row .work-card-summary { max-width: 44ch; margin: 10px 0 0; color: #0A1628; font-size: clamp(14px, 1.15vw, 18px); letter-spacing: -.015em; line-height: 1.3; }
+.work-row-action { display: inline-flex; align-items: center; gap: 12px; margin-top: 14px; color: #0A1628; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+body.home .work-row-arrow { display: inline-block; color: #0A1628; font-size: 16px; opacity: 1; text-decoration: none; }
+.work-row-meta { grid-column: 4; grid-row: 1; justify-self: end; margin: 0; color: #485272; font-size: 10px; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; }
+body.home .work-row:focus-within { border-radius: 0; }
+body.home .home-work-footer { margin-top: 24px; }
+@media (max-width: 991px) {
+ body.home .home-mast { --mast-copy-size: 18px; --mast-kicker-size: 22px; }
+ .home-mast-intro { gap: 24px; padding-top: 100px; }
+ .home-mast .home-banner-subtitle br { display: none; }
+ .home-mast-proof-chips { grid-column: 1 / -1; width: 80%; }
+ .home-mast .home-banner-outcomes { gap: 16px 28px; }
+ .home-mast .metric-context { display: none; }
+ body.home .work-row { grid-template-columns: minmax(0, 40fr) 16px minmax(0, 54fr); gap: 16px; }
+ .work-row-meta { display: none; }
+ body.home .work-row .work-title { font-size: clamp(28px, 4.8vw, 48px); }
+}
+@media (max-width: 599px) {
+ body.home { --composition-gutter: 20px; }
+ body.home .home-mast { --mast-copy-size: 18px; --mast-kicker-size: 20px; }
+ .home-mast-intro { display: block; padding: 94px 20px 28px; }
+ .home-mast .home-mast-intro > .banner-left-wrap { width: 100%; }
+ .home-mast-display { font-size: 14vw; margin-top: 16px; margin-bottom: max(24px, calc(32svh - 36px - 28vw)); }
+ .home-mast .home-banner-subtitle { max-width: 30ch; line-height: 1.25; }
+ .home-mast .home-intro-work { margin-top: 20px; }
+ .home-mast-proof-chips { width: 100%; grid-template-columns: 1fr 1fr; margin-top: 28px; gap: 14px; }
+ .home-mast-proof-chips li { font-size: 12px; }
+ .home-mast-proof-chips li + li { padding-left: 14px; }
+ .home-mast .home-banner-content-wrap { margin-top: 28px; padding-top: 20px; }
+ .home-mast .home-banner-outcomes { gap: 12px 24px; }
+ .home-mast .home-highlight-company { font-size: 12px; }
+ .home-mast-fallback { top: 60px; right: -1%; height: 64vw; max-width: 46%; }
+ body.home #works { padding-bottom: 48px; }
+ body.home .work-row { grid-template-columns: 20px minmax(0, 1fr); gap: 16px 10px; padding: 22px 0; }
+ .work-row-visual { grid-column: 1 / -1; grid-row: 1; aspect-ratio: 2.25; }
+ .work-row-number { grid-column: 1; grid-row: 2; }
+ body.home .work-row-copy { grid-column: 2; grid-row: 2; }
+ body.home .work-row .work-title { font-size: clamp(30px, 9vw, 48px); }
+ body.home .work-row .work-card-summary { font-size: 15px; }
+}
+.home-mast[data-text-reflow] .home-mast-track { height: auto; }
+.home-mast[data-text-reflow] .home-mast-scene { display: block; height: auto; padding: 0; }
+.home-mast[data-text-reflow] .home-mast-intro { position: relative; display: block; height: auto; padding-top: 100px; }
+.home-mast[data-text-reflow] .home-mast-sculpture { display: none; }
+.home-mast[data-text-reflow] .home-mast-display { font-size: clamp(48px, 10vw, 120px); margin-bottom: 28px; }
+.home-mast[data-text-reflow] .home-mast-proof-chips { width: 100%; margin-top: 32px; }
+.home-mast[data-text-reflow] .home-banner-content-wrap { margin-top: 32px; }
+.home-mast[data-text-reflow] .home-mast-statement { display: none; }
+.home-mast[data-text-reflow] .home-mast-baseline { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+@media (min-width: 600px) and (max-height: 760px) {
+ .home-mast-intro { padding-top: 82px; gap: 20px; }
+ .home-mast-display { font-size: clamp(64px, 9vw, 112px); margin-bottom: 18px; }
+ .home-mast .home-intro-work { margin-top: 18px; }
+}
+
+.home-mast-anchor { position: absolute; top: 0; width: 1px; height: 1px; pointer-events: none; }
+.home-mast[data-morph-active] .home-mast-anchor { top: calc(100% - 100svh); }
+body.home .home-mast .banner-left-wrap > p.hero-kicker { font-size: var(--mast-kicker-size); }
+body.home .navbar[data-composition-nav]:is([data-keyboard="true"]:focus-within, :has(.w--open), [data-reading-dock]) { background: #D6D4ED; color: #0A1628; mix-blend-mode: normal; }
+
+.home-mast[data-text-reflow] .home-mast-display { overflow-wrap: anywhere; }
+.home-mast .home-intro-work { max-width: 100%; white-space: normal; flex-wrap: wrap; }
+@media (min-width: 600px) {
+ .home-mast[data-morph-active] .home-mast-intro { padding-bottom: calc(32px + var(--consent-cover, 0px)); }
+}
+
+.home-mast[data-text-reflow] .home-intro-work { border-radius: 16px; }
+@media (max-width: 599px) {
+ .home-mast[data-morph-active] .home-mast-display { margin-bottom: max(24px, calc(32svh - 36px - 28vw - var(--consent-cover, 0px) * .6)); }
+}
+
+.home-mast-gate-fallback { position: absolute; top: 14%; right: 8%; width: 40%; height: 65%; object-fit: contain; }
+.home-mast:not([data-morph-active]) .home-mast-fallback { display: none; }
+.home-mast[data-morph-active] .home-mast-gate-fallback { display: none; }
+.home-mast-sculpture[data-hero-scene="ready"] .home-mast-gate-fallback { opacity: 0 !important; }
+@media (max-width: 599px) { .home-mast-gate-fallback { top: 14%; right: 1%; width: 48%; height: 28%; } }
+/* A missing morph owner still presents the endpoint drawing next to its copy. */
+.home-mast:not([data-morph-active]) .home-mast-canvas { visibility: hidden; }
+.home-mast:not([data-morph-active]) .home-mast-gate-fallback { opacity: 1 !important; }
+@media (min-width: 600px) {
+ .home-mast[data-morph-active] .home-mast-display { font-size: clamp(68px, calc(11.7vw - max(0px, var(--consent-cover, 0px) - 100px) * .8), 180px); }
+}
+@media (max-width: 599px) {
+ .home-mast[data-morph-active] .home-mast-intro { padding-top: calc(94px - min(28px, var(--consent-cover, 0px))); }
+}

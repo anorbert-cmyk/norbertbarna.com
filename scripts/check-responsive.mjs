@@ -392,9 +392,17 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
 }
 const sceneJs = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
 const journeyJs = readFileSync(join(ROOT, "assets/js/immersive-navigation.js"), "utf8");
+const compositionJs = readFileSync(join(ROOT, "assets/js/home-composition.js"), "utf8");
 if (!sceneJs.includes("PortfolioHeroScene") || !sceneJs.includes("webglcontextlost") ||
     !sceneJs.includes('listeners.abort()') || !sceneJs.includes("portfolio:arrivalstart")) {
   fail("hero scene must coordinate the arrival and retain context-loss and lifecycle cleanup");
+}
+if (!compositionJs.includes("PortfolioHomeMorph") || !compositionJs.includes("setMorphProgress") ||
+    /(?:wheel|touchmove)[\s\S]{0,160}preventDefault\(|new\s+(?:window\.)?Lenis\b/.test(compositionJs)) {
+  fail("home composition must own the hero pose without intercepting native input or scrolling");
+}
+if (!animationJs.includes("PortfolioHomeMorph")) {
+  fail("the shared statement animation must yield ownership to the home composition");
 }
 if (!journeyJs.includes("scrollY / limit") || !journeyJs.includes("prefers-reduced-motion") ||
     /preventDefault\(/.test(journeyJs)) {

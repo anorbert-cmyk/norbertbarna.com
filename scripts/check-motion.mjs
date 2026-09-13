@@ -125,6 +125,8 @@ function checkRichTextImages(page, html) {
 }
 
 const heroSceneFile = versionedAsset("assets/js/hero-scene.js", "hero-scene", "js");
+const homeCompositionCssFile = versionedAsset("assets/css/home-composition.css", "home-composition", "css");
+const homeCompositionFile = versionedAsset("assets/js/home-composition.js", "home-composition", "js");
 const immersiveNavigationFile = versionedAsset("assets/js/immersive-navigation.js", "immersive-navigation", "js");
 const arrivalCssFile = versionedAsset("assets/css/arrival.css", "arrival", "css");
 const arrivalFile = versionedAsset("assets/js/arrival.js", "arrival", "js");
@@ -136,6 +138,18 @@ const responsiveFile = versionedAsset("assets/css/responsive.css", "responsive",
 
 for (const page of ALL_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
+  const compositionStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
+    .map((match) => attribute(match[0], "href")).filter((href) => /\/home-composition(?:\.|\/)/.test(href));
+  const compositionScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
+    .map((match) => attribute(match[0], "src")).filter((src) => /\/home-composition(?:\.|\/)/.test(src));
+  if (page === "index.html") {
+    if (compositionStyles.length !== 1 || compositionStyles[0] !== `assets/css/${homeCompositionCssFile}` ||
+        compositionScripts.length !== 1 || compositionScripts[0] !== `assets/js/${homeCompositionFile}`) {
+      fail("home composition CSS and JS must each load their own current byte-matched asset once");
+    }
+  } else if (compositionStyles.length || compositionScripts.length) {
+    fail(`${page}: the home composition must not change another page's opening`);
+  }
   const responsiveRefs = [...html.matchAll(/<link\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "href"))
     .filter((href) => /\/responsive(?:\.[a-f0-9]+)?\.css$/i.test(href));
@@ -179,10 +193,14 @@ for (const page of ANIMATED_PAGES) {
     }
     if (page === "index.html") {
       const sceneIndex = scripts.indexOf(`assets/js/${heroSceneFile}`);
+      const compositionIndex = scripts.indexOf(`assets/js/${homeCompositionFile}`);
       const arrivalIndex = scripts.indexOf(`assets/js/${arrivalFile}`);
       const motionIndex = scripts.indexOf(`assets/js/${animationsFile}`);
       if (sceneIndex < 0 || sceneIndex >= arrivalIndex || arrivalIndex >= motionIndex) {
         fail("home scene readiness must initialize before arrival, followed by shared animation ownership");
+      }
+      if (compositionIndex <= sceneIndex || compositionIndex >= motionIndex) {
+        fail("home morph must connect to the scene before shared animations can claim the same statement");
       }
     }
     if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {

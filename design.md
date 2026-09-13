@@ -119,11 +119,8 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   Geometry begins 200ms after Enter,
   assembles in 2.3 seconds, responds to pointer tilt/nearby fragmentation and drag.
   Use original dependency-free WebGL with a corresponding SVG fallback.
-- The real H1 remains Product VP, visible at the lower left. Works and the
-  native scroll affordance occupy the lower edge. Move original dek, proof and
-  selected experience into the following spacious reading scene; do not shrink
-  them to force them into the opening viewport.
-- Distributed utility header: NB left, central wordmark, real page-progress
+- The real H1 remains Product VP, visible at the lower left in the starting pose. Works and the native scroll affordance occupy the lower edge. The user-selected 03/04 direction adds a 210svh native track: the same object turns and morphs to a matte forest/olive folded gate on the right. The large live Product VP display, original name/dek, proof and employers resolve on the left; the semantic H1 remains unique. Short windows, no-JS, reduced motion and enlarged text use the final unpinned composition.
+- During the home opening and Selected work, NB and destinations form a quiet stable lilac top bar. After that chapter, resume the distributed utility header: NB left, central wordmark, real page-progress
   counter and existing destinations. It travels down the viewport with native
   page progress and the wordmark expands at the footer. Keyboard focus and the
   mobile menu return navigation to a stable top position. Reading and product
@@ -134,8 +131,7 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   with opacity only; never translate the menu across the paragraph.
   The terminal wordmark has its own landing after the unchanged footer links;
   a screen-space offset keeps the scaled letters centred inside that landing.
-- The large intro statement resolves word positions with native scrolling.
-  Content reading order stays intact. No scroll hijack or touch capture.
+- `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
 - All seven cases inherit the branded arrival/chrome vocabulary; complete real
   product images and text remain. The lilac stage uses a large centered Funnel
   title, four-slice media assembly, and a short native-scroll perspective settle.
@@ -342,9 +338,7 @@ detection compares against the authored responsive baseline.
 6. Kineticare (HU product — kicker must say so)
 7. OnRobot
 
-Home selected work shows 1–6 as compact stacked rows (`.work-list` / `.work-row`):
-72–96px thumbs cropped from existing case images, live titles, live one-liners,
-hairline between rows, quiet arrow. Never giant 2-up color cards.
+Home selected work shows 1–6 as landscape editorial rows (`.work-list` / `.work-row`), directly after the home scene. The user-selected 03/04 storyboard supersedes the 72–96px thumbnails: a wide 2.4:1 image frame, small sequence number, large live title, original summary, View project affordance and factual domain labels. Existing complete case images use `contain`; compact stacks image above copy. Each entire row remains one native project link, separated by a hairline on footer-lilac.
 `/works` shows all seven in that order as the locked **E′ Weighted** grid
 (A/B/C/D/Mesh remain HOLD). Row 1 is **7/5** (Raiffeisen wider / Instructure
 narrower) with flush tops and equal band height. Row 2 is three equal 4-span
@@ -421,14 +415,13 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    refractive forest/olive chevron. No horizontal overflow or old semicircle.
 2. Semantic H1 `Product VP` in Inter 400 at the lower left. The large
    `PRODUCT / WITH / PURPOSE` artwork does not replace the accessible role.
-3. The next navy intro preserves the plain name `Norbert Barna` and
+3. Native scrolling transforms the same glass chevron to the right-hand matte folded gate. The left editorial composition preserves the plain name `Norbert Barna` and
    `AI products for fintech, Web3, regulated teams — strategy to ship.`
 4. Preserve proofs: multi-country banking / Raiffeisen and enterprise EdTech
    AI / Instructure. No invented results or metrics.
 5. `[ Works ]` in the scene and `View selected work` in the intro link
    natively to `/works`; at least 44px high and usable on first touch.
-6. BlackRock, Instructure, Raiffeisen, Bitpanda and Balabit remain semantic
-   employer items in the intro. Their detailed evidence remains below.
+6. BlackRock, Instructure, Raiffeisen, Bitpanda and Balabit remain semantic employer items at the lower edge of the resolved intro. Their detailed evidence remains below.
 7. Under text zoom/spacing the art and controls get separate rows. Decorative
    header text and progress can yield space to native links. The original
    consent component remains usable and the first-view role/Works stay clear.
@@ -441,10 +434,7 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    All five service headings use ink on paper, never the inherited white
    `--font-color--dark` from the old template. Test their revealed-state contrast.
 
-**Home selected work (E):** compact rows, not giant 2-up rounded color cards.
-Small 72–96px thumbs (crops of existing case images), live titles + live
-one-liners, hairline between rows, quiet arrow. Do not use invented years or
-invented descriptions from the compact-row mock.
+**Home selected work (03/04 storyboard, 2026-09-14):** wide landscape rows directly follow the hero. Preserve the six project names, order and summaries. Show complete existing UI in a 2.4:1 frame, a small sequence number, large title and native whole-row action. Mobile stacks frame over copy. The same lilac field and fine rules connect hero and work; About and services follow the list. No invented metrics, dates or descriptions.
 
 **Works fold:** H1 `Selected work` (same subject as `<title>`),
 two-line intro max, first card (Raiffeisen) visible in a 900px-tall desktop
@@ -541,7 +531,7 @@ English-wash the screenshot.
 |---|---|---|
 | EmptyFold | Name or manifesto, or a Canvas/product screenshot standing in for the home argument | Role + Works on the opening stage, live proof in the following intro; product UI stays in work rows and case pages |
 | CanvasFold | Instructure Canvas Career (or any product UI) in the homepage header | Delete it. Use the central original glass scene and title |
-| GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Compact stacked rows, 72–96px thumbs |
+| GiantWorkCards | Home Selected work as giant 2-up rounded color cards or half-viewport covers | Wide landscape rows from the approved 03/04 storyboard; compact stacks image above copy |
 | FooterHitSteal | Unscoped `.work-title::after` (z-index 5) paints over footer Email/LinkedIn so the ink-wash hover never sticks | Scope the hit-area to `.work-card` / `.work-row` / `.related-work-card`. Footer stacks at `z-index: 8` |
 | DualIndex | Home **list** order ≠ `/works` order | One list, hiring-first |
 | BlogHero | “Written by / Published / Updated” anywhere on the page | Facts + UI; authorship stays in meta and JSON-LD |
@@ -559,8 +549,8 @@ English-wash the screenshot.
 | CompactMeshClip | A hard horizontal seam through the compact ident / Email / Work stack where a short bottom-pinned mesh SVG begins | Compact `.footer-mesh-art` fills the footer (`inset: 0; height: 100%`) so the wash is one field |
 | FlatDuneGrain | Four solid dune fills, Ironclad ridge silhouettes, or per-layer sand on stacked paths | One soft mesh + one static analog grain overlay. No `.footer-dunes` |
 | FogGrain | A blurred grain layer or broad neutral haze flattens the field | Visible static speckle with retained light gray and blue depth; home planes remain distinct; footer retains its existing material |
-| NavyFlood | Navy reaches dark reading text and destroys contrast | Compact footer: fade navy below type. Home: lilac copy and employers stay on the separate navy intro; text reflow separates the artwork from controls |
-| GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid navy ink on lilac, and lilac ink on the navy intro and dark arrival; sample worst relevant pixels behind glyphs, including reflow |
+| NavyFlood | Navy reaches dark reading text and destroys contrast | Compact footer: fade navy below type. Home: navy copy and employers stay on the lilac composition; text reflow uses an unpinned layout without the sculpture |
+| GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid navy ink on lilac, and lilac ink on the dark arrival; sample worst relevant pixels behind glyphs, including reflow |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
 | PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
 | HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |

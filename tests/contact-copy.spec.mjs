@@ -157,8 +157,9 @@ for (const adjustment of ["text 200%", "WCAG text spacing"]) {
     await assertControlTextFits(page.locator(".navbar button.footer-email"), "header contact", viewport);
     await assertNoControlOverlap(page, [".navbar button.footer-email", ".navbar .footer-contact-link"], "header contact does not overlap LinkedIn");
     await page.locator(".menu-button").click();
-    await assertControlTextFits(page.locator(".home-banner-section .hero-work-link"), "hero CTA", viewport);
-    await assertNoControlOverlap(page, [".home-banner-section .hero-work-link", ".home-banner-subtitle"], "hero CTA does not overlap its preceding text");
+    const primaryAction = ".home-mast[data-morph-active] .hero-work-link, .home-mast:not([data-morph-active]) .home-intro-work";
+    await assertControlTextFits(page.locator(primaryAction), "hero CTA", viewport);
+    await assertNoControlOverlap(page, [primaryAction, ".home-banner-subtitle"], "hero CTA does not overlap its preceding text");
     expect.soft(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), "no horizontal page overflow").toBeLessThanOrEqual(1);
   });
 }

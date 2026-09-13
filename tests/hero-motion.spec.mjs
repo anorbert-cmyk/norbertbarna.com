@@ -59,16 +59,30 @@ test("WebGL pointer response and drag change the sculpture without moving readin
   expect(await readingGeometry(page)).toEqual(geometry);
 });
 
+async function reachSplitComposition(page) {
+  await page.locator(".home-mast-track").evaluate((track) => {
+    const box = track.getBoundingClientRect();
+    const scene = track.querySelector(".home-mast-scene").getBoundingClientRect();
+    scrollTo(0, box.top + scrollY + Math.max(0, box.height - scene.height));
+  });
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+}
+
 for (const width of [320, 390, 1280]) {
-  test(`${width}: native scroll reveals the separate reading scene without horizontal overflow`, async ({ page }) => {
+  test(`${width}: native scroll reveals the split composition without horizontal overflow`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await openScene(page);
-    const geometry = await readingGeometry(page);
+    const trackGeometry = () => page.locator(".home-mast-track").evaluate((track) => {
+      const box = track.getBoundingClientRect();
+      return [box.top + scrollY, box.width, box.height];
+    });
+    const geometry = await trackGeometry();
     await page.mouse.wheel(0, 650);
     await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(300);
-    expect(await readingGeometry(page)).toEqual(geometry);
+    expect(await trackGeometry(), "native scrolling changes the composition without changing the reserved track").toEqual(geometry);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
-    await page.locator(".home-mast-intro").scrollIntoViewIfNeeded();
+    await reachSplitComposition(page);
+    await expect(page.locator(".home-mast-intro")).toHaveCSS("opacity", "1");
     await expect(page.locator(".home-mast-proof-chips")).toBeVisible();
     await expect(page.locator(".home-intro-work")).toHaveAttribute("href", "/works");
   });
@@ -78,13 +92,26 @@ test("header journey follows actual native page progress and becomes stable for 
   await openScene(page);
   const nav = page.locator(".navbar");
   const top = await nav.boundingBox();
-  await page.evaluate(() => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * .35));
+  // The opening/work chapter intentionally keeps its quiet top bar. Travel
+  // resumes in the following reading chapters; their position follows content.
+  const foundTravelSlot = await page.locator("#works").evaluate(async (work) => {
+    const start = work.getBoundingClientRect().bottom + scrollY + 10;
+    const header = document.querySelector(".navbar");
+    for (let step = 0; step <= 8; step += 1) {
+      scrollTo(0, start + step * 96);
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (header.getBoundingClientRect().top > 100 && !header.hasAttribute("data-reading-dock") && !header.hasAttribute("data-composition-nav")) return true;
+    }
+    return false;
+  });
+  expect(foundTravelSlot, "the reading chapter must contain a real travelling slot beyond the quiet work chapter").toBe(true);
   await expect.poll(() => nav.evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(top.y + 100);
-  await expect(page.locator(".home-nav-progress span")).toHaveText("035");
+  const actualProgress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
+  await expect(page.locator(".home-nav-progress span")).toHaveText(actualProgress);
   await page.keyboard.press("Tab");
-  await page.locator(".navbar .home-nav-wordmark").focus();
+  await page.locator(".navbar .nav-logo-wrap").focus();
   await expect.poll(() => nav.evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
-  await expect(page.locator(".navbar .home-nav-wordmark")).toBeFocused();
+  await expect(page.locator(".navbar .nav-logo-wrap")).toBeFocused();
 });
 
 test("header changes reading slots through a bounded opacity settle and real keyboard or reduced motion cancels it", async ({ page }) => {
@@ -92,29 +119,50 @@ test("header changes reading slots through a bounded opacity settle and real key
   const nav = page.locator(".navbar");
   const crossReadingBoundary = () => page.evaluate(async () => {
     const header = document.querySelector(".navbar");
-    const groups = [...document.querySelectorAll(".home-mast-intro > .banner-left-wrap, .home-mast-proof-chips, .home-mast-intro > .home-banner-content-wrap")];
-    const top = Math.min(...groups.map((group) => group.getBoundingClientRect().top + scrollY));
-    const boundary = top - header.offsetHeight - 12;
     const frames = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    scrollTo(0, boundary - 20);
-    await frames();
-    await new Promise((resolve) => setTimeout(resolve, 220));
-    scrollTo(0, boundary + 20);
-    await frames();
-    const animation = header.getAnimations()[0];
-    window.__observedSlotFade = animation;
-    const box = header.getBoundingClientRect();
-    // The travelling header may use a genuine gap within the introduction.
-    // Protect every text/link box, not the empty padding around the proof list.
-    const readingBoxes = [...document.querySelectorAll(".home-mast-intro p, .home-mast-intro a, .home-mast-intro li")]
-      .map((element) => element.getBoundingClientRect()).filter((reading) => reading.width && reading.height);
-    return {
-      frames: animation?.effect.getKeyframes(), duration: animation?.effect.getTiming().duration,
-      opacity: Number(getComputedStyle(header).opacity),
-      clear: readingBoxes.length > 0 && readingBoxes.every((reading) => box.bottom <= reading.top - 11 || box.top >= reading.bottom + 11),
-      y: scrollY, counter: document.querySelector(".home-nav-progress span").textContent,
-      progress: String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"),
+    const state = () => {
+      const animation = header.getAnimations()[0];
+      window.__observedSlotFade = animation;
+      const box = header.getBoundingClientRect();
+      const readingBoxes = [...document.querySelectorAll("main h1, main h2, main h3, main p, main li, main .awards-card, main figure")]
+        .filter((element) => {
+          if (element.closest('[aria-hidden="true"]')) return false;
+          let alpha = 1;
+          for (let node = element; node; node = node.parentElement) alpha *= Number(getComputedStyle(node).opacity);
+          return alpha > .99 && getComputedStyle(element).visibility === "visible";
+        }).map((element) => element.getBoundingClientRect()).filter((reading) => reading.width > 1 && reading.height > 1);
+      return {
+        frames: animation?.effect.getKeyframes(), duration: animation?.effect.getTiming().duration,
+        opacity: Number(getComputedStyle(header).opacity),
+        clear: readingBoxes.length > 0 && readingBoxes.every((reading) => box.bottom <= reading.top - 11 || box.top >= reading.bottom + 11),
+        y: scrollY, counter: document.querySelector(".home-nav-progress span").textContent,
+        progress: String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"),
+      };
     };
+    const cross = async (from, to) => {
+      scrollTo(0, from); await frames();
+      await new Promise((resolve) => setTimeout(resolve, 220));
+      const previousTop = header.getBoundingClientRect().top;
+      scrollTo(0, to); await frames();
+      return Math.abs(header.getBoundingClientRect().top - previousTop);
+    };
+    if (window.__homeSlotCrossing) {
+      await cross(...window.__homeSlotCrossing);
+      return state();
+    }
+    // The old intro is now sticky artwork. Find a real, bounded large reading
+    // slot change after the work chapter instead of relying on its old Y offset.
+    const start = document.querySelector("#works").getBoundingClientRect().bottom + scrollY + 10;
+    const limit = document.querySelector("footer").getBoundingClientRect().top + scrollY;
+    for (let from = start, attempt = 0; from < limit && attempt < 45; from += 64, attempt += 1) {
+      const to = from + 64;
+      const distance = await cross(from, to);
+      if (distance > header.offsetHeight * 2 && header.getAnimations().length && !header.hasAttribute("data-reading-dock")) {
+        window.__homeSlotCrossing = [from, to];
+        return state();
+      }
+    }
+    return state();
   });
   const settledState = () => nav.evaluate(async (header) => {
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -134,9 +182,17 @@ test("header changes reading slots through a bounded opacity settle and real key
   await page.waitForTimeout(220);
   expect(await settledState()).toMatchObject({ opacity: 1, count: 0 });
 
-  // Start at the intro's final native link so the next real Tab reaches a
-  // control further down the document and scrolls while the fade is active.
-  await page.locator(".home-intro-work").evaluate((link) => link.focus({ preventScroll: true }));
+  // Select an existing focus predecessor whose next native Tab must reach a
+  // control below the current view, without manufacturing fixture controls.
+  const preparedNativeTab = await page.evaluate(() => {
+    const controls = [...document.querySelectorAll("main a[href], main button, footer a[href], footer button")]
+      .filter((element) => element.getClientRects().length && getComputedStyle(element).visibility === "visible" && element.tabIndex >= 0);
+    const next = controls.findIndex((element) => element.getBoundingClientRect().top > innerHeight + 80);
+    if (next < 1) return false;
+    controls[next - 1].focus({ preventScroll: true });
+    return true;
+  });
+  expect(preparedNativeTab).toBe(true);
   const keyboardCrossing = await crossReadingBoundary();
   await page.keyboard.press("Tab");
   const keyboard = await settledState();
@@ -154,15 +210,21 @@ test("reduced motion freezes the painted sculpture and the travelling header", a
   await openScene(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator("html")).toHaveClass(/no-motion/);
+  const fallback = page.locator(".home-mast-gate-fallback");
+  await expect(fallback).toBeVisible();
+  await expect(fallback).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-canvas")).toBeHidden();
+  await expect(page.locator(".home-mast-fallback")).toBeHidden();
+  const paintedFallback = async () => createHash("sha256").update(await fallback.screenshot()).digest("hex");
   await page.waitForTimeout(200);
-  const quiet = await paintedScene(page);
+  const quiet = await paintedFallback();
   await page.mouse.move(820, 360);
   await page.mouse.down(); await page.mouse.move(450, 540, { steps: 10 }); await page.mouse.up();
   await page.waitForTimeout(300);
   // In static mode the native drag may select the underlying SVG image.
   // Clear that browser selection so the comparison measures scene movement.
   await page.evaluate(() => getSelection().removeAllRanges());
-  expect(await paintedScene(page)).toEqual(quiet);
+  expect(await paintedFallback()).toEqual(quiet);
   await page.evaluate(() => window.scrollTo(0, 900));
   await expect.poll(() => page.locator(".navbar").evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
 });
@@ -180,7 +242,12 @@ test("destroying the hero scene stops rendering and preserves the visible SVG fa
   await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForTimeout(300);
   expect(await page.evaluate(() => window.__drawsAfterDestroy)).toBe(0);
+  // Explicit teardown retains the current opening pose. A real WebGL failure
+  // separately switches to the complete static reading composition below.
+  await expect(page.locator(".home-mast-fallback")).toBeVisible();
   await expect(page.locator(".home-mast-fallback")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-gate-fallback")).toBeHidden();
+  await expect(page.locator(".home-mast-canvas")).toHaveCSS("opacity", "0");
   await page.locator(".hero-work-link").click();
   await expect(page).toHaveURL(/\/works$/);
 });
@@ -194,9 +261,12 @@ test("unavailable WebGL preserves the original fallback artwork and native navig
   });
   await page.goto("/", { waitUntil: "load" });
   await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("fallback");
-  await expect(page.locator(".home-mast-fallback")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-gate-fallback")).toBeVisible();
+  await expect(page.locator(".home-mast-gate-fallback")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-fallback")).toBeHidden();
+  await expect(page.locator(".home-mast-canvas")).toBeHidden();
   await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
-  await page.locator(".hero-work-link").click();
+  await page.locator(".home-intro-work").click();
   await expect(page).toHaveURL(/\/works$/);
 });
 
@@ -214,7 +284,8 @@ test.describe("native touch input", () => {
       await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
     } finally { await session.detach(); }
     await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(200);
-    await page.locator(".hero-work-link").tap();
+    await reachSplitComposition(page);
+    await page.locator(".home-intro-work").tap();
     await expect(page).toHaveURL(/\/works$/);
   });
 });
@@ -225,8 +296,12 @@ test.describe("without JavaScript", () => {
     await page.goto("/", { waitUntil: "load" });
     await expect(page.locator(".site-arrival")).toHaveCount(0);
     await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
-    await expect(page.locator(".home-mast-fallback")).toHaveCSS("opacity", "1");
-    await page.locator(".hero-work-link").tap();
+    await expect(page.locator(".home-mast-gate-fallback")).toBeVisible();
+    await expect(page.locator(".home-mast-gate-fallback")).toHaveCSS("opacity", "1");
+    await expect(page.locator(".home-mast-fallback")).toBeHidden();
+    await expect(page.locator(".home-mast-canvas")).toBeHidden();
+    await expect(page.locator(".home-mast-display")).toBeVisible();
+    await page.locator(".home-intro-work").tap();
     await expect(page).toHaveURL(/\/works$/);
   });
 });
