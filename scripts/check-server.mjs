@@ -133,7 +133,7 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  for (const pagePath of ["/", "/works", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem"]) {
+  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem"]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -202,6 +202,8 @@ try {
   }
 
   for (const [legacyPath, expectedLocation] of [
+    ["/about.html?utm_source=story", "/about?utm_source=story"],
+    ["/about/", "/about"],
     ["/ai-integration.html?utm_source=test", "/ai-integration?utm_source=test"],
     ["/ai-integration/", "/ai-integration"],
     ["/privacy.html", "/privacy"],
@@ -256,6 +258,15 @@ try {
     apexWithoutFlag.headers.location ===
       "https://www.barnanorbert.com/work/raiffeisen?utm_source=apex",
     "apex must canonicalize host and path in one hop without the flag"
+  );
+
+  const apexAbout = await rawGet(address.port, "/about.html?ref=story", {
+    host: "barnanorbert.com",
+  });
+  assert(apexAbout.statusCode === 301, "apex About alias must redirect permanently");
+  assert(
+    apexAbout.headers.location === "https://www.barnanorbert.com/about?ref=story",
+    "apex About alias must preserve the query and canonicalize host and path in one hop"
   );
 
   const previousCanonicalRedirect = process.env.CANONICAL_REDIRECT;

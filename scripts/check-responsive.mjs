@@ -13,7 +13,7 @@ const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const CONTENT_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...UTILITY_PAGES];
+const CONTENT_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES];
 const ALL_PAGES = [...CONTENT_PAGES, "404.html"];
 const CARD_SIZES = {
   "index.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(40vw - 25.6px), (max-width: 1439px) 37.6vw, (max-width: 1829px) 30.08vw, (max-width: 1919px) 550.4px, 516px",
@@ -152,7 +152,10 @@ for (const page of ALL_PAGES) {
     if (html.indexOf('<button type="button" class="menu-button') > html.indexOf('<nav id="primary-navigation"')) {
       fail(`${page}: mobile menu links do not follow the trigger in keyboard order`);
     }
-    if (!/<noscript>[\s\S]*?\.nav-menu\.w-nav-menu\{display:block!important/i.test(html)) {
+    const noScriptNavigation = page === "about.html"
+      ? /<noscript>[\s\S]*?\.story-page\s+\.nav-menu(?:\.w-nav-menu)?\s*\{\s*display:\s*block!important/i
+      : /<noscript>[\s\S]*?\.nav-menu\.w-nav-menu\{display:block!important/i;
+    if (!noScriptNavigation.test(html)) {
       fail(`${page}: no-JavaScript navigation fallback is missing`);
     }
     if (/assets\/js\/(?:jquery|webflow)[^"']*\.js/i.test(html)) {
@@ -173,7 +176,25 @@ for (const page of ALL_PAGES) {
     const emailCta = [...footerHtml.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
       /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(footerHtml);
-    if (count(footerHtml, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
+    if (page === "about.html") {
+      // The chosen story board closes with a quiet navy footer; its native
+      // Email actions live in the header and final reading section.
+      const closing = html.match(/<section\b[^>]*\bid="next"[^>]*>[\s\S]*?<\/section>/i)?.[0] || "";
+      const closingEmail = [...closing.matchAll(/<button\b[^>]*>/gi)]
+        .map(match => match[0]).filter(tag => hasClass(tag, "footer-email"));
+      const storyLinkedIn = [...footerHtml.matchAll(/<a\b[^>]*>/gi)]
+        .map(match => match[0]).filter(tag => attribute(tag, "href") === "https://www.linkedin.com/in/barna-norbert/");
+      if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(footerHtml) ||
+          closingEmail.length !== 1 || attribute(closingEmail[0], "type") !== "button" ||
+          attribute(closingEmail[0], "href")) {
+        fail(`${page}: the story closing needs a native Email button followed by its own footer`);
+      }
+      if (storyLinkedIn.length !== 1 || attribute(storyLinkedIn[0], "target") !== "_blank" ||
+          !/\bnoopener\b/.test(attribute(storyLinkedIn[0], "rel")) ||
+          !/\bnoreferrer\b/.test(attribute(storyLinkedIn[0], "rel"))) {
+        fail(`${page}: the story footer must preserve the real LinkedIn link and external-link protection`);
+      }
+    } else if (count(footerHtml, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
         count(footerHtml, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
         emailCta.length !== 1 ||
         !/\btype="button"/.test(emailCta[0] || "") ||
@@ -200,6 +221,30 @@ for (const page of ALL_PAGES) {
     }
     if (/<a\b[^>]*class=["'][^"']*\b(?:work-image-wrap|related-work-image-wrap)\b/i.test(html)) {
       fail(`${page}: project card has a duplicate image link`);
+    }
+  }
+
+  if (page === "about.html") {
+    const rail = html.match(/<nav\b[^>]*class="[^"]*\bstory-rail\b[^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
+    const links = [...rail.matchAll(/<a\b[^>]*>/gi)].map(match => match[0]);
+    const targets = links.map(tag => attribute(tag, "href"));
+    if (JSON.stringify(targets) !== JSON.stringify(["#beginnings", "#perspective", "#next"]) ||
+        links.some(tag => !attribute(tag, "aria-label"))) {
+      fail(`${page}: the three story chapters need named native anchor links`);
+    }
+    for (const target of targets) {
+      const section = html.match(new RegExp(`<section\\b[^>]*\\bid="${target.slice(1)}"[^>]*>`, "i"))?.[0] || "";
+      const headingId = attribute(section, "aria-labelledby");
+      if (!headingId || !html.includes(`id="${headingId}"`)) {
+        fail(`${page}: ${target} must resolve to a named semantic reading section`);
+      }
+    }
+    for (const match of html.matchAll(/<img\b[^>]*>/gi)) {
+      const image = match[0];
+      if (!/^\d+$/.test(attribute(image, "width")) || !/^\d+$/.test(attribute(image, "height")) ||
+          attribute(image, "decoding") !== "async") {
+        fail(`${page}: story artwork needs intrinsic dimensions and asynchronous decoding`);
+      }
     }
   }
 

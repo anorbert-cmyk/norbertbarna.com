@@ -635,6 +635,37 @@ videos are retired; rows are not buttons and must not acquire tab stops.
 Normal reveal may settle once as the rows enter view; reduced motion and
 no JavaScript show readable static content immediately.
 
+## About — A story in motion
+
+The selected About concept is the dark cinematic board at
+`../output/about-concepts/02-story-in-motion.png`. `/about` extends the existing
+lilac `#D6D4ED`, navy `#0A1628`, forest `#1B3A32` and olive `#BDB414` palette,
+Funnel Display headings, Inter body text and folded geometric imagery.
+Alternate atmospheric chapter openings with still, comfortably spaced reading
+sections. Long biography copy stays semantic and readable while decorative
+artwork moves; native scroll and chapter anchors remain in charge. The About
+motion controller owns only its own `story-*` elements, listeners and frames.
+It must settle into readable static content with reduced motion, no JavaScript
+or missing animation assets, without hiding the sole copy or trapping focus.
+
+The final biography has not been supplied. `about.html` is therefore an
+explicit draft: `body.story-page[data-story-draft]`, one self-canonical `/about`
+URL, `AboutPage` structured data and `robots="noindex, follow"`. Do not invent
+career events or dates to fill the design. Keep the draft out of `sitemap.xml`
+until the supplied text is integrated and indexing is deliberately enabled.
+Existing content pages retain their `index, follow` contract. The shared main
+navigation includes a native About link; `/about.html` and `/about/` permanently
+redirect to `/about`, preserving query parameters. Shared navigation, consent,
+analytics and footer contact behavior remain available on this route.
+
+About uses the selected board's quiet navy footer rather than the editorial
+Work-column footer on the other routes. Its header Email and closing Get in
+touch actions reuse the existing native email owner; the footer retains the
+real LinkedIn link, identity, copyright, privacy links and analytics settings.
+Its chapter rail uses named native anchors. The story-only Pause motion button
+starts hidden and is exposed by the story controller; it does not restore the
+retired global motion switch or affect another route's motion state.
+
 ## Eval rubric (first attempt must pass)
 
 1. Facts that were on the page are still on the page.

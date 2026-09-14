@@ -52,6 +52,8 @@ const home = readFileSync(join(ROOT, "index.html"), "utf8");
 const works = readFileSync(join(ROOT, "works.html"), "utf8");
 const css = readFileSync(join(ROOT, "assets/css/responsive.css"), "utf8");
 const editorialCss = readFileSync(join(ROOT, "assets/css/editorial-sections.css"), "utf8");
+const story = readFileSync(join(ROOT, "about.html"), "utf8");
+const storyCss = readFileSync(join(ROOT, "assets/css/story.css"), "utf8");
 const projectCss = readFileSync(join(ROOT, "assets/css/project-index.css"), "utf8");
 const design = readFileSync(join(ROOT, "design.md"), "utf8");
 const raiffeisen = readFileSync(join(ROOT, "work/raiffeisen.html"), "utf8");
@@ -368,6 +370,8 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
   fail("HiddenMontage: Instructure video must fill the 16:9 frame (inset 0, z-index 0)");
 }
 
+// Existing editorial routes share this footer. The selected About story has
+// its own navy closing composition, checked separately below.
 // Shared editorial footer: lilac field, geometric art, native contacts, Work only.
 // No Contact column, no form, no sitemap, no Ironclad dunes, no
 // back-to-top on the copyright row. Mail href is assembled on click.
@@ -380,7 +384,49 @@ const footerCanon = footerPages.map((page) => {
   return page.startsWith("hu/") ? sameAssets.replace(' lang="en"', '') : sameAssets;
 });
 if (new Set(footerCanon).size !== 1) {
-  fail("site-wide footer markup must match across pages (asset prefix aside)");
+  fail("editorial footer markup must match across its existing routes (asset prefix aside)");
+}
+
+// About is a deliberately separate reading composition, not a case study or
+// service page. Its preview cannot imply that the final biography was supplied.
+const storyFooter = story.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/i)?.[0] || "";
+const storyNavigation = story.match(/<nav\b[^>]*\bid="primary-navigation"[^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
+const storyClosing = story.match(/<section\b[^>]*\bid="next"[^>]*>[\s\S]*?<\/section>/i)?.[0] || "";
+const storyTitle = story.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]
+  .replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+if (storyTitle !== "A story in motion.") fail("About must retain the selected A story in motion opening");
+if (!/class="story-draft-note"/.test(story) || !story.includes("Story preview")) {
+  fail("About must visibly identify the unfinished biography as a story preview");
+}
+for (const color of ["#D6D4ED", "#0A1628", "#1B3A32", "#BDB414"]) {
+  if (!storyCss.includes(color)) fail(`About must retain the original ${color} palette token`);
+}
+if (!storyCss.includes("Funnel Display") || !storyCss.includes("Inter")) {
+  fail("About must use Funnel Display headings and Inter reading text");
+}
+for (const [scope, markup] of [["navigation", storyNavigation], ["closing chapter", storyClosing]]) {
+  const buttons = contactButtons(markup);
+  if (buttons.length !== 1 || !/\btype="button"/.test(buttons[0]?.[1] || "") ||
+      /\bhref=/.test(buttons[0]?.[1] || "") ||
+      !buttons[0]?.[2].replace(/<[^>]+>/g, "").trim()) {
+    fail(`About ${scope} must retain one named native Email action`);
+  }
+}
+if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(storyFooter) ||
+    !storyFooter.includes("© 2026 Norbert Barna") ||
+    !storyFooter.includes("Product VP") ||
+    /footer-mesh|mesh-blur|footer-dunes|data-story-art/.test(storyFooter)) {
+  fail("About must close with its still navy identity and legal footer, without animated artwork");
+}
+if (/href="\/contact"|mailto:|anorbert@pm\.me/i.test(story)) {
+  fail("About contact must keep the existing native email owner and omit raw addresses or invented contact routes");
+}
+const storyToggles = [...story.matchAll(/(<button\b[^>]*\bdata-story-motion-toggle\b[^>]*>)([\s\S]*?)<\/button>/g)];
+if (storyToggles.length !== 1 || !/\btype="button"/.test(storyToggles[0]?.[1] || "") ||
+    !/\baria-pressed="false"/.test(storyToggles[0]?.[1] || "") ||
+    !/\shidden(?:\s|>)/.test(storyToggles[0]?.[1] || "") ||
+    !storyToggles[0]?.[2].trim()) {
+  fail("About motion pause must be one named native toggle, initially hidden until its controller is ready");
 }
 // Latest user direction replaces the footer-mesh and video-backed experience.
 if (existsSync(join(ROOT, "contact.html"))) fail("/contact must stay unpublished; contact is the native footer Email action");

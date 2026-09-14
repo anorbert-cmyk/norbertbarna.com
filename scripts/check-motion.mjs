@@ -18,7 +18,7 @@ const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const ANIMATED_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...UTILITY_PAGES];
+const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES];
 const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
 
 let failures = 0;
@@ -136,9 +136,31 @@ const caseOpeningFile = versionedAsset("assets/js/case-opening.js", "case-openin
 const animationsFile = versionedAsset("assets/js/animations.js", "animations", "js");
 const caseMotionFile = versionedAsset("assets/css/case-motion.css", "case-motion", "css");
 const responsiveFile = versionedAsset("assets/css/responsive.css", "responsive", "css");
+const storyCssFile = versionedAsset("assets/css/story.css", "story", "css");
+const storyMotionFile = versionedAsset("assets/js/story-motion.js", "story-motion", "js");
 
 for (const page of ALL_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
+  const storyStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
+    .map(match => attribute(match[0], "href")).filter(href => /\/story(?:\.[a-f0-9]+)?\.css$/i.test(href));
+  const storyScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
+    .map(match => attribute(match[0], "src")).filter(src => /\/story-motion(?:\.[a-f0-9]+)?\.js$/i.test(src));
+  if (page === "about.html") {
+    if (storyStyles.length !== 1 || storyStyles[0] !== `assets/css/${storyCssFile}` ||
+        storyScripts.length !== 1 || storyScripts[0] !== `assets/js/${storyMotionFile}`) {
+      fail(`${page}: story CSS and motion JS must each load one current byte-matched asset`);
+    }
+    const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map(match => attribute(match[0], "src"));
+    const storyIndex = scripts.indexOf(`assets/js/${storyMotionFile}`);
+    if (storyIndex <= scripts.indexOf(`assets/js/${animationsFile}`)) {
+      fail(`${page}: the independent story owner must initialize after the shared motion layer`);
+    }
+    if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
+      fail(`${page}: decorative story motion must not make the reading page inert`);
+    }
+  } else if (storyStyles.length || storyScripts.length) {
+    fail(`${page}: the About story owner must not change another route`);
+  }
   const compositionStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "href")).filter((href) => /\/home-composition(?:\.|\/)/.test(href));
   const compositionScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
@@ -166,7 +188,8 @@ for (const page of ALL_PAGES) {
 for (const page of ANIMATED_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
   for (const { stem, file } of editorialFiles) {
-    const required = stem !== "project-index" || page === "index.html" || page === "works.html";
+    const required = stem === "editorial-sections" ? page !== "about.html"
+      : stem !== "project-index" || page === "index.html" || page === "works.html";
     const refs = [...html.matchAll(/<link\b[^>]*href="([^"]+)"/g)].map(m => m[1]).filter(href => href.includes(`/assets/css/${stem}.`) || href.startsWith(`assets/css/${stem}.`));
     if (required && (refs.length !== 1 || refs[0] !== `${assetPrefix(page)}assets/css/${file}`)) fail(`${page}: expected one current ${stem} stylesheet`);
   }

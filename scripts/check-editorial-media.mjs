@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { UTILITY_PAGES, PRIVACY_PAGES, isServicePage } from './service-pages.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'works.html', ...readdirSync(join(root,'work')).filter(f=>f.endsWith('.html')).sort().map(f=>`work/${f}`), ...UTILITY_PAGES];
+const pages = ['index.html', 'works.html', 'about.html', ...readdirSync(join(root,'work')).filter(f=>f.endsWith('.html')).sort().map(f=>`work/${f}`), ...UTILITY_PAGES];
 const origin = 'https://www.barnanorbert.com';
 
 function attrs(tag) {
@@ -99,7 +99,7 @@ for (const page of pages) {
     assert(blocks.length,'JSON-LD is missing');
     const graph=blocks.flatMap(([,json])=>nodes(JSON.parse(json)));
     const types=graph.flatMap(n=>[].concat(n['@type']));
-    assert(types.includes(page==='index.html'?'ProfilePage':page==='works.html'?'CollectionPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':'Article'),'page schema');
+    assert(types.includes(page==='index.html'?'ProfilePage':page==='works.html'?'CollectionPage':page==='about.html'?'AboutPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':'Article'),'page schema');
     if(isServicePage(page)) assert(types.includes('Service'),'service schema');
     if(page.startsWith('work/')) {
       assert(types.includes('BreadcrumbList'),'breadcrumb schema');

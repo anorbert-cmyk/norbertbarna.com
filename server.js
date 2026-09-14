@@ -71,6 +71,8 @@ const REDIRECTS = {
   "/favicon.ico": "/assets/icons/68f923d010d274634c966a6e_favicon.png",
   "/works.html": "/works",
   "/works/": "/works",
+  "/about.html": "/about",
+  "/about/": "/about",
   "/ai-integration.html": "/ai-integration",
   "/ai-integration/": "/ai-integration",
   "/hu/ai-integracio.html": "/hu/ai-integracio",
