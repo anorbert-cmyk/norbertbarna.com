@@ -44,18 +44,36 @@ test.beforeEach(async ({ page }) => {
     sessionStorage.setItem("nb-arrival-seen-v2", "1");
     localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
     window.__cumulativeLayoutShift = 0;
+    window.__layoutShiftEvidence = [];
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        if (!entry.hadRecentInput) window.__cumulativeLayoutShift += entry.value;
+        if (!entry.hadRecentInput) {
+          window.__cumulativeLayoutShift += entry.value;
+          if (window.__layoutShiftEvidence.length < 100) window.__layoutShiftEvidence.push({
+            time: entry.startTime, value: entry.value, scrollY,
+            compositionNav: document.querySelector(".navbar")?.hasAttribute("data-composition-nav"),
+            sources: (entry.sources || []).map((source) => ({
+              node: source.node ? `${source.node.nodeName}#${source.node.id || ""}.${source.node.className || ""}` : null,
+              previous: source.previousRect.toJSON(), current: source.currentRect.toJSON(),
+            })),
+          });
+        }
       }
     }).observe({ type: "layout-shift", buffered: true });
   });
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   if (page.isClosed() || page.url() === "about:blank") return;
   expect(page.__runtimeErrors, page.__runtimeErrors.join("\n")).toEqual([]);
   const cumulativeLayoutShift = await page.evaluate(() => window.__cumulativeLayoutShift || 0);
+  if (cumulativeLayoutShift >= .1) await testInfo.attach("layout-shift-sources", {
+    body: JSON.stringify(await page.evaluate(() => ({
+      url: location.href, viewport: { width: innerWidth, height: innerHeight },
+      cls: window.__cumulativeLayoutShift, fonts: document.fonts.status,
+      entries: window.__layoutShiftEvidence,
+    })), null, 2), contentType: "application/json",
+  });
   expect(cumulativeLayoutShift, `CLS ${cumulativeLayoutShift} exceeds the good threshold`).toBeLessThan(0.1);
 });
 
