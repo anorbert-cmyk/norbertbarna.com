@@ -26,16 +26,35 @@ async function readingGeometry(page) {
 }
 
 test("first arrival waits for Enter, then the central sculpture actually assembles", async ({ page }) => {
+  // Install before page scripts capture their rAF/performance clock. Capture
+  // latency must not consume the short assembly window on a busy CI worker.
+  await page.clock.install();
   await page.addInitScript(() => sessionStorage.removeItem("nb-arrival-seen-v2"));
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const enter = page.getByRole("button", { name: "Enter the portfolio" });
   await expect(enter).toBeVisible({ timeout: 8000 });
   await expect(page.locator(".site-arrival__counter")).toHaveText("100");
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  const frameState = () => page.locator(".home-mast-canvas").evaluate((canvas) => ({
+    time: performance.now(), scrollY, bounds: canvas.getBoundingClientRect().toJSON(),
+  }));
+  const beforeEnter = await frameState();
   await page.keyboard.press("Enter");
+  await expect.poll(() => page.evaluate(() => window.PortfolioArrival.state)).toBe("exiting");
+  await page.clock.runFor(1200);
   await expect(page.locator(".site-arrival")).toHaveCount(0);
+  const firstFrame = await frameState();
+  expect(firstFrame.time - beforeEnter.time).toBe(1200);
+  expect(firstFrame.scrollY, "Enter leaves the native page at the top").toBe(0);
   const assembling = await paintedScene(page);
-  await page.waitForTimeout(1800);
+  expect(await frameState(), "capturing the first pose advances neither time nor native scroll").toEqual(firstFrame);
+  await page.clock.runFor(1800);
+  const lastFrame = await frameState();
+  expect(lastFrame.time - firstFrame.time).toBe(1800);
+  expect(lastFrame.scrollY, "native scroll does not short-circuit the assembly").toBe(0);
+  expect(lastFrame.bounds).toEqual(firstFrame.bounds);
   expect(await paintedScene(page), "the 2.3s assembly continues after the one-second curtain exits").not.toEqual(assembling);
+  expect(await frameState(), "capturing the final pose does not change the controlled frame").toEqual(lastFrame);
   await expect(page.locator(".home-banner-title")).toBeInViewport();
   await expect(page.locator(".hero-work-link")).toBeInViewport();
 });
