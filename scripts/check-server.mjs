@@ -17,6 +17,18 @@ const require = createRequire(import.meta.url);
 const serverModulePath = join(ROOT, "server.js");
 const app = require(serverModulePath);
 
+// Canonical releases verified by check-motion and check-editorial-media.
+// Keep this inventory independent of the server's filename classifier.
+const RELEASE_SOURCES = [
+  "js/animations.js", "js/media.js", "js/arrival.js", "js/hero-scene.js",
+  "js/home-composition.js", "js/immersive-navigation.js", "js/case-opening.js",
+  "js/story-motion.js", "css/case-motion.css", "css/responsive.css",
+  "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
+  "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
+  "css/story.css",
+];
+const approvedReleaseSources = new Set(RELEASE_SOURCES);
+
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
@@ -46,16 +58,11 @@ function hasVerifiedReleaseDigest(filePath) {
   const [directory, fileName, extra] = assetPath(filePath).split("/");
   if (extra || !directory || !fileName) return false;
 
-  let match = null;
-  if (directory === "js") {
-    match = fileName.match(/^(?:animations|media)\.([a-f0-9]{12})\.js$/i);
-  } else if (directory === "css") {
-    match = fileName.match(/^(?:case-motion|responsive)\.([a-f0-9]{12})\.css$/i);
-  }
-  if (!match) return false;
+  const match = fileName.match(/^(.+)\.([a-f0-9]{12})\.(js|css)$/i);
+  if (!match || !approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
 
   const actual = createHash("sha256").update(readFileSync(filePath)).digest("hex").slice(0, 12);
-  return match[1].toLowerCase() === actual;
+  return match[2].toLowerCase() === actual;
 }
 
 function cacheDirectives(header) {
@@ -342,25 +349,29 @@ try {
     );
   }
 
-  const versionedMotionAssets = [
-    ["js/animations.js", "js", "animations"],
-    ["js/media.js", "js", "media"],
-    ["css/case-motion.css", "css", "case-motion"],
-    ["css/responsive.css", "css", "responsive"],
-  ];
-
-  for (const [sourcePath, directory, stem] of versionedMotionAssets) {
+  for (const sourcePath of RELEASE_SOURCES) {
+    const [directory, fileName] = sourcePath.split("/");
+    const stem = fileName.slice(0, -(directory.length + 1));
     const source = readFileSync(join(ASSETS, sourcePath));
     const version = createHash("sha256").update(source).digest("hex").slice(0, 12);
     const versionedUrl = `${baseUrl}/assets/${directory}/${stem}.${version}.${directory}`;
-    const versioned = await fetch(versionedUrl, { method: "HEAD" });
+    const versioned = await fetch(versionedUrl);
     const versionedCache = cacheDirectives(versioned.headers.get("cache-control") || "");
     assert(versioned.ok, `${versionedUrl} returned ${versioned.status}`);
+    assert(Buffer.from(await versioned.arrayBuffer()).equals(source), `${versionedUrl} differs from its canonical source`);
     assert(versionedCache.has("immutable"), `${versionedUrl} is not immutable`);
     assert(
       versionedCache.get("max-age") === "31536000",
       `${versionedUrl} does not have a one-year cache lifetime`
     );
+  }
+
+  for (const inventedRelease of ["js/hero-scene.000000000000.js", "css/story.000000000000.css"]) {
+    const response = await fetch(`${baseUrl}/assets/${inventedRelease}`, { method: "HEAD" });
+    const cache = cacheDirectives(response.headers.get("cache-control") || "");
+    assert(response.status === 404, `${inventedRelease} unexpectedly exists`);
+    assert(!cache.has("immutable"), `${inventedRelease}: an invented hash must not cache a missing release`);
+    assert(cache.get("max-age") === "0" && cache.has("must-revalidate"), `${inventedRelease} must revalidate`);
   }
 
   console.log(

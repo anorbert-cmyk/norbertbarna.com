@@ -155,12 +155,13 @@ app.use((req, res, next) => {
 });
 
 // Only release files whose names contain the first 12 characters of their
-// SHA-256 digest are immutable. CI independently verifies the digest. Webflow
+// SHA-256 digest are immutable. check-motion and check-editorial-media verify
+// these release families; check-server independently verifies every digest. Webflow
 // object IDs and generated source-image hashes are not output-content hashes,
 // so those assets must revalidate after a deployment.
 const ASSET_ROOT = path.join(__dirname, "assets");
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/(?:animations|media)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive)\.[a-f0-9]{12}\.css)$/i;
+  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story)\.[a-f0-9]{12}\.css)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");

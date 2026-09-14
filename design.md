@@ -106,6 +106,9 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
 
 - Preserve the exact footer palette: lilac `#D6D4ED`, navy `#0A1628`, forest
   `#1B3A32`, olive `#BDB414`. Factual product assets remain; the latest editorial footer replaces the old mesh markup.
+  Muted editorial text uses navy at 70% over lilac; the dark Story footer uses
+  lilac at 85% over navy. Derive subdued text from these colors with alpha,
+  maintaining at least 4.5:1 contrast, instead of adding standalone hues.
 - Keep Inter and Funnel Display for semantic text. The hero uses original SVG
   angular display lettering for “PRODUCT / WITH / PURPOSE”, adapting the
   reference's integrated vector title. This user-requested title artwork is the
@@ -641,6 +644,11 @@ The selected About concept is the dark cinematic board at
 `../output/about-concepts/02-story-in-motion.png`. `/about` extends the existing
 lilac `#D6D4ED`, navy `#0A1628`, forest `#1B3A32` and olive `#BDB414` palette,
 Funnel Display headings, Inter body text and folded geometric imagery.
+The user explicitly requested generated concept artwork and selected this board
+for implementation. Its decorative corridor/fold images, the requested home
+sculpture and the unique geometric work-list images are narrow exceptions to
+the earlier blanket image-generation ban. They never replace real product
+evidence, portraits, logos or biography facts; no new palette is authorized.
 Alternate atmospheric chapter openings with still, comfortably spaced reading
 sections. Long biography copy stays semantic and readable while decorative
 artwork moves; native scroll and chapter anchors remain in charge. The About

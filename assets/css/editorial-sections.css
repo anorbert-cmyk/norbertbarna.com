@@ -4,7 +4,7 @@
 .footer-section.editorial-footer {
   --editorial-lilac: #D6D4ED;
   --editorial-navy: #0A1628;
-  --editorial-muted: #485272;
+  --editorial-muted: rgb(10 22 40 / 70%);
   --editorial-rule: rgb(10 22 40 / 26%);
   --editorial-gutter: clamp(24px, 4.8vw, 80px);
   color: var(--editorial-navy);
