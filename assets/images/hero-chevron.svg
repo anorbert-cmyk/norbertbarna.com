@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 760" fill="none">
+  <defs>
+    <linearGradient id="face" x1="82" y1="110" x2="390" y2="646" gradientUnits="userSpaceOnUse"><stop stop-color="#D6D4ED"/><stop offset=".18" stop-color="#BDB414"/><stop offset=".42" stop-color="#1B3A32"/><stop offset=".51" stop-color="#0A1628"/><stop offset=".57" stop-color="#BDB414"/><stop offset=".8" stop-color="#1B3A32"/><stop offset="1" stop-color="#D6D4ED"/></linearGradient>
+    <linearGradient id="edge" x1="340" y1="70" x2="455" y2="680" gradientUnits="userSpaceOnUse"><stop stop-color="#D6D4ED"/><stop offset=".2" stop-color="#1B3A32"/><stop offset=".5" stop-color="#0A1628"/><stop offset=".74" stop-color="#BDB414"/><stop offset="1" stop-color="#1B3A32"/></linearGradient>
+    <linearGradient id="bevel" x1="70" y1="60" x2="385" y2="694" gradientUnits="userSpaceOnUse"><stop stop-color="#D6D4ED"/><stop offset=".25" stop-color="#BDB414"/><stop offset=".51" stop-color="#D6D4ED"/><stop offset=".69" stop-color="#0A1628"/><stop offset="1" stop-color="#BDB414"/></linearGradient>
+  </defs>
+  <path d="M97 70H255L457 380 255 690H97L305 380Z" fill="url(#edge)"/>
+  <path d="M69 70H211L415 380 211 690H69L269 380Z" fill="url(#face)" stroke="url(#bevel)" stroke-width="13" stroke-linejoin="round"/>
+  <path d="M211 70 415 380 211 690M69 70 269 380 69 690" stroke="#D6D4ED" stroke-opacity=".45" stroke-width="2"/>
+</svg>

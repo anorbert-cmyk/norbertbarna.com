@@ -1,0 +1,691 @@
+/**
+ * Portfolio chevron — original beveled geometry and refractive WebGL glass.
+ * No imported model, rendering library, scroll interception or remote asset.
+ */
+(function () {
+  "use strict";
+  var host = document.querySelector(".home-mast-sculpture");
+  var canvas = host && host.querySelector(".home-mast-canvas");
+  if (!host || !canvas) return;
+  var mast = host.closest(".home-mast") || host;
+  var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
+  var fineQuery = matchMedia("(hover: hover) and (pointer: fine)");
+  var listeners = new AbortController();
+  var gl, program, texture, backdropTexture, backdropCanvas, shadowProgram, shadowBuffer, shadowAttributes, shadowUniforms;
+  var fragments = [], uniforms = {}, attributes = {};
+  var frame = 0, previousTime = 0, destroyed = false, suspended = false, intersecting = true;
+  var lost = false, initialized = false, assemblyStart = null, arrivalStarted = false;
+  var pointer = { x: 0, y: 0, inside: false, tiltX: 0, tiltY: 0, targetX: 0, targetY: 0 };
+  var drag = { active: false, x: 0, angle: 0, velocity: 0 };
+  var width = 1, height = 1, cameraZ = 3.7, aspect = 1, sceneScale = 1;
+  var morphProgress = 0, morphPose = { x: 0, y: 0, scale: 1 }, shadowBox = null;
+  var observer, resizeObserver, resolveReady, reflectionArtwork = null, reflectionTimer = 0;
+  var DEG = Math.PI / 180;
+  var api = window.PortfolioHeroScene = {
+    status: "loading",
+    ready: new Promise(function (resolve) { resolveReady = resolve; }),
+    start: start,
+    finish: finish,
+    setMorphProgress: setMorphProgress,
+    destroy: destroy,
+  };
+
+  function reduced() {
+    return reducedQuery.matches || document.documentElement.classList.contains("no-motion") ||
+      Boolean(window.PortfolioMedia && window.PortfolioMedia.isReduced());
+  }
+  function clamp(value, low, high) { return Math.max(low, Math.min(high, value)); }
+  function normalize(v) {
+    var length = Math.hypot(v[0], v[1], v[2]) || 1;
+    return [v[0] / length, v[1] / length, v[2] / length];
+  }
+  function identity() { return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]); }
+  function multiply(a, b) {
+    var out = new Float32Array(16);
+    for (var column = 0; column < 4; column++) {
+      for (var row = 0; row < 4; row++) {
+        for (var k = 0; k < 4; k++) out[column * 4 + row] += a[k * 4 + row] * b[column * 4 + k];
+      }
+    }
+    return out;
+  }
+  function compose(x, y, z, rx, ry, rz, scale) {
+    var cx = Math.cos(rx), sx = Math.sin(rx), cy = Math.cos(ry), sy = Math.sin(ry);
+    var cz = Math.cos(rz), sz = Math.sin(rz);
+    var mx = new Float32Array([1, 0, 0, 0, 0, cx, sx, 0, 0, -sx, cx, 0, 0, 0, 0, 1]);
+    var my = new Float32Array([cy, 0, -sy, 0, 0, 1, 0, 0, sy, 0, cy, 0, 0, 0, 0, 1]);
+    var mz = new Float32Array([cz, sz, 0, 0, -sz, cz, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    var out = multiply(mz, multiply(my, mx));
+    for (var i = 0; i < 12; i++) out[i] *= scale;
+    out[12] = x; out[13] = y; out[14] = z;
+    return out;
+  }
+  function perspective() {
+    var near = .1, far = 30, f = 1 / Math.tan(75 * DEG / 2), matrix = new Float32Array(16);
+    matrix[0] = f / aspect; matrix[5] = f;
+    matrix[10] = (far + near) / (near - far); matrix[11] = -1;
+    matrix[14] = 2 * far * near / (near - far);
+    return matrix;
+  }
+  function transformPoint(matrix, point) {
+    return [matrix[0] * point[0] + matrix[4] * point[1] + matrix[8] * point[2] + matrix[12],
+      matrix[1] * point[0] + matrix[5] * point[1] + matrix[9] * point[2] + matrix[13],
+      matrix[2] * point[0] + matrix[6] * point[1] + matrix[10] * point[2] + matrix[14]];
+  }
+  function project(point) {
+    var f = 1 / Math.tan(75 * DEG / 2), depth = cameraZ - point[2];
+    return { x: (point[0] * f / aspect / depth * .5 + .5) * width,
+      y: (.5 - point[1] * f / depth * .5) * height };
+  }
+
+  // Five open, planar folds make the endpoint: a broad front ribbon, its
+  // roof, the splayed rear leg and two separated olive inner folds. A closed
+  // extruded A cannot leave the empty space between those inner triangles.
+  var gateCorners = {
+    a: [-.85, 1.15, .60], b: [-.05, .95, .60],
+    c: [-.65, -1.50, .60], d: [-1.25, -1.30, .60],
+    e: [-.05, 1.55, -.45], f: [.55, 1.40, -.45],
+    g: [.75, -1.50, -.45], h: [1.65, -1.75, -.45],
+    i: [.45, -1.65, -.45], j: [-.32, -.1525, .60]
+  };
+  var gateFaces = [
+    { corners: ["b", "a", "d", "c"], tone: 0 },
+    { corners: ["b", "a", "e", "f"], tone: 0 },
+    { corners: ["f", "f", "h", "g"], tone: 0 },
+    { corners: ["j", "j", "i", "c"], tone: 1 },
+    { corners: ["b", "f", "g", "g"], tone: 1 }
+  ];
+  function gateMix(a, b, t) {
+    return a.map(function (value, i) { return value + (b[i] - value) * t; });
+  }
+  function gateAxis(point) { return [point[1], -point[0] * 1.25, point[2]]; }
+  function gateFaceNormal(points) {
+    // A triangular fold repeats one corner. Find a nonzero cross product;
+    // surplus source bevels receive this finite normal even when collapsed.
+    for (var i = 1; i < points.length - 1; i++) {
+      var a = points[i].map(function (value, k) { return value - points[0][k]; });
+      var b = points[i + 1].map(function (value, k) { return value - points[0][k]; });
+      var cross = [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+      if (Math.hypot.apply(Math, cross) > .000001) return normalize([cross[1], -cross[0] / 1.25, cross[2]]);
+    }
+    return [0, 0, 1];
+  }
+  function gateVertices(data, center) {
+    var central = Math.abs(center[1]) < .01;
+    var out = new Float32Array(data.length / 6 * 13 + (central ? 312 : 0));
+    var planes = gateFaces.map(function (face) {
+      var points = face.corners.map(function (key) { return gateCorners[key]; });
+      return { points: points, normal: gateFaceNormal(points), tone: face.tone };
+    });
+    function pointOnFace(face, reach, across) {
+      var points = planes[face].points;
+      return gateAxis(gateMix(gateMix(points[0], points[3], reach), gateMix(points[1], points[2], reach), across));
+    }
+    for (var triangle = 0; triangle < data.length; triangle += 18) {
+      var averageY = center[1] + (data[triangle + 1] + data[triangle + 7] + data[triangle + 13]) / 3;
+      var averageZ = (data[triangle + 5] + data[triangle + 11] + data[triangle + 17]) / 3;
+      var averageX = (data[triangle + 3] + data[triangle + 9] + data[triangle + 15]) / 3;
+      var positive = averageY >= 0;
+      var face = averageZ > .01 ? (positive ? 0 : 2) : averageZ < -.01 ? (positive ? 1 : 2) : averageX < 0 ? (positive ? 3 : 4) : (positive ? 0 : 2);
+      var internal = Math.abs(data[triangle + 1] + center[1]) < 1.69 && Math.abs(data[triangle + 1] - data[triangle + 7]) < .00001 && Math.abs(data[triangle + 1] - data[triangle + 13]) < .00001;
+      var hidden = central || internal || (Math.abs(averageZ) < .999 && !(Math.abs(averageZ) < .01 && averageX < 0));
+      var collapse;
+      for (var vertex = 0; vertex < 3; vertex++) {
+        var source = triangle + vertex * 6, destination = source / 6 * 13;
+        var x = data[source] + center[0], y = data[source + 1] + center[1], z = data[source + 2];
+        var join = -1.7 + Math.round((y + 1.7) / (3.4 / 7)) * (3.4 / 7);
+        if (Math.abs(y - join) < .0015 && Math.abs(join) < 1.69) {
+          var oldReach = Math.abs(y) / 1.7, oldAcross = (x - (.33 - 1.29 * oldReach)) / (1.03 - .03 * oldReach);
+          var newReach = Math.abs(join) / 1.7;
+          x = .33 - 1.29 * newReach + oldAcross * (1.03 - .03 * newReach); y = join;
+        }
+        var rawReach = Math.abs(y) / 1.7, inner = .33 - 1.29 * rawReach;
+        var across = clamp(((x - inner) / (1.03 - .03 * rawReach) - .075) / .85, 0, 1);
+        var reach = clamp((positive ? y : -y) / 1.638, 0, 1);
+        if (face === 3) { reach = clamp((reach - .45) / .55, 0, 1); across = clamp((.21 - z) / .42, 0, 1); }
+        if (face === 4) across = clamp((.21 - z) / .42, 0, 1);
+        if (Math.abs(averageZ) < .01 && averageX >= 0) across = 0;
+        var target = pointOnFace(face, reach, across), plane = planes[face];
+        if (internal) { if (!collapse) collapse = target; target = collapse; }
+        out.set(data.subarray(source, source + 6), destination);
+        out.set([target[0] - center[0], target[1] - center[1], target[2], plane.normal[0], plane.normal[1], plane.normal[2], hidden ? 3 : plane.tone], destination + 6);
+      }
+    }
+    if (central) {
+      // The concave source centre crosses both arms. Split only that hinge
+      // into contiguous planar patches for the morph. The original centre
+      // still renders p0; these patches are discarded until morph begins.
+      var cutoff = 1.7 / 7, edgeY = cutoff - .001, patchIndex = 0;
+      function edge(y, outer) {
+        var reach = Math.abs(y) / 1.7;
+        return outer ? 1.36 - 1.32 * reach - .062 * Math.hypot(1, 1.32 / 1.7) :
+          .33 - 1.29 * reach + .062 * Math.hypot(1, 1.29 / 1.7);
+      }
+      [0, 1, 2, 4].forEach(function (face) {
+        var positive = face < 2, plane = planes[face], reach = cutoff / 1.638;
+        var coordinates = [[0, 0], [0, 1], [reach, 1], [reach, 0]];
+        var patch = coordinates.map(function (coordinate) {
+          var t = coordinate[0] / reach, across = coordinate[1], y = (positive ? 1 : -1) * edgeY * t;
+          var x = edge(y, across > .5), z = face === 1 ? -.272 : .272;
+          if (face === 4) { x = .33 - 1.29 * Math.abs(y) / 1.7; z = .21 - .42 * across; }
+          return { source: [x - center[0], y - center[1], z], target: pointOnFace(face, coordinate[0], across) };
+        });
+        [[0, 1, 2], [0, 2, 3]].forEach(function (indices) {
+          indices.forEach(function (index) {
+            var destination = data.length / 6 * 13 + patchIndex++ * 13, point = patch[index];
+            out.set(point.source.concat([0, 0, face === 1 ? -1 : 1],
+              [point.target[0] - center[0], point.target[1] - center[1], point.target[2],
+                plane.normal[0], plane.normal[1], plane.normal[2], 4 + plane.tone]), destination);
+          });
+        });
+      });
+    }
+    // Front/back source winding differs. Store the actual target orientation
+    // so two-sided lighting agrees where both source faces meet one open plane.
+    for (var triangleOffset = 0; triangleOffset < out.length; triangleOffset += 39) {
+      var a = out.subarray(triangleOffset + 6, triangleOffset + 9);
+      var b = out.subarray(triangleOffset + 19, triangleOffset + 22);
+      var c = out.subarray(triangleOffset + 32, triangleOffset + 35);
+      var ab = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], ac = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+      var normal = [ab[1] * ac[2] - ab[2] * ac[1], ab[2] * ac[0] - ab[0] * ac[2], ab[0] * ac[1] - ab[1] * ac[0]];
+      if (Math.hypot.apply(Math, normal) > .00001) {
+        normal = normalize(normal);
+        for (var vertex = 0; vertex < 3; vertex++) out.set(normal, triangleOffset + vertex * 13 + 9);
+      }
+    }
+    return out;
+  }
+  function gateRotation(scale, x, y) {
+    return multiply(compose(x, y, 0, 20 * DEG, (innerWidth < 600 ? 12 : -8) * DEG, 0, scale), compose(0, 0, 0, 0, 0, Math.PI / 2, 1));
+  }
+  function fitGate() {
+    var compact = innerWidth < 600;
+    var box = { left: width * (compact ? .51 : .52), right: width * (compact ? .99 : .92),
+      top: height * .14, bottom: height * (compact ? .42 : .79) };
+    var viewportHeight = 2 * cameraZ * Math.tan(75 * DEG / 2);
+    morphPose = { x: 0, y: 0, scale: 1 };
+    // A few resize-only projection passes fit the actual beveled vertices, not
+    // an approximate rectangle that can intrude into the adjacent reading copy.
+    for (var pass = 0; pass < 4; pass++) {
+      var matrix = gateRotation(morphPose.scale, morphPose.x, morphPose.y);
+      var bounds = { left: Infinity, right: -Infinity, top: Infinity, bottom: -Infinity };
+      fragments.forEach(function (fragment) {
+        for (var i = 0; i < fragment.data.length; i += 13) {
+          var point = project(transformPoint(matrix, [fragment.data[i + 6] + fragment.center[0],
+            fragment.data[i + 7] + fragment.center[1], fragment.data[i + 8]]));
+          bounds.left = Math.min(bounds.left, point.x); bounds.right = Math.max(bounds.right, point.x);
+          bounds.top = Math.min(bounds.top, point.y); bounds.bottom = Math.max(bounds.bottom, point.y);
+        }
+      });
+      if (!Number.isFinite(bounds.left)) return;
+      var fit = Math.min((box.right - box.left) / Math.max(1, bounds.right - bounds.left),
+        (box.bottom - box.top) / Math.max(1, bounds.bottom - bounds.top));
+      morphPose.scale *= fit * (pass === 0 ? .94 : 1);
+      morphPose.x += ((box.left + box.right - bounds.left - bounds.right) / 2) / width * viewportHeight * aspect;
+      morphPose.y -= ((box.top + box.bottom - bounds.top - bounds.bottom) / 2) / height * viewportHeight;
+      shadowBox = { x: (box.left + box.right) / 2, y: bounds.bottom + height * .008,
+        width: (bounds.right - bounds.left) * 1.04, height: height * .043 };
+    }
+  }
+
+  // Sutherland–Hodgman clipping makes independent horizontal slices of one >.
+  function clipY(polygon, limit, keepAbove) {
+    var out = [];
+    polygon.forEach(function (p, i) {
+      var q = polygon[(i + 1) % polygon.length];
+      var insideP = keepAbove ? p[1] >= limit : p[1] <= limit;
+      var insideQ = keepAbove ? q[1] >= limit : q[1] <= limit;
+      if (insideP) out.push(p);
+      if (insideP !== insideQ) {
+        var t = (limit - p[1]) / (q[1] - p[1]);
+        out.push([p[0] + (q[0] - p[0]) * t, limit]);
+      }
+    });
+    return out;
+  }
+  function signedArea(polygon) {
+    return polygon.reduce(function (sum, p, i) {
+      var q = polygon[(i + 1) % polygon.length]; return sum + p[0] * q[1] - q[0] * p[1];
+    }, 0) / 2;
+  }
+  function insetPolygon(polygon, distance) {
+    return polygon.map(function (p, i) {
+      var prev = polygon[(i + polygon.length - 1) % polygon.length], next = polygon[(i + 1) % polygon.length];
+      var a = normalize([p[0] - prev[0], p[1] - prev[1], 0]);
+      var b = normalize([next[0] - p[0], next[1] - p[1], 0]);
+      // Internal cut lines meet flush. Only the silhouette carries a bevel.
+      var da = Math.abs(prev[1] - p[1]) < .00001 && Math.abs(p[1]) < 1.69 ? 0 : distance;
+      var db = Math.abs(next[1] - p[1]) < .00001 && Math.abs(p[1]) < 1.69 ? 0 : distance;
+      var n1 = [-a[1], a[0]], n2 = [-b[1], b[0]];
+      var determinant = n1[0] * n2[1] - n1[1] * n2[0];
+      if (Math.abs(determinant) < .00001) return [p[0] + n1[0] * da, p[1] + n1[1] * da];
+      return [p[0] + clamp((da * n2[1] - db * n1[1]) / determinant, -.18, .18),
+        p[1] + clamp((n1[0] * db - n2[0] * da) / determinant, -.18, .18)];
+    });
+  }
+  function cross(a, b, c) { return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]); }
+  function triangulate(polygon) {
+    var indices = polygon.map(function (_, i) { return i; }), triangles = [], budget = 100;
+    while (indices.length > 3 && budget-- > 0) {
+      var found = false;
+      for (var i = 0; i < indices.length; i++) {
+        var a = indices[(i + indices.length - 1) % indices.length], b = indices[i], c = indices[(i + 1) % indices.length];
+        if (cross(polygon[a], polygon[b], polygon[c]) <= .000001) continue;
+        var contains = indices.some(function (j) {
+          return j !== a && j !== b && j !== c && cross(polygon[a], polygon[b], polygon[j]) >= 0 &&
+            cross(polygon[b], polygon[c], polygon[j]) >= 0 && cross(polygon[c], polygon[a], polygon[j]) >= 0;
+        });
+        if (contains) continue;
+        triangles.push([a, b, c]); indices.splice(i, 1); found = true; break;
+      }
+      if (!found) break;
+    }
+    if (indices.length === 3) triangles.push(indices.slice());
+    return triangles;
+  }
+  function fragmentGeometry(polygon, center) {
+    var vertices = [], rings = [], bevel = .062, halfDepth = .21;
+    var vertexNormals = polygon.map(function (p, i) {
+      var prev = polygon[(i + polygon.length - 1) % polygon.length], next = polygon[(i + 1) % polygon.length];
+      var a = normalize([p[1] - prev[1], prev[0] - p[0], 0]);
+      var b = normalize([next[1] - p[1], p[0] - next[0], 0]);
+      return normalize([a[0] + b[0], a[1] + b[1], 0]);
+    });
+    function ring(theta, side) {
+      var outline = insetPolygon(polygon, bevel * (1 - Math.sin(theta)));
+      return outline.map(function (p, i) {
+        return { p: [p[0] - center[0], p[1] - center[1], side * (halfDepth + bevel * Math.cos(theta))],
+          n: [vertexNormals[i][0] * Math.sin(theta), vertexNormals[i][1] * Math.sin(theta), side * Math.cos(theta)] };
+      });
+    }
+    [0, .32, .68, 1.06, Math.PI / 2].forEach(function (theta) { rings.push(ring(theta, 1)); });
+    [Math.PI / 2, 1.06, .68, .32, 0].forEach(function (theta) { rings.push(ring(theta, -1)); });
+    function vertex(v) { vertices.push(v.p[0], v.p[1], v.p[2], v.n[0], v.n[1], v.n[2]); }
+    function triangle(a, b, c) { vertex(a); vertex(b); vertex(c); }
+    for (var r = 0; r < rings.length - 1; r++) {
+      for (var i = 0; i < polygon.length; i++) {
+        var j = (i + 1) % polygon.length;
+        triangle(rings[r][i], rings[r + 1][i], rings[r][j]);
+        triangle(rings[r][j], rings[r + 1][i], rings[r + 1][j]);
+      }
+    }
+    var face = insetPolygon(polygon, bevel);
+    triangulate(face).forEach(function (t) {
+      triangle(rings[0][t[0]], rings[0][t[1]], rings[0][t[2]]);
+      var back = rings[rings.length - 1]; triangle(back[t[2]], back[t[1]], back[t[0]]);
+    });
+    return new Float32Array(vertices);
+  }
+  function makeFragments() {
+    var outline = [[-.96, 1.7], [.04, 1.7], [1.36, 0], [.04, -1.7], [-.96, -1.7], [.33, 0]];
+    if (signedArea(outline) < 0) outline.reverse();
+    var count = 7;
+    return Array.from({ length: count }, function (_, i) {
+      var bottom = -1.7 + i * 3.4 / count, top = -1.7 + (i + 1) * 3.4 / count;
+      var polygon = clipY(clipY(outline, bottom + (i ? .001 : 0), true), top - (i < count - 1 ? .001 : 0), false);
+      var center = polygon.reduce(function (sum, p) { return [sum[0] + p[0] / polygon.length, sum[1] + p[1] / polygon.length, 0]; }, [0, 0, 0]);
+      return { data: gateVertices(fragmentGeometry(polygon, center), center), center: center,
+        offset: [(i % 2 ? 1 : -1) * (.65 + i * .08), (i - 3) * .23, (i % 3 - 1) * .78],
+        spin: [(i % 3 - 1) * .56, (i % 2 ? 1 : -1) * .78, (i - 3) * .13],
+        delay: (i * 3 % count) * 38, hoverX: 0, hoverY: 0, hoverZ: 0 };
+    });
+  }
+
+  var vertexSource = "attribute vec3 aPosition;attribute vec3 aNormal;attribute vec3 aGatePosition;attribute vec4 aGateNormal;uniform float uMorph;uniform mat4 uModel;uniform mat4 uViewProjection;varying vec3 vPosition;varying vec3 vNormal;varying float vMatteTone;void main(){vec3 position=mix(aPosition,aGatePosition,uMorph);vec3 blendedNormal=mix(aNormal,aGateNormal.xyz,uMorph);vec3 normal=length(blendedNormal)>.00001?normalize(blendedNormal):aNormal;vec4 world=uModel*vec4(position,1.0);vPosition=world.xyz;vNormal=normalize(mat3(uModel)*normal);vMatteTone=aGateNormal.w;gl_Position=uViewProjection*world;}";
+  var fragmentSource = [
+    "precision highp float;",
+    "uniform sampler2D uEnvironment;uniform sampler2D uBackdrop;uniform vec2 uResolution;",
+    "uniform mat4 uViewProjection;uniform vec3 uCamera;uniform float uMorph;varying vec3 vPosition;varying vec3 vNormal;varying float vMatteTone;",
+    "const float PI=3.14159265359;",
+    "vec3 environment(vec3 r){",
+    " vec2 uv=vec2(atan(r.x,r.z)/(2.0*PI)+.5,asin(clamp(r.y,-1.0,1.0))/PI+.5);",
+    " vec3 env=texture2D(uEnvironment,uv).rgb;",
+    " float strip=pow(max(0.0,dot(r,normalize(vec3(-.45,.72,.65)))),45.0);",
+    " float edge=pow(max(0.0,dot(r,normalize(vec3(.8,.1,-.45)))),70.0);",
+    " return env+vec3(.839,.831,.929)*strip*1.6+vec3(.741,.706,.078)*edge*.8;}",
+    "void main(){",
+    " if((vMatteTone>2.5&&vMatteTone<3.5&&uMorph>.001)||(vMatteTone>3.5&&uMorph<=.001))discard;vec3 n=normalize(vNormal);if(!gl_FrontFacing)n=-n;vec3 v=normalize(uCamera-vPosition);",
+    " float nv=max(dot(n,v),.001);vec3 r=reflect(-v,n);",
+    // An IOR of two bends the camera ray through a virtual thickness behind the
+    // front face. The backdrop contains the actual DOM lettering, not an env-map
+    // imitation of it, so the character entering a bevel visibly changes shape.
+    " vec3 ray=refract(-v,n,.5);float travel=.85/max(.22,-ray.z);",
+    " vec4 projected=uViewProjection*vec4(vPosition+ray*travel,1.0);",
+    " vec2 screen=gl_FragCoord.xy/uResolution;vec2 refracted=projected.xy/projected.w*.5+.5;",
+    " vec2 displacement=clamp(refracted-screen,vec2(-.16),vec2(.16));",
+    " vec2 uv=clamp(screen+displacement,vec2(.001),vec2(.999));",
+    " vec3 transmitted=texture2D(uBackdrop,uv).rgb;",
+    // Beer–Lambert absorption keeps the user's olive/forest palette in the glass
+    // while transmitting the navy strokes and lilac background at full detail.
+    " float path=.58/max(nv,.24);vec3 absorption=vec3(.22,.17,1.08);",
+    " transmitted*=exp(-absorption*path);",
+    " float fresnel=.111111+.888889*pow(1.0-nv,5.0);",
+    " vec3 color=mix(transmitted,environment(r)*.65,fresnel);",
+    " vec3 light=normalize(vec3(-.5,.85,1.0));vec3 h=normalize(light+v);",
+    " float nh=max(dot(n,h),0.0);float nl=max(dot(n,light),0.0);",
+    " float a=.045;float d=a*a/(PI*pow(max(.001,nh*nh*(a*a-1.0)+1.0),2.0));",
+    " float spec=d*nl/(4.0*max(.2,nv));color+=vec3(.839,.831,.929)*min(spec,.9)*.45;",
+    " vec3 matte=mix(vec3(.106,.227,.196),vec3(.741,.706,.078),mod(floor(vMatteTone+.1),4.0))*(.80+.35*nl+.12*max(n.y,0.0));",
+    " color=mix(color,matte,smoothstep(.06,.82,uMorph));",
+    " gl_FragColor=vec4(clamp(color,0.0,1.0),1.0);}",
+  ].join("\n");
+
+  function compile(type, source) {
+    var shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      var message = gl.getShaderInfoLog(shader); gl.deleteShader(shader); throw new Error(message || "Hero shader unavailable");
+    }
+    return shader;
+  }
+  function initializeShadow() {
+    var vertex = compile(gl.VERTEX_SHADER, "attribute vec2 aPoint;uniform vec4 uBox;varying vec2 vPoint;void main(){vPoint=aPoint;gl_Position=vec4(uBox.xy+aPoint*uBox.zw,0.0,1.0);}");
+    var fragment = compile(gl.FRAGMENT_SHADER, "precision mediump float;uniform float uOpacity;varying vec2 vPoint;void main(){float feather=pow(max(0.0,1.0-dot(vPoint,vPoint)),2.0);gl_FragColor=vec4(.04,.07,.06,feather*uOpacity);}");
+    shadowProgram = gl.createProgram(); gl.attachShader(shadowProgram, vertex); gl.attachShader(shadowProgram, fragment); gl.linkProgram(shadowProgram);
+    gl.deleteShader(vertex); gl.deleteShader(fragment);
+    if (!gl.getProgramParameter(shadowProgram, gl.LINK_STATUS)) throw new Error("Hero contact shadow unavailable");
+    shadowAttributes = gl.getAttribLocation(shadowProgram, "aPoint");
+    shadowUniforms = { box: gl.getUniformLocation(shadowProgram, "uBox"), opacity: gl.getUniformLocation(shadowProgram, "uOpacity") };
+    shadowBuffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, shadowBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  }
+  function drawShadow() {
+    if (!shadowBox || morphProgress <= .55) return;
+    var opacity = clamp((morphProgress - .55) / .45, 0, 1);
+    gl.disable(gl.DEPTH_TEST); gl.useProgram(shadowProgram);
+    gl.uniform4f(shadowUniforms.box, shadowBox.x / width * 2 - 1, 1 - shadowBox.y / height * 2,
+      shadowBox.width / width, shadowBox.height / height);
+    gl.uniform1f(shadowUniforms.opacity, opacity * .16);
+    gl.bindBuffer(gl.ARRAY_BUFFER, shadowBuffer); gl.enableVertexAttribArray(shadowAttributes);
+    gl.vertexAttribPointer(shadowAttributes, 2, gl.FLOAT, false, 8, 0); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.enable(gl.DEPTH_TEST);
+  }
+  function paintEnvironment() {
+    var image = document.createElement("canvas"); image.width = 2048; image.height = 1024;
+    var context = image.getContext("2d");
+    if (!context) throw new Error("Reflection texture unavailable");
+    var wash = context.createLinearGradient(0, 0, 0, 1024);
+    wash.addColorStop(0, "#0A1628"); wash.addColorStop(.22, "#1B3A32"); wash.addColorStop(.40, "#D6D4ED");
+    wash.addColorStop(.73, "#D6D4ED"); wash.addColorStop(.88, "#BDB414"); wash.addColorStop(1, "#0A1628");
+    context.fillStyle = wash; context.fillRect(0, 0, 2048, 1024);
+    context.fillStyle = "#0A1628"; context.textAlign = "center"; context.textBaseline = "middle";
+    if (reflectionArtwork) {
+      context.drawImage(reflectionArtwork, 270, 215, 1508, 814);
+    } else {
+      context.font = "700 174px Inter, Arial, sans-serif";
+      ["PRODUCT", "WITH", "PURPOSE"].forEach(function (text, i) { context.fillText(text, 1024, 415 + i * 145); });
+    }
+    // Broad studio softboxes give the bevel a clear reflected light-dark edge.
+    context.fillStyle = "#D6D4ED"; context.fillRect(82, 230, 80, 540); context.fillRect(1792, 180, 115, 580);
+    context.fillStyle = "#0A1628"; context.fillRect(1755, 160, 24, 630);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  function paintBackdrop() {
+    if (!backdropTexture || destroyed || lost) return;
+    if (!backdropCanvas) backdropCanvas = document.createElement("canvas");
+    // Power-of-two dimensions permit mipmaps in WebGL 1. Each side is capped;
+    // reusing the canvas avoids allocating a new full-page image on every resize.
+    var cap = Math.min(2048, gl.getParameter(gl.MAX_TEXTURE_SIZE));
+    function dimension(value) { return Math.min(cap, Math.pow(2, Math.ceil(Math.log2(Math.max(2, value))))); }
+    var density = Math.min(devicePixelRatio || 1, 1.5);
+    var targetWidth = dimension(width * density), targetHeight = dimension(height * density);
+    if (backdropCanvas.width !== targetWidth) backdropCanvas.width = targetWidth;
+    if (backdropCanvas.height !== targetHeight) backdropCanvas.height = targetHeight;
+    var context = backdropCanvas.getContext("2d");
+    if (!context) throw new Error("Glass backdrop unavailable");
+    context.setTransform(targetWidth / width, 0, 0, targetHeight / height, 0, 0);
+    context.fillStyle = "#D6D4ED"; context.fillRect(0, 0, width, height);
+    var artwork = document.querySelector(".home-mast-lettering img, img.home-mast-lettering");
+    if (artwork && artwork.complete && artwork.naturalWidth) {
+      var box = canvas.getBoundingClientRect(), lettering = artwork.getBoundingClientRect();
+      var scaleX = width / Math.max(1, box.width), scaleY = height / Math.max(1, box.height);
+      // The source SVG's default xMidYMid meet keeps its viewBox proportional
+      // inside the tall mobile <img>. Match that painted area, not its empty box.
+      var imageRatio = Number(artwork.getAttribute("width")) / Number(artwork.getAttribute("height")) || artwork.naturalWidth / artwork.naturalHeight;
+      var paintedWidth = Math.min(lettering.width, lettering.height * imageRatio);
+      var paintedHeight = paintedWidth / imageRatio;
+      var left = lettering.left + (lettering.width - paintedWidth) / 2;
+      var top = lettering.top + (lettering.height - paintedHeight) / 2;
+      context.drawImage(artwork, (left - box.left) * scaleX, (top - box.top) * scaleY, paintedWidth * scaleX, paintedHeight * scaleY);
+    }
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, backdropTexture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, backdropCanvas);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  function initialize() {
+    gl = canvas.getContext("webgl", { alpha: true, antialias: true, premultipliedAlpha: false, powerPreference: "low-power" });
+    if (!gl) throw new Error("WebGL unavailable");
+    var precision = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+    var vertex = compile(gl.VERTEX_SHADER, vertexSource);
+    var fragment = compile(gl.FRAGMENT_SHADER, precision && precision.precision ? fragmentSource : fragmentSource.replace("highp", "mediump"));
+    program = gl.createProgram(); gl.attachShader(program, vertex); gl.attachShader(program, fragment); gl.linkProgram(program);
+    gl.deleteShader(vertex); gl.deleteShader(fragment);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error("Hero material unavailable");
+    initializeShadow();
+    gl.useProgram(program);
+    ["uModel", "uViewProjection", "uEnvironment", "uBackdrop", "uResolution", "uCamera", "uMorph"].forEach(function (name) { uniforms[name] = gl.getUniformLocation(program, name); });
+    attributes.position = gl.getAttribLocation(program, "aPosition"); attributes.normal = gl.getAttribLocation(program, "aNormal");
+    attributes.gatePosition = gl.getAttribLocation(program, "aGatePosition"); attributes.gateNormal = gl.getAttribLocation(program, "aGateNormal");
+    fragments = makeFragments();
+    fragments.forEach(function (fragment) {
+      fragment.buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, fragment.buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, fragment.data, gl.STATIC_DRAW);
+    });
+    texture = gl.createTexture(); backdropTexture = gl.createTexture(); paintEnvironment();
+    gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
+    gl.clearColor(0, 0, 0, 0); initialized = true; lost = false;
+    resize();
+    if (!initialized) throw new Error("Glass backdrop unavailable");
+    stop(); render(performance.now());
+    if (gl.getError() !== gl.NO_ERROR) throw new Error("Hero renderer unavailable");
+    api.status = "ready"; host.dataset.heroScene = "ready";
+    loadReflection();
+  }
+  function loadReflection() {
+    var artwork = document.querySelector(".home-mast-lettering img, img.home-mast-lettering");
+    var settled = false;
+    function complete() {
+      if (settled || destroyed || lost) return;
+      settled = true; clearTimeout(reflectionTimer);
+      if (artwork && artwork.complete && artwork.naturalWidth) {
+        reflectionArtwork = artwork;
+        try { paintEnvironment(); paintBackdrop(); requestRender(); } catch (error) { reflectionArtwork = null; fallback(); return; }
+      }
+      resolveReady({ status: "ready" });
+      window.dispatchEvent(new CustomEvent("portfolio:heroready", { detail: { status: "ready" } }));
+    }
+    if (!artwork || (artwork.complete && artwork.naturalWidth)) { complete(); return; }
+    on(artwork, "load", complete, { once: true }); on(artwork, "error", complete, { once: true });
+    reflectionTimer = setTimeout(complete, 1400);
+  }
+
+  function fallback() {
+    stop(); initialized = false; api.status = "fallback"; host.dataset.heroScene = "fallback";
+    resolveReady({ status: "fallback" });
+    window.dispatchEvent(new CustomEvent("portfolio:heroready", { detail: { status: "fallback" } }));
+  }
+  function resize() {
+    if (destroyed || lost) return;
+    var box = host.getBoundingClientRect(); width = Math.max(1, box.width); height = Math.max(1, box.height); aspect = width / height;
+    cameraZ = innerWidth <= 991 ? 3.9 : 3.7;
+    // The 60vh sculpture remains inside very narrow/landscape drawing surfaces.
+    sceneScale = Math.min(1, aspect * 2.25);
+    var dpr = Math.min(devicePixelRatio || 1, innerWidth <= 991 ? 1.6 : 2);
+    canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+    if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+    fitGate();
+    if (initialized) {
+      try { paintBackdrop(); } catch (error) { fallback(); return; }
+    }
+    requestRender();
+  }
+  function start() {
+    if (destroyed || api.status === "fallback" || assemblyStart !== null) return;
+    arrivalStarted = true;
+    assemblyStart = reduced() ? -Infinity : performance.now() + 200;
+    requestRender();
+  }
+  function finish() {
+    assemblyStart = -Infinity;
+    pointer.targetX = pointer.targetY = pointer.tiltX = pointer.tiltY = 0;
+    pointer.inside = false; drag.active = false; drag.velocity = 0; drag.angle = 0;
+    fragments.forEach(function (fragment) { fragment.hoverX = fragment.hoverY = fragment.hoverZ = 0; });
+    requestRender();
+  }
+  function setMorphProgress(value) {
+    if (destroyed || !Number.isFinite(value)) return;
+    var next = clamp(value, 0, 1);
+    if (Math.abs(next - morphProgress) < .00001) return;
+    morphProgress = next;
+    // Scrolling may interrupt arrival. Complete the assembly once instead of
+    // mixing dispersed fragments with a destination shape that is already read.
+    if (next > .001 && assemblyStart !== -Infinity) finish();
+    requestRender();
+  }
+  function stop() { if (frame) cancelAnimationFrame(frame); frame = 0; previousTime = 0; }
+  function requestRender() {
+    if (!frame && initialized && !lost && !destroyed && !suspended && intersecting && !document.hidden) frame = requestAnimationFrame(render);
+  }
+  function render(now) {
+    frame = 0;
+    if (!initialized || destroyed || lost || suspended || !intersecting || document.hidden) return;
+    var dt = previousTime ? Math.min(.05, (now - previousTime) / 1000) : 1 / 60; previousTime = now;
+    var quiet = reduced(), easing = 1 - Math.exp(-dt / .4), hovering = false;
+    if (quiet) { pointer.targetX = pointer.targetY = pointer.tiltX = pointer.tiltY = 0; drag.angle = 0; drag.velocity = 0; }
+    pointer.tiltX += (pointer.targetX - pointer.tiltX) * easing; pointer.tiltY += (pointer.targetY - pointer.tiltY) * easing;
+    if (!drag.active && !quiet) { drag.angle += drag.velocity * dt * 60; drag.velocity *= Math.pow(.91, dt * 60); }
+    var interaction = 1 - clamp(morphProgress / .35, 0, 1);
+    var rootMatrix = multiply(compose(-.16 + (morphPose.x + .16) * morphProgress, morphPose.y * morphProgress, 0,
+      pointer.tiltX * interaction + 20 * DEG * morphProgress,
+      (-27 + (innerWidth < 600 ? 39 : 19) * morphProgress) * DEG + (pointer.tiltY + drag.angle) * interaction, 0,
+      sceneScale + (morphPose.scale - sceneScale) * morphProgress),
+      compose(0, 0, 0, 0, 0, Math.PI / 2 * morphProgress, 1));
+    var view = identity(); view[14] = -cameraZ;
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); drawShadow(); gl.useProgram(program);
+    gl.uniformMatrix4fv(uniforms.uViewProjection, false, multiply(perspective(), view));
+    gl.uniform3f(uniforms.uCamera, 0, 0, cameraZ);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texture); gl.uniform1i(uniforms.uEnvironment, 0);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, backdropTexture); gl.uniform1i(uniforms.uBackdrop, 1);
+    gl.uniform2f(uniforms.uResolution, canvas.width, canvas.height);
+    gl.uniform1f(uniforms.uMorph, morphProgress);
+    var assembling = false;
+    fragments.forEach(function (fragment) {
+      var progress = quiet || assemblyStart === null ? 1 : clamp((now - assemblyStart - fragment.delay) / (2300 - fragment.delay), 0, 1);
+      var scatter = 1 - Math.sqrt(1 - Math.pow(progress - 1, 2));
+      if (progress < 1) assembling = true;
+      var targetX = 0, targetY = 0, targetZ = 0;
+      if (pointer.inside && !quiet && progress === 1 && !drag.active && morphProgress < .001) {
+        var projected = project(transformPoint(rootMatrix, fragment.center));
+        var dx = projected.x - pointer.x, dy = projected.y - pointer.y, distance = Math.hypot(dx, dy);
+        var weight = Math.max(0, 1 - distance / 105);
+        targetX = dx / 105 * weight * .22; targetY = -dy / 105 * weight * .22; targetZ = weight * .12;
+      }
+      var spring = 1 - Math.exp(-dt / .3);
+      fragment.hoverX += (targetX - fragment.hoverX) * spring;
+      fragment.hoverY += (targetY - fragment.hoverY) * spring;
+      fragment.hoverZ += (targetZ - fragment.hoverZ) * spring;
+      if (Math.abs(fragment.hoverX - targetX) + Math.abs(fragment.hoverY - targetY) + Math.abs(fragment.hoverZ - targetZ) > .0001) hovering = true;
+      var matrix = compose(fragment.center[0] + fragment.offset[0] * scatter + fragment.hoverX,
+        fragment.center[1] + fragment.offset[1] * scatter + fragment.hoverY, fragment.offset[2] * scatter + fragment.hoverZ,
+        fragment.spin[0] * scatter, fragment.spin[1] * scatter, fragment.spin[2] * scatter, 1);
+      gl.uniformMatrix4fv(uniforms.uModel, false, multiply(rootMatrix, matrix));
+      gl.bindBuffer(gl.ARRAY_BUFFER, fragment.buffer);
+      gl.enableVertexAttribArray(attributes.position); gl.vertexAttribPointer(attributes.position, 3, gl.FLOAT, false, 52, 0);
+      gl.enableVertexAttribArray(attributes.normal); gl.vertexAttribPointer(attributes.normal, 3, gl.FLOAT, false, 52, 12);
+      gl.enableVertexAttribArray(attributes.gatePosition); gl.vertexAttribPointer(attributes.gatePosition, 3, gl.FLOAT, false, 52, 24);
+      gl.enableVertexAttribArray(attributes.gateNormal); gl.vertexAttribPointer(attributes.gateNormal, 4, gl.FLOAT, false, 52, 36);
+      gl.drawArrays(gl.TRIANGLES, 0, fragment.data.length / 13);
+    });
+    var moving = Math.abs(pointer.targetX - pointer.tiltX) + Math.abs(pointer.targetY - pointer.tiltY) > .0001 || Math.abs(drag.velocity) > .00001;
+    if (!quiet && (assembling || moving || hovering || drag.active)) requestRender();
+  }
+  function pointerMove(event) {
+    if (reduced() || morphProgress > .001 || !fineQuery.matches || event.pointerType === "touch") return;
+    var box = host.getBoundingClientRect();
+    pointer.x = (event.clientX - box.left) * width / Math.max(1, box.width);
+    pointer.y = (event.clientY - box.top) * height / Math.max(1, box.height);
+    pointer.inside = pointer.x >= 0 && pointer.x <= width && pointer.y >= 0 && pointer.y <= height;
+    if (pointer.inside) {
+      pointer.targetY = clamp((pointer.x / width - .5) * 2, -1, 1) * 14.4 * DEG;
+      pointer.targetX = clamp((pointer.y / height - .5) * 2, -1, 1) * 14.4 * DEG;
+    }
+    if (drag.active) {
+      var delta = event.clientX - drag.x; drag.x = event.clientX;
+      drag.velocity = delta * .2 * DEG; drag.angle += drag.velocity;
+    }
+    requestRender();
+  }
+  function pointerLeave() { pointer.inside = false; pointer.targetX = pointer.targetY = 0; requestRender(); }
+  function on(target, type, callback, options) {
+    target.addEventListener(type, callback, Object.assign({ signal: listeners.signal }, options || {}));
+  }
+  on(mast, "pointermove", pointerMove, { passive: true });
+  on(mast, "pointerleave", pointerLeave, { passive: true });
+  on(mast, "pointerdown", function (event) {
+    if (reduced() || morphProgress > .001 || !fineQuery.matches || event.button !== 0 || event.target.closest("a,button,input,textarea,select")) return;
+    var box = host.getBoundingClientRect();
+    var localX = (event.clientX - box.left) * width / Math.max(1, box.width);
+    var localY = (event.clientY - box.top) * height / Math.max(1, box.height);
+    if (Math.abs(localX - width / 2) > Math.min(width * .30, height * .24) || Math.abs(localY - height / 2) > height * .34) return;
+    drag.active = true; drag.x = event.clientX; drag.velocity = 0; requestRender();
+  }, { passive: true });
+  on(window, "pointermove", function (event) { if (drag.active && !mast.contains(event.target)) pointerMove(event); }, { passive: true });
+  on(window, "pointerup", function () { drag.active = false; requestRender(); }, { passive: true });
+  on(window, "pointercancel", function () { drag.active = false; drag.velocity = 0; requestRender(); }, { passive: true });
+  on(window, "portfolio:arrivalstart", start);
+  on(window, "portfolio:arrivalend", function () { if (!arrivalStarted) start(); });
+  on(window, "portfolio:motionchange", function () { if (reduced()) finish(); else requestRender(); });
+  on(reducedQuery, "change", function () { if (reduced()) finish(); else requestRender(); });
+  on(document, "visibilitychange", function () { if (document.hidden) stop(); else requestRender(); });
+  on(window, "pagehide", function () { suspended = true; stop(); });
+  on(window, "pageshow", function () { suspended = false; requestRender(); });
+  on(canvas, "webglcontextlost", function (event) { event.preventDefault(); lost = true; fallback(); });
+  on(canvas, "webglcontextrestored", function () { if (!destroyed) { try { initialize(); finish(); } catch (error) { fallback(); } } });
+  on(window, "resize", resize, { passive: true });
+  if (typeof ResizeObserver === "function") {
+    resizeObserver = new ResizeObserver(resize); resizeObserver.observe(host);
+    var lettering = document.querySelector(".home-mast-lettering img, img.home-mast-lettering");
+    if (lettering) resizeObserver.observe(lettering);
+  }
+  if (typeof IntersectionObserver === "function") {
+    observer = new IntersectionObserver(function (entries) {
+      intersecting = entries.some(function (entry) { return entry.isIntersecting; });
+      if (intersecting) requestRender(); else stop();
+    }); observer.observe(host);
+  }
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true; stop(); clearTimeout(reflectionTimer); listeners.abort();
+    if (observer) observer.disconnect(); if (resizeObserver) resizeObserver.disconnect();
+    if (gl && !lost) {
+      fragments.forEach(function (fragment) { gl.deleteBuffer(fragment.buffer); });
+      if (texture) gl.deleteTexture(texture); if (backdropTexture) gl.deleteTexture(backdropTexture);
+      if (program) gl.deleteProgram(program);
+      if (shadowBuffer) gl.deleteBuffer(shadowBuffer); if (shadowProgram) gl.deleteProgram(shadowProgram);
+    }
+    if (backdropCanvas) { backdropCanvas.width = backdropCanvas.height = 1; backdropCanvas = null; }
+    fragments = []; resolveReady({ status: "fallback" }); api.status = "destroyed"; host.dataset.heroScene = "fallback";
+  }
+  try { initialize(); } catch (error) { fallback(); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+    if (!destroyed && initialized && !lost && api.status === "ready") { paintEnvironment(); paintBackdrop(); requestRender(); }
+  }).catch(function () {});
+  function automaticStart() {
+    requestAnimationFrame(function () {
+      if (!arrivalStarted && !document.querySelector(".site-arrival") && !document.documentElement.classList.contains("arrival-active")) start();
+    });
+  }
+  if (document.readyState === "loading") on(document, "DOMContentLoaded", automaticStart, { once: true });
+  else automaticStart();
+})();

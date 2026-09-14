@@ -7,7 +7,9 @@ This repository is a static hiring portfolio.
    stylesheet, deterministic checks).
 2. Use existing class names documented there. Do not add a parallel design
    system, a third type family, or Vercel/Geist chrome.
-3. Do not generate images, palettes, wordmarks, or UI screenshots.
+3. Do not generate images, palettes, wordmarks, or UI screenshots outside the
+   explicit user-approved decorative artwork exceptions in `design.md`.
+   Never generate product evidence or replace the shipped palette.
 4. Keep Funnel Display + Inter and the shipped case colors.
 5. Mechanical rules live in `scripts/check-design.mjs` plus the existing
    `scripts/check-*.mjs` suite. If a correction repeats, encode it — do not

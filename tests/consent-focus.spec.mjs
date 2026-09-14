@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.use({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
+test.use({ viewport: { width: 390, height: 844 }, contextOptions: { reducedMotion: "reduce" } });
 
 test.beforeEach(async ({ page }) => {
   page.consentFocusRequests = [];
@@ -22,6 +22,7 @@ test.beforeEach(async ({ page }) => {
     });
   });
   await page.goto("/ai-integration");
+  expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
   await page.waitForFunction(() => document.fonts.status === "loaded");
   await expect(page.locator("[data-consent-banner]")).toBeHidden();
 });

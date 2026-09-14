@@ -1,0 +1,44 @@
+/* The same sculptural project list on the home page and complete work index. */
+body.works-index { --composition-gutter: clamp(24px, 4.8vw, 80px); background: #D6D4ED; color: #0A1628; }
+body.works-index .navbar { background: #D6D4ED; border-color: rgb(10 22 40 / 20%); }
+body.works-index .project-index-intro { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 40px; padding: clamp(48px, 8vw, 120px) var(--composition-gutter) 64px; }
+.project-index-intro h1 { margin: 0; color: #0A1628; font-family: 'Funnel Display', sans-serif; font-weight: 700; font-size: clamp(72px, 11vw, 164px); line-height: .88; letter-spacing: -.065em; overflow-wrap: anywhere; }
+.project-index-intro p { max-width: 30ch; margin: 0 0 4px; font-size: clamp(18px, 2vw, 28px); line-height: 1.3; letter-spacing: -.025em; }
+body.works-index .work-section { margin: 0; padding: 0 var(--composition-gutter) 100px; background: #D6D4ED; }
+body.works-index .work-list { display: flex; flex-direction: column; width: 100%; margin: 0; border-top: 1px solid rgb(10 22 40 / 30%); }
+body.works-index .work-row { position: relative; display: grid; grid-template-columns: minmax(0, 35fr) 20px minmax(0, 46fr) minmax(80px, 13fr); gap: clamp(16px, 2vw, 32px); align-items: center; width: 100%; padding: 26px 0; border-bottom: 1px solid rgb(10 22 40 / 30%); }
+body.works-index .work-row-visual { grid-column: 1; grid-row: 1; overflow: hidden; aspect-ratio: 2.4; background: #D6D4ED; }
+body.works-index .work-row-thumb { display: block; width: 100%; height: 100%; border-radius: 0; object-fit: cover; }
+body.home .work-row-thumb { object-fit: cover; }
+body.home .work-row-visual { background: #D6D4ED; }
+body.home #works .about-section-title { width: auto; text-align: left; }
+body.works-index .work-row-number { grid-column: 2; grid-row: 1; align-self: start; padding-top: 6px; font-size: 11px; }
+body.works-index .work-row-copy { grid-column: 3; grid-row: 1; min-width: 0; }
+body.works-index .work-title-heading { margin: 0; }
+body.works-index .work-row .work-title { display: inline; color: #0A1628; font-family: Inter, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 66px); letter-spacing: -.065em; line-height: 1.06; text-decoration: none; overflow-wrap: anywhere; }
+body.works-index .work-row .work-card-summary { max-width: 44ch; margin: 10px 0 0; color: #0A1628; font-size: clamp(14px, 1.15vw, 18px); letter-spacing: -.015em; line-height: 1.3; }
+body.works-index .work-row-action { display: inline-flex; align-items: center; gap: 12px; margin-top: 14px; color: #0A1628; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+body.works-index .work-row-arrow { color: #0A1628; font-size: 16px; opacity: 1; }
+body.works-index .work-row-meta { grid-column: 4; grid-row: 1; justify-self: end; margin: 0; color: #485272; font-size: 10px; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; }
+body.works-index .work-row:hover .work-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+body.works-index .work-title:focus-visible { outline: 3px solid var(--site-focus); outline-offset: 5px; }
+body.works-index .work-row:focus-within { border-radius: 0; }
+@media (max-width: 991px) {
+ body.works-index .project-index-intro { gap: 24px; padding-top: 56px; padding-bottom: 48px; }
+ body.works-index .work-row { grid-template-columns: minmax(0, 40fr) 16px minmax(0, 54fr); gap: 16px; }
+ body.works-index .work-row-meta { display: none; }
+ body.works-index .work-row .work-title { font-size: clamp(28px, 4.8vw, 48px); }
+}
+@media (max-width: 599px) {
+ body.works-index { --composition-gutter: 20px; }
+ body.works-index .project-index-intro { display: block; padding-top: 42px; padding-bottom: 36px; }
+ .project-index-intro h1 { font-size: clamp(66px, 20vw, 116px); }
+ .project-index-intro p { margin-top: 24px; max-width: 31ch; font-size: 18px; }
+ body.works-index .work-section { padding-bottom: 60px; }
+ body.works-index .work-row { grid-template-columns: 20px minmax(0, 1fr); gap: 16px 10px; padding: 22px 0; }
+ body.works-index .work-row-visual { grid-column: 1 / -1; grid-row: 1; aspect-ratio: 2.25; }
+ body.works-index .work-row-number { grid-column: 1; grid-row: 2; }
+ body.works-index .work-row-copy { grid-column: 2; grid-row: 2; }
+ body.works-index .work-row .work-title { font-size: clamp(30px, 9vw, 48px); }
+ body.works-index .work-row .work-card-summary { font-size: 15px; }
+}

@@ -40,21 +40,40 @@ test.beforeEach(async ({ page }) => {
     }
   });
   await page.addInitScript(() => {
-    // Existing visual locks test a returning visitor; consent has its own fresh-state suite.
+    // Visual and accessibility tests use a returning visitor; arrival has its own fresh-session suite.
+    sessionStorage.setItem("nb-arrival-seen-v2", "1");
     localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
     window.__cumulativeLayoutShift = 0;
+    window.__layoutShiftEvidence = [];
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        if (!entry.hadRecentInput) window.__cumulativeLayoutShift += entry.value;
+        if (!entry.hadRecentInput) {
+          window.__cumulativeLayoutShift += entry.value;
+          if (window.__layoutShiftEvidence.length < 100) window.__layoutShiftEvidence.push({
+            time: entry.startTime, value: entry.value, scrollY,
+            compositionNav: document.querySelector(".navbar")?.hasAttribute("data-composition-nav"),
+            sources: (entry.sources || []).map((source) => ({
+              node: source.node ? `${source.node.nodeName}#${source.node.id || ""}.${source.node.className || ""}` : null,
+              previous: source.previousRect.toJSON(), current: source.currentRect.toJSON(),
+            })),
+          });
+        }
       }
     }).observe({ type: "layout-shift", buffered: true });
   });
 });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, testInfo) => {
   if (page.isClosed() || page.url() === "about:blank") return;
   expect(page.__runtimeErrors, page.__runtimeErrors.join("\n")).toEqual([]);
   const cumulativeLayoutShift = await page.evaluate(() => window.__cumulativeLayoutShift || 0);
+  if (cumulativeLayoutShift >= .1) await testInfo.attach("layout-shift-sources", {
+    body: JSON.stringify(await page.evaluate(() => ({
+      url: location.href, viewport: { width: innerWidth, height: innerHeight },
+      cls: window.__cumulativeLayoutShift, fonts: document.fonts.status,
+      entries: window.__layoutShiftEvidence,
+    })), null, 2), contentType: "application/json",
+  });
   expect(cumulativeLayoutShift, `CLS ${cumulativeLayoutShift} exceeds the good threshold`).toBeLessThan(0.1);
 });
 
@@ -176,64 +195,6 @@ async function screenshotClip(page, clip) {
   return sampleStats(readPng(buffer));
 }
 
-async function footerSeamClip(page) {
-  const sample = await page.evaluate(() => {
-    const cta = document.querySelector(".footer-cta").getBoundingClientRect();
-    const work = document.querySelector(".footer-col-title").getBoundingClientRect();
-    const controls = [...document.querySelectorAll(".footer-cta a, .footer-cta button")].map((control) => {
-      const box = control.getBoundingClientRect();
-      return { left: box.left, right: box.right, top: box.top, bottom: box.bottom };
-    });
-    const viewport = { width: document.documentElement.clientWidth, height: window.innerHeight };
-    const gutter = 12;
-    const x = Math.ceil(Math.max(...controls.map((control) => control.right)) + gutter);
-    const y = Math.max(0, Math.floor(cta.bottom - 12));
-    return {
-      controls, viewport, gutter,
-      clip: {
-        x, y,
-        width: Math.min(80, Math.floor(viewport.width - gutter - x)),
-        height: Math.min(viewport.height, Math.ceil(work.top + 12)) - y,
-      },
-    };
-  });
-  const { clip, controls, viewport, gutter } = sample;
-  expect(controls).toHaveLength(2);
-  expect(clip.width, "the empty background sample must remain useful").toBeGreaterThanOrEqual(32);
-  expect(clip.width).toBeLessThanOrEqual(80);
-  expect(clip.height).toBeGreaterThanOrEqual(8);
-  expect(clip.x).toBeGreaterThanOrEqual(0);
-  expect(clip.y).toBeGreaterThanOrEqual(0);
-  expect(clip.x + clip.width).toBeLessThanOrEqual(viewport.width);
-  expect(clip.y + clip.height).toBeLessThanOrEqual(viewport.height);
-  for (const control of controls) {
-    expect(clip.x).toBeGreaterThanOrEqual(control.right + gutter);
-    const intersects = clip.x < control.right && clip.x + clip.width > control.left &&
-      clip.y < control.bottom && clip.y + clip.height > control.top;
-    expect(intersects, "mesh sample must not contain a contact control or its border").toBe(false);
-  }
-  return clip;
-}
-
-async function footerSeamJump(page, clip) {
-  const png = readPng(await page.screenshot({ clip, type: "png" }));
-  expect(png.width).toBe(clip.width);
-  expect(png.height).toBe(clip.height);
-  const row = (y) => {
-    let sum = 0;
-    for (let x = 0; x < png.width; x += 1) {
-      const i = (y * png.width + x) * 4;
-      sum += 0.2126 * png.pixels[i] + 0.7152 * png.pixels[i + 1] + 0.0722 * png.pixels[i + 2];
-    }
-    return sum / png.width;
-  };
-  let maxJump = 0;
-  for (let y = 1; y < png.height; y += 1) {
-    maxJump = Math.max(maxJump, Math.abs(row(y) - row(y - 1)));
-  }
-  return maxJump;
-}
-
 function srgbToLin(channel) {
   const value = channel / 255;
   return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
@@ -333,7 +294,36 @@ async function sampleBehindGlyphs(page, locator, { includePixels = false } = {})
   return includePixels ? { ...stats, png, x: Math.max(0, box.x), y: Math.max(0, box.y) } : stats;
 }
 
+async function readableHomeTarget(page, locator) {
+  const target = await locator.evaluate((element) => {
+    const mast = element.closest(".home-mast");
+    if (!mast) return null;
+    return { active: mast.hasAttribute("data-morph-active"),
+      role: element.matches(".home-banner-title"), baseline: Boolean(element.closest(".home-mast-baseline")),
+      intro: Boolean(element.closest(".home-mast-intro")), action: element.matches(".hero-work-link") };
+  });
+  if (!target) return locator;
+  // Each reading phase is reached by native document scrolling. Never reveal
+  // hidden text by changing its styles, opacity or the animation's progress.
+  if (target.active && (target.baseline || target.intro)) {
+    await page.locator(".home-mast-track").evaluate((track, end) => {
+      const box = track.getBoundingClientRect();
+      const scene = track.querySelector(".home-mast-scene").getBoundingClientRect();
+      scrollTo(0, box.top + scrollY + (end ? box.height - scene.height : 0));
+    }, target.intro);
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    await page.waitForTimeout(220);
+  } else if (!target.active && target.role) {
+    // Static/reflow modes keep one semantic H1 and paint the large role title.
+    locator = page.locator(".home-mast-display");
+  } else if (!target.active && target.action) {
+    locator = page.locator(".home-intro-work");
+  }
+  return locator;
+}
+
 async function expectHeaderTextAA(page, locator, label, { raster = false } = {}) {
+  locator = await readableHomeTarget(page, locator);
   await locator.scrollIntoViewIfNeeded();
   const runs = await locator.evaluate((element) => {
     const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
@@ -349,16 +339,18 @@ async function expectHeaderTextAA(page, locator, label, { raster = false } = {})
         .map(({ left, right, top, bottom }) => ({ left, right, top, bottom }));
       if (!rects.length) continue;
       let opacity = 1;
+      let blend = "normal";
       const backgrounds = [];
       for (let parent = node.parentElement; parent; parent = parent.parentElement) {
         const parentStyle = getComputedStyle(parent);
         opacity *= Number(parentStyle.opacity);
+        if (parentStyle.mixBlendMode !== "normal") blend = parentStyle.mixBlendMode;
         backgrounds.push({ color: parentStyle.backgroundColor, image: parentStyle.backgroundImage });
       }
       result.push({
         text: node.textContent.replace(/\s+/g, " ").trim(), color: style.color,
         size: parseFloat(style.fontSize), weight: parseInt(style.fontWeight, 10),
-        opacity, backgrounds, rects,
+        opacity, blend, backgrounds, rects,
       });
     }
     return result;
@@ -375,13 +367,17 @@ async function expectHeaderTextAA(page, locator, label, { raster = false } = {})
     b: foreground.b * alpha + background.b * (1 - alpha),
   });
   for (const run of runs) {
+    expect(["normal", "difference"], `${label}: the checker must understand the actual blend mode`).toContain(run.blend);
     const color = parseCssColor(run.color);
     const alpha = color.a * run.opacity;
     const required = run.size >= 24 || (run.size >= 18.6667 && run.weight >= 700) ? 3 : 4.5;
     let worst = Infinity;
     let measured = 0;
     const compare = (background) => {
-      worst = Math.min(worst, contrastRatio(colorLuminance(mix(color, background, alpha)), colorLuminance(background)));
+      const painted = run.blend === "difference" ? {
+        r: Math.abs(background.r - color.r), g: Math.abs(background.g - color.g), b: Math.abs(background.b - color.b),
+      } : color;
+      worst = Math.min(worst, contrastRatio(colorLuminance(mix(painted, background, alpha)), colorLuminance(background)));
       measured += 1;
     };
     if (sample) {
@@ -413,22 +409,49 @@ async function expectHeaderTextAA(page, locator, label, { raster = false } = {})
   }
 }
 
+async function expectBreadcrumbSeparatorAA(page, label) {
+  const separator = page.locator(".nav-breadcrumb li + li");
+  const state = await separator.evaluate((element) => ({
+    color: getComputedStyle(element, "::before").color,
+    content: getComputedStyle(element, "::before").content,
+    blend: getComputedStyle(element.closest(".navbar")).mixBlendMode,
+  }));
+  expect(state.content).toBe('"/"');
+  expect(["normal", "difference"]).toContain(state.blend);
+  const hiding = await page.addStyleTag({ content: ".nav-breadcrumb li + li::before { color: transparent !important; }" });
+  const sample = await sampleBehindGlyphs(page, separator, { includePixels: true });
+  await hiding.evaluate((element) => element.remove());
+  const ink = parseCssColor(state.color);
+  let worst = Infinity;
+  for (let index = 0; index < sample.png.pixels.length; index += 4) {
+    const background = { r: sample.png.pixels[index], g: sample.png.pixels[index + 1], b: sample.png.pixels[index + 2] };
+    const foreground = Object.fromEntries(["r", "g", "b"].map((channel) => {
+      const painted = state.blend === "difference" ? Math.abs(background[channel] - ink[channel]) : ink[channel];
+      return [channel, painted * ink.a + background[channel] * (1 - ink.a)];
+    }));
+    worst = Math.min(worst, contrastRatio(colorLuminance(foreground), colorLuminance(background)));
+  }
+  expect(worst, `${label}: visible breadcrumb separator must meet AA on its actual blended field`).toBeGreaterThanOrEqual(4.5);
+}
+
 for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
   test(`${width} home: every header text meets AA on its worst relevant background`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.route(/posthog\.com/, (route) => route.abort());
     await openStable(page, "/");
-    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
-    await expect(text).toHaveCount(11);
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-mast-display, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(12);
     for (let index = 0; index < await text.count(); index += 1) {
-      if (await text.nth(index).isVisible()) {
-        await expectHeaderTextAA(page, text.nth(index), `${width} home text ${index + 1}`, { raster: true });
-      }
+      const target = await readableHomeTarget(page, text.nth(index));
+      if (await target.evaluate((element) => element.matches(".metric-context") && getComputedStyle(element).display === "none")) continue;
+      await expect(target).toBeVisible();
+      await expectHeaderTextAA(page, target, `${width} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast a.hero-work-link, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
-    await expect(controls).toHaveCount(5);
+    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
+    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About"]);
+    await expect(controls).toHaveCount(6);
     for (let index = 0; index < await controls.count(); index += 1) {
-      const control = controls.nth(index);
+      const control = await readableHomeTarget(page, controls.nth(index));
       if (!await control.isVisible()) await page.locator(".menu-button").click();
       for (const state of ["default", "hover", "focus"]) {
         await control.evaluate((element) => element.blur());
@@ -442,65 +465,22 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
   });
 }
 
-test.describe("portable header contrast", () => {
+test.describe("native intro contrast", () => {
   test.use({ hasTouch: true, isMobile: true });
   for (const width of [320, 390, 768, 991, 1440]) {
-    test(`${width}: native-scroll middle and end states preserve text AA`, async ({ page }, testInfo) => {
-      // Sample two complete rendered states, including every employer label.
-      test.setTimeout(90_000);
-      await page.setViewportSize({ width, height: width <= 390 ? 844 : 900 });
-      await page.emulateMedia({ reducedMotion: "no-preference" });
-      await page.route(/posthog\.com/, (route) => route.abort());
-      const snapshots = [];
-      const readState = () => page.evaluate(() => {
-        const mast = document.querySelector(".home-mast");
-        const rect = mast.getBoundingClientRect();
-        const transform = getComputedStyle(mast.querySelector(".home-mast-art")).transform;
-        const innerTransforms = [...mast.querySelectorAll(".home-mast-navy-drift")]
-          .map((element) => getComputedStyle(element).transform);
-        return {
-          progress: Math.max(0, Math.min(1, -rect.top / rect.height)),
-          transform,
-          pixels: new DOMMatrixReadOnly(transform === "none" ? undefined : transform).f,
-          innerPixels: innerTransforms.map((value) => new DOMMatrixReadOnly(value === "none" ? undefined : value).f),
-        };
-      });
-      for (const progress of [0.5, 0.95]) {
-        await openStable(page, "/");
-        expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
-        expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: no-preference)").matches)).toBe(true);
-        await expect(page.locator(".home-mast-art")).toHaveCSS("animation-name", "home-mast-native-depth");
-        expect(await page.evaluate(() => window.ScrollTrigger?.getAll()
-          .filter((entry) => entry.trigger === document.querySelector(".home-mast")).length)).toBe(0);
-        await page.evaluate((target) => {
-          const rect = document.querySelector(".home-mast").getBoundingClientRect();
-          window.scrollTo(0, scrollY + rect.top + rect.height * target);
-        }, progress);
-        await expect(async () => {
-          const state = await readState();
-          expect(state.progress).toBeCloseTo(progress, 2);
-          expect(Math.abs(state.pixels - -44 * state.progress)).toBeLessThan(0.15);
-          expect(state.innerPixels).toEqual([0, 0]);
-        }).toPass();
-        const settled = await readState();
-        snapshots.push(settled);
-        // Capture the actual scroll-produced paint before bringing text back
-        // into view. Otherwise the contrast helper's native scroll would reset
-        // the mast and silently measure only the resting background.
-        await page.addStyleTag({ content: `
-          .home-mast-art { transform: ${settled.transform} !important; }
-        ` });
-        await page.evaluate(() => window.scrollTo(0, 0));
-        const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li, .home-mast a.hero-work-link");
-        await expect(text).toHaveCount(12);
-        for (let index = 0; index < await text.count(); index += 1) {
-          if (await text.nth(index).isVisible()) {
-            await expectHeaderTextAA(page, text.nth(index), `${width} touch, scroll ${progress}, text ${index + 1}`, { raster: true });
-          }
-        }
-        expect((await readState()).transform, "the sampled background must retain its actual scrolled pose").toEqual(settled.transform);
+    test(`${width}: scrolled introduction preserves every proof and text AA`, async ({ page }) => {
+      test.setTimeout(90000);
+      await page.setViewportSize({ width, height: 900 });
+      await openStable(page, "/");
+      await page.locator(".home-mast-intro").scrollIntoViewIfNeeded();
+      await page.mouse.wheel(0, 180);
+      const text = page.locator(".home-mast-intro .hero-kicker, .home-mast-intro .home-mast-display, .home-mast-intro .home-banner-subtitle, .home-mast-intro .metric-context, .home-mast-proof-chips li, .home-banner-outcomes li, .home-intro-work");
+      await expect(text).toHaveCount(12);
+      for (let index = 0; index < await text.count(); index += 1) {
+        const target = await readableHomeTarget(page, text.nth(index));
+        if (await target.evaluate((element) => element.matches(".metric-context") && getComputedStyle(element).display === "none")) continue;
+        await expectHeaderTextAA(page, target, `${width} scrolled intro text ${index}`, { raster: true });
       }
-      await testInfo.attach("portable-header-rendered-scroll-states", { body: JSON.stringify(snapshots, null, 2), contentType: "application/json" });
     });
   }
 });
@@ -521,6 +501,8 @@ test("home subtitle uses the reference break only on normal desktop text", async
       spacingStyle = await page.addStyleTag({ content: "* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-block-end: 2em !important; }" });
       await expect(mast).toHaveAttribute("data-text-reflow", "");
     }
+    await readableHomeTarget(page, subtitle);
+    await expect(subtitle).toBeVisible();
     await expect(subtitle.locator("br")).toHaveCount(1);
     await expect(subtitle.locator("br")).toHaveCSS("display", mode.display);
     expect(await subtitle.textContent(), "hiding the break must not join the two words").toMatch(/Web3,\s+regulated/);
@@ -562,8 +544,9 @@ for (const resize of [
       await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       await expect(mast).not.toHaveAttribute("data-text-reflow");
       await expect(page.locator(".home-mast .home-banner-title")).toHaveCSS("font-family", /Inter/);
-      await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", viewport.width < 992 ? "block" : "grid");
-      await expect(page.locator(".home-mast .metric-context")).toBeHidden();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+      const employer = await readableHomeTarget(page, page.locator(".home-mast .home-highlight-company").first());
+      await expect(employer).toBeVisible();
     }
     // These are intentional viewport changes; the initial load was checked above.
     await page.waitForTimeout(100);
@@ -587,7 +570,7 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     expect(await page.evaluate(() => window.__cumulativeLayoutShift || 0)).toBeLessThan(0.1);
     const mast = page.locator(".home-mast");
     await expect(mast).not.toHaveAttribute("data-text-reflow");
-    await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", width < 992 ? "block" : "grid");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     let spacingStyle;
     if (adjustment === "text 200%") {
       const snapshot = await page.evaluate(() => {
@@ -611,7 +594,7 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
       spacingStyle = await page.addStyleTag({ content: "* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-block-end: 2em !important; }" });
     }
     await expect(mast).toHaveAttribute("data-text-reflow", "");
-    await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", "block");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     await expect(page.locator(".home-mast .home-banner-title")).toHaveCSS("font-family", /Inter/);
     const proofBounds = await page.locator(".home-mast-proof-chips li").evaluateAll((chips) => chips.map((chip) => {
       const box = chip.getBoundingClientRect();
@@ -634,13 +617,16 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     // for any subsequent shifts after the adjustment has been laid out.
     await page.waitForTimeout(100);
     await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
-    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
-    await expect(text).toHaveCount(11);
+    const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-mast-display, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
+    await expect(text).toHaveCount(12);
     for (let index = 0; index < await text.count(); index += 1) {
-      await expectHeaderTextAA(page, text.nth(index), `${width} ${adjustment} home text ${index + 1}`, { raster: true });
+      const target = await readableHomeTarget(page, text.nth(index));
+      if (await target.evaluate((element) => element.matches(".metric-context") && getComputedStyle(element).display === "none")) continue;
+      await expectHeaderTextAA(page, target, `${width} ${adjustment} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast a.hero-work-link, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
-    await expect(controls).toHaveCount(5);
+    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
+    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About"]);
+    await expect(controls).toHaveCount(6);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
       const toggle = page.locator(".menu-button");
@@ -668,7 +654,7 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
       delete window.__headerContrastFonts;
     });
     await expect(mast).not.toHaveAttribute("data-text-reflow");
-    await expect(page.locator(".home-mast .home-banner-area")).toHaveCSS("display", width < 992 ? "block" : "grid");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     // Removing the deliberate user adjustment is another expected reflow.
     await page.waitForTimeout(100);
     await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
@@ -686,15 +672,25 @@ for (const route of contentRoutes.filter((route) => route !== "/")) {
       await openStable(page, route);
       const isCase = route.startsWith("/work/");
       if (isCase) {
-        const separator = await page.locator(".nav-breadcrumb li + li").evaluate((element) => ({
-          color: getComputedStyle(element, "::before").color,
-          background: getComputedStyle(element.closest(".navbar")).backgroundColor,
-        }));
-        const foreground = parseCssColor(separator.color);
-        const background = parseCssColor(separator.background);
-        expect(background.a, "breadcrumb is on an opaque navigation field").toBe(1);
-        const painted = ["r", "g", "b"].map((channel) => foreground[channel] * foreground.a + background[channel] * (1 - foreground.a));
-        expect.soft(contrastRatio(relativeLuminance(...painted), colorLuminance(background)), `${width} ${route} breadcrumb separator text contrast`).toBeGreaterThanOrEqual(4.5);
+        await page.evaluate(() => window.PortfolioCaseOpening.finish());
+        await expect(page.locator(".case-study-header .banner-section")).toHaveCSS("background-color", "rgb(214, 212, 237)");
+        const stage = await page.locator(".case-study-header").boundingBox();
+        const facts = await page.locator(".case-facts-section").boundingBox();
+        expect(stage.height, "the original product has a complete viewport opening").toBeGreaterThanOrEqual(899);
+        expect(facts.y, "the four factual keys follow the opening stage").toBeGreaterThanOrEqual(stage.y + stage.height - 1);
+        const breadcrumb = page.locator(".nav-breadcrumb");
+        if (width >= 992) {
+          await expect(breadcrumb).toBeVisible();
+          await expectHeaderTextAA(page, breadcrumb, `${width} ${route} breadcrumb text`, { raster: true });
+          await expectBreadcrumbSeparatorAA(page, `${width} ${route}`);
+        } else {
+          await expect(breadcrumb).toBeHidden();
+          await page.locator(".menu-button").click();
+          const works = page.locator('.navbar a.nav-link[href="/works"]');
+          await expect(works).toBeVisible();
+          await expectHeaderTextAA(page, works, `${width} ${route} compact Works destination`, { raster: true });
+          await page.locator(".menu-button").click();
+        }
       }
       const selectors = isCase
         ? ".case-study-header h1, .case-study-header .work-category, .case-study-header .banner-text, .case-facts dt, .case-facts dd"
@@ -714,13 +710,14 @@ for (const route of contentRoutes.filter((route) => route !== "/")) {
   });
 }
 
-test("Kineticare header: overlay protects text against a synthetic white video frame", async ({ page }) => {
+test("Kineticare adapted stage: separate text stays AA against a synthetic white video frame", async ({ page }) => {
   await page.route(/posthog\.com/, (route) => route.abort());
   for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await openStable(page, "/work/kineticare");
+    await page.evaluate(() => window.PortfolioCaseOpening.finish());
     // This is an explicit upper-luminance stress control, not a claim that the
-    // shipped video contains a white frame. Leave the real overlay untouched.
+    // shipped video contains a white frame. Keep the production text layout.
     await page.addStyleTag({ content: ".kineticare-hero-bg{background:#fff!important}.kineticare-hero-bg video{visibility:hidden!important}" });
     const text = page.locator(".case-study-header h1, .case-study-header .work-category, .case-study-header .banner-text");
     await expect(text).toHaveCount(3);
@@ -901,79 +898,100 @@ test("skip link and full-card project action work without hover", async ({ page 
   await expect(page.locator("#main-content")).toBeFocused();
 
   await openStable(page, "/works");
-  await expect(page.locator("h1")).toHaveText("Selected work");
-  const firstCard = page.locator(".work-card").first();
+  await expect(page.locator("h1")).toHaveText(/Selected\s*work/);
+  const firstCard = page.locator(".work-row").first();
   await firstCard.click({ position: { x: 30, y: 30 } });
   await expect(page).toHaveURL(/\/work\/raiffeisen$/);
 });
 
-test("works E′ Weighted grid is 7/5 then 3-up with aligned tops", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await openStable(page, "/works");
-  const layout = await page.evaluate(() => {
-    const items = [...document.querySelectorAll(".work-section .work-collection-item")].map((el) => {
-      const box = el.getBoundingClientRect();
-      const band = el.querySelector(".work-image-wrap").getBoundingClientRect();
-      return {
-        left: box.left,
-        width: box.width,
-        bandTop: band.top,
-        bandHeight: band.height,
-      };
-    });
-    const grid = document.querySelector(".work-section .w-dyn-items.work-grid");
-    const gridStyle = getComputedStyle(grid);
-    return {
-      items,
-      pills: [...document.querySelectorAll(".work-section .work-category-text")].map((el) => el.textContent.trim()),
-      titles: [...document.querySelectorAll(".work-section .work-title")].map((el) => el.textContent.trim()),
-      columns: gridStyle.gridTemplateColumns.split(" ").filter(Boolean).length,
-      beforeContent: getComputedStyle(grid, "::before").content,
-    };
-  });
-  expect(layout.titles).toEqual([
-    "Raiffeisen",
-    "Instructure",
-    "Bitpanda",
-    "Benker",
-    "SportsGambit",
-    "Kineticare",
-    "OnRobot",
-  ]);
-  expect(layout.pills).toEqual([
-    "Product design",
-    "Product design",
-    "Product design",
-    "Product design",
-    "Product design",
-    "Hungarian product",
-    "Product design",
-  ]);
-  expect(layout.columns).toBe(12);
-  expect(layout.beforeContent).toMatch(/^(none|""|'')$/);
-  expect(Math.abs(layout.items[0].bandTop - layout.items[1].bandTop)).toBeLessThan(2);
-  expect(Math.abs(layout.items[0].bandHeight - layout.items[1].bandHeight)).toBeLessThan(2);
-  expect(layout.items[0].width).toBeGreaterThan(layout.items[1].width * 1.2);
-  const threeUp = [layout.items[2].width, layout.items[3].width, layout.items[4].width];
-  expect(Math.abs(threeUp[0] - threeUp[1])).toBeLessThan(4);
-  expect(Math.abs(threeUp[1] - threeUp[2])).toBeLessThan(4);
-  expect(Math.abs(layout.items[2].bandTop - layout.items[3].bandTop)).toBeLessThan(2);
-  expect(Math.abs(layout.items[3].bandTop - layout.items[4].bandTop)).toBeLessThan(2);
-  expect(Math.abs(layout.items[5].bandTop - layout.items[6].bandTop)).toBeLessThan(2);
-  expect(layout.items[0].bandTop).toBeGreaterThan(64);
-  expect(layout.items[0].bandTop).toBeLessThan(900);
+const projectOrder = ["Raiffeisen", "Instructure", "Bitpanda", "Benker", "SportsGambit", "Kineticare", "OnRobot"];
 
-  await page.setViewportSize({ width: 390, height: 844 });
-  const stacked = await page.evaluate(() => {
-    const items = [...document.querySelectorAll(".work-section .work-collection-item")].map((el) => el.getBoundingClientRect());
-    return {
-      widths: items.map((box) => box.width),
-      stacked: items.every((box, index, all) => index === 0 || box.top >= all[index - 1].bottom - 2),
-    };
+async function expectTextWithinWidth(locator, label) {
+  await locator.scrollIntoViewIfNeeded();
+  const state = await locator.evaluate((element) => {
+    const box = element.getBoundingClientRect();
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const rects = [];
+    while (walker.nextNode()) {
+      if (!walker.currentNode.textContent.trim()) continue;
+      const range = document.createRange(); range.selectNodeContents(walker.currentNode);
+      rects.push(...[...range.getClientRects()].filter((rect) => rect.width > 0).map((rect) => ({ left: rect.left, right: rect.right })));
+    }
+    return { rects, left: Math.max(0, box.left), right: Math.min(innerWidth, box.right), client: element.clientWidth || box.width, scroll: element.scrollWidth || box.width };
   });
-  expect(stacked.stacked).toBe(true);
-  expect(Math.max(...stacked.widths) - Math.min(...stacked.widths)).toBeLessThan(8);
+  expect(state.rects.length, `${label}: actual glyph ranges`).toBeGreaterThan(0);
+  expect(state.scroll, `${label}: own box must contain its text`).toBeLessThanOrEqual(state.client + 1);
+  for (const rect of state.rects) {
+    expect(rect.left, `${label}: visible left edge`).toBeGreaterThanOrEqual(state.left - 1);
+    expect(rect.right, `${label}: visible right edge`).toBeLessThanOrEqual(state.right + 1);
+  }
+}
+
+for (const width of [320, 390, 1280]) {
+  test(`${width} Works editorial list preserves project order, landscape artwork and native row actions`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await openStable(page, "/works");
+    await expect(page.locator("main h1")).toHaveText(/Selected\s*work/);
+    await expect(page.locator(".work-title")).toHaveText(projectOrder);
+    const rows = page.locator(".work-row");
+    await expect(rows).toHaveCount(7);
+    const sources = [];
+    for (let index = 0; index < 7; index += 1) {
+      const row = rows.nth(index);
+      await row.scrollIntoViewIfNeeded();
+      await expect(row.locator("a")).toHaveCount(1);
+      const image = row.locator(".work-row-thumb");
+      await expect.poll(() => image.evaluate((node) => node.complete && node.naturalWidth > 0)).toBe(true);
+      await expect(image).toHaveAttribute("alt", "");
+      await expect(image).toHaveAttribute("aria-hidden", "true");
+      await expect(image).toHaveAttribute("src", new RegExp(`/geometry/${projectOrder[index].toLowerCase()}\\.960\\.webp$`));
+      sources.push(await image.getAttribute("src"));
+      const layout = await row.evaluate((element) => {
+        const row = element.getBoundingClientRect(), art = element.querySelector(".work-row-visual").getBoundingClientRect();
+        const copy = element.querySelector(".work-row-copy").getBoundingClientRect();
+        return { row: row.toJSON(), art: art.toJSON(), copy: copy.toJSON(), fit: getComputedStyle(element.querySelector("img")).objectFit,
+          nextTop: element.nextElementSibling?.getBoundingClientRect().top };
+      });
+      expect(layout.art.width / layout.art.height).toBeGreaterThan(1.5);
+      expect(layout.fit).toBe("cover");
+      if (width < 600) {
+        expect(layout.art.width).toBeGreaterThan(layout.row.width * .8);
+        expect(layout.copy.top).toBeGreaterThanOrEqual(layout.art.bottom);
+      } else {
+        expect(layout.art.width).toBeGreaterThan(layout.row.width * .25);
+        expect(layout.copy.left).toBeGreaterThanOrEqual(layout.art.right);
+      }
+      if (layout.nextTop !== undefined) expect(layout.nextTop).toBeGreaterThanOrEqual(layout.row.bottom - 1);
+      await expectHeaderTextAA(page, row.locator(".work-title"), `${width} Works title ${index}`, { raster: true });
+      await expectHeaderTextAA(page, row.locator(".work-card-summary"), `${width} Works summary ${index}`, { raster: true });
+    }
+    expect(new Set(sources).size).toBe(7);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    const second = rows.nth(1).locator("a");
+    await second.focus();
+    await expect(rows.nth(1)).toHaveCSS("outline-style", "solid");
+    expect(await rows.nth(1).evaluate((row) => parseFloat(getComputedStyle(row).outlineWidth))).toBeGreaterThanOrEqual(3);
+    await second.press("Enter");
+    await expect(page).toHaveURL(/\/work\/instructure$/);
+  });
+}
+
+test("320 Works editorial title and project labels reflow at 200% without clipped glyphs", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await openStable(page, "/works");
+  expect(await page.evaluate(() => window.__cumulativeLayoutShift)).toBeLessThan(.1);
+  await page.evaluate(() => {
+    const entries = [...document.querySelectorAll("main, main *")].filter((element) => element instanceof HTMLElement)
+      .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
+    for (const { element, size } of entries) element.style.setProperty("font-size", `${size * 2}px`, "important");
+  });
+  await page.waitForTimeout(100);
+  await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
+  for (const target of await page.locator("main h1, .work-title, .work-card-summary").all()) {
+    await expectTextWithinWidth(target, "Works enlarged text");
+    await expectHeaderTextAA(page, target, "Works enlarged text", { raster: true });
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
 
 test("reduced-motion preference stops active animation and video", async ({ page }) => {
@@ -997,7 +1015,7 @@ test("reduced-motion preference stops active animation and video", async ({ page
   await page.waitForTimeout(100);
   const state = await page.evaluate(() => ({
     videosPaused: [...document.querySelectorAll("video")].every((video) => video.paused),
-    hiddenContent: [...document.querySelectorAll(".work-card, .section-title")]
+    hiddenContent: [...document.querySelectorAll(".work-row, .section-title")]
       .some((element) => Number.parseFloat(getComputedStyle(element).opacity) === 0),
     activeScrollTriggers: window.ScrollTrigger?.getAll().length || 0,
   }));
@@ -1099,14 +1117,15 @@ for (const viewport of [viewports[0], viewports[4]]) {
   }
 }
 
-test("Kineticare compact fold: white dek and unclipped facts, no Motion chip", async ({ page }) => {
+test("Kineticare adapted compact stage: navy dek and unclipped facts, no Motion chip", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
   await openStable(page, "/work/kineticare");
 
   const dekColor = await page.locator(".kineticare-hero .banner-text").evaluate(
     (element) => getComputedStyle(element).color
   );
-  expect(dekColor).toBe("rgb(255, 255, 255)");
+  expect(dekColor).toBe("rgb(10, 22, 40)");
+  await expect(page.locator(".kineticare-hero")).toHaveCSS("background-color", "rgb(214, 212, 237)");
 
   const layout = await page.evaluate(() => {
     const role = document.querySelector(".case-facts dd");
@@ -1169,18 +1188,15 @@ test("Kineticare case header contains exactly one media node and it autoplays", 
   }), { timeout: 15000 }).toMatch(/playing|loading/);
 });
 
-function isTransparentFill(color) {
-  return /rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)|transparent/.test(color);
+async function alignFooterBottom(page) {
+  // The brand landing follows the footer; keep its original field aligned to
+  // the viewport when sampling footer geometry, palette and pointer motion.
+  await page.locator("footer.footer-section").evaluate((footer) =>
+    footer.scrollIntoView({ block: "end", inline: "nearest", behavior: "instant" }));
 }
 
-function isInkWash(color) {
-  const legacy = color.match(/rgba\(\s*17,\s*17,\s*17,\s*([0-9.]+)\s*\)/);
-  if (legacy && Number(legacy[1]) > 0 && Number(legacy[1]) <= 0.12) return true;
-  const modern = color.match(/rgba?\(\s*17[\s,]+17[\s,]+17\s*\/\s*([0-9.]+%?)\s*\)/);
-  if (!modern) return false;
-  const raw = modern[1];
-  const alpha = String(raw).endsWith("%") ? Number(raw.slice(0, -1)) / 100 : Number(raw);
-  return alpha > 0 && alpha <= 0.12;
+function isTransparentFill(color) {
+  return /rgba?\(\s*0,\s*0,\s*0,\s*0\s*\)|transparent/.test(color);
 }
 
 for (const width of [320, 390, 768, 991, 1440]) {
@@ -1191,8 +1207,8 @@ for (const width of [320, 390, 768, 991, 1440]) {
     const footerBox = await page.locator("footer").boundingBox();
     await page.mouse.move(width * .92, Math.min(1090, footerBox.y + footerBox.height * .86));
     await page.waitForTimeout(450);
-    const text = page.locator(".footer-lede, .footer-col-title, .footer-col a, footer .footer-email, .footer-copyright, .footer-privacy a, .footer-privacy button");
-    await expect(text).toHaveCount(11);
+    const text = page.locator(".editorial-footer-title, .footer-lede, .footer-col-title, .footer-col a, footer .footer-email, footer .footer-contact-link, .footer-copyright, .footer-privacy a, .footer-privacy button");
+    await expect(text).toHaveCount(13);
     for (const element of await text.all()) {
       await expectHeaderTextAA(page, element, "footer rendered text", { raster: true });
       if (await element.evaluate((node) => node.matches("a, button"))) {
@@ -1202,163 +1218,58 @@ for (const width of [320, 390, 768, 991, 1440]) {
         await expectHeaderTextAA(page, element, "footer focus text", { raster: true });
       }
     }
-    // A white frame is the worst possible background under the navy strip.
-    await page.locator(".footer-mesh").evaluate((node) => { node.style.visibility = "hidden"; });
-    await page.locator("footer").evaluate((node) => { node.style.background = "#fff"; });
-    for (const element of await page.locator(".footer-copyright, .footer-privacy a, .footer-privacy button").all()) {
-      await expectHeaderTextAA(page, element, "footer utility on white", { raster: true });
-    }
+
   });
 }
 
 for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
-  test(`${route}: footer lock — mesh field, outlined Email, Work cases, no form`, async ({ page }) => {
+  test(`${route}: editorial footer preserves native contact, factual links and integrated legal controls`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await openStable(page, route);
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    const footer = await page.evaluate(() => {
-      const root = document.querySelector("footer.footer-section");
-      const chrome = root.querySelector(".footer-chrome");
-      const email = root.querySelector("button.footer-email");
-      const linkedin = root.querySelector("a.footer-contact-link");
-      const icon = linkedin?.querySelector(".footer-icon");
-      const work = [...root.querySelectorAll(".footer-nav .footer-col:first-child a")].map((a) => ({
-        href: a.getAttribute("href"),
-        text: a.textContent.trim(),
-      }));
-      const cols = [...root.querySelectorAll(".footer-nav .footer-col")];
-      const emailStyle = email ? getComputedStyle(email) : null;
-      const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
-      const barStyle = getComputedStyle(root.querySelector(".footer-bar"));
-      const emailBox = email ? email.getBoundingClientRect() : null;
-      const linkedinBox = linkedin ? linkedin.getBoundingClientRect() : null;
-      const iconBox = icon ? icon.getBoundingClientRect() : null;
-      const hairline = barStyle.borderTopColor;
-      const alphaMatch = hairline.match(/rgba?\(\s*17,\s*17,\s*17(?:,\s*([0-9.]+))?\s*\)/);
-      return {
-        lede: root.querySelector(".footer-lede")?.textContent.trim() || "",
-        copyright: root.querySelector(".footer-copyright")?.textContent.trim() || "",
-        form: Boolean(root.querySelector("form, .footer-hp, [data-contact-form]")),
-        emailHref: email ? email.getAttribute("href") : "missing",
-        emailText: email ? email.textContent.trim() : "",
-        emailTitle: email ? email.getAttribute("title") : "",
-        emailTag: email ? email.tagName : "",
-        emailType: email ? email.getAttribute("type") : "",
-        linkedinHref: linkedin ? linkedin.getAttribute("href") : "",
-        linkedinCount: root.querySelectorAll("a.footer-contact-link").length,
-        emailCount: root.querySelectorAll("button.footer-email").length,
-        fakeEmailLink: Boolean(root.querySelector("a.footer-email")),
-        emailSize: emailBox && emailStyle ? {
-          w: Math.round(emailBox.width),
-          h: Math.round(emailBox.height),
-          bg: emailStyle.backgroundColor,
-          color: emailStyle.color,
-          radius: emailStyle.borderRadius,
-          weight: emailStyle.fontWeight,
-          size: emailStyle.fontSize,
-          padX: `${emailStyle.paddingLeft} ${emailStyle.paddingRight}`,
-          border: emailStyle.borderTopWidth,
-        } : null,
-        linkedinSize: linkedinBox && linkedinStyle ? {
-          w: Math.round(linkedinBox.width),
-          h: Math.round(linkedinBox.height),
-          radius: linkedinStyle.borderRadius,
-          bg: linkedinStyle.backgroundColor,
-          color: linkedinStyle.color,
-          border: linkedinStyle.borderTopWidth,
-        } : null,
-        iconH: iconBox ? Math.round(iconBox.height) : 0,
-        gap: emailBox && linkedinBox ? Math.round(emailBox.left - linkedinBox.right) : null,
-        work,
-        colTitles: cols.map((col) => col.querySelector(".footer-col-title")?.textContent.trim() || ""),
-        colCount: cols.length,
-        ledeColor: root.querySelector(".footer-lede") ? getComputedStyle(root.querySelector(".footer-lede")).color : "",
-        workColor: root.querySelector(".footer-col-title") ? getComputedStyle(root.querySelector(".footer-col-title")).color : "",
-        mesh: Boolean(root.querySelector(".footer-mesh") && root.querySelector("#mesh-blur")),
-        dunes: Boolean(root.querySelector(".footer-dunes, .footer-dune-layer, #dune-lit-yellow, #sand-grain-1")),
-        paper: getComputedStyle(root).backgroundColor,
-        chromeBg: chrome ? getComputedStyle(chrome).backgroundColor : "",
-        backToTop: Boolean(root.querySelector(".back-to-top-wrap, [aria-label='Back to top']")),
-        hairlineWidth: barStyle.borderTopWidth,
-        hairlineAlpha: alphaMatch ? Number(alphaMatch[1] ?? 1) : 0,
-      };
-    });
-    expect(footer.form).toBe(false);
-    expect(footer.backToTop).toBe(false);
-    expect(footer.lede).toBe("Product VP — I lead AI products in regulated finance and high-trust systems.");
-    expect(footer.copyright).toBe("© 2026 Norbert Barna");
-    expect(footer.emailHref).toBeNull();
-    expect(footer.emailText).toBe(PROJECT_LABEL);
-    expect(footer.emailTitle).toBe(PROJECT_TITLE);
-    expect(footer.emailTag).toBe("BUTTON");
-    expect(footer.emailType).toBe("button");
-    expect(footer.emailCount).toBe(1);
-    expect(footer.fakeEmailLink).toBe(false);
-    expect(footer.linkedinHref).toBe("https://www.linkedin.com/in/barna-norbert/");
-    expect(footer.linkedinCount).toBe(1);
-    expect(footer.emailSize.h).toBe(44);
-    await expectContactLabelFit(page.locator("footer button.footer-email"));
-    expect(isTransparentFill(footer.emailSize.bg)).toBe(true);
-    expect(footer.emailSize.color).toBe("rgb(17, 17, 17)");
-    expect(footer.emailSize.radius).toBe("12px");
-    expect(footer.emailSize.weight).toBe("500");
-    expect(footer.emailSize.size).toBe("15px");
-    expect(footer.emailSize.padX).toBe("14px 14px");
-    expect(footer.emailSize.border).toBe("1px");
-    expect(footer.linkedinSize.w).toBe(44);
-    expect(footer.linkedinSize.h).toBe(44);
-    expect(footer.linkedinSize.radius).toBe("12px");
-    expect(isTransparentFill(footer.linkedinSize.bg)).toBe(true);
-    expect(footer.linkedinSize.color).toBe("rgb(17, 17, 17)");
-    expect(footer.linkedinSize.border).toBe("1px");
-    expect(footer.iconH).toBeGreaterThanOrEqual(16);
-    expect(footer.iconH).toBeLessThanOrEqual(18);
-    expect(footer.gap).toBeGreaterThanOrEqual(8);
-    expect(footer.gap).toBeLessThanOrEqual(10);
-    expect(footer.work.map((item) => item.href)).toEqual([
-      "/work/raiffeisen",
-      "/work/instructure",
-      "/work/bitpanda",
-      "/work/kineticare",
-    ]);
-    expect(footer.work.map((item) => item.text)).toEqual([
-      "Raiffeisen",
-      "Instructure",
-      "Bitpanda",
-      "Kineticare",
-    ]);
-    expect(footer.colCount).toBe(1);
-    expect(footer.colTitles).toEqual(["Work"]);
-    expect(footer.ledeColor).toBe("rgb(17, 17, 17)");
-    expect(footer.workColor).toBe("rgb(17, 17, 17)");
-    expect(footer.mesh).toBe(true);
-    expect(footer.dunes).toBe(false);
-    expect(footer.paper).not.toBe("rgb(241, 243, 242)");
-    expect(footer.chromeBg).toMatch(/rgba?\(0,\s*0,\s*0,\s*0\)|transparent/);
-    expect(footer.hairlineWidth).toBe("1px");
-    expect(footer.hairlineAlpha).toBeGreaterThanOrEqual(0.45);
-
-    const email = page.locator("footer button.footer-email");
-    const linkedin = page.locator("footer a.footer-contact-link");
-    const hoverWash = async (locator) => {
-      await locator.evaluate((el) => el.scrollIntoView({ block: "center", inline: "nearest" }));
-      await locator.hover({ force: true });
-      return isInkWash(await locator.evaluate((el) => getComputedStyle(el).backgroundColor));
-    };
-    await expect.poll(() => hoverWash(email)).toBe(true);
-    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(17, 17, 17)");
-    await expect.poll(() => email.evaluate((el) => getComputedStyle(el).borderRadius)).toBe("12px");
-    await expect.poll(() => hoverWash(linkedin)).toBe(true);
-    await expect.poll(() => linkedin.evaluate((el) => getComputedStyle(el).color)).toBe("rgb(17, 17, 17)");
-
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains("no-motion"))).toBe(true);
-    await expect.poll(() => page.evaluate(() => {
-      const mesh = document.querySelector(".footer-mesh");
-      const transform = getComputedStyle(mesh).transform;
-      return transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)";
-    })).toBe(true);
-    await expect.poll(() => hoverWash(email)).toBe(true);
+    const footer = page.locator("footer");
+    await expect(footer.locator("form, .footer-mesh, .footer-dunes, .back-to-top-wrap, a.footer-email")).toHaveCount(0);
+    await expect(footer.locator(".editorial-footer-title")).toHaveText(/Let’s talk\s*product\./);
+    await expect(footer.locator(".footer-lede")).toHaveText("Product VP — I lead AI products in regulated finance and high-trust systems.");
+    await expect(footer.locator(".footer-copyright")).toHaveText("© 2026 Norbert Barna");
+    await expect(footer.locator(".footer-col-title")).toHaveText(["Work"]);
+    await expect(footer.locator(".footer-col a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare"]);
+    expect(await footer.locator(".footer-col a").evaluateAll((links) => links.map((link) => link.getAttribute("href"))))
+      .toEqual(["/work/raiffeisen", "/work/instructure", "/work/bitpanda", "/work/kineticare"]);
+    await expect(footer.locator('.footer-privacy a[href="/privacy"]')).toHaveText("Privacy");
+    await expect(footer.locator('.footer-privacy a[href="/hu/adatvedelem"]')).toHaveAttribute("lang", "hu");
+    await expect(footer.locator("[data-consent-settings]")).toHaveCount(1);
+    await expect(footer).toHaveCSS("background-color", "rgb(214, 212, 237)");
+    await expect(footer.locator(".footer-bar")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(footer.locator(".footer-bar")).toHaveCSS("border-top-width", "1px");
+    await expect(footer.locator(".editorial-footer-art")).toHaveAttribute("aria-hidden", "true");
+    const email = footer.locator("button.footer-email"), linkedin = footer.locator("a.footer-contact-link");
+    await expect(email).toHaveCount(1);
+    await expect(email).toHaveText(PROJECT_LABEL);
+    await expect(email).toHaveAttribute("type", "button");
+    await expect(email).toHaveAttribute("title", PROJECT_TITLE);
+    expect(await email.getAttribute("href")).toBeNull();
+    await expect(linkedin).toHaveCount(1);
+    await expect(linkedin).toHaveAttribute("href", "https://www.linkedin.com/in/barna-norbert/");
+    await expectContactLabelFit(email);
+    for (const control of [email, linkedin]) {
+      await control.scrollIntoViewIfNeeded();
+      const box = await control.boundingBox();
+      expect(box.height).toBeGreaterThanOrEqual(48);
+      expect(box.width).toBeGreaterThanOrEqual(44);
+      expect(await control.evaluate((element) => { const box = element.getBoundingClientRect(); return element.contains(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)); })).toBe(true);
+      await control.hover();
+      await expectHeaderTextAA(page, control, `${route} footer hover`, { raster: true });
+      await control.focus();
+      await expect(control).toHaveCSS("outline-style", "solid");
+      expect(await control.evaluate((element) => parseFloat(getComputedStyle(element).outlineWidth))).toBeGreaterThanOrEqual(3);
+      await expectHeaderTextAA(page, control, `${route} footer focus`, { raster: true });
+    }
+    await expect(email).toHaveCSS("background-color", "rgb(10, 22, 40)");
+    await expect(email).toHaveCSS("color", "rgb(214, 212, 237)");
+    const request = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
+    await email.press("Enter");
+    expect((await request).url()).toBe("mailto:anorbert@pm.me");
+    expect(await page.content()).not.toMatch(/mailto:|anorbert@pm\.me/i);
   });
 }
 
@@ -1444,297 +1355,192 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   expect(afterHtml).not.toMatch(/anorbert@pm\.me/i);
 });
 
-test("1280 home footer: type stays on the pale band, olive bottom, analog grain", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await page.waitForTimeout(80);
-  const boxes = await page.evaluate(() => {
-    const footer = document.querySelector("footer.footer-section").getBoundingClientRect();
-    const work = document.querySelector(".footer-col-title").getBoundingClientRect();
-    const lede = document.querySelector(".footer-lede").getBoundingClientRect();
-    const bar = document.querySelector(".footer-bar");
-    const barStyle = getComputedStyle(bar);
-    return {
-      footer: { x: footer.x, y: footer.y, width: footer.width, height: footer.height },
-      work: { x: work.x, y: work.y, width: work.width, height: work.height },
-      lede: { x: lede.x, y: lede.y, width: lede.width, height: lede.height },
-      utilityTop: bar.getBoundingClientRect().top + parseFloat(barStyle.borderTopWidth) + parseFloat(barStyle.paddingTop),
-    };
+for (const width of [390, 1440]) {
+  test(`${width} editorial footer keeps text, folded art and targets in readable native flow`, async ({ playwright }, testInfo) => {
+    // This page has two explicit measurement phases: ordinary load/scroll/actions
+    // retain <0.1 CLS; a deliberate OS preference change is verified in every
+    // compositor frame and reports its raw CLS without treating CDP as user input.
+    // Linux Chromium can replace LCD glyph antialiasing with grayscale when
+    // motion layers are removed. Only this paint comparison fixes the raster
+    // mode; production CSS and every pixel, geometry and focus guard stay intact.
+    const rasterBrowser = await playwright.chromium.launch({ args: ["--disable-lcd-text", "--enable-automation"] });
+    const page = await rasterBrowser.newPage({ baseURL: "http://127.0.0.1:3000", viewport: { width, height: 1100 }, reducedMotion: "no-preference" });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
+    page.on("console", (message) => {
+      if (message.type() === "error" && !message.text().includes("Failed to load resource")) errors.push(`console.error: ${message.text()}`);
+    });
+    await page.addInitScript(() => {
+      sessionStorage.setItem("nb-arrival-seen-v2", "1");
+      localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
+      window.__cumulativeLayoutShift = 0;
+      new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.__cumulativeLayoutShift += entry.value;
+      }).observe({ type: "layout-shift", buffered: true });
+    });
+    try {
+      await openStable(page, "/");
+      await expect(page.locator(".home-mast")).toHaveAttribute("data-morph-active");
+      await alignFooterBottom(page);
+      const read = () => page.locator("footer .footer-ident, footer .editorial-footer-art, footer .footer-nav, footer .footer-bar").evaluateAll((elements) => elements.map((element) => {
+        const box = element.getBoundingClientRect();
+        return { left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: box.width, height: box.height };
+      }));
+      const before = await read();
+      const [ident, art, work, legal] = before;
+      for (const box of before) {
+        expect(box.width).toBeGreaterThan(0);
+        expect(box.left).toBeGreaterThanOrEqual(0);
+        expect(box.right).toBeLessThanOrEqual(width);
+      }
+      if (width < 600) {
+        expect(art.top).toBeGreaterThanOrEqual(ident.bottom);
+        expect(work.top).toBeGreaterThanOrEqual(art.bottom);
+      } else {
+        expect(art.left).toBeGreaterThanOrEqual(ident.right);
+        expect(work.top).toBeGreaterThanOrEqual(art.bottom);
+      }
+      expect(legal.top).toBeGreaterThanOrEqual(Math.max(ident.bottom, art.bottom, work.bottom));
+      await page.mouse.move(width * .88, 780);
+      await page.waitForTimeout(240);
+      expect(await read(), "pointer input does not relocate the editorial close").toEqual(before);
+      const email = page.locator("footer button.footer-email");
+      await email.focus();
+      await expect(email).toBeFocused();
+      const ordinaryCLS = await page.evaluate(() => window.__cumulativeLayoutShift);
+      expect(ordinaryCLS, "ordinary load, scroll and contact focus retain the existing CLS threshold").toBeLessThan(.1);
+      expect(errors).toEqual([]);
+
+      const identBox = await page.locator("footer .footer-ident").boundingBox();
+      const cdp = await page.context().newCDPSession(page);
+      const { arguments: launchArguments } = await cdp.send("Browser.getBrowserCommandLine");
+      expect(launchArguments).toContain("--disable-lcd-text");
+      const frames = [], acknowledgements = [];
+      cdp.on("Page.screencastFrame", (event) => {
+        frames.push({ timestamp: event.metadata.timestamp, bytes: Buffer.from(event.data, "base64") });
+        acknowledgements.push(cdp.send("Page.screencastFrameAck", { sessionId: event.sessionId }));
+      });
+      await page.evaluate(() => {
+        window.__footerFrames = [];
+        window.__captureFooter = true;
+        const sample = (time) => {
+          window.__footerFrames.push({ time, focused: document.activeElement === document.querySelector("footer button.footer-email"), boxes:
+            [...document.querySelectorAll("footer, footer .footer-ident, footer .editorial-footer-art, footer .footer-nav, footer .footer-bar")].map((element) => {
+              const box = element.getBoundingClientRect();
+              return { x: box.x, y: box.y, width: box.width, height: box.height };
+            }) });
+          if (window.__captureFooter) requestAnimationFrame(sample);
+        };
+        requestAnimationFrame(sample);
+      });
+      await cdp.send("Page.startScreencast", { format: "png", everyNthFrame: 1 });
+      await page.waitForTimeout(120);
+      const changedAt = Date.now() / 1000;
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.waitForTimeout(500);
+      await cdp.send("Page.stopScreencast");
+      await Promise.all(acknowledgements);
+      const samples = await page.evaluate(() => { window.__captureFooter = false; return window.__footerFrames; });
+      const rawCLS = await page.evaluate(() => window.__cumulativeLayoutShift);
+      const reference = readPng(frames[0].bytes);
+      const paint = frames.map((frame) => {
+        const image = readPng(frame.bytes);
+        let substantialPixels = 0, maxChannelDifference = 0;
+        for (let y = Math.max(53, Math.ceil(identBox.y)); y < Math.min(1100, Math.floor(identBox.y + identBox.height)); y += 1) {
+          for (let x = Math.ceil(identBox.x); x < Math.floor(identBox.x + identBox.width); x += 1) {
+            const pixel = (y * image.width + x) * 4;
+            const difference = Math.max(...[0, 1, 2].map((channel) => Math.abs(image.pixels[pixel + channel] - reference.pixels[pixel + channel])));
+            maxChannelDifference = Math.max(maxChannelDifference, difference);
+            // Frame audits measured at most 23/255 at four focused-outline
+            // antialias pixels; displacement changes high-contrast glyph edges.
+            if (difference > 32) substantialPixels += 1;
+          }
+        }
+        return { timestamp: frame.timestamp, substantialPixels, maxChannelDifference };
+      });
+      await testInfo.attach("OS-motion-preference-measurements", { body: Buffer.from(JSON.stringify({ rasterMode: "grayscale (--disable-lcd-text)", ordinaryCLS, rawCLS, preferenceCLS: rawCLS - ordinaryCLS, changedAt, samples, paint }, null, 2)), contentType: "application/json" });
+      for (let index = 0; index < frames.length; index += 1) await testInfo.attach(`compositor-frame-${index}`, { body: frames[index].bytes, contentType: "image/png" });
+      expect(frames.some((frame) => frame.timestamp < changedAt)).toBe(true);
+      expect(frames.some((frame) => frame.timestamp >= changedAt)).toBe(true);
+      expect(samples.length).toBeGreaterThan(2);
+      for (const sample of samples) {
+        expect(sample.focused, "Email remains focused in every preference-change frame").toBe(true);
+        expect(sample.boxes, "all visible footer geometry stays at its reading position in every frame").toEqual(samples[0].boxes);
+      }
+      for (const frame of paint) expect(frame.substantialPixels, "every compositor frame preserves the painted contact content").toBe(0);
+      await expect(email).toBeFocused();
+      await expect(page.locator(".home-mast")).not.toHaveAttribute("data-morph-active");
+      await expect(email).toHaveCSS("background-color", "rgb(10, 22, 40)");
+      await expect(email).toHaveCSS("color", "rgb(214, 212, 237)");
+      expect(errors).toEqual([]);
+    } finally { await rasterBrowser.close(); }
   });
-  const sampleBeside = (box) => ({
-    x: Math.max(0, box.x - 28),
-    y: box.y + 2,
-    width: 20,
-    height: 16,
+}
+
+test("320 editorial footer reflows every label and preserves accessible contact and settings at 200%", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await openStable(page, "/works");
+  await page.evaluate(() => {
+    const entries = [...document.querySelectorAll("footer, footer *")].filter((element) => element instanceof HTMLElement)
+      .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
+    for (const { element, size } of entries) element.style.setProperty("font-size", `${size * 2}px`, "important");
   });
-  const workBand = await screenshotClip(page, sampleBeside(boxes.work));
-  const ledeBand = await screenshotClip(page, sampleBeside(boxes.lede));
-  for (const [name, sample] of [["Work", workBand], ["lede", ledeBand]]) {
-    expect(sample.luminance, `${name} must sit on the pale lilac band, not navy`).toBeGreaterThan(140);
-    expect(sample.b, `${name} band should stay cool-lilac, not yellow`).toBeGreaterThan(sample.r - 8);
+  await page.waitForTimeout(100);
+  await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
+  for (const target of await page.locator(".editorial-footer-title, .footer-lede, .footer-col a, footer .footer-email, footer .footer-contact-link, .footer-copyright, .footer-privacy a, .footer-privacy button").all()) {
+    await expectTextWithinWidth(target, "enlarged footer label");
+    await expectHeaderTextAA(page, target, "enlarged footer label", { raster: true });
+    if (await target.evaluate((element) => element.matches("a,button"))) {
+      expect((await target.boundingBox()).height).toBeGreaterThanOrEqual(44);
+    }
   }
-  const grain = await screenshotClip(page, {
-    x: boxes.footer.x + boxes.footer.width * 0.5 - 32,
-    y: boxes.footer.y + 20,
-    width: 64,
-    height: 48,
-  });
-  expect(grain.luminance, "top of the footer must stay the pale lilac band").toBeGreaterThan(160);
-  expect(grain.stddev, "grain must read as analog speckle, not a smooth fog").toBeGreaterThan(2.5);
-  const yellow = await screenshotClip(page, {
-    x: boxes.footer.x + boxes.footer.width * 0.5 - 24,
-    // Sample the empty mesh above the new AA utility surface, not its navy tint.
-    y: boxes.utilityTop - 48,
-    width: 48,
-    height: 36,
-  });
-  expect(yellow.r, "bottom band must be muted olive, not neon #FFE000").toBeLessThan(230);
-  expect(yellow.g).toBeLessThan(220);
-  expect(yellow.b).toBeLessThan(90);
-  expect(yellow.r).toBeGreaterThan(120);
-  expect(yellow.g).toBeGreaterThan(110);
+  const settings = page.locator("footer [data-consent-settings]");
+  await settings.click();
+  await expect(page.locator("[data-consent-banner]")).toBeVisible();
+  await page.getByRole("button", { name: "Decline analytics", exact: true }).click();
+  await expect(settings).toBeFocused();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 });
 
-test("1440 home footer: yellow is right-weighted, navy is a left horizon, not a balloon", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1100 });
+test.describe("editorial footer without JavaScript", () => {
+  test.use({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  test("static contact information and native Work links remain keyboard reachable", async ({ page }) => {
+    await openStable(page, "/works");
+    const footer = page.locator("footer");
+    await expect(footer.locator(".editorial-footer-title")).toBeVisible();
+    await expect(footer.locator(".footer-col a")).toHaveCount(4);
+    await expect(footer.locator(".editorial-footer-art img")).toHaveAttribute("alt", "");
+    const work = footer.locator('.footer-col a[href="/work/instructure"]');
+    await work.focus();
+    await expect(work).toBeFocused();
+    await expect(work).toHaveCSS("outline-style", "solid");
+    await work.press("Enter");
+    await expect(page).toHaveURL(/\/work\/instructure$/);
+  });
+});
+
+test("home sculpture pointer motion leaves title, proof and native links stationary", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await page.waitForTimeout(80);
-  const footer = await page.evaluate(() => {
-    const box = document.querySelector("footer.footer-section").getBoundingClientRect();
+  const read = () => page.locator(".navbar .nav-wrap, .home-banner-title, .home-mast-proof-chips, .home-banner-outcomes, .hero-work-link").evaluateAll((elements) => elements.map((element) => {
+    const box = element.getBoundingClientRect();
     return { x: box.x, y: box.y, width: box.width, height: box.height };
-  });
-  expect(footer.height, "desktop field must be tall enough for the lock mesh (~3:2 / 960px at 1440)").toBeGreaterThan(900);
-  expect(footer.y, "full 960px footer must sit in the 1100 viewport after scroll").toBeGreaterThanOrEqual(0);
-
-  const isYellow = (sample) => sample.r > 120 && sample.g > 110 && sample.b < 95 && sample.luminance > 90;
-  const sampleAt = (fx, fy) => screenshotClip(page, {
-    x: Math.max(0, footer.x + footer.width * fx - 10),
-    y: footer.y + footer.height * fy,
-    width: 20,
-    height: 12,
-  });
-
-  async function yellowOnset(fx) {
-    for (let fy = 0.48; fy <= 0.98; fy += 0.02) {
-      if (isYellow(await sampleAt(fx, fy))) return fy;
-    }
-    return 1;
-  }
-
-  const leftOnset = await yellowOnset(0.08);
-  const centerOnset = await yellowOnset(0.5);
-  const rightOnset = await yellowOnset(0.92);
-  expect(rightOnset, "yellow onset must be right-weighted (lock ~73% on the right)").toBeLessThan(centerOnset - 0.04);
-  expect(centerOnset, "yellow onset must rise from right to left (lock ~84% center / ~94% left)").toBeLessThan(leftOnset - 0.04);
-  expect(rightOnset).toBeGreaterThan(0.62);
-  expect(rightOnset).toBeLessThan(0.82);
-  expect(centerOnset).toBeGreaterThan(0.74);
-  expect(centerOnset).toBeLessThan(0.90);
-  expect(leftOnset).toBeGreaterThan(0.86);
-
-  const left80 = await sampleAt(0.08, 0.80);
-  const right80 = await sampleAt(0.92, 0.80);
-  expect(isYellow(left80), "at 80% height the left is still dark green-navy, not yellow").toBe(false);
-  expect(left80.luminance, "at 80% height the left is still dark").toBeLessThan(90);
-  expect(isYellow(right80), "at 80% height the right is already yellow").toBe(true);
-
-  const left50 = await sampleAt(0.20, 0.50);
-  const right50 = await sampleAt(0.88, 0.50);
-  expect(left50.luminance, "at 50% height x≈20% is navy, not a lilac gutter").toBeLessThan(90);
-  expect(right50.luminance, "at 50% height the right is navy, not a lilac gutter beside a centered blob").toBeLessThan(140);
-
-  const atCenterOnsetRight = await sampleAt(0.90, centerOnset);
-  expect(isYellow(atCenterOnsetRight), "no yellow island: when the center turns yellow the right is already yellow").toBe(true);
-
-  const left95 = await sampleAt(0.08, 0.95);
-  const right95 = await sampleAt(0.92, 0.95);
-  expect(isYellow(right95), "at 95% the right is bright chartreuse").toBe(true);
-  expect(right95.r + right95.g, "at 95% the left stays olive; the right is brighter yellow").toBeGreaterThan(left95.r + left95.g + 20);
-
-  const navyBand = await sampleAt(0.28, 0.55);
-  expect(navyBand.luminance, "navy must be a wide left-center horizon, not a thin stripe").toBeLessThan(85);
-});
-
-async function readFooterMeshMotion(page) {
-  return page.evaluate(() => {
-    const offset = (el) => {
-      if (!el) return { x: 0, y: 0 };
-      const transform = getComputedStyle(el).transform;
-      if (!transform || transform === "none") return { x: 0, y: 0 };
-      const matrix = new DOMMatrixReadOnly(transform);
-      return { x: matrix.e, y: matrix.f };
-    };
-    const state = {
-      navy: offset(document.querySelector(".footer-mesh-navy")),
-      olive: offset(document.querySelector(".footer-mesh-olive")),
-      yellow: offset(document.querySelector(".footer-mesh-yellow")),
-      lilac: offset(document.querySelector(".footer-mesh-lilac")),
-      lede: offset(document.querySelector(".footer-lede")),
-      work: offset(document.querySelector(".footer-col-title")),
-      email: offset(document.querySelector("button.footer-email")),
-      linkedin: offset(document.querySelector("a.footer-contact-link")),
-      copy: offset(document.querySelector(".footer-copyright")),
-      bar: offset(document.querySelector(".footer-bar")),
-      layers: {
-        navy: Boolean(document.querySelector(".footer-mesh-navy")),
-        olive: document.querySelectorAll(".footer-mesh-olive").length,
-        yellow: Boolean(document.querySelector(".footer-mesh-yellow")),
-      },
-    };
-    return {
-      ...state,
-      navyTravel: Math.hypot(state.navy.x, state.navy.y),
-      oliveTravel: Math.hypot(state.olive.x, state.olive.y),
-      yellowTravel: Math.hypot(state.yellow.x, state.yellow.y),
-      lilacTravel: Math.hypot(state.lilac.x, state.lilac.y),
-    };
-  });
-}
-
-async function readHomeMastMotion(page) {
-  return page.evaluate(() => {
-    const offset = (selector) => {
-      const element = document.querySelector(selector);
-      const transform = element ? getComputedStyle(element).transform : "none";
-      if (!transform || transform === "none") return { x: 0, y: 0 };
-      const matrix = new DOMMatrixReadOnly(transform);
-      return { x: matrix.e, y: matrix.f };
-    };
-    const rect = (selector) => {
-      const box = document.querySelector(selector)?.getBoundingClientRect();
-      return box ? { x: box.x, y: box.y, width: box.width, height: box.height } : null;
-    };
-    const back = offset(".home-mast-navy-back");
-    const front = offset(".home-mast-navy-front");
-    return {
-      back,
-      front,
-      backTravel: Math.hypot(back.x, back.y),
-      frontTravel: Math.hypot(front.x, front.y),
-      groups: {
-        back: document.querySelectorAll(".home-mast-navy-back").length,
-        front: document.querySelectorAll(".home-mast-navy-front").length,
-        drifts: document.querySelectorAll(".home-mast-navy-drift").length,
-      },
-      nav: rect(".navbar .nav-wrap"),
-      h1: rect(".home-banner-title"),
-      proof: rect(".home-mast-proof-chips"),
-      rail: rect(".home-banner-outcomes"),
-      cta: rect(".hero-work-link"),
-    };
-  });
-}
-
-test("1440 home mast: pointer gives the navy field restrained depth while all content stays still", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await openStable(page, "/");
-  const mast = await page.locator(".home-mast").boundingBox();
-  expect(mast).toBeTruthy();
-
-  await page.mouse.move(mast.x + mast.width * 0.06, mast.y + mast.height * 0.18);
-  await expect.poll(async () => (await readHomeMastMotion(page)).front.x, { timeout: 2500 }).toBeLessThan(-2);
-  const left = await readHomeMastMotion(page);
-  expect(left.groups).toEqual({ back: 1, front: 1, drifts: 2 });
-
-  await page.mouse.move(mast.x + mast.width * 0.94, mast.y + mast.height * 0.72);
-  await expect.poll(async () => (await readHomeMastMotion(page)).front.x, { timeout: 2500 }).toBeGreaterThan(2);
-  const right = await readHomeMastMotion(page);
-  expect(right.front.x - left.front.x, "front layer has more pointer depth").toBeGreaterThan(right.back.x - left.back.x + 2);
-  expect(right.frontTravel, "front travel stays within the 24px by 18px pointer envelope").toBeLessThanOrEqual(30);
-  expect(right.backTravel, "back travel stays quieter than the front").toBeLessThan(right.frontTravel);
-  for (const key of ["nav", "h1", "proof", "rail", "cta"]) {
-    expect(right[key], `${key} exists`).toBeTruthy();
-    for (const axis of ["x", "y", "width", "height"]) {
-      expect(Math.abs(right[key][axis] - left[key][axis]), `${key} ${axis} must not parallax`).toBeLessThan(0.1);
-    }
-  }
-
-  await page.evaluate(() => window.scrollTo(0, document.querySelector(".home-about-section").offsetTop + 200));
-  await expect.poll(async () => (await readHomeMastMotion(page)).frontTravel, { timeout: 3000 }).toBeLessThan(0.2);
-
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await page.setViewportSize({ width: 991, height: 900 });
-  await expect.poll(async () => (await readHomeMastMotion(page)).frontTravel).toBeLessThan(0.05);
-  expect((await readHomeMastMotion(page)).backTravel, "breakpoint cleanup clears the back transform").toBeLessThan(0.05);
-});
-
-test("reduced-motion keeps the home mast static under the pointer", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await openStable(page, "/");
-  const mast = await page.locator(".home-mast").boundingBox();
-  await page.mouse.move(mast.x + mast.width * 0.92, mast.y + mast.height * 0.75);
-  await page.waitForTimeout(500);
-  const state = await readHomeMastMotion(page);
-  expect(state.backTravel).toBeLessThan(0.05);
-  expect(state.frontTravel).toBeLessThan(0.05);
-});
-
-test("the home mast remains readable and static when GSAP is unavailable", async ({ page }) => {
-  await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await openStable(page, "/");
-  const mast = await page.locator(".home-mast").boundingBox();
-  await page.mouse.move(mast.x + mast.width * 0.9, mast.y + mast.height * 0.7);
-  await page.waitForTimeout(300);
-  const state = await readHomeMastMotion(page);
-  expect(state.backTravel).toBeLessThan(0.05);
-  expect(state.frontTravel).toBeLessThan(0.05);
-  await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
-  await expect(page.locator(".home-mast-proof-chips")).toBeVisible();
-});
-
-test("1440 footer mesh: pointer moves masses a little; type and chrome stay still", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1100 });
-  await openStable(page, "/");
-  await page.mouse.move(8, 8);
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  await page.waitForTimeout(80);
-
-  const rest = await readFooterMeshMotion(page);
-  expect(rest.layers.navy).toBe(true);
-  expect(rest.layers.olive).toBeGreaterThanOrEqual(2);
-  expect(rest.layers.yellow).toBe(true);
-  expect(rest.navyTravel, "resting navy must stay near identity").toBeLessThan(1.5);
-  expect(rest.yellowTravel, "resting yellow must stay near identity").toBeLessThan(1.5);
-  expect(rest.lilacTravel).toBeLessThan(0.05);
-
-  const footer = page.locator("footer.footer-section");
-  const box = await footer.boundingBox();
-  expect(box).toBeTruthy();
-  await page.mouse.move(box.x + box.width * 0.92, box.y + box.height * 0.86);
-  await expect.poll(async () => (await readFooterMeshMotion(page)).yellowTravel, {
-    timeout: 2500,
-  }).toBeGreaterThan(1.8);
-
-  const moved = await readFooterMeshMotion(page);
-  expect(moved.yellowTravel, "yellow is the closer mass").toBeGreaterThan(moved.navyTravel + 0.4);
-  expect(moved.oliveTravel).toBeGreaterThan(moved.navyTravel);
-  expect(moved.yellowTravel, "travel stays a few pixels").toBeLessThan(12);
-  expect(moved.navyTravel).toBeGreaterThan(0.4);
-  expect(moved.navyTravel).toBeLessThan(8);
-  expect(moved.lilacTravel, "lilac plate stays still").toBeLessThan(0.05);
-  for (const key of ["lede", "work", "email", "linkedin", "copy", "bar"]) {
-    expect(Math.hypot(moved[key].x, moved[key].y), `${key} must not parallax`).toBeLessThan(0.05);
-  }
-});
-
-test("reduced-motion keeps the footer mesh static under the pointer", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.setViewportSize({ width: 1440, height: 1100 });
-  await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  const box = await page.locator("footer.footer-section").boundingBox();
-  expect(box).toBeTruthy();
-  await page.mouse.move(box.x + box.width * 0.92, box.y + box.height * 0.86);
+  }));
+  await page.mouse.move(150, 180);
+  const before = await read();
+  await page.mouse.move(1300, 600);
   await page.waitForTimeout(400);
-  const moved = await readFooterMeshMotion(page);
-  expect(moved.navyTravel).toBeLessThan(0.05);
-  expect(moved.oliveTravel).toBeLessThan(0.05);
-  expect(moved.yellowTravel).toBeLessThan(0.05);
-  expect(moved.lilacTravel).toBeLessThan(0.05);
+  expect(await read(), "decorative pointer response must not move reading or target geometry").toEqual(before);
+});
+
+test("the immersive home remains readable when GSAP is unavailable", async ({ page }) => {
+  await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
+  await openStable(page, "/");
+  await expect(page.locator(".site-arrival")).toHaveCount(0);
+  await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
+  await readableHomeTarget(page, page.locator(".home-mast-proof-chips"));
+  await expect(page.locator(".home-mast-proof-chips")).toBeVisible();
+  await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
 });
 
 test("/contact stays unpublished", async ({ request }) => {
@@ -1742,74 +1548,7 @@ test("/contact stays unpublished", async ({ request }) => {
   expect(response.status()).toBe(404);
 });
 
-test("390 footer stacks ident, CTA, Work with copyright left and no back-to-top", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  const stack = await page.evaluate(() => {
-    const ident = document.querySelector(".footer-ident").getBoundingClientRect();
-    const work = document.querySelector(".footer-nav .footer-col").getBoundingClientRect();
-    const copy = document.querySelector(".footer-copyright").getBoundingClientRect();
-    const footer = document.querySelector("footer.footer-section").getBoundingClientRect();
-    const cols = document.querySelectorAll(".footer-nav .footer-col");
-    return {
-      identBottom: ident.bottom,
-      workTop: work.top,
-      copyLeft: copy.left,
-      footerLeft: footer.left,
-      colCount: cols.length,
-      contactHeading: Boolean([...cols].some((col) => /Contact/.test(col.textContent))),
-      backToTop: Boolean(document.querySelector("footer .back-to-top-wrap")),
-    };
-  });
-  expect(stack.backToTop).toBe(false);
-  expect(stack.colCount).toBe(1);
-  expect(stack.contactHeading).toBe(false);
-  expect(stack.workTop).toBeGreaterThan(stack.identBottom - 1);
-  expect(stack.copyLeft).toBeLessThan(stack.footerLeft + 80);
-
-  const work = await page.evaluate(() => {
-    const title = document.querySelector(".footer-col-title").getBoundingClientRect();
-    return { x: title.x, y: title.y, width: title.width, height: title.height };
-  });
-  const workBand = await screenshotClip(page, {
-    x: Math.max(0, work.x - 24),
-    y: work.y + 2,
-    width: 16,
-    height: 14,
-  });
-  expect(workBand.luminance, "390 Work must sit on the pale lilac band, not the navy horizon").toBeGreaterThan(140);
-
-  const seam = await footerSeamClip(page);
-  const maxJump = await footerSeamJump(page, seam);
-  expect(maxJump, "compact mesh must not clip a hard seam through the Email / Work stack").toBeLessThan(12);
-  console.log("Empty footer seam sample:", JSON.stringify({ ...seam, maxJump }));
-});
-
-test("390 footer seam guard detects a synthetic full-width hard seam", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await openStable(page, "/");
-  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  const seam = await footerSeamClip(page);
-  await page.evaluate((y) => {
-    // Negative control exists only in this test document, not in site assets.
-    const line = document.createElement("div");
-    line.setAttribute("data-test-hard-seam", "");
-    Object.assign(line.style, {
-      position: "fixed", left: "0", right: "0", top: `${y}px`, height: "2px",
-      background: "#000", zIndex: "2147483647", pointerEvents: "none",
-    });
-    document.body.appendChild(line);
-  }, Math.floor(seam.y + seam.height / 2));
-  const line = await page.locator("[data-test-hard-seam]").boundingBox();
-  expect(line.x).toBe(0);
-  expect(line.width).toBe(390);
-  const maxJump = await footerSeamJump(page, seam);
-  expect(maxJump, "a real full-width seam must still violate the unchanged <12 guard").toBeGreaterThanOrEqual(12);
-  console.log("Synthetic footer seam negative control:", maxJump);
-});
-
-test("1280 home selected work: compact rows, small thumbs, hiring order, stable title color", async ({ page }) => {
+test("1280 home selected work: wide landscape media, hiring order and stable title color", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await openStable(page, "/");
   const list = await page.evaluate(() => {
@@ -1820,8 +1559,11 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
         href: row.querySelector(".work-title")?.getAttribute("href"),
         title: row.querySelector(".work-title")?.textContent.trim(),
         summary: row.querySelector(".work-card-summary")?.textContent.trim() || "",
-        thumbW: Math.round(box.width),
-        thumbH: Math.round(box.height),
+        thumbW: box.width,
+        thumbH: box.height,
+        rowW: row.getBoundingClientRect().width,
+        fit: getComputedStyle(thumb).objectFit,
+        source: thumb.getAttribute("src"), alt: thumb.getAttribute("alt"), hidden: thumb.getAttribute("aria-hidden"),
       };
     });
     return {
@@ -1829,7 +1571,7 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
       giantCards: Boolean(document.querySelector("#works .work-image-wrap, #works .work-grid")),
     };
   });
-  expect(list.giantCards, "GiantWorkCards must not return").toBe(false);
+  expect(list.giantCards, "home keeps a single ordered list").toBe(false);
   expect(list.rows.map((row) => row.href)).toEqual([
     "/work/raiffeisen",
     "/work/instructure",
@@ -1848,10 +1590,12 @@ test("1280 home selected work: compact rows, small thumbs, hiring order, stable 
   ]);
   expect(list.rows.some((row) => /4M\+|Redesigning banking for/.test(row.summary))).toBe(false);
   for (const row of list.rows) {
-    expect(row.thumbW).toBeGreaterThanOrEqual(72);
-    expect(row.thumbW).toBeLessThanOrEqual(96);
-    expect(row.thumbH).toBeGreaterThanOrEqual(72);
-    expect(row.thumbH).toBeLessThanOrEqual(96);
+    expect(row.thumbW, "the project image is a substantial landscape band").toBeGreaterThanOrEqual(row.rowW * .25);
+    expect(row.thumbW / row.thumbH).toBeGreaterThanOrEqual(1.5);
+    expect(row.fit, "decorative geometry fills the landscape frame").toBe("cover");
+    expect(row.source).toMatch(new RegExp(`/geometry/${row.title.toLowerCase()}\\.960\\.webp$`));
+    expect(row.alt).toBe("");
+    expect(row.hidden).toBe("true");
   }
 
   const kineticareTitle = page.locator('#works .work-title[href="/work/kineticare"]');
@@ -1923,7 +1667,7 @@ async function expectWorkPaper(row) {
     pseudo: getComputedStyle(element, "::before").content,
   }));
   expect(isTransparentFill(paint.background) || colorLuminance(parseCssColor(paint.background)) > 0.99,
-    "the row keeps its white reading surface").toBe(true);
+    "the row keeps its quiet reading surface").toBe(true);
   expect(paint.pseudo, "the former colored hover/focus wash must not return").toMatch(/^(none|normal)$/);
 }
 
@@ -2045,8 +1789,13 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
   await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
   const rows = await page.locator(".work-row").all();
   for (let step = 0; step < 18; step += 1) {
-    const box = await rows[step % rows.length].boundingBox();
-    await page.mouse.move(step % 2 ? box.x + 20 : box.x + box.width - 20, box.y + box.height / 2);
+    const row = rows[step % rows.length];
+    await row.scrollIntoViewIfNeeded();
+    const box = await row.boundingBox();
+    const point = { x: step % 2 ? box.x + 20 : box.x + box.width - 20, y: box.y + box.height / 2 };
+    expect(await row.evaluate((element, target) => element.contains(document.elementFromPoint(target.x, target.y)), point),
+      "the pointer samples a visible point inside the intended row").toBe(true);
+    await page.mouse.move(point.x, point.y);
     expect(await page.evaluate(() => gsap.globalTimeline.getChildren(true, true, true)
       .filter((animation) => animation.vars.data === "work-list-motion")
       .every((animation) => window.__workMotionAnimations.has(animation))), "rapid pointer input must reuse its original controllers").toBe(true);
@@ -2174,246 +1923,47 @@ for (const width of [390, 1440]) test.describe(width + " selected-work touch", (
   });
 });
 
-test("1440 home header: reference composition, truthful proof and text navigation", async ({ page }) => {
+test("1440 home opening: original centered artwork and semantic role lead into the split composition", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStable(page, "/");
-  const fold = await page.evaluate(() => {
-    const mast = document.querySelector(".home-mast");
-    const header = document.querySelector(".home-banner-section");
-    const navbar = document.querySelector(".navbar");
-    const email = navbar.querySelector("button.footer-email");
-    const linkedin = navbar.querySelector("a.footer-contact-link");
-    const cta = document.querySelector(".home-banner-section a.hero-work-link[href='/works']");
-    const headerImgs = [...header.querySelectorAll("img")].map((img) => img.getAttribute("src"));
-    const emailStyle = email ? getComputedStyle(email) : null;
-    const linkedinStyle = linkedin ? getComputedStyle(linkedin) : null;
-    const ctaStyle = cta ? getComputedStyle(cta) : null;
-    const navStyle = getComputedStyle(navbar);
-    return {
-      kicker: document.querySelector(".hero-kicker")?.textContent.trim() || "",
-      h1: document.querySelector(".home-banner-title")?.textContent.trim() || "",
-      sub: document.querySelector(".home-banner-subtitle")?.textContent.trim() || "",
-      cta: cta?.textContent.trim() || "",
-      ctaHref: cta?.getAttribute("href") || "",
-      navItems: [
-        navbar.querySelector(".home-nav-monogram")?.textContent.trim(),
-        navbar.querySelector('a.nav-link[href="/works"]')?.textContent.trim(),
-        linkedin?.textContent.trim(),
-        email?.textContent.trim(),
-      ],
-      proof: [...document.querySelectorAll(".home-mast-proof-chips li")].map((li) => ({
-        claim: li.querySelector("strong")?.textContent.trim() || "",
-        company: li.querySelector("strong + span")?.textContent.trim() || "",
-      })),
-      highlights: [...document.querySelectorAll(".home-banner-outcomes li")].map((li) => li.textContent.trim()),
-      mesh: Boolean(document.querySelector(".home-mast-mesh") && document.querySelector("#home-mast-blur")),
-      dunes: Boolean(document.querySelector(".footer-dunes, .home-mast-dunes")),
-      canvas: Boolean(document.querySelector(".hero-proof, .home-mast img[src*='insights-feed']")),
-      headerImgs,
-      motion: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
-      navBg: navStyle.backgroundColor,
-      navBorder: navStyle.borderBottomWidth,
-      emailHref: email ? email.getAttribute("href") : "missing",
-      emailType: email ? email.getAttribute("type") : "",
-      emailText: email ? email.textContent.trim() : "",
-      emailName: email ? email.getAttribute("aria-label") : "",
-      emailTitle: email ? email.getAttribute("title") : "",
-      works: Boolean(navbar.querySelector('a.nav-link[href="/works"]')),
-      emailSize: email ? {
-        w: Math.round(email.getBoundingClientRect().width),
-        h: Math.round(email.getBoundingClientRect().height),
-        radius: emailStyle.borderRadius,
-        bg: emailStyle.backgroundColor,
-        color: emailStyle.color,
-        size: emailStyle.fontSize,
-        weight: emailStyle.fontWeight,
-      } : null,
-      linkedinSize: linkedin ? {
-        w: Math.round(linkedin.getBoundingClientRect().width),
-        h: Math.round(linkedin.getBoundingClientRect().height),
-        radius: linkedinStyle.borderRadius,
-        bg: linkedinStyle.backgroundColor,
-      } : null,
-      ctaChrome: ctaStyle ? {
-        h: Math.round(cta.getBoundingClientRect().height),
-        radius: ctaStyle.borderRadius,
-        bg: ctaStyle.backgroundColor,
-        color: ctaStyle.color,
-        weight: ctaStyle.fontWeight,
-        size: ctaStyle.fontSize,
-      } : null,
-      mastBox: mast ? mast.getBoundingClientRect() : null,
-    };
-  });
-  expect(fold.kicker).toBe("Norbert Barna");
-  expect(fold.h1).toBe("Product VP");
-  expect(fold.sub).toMatch(/AI products for fintech, Web3,\s*regulated teams — strategy to ship\./);
+  await expect(page.locator(".home-mast h1")).toHaveText("Product VP");
+  await expect(page.locator(".home-mast-statement")).toHaveText("Product with purpose.");
+  await expect(page.locator(".home-mast-lettering")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator(".home-mast-sculpture")).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator(".home-mast-canvas")).toHaveCount(1);
+  await expect(page.locator(".home-mast-fallback")).toHaveAttribute("src", /hero-chevron\.svg$/);
+  await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
+  await expect(page.locator(".home-mast-scroll")).toHaveAttribute("href", "#home-introduction");
   await expect(page.locator(".home-banner-title")).toHaveCSS("font-family", /Inter/);
-  await expect(page.locator(".home-banner-title")).toHaveCSS("font-weight", "700");
-  expect(fold.cta).toBe("View selected work →");
-  expect(fold.ctaHref).toBe("/works");
-  expect(fold.navItems).toEqual(["NB", "Works", "LinkedIn", "Email"]);
-  expect(fold.proof).toEqual([
-    { claim: "Multi-country banking", company: "Raiffeisen" },
-    { claim: "Enterprise EdTech AI", company: "Instructure" },
-  ]);
-  expect(fold.highlights).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
-  const chrome = await page.evaluate(() => {
-    const wrap = document.querySelector(".nav-wrap").getBoundingClientRect();
-    const logo = document.querySelector(".nav-logo-wrap").getBoundingClientRect();
-    const works = document.querySelector('a.nav-link[href="/works"]').getBoundingClientRect();
-    const linkedin = document.querySelector(".navbar a.footer-contact-link").getBoundingClientRect();
-    const items = [...document.querySelectorAll(".home-banner-outcomes li")].map((li) => {
-      const box = li.getBoundingClientRect();
-      return { name: li.textContent.trim(), top: box.top, bottom: box.bottom };
-    });
-    return {
-      logoW: Math.round(logo.width),
-      logoH: Math.round(logo.height),
-      leftGap: Math.round(logo.left - wrap.left),
-      nbToWorks: Math.round(works.left - logo.right),
-      worksToLi: Math.round(linkedin.left - works.right),
-      items,
-    };
+  const layout = await page.evaluate(() => {
+    const stage = document.querySelector(".home-mast-scene").getBoundingClientRect();
+    const art = document.querySelector(".home-mast-sculpture").getBoundingClientRect();
+    const track = document.querySelector(".home-mast-track").getBoundingClientRect();
+    return { stageHeight: stage.height, centered: Math.abs(art.left + art.width / 2 - innerWidth / 2),
+      trackHeight: track.height, introInside: Boolean(document.querySelector(".home-mast-scene > .home-mast-intro")), overflow: document.documentElement.scrollWidth - innerWidth };
   });
-  expect(chrome.logoW).toBeGreaterThanOrEqual(44);
-  expect(chrome.logoH).toBeGreaterThanOrEqual(44);
-  expect(chrome.leftGap, "NB sits in the right cluster, not a left logo column").toBeGreaterThan(400);
-  expect(chrome.nbToWorks, "no huge empty gap between NB and Works").toBeLessThan(56);
-  expect(Math.abs(chrome.nbToWorks - chrome.worksToLi)).toBeLessThan(16);
-  for (const item of chrome.items) {
-    expect(item.top, `${item.name} stays in the first viewport`).toBeGreaterThanOrEqual(0);
-    expect(item.bottom, `${item.name} stays in the first viewport`).toBeLessThanOrEqual(900);
-  }
-  expect(fold.mesh).toBe(true);
-  expect(fold.dunes).toBe(false);
-  expect(fold.canvas).toBe(false);
-  expect(fold.headerImgs).toEqual([]);
-  expect(fold.motion).toBe(false);
-  expect(fold.works).toBe(true);
-  expect(fold.navBg).toMatch(/rgba?\(0,\s*0,\s*0,\s*0\)|transparent/);
-  expect(fold.navBorder).toBe("0px");
-  expect(fold.emailHref).toBeNull();
-  expect(fold.emailType).toBe("button");
-  expect(fold.emailText).toBe(HOME_EMAIL_LABEL);
-  expect(fold.emailName).toBe(HOME_EMAIL_NAME);
-  expect(fold.emailTitle).toBe(PROJECT_TITLE);
-  expect(fold.emailSize.h).toBe(44);
-  await expectContactLabelFit(page.locator(".navbar button.footer-email"));
-  expect(isTransparentFill(fold.emailSize.bg)).toBe(true);
-  expect(fold.emailSize.color).toBe("rgb(17, 17, 17)");
-  expect(fold.emailSize.radius).toBe("8px");
-  expect(fold.emailSize.size).toBe("16px");
-  expect(fold.emailSize.weight).toBe("400");
-  expect(fold.linkedinSize.w).toBeGreaterThan(44);
-  expect(fold.linkedinSize.h).toBe(44);
-  expect(fold.linkedinSize.radius).toBe("8px");
-  expect(isTransparentFill(fold.linkedinSize.bg)).toBe(true);
-  expect(fold.ctaChrome.h).toBeGreaterThanOrEqual(56);
-  expect(fold.ctaChrome.radius).toBe("12px");
-  const ctaInk = parseCssColor(fold.ctaChrome.bg);
-  expect(colorLuminance(ctaInk), "primary action uses deep reference navy").toBeLessThan(0.04);
-  expect(ctaInk.b - ctaInk.r, "navy retains its blue color").toBeGreaterThan(15);
-  expect(fold.ctaChrome.color).toBe("rgb(255, 255, 255)");
-  expect(fold.ctaChrome.weight).toBe("400");
-  expect(parseFloat(fold.ctaChrome.size)).toBeGreaterThanOrEqual(18);
-  expect(parseFloat(fold.ctaChrome.size)).toBeLessThanOrEqual(20);
-
-  const mast = fold.mastBox;
-  expect(mast).toBeTruthy();
-  const lilac = await screenshotClip(page, {
-    x: Math.max(0, mast.x + 48),
-    y: mast.y + 28,
-    width: 64,
-    height: 40,
-  });
-  expect(lilac.luminance, "copy sits on the pale lilac band").toBeGreaterThan(150);
-  expect(lilac.b, "type band stays cool-lilac").toBeGreaterThan(lilac.r - 12);
-  const outcomes = await page.evaluate(() => {
-    const list = document.querySelector(".home-banner-outcomes").getBoundingClientRect();
-    return { x: list.x, y: list.y };
-  });
-  const outcomesBand = await screenshotClip(page, {
-    x: Math.max(0, outcomes.x + 8),
-    y: outcomes.y + 8,
-    width: 18,
-    height: 14,
-  });
-  expect(outcomesBand.luminance, "desktop highlights sit on the dark navy transition, not the lilac field").toBeLessThan(135);
-  const dome = await screenshotClip(page, {
-    x: Math.max(0, mast.x + mast.width * 0.72 - 24),
-    y: mast.y + mast.height - 70,
-    width: 48,
-    height: 36,
-  });
-  expect(dome.luminance, "navy félkör must occupy the lower field").toBeLessThan(70);
-  expect(dome.b, "dome is navy, not yellow").toBeGreaterThan(dome.r - 20);
-  const domeRise = await screenshotClip(page, {
-    x: Math.max(0, mast.x + mast.width * 0.74 - 24),
-    y: mast.y + mast.height * 0.78,
-    width: 48,
-    height: 36,
-  });
-  expect(domeRise.luminance, "félkör rises through the lower field, not a thin horizon").toBeLessThan(110);
-  const grain = await screenshotClip(page, {
-    x: Math.max(0, mast.x + 80),
-    y: mast.y + 80,
-    width: 72,
-    height: 48,
-  });
-  expect(grain.stddev, "mast grain must read as analog speckle").toBeGreaterThan(2.5);
+  expect(layout.stageHeight).toBeCloseTo(900, 0);
+  expect(layout.centered).toBeLessThan(1);
+  expect(layout.trackHeight, "the native track supplies scroll distance for the composition change").toBeGreaterThan(layout.stageHeight);
+  expect(layout.introInside).toBe(true);
+  expect(layout.overflow).toBeLessThanOrEqual(1);
+  await expect(page.locator(".home-banner-title")).toBeInViewport();
+  await expect(page.locator(".hero-work-link")).toBeInViewport();
+  await expect(page.locator(".home-mast .hero-kicker")).toHaveText("Norbert Barna");
+  await expect(page.locator(".home-banner-subtitle")).toHaveText(/AI products for fintech, Web3,\s*regulated teams — strategy to ship\./);
+  await expect(page.locator(".home-mast-proof-chips li")).toHaveText(["Multi-country bankingRaiffeisen", "Enterprise EdTech AIInstructure"]);
+  await expect(page.locator(".home-banner-outcomes li")).toHaveText(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  const email = page.locator(".navbar button.footer-email");
+  await expect(email).toHaveAttribute("type", "button");
+  await expect(email).not.toHaveAttribute("href");
+  await expect(email).toHaveAttribute("aria-label", HOME_EMAIL_NAME);
+  await expect(email).toHaveAttribute("title", PROJECT_TITLE);
+  await expect(page.locator(".navbar .home-nav-wordmark")).toHaveText("NORBERT.BARNA");
+  await expect(page.locator(".navbar .home-nav-progress")).toHaveAttribute("aria-hidden", "true");
 });
 
-test("home material matches the footer light gray with blue depth and visible grain across desktop and compact", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  const paleSamples = [];
-  for (const width of [1280, 390]) {
-    await page.setViewportSize({ width, height: 900 });
-    await openStable(page, "/");
-    const samples = await page.evaluate(() => {
-      const mast = document.querySelector(".home-mast").getBoundingClientRect();
-      window.scrollTo(0, Math.max(0, mast.height - innerHeight));
-      const svg = document.querySelector(".home-mast-art");
-      const ellipse = svg.querySelector(".home-mast-navy-front ellipse");
-      const at = (inset) => {
-        const point = svg.createSVGPoint();
-        point.x = ellipse.cx.baseVal.value - ellipse.rx.baseVal.value * inset;
-        point.y = ellipse.cy.baseVal.value - ellipse.ry.baseVal.value * 0.1;
-        const screen = point.matrixTransform(svg.getScreenCTM());
-        return { x: screen.x - 12, y: screen.y - 12, width: 24, height: 24 };
-      };
-      return { edge: at(0.91), deep: at(0.35) };
-    });
-    const edge = await screenshotClip(page, samples.edge);
-    const deep = await screenshotClip(page, samples.deep);
-    await page.evaluate(() => window.scrollTo(0, 0));
-    const kicker = await page.locator(".hero-kicker").boundingBox();
-    const pale = await screenshotClip(page, { x: kicker.x + 40, y: kicker.y - 44, width: 64, height: 36 });
-    paleSamples.push(pale);
-
-    await page.evaluate(() => window.scrollTo(0, document.querySelector(".footer-section").getBoundingClientRect().top + scrollY));
-    const footer = await page.locator(".footer-section").boundingBox();
-    const footerPale = await screenshotClip(page, { x: footer.x + Math.floor(footer.width * .55), y: footer.y + 25, width: 32, height: 24 });
-    for (const channel of ["r", "g", "b"]) {
-      expect(Math.abs(pale[channel] - footerPale[channel]), `${width}: ${channel} matches the footer's rendered light gray`).toBeLessThan(4);
-    }
-    expect(pale.luminance, `${width}: the light gray stays pale`).toBeGreaterThan(185);
-    expect(pale.luminance, `${width}: the light gray does not wash to white`).toBeLessThan(240);
-    expect(pale.stddev, `${width}: the requested analog pattern remains visible`).toBeGreaterThan(2.5);
-    expect(pale.stddev, `${width}: coarse dark grain must not overpower the pale field`).toBeLessThan(18);
-    expect(deep.luminance, `${width}: the form retains a deep interior`).toBeLessThan(65);
-    expect(deep.b - deep.r, `${width}: the interior is blue, not a neutral black disk`).toBeGreaterThan(25);
-    expect(edge.luminance - deep.luminance, `${width}: violet edge and navy interior remain distinct`).toBeGreaterThan(20);
-    expect(edge.luminance, `${width}: the inner edge remains separate from pale fog`).toBeLessThan(pale.luminance - 40);
-    expect(edge.b - edge.r, `${width}: the inner edge remains blue-violet`).toBeGreaterThan(25);
-  }
-  for (const channel of ["r", "g", "b"]) {
-    expect(Math.abs(paleSamples[0][channel] - paleSamples[1][channel]), `${channel}: compact grain uses the same light gray backdrop`).toBeLessThan(16);
-  }
-});
-
-for (const width of [992, 1280]) {
-test(`${width} first-visit fold keeps employers and primary action above the consent banner`, async ({ page }) => {
+for (const width of [390, 992, 1280]) {
+test(`${width} first-visit scene keeps role and primary action above the consent banner`, async ({ page }) => {
   await page.addInitScript(() => localStorage.removeItem("bn-analytics-consent-v1"));
   await page.setViewportSize({ width, height: 720 });
   await openStable(page, "/");
@@ -2430,14 +1980,22 @@ test(`${width} first-visit fold keeps employers and primary action above the con
         covered: Boolean(bannerBox && box.bottom > bannerBox.top + 2),
       };
     });
-    return { items, bannerTop: bannerBox ? bannerBox.top : null, ctaBottom: document.querySelector(".hero-work-link").getBoundingClientRect().bottom };
+    const active = document.querySelector(".home-mast").hasAttribute("data-morph-active");
+    const action = document.querySelector(active ? ".hero-work-link" : ".home-intro-work");
+    const role = document.querySelector(active ? ".home-banner-title" : ".home-mast-display");
+    const actionBox = action.getBoundingClientRect();
+    const actionHit = document.elementFromPoint(actionBox.left + actionBox.width / 2, actionBox.top + actionBox.height / 2);
+    return { items, bannerTop: bannerBox ? bannerBox.top : null, ctaBottom: actionBox.bottom, actionReceivesPointer: action.contains(actionHit),
+      roleBottom: role.getBoundingClientRect().bottom,
+      introTop: document.querySelector(".home-mast-intro").getBoundingClientRect().top };
   });
   expect(fold.items.map((item) => item.name)).toEqual(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
+  expect(fold.bannerTop, "this regression must exercise the actual first-visit consent banner").not.toBeNull();
   expect(fold.ctaBottom + 8, "primary action and focus outline must remain above consent").toBeLessThanOrEqual(fold.bannerTop ?? 720);
+  expect(fold.roleBottom + 8, "the Product VP role remains above consent").toBeLessThanOrEqual(fold.bannerTop ?? 720);
+  expect(fold.actionReceivesPointer, "the visible Works action receives the first pointer or touch input").toBe(true);
   for (const item of fold.items) {
-    expect(item.covered, `${item.name} must stay above the consent banner`).toBe(false);
-    expect(item.top).toBeGreaterThanOrEqual(0);
-    expect(item.bottom).toBeLessThanOrEqual(720);
+    expect(item.top, `${item.name} stays inside the semantic introduction`).toBeGreaterThanOrEqual(fold.introTop);
   }
 });
 }
@@ -2488,306 +2046,107 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   expect(schema.personDescription).toMatch(/Product VP/);
   expect(schema.personDescription).not.toMatch(/design lead/i);
 
-  const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
-  const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
-  const bulletRgb = parseCssColor(await firstBullet.evaluate((el) => getComputedStyle(el).color));
-  const emailRgb = parseCssColor(await email.evaluate((el) => getComputedStyle(el).color));
-  const linkedinRgb = parseCssColor(await linkedin.evaluate((el) => getComputedStyle(el).color));
-
-  expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
-  expect(colorLuminance(kickerRgb), "kicker stays dark violet on lavender").toBeLessThan(0.2);
-  expect(colorLuminance(h1Rgb), "H1 stays deep navy on lavender").toBeLessThan(0.04);
-  expect(colorLuminance(bulletRgb), "InkOnNavy: highlights body must be light ink").toBeGreaterThan(0.5);
-
-  const kickerBg = await sampleBehindGlyphs(page, kicker);
-  const h1Bg = await sampleBehindGlyphs(page, h1);
-  const bulletBg = await sampleBehindGlyphs(page, firstBullet);
-  const lastBg = await sampleBehindGlyphs(page, lastBullet);
-  const emailBg = await sampleBehindGlyphs(page, email);
-  const linkedinBg = await sampleBehindGlyphs(page, linkedin);
-
-  expect(bulletBg.median.l, "highlights body must sit on the navy félkör").toBeLessThan(0.2);
-  expect(lastBg.median.l, "last highlight must sit on the navy félkör").toBeLessThan(0.2);
-  expect(h1Bg.median.l, "H1 must stay on lilac").toBeGreaterThan(0.5);
-  expect(kickerBg.median.l, "kicker must stay on lilac").toBeGreaterThan(0.5);
-
-  const kickerVsLight = contrastAgainst(kickerRgb, kickerBg.lightest);
-  const kickerVsDark = contrastAgainst(kickerRgb, kickerBg.darkest);
-  const h1VsLilac = contrastAgainst(h1Rgb, h1Bg.median);
-  const bulletVsNavy = contrastAgainst(bulletRgb, bulletBg.darkest);
-  const bulletVsLight = contrastAgainst(bulletRgb, bulletBg.lightest);
-  const lastVsNavy = contrastAgainst(bulletRgb, lastBg.darkest);
-  const emailVsLilac = contrastAgainst(emailRgb, emailBg.median);
-  const linkedinVsLilac = contrastAgainst(linkedinRgb, linkedinBg.median);
-
-  expect(kickerVsLight, `kicker vs lightest grain ${kickerVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(kickerVsDark, `kicker vs darkest grain ${kickerVsDark.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(h1VsLilac, `H1 vs lilac ${h1VsLilac.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(bulletVsNavy, `highlights body vs darkest navy ${bulletVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(bulletVsLight, `highlights body vs lightest under glyphs ${bulletVsLight.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(lastVsNavy, `last highlight vs darkest navy ${lastVsNavy.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(emailVsLilac, `Email vs lilac ${emailVsLilac.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-  expect(linkedinVsLilac, `LinkedIn vs lilac ${linkedinVsLilac.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
-
-  const ratios = [
-    `kicker ${hexRgb(kickerRgb)} vs light ${hexRgb(kickerBg.lightest)} = ${kickerVsLight.toFixed(2)}`,
-    `kicker ${hexRgb(kickerRgb)} vs dark ${hexRgb(kickerBg.darkest)} = ${kickerVsDark.toFixed(2)}`,
-    `H1 ${hexRgb(h1Rgb)} vs ${hexRgb(h1Bg.median)} = ${h1VsLilac.toFixed(2)}`,
-    `bullet ${hexRgb(bulletRgb)} vs darkest ${hexRgb(bulletBg.darkest)} = ${bulletVsNavy.toFixed(2)}`,
-    `bullet ${hexRgb(bulletRgb)} vs lightest ${hexRgb(bulletBg.lightest)} = ${bulletVsLight.toFixed(2)}`,
-    `Email vs lilac = ${emailVsLilac.toFixed(2)}`,
-    `LinkedIn vs lilac = ${linkedinVsLilac.toFixed(2)}`,
-  ].join("\n");
-  console.log(ratios);
-  expect(ratios).toMatch(/bullet .+ = [4-9]|1[0-9]/);
+  for (const [name, text] of [["kicker", kicker], ["title", h1], ["first employer", firstBullet], ["last employer", lastBullet], ["email", email], ["LinkedIn", linkedin]]) {
+    await expectHeaderTextAA(page, text, `1440 immersive ${name}`, { raster: true });
+  }
 });
 
-test("390 home mast type meets WCAG AA with the light employer rail inside navy", async ({ page }) => {
+test("390 immersive header keeps every label readable and inside the content flow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openStable(page, "/");
-
-  const kicker = page.locator(".home-mast .hero-kicker").first();
-  const h1 = page.locator(".home-mast h1").first();
-  const dek = page.locator(".home-mast .home-banner-subtitle").first();
-  const label = page.locator(".home-mast .metric-context").first();
-  const firstBullet = page.locator(".home-mast .home-highlight-company").first();
-  const lastBullet = page.locator(".home-mast .home-highlight-company").last();
-
-  const fold = await page.evaluate(() => {
-    const kickerEl = document.querySelector(".hero-kicker");
-    const last = document.querySelector(".home-banner-outcomes li:last-child");
-    const mast = document.querySelector(".home-mast");
-    return {
-      kickerSize: kickerEl ? getComputedStyle(kickerEl).fontSize : "",
-      lastBottom: last ? last.getBoundingClientRect().bottom : 0,
-      mastBottom: mast ? mast.getBoundingClientRect().bottom : 0,
-    };
-  });
-  expect(fold.kickerSize, "compact kicker must stay 13px").toBe("13px");
-  expect(fold.lastBottom, "employers remain inside the mast with breathing room").toBeLessThan(fold.mastBottom - 32);
-  await expect(label).toBeHidden();
-  await expect(page.locator(".home-banner-outcomes")).toHaveCSS("border-top-width", "0px");
-  const rail = await page.locator(".home-banner-content-wrap").boundingBox();
-  expect(rail.width, "compact rail stays narrow").toBeLessThanOrEqual(180);
-  expect(rail.x, "compact rail is right-aligned").toBeGreaterThan(390 / 2);
-
-  const kickerRgb = parseCssColor(await kicker.evaluate((el) => getComputedStyle(el).color));
-  const h1Rgb = parseCssColor(await h1.evaluate((el) => getComputedStyle(el).color));
-  const dekRgb = parseCssColor(await dek.evaluate((el) => getComputedStyle(el).color));
-  const bulletRgb = parseCssColor(await firstBullet.evaluate((el) => getComputedStyle(el).color));
-  const lastRgb = parseCssColor(await lastBullet.evaluate((el) => getComputedStyle(el).color));
-
-  expect(kickerRgb.a, "kicker must be solid ink, not 62% --muted").toBeGreaterThan(0.92);
-  expect(kickerRgb.r + kickerRgb.g + kickerRgb.b, "kicker stays dark on lilac").toBeLessThan(260);
-  expect(colorLuminance(h1Rgb), "H1 stays deep navy on lavender").toBeLessThan(0.04);
-  expect(colorLuminance(bulletRgb), "compact highlights use light ink on navy").toBeGreaterThan(0.5);
-  expect(colorLuminance(lastRgb), "last compact highlight uses light ink").toBeGreaterThan(0.5);
-
-  const kickerBg = await sampleBehindGlyphs(page, kicker);
-  const h1Bg = await sampleBehindGlyphs(page, h1);
-  const dekBg = await sampleBehindGlyphs(page, dek);
-  const firstBg = await sampleBehindGlyphs(page, firstBullet);
-  const lastBg = await sampleBehindGlyphs(page, lastBullet);
-
-  expect(kickerBg.median.l, "kicker must stay on lilac").toBeGreaterThan(0.5);
-  expect(h1Bg.median.l, "H1 must stay on lilac").toBeGreaterThan(0.5);
-  expect(dekBg.median.l, "dek must stay on lilac").toBeGreaterThan(0.5);
-  expect(firstBg.median.l, "first highlight sits inside navy").toBeLessThan(0.2);
-  expect(lastBg.median.l, "last highlight sits inside navy").toBeLessThan(0.2);
-
-  const pairs = [
-    ["kicker vs lightest grain", contrastAgainst(kickerRgb, kickerBg.lightest)],
-    ["kicker vs darkest grain", contrastAgainst(kickerRgb, kickerBg.darkest)],
-    ["H1 vs lightest grain", contrastAgainst(h1Rgb, h1Bg.lightest)],
-    ["dek vs lightest grain", contrastAgainst(dekRgb, dekBg.lightest)],
-    ["first highlight vs lightest grain", contrastAgainst(bulletRgb, firstBg.lightest)],
-    ["last highlight vs lightest grain", contrastAgainst(lastRgb, lastBg.lightest)],
-    ["last highlight vs darkest under glyphs", contrastAgainst(lastRgb, lastBg.darkest)],
-  ];
-  const ratios = pairs.map(([name, value]) => `${name} = ${value.toFixed(2)}`).join("\n");
-  console.log(ratios);
-  for (const [name, value] of pairs) {
-    expect(value, `${name} ${value.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+  await readableHomeTarget(page, page.locator(".home-mast .hero-kicker"));
+  const labels = page.locator(".home-mast .hero-kicker, .home-mast .home-mast-display, .home-mast .home-banner-subtitle, .home-mast .home-highlight-company");
+  await expect(labels).toHaveCount(8);
+  const bounds = await labels.evaluateAll((elements) => elements.map((element) => {
+    const box = element.getBoundingClientRect();
+    const mast = element.closest(".home-mast").getBoundingClientRect();
+    return { text: element.textContent.trim(), width: box.width, left: box.left, right: box.right,
+      inside: box.top >= mast.top && box.bottom <= mast.bottom + 1 };
+  }));
+  for (const box of bounds) {
+    expect(box.width, box.text).toBeGreaterThan(0);
+    expect(box.left, box.text).toBeGreaterThanOrEqual(0);
+    expect(box.right, box.text).toBeLessThanOrEqual(390);
+    expect(box.inside, `${box.text} stays inside the opening`).toBe(true);
   }
-
-  await page.evaluate(() => {
-    const mast = document.querySelector(".home-mast");
-    window.scrollTo(0, Math.max(0, mast.getBoundingClientRect().height - window.innerHeight));
-  });
-  const domeBox = await page.evaluate(() => {
-    const mast = document.querySelector(".home-mast").getBoundingClientRect();
-    return { x: mast.x, width: mast.width, bottom: mast.bottom };
-  });
-  const dome = await screenshotClip(page, {
-    x: Math.max(0, domeBox.x + domeBox.width * 0.72 - 20),
-    y: Math.max(0, domeBox.bottom - 40),
-    width: 36,
-    height: 24,
-  });
-  expect(dome.luminance, "navy félkör still occupies the compact lower field").toBeLessThan(90);
+  for (let index = 0; index < await labels.count(); index += 1) {
+    await expectHeaderTextAA(page, labels.nth(index), `390 immersive label ${index}`, { raster: true });
+  }
 });
 
-async function awardFill(page, card) {
-  return card.evaluate((el) => {
-    const wrap = el.querySelector(".awards-bg-video-wrap");
-    const frame = el.querySelector(".awards-bg-video");
-    const video = el.querySelector("video");
-    if (!wrap || !frame || !video) return null;
-    const cardBox = el.getBoundingClientRect();
-    const wrapBox = wrap.getBoundingClientRect();
-    const frameBox = frame.getBoundingClientRect();
-    const videoBox = video.getBoundingClientRect();
-    const cover = (inner, outer) => {
-      const overlapW = Math.max(0, Math.min(inner.right, outer.right) - Math.max(inner.left, outer.left));
-      const overlapH = Math.max(0, Math.min(inner.bottom, outer.bottom) - Math.max(inner.top, outer.top));
-      const area = outer.width * outer.height;
-      return area ? (overlapW * overlapH) / area : 0;
-    };
-    const style = getComputedStyle(video);
-    return {
-      wrapDisplay: getComputedStyle(wrap).display,
-      wrapOpacity: Number.parseFloat(getComputedStyle(wrap).opacity),
-      wrapFill: cover(wrapBox, cardBox),
-      frameFill: cover(frameBox, cardBox),
-      videoFill: cover(videoBox, cardBox),
-      inset: style.inset,
-      objectFit: style.objectFit,
-      videoFilter: style.filter,
-      videoBlend: style.mixBlendMode,
-      videoOpacity: Number(style.opacity),
-      layerEffects: [el, wrap, frame, video].map((node) => {
-        const layer = getComputedStyle(node);
-        return { filter: layer.filter, backdropFilter: layer.backdropFilter, blend: layer.mixBlendMode };
-      }),
-      scrimContent: getComputedStyle(el, "::after").content,
-      dotOverlays: el.querySelectorAll(".award-bg-dot-image-wrap, .award-bg-dot-image").length,
-      cardW: cardBox.width,
-      cardH: cardBox.height,
-      videoW: videoBox.width,
-      videoH: videoBox.height,
-    };
-  });
+const experienceFacts = [
+  ["Vice President", "BlackRock", "2026–Present"],
+  ["Creative Team Lead", "Instructure", "2023–2025"],
+  ["Senior Product Designer", "Instructure", "2022–2023"],
+  ["Product Lead", "Raiffeisen Bank International", "2020–2022"],
+  ["Staff Designer", "Balabit / Balasys / One Identity", "2014–2020"],
+];
+
+async function expectEditorialExperience(page, { pointer = false } = {}) {
+  const section = page.locator(".editorial-experience");
+  await expect(section.getByRole("heading", { level: 2 })).toHaveText("Professional experience");
+  await expect(section.getByRole("list")).toHaveCount(1);
+  const rows = section.getByRole("listitem");
+  await expect(rows).toHaveCount(5);
+  expect(await rows.evaluateAll((elements) => elements.map((element) =>
+    [".awards-card-title", ".awards-card-text", ".awards-year"].map((selector) => element.querySelector(selector).textContent.trim())))).toEqual(experienceFacts);
+  await expect(section.locator('video, button, a, [tabindex="0"], [role="button"]')).toHaveCount(0);
+  await expect(section.locator(".editorial-experience-art")).toHaveAttribute("aria-hidden", "true");
+  await expect(section.locator(".editorial-experience-art img")).toHaveAttribute("alt", "");
+  for (const row of await rows.all()) {
+    await row.scrollIntoViewIfNeeded();
+    for (const target of await row.locator(".awards-card-title, .awards-card-text, .awards-year").all()) {
+      await expectTextWithinWidth(target, "experience fact");
+      await expectHeaderTextAA(page, target, "experience fact", { raster: true });
+    }
+    if (pointer) {
+      const read = () => row.evaluate((element) => {
+        const box = element.getBoundingClientRect();
+        return { left: box.left, top: box.top + scrollY, width: box.width, height: box.height,
+          text: element.textContent.replace(/\s+/g, " ").trim(), transform: getComputedStyle(element).transform };
+      });
+      const before = await read();
+      await row.hover();
+      await page.waitForTimeout(160);
+      expect(await read(), "noninteractive experience facts do not move on hover").toEqual(before);
+    }
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 }
 
-function expectAwardClear(info) {
-  expect({ scrim: info.scrimContent, dots: info.dotOverlays, filter: info.videoFilter, blend: info.videoBlend },
-    "experience footage stays unobscured: no full-card scrim, dot overlay, filter or blend")
-    .toEqual({ scrim: "none", dots: 0, filter: "none", blend: "normal" });
-  expect(info.videoOpacity).toBe(1);
-  expect(info.layerEffects, "no ancestor may reintroduce grading or blending")
-    .toEqual(Array.from({ length: 4 }, () => ({ filter: "none", backdropFilter: "none", blend: "normal" })));
-}
-
-test("1440 experience card hover fills the card with the award video", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await openStable(page, "/");
-  const card = page.locator(".awards-card").first();
-  await card.scrollIntoViewIfNeeded();
-  const rest = await awardFill(page, card);
-  expect(rest.wrapDisplay, "desktop wrap stays in layout").not.toBe("none");
-  expect(rest.wrapOpacity, "video stays off until hover").toBeLessThan(0.2);
-  await card.hover();
-  await expect.poll(() => awardFill(page, card).then((info) => info.wrapOpacity)).toBeGreaterThan(0.9);
-  const hot = await awardFill(page, card);
-  expect(hot.wrapFill, "wrap covers the card").toBeGreaterThan(0.98);
-  expect(hot.frameFill, "500px Webflow frame must not sit as a tight strip").toBeGreaterThan(0.98);
-  expect(hot.videoFill, "video file must cover the card").toBeGreaterThan(0.98);
-  expect(hot.inset).toMatch(/^(0px|0)$/);
-  expect(hot.objectFit).toBe("cover");
-  expectAwardClear(hot);
-});
-
-test.describe("compact award tap", () => {
-  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-
-  test("390 experience card tap fills the card with the award video", async ({ page }) => {
+for (const width of [320, 390, 1440]) {
+  test(`${width} editorial experience preserves all five factual rows, AA text and static pointer behavior`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
     await openStable(page, "/");
-    const card = page.locator(".awards-card").first();
-    await card.scrollIntoViewIfNeeded();
-    const rest = await awardFill(page, card);
-    expect(rest.wrapDisplay, "compact must not hide the award video wrap").not.toBe("none");
-    expect(rest.wrapOpacity, "video stays off until tap").toBeLessThan(0.2);
-    await card.tap();
-    await expect.poll(() => page.locator(".awards-card").first().evaluate((el) => el.classList.contains("is-award-on"))).toBe(true);
-    await expect.poll(() => awardFill(page, card).then((info) => info.wrapOpacity)).toBeGreaterThan(0.9);
-    const hot = await awardFill(page, card);
-    expect(hot.wrapFill, "wrap covers the compact card").toBeGreaterThan(0.98);
-    expect(hot.frameFill, "compact video frame must fill the card, not a tight strip").toBeGreaterThan(0.98);
-    expect(hot.videoFill, "compact video file must cover the card").toBeGreaterThan(0.98);
-    expect(hot.inset).toMatch(/^(0px|0)$/);
-    expect(hot.objectFit).toBe("cover");
-    expectAwardClear(hot);
+    await expectEditorialExperience(page, { pointer: true });
+  });
+}
+
+test("editorial experience stays readable with reduced motion and 200% mobile text", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await openStable(page, "/");
+  await page.evaluate(() => {
+    const entries = [...document.querySelectorAll(".editorial-experience, .editorial-experience *")].filter((element) => element instanceof HTMLElement)
+      .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
+    for (const { element, size } of entries) element.style.setProperty("font-size", `${size * 2}px`, "important");
+  });
+  await page.waitForTimeout(100);
+  await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
+  await expectTextWithinWidth(page.locator("#experience-title"), "enlarged experience heading");
+  await expectEditorialExperience(page, { pointer: true });
+});
+
+test.describe("editorial experience without JavaScript", () => {
+  test.use({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } });
+  test("all facts are available without activating a video or control", async ({ page }) => {
+    await openStable(page, "/");
+    await expectEditorialExperience(page);
   });
 });
 
-for (const width of [390, 1440]) {
-  for (const frameColor of ["white", "black"]) {
-    test(`${width} experience video clarity: all five cards preserve ${frameColor} frames and paper-backed text contrast`, async ({ page }) => {
-      await page.setViewportSize({ width, height: 1000 });
-      await openStable(page, "/");
-      const cards = page.locator(".awards-card");
-      await expect(cards).toHaveCount(5);
-      for (let index = 0; index < 5; index += 1) {
-        const card = cards.nth(index);
-        await card.hover();
-        await expect(card).toHaveCSS("opacity", "1");
-        await expect.poll(() => awardFill(page, card).then((info) => info.wrapOpacity)).toBe(1);
-        expectAwardClear(await awardFill(page, card));
-        // Replace only the video pixels, not any of the actual card/text CSS.
-        // These are luminance-bound controls, not a claim about a sampled movie frame.
-        await card.evaluate((element, color) => {
-          element.querySelector("video").style.visibility = "hidden";
-          element.querySelector(".awards-bg-video").style.background = color;
-        }, frameColor);
-        const paper = await card.evaluate((element) => {
-          const box = element.getBoundingClientRect();
-          const plates = [...element.querySelectorAll(".awards-title-wrap, .awards-year")].map((plate) => {
-            const rect = plate.getBoundingClientRect();
-            const style = getComputedStyle(plate);
-            // Include the eight-pixel opaque spread around the title when
-            // measuring both coverage and a truly unobstructed sample patch.
-            const spread = plate.matches(".awards-title-wrap") ? 8 : 0;
-            return {
-              background: style.backgroundColor, opacity: Number(style.opacity),
-              left: rect.left - spread, right: rect.right + spread,
-              top: rect.top - spread, bottom: rect.bottom + spread,
-            };
-          });
-          let clip = null;
-          for (let y = Math.ceil(box.top + 12); !clip && y + 16 < box.bottom - 12; y += 8) {
-            for (let x = Math.ceil(box.left + 12); !clip && x + 16 < box.right - 12; x += 8) {
-              if (plates.every((plate) => x + 16 <= plate.left || x >= plate.right || y + 16 <= plate.top || y >= plate.bottom)) {
-                clip = { x, y, width: 16, height: 16 };
-              }
-            }
-          }
-          return { plates, clip, area: box.width * box.height };
-        });
-        expect(paper.plates).toHaveLength(2);
-        for (const plate of paper.plates) {
-          const color = parseCssColor(plate.background);
-          expect(color.a, "each label plate is opaque, not a frame-dependent translucent scrim").toBe(1);
-          expect(colorLuminance(color), "the text uses the existing light paper surface").toBeGreaterThan(0.8);
-          expect(plate.opacity).toBe(1);
-        }
-        const coverage = paper.plates.reduce((area, plate) => area + (plate.right - plate.left) * (plate.bottom - plate.top), 0) / paper.area;
-        expect(coverage, "text backplates must leave substantial footage visible, not cover the full card").toBeLessThan(0.75);
-        expect(paper.clip, "there must be a clear video region outside the text backplates").not.toBeNull();
-        const clearFrame = await screenshotClip(page, paper.clip);
-        for (const channel of ["r", "g", "b"]) {
-          expect(Math.abs(clearFrame[channel] - (frameColor === "white" ? 255 : 0)),
-            `${width} card ${index + 1}: unobstructed ${frameColor} footage must not be graded or washed out`).toBeLessThan(4);
-        }
-        for (const selector of [".awards-card-title", ".awards-card-text", ".awards-year"]) {
-          await expectHeaderTextAA(page, card.locator(selector), `${width} card ${index + 1} ${frameColor} ${selector}`, { raster: true });
-        }
-      }
-    });
-  }
-}
-
-for (const [width, expected] of [[1280, 64], [390, 56]]) {
-  test(`${width}: header is a sticky white ${expected}px bar with the locked border`, async ({ page }) => {
+for (const width of [1280, 390]) {
+  test(`${width}: case utility keeps real progress and ${width < 992 ? "a stable compact bar" : "its desktop journey"} with keyboard navigation`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await openStable(page, "/work/instructure");
     const bar = await page.evaluate(() => {
@@ -2796,26 +2155,33 @@ for (const [width, expected] of [[1280, 64], [390, 56]]) {
       const style = getComputedStyle(navbar);
       return {
         position: style.position,
-        background: style.backgroundColor,
-        border: style.borderBottomWidth + " " + style.borderBottomColor,
         height: Math.round(wrap.getBoundingClientRect().height),
         breadcrumb: navbar.querySelector(".nav-breadcrumb")?.textContent.replace(/\s+/g, " ").trim() || "",
         oldStrip: Boolean(document.querySelector(".case-breadcrumb")),
         motion: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
       };
     });
-    expect(bar.position).toBe("sticky");
-    expect(bar.background).toBe("rgb(255, 255, 255)");
-    expect(bar.border).toBe("1px rgb(230, 232, 233)");
-    expect(bar.height).toBe(expected);
+    expect(bar.position).toBe("fixed");
+    expect(bar.height).toBeGreaterThanOrEqual(44);
     expect(bar.breadcrumb).toContain("Works");
     expect(bar.breadcrumb).toContain("Instructure");
     expect(bar.oldStrip).toBe(false);
     expect(bar.motion).toBe(false);
 
     await page.evaluate(() => window.scrollTo(0, 1200));
-    await page.waitForTimeout(80);
-    const stuckTop = await page.evaluate(() => document.querySelector(".navbar").getBoundingClientRect().top);
-    expect(stuckTop).toBe(0);
+    const progress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
+    await expect(page.locator(".home-nav-progress span")).toHaveText(progress);
+    const travelled = await page.locator(".navbar").boundingBox();
+    if (width < 992) expect(Math.abs(travelled.y), "compact case navigation stays at the top").toBeLessThanOrEqual(.5);
+    else expect(travelled.y, "desktop case navigation follows native document progress").toBeGreaterThan(0);
+    expect(travelled.y + travelled.height).toBeLessThanOrEqual(900);
+    await page.keyboard.press("Tab");
+    await page.locator(".navbar .nav-logo-wrap").focus();
+    await expect.poll(() => page.locator(".navbar").evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
+    if (width < 992) await page.locator(".menu-button").click();
+    const works = page.locator(width < 992 ? '.navbar .nav-link[href="/works"]' : '.nav-breadcrumb a[href="/works"]');
+    await expect(works).toBeVisible();
+    await works.click();
+    await expect(page).toHaveURL(/\/works$/);
   });
 }

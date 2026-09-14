@@ -3,7 +3,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { UTILITY_PAGES } from './service-pages.mjs';
 const root = new URL('../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
-const pages = ['index.html', 'works.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p)];
+const pages = ['index.html', 'works.html', 'about.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p)];
 for (const page of pages) {
   const html = read(page);
   assert.equal((html.match(/src="\/assets\/js\/analytics-config.js"/g) || []).length, 1, `${page}: one release gate`);

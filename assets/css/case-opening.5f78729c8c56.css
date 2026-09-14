@@ -1,0 +1,213 @@
+/* Shared KODE-directed project stage. Only existing case content is composed.
+ * This file follows responsive.css and arrival.css; no script is needed to read it. */
+.case-study-header {
+  --case-stage-paper: #D6D4ED;
+  --case-stage-ink: #0A1628;
+  --case-stage-gutter: clamp(20px, 4vw, 72px);
+  position: relative;
+  isolation: isolate;
+  background: var(--case-stage-paper);
+  color: var(--case-stage-ink) !important;
+}
+.case-study-header .case-opening-fold { display: none; }
+.case-study-header .banner-section,
+.case-study-header .banner-section.kineticare-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  justify-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 100svh;
+  height: auto;
+  margin: 0;
+  padding: 92px var(--case-stage-gutter) 30px;
+  overflow: hidden;
+  background: var(--case-stage-paper);
+  color: var(--case-stage-ink) !important;
+}
+.case-study-article .case-study-header .banner-section {
+  /* Exported multi-class case variants must share the footer palette too. */
+  background: var(--case-stage-paper) !important;
+}
+.case-study-header .banner-content-area,
+.case-study-header .banner-content-area.product-header,
+.case-study-header .container.product-details-header,
+.case-study-header .banner-wrap,
+.case-study-header .banner-content-wrap {
+  display: contents !important;
+}
+.case-study-header .w-container::before,
+.case-study-header .w-container::after { content: none; display: none; }
+.case-study-header :is(.work-category, .banner-title, .banner-text, .case-hero-media, .kineticare-hero-bg) { grid-column: 1; }
+.case-study-header .work-category {
+  position: static;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  grid-row: 1;
+  align-self: end;
+  max-width: 100%;
+  margin: 0;
+  color: var(--case-stage-ink) !important;
+  font: 400 12px/1.5 Inter, sans-serif;
+  letter-spacing: .08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.case-study-header .banner-title {
+  grid-row: 2;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 0 .07em;
+  color: var(--case-stage-ink) !important;
+  font-family: "Funnel Display", sans-serif;
+  font-size: clamp(64px, 10.5vw, 164px);
+  font-weight: 700;
+  line-height: .94;
+  letter-spacing: -.065em;
+  text-align: center;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.case-study-header .banner-text {
+  grid-row: 4;
+  width: 100%;
+  max-width: 62ch;
+  margin: 0;
+  color: var(--case-stage-ink) !important;
+  font: 400 clamp(17px, 1.5vw, 20px)/1.5 Inter, sans-serif;
+  letter-spacing: -.012em;
+  text-align: center;
+}
+.case-study-header .case-hero-media,
+.case-study-header .kineticare-hero-bg {
+  grid-row: 3;
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  align-self: center;
+  width: min(76vw, 1040px);
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  margin: 0;
+  border: 1px solid rgb(10 22 40 / 14%);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 24%);
+  box-shadow: 0 16px 32px -22px rgb(10 22 40 / 55%);
+  transform-origin: 50% 50%;
+}
+.case-study-header .case-hero-shot {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(48svh, 520px);
+  object-fit: contain;
+  object-position: center;
+  border-radius: 3px;
+  background: transparent;
+}
+.case-study-header .kineticare-hero-bg {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  width: min(76vw, 85.333svh, 924px);
+  background: #0A1628;
+}
+.case-study-header .kineticare-hero-bg video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 3px;
+}
+.case-study-header .kineticare-hero-overlay { display: none; }
+
+/* Entrance and scroll have separate transform properties on the one real panel.
+ * The masks reveal its pixels; there are no cloned screenshots or canvas copies. */
+.case-study-header .case-opening-media {
+  translate: 0 var(--case-enter-y, 0px);
+  rotate: x var(--case-enter-angle, 0deg);
+  scale: var(--case-enter-scale, 1);
+}
+.case-study-header .case-opening-letter {
+  display: inline-block;
+  transform-origin: 50% 100%;
+}
+@supports (mask-image: linear-gradient(#000, #000)) {
+  .case-study-header[data-case-opening="assembling"] .case-opening-media {
+    mask-image:
+      linear-gradient(to top, #000 0 var(--case-slice-a, 100%), transparent var(--case-slice-a, 100%) 100%),
+      linear-gradient(to bottom, #000 0 var(--case-slice-b, 100%), transparent var(--case-slice-b, 100%) 100%),
+      linear-gradient(to top, #000 0 var(--case-slice-c, 100%), transparent var(--case-slice-c, 100%) 100%),
+      linear-gradient(to bottom, #000 0 var(--case-slice-d, 100%), transparent var(--case-slice-d, 100%) 100%);
+    mask-size: 25.1% 100%;
+    mask-position: 0% 0%, 33.333% 0%, 66.667% 0%, 100% 0%;
+    mask-repeat: no-repeat;
+  }
+}
+@media (min-width: 992px) and (max-height: 780px) {
+  .case-study-header .banner-section { gap: 12px; padding-top: 82px; padding-bottom: 24px; }
+  .case-study-header .banner-title { font-size: clamp(64px, 8.6vw, 126px); }
+  .case-study-header .case-hero-shot { max-height: 39svh; }
+  .case-study-header .kineticare-hero-bg { width: min(76vw, 69.333svh); }
+  .case-study-header .banner-text { font-size: 17px; }
+}
+@media (max-width: 991px) {
+  .case-study-header .banner-section,
+  .case-study-header .banner-section.kineticare-hero {
+    min-height: 100svh;
+    grid-template-rows: auto auto minmax(220px, 1fr) auto;
+    gap: 20px;
+    padding-top: 86px;
+    padding-bottom: 32px;
+  }
+  .case-study-header .banner-title { font-size: clamp(40px, 11.5vw, 104px); line-height: 1; letter-spacing: -.065em; }
+  .case-study-header .work-category { max-width: 34ch; font-size: 11px; letter-spacing: .05em; }
+  .case-study-header .case-hero-media,
+  .case-study-header .kineticare-hero-bg { width: 100%; }
+  .case-study-header .case-hero-shot { max-height: 48svh; }
+  .case-study-header .kineticare-hero-bg { height: auto; }
+  .case-study-header .banner-text { max-width: 43ch; font-size: 17px; line-height: 1.5; }
+}
+@media (max-width: 479px) {
+  .case-study-header .banner-section,
+  .case-study-header .banner-section.kineticare-hero { grid-template-rows: auto auto minmax(190px, 1fr) auto; gap: 18px; }
+  .case-study-header .banner-title { font-size: clamp(36px, 12.4vw, 60px); }
+}
+@media (max-height: 600px) {
+  .case-study-header .banner-section,
+  .case-study-header .banner-section.kineticare-hero { min-height: 0; grid-template-rows: auto auto auto auto; }
+  .case-study-header .case-hero-shot { max-height: none; }
+  .case-study-header .kineticare-hero-bg { height: auto; aspect-ratio: 16 / 9; }
+}
+html.no-motion .case-study-header .case-opening-media,
+html.no-motion .case-study-header .case-opening-letter {
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+  rotate: none !important;
+  scale: none !important;
+  mask-image: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-study-header .case-opening-media,
+  .case-study-header .case-opening-letter {
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
+    rotate: none !important;
+    scale: none !important;
+    mask-image: none !important;
+  }
+}
+
+/* Supersede the exported per-case !important text colors on the new light field. */
+.case-study-article .case-study-header .banner-section :is(.work-category, .banner-title, .banner-text, .banner-text strong) {
+  color: var(--case-stage-ink) !important;
+}

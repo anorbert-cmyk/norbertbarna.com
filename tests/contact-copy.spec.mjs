@@ -12,23 +12,44 @@ const viewports = [
   { width: 1280, height: 900, activation: "Space" },
 ];
 
-test.use({ reducedMotion: "reduce" });
+// reducedMotion is a BrowserContext option, not a standalone TestOptions fixture.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
+    window.__contactReducedAtStart = matchMedia("(prefers-reduced-motion: reduce)").matches;
     localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
   });
 });
+
+async function assertReducedContactPage(page) {
+  const motion = await page.evaluate(() => ({
+    atDocumentStart: window.__contactReducedAtStart,
+    current: matchMedia("(prefers-reduced-motion: reduce)").matches,
+    arrival: window.PortfolioArrival?.state,
+    curtains: document.querySelectorAll(".site-arrival").length,
+  }));
+  expect(motion, "contact checks request reduced motion before initialization, with no introduction to dismiss").toMatchObject({
+    atDocumentStart: true, current: true, curtains: 0,
+  });
+}
 
 // These are text-only resize checks, not CSS zoom or a narrower screenshot.
 // Snapshot every header/hero computed size before changing any ancestor so
 // nested elements inherit neither an accidental 4x nor an untested 1x size.
 async function doubleHeaderText(page) {
-  return page.evaluate(() => {
+  return page.evaluate(async () => {
     const snapshot = [...document.querySelectorAll(".navbar, .navbar *, .home-banner-section, .home-banner-section *")]
       .filter((element) => element instanceof HTMLElement)
       .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
     for (const { element, size } of snapshot) element.style.setProperty("font-size", `${size * 2}px`, "important");
+    // Reduced-motion CSS still gives font-size transitions a .01ms duration.
+    // Wait for the actual computed sizes, rather than reading their start frame.
+    const deadline = performance.now() + 2000;
+    while (snapshot.some(({ element, size }) => Math.abs(parseFloat(getComputedStyle(element).fontSize) - size * 2) > .001)) {
+      if (performance.now() >= deadline) throw new Error("Header text did not settle at its requested 200% size");
+      await new Promise(requestAnimationFrame);
+    }
     return snapshot.map(({ element, size }) => ({
       element: `${element.tagName}.${element.className}`,
       before: size,
@@ -42,6 +63,7 @@ async function openHeaderFixture(page, viewport, route = "/") {
   await page.route(/posthog\.com/, (request) => request.abort());
   const response = await page.goto(route);
   expect(response.status()).toBe(200);
+  await assertReducedContactPage(page);
   await page.waitForFunction(() => document.fonts.status === "loaded");
   await expect(page.locator(".menu-button")).toHaveAttribute("data-navigation-ready", "true");
 }
@@ -157,8 +179,9 @@ for (const adjustment of ["text 200%", "WCAG text spacing"]) {
     await assertControlTextFits(page.locator(".navbar button.footer-email"), "header contact", viewport);
     await assertNoControlOverlap(page, [".navbar button.footer-email", ".navbar .footer-contact-link"], "header contact does not overlap LinkedIn");
     await page.locator(".menu-button").click();
-    await assertControlTextFits(page.locator(".home-banner-section .hero-work-link"), "hero CTA", viewport);
-    await assertNoControlOverlap(page, [".home-banner-section .hero-work-link", ".home-banner-subtitle"], "hero CTA does not overlap its preceding text");
+    const primaryAction = ".home-mast[data-morph-active] .hero-work-link, .home-mast:not([data-morph-active]) .home-intro-work";
+    await assertControlTextFits(page.locator(primaryAction), "hero CTA", viewport);
+    await assertNoControlOverlap(page, [primaryAction, ".home-banner-subtitle"], "hero CTA does not overlap its preceding text");
     expect.soft(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), "no horizontal page overflow").toBeLessThanOrEqual(1);
   });
 }
@@ -304,7 +327,8 @@ test("header AA: 568x200 landscape menu keeps every control reachable with enlar
   await testInfo.attach("landscape-text-resize-snapshot", { body: JSON.stringify(snapshot, null, 2), contentType: "application/json" });
   await page.locator(".menu-button").click();
   const controls = page.locator("#primary-navigation a[href], #primary-navigation button");
-  expect(await controls.count()).toBe(3);
+  await expect(page.locator("#primary-navigation a.nav-link")).toHaveText(["Works", "About"]);
+  await expect(controls).toHaveCount(4);
   for (let index = 0; index < await controls.count(); index += 1) {
     const control = controls.nth(index);
     await control.focus();
@@ -343,6 +367,7 @@ for (const viewport of viewports) {
       });
       const response = await page.goto(route);
       expect(response.status()).toBe(200);
+      await assertReducedContactPage(page);
       await page.waitForFunction(() => document.fonts.status === "loaded");
       const expectedCount = 2;
       const buttons = page.locator("button.footer-email");
@@ -353,6 +378,7 @@ for (const viewport of viewports) {
         const scope = await button.evaluate((element) => ({
           main: Boolean(element.closest("main")),
           nav: Boolean(element.closest(".navbar")),
+          footer: Boolean(element.closest("footer")),
           lang: element.closest("[lang]")?.lang,
         }));
         const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
@@ -386,7 +412,8 @@ for (const viewport of viewports) {
             overflow: element.scrollWidth - element.clientWidth,
           };
         });
-        expect(size.height).toBe(homeNav && viewport.width < 992 ? 48 : 44);
+        if (scope.footer) expect(size.height, "editorial footer contact target").toBeGreaterThanOrEqual(48);
+        else expect(size.height).toBe(homeNav && viewport.width < 992 ? 48 : 44);
         expect(size.width).toBeGreaterThanOrEqual(44);
         if (homeNav && viewport.width < 992) {
           expect(size.width, "compact menu action may fill its available row").toBeGreaterThanOrEqual(size.expected);

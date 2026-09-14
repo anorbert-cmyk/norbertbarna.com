@@ -1,494 +1,381 @@
+import { createHash } from "node:crypto";
 import { expect, test } from "@playwright/test";
 
-test.use({ viewport: { width: 1440, height: 900 } });
-
+test.use({ viewport: { width: 1280, height: 900 } });
 test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.addInitScript(() => {
-    localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({
-      version: 1, decision: "rejected", timestamp: Date.now(),
-    }));
+    localStorage.setItem("bn-analytics-consent-v1", JSON.stringify({ version: 1, decision: "rejected", timestamp: Date.now() }));
+    sessionStorage.setItem("nb-arrival-seen-v2", "1");
   });
 });
 
-async function openHome(page) {
+async function openScene(page) {
   await page.goto("/", { waitUntil: "load" });
-  await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
-  await expect(page.locator("html")).toHaveClass(/gsap-ready/);
-  const portable = (await heroState(page)).portableViewport;
-  await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(portable ? 0 : 1);
+  await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
+}
+async function paintedScene(page) {
+  return createHash("sha256").update(await page.locator(".home-mast-canvas").screenshot()).digest("hex");
+}
+async function readingGeometry(page) {
+  return page.locator(".home-mast-baseline, .home-mast-intro, .home-mast-proof-chips").evaluateAll((elements) => elements.map((element) => {
+    const box = element.getBoundingClientRect();
+    return [box.x, box.y + scrollY, box.width, box.height];
+  }));
 }
 
-async function heroState(page) {
-  return page.evaluate(() => {
-    const mast = document.querySelector(".home-mast");
-    const art = mast.querySelector(".home-mast-art");
-    const mastRect = mast.getBoundingClientRect();
-    const artStyle = getComputedStyle(art);
-    const targets = [...mast.querySelectorAll(".home-mast-art, .home-mast-navy, .home-mast-navy-drift")];
-    const translation = (element) => {
-      const transform = getComputedStyle(element).transform;
-      const matrix = new DOMMatrixReadOnly(transform === "none" ? undefined : transform);
-      return { x: matrix.e, y: matrix.f };
-    };
-    const position = (selector) => {
-      const rect = document.querySelector(selector).getBoundingClientRect();
-      return { x: rect.x, y: rect.y + scrollY, width: rect.width, height: rect.height };
-    };
-    return {
-      root: translation(art),
-      portable: mast.getAttribute("data-mast-motion"),
-      portableViewport: matchMedia("(max-width: 991px), (hover: none), (pointer: coarse)").matches,
-      supportsNative: CSS.supports("view-timeline-name: --home-mast-scroll") &&
-        CSS.supports("animation-timeline: --home-mast-scroll") &&
-        CSS.supports("animation-range: exit-crossing 0% exit-crossing 100%"),
-      progress: Math.max(0, Math.min(1, -mastRect.top / mastRect.height)),
-      mastTop: mastRect.top,
-      viewportHeight: innerHeight,
-      inlineTransform: art.style.transform,
-      svgTransform: art.getAttribute("transform"),
-      css: art.getAnimations().map((animation) => ({
-        type: animation.constructor.name, name: animation.animationName,
-        viewTimeline: typeof ViewTimeline === "function" && animation.timeline instanceof ViewTimeline,
-        subjectIsMast: animation.timeline?.subject === mast,
-        axis: animation.timeline?.axis,
-        rangeStart: { name: animation.rangeStart?.rangeName, offset: String(animation.rangeStart?.offset) },
-        rangeEnd: { name: animation.rangeEnd?.rangeName, offset: String(animation.rangeEnd?.offset) },
-        progress: animation.effect.getComputedTiming().progress,
-      })),
-      cssDuration: artStyle.animationDuration,
-      cssEasing: artStyle.animationTimingFunction,
-      cssFill: artStyle.animationFillMode,
-      timelineInset: getComputedStyle(mast).viewTimelineInset,
-      pointer: [".home-mast-navy-back", ".home-mast-navy-front"].map((selector) => translation(mast.querySelector(selector))),
-      scroll: [...mast.querySelectorAll(".home-mast-navy-drift")].map(translation),
-      content: [".hero-kicker", ".home-banner-title", ".home-banner-subtitle", ".home-mast-proof-chips", ".home-banner-outcomes", ".hero-work-link"].map(position),
-      nav: position(".navbar .nav-wrap"),
-      navTransform: getComputedStyle(document.querySelector(".navbar .nav-wrap")).transform,
-      grain: ["::before", "::after"].map((pseudo) => {
-        const style = getComputedStyle(mast.querySelector(".home-mast-mesh"), pseudo);
-        return [style.transform, style.backgroundPosition, style.backgroundSize, style.opacity];
-      }),
-      height: mastRect.height,
-      scrollY,
-      activeTweens: window.gsap ? gsap.getTweensOf(targets, true).length : 0,
-      tweens: window.gsap ? gsap.getTweensOf(targets).length : 0,
-      triggers: window.ScrollTrigger ? ScrollTrigger.getAll().filter((trigger) => trigger.trigger === mast).length : 0,
-    };
+test("first arrival waits for Enter, then the central sculpture actually assembles", async ({ page }) => {
+  // Install before page scripts capture their rAF/performance clock. Capture
+  // latency must not consume the short assembly window on a busy CI worker.
+  await page.clock.install();
+  await page.addInitScript(() => sessionStorage.removeItem("nb-arrival-seen-v2"));
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const enter = page.getByRole("button", { name: "Enter the portfolio" });
+  await expect(enter).toBeVisible({ timeout: 8000 });
+  await expect(page.locator(".site-arrival__counter")).toHaveText("100");
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  const frameState = () => page.locator(".home-mast-canvas").evaluate((canvas) => ({
+    time: performance.now(), scrollY, bounds: canvas.getBoundingClientRect().toJSON(),
+  }));
+  const beforeEnter = await frameState();
+  await page.keyboard.press("Enter");
+  await expect.poll(() => page.evaluate(() => window.PortfolioArrival.state)).toBe("exiting");
+  await page.clock.runFor(1200);
+  await expect(page.locator(".site-arrival")).toHaveCount(0);
+  const firstFrame = await frameState();
+  expect(firstFrame.time - beforeEnter.time).toBe(1200);
+  expect(firstFrame.scrollY, "Enter leaves the native page at the top").toBe(0);
+  const assembling = await paintedScene(page);
+  expect(await frameState(), "capturing the first pose advances neither time nor native scroll").toEqual(firstFrame);
+  await page.clock.runFor(1800);
+  const lastFrame = await frameState();
+  expect(lastFrame.time - firstFrame.time).toBe(1800);
+  expect(lastFrame.scrollY, "native scroll does not short-circuit the assembly").toBe(0);
+  expect(lastFrame.bounds).toEqual(firstFrame.bounds);
+  expect(await paintedScene(page), "the 2.3s assembly continues after the one-second curtain exits").not.toEqual(assembling);
+  expect(await frameState(), "capturing the final pose does not change the controlled frame").toEqual(lastFrame);
+  await expect(page.locator(".home-banner-title")).toBeInViewport();
+  await expect(page.locator(".hero-work-link")).toBeInViewport();
+});
+
+test("WebGL pointer response and drag change the sculpture without moving reading or link geometry", async ({ page }) => {
+  await openScene(page);
+  await page.evaluate(() => window.PortfolioHeroScene.finish());
+  await page.waitForTimeout(200);
+  const geometry = await readingGeometry(page);
+  const resting = await paintedScene(page);
+  await page.mouse.move(820, 380);
+  await page.waitForTimeout(600);
+  expect(await paintedScene(page)).not.toEqual(resting);
+  const hovered = await paintedScene(page);
+  await page.mouse.move(640, 440);
+  await page.mouse.down();
+  await page.mouse.move(760, 460, { steps: 12 });
+  await page.mouse.up();
+  await page.waitForTimeout(500);
+  expect(await paintedScene(page), "drag produces a different painted pose").not.toEqual(hovered);
+  expect(await readingGeometry(page)).toEqual(geometry);
+});
+
+async function reachSplitComposition(page) {
+  await page.locator(".home-mast-track").evaluate((track) => {
+    const box = track.getBoundingClientRect();
+    const scene = track.querySelector(".home-mast-scene").getBoundingClientRect();
+    scrollTo(0, box.top + scrollY + Math.max(0, box.height - scene.height));
   });
-}
-
-async function rememberHeroController(page) {
-  await page.evaluate(() => {
-    const mast = document.querySelector(".home-mast");
-    window.__oldHeroTweens = gsap.getTweensOf(mast.querySelectorAll(".home-mast-art, .home-mast-navy, .home-mast-navy-drift"));
-    window.__oldHeroTriggers = ScrollTrigger.getAll().filter((trigger) => trigger.trigger === mast);
-  });
-}
-
-async function expectOldHeroControllerRemoved(page) {
-  await expect.poll(() => page.evaluate(() => {
-    const tweens = gsap.globalTimeline.getChildren(true, true, true);
-    const triggers = ScrollTrigger.getAll();
-    return window.__oldHeroTweens.every((tween) => !tweens.includes(tween)) &&
-      window.__oldHeroTriggers.every((trigger) => !triggers.includes(trigger));
-  })).toBe(true);
-}
-
-async function expectStaticHero(page) {
-  // SVG computed styles may settle one frame after the JS registry is cleared.
-  await expect(async () => {
-    const state = await heroState(page);
-    expect(state.triggers).toBe(0);
-    expect(state.tweens, "the old controller retains no animated SVG targets").toBe(0);
-    expect(state.css, "static mode has no CSS animation either").toEqual([]);
-    expect(state.portable).toBeNull();
-    expect(state.inlineTransform).toBe("");
-    for (const offset of state.pointer.concat(state.scroll, [state.root])) {
-      expect(Math.hypot(offset.x, offset.y), "static mode clears every decorative transform").toBeLessThan(0.05);
-    }
-  }).toPass({ timeout: 2000 });
-}
-
-async function nextRenderedFrame(page) {
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 }
 
-async function expectNativeHero(page, { javaScriptEnabled = true } = {}) {
-  // View timelines update during rendering. Two frames allow that update, but
-  // deliberately do not wait through the former 0.48s JavaScript easing.
-  if (javaScriptEnabled) await nextRenderedFrame(page);
-  // Disabled page JavaScript also suppresses injected rAF callbacks. Give the
-  // browser its rendering interval while CSS continues without script execution.
-  else await page.waitForTimeout(50);
-  const state = await heroState(page);
-  expect(state.supportsNative).toBe(true);
-  expect(state.portable).toBeNull();
-  expect(state.triggers, "portable hero creates no GSAP ScrollTrigger").toBe(0);
-  expect(state.tweens, "portable hero creates no GSAP tween").toBe(0);
-  expect(state.activeTweens).toBe(0);
-  expect(state.inlineTransform, "CSS owns the root transform").toBe("");
-  expect(state.svgTransform).toBeNull();
-  expect(state.css).toHaveLength(1);
-  expect(state.css[0]).toMatchObject({
-    type: "CSSAnimation", name: "home-mast-native-depth", viewTimeline: true,
-    subjectIsMast: true, axis: "block",
-    rangeStart: { name: "exit-crossing", offset: "0%" },
-    rangeEnd: { name: "exit-crossing", offset: "100%" },
-  });
-  expect(state.cssDuration).toBe("auto");
-  expect(state.cssEasing).toBe("linear");
-  expect(state.cssFill).toBe("both");
-  expect(state.timelineInset).toBe("0px");
-  expect(state.css[0].progress).toBeCloseTo(state.progress, 3);
-  expect(state.root.x).toBeCloseTo(0, 2);
-  expect(Math.abs(state.root.y + 44 * state.progress), "depth tracks the actual mast range without time-based lag").toBeLessThan(0.15);
-  for (const offset of state.pointer.concat(state.scroll)) expect(offset).toEqual({ x: 0, y: 0 });
-  return state;
-}
-
-async function scrollMastTo(page, progress) {
-  await page.evaluate((fraction) => {
-    const rect = document.querySelector(".home-mast").getBoundingClientRect();
-    window.scrollTo(0, window.scrollY + rect.top + rect.height * fraction);
-  }, progress);
-  return expectNativeHero(page);
-}
-
-function expectStillContent(before, after) {
-  before.forEach((rect, index) => {
-    for (const axis of ["x", "y", "width", "height"]) {
-      expect(Math.abs(rect[axis] - after[index][axis]), `content ${index} ${axis} does not follow decoration`).toBeLessThan(0.2);
-    }
-  });
-}
-
-async function hoverRight(page) {
-  const mast = await page.locator(".home-mast").boundingBox();
-  await page.mouse.move(mast.x + mast.width * 0.96, Math.min(500, mast.y + mast.height * 0.55));
-  await expect.poll(() => heroState(page).then((state) => state.pointer[1].x)).toBeGreaterThan(19);
-}
-
-async function swipeHeader(page, distance, { javaScriptEnabled = true } = {}) {
-  if (javaScriptEnabled) await page.evaluate(() => {
-    window.__heroTouchEvents = [];
-    for (const type of ["touchstart", "touchmove", "touchend", "touchcancel", "pointercancel"]) {
-      document.addEventListener(type, (event) => {
-        window.__heroTouchEvents.push({ type, trusted: event.isTrusted });
-      }, { capture: true, passive: true });
-    }
-  });
-  const viewport = page.viewportSize();
-  const x = Math.min(300, viewport.width * 0.5);
-  const y = Math.min(680, viewport.height - 40);
-  const session = await page.context().newCDPSession(page);
-  try {
-    // Dispatch actual touch input: DOM-dispatched TouchEvents have no native
-    // scroll action, and the experimental gesture synthesizer was inert in CI.
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchStart", touchPoints: [{ x, y, id: 1 }],
+for (const width of [320, 390, 1280]) {
+  test(`${width}: native scroll reveals the split composition without horizontal overflow`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await openScene(page);
+    const trackGeometry = () => page.locator(".home-mast-track").evaluate((track) => {
+      const box = track.getBoundingClientRect();
+      return [box.top + scrollY, box.width, box.height];
     });
-    for (let step = 1; step <= 24; step += 1) {
-      await session.send("Input.dispatchTouchEvent", {
-        type: "touchMove", touchPoints: [{ x, y: y - distance * step / 24, id: 1 }],
-      });
-      await page.waitForTimeout(24);
-    }
-    // Stop the finger before lifting so momentum cannot carry the mast offscreen.
-    await page.waitForTimeout(160);
-    await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-  } finally {
-    await session.detach();
-  }
-  // JavaScript-disabled pages cannot execute these observer callbacks. The
-  // same native CDP input still has to produce the asserted document scroll.
-  if (javaScriptEnabled) {
-    const events = await page.evaluate(() => window.__heroTouchEvents);
-    for (const type of ["touchstart", "touchmove", "touchend"]) {
-      expect(events.some((event) => event.type === type && event.trusted), type + " must reach the page as browser input").toBe(true);
-    }
-  }
+    const geometry = await trackGeometry();
+    await page.mouse.wheel(0, 650);
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(300);
+    expect(await trackGeometry(), "native scrolling changes the composition without changing the reserved track").toEqual(geometry);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    await reachSplitComposition(page);
+    await expect(page.locator(".home-mast-intro")).toHaveCSS("opacity", "1");
+    await expect(page.locator(".home-mast-proof-chips")).toBeVisible();
+    await expect(page.locator(".home-intro-work")).toHaveAttribute("href", "/works");
+  });
 }
 
-test("desktop hero responds visibly to hover and scroll without moving its content", async ({ page }) => {
-  await openHome(page);
-  const start = await heroState(page);
-  await hoverRight(page);
-  const hovered = await heroState(page);
-  expect(hovered.pointer[1].x).toBeGreaterThan(hovered.pointer[0].x + 7);
-  expect(Math.hypot(hovered.pointer[1].x, hovered.pointer[1].y)).toBeLessThanOrEqual(24.1);
-  expectStillContent(start.content, hovered.content);
-  expectStillContent([start.nav], [hovered.nav]);
-
-  await page.evaluate((height) => window.scrollTo(0, Math.round(height * 0.6)), start.height);
-  await expect.poll(() => heroState(page).then((state) => state.scroll[1].y)).toBeGreaterThan(30);
-  await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
-  const scrolled = await heroState(page);
-  expect(scrolled.scroll[1].y).toBeLessThan(36);
-  expect(scrolled.scroll[1].y).toBeGreaterThan(scrolled.scroll[0].y + 10);
-  expectStillContent(start.content, scrolled.content);
-
-  // Changing pointer direction while partially scrolled must preserve scroll depth.
-  await page.mouse.move(90, 150);
-  await expect.poll(() => heroState(page).then((state) => state.pointer[1].x)).toBeLessThan(-17);
-  const combined = await heroState(page);
-  expect(combined.scroll[1].y).toBeCloseTo(scrolled.scroll[1].y, 1);
-  expectStillContent(start.content, combined.content);
-
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await expect.poll(() => heroState(page).then((state) => state.scroll[1].y)).toBeLessThan(0.1);
-});
-
-test("hero motion settles at rest and pauses its decorative tweens offscreen", async ({ page }) => {
-  await openHome(page);
-  await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
-  await hoverRight(page);
-  const { height } = await heroState(page);
-  await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.5), height);
-  await expect.poll(() => heroState(page).then((state) => state.scroll[1].y)).toBeGreaterThan(24);
-  await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight + 300), height);
-  await expect.poll(() => heroState(page).then((state) => Math.hypot(state.pointer[1].x, state.pointer[1].y))).toBeLessThan(0.1);
-  await expect.poll(() => heroState(page).then((state) => state.activeTweens)).toBe(0);
-  const offscreen = await heroState(page);
-  await page.waitForTimeout(400);
-  expect((await heroState(page)).scroll).toEqual(offscreen.scroll);
-  expect((await heroState(page)).root).toEqual(offscreen.root);
-
-  await page.evaluate(() => window.scrollTo(0, 0));
-  await expect.poll(() => heroState(page).then((state) => state.scroll[1].y)).toBeLessThan(0.1);
-  await hoverRight(page);
-});
-
-test("hero controller cleans up and resumes across repeated reduced-motion and breakpoint changes", async ({ page }) => {
-  await openHome(page);
-  for (const mode of ["reduce", "breakpoint", "reduce", "breakpoint"]) {
-    await hoverRight(page);
-    const { height } = await heroState(page);
-    await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.4), height);
-    await expect.poll(() => heroState(page).then((state) => state.scroll[1].y)).toBeGreaterThan(18);
-    await rememberHeroController(page);
-
-    if (mode === "reduce") await page.emulateMedia({ reducedMotion: "reduce" });
-    else await page.setViewportSize({ width: 991, height: 900 });
-    await expectOldHeroControllerRemoved(page);
-    if (mode === "reduce") await expectStaticHero(page);
-    else {
-      const portable = await expectNativeHero(page);
-      expect(portable.root.y).toBeLessThan(-10);
+test("header journey follows actual native page progress and becomes stable for keyboard navigation", async ({ page }) => {
+  await openScene(page);
+  const nav = page.locator(".navbar");
+  const top = await nav.boundingBox();
+  // The opening/work chapter intentionally keeps its quiet top bar. Travel
+  // resumes in the following reading chapters; their position follows content.
+  const foundTravelSlot = await page.locator("#works").evaluate(async (work) => {
+    const start = work.getBoundingClientRect().bottom + scrollY + 10;
+    const header = document.querySelector(".navbar");
+    for (let step = 0; step <= 8; step += 1) {
+      scrollTo(0, start + step * 96);
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (header.getBoundingClientRect().top > 100 && !header.hasAttribute("data-reading-dock") && !header.hasAttribute("data-composition-nav")) return true;
     }
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.mouse.move(900, 200);
-    await expect.poll(() => heroState(page).then((state) => Math.abs(state.root.y))).toBeLessThan(0.1);
-    for (const offset of (await heroState(page)).pointer) expect(Math.hypot(offset.x, offset.y)).toBeLessThan(0.05);
-
-    if (mode === "reduce") await page.emulateMedia({ reducedMotion: "no-preference" });
-    else {
-      await rememberHeroController(page);
-      await page.setViewportSize({ width: 1440, height: 900 });
-      await expectOldHeroControllerRemoved(page);
-    }
-    await expect.poll(() => heroState(page).then((state) => state.triggers)).toBe(1);
-    expect((await heroState(page)).css).toEqual([]);
-    // Leaving before re-entry guarantees a real pointermove after each restart.
-    await page.mouse.move(1, 1);
-  }
-  await hoverRight(page);
-});
-
-for (const width of [390, 1440]) test.describe(width + " touch header", () => {
-  test.use({ viewport: { width, height: 844 }, hasTouch: true, isMobile: true });
-  test("native touch scroll gives visible bounded CSS depth, keeps reading content still, and returns to rest", async ({ page }) => {
-    await openHome(page);
-    expect(await page.evaluate(() => matchMedia("(pointer: coarse)").matches)).toBe(true);
-    const start = await expectNativeHero(page);
-    // A real browser touch gesture must scroll the document without being captured.
-    await swipeHeader(page, Math.round(start.height * 0.55));
-    await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(start.height * 0.35);
-    const scrolled = await expectNativeHero(page);
-    expect(scrolled.root.y).toBeLessThan(-15);
-    expectStillContent(start.content, scrolled.content);
-    expect(scrolled.grain).toEqual(start.grain);
-    expect(scrolled.navTransform).toBe(start.navTransform);
-
-    // Portable input never adds desktop pointer depth, even with a connected mouse.
-    await page.mouse.move(width * 0.9, 160);
-    await expectNativeHero(page);
-    const nearEnd = await scrollMastTo(page, 0.9);
-    expect(nearEnd.root.y).toBeGreaterThanOrEqual(-44.1);
-    expect(nearEnd.root.y).toBeLessThan(-35);
-
-    const offscreen = await scrollMastTo(page, 1.3);
-    expect(offscreen.root.y).toBeCloseTo(-44, 2);
-    await page.waitForTimeout(300);
-    expect((await heroState(page)).root).toEqual(offscreen.root);
-    const returned = await scrollMastTo(page, 0);
-    expect(Math.abs(returned.root.y)).toBeLessThan(0.1);
-    expectStillContent(start.content, returned.content);
-    await page.waitForTimeout(150);
-    expect((await heroState(page)).activeTweens).toBe(0);
+    return false;
   });
+  expect(foundTravelSlot, "the reading chapter must contain a real travelling slot beyond the quiet work chapter").toBe(true);
+  await expect.poll(() => nav.evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(top.y + 100);
+  const actualProgress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
+  await expect(page.locator(".home-nav-progress span")).toHaveText(actualProgress);
+  await page.keyboard.press("Tab");
+  await page.locator(".navbar .nav-logo-wrap").focus();
+  await expect.poll(() => nav.evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
+  await expect(page.locator(".navbar .nav-logo-wrap")).toBeFocused();
 });
 
-test.describe("portable header lifecycle", () => {
-  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-  test("native CSS scrolling moves the root without any root or inner SVG attribute writes", async ({ page }) => {
-    await openHome(page);
-    const start = await expectNativeHero(page);
-    await page.evaluate(() => {
-      const art = document.querySelector(".home-mast-art");
-      window.__heroDrawingMutations = [];
-      window.__heroDrawingObserver = new MutationObserver((records) => {
-        for (const record of records) {
-          window.__heroDrawingMutations.push({ tag: record.target.tagName, attribute: record.attributeName });
-        }
-      });
-      window.__heroDrawingObserver.observe(art, { attributes: true, subtree: true });
-    });
-    await swipeHeader(page, 400);
-    await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(300);
-    const moved = await expectNativeHero(page);
-    expect(moved.root.y).toBeLessThan(-15);
-    expect(moved.root.y).toBeLessThan(start.root.y - 15);
-    // An immediate jump must also resolve through the CSS range in two frames,
-    // with no old quickTo easing period or JavaScript transform writes.
-    await scrollMastTo(page, 0.75);
-    await scrollMastTo(page, 0.25);
-    const paint = await page.locator(".home-mast-art").evaluate((art) => {
-      window.__heroDrawingObserver.disconnect();
+test("header changes reading slots through a bounded opacity settle and real keyboard or reduced motion cancels it", async ({ page }) => {
+  await openScene(page);
+  const nav = page.locator(".navbar");
+  const crossReadingBoundary = () => page.evaluate(async () => {
+    const header = document.querySelector(".navbar");
+    const frames = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const state = () => {
+      const animation = header.getAnimations()[0];
+      window.__observedSlotFade = animation;
+      const box = header.getBoundingClientRect();
+      const readingBoxes = [...document.querySelectorAll("main h1, main h2, main h3, main p, main li, main .awards-card, main figure")]
+        .filter((element) => {
+          if (element.closest('[aria-hidden="true"]')) return false;
+          let alpha = 1;
+          for (let node = element; node; node = node.parentElement) alpha *= Number(getComputedStyle(node).opacity);
+          return alpha > .99 && getComputedStyle(element).visibility === "visible";
+        }).map((element) => element.getBoundingClientRect()).filter((reading) => reading.width > 1 && reading.height > 1);
       return {
-        mutations: window.__heroDrawingMutations,
-        inlineTransform: art.style.transform, svgTransform: art.getAttribute("transform"),
-        willChange: getComputedStyle(art).willChange, overflow: getComputedStyle(art).overflow,
-        clip: getComputedStyle(art).clipPath,
+        frames: animation?.effect.getKeyframes(), duration: animation?.effect.getTiming().duration,
+        opacity: Number(getComputedStyle(header).opacity),
+        clear: readingBoxes.length > 0 && readingBoxes.every((reading) => box.bottom <= reading.top - 11 || box.top >= reading.bottom + 11),
+        y: scrollY, counter: document.querySelector(".home-nav-progress span").textContent,
+        progress: String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"),
+      };
+    };
+    const cross = async (from, to) => {
+      scrollTo(0, from); await frames();
+      await new Promise((resolve) => setTimeout(resolve, 220));
+      const previousTop = header.getBoundingClientRect().top;
+      scrollTo(0, to); await frames();
+      return Math.abs(header.getBoundingClientRect().top - previousTop);
+    };
+    if (window.__homeSlotCrossing) {
+      await cross(...window.__homeSlotCrossing);
+      return state();
+    }
+    // The old intro is now sticky artwork. Find a real, bounded large reading
+    // slot change after the work chapter instead of relying on its old Y offset.
+    const start = document.querySelector("#works").getBoundingClientRect().bottom + scrollY + 10;
+    const limit = document.querySelector("footer").getBoundingClientRect().top + scrollY;
+    for (let from = start, attempt = 0; from < limit && attempt < 45; from += 64, attempt += 1) {
+      const to = from + 64;
+      const distance = await cross(from, to);
+      if (distance > header.offsetHeight * 2 && header.getAnimations().length && !header.hasAttribute("data-reading-dock")) {
+        window.__homeSlotCrossing = [from, to];
+        return state();
+      }
+    }
+    return state();
+  });
+  const settledState = () => nav.evaluate(async (header) => {
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    return { opacity: Number(getComputedStyle(header).opacity), count: header.getAnimations().length,
+      observedState: window.__observedSlotFade?.playState, y: scrollY };
+  });
+  const crossing = await crossReadingBoundary();
+  expect(crossing.frames, "the actual above-to-below crossing must settle visibly").toHaveLength(2);
+  expect(crossing.frames.map((frame) => frame.opacity)).toEqual(["0", "1"]);
+  expect(crossing.frames.every((frame) => !["transform", "translate", "scale", "rotate"].some((key) => key in frame)),
+    "the navigation must never animate through the reading text").toBe(true);
+  expect(crossing.duration).toBeGreaterThan(0);
+  expect(crossing.duration).toBeLessThanOrEqual(250);
+  expect(crossing.opacity).toBeLessThan(1);
+  expect(crossing.clear).toBe(true);
+  expect(crossing.counter).toBe(crossing.progress);
+  await page.waitForTimeout(220);
+  expect(await settledState()).toMatchObject({ opacity: 1, count: 0 });
+
+  // Select an existing focus predecessor whose next native Tab must reach a
+  // control below the current view, without manufacturing fixture controls.
+  const preparedNativeTab = await page.evaluate(() => {
+    const controls = [...document.querySelectorAll("main a[href], main button, footer a[href], footer button")]
+      .filter((element) => element.getClientRects().length && getComputedStyle(element).visibility === "visible" && element.tabIndex >= 0);
+    const next = controls.findIndex((element) => element.getBoundingClientRect().top > innerHeight + 80);
+    if (next < 1) return false;
+    controls[next - 1].focus({ preventScroll: true });
+    return true;
+  });
+  expect(preparedNativeTab).toBe(true);
+  const keyboardCrossing = await crossReadingBoundary();
+  await page.keyboard.press("Tab");
+  const keyboard = await settledState();
+  expect(keyboard).toMatchObject({ opacity: 1, count: 0, observedState: "idle" });
+  expect(Math.abs(keyboard.y - keyboardCrossing.y), "real Tab also exercises the browser's native focus scroll").toBeGreaterThan(20);
+
+  await openScene(page);
+  await crossReadingBoundary();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  expect(await settledState(), "a preference change cancels the observed animation instead of waiting for it to finish")
+    .toMatchObject({ opacity: 1, count: 0, observedState: "idle" });
+});
+
+test("reduced motion freezes the painted sculpture and the travelling header", async ({ page }) => {
+  await openScene(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("html")).toHaveClass(/no-motion/);
+  const fallback = page.locator(".home-mast-gate-fallback");
+  await expect(fallback).toBeVisible();
+  await expect(fallback).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-canvas")).toBeHidden();
+  await expect(page.locator(".home-mast-fallback")).toBeHidden();
+  const paintedFallback = async () => createHash("sha256").update(await fallback.screenshot()).digest("hex");
+  await page.waitForTimeout(200);
+  const quiet = await paintedFallback();
+  await page.mouse.move(820, 360);
+  await page.mouse.down(); await page.mouse.move(450, 540, { steps: 10 }); await page.mouse.up();
+  await page.waitForTimeout(300);
+  // In static mode the native drag may select the underlying SVG image.
+  // Clear that browser selection so the comparison measures scene movement.
+  await page.evaluate(() => getSelection().removeAllRanges());
+  expect(await paintedFallback()).toEqual(quiet);
+  await page.evaluate(() => window.scrollTo(0, 900));
+  await expect.poll(() => page.locator(".navbar").evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
+});
+
+test("destroying the hero scene stops rendering and preserves the visible SVG fallback", async ({ page }) => {
+  await openScene(page);
+  await page.evaluate(() => {
+    const context = document.querySelector(".home-mast-canvas").getContext("webgl");
+    const draw = context.drawArrays.bind(context);
+    window.__drawsAfterDestroy = 0;
+    context.drawArrays = (...args) => { window.__drawsAfterDestroy += 1; return draw(...args); };
+    window.PortfolioHeroScene.destroy();
+  });
+  await page.mouse.move(800, 300);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(300);
+  expect(await page.evaluate(() => window.__drawsAfterDestroy)).toBe(0);
+  // Explicit teardown retains the current opening pose. A real WebGL failure
+  // separately switches to the complete static reading composition below.
+  await expect(page.locator(".home-mast-fallback")).toBeVisible();
+  await expect(page.locator(".home-mast-fallback")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-gate-fallback")).toBeHidden();
+  await expect(page.locator(".home-mast-canvas")).toHaveCSS("opacity", "0");
+  await page.locator(".hero-work-link").click();
+  await expect(page).toHaveURL(/\/works$/);
+});
+
+test("unavailable WebGL preserves the original fallback artwork and native navigation", async ({ page }) => {
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, ...args) {
+      return /webgl/.test(type) ? null : getContext.call(this, type, ...args);
+    };
+  });
+  await page.goto("/", { waitUntil: "load" });
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("fallback");
+  await expect(page.locator(".home-mast-gate-fallback")).toBeVisible();
+  await expect(page.locator(".home-mast-gate-fallback")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-fallback")).toBeHidden();
+  await expect(page.locator(".home-mast-canvas")).toBeHidden();
+  await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
+  await page.locator(".home-intro-work").click();
+  await expect(page).toHaveURL(/\/works$/);
+});
+
+test.describe("native touch input", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  test("real touch scroll remains native and the primary action follows on its first tap", async ({ page }) => {
+    await openScene(page);
+    const session = await page.context().newCDPSession(page);
+    try {
+      await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: 190, y: 650, id: 1 }] });
+      for (let step = 1; step <= 12; step += 1) {
+        await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{ x: 190, y: 650 - step * 28, id: 1 }] });
+        await page.waitForTimeout(24);
+      }
+      await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    } finally { await session.detach(); }
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(200);
+    await reachSplitComposition(page);
+    await page.locator(".home-intro-work").tap();
+    await expect(page).toHaveURL(/\/works$/);
+  });
+});
+
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  test("title, original fallback artwork and native links render immediately", async ({ page }) => {
+    await page.goto("/", { waitUntil: "load" });
+    await expect(page.locator(".site-arrival")).toHaveCount(0);
+    await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
+    await expect(page.locator(".home-mast-gate-fallback")).toBeVisible();
+    await expect(page.locator(".home-mast-gate-fallback")).toHaveCSS("opacity", "1");
+    await expect(page.locator(".home-mast-fallback")).toBeHidden();
+    await expect(page.locator(".home-mast-canvas")).toBeHidden();
+    await expect(page.locator(".home-mast-display")).toBeVisible();
+    await page.locator(".home-intro-work").tap();
+    await expect(page).toHaveURL(/\/works$/);
+  });
+});
+
+for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
+  test(`${viewport.width}: case media unfolds during native scroll while preserving the complete product image`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.addInitScript(() => sessionStorage.setItem("nb-arrival-seen-v2", "1"));
+    await page.goto("/work/instructure", { waitUntil: "load" });
+    await expect(page.locator("html")).toHaveClass(/gsap-ready/);
+    const media = page.locator(".case-hero-media");
+    await expect.poll(() => media.locator("img").evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+    // Isolate the native scroll response from the independent arrival assembly.
+    await page.evaluate(() => window.PortfolioCaseOpening.finish());
+    const state = () => media.evaluate((element) => {
+      const image = element.querySelector("img");
+      const box = element.getBoundingClientRect();
+      return {
+        transform: getComputedStyle(element).transform,
+        width: box.width, height: box.height,
+        inViewport: box.bottom > 0 && box.top < innerHeight,
+        image: {
+          src: image.getAttribute("src"), srcset: image.getAttribute("srcset"),
+          sizes: image.getAttribute("sizes"), alt: image.getAttribute("alt"),
+          width: image.getAttribute("width"), height: image.getAttribute("height"),
+          naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight,
+          objectFit: getComputedStyle(image).objectFit,
+        },
       };
     });
-    expect(paint.mutations, "native CSS motion writes no root or inner drawing attributes").toEqual([]);
-    expect(paint.inlineTransform).toBe("");
-    expect(paint.svgTransform).toBeNull();
-    expect(paint.willChange).toContain("transform");
-    expect(paint.overflow).toBe("visible");
-    expect(paint.clip).toBe("inset(0px 0px -48px)");
-  });
+    await expect.poll(() => state().then((value) => value.transform)).not.toBe("none");
+    const before = await state();
+    expect(before.image.alt).toMatch(/Canvas Career/);
+    expect(Number(before.image.width)).toBeGreaterThan(0);
+    expect(Number(before.image.height)).toBeGreaterThan(0);
+    expect(before.image.objectFit).toBe("contain");
+    // Previously the media-owned range was already complete at 1280×900.
+    // A real document scroll must produce a visible pose change after arrival.
+    await page.evaluate(() => window.scrollTo(0, 250));
+    await expect.poll(() => state().then((after) =>
+      Math.max(Math.abs(after.width - before.width), Math.abs(after.height - before.height))
+    ), { message: "product media must visibly unfold in response to user scrolling" }).toBeGreaterThan(0.5);
+    const scrolled = await state();
+    expect(scrolled.transform).not.toEqual(before.transform);
+    expect(scrolled.inViewport).toBe(true);
+    expect(scrolled.image, "scrolling preserves the complete source, description and contain fit").toEqual(before.image);
 
-  test("repeated wide-touch, reduced-motion and no-motion transitions retain one native CSS animation", async ({ page }) => {
-    await openHome(page);
-    for (const width of [1440, 390, 1440, 390]) {
-      await scrollMastTo(page, 0.45);
-      await rememberHeroController(page);
-      await page.setViewportSize({ width, height: 844 });
-      await expectOldHeroControllerRemoved(page);
-      await expectNativeHero(page);
-      await page.emulateMedia({ reducedMotion: "reduce" });
-      await expectStaticHero(page);
-      await page.evaluate(() => window.scrollTo(0, 0));
-      await page.emulateMedia({ reducedMotion: "no-preference" });
-      await expectNativeHero(page);
-      await page.locator("html").evaluate((html) => html.classList.add("no-motion"));
-      await expectStaticHero(page);
-      await page.locator("html").evaluate((html) => html.classList.remove("no-motion"));
-      await expectNativeHero(page);
-    }
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(page.locator("html")).toHaveClass(/no-motion/);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const reduced = await state();
+    await page.evaluate(() => window.scrollTo(0, 250));
+    await page.waitForTimeout(500);
+    const reducedScrolled = await state();
+    expect(reducedScrolled.transform, "reduced motion stays static during native scrolling").toEqual(reduced.transform);
+    expect(reducedScrolled.image).toEqual(before.image);
   });
-
-  for (const enlarged of [false, true]) test(`native CSS range follows the actual ${enlarged ? "200% text-reflow tall" : "normal"} mast height`, async ({ page }, testInfo) => {
-    await openHome(page);
-    const mast = page.locator(".home-mast");
-    await expect(mast).not.toHaveAttribute("data-text-reflow");
-    if (enlarged) {
-      const sizes = await page.evaluate(() => {
-        const entries = [...document.querySelectorAll(".navbar, .navbar *, .home-banner-section, .home-banner-section *")]
-          .filter((element) => element instanceof HTMLElement)
-          .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
-        for (const { element, size } of entries) element.style.setProperty("font-size", `${size * 2}px`, "important");
-        return entries.map(({ element, size }) => ({
-          element: `${element.tagName}.${element.className}`, before: size,
-          after: parseFloat(getComputedStyle(element).fontSize),
-        }));
-      });
-      expect(sizes.length).toBeGreaterThan(10);
-      for (const entry of sizes) expect(entry.after, entry.element).toBeCloseTo(entry.before * 2, 2);
-      await testInfo.attach("native-range-real-text-resize", { body: JSON.stringify(sizes, null, 2), contentType: "application/json" });
-      await expect(mast).toHaveAttribute("data-text-reflow", "");
-    }
-    const initial = await expectNativeHero(page);
-    if (enlarged) expect(initial.height).toBeGreaterThan(initial.viewportHeight + 100);
-    else expect(initial.height).toBeLessThan(initial.viewportHeight);
-    const positions = [];
-    for (const fraction of [0.25, 0.5, 0.9, 1, 0]) {
-      const state = await scrollMastTo(page, fraction);
-      expect(state.progress).toBeCloseTo(fraction, 2);
-      expectStillContent(initial.content, state.content);
-      positions.push({ requested: fraction, height: state.height, top: state.mastTop, actual: state.progress, y: state.root.y });
-    }
-    await testInfo.attach("native-range-geometry", { body: JSON.stringify(positions, null, 2), contentType: "application/json" });
-  });
-
-  test("unsupported view-timeline enhancement keeps the header static and the native CTA usable", async ({ page }) => {
-    // Make this one CSS feature query false rather than disabling JavaScript or
-    // replacing the animation itself: the authored progressive fallback must win.
-    await page.route("**/assets/css/responsive.*.css", async (route) => {
-      const response = await route.fetch();
-      const css = await response.text();
-      const featureQuery = "@supports (view-timeline-name: --home-mast-scroll) and";
-      expect(css.split(featureQuery)).toHaveLength(2);
-      await route.fulfill({ response, body: css.replace(featureQuery, "@supports (codex-unsupported-scroll-timeline: unavailable) and") });
-    });
-    await openHome(page);
-    expect(await page.evaluate(() => CSS.supports("codex-unsupported-scroll-timeline: unavailable"))).toBe(false);
-    await swipeHeader(page, 400);
-    await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(300);
-    await expectStaticHero(page);
-    await page.locator(".hero-work-link").tap();
-    await expect(page).toHaveURL(/\/works$/);
-  });
-});
-
-for (const fallback of [
-  { name: "reduced motion", reducedMotion: "reduce" },
-  { name: "unavailable GSAP", blockGsap: true },
-  { name: "no JavaScript", javaScriptEnabled: false },
-]) test.describe("mobile header fallback: " + fallback.name, () => {
-  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
-    javaScriptEnabled: fallback.javaScriptEnabled !== false });
-  test(fallback.reducedMotion ? "keeps the decorative layers static and the native CTA usable" : "keeps native CSS motion and the native CTA usable without GSAP", async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: fallback.reducedMotion || "no-preference" });
-    expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(fallback.reducedMotion === "reduce");
-    if (fallback.blockGsap) await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
-    await page.goto("/", { waitUntil: "load" });
-    await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
-    await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
-    if (fallback.javaScriptEnabled !== false) {
-      await expect.poll(() => page.evaluate(() => window.PortfolioMedia?.isReduced())).toBe(fallback.reducedMotion === "reduce");
-    }
-    if (fallback.reducedMotion === "reduce") await expect(page.locator("html")).toHaveClass(/no-motion/);
-    const scripting = { javaScriptEnabled: fallback.javaScriptEnabled !== false };
-    const start = await heroState(page);
-    // Without navigation JavaScript, the expanded native menu precedes the
-    // mast. Include that document offset so the same visible depth is reached.
-    const distance = scripting.javaScriptEnabled ? 400 :
-      Math.min(600, Math.round(Math.max(0, start.mastTop) + start.height * 0.55));
-    await swipeHeader(page, distance, scripting);
-    await expect.poll(() => heroState(page).then((state) => state.scrollY)).toBeGreaterThan(300);
-    if (fallback.reducedMotion) await expectStaticHero(page);
-    else {
-      expect(await page.evaluate(() => typeof window.gsap)).toBe("undefined");
-      const state = await expectNativeHero(page, scripting);
-      expect(state.root.y).toBeLessThan(-15);
-    }
-    await page.locator(".hero-work-link").tap();
-    await expect(page).toHaveURL(/\/works$/);
-  });
-});
-
-test("unavailable GSAP leaves both hover and scroll layers static and the CTA usable", async ({ page }) => {
-  await page.route("**/assets/js/vendor/gsap.min.js", (route) => route.abort());
-  await page.goto("/", { waitUntil: "load" });
-  await expect(page.locator(".home-banner-title")).toHaveText("Product VP");
-  await page.mouse.move(1340, 450);
-  const { height } = await heroState(page);
-  await page.evaluate((mastHeight) => window.scrollTo(0, mastHeight * 0.4), height);
-  const state = await heroState(page);
-  for (const offset of state.pointer.concat(state.scroll, [state.root])) expect(offset).toEqual({ x: 0, y: 0 });
-  expect(state.triggers).toBe(0);
-  await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
-});
+}

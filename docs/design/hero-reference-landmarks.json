@@ -1,0 +1,57 @@
+{
+  "source": "Original generated desktop-sequence.png, 1536\u00d71024; embedded losslessly in hero-reference-source.svg",
+  "frame": {
+    "x": 288,
+    "y": 550,
+    "width": 452,
+    "height": 392
+  },
+  "silhouette": "M358.8 883.3 L443.5 597 L533.9 569.9 L608.7 610.2 L697.4 879.8 L600.5 853.5 L597.5 835 L589.5 800 L577.5 750 L565.5 700 L560.5 680 L553.7 651.3 L549.5 660 L529.5 700 L509.5 740 L499.8 760 L513.5 780 L527.5 800 L541.5 820 L555.5 840 L569.5 860 L581.1 876.7 L425.5 916.5 Z",
+  "points": {
+    "A": [
+      443.5,
+      597
+    ],
+    "B": [
+      562.5,
+      633.6
+    ],
+    "C": [
+      425.5,
+      916.5
+    ],
+    "D": [
+      358.8,
+      883.3
+    ],
+    "E": [
+      533.9,
+      569.9
+    ],
+    "F": [
+      608.7,
+      610.2
+    ],
+    "G": [
+      600.5,
+      853.5
+    ],
+    "H": [
+      697.4,
+      879.8
+    ],
+    "I": [
+      581.1,
+      876.7
+    ],
+    "J": [
+      499.8,
+      760
+    ],
+    "K": [
+      553.7,
+      651.3
+    ]
+  },
+  "shadow": "Original luminance recovered against a 207 gray background, navy RGB14/22/44; alpha reconstruction is an approximation because no clean background plate exists."
+}

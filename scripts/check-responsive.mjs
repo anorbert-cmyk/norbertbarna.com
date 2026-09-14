@@ -13,7 +13,7 @@ const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const CONTENT_PAGES = ["index.html", "works.html", ...WORK_PAGES, ...UTILITY_PAGES];
+const CONTENT_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES];
 const ALL_PAGES = [...CONTENT_PAGES, "404.html"];
 const CARD_SIZES = {
   "index.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(40vw - 25.6px), (max-width: 1439px) 37.6vw, (max-width: 1829px) 30.08vw, (max-width: 1919px) 550.4px, 516px",
@@ -152,7 +152,10 @@ for (const page of ALL_PAGES) {
     if (html.indexOf('<button type="button" class="menu-button') > html.indexOf('<nav id="primary-navigation"')) {
       fail(`${page}: mobile menu links do not follow the trigger in keyboard order`);
     }
-    if (!/<noscript>[\s\S]*?\.nav-menu\.w-nav-menu\{display:block!important/i.test(html)) {
+    const noScriptNavigation = page === "about.html"
+      ? /<noscript>[\s\S]*?\.story-page\s+\.nav-menu(?:\.w-nav-menu)?\s*\{\s*display:\s*block!important/i
+      : /<noscript>[\s\S]*?\.nav-menu\.w-nav-menu\{display:block!important/i;
+    if (!noScriptNavigation.test(html)) {
       fail(`${page}: no-JavaScript navigation fallback is missing`);
     }
     if (/assets\/js\/(?:jquery|webflow)[^"']*\.js/i.test(html)) {
@@ -173,7 +176,25 @@ for (const page of ALL_PAGES) {
     const emailCta = [...footerHtml.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
       /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(footerHtml);
-    if (count(footerHtml, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
+    if (page === "about.html") {
+      // The chosen story board closes with a quiet navy footer; its native
+      // Email actions live in the header and final reading section.
+      const closing = html.match(/<section\b[^>]*\bid="next"[^>]*>[\s\S]*?<\/section>/i)?.[0] || "";
+      const closingEmail = [...closing.matchAll(/<button\b[^>]*>/gi)]
+        .map(match => match[0]).filter(tag => hasClass(tag, "footer-email"));
+      const storyLinkedIn = [...footerHtml.matchAll(/<a\b[^>]*>/gi)]
+        .map(match => match[0]).filter(tag => attribute(tag, "href") === "https://www.linkedin.com/in/barna-norbert/");
+      if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(footerHtml) ||
+          closingEmail.length !== 1 || attribute(closingEmail[0], "type") !== "button" ||
+          attribute(closingEmail[0], "href")) {
+        fail(`${page}: the story closing needs a native Email button followed by its own footer`);
+      }
+      if (storyLinkedIn.length !== 1 || attribute(storyLinkedIn[0], "target") !== "_blank" ||
+          !/\bnoopener\b/.test(attribute(storyLinkedIn[0], "rel")) ||
+          !/\bnoreferrer\b/.test(attribute(storyLinkedIn[0], "rel"))) {
+        fail(`${page}: the story footer must preserve the real LinkedIn link and external-link protection`);
+      }
+    } else if (count(footerHtml, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
         count(footerHtml, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
         emailCta.length !== 1 ||
         !/\btype="button"/.test(emailCta[0] || "") ||
@@ -193,13 +214,37 @@ for (const page of ALL_PAGES) {
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
     const rows = countTagsByClass(html, "div", "work-row");
     const cardTitleLinks = countTagsByClass(html, "a", "work-title") + countTagsByClass(html, "a", "related-work-title");
-    if (page === "index.html") {
+    if (page === "index.html" || page === "works.html") {
       if (rows !== cardTitleLinks) fail(`${page}: each selected-work row must have exactly one title link`);
     } else if (cards !== cardTitleLinks) {
       fail(`${page}: each project card must have exactly one title link`);
     }
     if (/<a\b[^>]*class=["'][^"']*\b(?:work-image-wrap|related-work-image-wrap)\b/i.test(html)) {
       fail(`${page}: project card has a duplicate image link`);
+    }
+  }
+
+  if (page === "about.html") {
+    const rail = html.match(/<nav\b[^>]*class="[^"]*\bstory-rail\b[^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
+    const links = [...rail.matchAll(/<a\b[^>]*>/gi)].map(match => match[0]);
+    const targets = links.map(tag => attribute(tag, "href"));
+    if (JSON.stringify(targets) !== JSON.stringify(["#beginnings", "#perspective", "#next"]) ||
+        links.some(tag => !attribute(tag, "aria-label"))) {
+      fail(`${page}: the three story chapters need named native anchor links`);
+    }
+    for (const target of targets) {
+      const section = html.match(new RegExp(`<section\\b[^>]*\\bid="${target.slice(1)}"[^>]*>`, "i"))?.[0] || "";
+      const headingId = attribute(section, "aria-labelledby");
+      if (!headingId || !html.includes(`id="${headingId}"`)) {
+        fail(`${page}: ${target} must resolve to a named semantic reading section`);
+      }
+    }
+    for (const match of html.matchAll(/<img\b[^>]*>/gi)) {
+      const image = match[0];
+      if (!/^\d+$/.test(attribute(image, "width")) || !/^\d+$/.test(attribute(image, "height")) ||
+          attribute(image, "decoding") !== "async") {
+        fail(`${page}: story artwork needs intrinsic dimensions and asynchronous decoding`);
+      }
     }
   }
 
@@ -288,12 +333,9 @@ for (const page of ["index.html", "works.html"]) {
     const summaries = countTagsByClass(html, "p", "work-card-summary");
     if (rows !== summaries || rows !== 6) fail(`${page}: every selected-work row needs a visible scope summary`);
   } else {
-    const cards = countTagsByClass(html, "div", "work-card");
+    const rows = countTagsByClass(html, "div", "work-row");
     const summaries = countTagsByClass(html, "p", "work-card-summary");
-    const pills = countTagsByClass(html, "p", "work-category-text");
-    if (cards !== 7) fail(`${page}: E′ Weighted keeps all seven hiring-order cards`);
-    if (summaries !== 0) fail(`${page}: E′ Weighted labels are name + pill only — no card summaries`);
-    if (pills !== cards) fail(`${page}: every primary project card needs a Product design or Hungarian product pill`);
+    if (rows !== 7 || summaries !== rows) fail(`${page}: all seven editorial rows need factual summaries`);
   }
 }
 
@@ -304,32 +346,19 @@ if (!/<video\b[^>]*\bdata-autoplay-video\b[^>]*aria-label="Kineticare platform w
 }
 
 const responsiveCss = readFileSync(join(ROOT, "assets/css/responsive.css"), "utf8");
-if (!/\.home-mast:not\(\[data-text-reflow\]\) \.home-banner-content-wrap[^}]*max-width:[^}]*text-align:\s*right/.test(responsiveCss) ||
-    !/\.home-mast:not\(\[data-text-reflow\]\) \.metric-context[^}]*display:\s*none/.test(responsiveCss)) {
-  fail("home compact reference rail must stay narrow and right-aligned without an extra visible label");
-}
-if (!/\.home-mast\[data-text-reflow\] \.home-banner-outcomes[^}]*color:\s*var\(--ink\)/.test(responsiveCss) ||
-    !/\.home-mast\[data-text-reflow\] \.home-banner-content-wrap \.metric-context[^}]*color:\s*var\(--mast-muted\)/.test(responsiveCss)) {
-  fail("home enlarged/spaced text must retain the dark-on-pale list and solid label fallback");
-}
+// Home placement is responsive artwork, not a fixed navy rail. Real 320px,
+// text-resize and worst-background AA regressions live in portfolio.spec.mjs.
 const cssContracts = [
   [/\.summary[\s\S]*?height:\s*auto\s*!important/i, "rich-text images must keep intrinsic ratio"],
   [/@media\s*\(max-width:\s*991px\)/i, "tablet/mobile layout breakpoint is missing"],
   [/@media\s*\(max-width:\s*599px\)/i, "compact mobile layout breakpoint is missing"],
   [/\.work-image-wrap[\s\S]*?aspect-ratio:\s*4\s*\/\s*5/i, "portfolio cover ratio is not reserved"],
-  [/\.work-section \.work-image-wrap \.work-image[\s\S]*?object-fit:\s*contain/i, "works stills must use contain, not cover-crop"],
-  [/\.work-section \.w-dyn-items\.work-grid > \.work-collection-item:nth-child\(3\)[\s\S]*?span 4/i, "E′ Weighted three-up columns are missing"],
-  [/\.work-section \.w-dyn-items\.work-grid::before[\s\S]*?content:\s*none/i, "RowClearfixHole: /works grid must disable Webflow clearfix"],
   [/\.home-about-video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "homepage video ratio is not reserved"],
   [/\.kineticare-browser-frame video[\s\S]*?aspect-ratio:\s*16\s*\/\s*9/i, "Kineticare video ratio is not reserved"],
   [/\.summary \.kineticare-video-caption[\s\S]*?color:\s*#d8e2ec/i, "Kineticare video caption contrast is not guaranteed"],
   [/\.case-facts[\s\S]*?grid-template-columns:\s*repeat\(4/i, "desktop project facts grid is missing"],
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
-  [/\.footer-contact-link[\s\S]*?min-height:\s*44px/i, "footer LinkedIn is missing its 44px lock height"],
-  [/\.footer-email[\s\S]*?min-height:\s*44px/i, "footer Email is not 44px tall"],
-  [/\.footer-section[\s\S]*?min-height:\s*min\(66\.667vw,\s*960px\)/i, "desktop footer field must be ~3:2 so the dome is not crushed"],
-  [/\.footer-contact-link[\s\S]*?border-radius:\s*12px/i, "footer LinkedIn must share 12px outlined chrome"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
   [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
@@ -342,6 +371,12 @@ const cssContracts = [
   [/@media\s*\(prefers-reduced-motion:\s*reduce\)/i, "reduced-motion CSS is missing"],
 ];
 for (const [pattern, message] of cssContracts) if (!pattern.test(responsiveCss)) fail(message);
+const editorialCss = readFileSync(join(ROOT, "assets/css/editorial-sections.css"), "utf8");
+for (const selector of ["button\\.footer-email", "a\\.footer-contact-link"]) {
+  const rule = new RegExp(`\\.footer-section\\.editorial-footer ${selector}\\s*\\{([^}]+)\\}`).exec(editorialCss)?.[1] || "";
+  if (!/min-height:\s*48px/.test(rule) || !/height:\s*auto/.test(rule)) fail(`Editorial ${selector}: needs a 48px minimum with text reflow`);
+}
+
 
 const animationJs = readFileSync(join(ROOT, "assets/js/animations.js"), "utf8");
 const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8");
@@ -396,23 +431,23 @@ if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("stopFooterMeshField()")) {
   fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
 }
-if (!animationJs.includes("function addHomeMastField(") ||
-    !animationJs.includes('gsap.quickTo(layer.el, "x"') ||
-    !animationJs.includes('gsap.quickTo(layer.el, "y"') ||
-    !animationJs.includes("new IntersectionObserver") ||
-    !animationJs.includes("removeHomeMastField")) {
-  fail("desktop home mast motion must use an independently scoped, offscreen-paused GSAP controller");
+const sceneJs = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
+const journeyJs = readFileSync(join(ROOT, "assets/js/immersive-navigation.js"), "utf8");
+const compositionJs = readFileSync(join(ROOT, "assets/js/home-composition.js"), "utf8");
+if (!sceneJs.includes("PortfolioHeroScene") || !sceneJs.includes("webglcontextlost") ||
+    !sceneJs.includes('listeners.abort()') || !sceneJs.includes("portfolio:arrivalstart")) {
+  fail("hero scene must coordinate the arrival and retain context-loss and lifecycle cleanup");
 }
-const portableMotion = animationJs.slice(animationJs.indexOf("function initPortableMotion()"), animationJs.indexOf("var started = false;"));
-if (/addHomeMastField\(/.test(portableMotion) || animationJs.includes('data-mast-motion')) {
-  fail("portable mast animation belongs to CSS and must not mount a JavaScript scroll controller");
+if (!compositionJs.includes("PortfolioHomeMorph") || !compositionJs.includes("setMorphProgress") ||
+    /(?:wheel|touchmove)[\s\S]{0,160}preventDefault\(|new\s+(?:window\.)?Lenis\b/.test(compositionJs)) {
+  fail("home composition must own the hero pose without intercepting native input or scrolling");
 }
-const mastFieldStart = animationJs.indexOf("function addHomeMastField(");
-const mastFieldEnd = animationJs.indexOf("function createCaseRail()", mastFieldStart);
-const mastField = animationJs.slice(mastFieldStart, mastFieldEnd);
-if (/rotate(?:X|Y|Z)?\s*:|rotation(?:X|Y|Z)?\s*:/.test(mastField) ||
-    !/ScrollTrigger\.create/.test(mastField) || /repeat:\s*-1/.test(mastField)) {
-  fail("home mast must respond to native scroll without rotation or an idle loop");
+if (!animationJs.includes("PortfolioHomeMorph")) {
+  fail("the shared statement animation must yield ownership to the home composition");
+}
+if (!journeyJs.includes("scrollY / limit") || !journeyJs.includes("prefers-reduced-motion") ||
+    /preventDefault\(/.test(journeyJs)) {
+  fail("header journey must reflect native page progress while preserving native scroll and motion preferences");
 }
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");
