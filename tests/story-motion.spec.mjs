@@ -209,6 +209,17 @@ test.describe("compact visit", () => {
     await expect(page.locator("[data-consent-banner]")).toBeVisible();
     await expect(page.locator('.navbar a[href="/works"]')).toBeHidden();
     await stableNav(page);
+    await page.evaluate(() => {
+      window.__storyTouch = { scrolling: false, scrollEnds: 0, declineClicks: 0 };
+      document.addEventListener("scroll", () => { window.__storyTouch.scrolling = true; }, { passive: true });
+      document.addEventListener("scrollend", () => {
+        window.__storyTouch.scrolling = false;
+        window.__storyTouch.scrollEnds++;
+      }, { passive: true });
+      document.addEventListener("click", (event) => {
+        if (event.isTrusted && event.target.closest('[data-consent-decision="rejected"]')) window.__storyTouch.declineClicks++;
+      }, { capture: true });
+    });
     const session = await page.context().newCDPSession(page);
     try {
       await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: 180, y: 450, id: 1 }] });
@@ -217,8 +228,31 @@ test.describe("compact visit", () => {
     } finally { await session.detach(); }
     await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
     for (const height of [720, 844]) { await page.setViewportSize({ width: 390, height }); await settle(page); await stableNav(page); }
+    // A fixed navbar can be stable while the native touch fling still runs.
+    // Finish that gesture before asking the first tap to activate a control.
+    await expect.poll(() => page.evaluate(() => ({
+      ended: window.__storyTouch.scrollEnds > 0,
+      scrolling: window.__storyTouch.scrolling,
+    })), { message: "the native touch gesture finishes after the viewport changes", timeout: 7000 })
+      .toEqual({ ended: true, scrolling: false });
+    let previousGeometry;
+    await expect.poll(async () => {
+      const geometry = await page.locator('[data-consent-decision="rejected"]').evaluate((button) => ({
+        scrolling: window.__storyTouch.scrolling,
+        scrollY,
+        viewportHeight: innerHeight,
+        button: button.getBoundingClientRect().toJSON(),
+      }));
+      const serialized = JSON.stringify(geometry);
+      const stable = !geometry.scrolling && serialized === previousGeometry;
+      previousGeometry = serialized;
+      return stable;
+    }, { message: "the finished gesture leaves the first tap target and reading position stable", timeout: 7000 })
+      .toBe(true);
     await page.getByRole("button", { name: "Decline analytics", exact: true }).tap();
     await expect(page.locator("[data-consent-banner]")).toBeHidden();
+    expect(await page.evaluate(() => window.PortfolioConsent.getDecision())).toBe("rejected");
+    expect(await page.evaluate(() => window.__storyTouch.declineClicks), "one trusted tap makes the decision").toBe(1);
     const toggle = page.locator(".menu-button");
     await toggle.tap();
     await expect(toggle).toHaveAttribute("aria-expanded", "true");

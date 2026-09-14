@@ -483,6 +483,8 @@ test("home subtitle uses the reference break only on normal desktop text", async
       spacingStyle = await page.addStyleTag({ content: "* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-block-end: 2em !important; }" });
       await expect(mast).toHaveAttribute("data-text-reflow", "");
     }
+    await readableHomeTarget(page, subtitle);
+    await expect(subtitle).toBeVisible();
     await expect(subtitle.locator("br")).toHaveCount(1);
     await expect(subtitle.locator("br")).toHaveCSS("display", mode.display);
     expect(await subtitle.textContent(), "hiding the break must not join the two words").toMatch(/Web3,\s+regulated/);
@@ -1336,11 +1338,15 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
 });
 
 for (const width of [390, 1440]) {
-  test(`${width} editorial footer keeps text, folded art and targets in readable native flow`, async ({ browser }, testInfo) => {
+  test(`${width} editorial footer keeps text, folded art and targets in readable native flow`, async ({ playwright }, testInfo) => {
     // This page has two explicit measurement phases: ordinary load/scroll/actions
     // retain <0.1 CLS; a deliberate OS preference change is verified in every
     // compositor frame and reports its raw CLS without treating CDP as user input.
-    const page = await browser.newPage({ baseURL: "http://127.0.0.1:3000", viewport: { width, height: 1100 }, reducedMotion: "no-preference" });
+    // Linux Chromium can replace LCD glyph antialiasing with grayscale when
+    // motion layers are removed. Only this paint comparison fixes the raster
+    // mode; production CSS and every pixel, geometry and focus guard stay intact.
+    const rasterBrowser = await playwright.chromium.launch({ args: ["--disable-lcd-text", "--enable-automation"] });
+    const page = await rasterBrowser.newPage({ baseURL: "http://127.0.0.1:3000", viewport: { width, height: 1100 }, reducedMotion: "no-preference" });
     const errors = [];
     page.on("pageerror", (error) => errors.push(`pageerror: ${error.message}`));
     page.on("console", (message) => {
@@ -1389,6 +1395,8 @@ for (const width of [390, 1440]) {
 
       const identBox = await page.locator("footer .footer-ident").boundingBox();
       const cdp = await page.context().newCDPSession(page);
+      const { arguments: launchArguments } = await cdp.send("Browser.getBrowserCommandLine");
+      expect(launchArguments).toContain("--disable-lcd-text");
       const frames = [], acknowledgements = [];
       cdp.on("Page.screencastFrame", (event) => {
         frames.push({ timestamp: event.metadata.timestamp, bytes: Buffer.from(event.data, "base64") });
@@ -1432,7 +1440,7 @@ for (const width of [390, 1440]) {
         }
         return { timestamp: frame.timestamp, substantialPixels, maxChannelDifference };
       });
-      await testInfo.attach("OS-motion-preference-measurements", { body: Buffer.from(JSON.stringify({ ordinaryCLS, rawCLS, preferenceCLS: rawCLS - ordinaryCLS, changedAt, samples, paint }, null, 2)), contentType: "application/json" });
+      await testInfo.attach("OS-motion-preference-measurements", { body: Buffer.from(JSON.stringify({ rasterMode: "grayscale (--disable-lcd-text)", ordinaryCLS, rawCLS, preferenceCLS: rawCLS - ordinaryCLS, changedAt, samples, paint }, null, 2)), contentType: "application/json" });
       for (let index = 0; index < frames.length; index += 1) await testInfo.attach(`compositor-frame-${index}`, { body: frames[index].bytes, contentType: "image/png" });
       expect(frames.some((frame) => frame.timestamp < changedAt)).toBe(true);
       expect(frames.some((frame) => frame.timestamp >= changedAt)).toBe(true);
@@ -1447,7 +1455,7 @@ for (const width of [390, 1440]) {
       await expect(email).toHaveCSS("background-color", "rgb(10, 22, 40)");
       await expect(email).toHaveCSS("color", "rgb(214, 212, 237)");
       expect(errors).toEqual([]);
-    } finally { await page.close(); }
+    } finally { await rasterBrowser.close(); }
   });
 }
 
@@ -1763,8 +1771,13 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
   await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
   const rows = await page.locator(".work-row").all();
   for (let step = 0; step < 18; step += 1) {
-    const box = await rows[step % rows.length].boundingBox();
-    await page.mouse.move(step % 2 ? box.x + 20 : box.x + box.width - 20, box.y + box.height / 2);
+    const row = rows[step % rows.length];
+    await row.scrollIntoViewIfNeeded();
+    const box = await row.boundingBox();
+    const point = { x: step % 2 ? box.x + 20 : box.x + box.width - 20, y: box.y + box.height / 2 };
+    expect(await row.evaluate((element, target) => element.contains(document.elementFromPoint(target.x, target.y)), point),
+      "the pointer samples a visible point inside the intended row").toBe(true);
+    await page.mouse.move(point.x, point.y);
     expect(await page.evaluate(() => gsap.globalTimeline.getChildren(true, true, true)
       .filter((animation) => animation.vars.data === "work-list-motion")
       .every((animation) => window.__workMotionAnimations.has(animation))), "rapid pointer input must reuse its original controllers").toBe(true);
