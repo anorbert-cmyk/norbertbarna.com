@@ -8,6 +8,7 @@ This file is a concise guide to the canonical portfolio at https://www.barnanorb
 
 - [Home](https://www.barnanorbert.com/): profile, expertise, selected work and professional experience
 - [Selected work](https://www.barnanorbert.com/works): complete portfolio index
+- [About: A story in motion](https://www.barnanorbert.com/about): the career story, from enterprise security software to banking, AI in enterprise learning and an AI platform in capital markets
 - [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and relevant evidence
 - [AI-integráció vállalkozásoknak](https://www.barnanorbert.com/hu/ai-integracio): Hungarian version of the AI integration and development offer
 - [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice (English)

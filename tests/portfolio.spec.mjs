@@ -448,8 +448,8 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
       await expectHeaderTextAA(page, target, `${width} home text ${index + 1}`, { raster: true });
     }
     const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
-    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About"]);
-    await expect(controls).toHaveCount(6);
+    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About", "AI integration"]);
+    await expect(controls).toHaveCount(7);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = await readableHomeTarget(page, controls.nth(index));
       if (!await control.isVisible()) await page.locator(".menu-button").click();
@@ -625,8 +625,8 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
       await expectHeaderTextAA(page, target, `${width} ${adjustment} home text ${index + 1}`, { raster: true });
     }
     const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
-    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About"]);
-    await expect(controls).toHaveCount(6);
+    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About", "AI integration"]);
+    await expect(controls).toHaveCount(7);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
       const toggle = page.locator(".menu-button");

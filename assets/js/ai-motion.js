@@ -133,7 +133,7 @@
         // the section crosses the viewport; the fallback shows the start.
         var box = pieces.getBoundingClientRect();
         var travel = smooth((height * .9 - box.top) / Math.max(1, height * .9 + box.height * .55));
-        write.ribbonPan((-travel * 47).toFixed(3) + "%");
+        write.ribbonPan((-travel * 56).toFixed(3) + "%");
       }
     }
     painted = true;

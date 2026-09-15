@@ -73,13 +73,13 @@ async function navTextContrast(link) {
   expect(ratio, "menu text remains AA against its actual opaque backing").toBeGreaterThanOrEqual(4.5);
 }
 
-test("About remains an explicit story draft with canonical identity and native destinations", async ({ page }) => {
+test("About is the written biography with canonical identity and native destinations", async ({ page }) => {
   await openStory(page);
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.locator("h1")).toHaveText(/A story in\s*motion\./);
-  await expect(page.locator("body")).toHaveAttribute("data-story-draft", "");
-  await expect(page.locator(".story-draft-note")).toContainText("The full personal story is being written");
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.locator("body")).not.toHaveAttribute("data-story-draft", /.*/);
+  await expect(page.locator(".story-draft-note")).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /^index, follow/);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.barnanorbert.com/about");
   await expect(page.locator('.navbar a[aria-current="page"]')).toHaveAttribute("href", "/about");
   await expect(page.locator('.navbar a[href="/works"]')).toHaveCount(1);

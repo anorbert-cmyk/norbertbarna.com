@@ -89,7 +89,7 @@ if (!existsSync(versionedResponsivePath)) {
 for (const page of PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const is404 = page === "404.html";
-  const isStoryDraft = page === "about.html";
+  const isBiography = page === "about.html";
 
   const h1s = html.match(/<h1\b/g) || [];
   if (h1s.length !== 1) fail(`${page}: expected exactly 1 <h1>, found ${h1s.length}`);
@@ -122,16 +122,6 @@ for (const page of PAGES) {
   const robotsMeta = metaContent(html, "name", "robots");
   if (is404) {
     if (!/noindex/i.test(robotsMeta || "")) fail(`${page}: error document must noindex`);
-  } else if (isStoryDraft) {
-    const directives = (robotsMeta || "").toLowerCase().split(",").map(value => value.trim()).sort();
-    if (JSON.stringify(directives) !== JSON.stringify(["follow", "noindex"])) {
-      fail(`${page}: biography draft robots must be exactly noindex, follow`);
-    }
-    const bodyTag = html.match(/<body\b[^>]*>/i)?.[0] || "";
-    if (!/\bclass=["'][^"']*\bstory-page\b[^"']*["']/i.test(bodyTag) ||
-        !/\sdata-story-draft(?:\s|=|>)/i.test(bodyTag)) {
-      fail(`${page}: the unfinished biography must retain story-page and data-story-draft on its body`);
-    }
   } else if (!robotsMeta) {
     fail(`${page}: content page must include robots meta`);
   } else if (!/\bindex\b/i.test(robotsMeta) || !/\bfollow\b/i.test(robotsMeta)) {
@@ -150,12 +140,12 @@ for (const page of PAGES) {
   else descriptions.set(desc, page);
 
   if (!is404 && !html.includes('rel="canonical"')) fail(`${page}: missing canonical`);
-  if (isStoryDraft) {
+  if (isBiography) {
     const canonicalTags = [...html.matchAll(/<link\b[^>]*>/gi)]
       .map(match => match[0]).filter(tag => /\brel=["']canonical["']/i.test(tag));
     if (canonicalTags.length !== 1 ||
         !/\bhref=["']https:\/\/www\.barnanorbert\.com\/about["']/i.test(canonicalTags[0])) {
-      fail(`${page}: the draft must retain one self-canonical https://www.barnanorbert.com/about`);
+      fail(`${page}: the biography must retain one self-canonical https://www.barnanorbert.com/about`);
     }
   }
   if (/cdnjs\.cloudflare\.com|unpkg\.com|cdn\.jsdelivr\.net/.test(html))
@@ -200,10 +190,10 @@ for (const page of PAGES) {
     }
   }
 
-  if (isStoryDraft) {
+  if (isBiography) {
     const aboutPages = parsedSchemas.flatMap(schema => schemaNodes(schema)).filter(node => node["@type"] === "AboutPage");
     if (aboutPages.length !== 1 || aboutPages[0].url !== "https://www.barnanorbert.com/about") {
-      fail(`${page}: the draft needs one AboutPage schema with its self-canonical URL`);
+      fail(`${page}: the biography needs one AboutPage schema with its self-canonical URL`);
     }
   }
 
@@ -398,11 +388,9 @@ const hiringSitemap = [
   "/work/sportsgambit",
   "/work/kineticare",
   "/work/onrobot",
+  "/about",
   ...UTILITY_PAGES.map(page => `/${page.replace(/\.html$/, "")}`),
 ];
-if (sitemapPaths.includes("/about")) {
-  fail("sitemap.xml: the unfinished noindex biography must stay outside the sitemap");
-}
 if (JSON.stringify(sitemapPaths) !== JSON.stringify(hiringSitemap)) {
   fail(`sitemap.xml order is ${sitemapPaths.join(", ")} (must be hiring-first)`);
 }

@@ -430,8 +430,8 @@ const storyClosing = story.match(/<section\b[^>]*\bid="next"[^>]*>[\s\S]*?<\/sec
 const storyTitle = story.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]
   .replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 if (storyTitle !== "A story in motion.") fail("About must retain the selected A story in motion opening");
-if (!/class="story-draft-note"/.test(story) || !story.includes("Story preview")) {
-  fail("About must visibly identify the unfinished biography as a story preview");
+if (/class="story-draft-note"|data-story-draft|Story preview/.test(story)) {
+  fail("About is the written biography: no draft note or draft marker");
 }
 for (const color of ["#D6D4ED", "#0A1628", "#1B3A32", "#BDB414"]) {
   if (!storyCss.includes(color)) fail(`About must retain the original ${color} palette token`);
