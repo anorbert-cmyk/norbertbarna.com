@@ -603,7 +603,7 @@ for (const page of SERVICE_PAGES) {
       if ((html.match(new RegExp(`\\b${hook}(?=[\\s>=])`, "g")) || []).length !== 1) fail(`${page}: exactly one ${hook} hook`);
     }
     if ((html.match(/\bdata-ai-step="[123]"/g) || []).length !== 3) fail(`${page}: the ribbon journey has three steps`);
-    for (const still of ["passage", "bars", "ribbon", "workflow-passage"]) {
+    for (const still of ["passage-panel", "bars", "ribbon", "band", "workflow-passage"]) {
       if (!html.includes(`/assets/images/ai/${still}.webp`)) fail(`${page}: the ${still} board crop is missing`);
     }
     // Board artwork is decorative: sized, empty alt, inside an aria-hidden node.

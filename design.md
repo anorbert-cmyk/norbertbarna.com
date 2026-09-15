@@ -59,14 +59,16 @@ page is those boards in this order, and the Hungarian page is the same board:
    steps as a list, the related work with its honest one-liners, the
    language switch.
 
-The artwork is the owner's boards, cut out, not generated: the passage, the
-bars, the ribbon and the second passage are crops with their baked labels
-filled from the surface around them and feathered into the CSS field; the
-closing ribbon is an SVG traced from the board. They are 288 to 976px wide and
-shown up to about 1.5x, so they are soft where the lens goes close; the code
-treats each as a drop-in file for a source render. This is a narrow exception
-to the image rule below, tied to these two boards. The related work row uses
-the site's own geometric project artwork, not the boards' cube marks.
+The artwork is the owner's boards, cut out, not generated: the passage panel,
+the bars, the ribbon, the olive band and the second passage are crops with
+their baked labels filled from the surface around them, their field shifted to
+the CSS colour and keyed to alpha so the crop has no edge, the ribbon crossing
+the stage above the reading rows as it does on the board. They are board
+resolution (the band is the olive panel's own strip scaled 3x), shown up to
+about 1.5x, so they are soft where the lens goes close; the code treats each as
+a drop-in file for a source render. This is a narrow exception to the image
+rule below, tied to these two boards. The selected and related work rows use
+the boards' own project marks, cropped the same way.
 
 The page has its own stylesheet and native-scroll owner (`ai-integration.css`,
 `ai-motion.js`), released as content-hashed files, loaded on these two routes
@@ -647,8 +649,8 @@ markup that is being retired: check the page before reusing it.
 **AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
 `.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
 `.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
-`.ai-hero-art` `.ai-triad` `.ai-shape` `.ai-shape-copy` `.ai-shape-dek`
-`.ai-shape-text` `.ai-actions` `.ai-cta-pill` `.ai-link-plain` `.ai-shape-art`
+`.ai-hero-art` `.ai-hero-kicker` `.ai-triad` `.ai-shape` `.ai-shape-copy` `.ai-shape-dek`
+`.ai-actions` `.ai-cta-pill` `.ai-link-plain` `.ai-shape-art`
 `.ai-shape-label` `.ai-steps-rule` `.ai-pieces` `.ai-pieces-track`
 `.ai-pieces-stage` `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider`
 `.ai-pieces-intro` `.ai-pieces-label` `.ai-ribbon` `.ai-pieces-steps`
@@ -656,7 +658,7 @@ markup that is being retired: check the page before reusing it.
 `.ai-pieces-work-label` `.ai-better` `.ai-better-dek` `.ai-better-note`
 `.ai-better-bar` `.ai-better-band` `.ai-start` `.ai-start-art`
 `.ai-start-art-label` `.ai-start-body` `.ai-start-steps` `.ai-start-bring`
-`.ai-related` `.ai-related-list` `.ai-start-lang`
+`.ai-related` `.ai-related-list` `.ai-start-lang` `.ai-eyebrow-rule-after`
 
 **About (`/about` only):** `.story-page` `.story-opening`
 `.story-opening-stage` `.story-opening-copy` `.story-opening-dek`
