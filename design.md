@@ -404,6 +404,14 @@ art, original summaries and native links. No “these aren’t mockups” manife
 **Home professional experience:** five chronological text rows on lilac, original
 roles/companies/dates, the original folded gate beside the heading. Company names
 are visually prominent. No decorative video, pointer/tap state or fake tab stop.
+A lead paragraph under the heading names the arc the five rows belong to, and each
+row carries one short paragraph saying what that step actually was, so the section
+reads as one career rather than five unconnected posts. Each row stands on its own:
+a reader or an answer engine can take one without the rest for context. Every claim
+in them is the owner's own, checkable, and carries the employer it belongs to.
+Invent nothing here, and add no metric the owner has not stated. The same five roles
+appear as described `hasOccupation` entries in the home `Person` schema; when a row
+changes, its schema entry changes with it.
 
 **Case opening (one centered lilac template)**
 
@@ -585,6 +593,7 @@ markup that is being retired: check the page before reusing it.
 `.home-work-footer` `.works-index` `.project-index-intro`
 
 **Home experience and services:** `.editorial-experience`
+`.editorial-experience-lead` `.awards-card-summary`
 `.editorial-experience-art` `.home-service-section` `.home-service-grid`
 `.home-service-title-area` `.home-service-card-title` `.home-about-area`
 `.about-section-title`
@@ -851,8 +860,19 @@ immutable header.
 
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis),
 respect `prefers-reduced-motion`, `html.no-motion` and `PortfolioMedia.isReduced()`.
+Every page carries a blanket `html.no-motion * { opacity: 1 !important }`, so
+anything that hides one of two stacked states has to re-assert it explicitly
+under `html.no-motion` or both show at once. Keep such arithmetic in the owner,
+not in CSS, so the stylesheet's defaults stay the honest resting state.
 No new runtime dependency, sound requirement, generated Lottie or visible
-Motion control. Original raw WebGL is the user-requested central hero exception.
+Motion control. Original raw WebGL is the user-requested central hero exception,
+and the home hero is the only stage that runs it. A second stage was built in
+the Story in Motion corridor on 2026-09-15 and removed the same day at the
+owner's request; the corridor stands a still instead. The renderer still names
+its host with `data-glass-scene`, `data-glass-stage`, `data-glass-frame`,
+`data-glass-backdrop` and `data-glass-field` rather than the home page's class
+names, which is worth keeping whether or not a second stage exists. No second
+stage without an explicit request for one.
 Keep `.case-motion-rail` hidden.
 
 The central glass form assembles once, then responds to pointer tilt,
@@ -937,6 +957,21 @@ for implementation. Its decorative corridor/fold images, the requested home
 sculpture and the unique geometric work-list images are narrow exceptions to
 the earlier blanket image-generation ban. They never replace real product
 evidence, portraits, logos or biography facts; no new palette is authorized.
+The object standing in the corridor is the chevron the home hero assembles, as a
+still, not the flat gate it morphs into (changed 2026-09-15, at the owner's
+request: he wanted the corridor to carry the home object's shape). The chevron is
+taller than it is wide where the gate was wider than tall, so its slot narrows to
+hold the same standing height on the floor.
+
+It is a still and stays one. The live renderer was run here on 2026-09-15 and the
+owner asked for it to be left out the same day, having seen it dark against the
+corridor, flat on a bare lilac field, and bright with its own silhouette
+refracted. Do not put a moving object back in this corridor without him asking
+for it again. If a later pass does, the reason the field alone never settles it
+is this: the refraction source is a base fill with the backdrop artwork painted
+over it, so a full-bleed backdrop such as the corridor photograph covers the fill
+and the field colour never reaches the glass, while a field with nothing over it
+leaves the glass nothing to bend and it reads as a solid slab.
 Alternate atmospheric chapter openings with still, comfortably spaced reading
 sections. Long biography copy stays semantic and readable while decorative
 artwork moves; native scroll and chapter anchors remain in charge. The About

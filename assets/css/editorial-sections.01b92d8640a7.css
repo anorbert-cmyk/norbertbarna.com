@@ -146,6 +146,52 @@
   letter-spacing: -.015em;
   white-space: nowrap;
 }
+/* The home hero's object carried onto every other page as a quiet mark, so one
+   identity runs through the site instead of the opening alone. Absolute, so it
+   never takes a grid cell, changes a reading layout or pushes a fold. */
+.page-chevron-mark {
+  position: absolute;
+  top: clamp(16px, 2.6vw, 38px);
+  right: clamp(20px, 4vw, 72px);
+  z-index: 2;
+  width: clamp(54px, 4.8vw, 74px);
+  pointer-events: none;
+}
+/* Two poses of the one object, stacked. --page-mark runs 0 to 1 on native
+   scroll: the resolved gate hands over to the glass chevron, turned to point
+   down the page. At rest, and whenever motion is off, only the gate shows. */
+.page-chevron-mark {
+  aspect-ratio: 500 / 800;
+  rotate: calc(var(--page-mark, 0) * 90deg);
+  translate: 0 var(--page-mark-y, 0px);
+}
+.page-chevron-mark img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* The owner hands both opacities over ready-made. Keeping the arithmetic in
+   JavaScript means the defaults here are the honest resting state: with no
+   owner, no JavaScript or reduced motion, the gate shows and the glass does
+   not. A short handover, because two different silhouettes held at similar
+   opacity read as ghosting rather than one object changing state. */
+.page-chevron-mark .page-mark-rest { opacity: var(--page-mark-rest, 1); }
+.page-chevron-mark .page-mark-glass { opacity: var(--page-mark-glass, 0); }
+/* Every page carries a blanket `html.no-motion * { opacity: 1 !important }`,
+   which would reveal both poses at once. Reduced motion keeps the gate alone,
+   the same way the award backplates re-assert themselves against that rule. */
+html.no-motion .page-chevron-mark .page-mark-glass { opacity: 0 !important; }
+/* A case banner starts at the top of the document, so its mark clears the
+   travelling header instead of sitting inside it. */
+.banner-section .page-chevron-mark { top: clamp(92px, 9.5vw, 138px); }
+body.works-index .project-index-intro,
+.home-banner-section,
+.banner-section,
+.work-single-section { position: relative; }
+
 /* What the step actually was. Each row stands on its own, so a reader or an
    answer engine can take one without the rest for context. */
 .editorial-experience .awards-card-summary {

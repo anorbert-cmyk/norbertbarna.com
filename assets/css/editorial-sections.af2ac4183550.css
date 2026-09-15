@@ -146,6 +146,26 @@
   letter-spacing: -.015em;
   white-space: nowrap;
 }
+/* The home hero's object carried onto every other page as a quiet mark, so one
+   identity runs through the site instead of the opening alone. Absolute, so it
+   never takes a grid cell, changes a reading layout or pushes a fold. */
+.page-chevron-mark {
+  position: absolute;
+  top: clamp(16px, 2.6vw, 38px);
+  right: clamp(20px, 4vw, 72px);
+  z-index: 2;
+  width: clamp(38px, 4.4vw, 74px);
+  pointer-events: none;
+}
+.page-chevron-mark img { display: block; width: 100%; height: auto; }
+/* A case banner starts at the top of the document, so its mark clears the
+   travelling header instead of sitting inside it. */
+.banner-section .page-chevron-mark { top: clamp(92px, 9.5vw, 138px); }
+body.works-index .project-index-intro,
+.home-banner-section,
+.banner-section,
+.work-single-section { position: relative; }
+
 /* What the step actually was. Each row stands on its own, so a reader or an
    answer engine can take one without the rest for context. */
 .editorial-experience .awards-card-summary {

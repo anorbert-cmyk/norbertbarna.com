@@ -165,6 +165,48 @@ if (worksLd) {
     fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
   }
 }
+// The corridor stands the chevron as a still, never the flat gate and never a
+// second live scene: the owner asked for the object's shape there, then asked
+// for the moving object to be left out. The home hero is the only running scene.
+{
+  const about = readFileSync(join(ROOT, "about.html"), "utf8");
+  if (/class="story-sculpture"[^>]*hero-(?:final|gate)/.test(about)) {
+    fail("/about must stand the chevron in its corridor, not the flat gate");
+  }
+  if (/data-glass-|hero-scene\.js|story-sculpture-canvas/.test(about)) {
+    fail("/about must stand a still, not run the live scene");
+  }
+  const scene = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
+  if (/home-mast/.test(scene)) {
+    fail("hero-scene.js must not reach for one stage's class names");
+  }
+  const others = [
+    "works.html", "privacy.html", "ai-integration.html",
+    "hu/ai-integracio.html", "hu/adatvedelem.html",
+    ...WORK.map((slug) => `work/${slug}.html`),
+  ];
+  for (const page of others) {
+    if (/page-chevron-mark|story-sculpture/.test(readFileSync(join(ROOT, page), "utf8"))) {
+      fail(`${page}: the corridor sculpture belongs to Story in Motion alone`);
+    }
+  }
+}
+// The experience section is a career, not a list: a lead names the arc and every
+// row says what the step was. Each row must also stand alone in the schema.
+{
+  const rows = [...home.matchAll(/<div class="awards-card" role="listitem">([\s\S]*?)<\/div>\n<\/div>/g)];
+  const described = [...home.matchAll(/class="awards-card-summary">([^<]{80,})</g)];
+  if (!/class="editorial-experience-lead"/.test(home)) {
+    fail("the experience section must open with the arc its five rows belong to");
+  }
+  if (described.length !== 5) {
+    fail(`every experience row must say what the step was (${described.length} of 5 described)`);
+  }
+  const occupations = [...home.matchAll(/"@type": "Occupation",\n\s*"name": "[^"]+",\n\s*"description": "[^"]{80,}"/g)];
+  if (occupations.length !== 5) {
+    fail(`all five roles must carry a described Occupation entry (found ${occupations.length})`);
+  }
+}
 if (!/"jobTitle": "Product VP"/.test(home)) {
   fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
 }
