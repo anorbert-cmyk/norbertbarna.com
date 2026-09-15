@@ -223,6 +223,15 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   fail("design.md must lock Funnel Display and Inter");
 }
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
+if (/EmptyFold/.test(design) === false) fail("design.md must name the EmptyFold anti-pattern");
+if (/CroppedProduct/.test(design) === false) fail("design.md must name the CroppedProduct anti-pattern");
+if (/TemplateVoice/.test(design) === false) fail("design.md must name the TemplateVoice anti-pattern");
+if (/HeadlineDrift/.test(design) === false) fail("design.md must name the HeadlineDrift anti-pattern");
+if (/ClippedChip/.test(design) === false) fail("design.md must name the ClippedChip anti-pattern");
+if (/WorksDomainChip/.test(design) === false) fail("design.md must name the WorksDomainChip anti-pattern");
+if (/BlogFooterCTA/.test(design) === false) fail("design.md must name the BlogFooterCTA anti-pattern");
+if (/Marquee/.test(design) === false) fail("design.md must name the Marquee anti-pattern");
+if (/TightAwardVideo/.test(design) === false) fail("design.md must name the TightAwardVideo anti-pattern");
 if (/YellowDuneSlab/.test(design) === false) fail("design.md must name the YellowDuneSlab anti-pattern");
 if (/SausageBand/.test(design) === false) fail("design.md must name the SausageBand anti-pattern");
 if (/YellowBalloon/.test(design) === false) fail("design.md must name the YellowBalloon anti-pattern");

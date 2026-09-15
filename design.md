@@ -9,11 +9,17 @@ This file follows the loop in
 [How our agents build on-brand pages with design.md](https://vercel.com/blog/how-our-agents-build-on-brand-pages-with-design-md):
 
 1. **Guidance** (this file) — reader job, composition, named failures.
-2. **Stylesheet** — `assets/css/responsive.css` (hashed on pages as
-   `responsive.<sha256-12>.css`). Repeatable mechanics live there. Do not
-   read the hashed copy into context.
-3. **Checks** — `scripts/check-design.mjs` plus the existing `check-*.mjs`
-   suite. Mechanical failures that have already been named must fail CI.
+2. **Stylesheets** — `assets/css/responsive.css` holds the site tokens, the
+   chrome lock and the reflow rules; nine scoped companions own one surface
+   each. Pages load byte-identical `name.<sha256-12>.css` copies of the nine
+   content-hashed families; `consent.css` is served unhashed and revalidates,
+   so a change to it ships without a new copy. Repeatable
+   mechanics live in CSS. Never read a hashed copy into context. The full
+   ownership map is in **System reference** below.
+3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
+   scripts and seventeen Playwright specs. Mechanical failures that have
+   already been named must fail CI. **System reference → Checks** says which
+   file owns which rule, so a new rule lands in one place.
 
 Judgment stays here. When a review correction repeats, encode it here
 (prose), in `responsive.css` (mechanic), or in `check-design.mjs` (check).
@@ -122,7 +128,7 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   Geometry begins 200ms after Enter,
   assembles in 2.3 seconds, responds to pointer tilt/nearby fragmentation and drag.
   Use original dependency-free WebGL with a corresponding SVG fallback.
-- The real H1 remains Product VP, visible at the lower left in the starting pose. Works and the native scroll affordance occupy the lower edge. The user-selected 03/04 direction adds a 210svh native track: the same object turns and morphs to a matte forest/olive triangular folded ribbon on the right, matching the original 03 silhouette: broad sloped left plane, visible olive inner fold and a slimmer outward-leaning right leg. Avoid the earlier thick horizontal lintel and parallel blocky towers. The large live Product VP display, original name/dek, proof and employers resolve on the left; the semantic H1 remains unique. Short windows, no-JS, reduced motion and enlarged text use the final unpinned composition.
+- The real H1 remains Product VP, visible at the lower left in the starting pose. Works and the native scroll affordance occupy the lower edge. The user-selected 03/04 direction adds a 210svh native track: the same object turns and morphs to a matte forest/olive triangular folded ribbon on the right, matching the original 03 silhouette: broad sloped left plane, visible olive inner fold and a slimmer outward-leaning right leg. Avoid the earlier thick horizontal lintel and parallel blocky towers. The large live Product VP display, original name/dek, proof and employers resolve on the left; the semantic H1 remains unique. Short windows, no-JS, reduced motion and enlarged text use the final unpinned composition. That composition still carries the live object: phones, tablets and short desktop windows keep the assembled refractive chevron in the right-hand drawing slot the flat gate held, turned by their own native scroll. The flat gate drawing is the fallback, not the compact design.
 - During the home opening and Selected work, NB and destinations form a quiet stable lilac top bar. After that chapter, desktop resumes the distributed utility header: NB left, central wordmark, real page-progress
   counter and existing destinations. On desktop it travels down the viewport with native
   page progress and the wordmark expands at the footer. Keyboard focus and the
@@ -134,7 +140,7 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   with opacity only; never translate the menu across the paragraph.
   The terminal wordmark has its own landing after the unchanged footer links;
   a screen-space offset keeps the scaled letters centred inside that landing.
-- `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
+- `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`, or `setCompactProgress` while `data-glass-live` marks the unpinned slot; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
 - All seven cases inherit the branded arrival/chrome vocabulary; complete real
   product images and text remain. The lilac stage uses a large centered Funnel
   title, four-slice media assembly, and a short native-scroll perspective settle.
@@ -547,33 +553,299 @@ black-and-white empty margin, and it is not a Vercel report shell.
 ## Primitives (HTML vocabulary)
 
 Agents compose pages from these names. Do not invent parallel components.
+Anything not listed here either does not exist yet or is inherited Webflow
+markup that is being retired: check the page before reusing it.
 
-**Chrome:** `.skip-to-content` `.navbar` `.nav-logo-wrap` `.nav-breadcrumb`
-`.menu-button` `#primary-navigation` `.nav-menu` `.nav-link` `.footer-section`
-`.footer-chrome` `.footer-ident` `.footer-brand` `.footer-wordmark`
-`.footer-lede` `.footer-cta` `.footer-contact-link` `.footer-email`
-`.editorial-footer` `.editorial-footer-title` `.editorial-footer-art`
-`.footer-nav` `.footer-col` `.footer-col-title`
-`.footer-copyright` `.footer-bar` `.footer-privacy`
+**Chrome (all thirteen content pages):** `.skip-to-content` `.navbar`
+`.nav-wrap` `.nav-menu` `.nav-menu-area` `.nav-link` `.nav-logo-wrap`
+`.nav-cta` `.nav-breadcrumb` `.menu-button` `#primary-navigation`
+`.home-nav-monogram` `.home-nav-label` `.home-nav-wordmark`
+`.home-nav-progress`
 
-**Home:** `.home-mast` `.home-mast-mesh` `.home-mast-art` `.home-mast-lilac`
-`.home-mast-sculpture` `.home-banner-section` `.hero-kicker`
-`.home-banner-title` `.home-banner-subtitle` `.home-mast-proof-chips`
-`.home-banner-outcomes` `.home-highlight-company`
-`.hero-work-link` `.home-nav-monogram` `.home-nav-label`
-`.about-section-title` `.home-about-area` `.work-list` `.work-row`
-`.work-row-thumb` `.work-row-copy` `.work-row-arrow` `.work-title`
-`.work-card-summary` `.home-work-footer` `.nav-cta`
+**Editorial footer:** `.footer-section` `.editorial-footer`
+`.editorial-footer-title` `.editorial-footer-art` `.editorial-linkedin-label`
+`.footer-chrome` `.footer-inner` `.footer-ident` `.footer-brand`
+`.footer-wordmark` `.footer-lede` `.footer-cta` `.footer-contact-link`
+`.footer-email` `.footer-icon` `.footer-nav` `.footer-col` `.footer-col-title`
+`.footer-col-list` `.footer-copyright` `.footer-bar` `.footer-privacy`
 
-**Works:** `.works-index` `.project-index-intro` `.work-list` `.work-row`
-`.work-row-visual` `.work-row-number` `.work-row-meta`. Landscape artwork,
-project title, factual summary and metadata share the home list vocabulary.
+**Home opening:** `.home-mast` `.home-mast-scene` `.home-mast-canvas`
+`.home-mast-fallback` `.home-mast-sculpture` `.home-mast-gate-fallback`
+`.home-mast-display` `.home-mast-lettering` `.home-mast-track`
+`.home-mast-anchor` `.home-mast-intro` `.home-mast-statement`
+`.home-mast-baseline` `.home-mast-proof-chips` `.home-mast-scroll`
+`.home-banner-section` `.home-banner-title` `.home-banner-subtitle`
+`.home-banner-outcomes` `.home-highlight-company` `.hero-kicker`
+`.hero-work-link` `.home-intro-work`
 
-**Case:** `article.case-study-article` `h1#case-title` `.case-hero-media`
+**Selected work and `/works` (one shared vocabulary):** `.work-list`
+`.work-row` `.work-row-visual` `.work-row-thumb` `.work-row-number`
+`.work-row-copy` `.work-row-meta` `.work-row-action` `.work-row-arrow`
+`.work-title` `.work-title-heading` `.work-card-summary` `.work-category`
+`.home-work-footer` `.works-index` `.project-index-intro`
+
+**Home experience and services:** `.editorial-experience`
+`.editorial-experience-art` `.home-service-section` `.home-service-grid`
+`.home-service-title-area` `.home-service-card-title` `.home-about-area`
+`.about-section-title`
+
+**Case:** `article.case-study-article` `.case-study-header`
+`.case-opening-fold` `h1#case-title` `.banner-section` `.banner-content-area`
+`.banner-content-wrap` `.banner-title` `.banner-text` `.case-hero-media`
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
-`.case-evidence-note` `.summary` `.related-work-card`
+`.case-toc__inner` `.case-toc__label` `.case-evidence-note` `.summary`
+`.case-related-projects` `.related-work-card` `.case-nav-works`
+
+**About (`/about` only):** `.story-page` `.story-opening`
+`.story-opening-stage` `.story-opening-copy` `.story-opening-dek`
+`.story-opening-cue` `.story-chapter` `.story-chapter-number`
+`.story-chapter-side` `.story-reading` `.story-detail` `.story-detail-window`
+`.story-perspective` `.story-perspective-art` `.story-sculpture`
+`.story-wing` `.story-backdrop` `.story-stage-shade` `.story-rail`
+`.story-rail-dot` `.story-next` `.story-next-links` `.story-footer`
+`.story-motion-toggle` `.story-draft-note` `.story-eyebrow`
+`.story-closing-line` `.story-beginnings` `.story-text-link`
+`.story-perspective-inner` `.story-sculpture-position` `.story-wing-left`
+`.story-wing-right` `.story-footer-top` `.story-footer-bottom`
+`.story-footer-name`
 
 **Buttons:** `.dark-button` `#000` on `#fff`. Editorial footer Email is a navy capsule with lilac ink and a native `<button type="button" class="footer-email">`; LinkedIn is a visible text link with its existing `in` icon. Both are at least 48px tall. Project contact labels follow the Copy contract above. The home nav uses text-only 44px targets. The scene Works action and intro View selected work use native underlined/text controls.
+
+**Behavioural hooks (attributes, not classes).** These are read by JavaScript;
+renaming one silently disables a feature. `data-hero-critical`
+`data-morph-active` (the pinned home track) `data-glass-live` (the unpinned
+slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow`
+`data-composition-nav` `data-autoplay-video` `data-motion-video`
+`data-video-urls` `data-poster-url` `data-video-label` `data-object-fit`
+`data-consent-settings` `data-story` `data-story-*` (`-art` `-line` `-mode`
+`-motion` `-motion-toggle` `-reflow` `-scene` `-stage` `-step`). Five more
+`data-story-*` attributes in `about.html` — `-backdrop` `-draft` `-sculpture`
+`-shade` `-wing` — are markup state that no script queries; the animation binds
+to the matching classes, so adding one of those attributes without its class
+animates nothing. `data-w-id` is inherited Webflow state
+that `animations.js` strips; never author a new one.
+
+## System reference
+
+Everything below is observable in the repository. If the code and this
+section disagree, the code is right and this section is stale — fix it in the
+same change that caused the drift.
+
+### Pages and routes
+
+| Route | File | Kind | Robots |
+|---|---|---|---|
+| `/` | `index.html` | Arrival, glass hero, Selected work, services, experience | `index, follow, max-image-preview:large` |
+| `/works` | `works.html` | Seven landscape project rows | `index, follow, max-image-preview:large` |
+| `/work/{slug}` | `work/*.html` (7) | Case studies | `index, follow, max-image-preview:large` |
+| `/about` | `about.html` | Story in Motion, explicit draft | `noindex, follow`, kept out of `sitemap.xml` |
+| `/ai-integration` | `ai-integration.html` | English service offer | default |
+| `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair, `lang="hu"` | default |
+| `/privacy` | `privacy.html` | Consent and analytics notice | default |
+| `/hu/adatvedelem` | `hu/adatvedelem.html` | Hungarian pair, `lang="hu"` | default |
+| (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
+
+Thirteen content pages carry chrome, consent and the editorial footer.
+`sitemap.xml` lists thirteen URLs. `server.js` owns canonicalisation: apex to
+`www`, and `/index`, `/{slug}`, trailing slashes and `.html` all 301 to one
+URL. Adding a page means adding it to the checks that enumerate pages, not
+only to the sitemap.
+
+### Stylesheets and what each one owns
+
+| File | Owns | Loaded by |
+|---|---|---|
+| `norbertbarna.webflow.*.css` | Inherited Webflow base | every page |
+| `responsive.css` | Site tokens, chrome lock, type scale, reflow, footer base | every page |
+| `arrival.css` | First-session name assembly and curtain | `/`, cases |
+| `home-composition.css` | Home morph track and the resolved split composition | `/` |
+| `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
+| `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
+| `compact-navigation.css` | Stable bar up to 991px and the desktop utility journey | 14 content pages |
+| `case-opening.css` | Lilac case stage and the four-slice media reveal | cases |
+| `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
+| `story.css` | `/about` chapters, rail, dark story footer | `/about` |
+| `consent.css` | Consent banner and `.footer-privacy` only | 14 content pages, unhashed |
+
+Two stylesheets must never grow brand rules: the Webflow base (inherited, being
+retired) and `consent.css` (narrow, separately revalidated). A new surface gets
+a scoped companion; it does not get appended to `responsive.css`.
+
+### Scripts and motion ownership
+
+One owner per animated target. Three loading positions, not one: `webfont.js`
+is a blocking head script, the analytics trio (`analytics-config.js`,
+`consent.js`, `analytics.js`) is `defer`, and every other script is an ordinary
+end-of-body tag that runs in written order. Moving one across those positions
+changes its dependencies, so keep a script where it is.
+
+| File | Owns | Content-hashed |
+|---|---|---|
+| `analytics-config.js` | Release gate; loads first; static `enabled` | no |
+| `consent.js` | Consent record, settings reveal, focus return | no |
+| `analytics.js` | Consent-gated PostHog EU capture | no |
+| `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
+| `navigation.js` | Mobile disclosure, every `.footer-email` assign-only handler, and the mast text-enlargement/spacing reflow detector; deliberately has no animation dependency | no |
+| `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle | yes |
+| `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
+| `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
+| `immersive-navigation.js` | Compact bar and the desktop travelling header | yes |
+| `case-opening.js` | Case title and media assembly, perspective settle | yes |
+| `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
+| `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field | yes |
+| `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
+
+Load order is a contract, not a preference:
+
+- `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
+- `media.js` before any GSAP owner, so video never depends on animation.
+- On `/`: `hero-scene.js` → `home-composition.js` → `arrival.js` →
+  `immersive-navigation.js` → `animations.js`.
+- `animations.js` waits for the Webflow IX2 takeover and for fonts before it
+  adds `html.gsap-ready`. Do not move that class earlier.
+
+### Tokens
+
+Site scope (`responsive.css`, available everywhere):
+
+| Token | Value | Use |
+|---|---|---|
+| `--ink` | `#111111` | Body, nav, light-hero text |
+| `--paper` | `#f7f8f8` | Site background |
+| `--paper-full` | `#ffffff` | Cards, menus, fact band |
+| `--muted` | `rgb(17 17 17 / 62%)` | Meta and kickers on paper only |
+| `--mast-muted` | `#2a2a2e` | 13px kicker on lilac grain. Solid charcoal, **not** `--muted`, because 62% ink fails AA on grain |
+| `--mast-on-navy` | `#c8c1e5` | Body, strong and labels on the darkest mast navy `#0A1628` |
+| `--site-gutter` | `clamp(24px, 4vw, 60px)` | Page gutter; narrowed per breakpoint |
+| `--site-content` | `1200px` | Content max width |
+| `--site-readable` | `720px` | Reading measure for case and utility body |
+| `--site-radius-sm` / `--site-radius-md` | `14px` / `24px` (16–20px compact) | Cards and frames |
+| `--site-focus` | `#5b45ff` | Focus ring, 3px with 4–5px offset |
+| `--site-muted` | `#62676a` | Secondary UI text on paper |
+
+Brand scope (shared by home, work index, experience, footer, About):
+
+| Token | Value |
+|---|---|
+| `--footer-lavender` / `--editorial-lilac` / `--story-lilac` | `#D6D4ED` |
+| `--footer-navy` / `--editorial-navy` / `--story-navy` / `--case-stage-ink` | `#0A1628` |
+| `--footer-teal` / `--story-forest` | `#1B3A32` |
+| `--footer-yellow` / `--story-olive` | `#BDB414` |
+| `--editorial-muted` | `rgb(10 22 40 / 70%)` (navy at 70% on lilac) |
+| `--editorial-rule` | `rgb(10 22 40 / 26%)` |
+| `--case-stage-paper` | `#D6D4ED` |
+
+Derive subdued text from these four brand colors with alpha. Do not add a
+standalone hue to get a lighter grey. The same lilac appears under three
+names because three scoped stylesheets own three surfaces; keep the value
+identical when you touch one.
+
+Motion and stage scope:
+
+| Token | Value | Owner |
+|---|---|---|
+| `--case-motion-fast` / `--case-motion-medium` | `220ms` / `420ms` | `case-motion.css` |
+| `--case-motion-ease` | `cubic-bezier(.16, 1, .3, 1)` | `case-motion.css` |
+| `--case-motion-line` / `--case-motion-muted` | `rgb(17 17 17 / 18%)` / `/ 32%` | `case-motion.css` |
+| `--arrival-assembly-duration` | `3666.667ms` (220 frames at 60fps) | `arrival.css` |
+| `--arrival-progress` / `--arrival-fidelity` | runtime, written by `arrival.js` | `arrival.css` |
+| `--case-stage-gutter` | `clamp(20px, 4vw, 72px)` | `case-opening.css` |
+| `--editorial-gutter` | `clamp(24px, 4.8vw, 80px)` | `editorial-sections.css` |
+| `--story-gutter` | `clamp(24px, 5.2vw, 88px)` | `story.css` |
+| `--immersive-link-ink` | `#0A1628` | `compact-navigation.css` |
+
+### Breakpoints and media features
+
+| Query | Meaning |
+|---|---|
+| `max-width: 479px` | Smallest phone tuning |
+| `max-width: 599px` / `min-width: 600px` | Compact stack turning into two-up |
+| `max-width: 767px` | Inherited Webflow tier. Do not author new rules here. One existing exception: the arrival wordmark block in `arrival.css` |
+| `max-width: 991px` / `min-width: 992px` | **The** split: stable compact bar against the desktop utility journey |
+| `min-width: 1200px`, `min-width: 1800px` | Wide tuning only |
+| `(hover: hover) and (pointer: fine)` | Desktop pointer motion may run |
+| `(hover: none), (pointer: coarse)` | Restrained decorative depth only; a first tap always follows the link |
+| `prefers-reduced-motion: reduce` | Static composited state. The largest single rule group in the codebase |
+| `max-height: 600px` | Short viewport: role and primary action come before decoration |
+
+The home hero's pointer motion requires 992px **and** a fine pointer, so a wide
+touch screen gets the compact contract there, not the desktop one. `/about` is
+the known exception: `story-motion.js` picks its cinematic mode from width and
+height alone (992px and 700px), with no pointer test, so a wide touch screen
+does get its cinematic layout. Do not document or test a pointer gate for
+`/about` until that runtime actually has one. The compact contract is
+a different motion budget, not the absence of the glass: the pinned 210svh track
+needs `innerHeight >= 780`, while the live object itself is present wherever the
+scene is ready and motion is allowed.
+
+### Checks
+
+`npm test` runs eight scripts in order; `npm run test:e2e` runs seventeen
+Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
+the file that already owns that subject.
+
+| Script | Owns |
+|---|---|
+| `check-site.mjs` | One H1, unique title and description, canonical, valid JSON-LD, every local reference resolves |
+| `check-responsive.mjs` | Compact composition, image stability, landmarks, social previews, the reduced-motion and native-scroll contract |
+| `check-motion.mjs` | Pages reference byte-identical hashed release files; motion ownership and initialisation order |
+| `check-server.mjs` | Express behaviour: redirects, private paths, and that only content-versioned files get an immutable cache |
+| `check-editorial-media.mjs` | Posters, muted loop attributes, evidence-note chrome, real OG files, breadcrumb and service schema |
+| `check-design.mjs` | This file. Named anti-patterns, work order, header lock, home H1 and JSON-LD identity |
+| `check-client-seo.mjs` | Service pages: visible offer, en/hu equivalence, no invented price or review |
+| `check-analytics.mjs` | Gate and owner order, hidden settings, EU host, the insights lock for project **265707** |
+
+Playwright specs, grouped by what they defend:
+
+- **Arrival and hero:** `arrival-fidelity`, `arrival-pointer`, `hero-motion`,
+  `hero-reference`, `home-composition`, `home-first-paint`.
+- **Chrome:** `compact-navigation`, `contact-copy`, `case-first-paint`.
+- **Content and access:** `portfolio` (the large accessibility and AA suite),
+  `editorial-media`, `story-motion`.
+- **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,
+  `analytics`, `analytics-off`.
+
+`check-design.mjs` also asserts that this file keeps naming every
+anti-pattern in the table above. Renaming one here without renaming it there
+fails CI, which is the point: the vocabulary is the contract.
+
+### Asset hashing and cache policy
+
+`server.js` serves `assets/**` with `must-revalidate` by default, and gives a
+one-year immutable policy **only** to files whose name carries the first
+twelve characters of their own SHA-256 digest, in these families:
+
+- JS: `animations`, `media`, `arrival`, `hero-scene`, `home-composition`,
+  `immersive-navigation`, `case-opening`, `story-motion`
+- CSS: `case-motion`, `responsive`, `arrival`, `home-composition`,
+  `case-opening`, `editorial-sections`, `compact-navigation`, `project-index`,
+  `story`
+
+After editing one of those sources: recompute the digest, write the hashed
+copy beside the source, update every page reference, and delete nothing. Stale
+hashed copies stay on disk so a cached page keeps resolving. `check-motion.mjs`
+verifies that each page's reference is byte-identical to the current source,
+so a forgotten re-hash fails CI rather than shipping a stale file behind an
+immutable header.
+
+### Change runbook
+
+1. Read the reader job for the surface you are touching, then the anti-pattern
+   table. Most requests are already answered there.
+2. Compose from **Primitives**. If nothing fits, add one name to the scoped
+   stylesheet that owns the surface, and add it to Primitives in the same
+   change.
+3. Keep one owner per animated target. New motion joins the existing
+   responsive context and removes its own listeners, transforms and
+   ScrollTriggers on breakpoint or preference change.
+4. Re-hash touched release files and update page references.
+5. Run `npm test`, then `npm run test:e2e`.
+6. Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`,
+   `/work/kineticare` and `/about` at 1280 and 390, with and without
+   `prefers-reduced-motion`.
+7. If a correction repeats, encode it: prose here, mechanic in CSS, check in
+   `scripts/check-design.mjs`. Never hand-tune one page and leave the rule
+   unwritten.
 
 ## Motion
 
@@ -592,6 +864,22 @@ One owner
 per animated target; responsive and preference changes remove obsolete GSAP
 contexts and restore the correct static/composited state. No pinning, snap,
 scroll hijack or infinite idle rotation.
+
+**Compact glass (2026-09-15).** Without the pin the same object stays live in
+the drawing slot rather than resolving to its flat endpoint, so phones, tablets
+and short desktop windows get glass instead of a drawing. User-confirmed
+(2026-09-15) that phones keep it: do not trade the live object back for the
+static drawing on phones as a battery optimisation. The restraint below is
+where that cost is paid. The compact contract
+is restrained: the object never blends toward the flat artwork, its own scene's
+native scroll turns it within a bounded arc, and it holds still when the page
+does. No idle loop, no drag, no fragment scatter and no pointer response on a
+coarse pointer; a fine pointer may still tilt it. Render density stays capped
+and the renderer sleeps offscreen. It must not overlap the role, dek, primary
+action or proof, and reduced motion, enlarged text and WebGL failure still fall
+back to the single static drawing. The stage hides the lettering here, so the
+same approved title artwork is painted into the refraction source behind the
+slot; it is what the glass shows through itself, never a second visible layer.
 
 First-session arrival assembles the horizontal brand for 220/60 seconds,
 waits for real fonts/critical images/scene readiness, then shows Enter. The
