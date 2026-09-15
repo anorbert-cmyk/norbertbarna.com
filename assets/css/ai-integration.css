@@ -67,8 +67,8 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 
 /* 4. The olive close: board 1, bottom right. Holds the one real contact action. */
 .ai-better { position: relative; overflow: hidden; padding: clamp(72px, 10vw, 128px) var(--ai-gutter) 0; background: var(--ai-olive); color: var(--ai-ink); }
-.ai-better h2 { max-width: 12ch; font-size: clamp(54px, 7.6vw, 124px); line-height: .9; }
-.ai-better-dek { max-width: 30ch; margin-top: clamp(22px, 3vw, 36px); font-size: clamp(18px, 1.6vw, 24px); line-height: 1.4; letter-spacing: -.02em; }
+.ai-better h2 { max-width: 12ch; font-size: clamp(54px, 7.6vw, 124px); line-height: .92; }
+.ai-better-dek { max-width: 30ch; margin-top: clamp(28px, 4vw, 48px); font-size: clamp(18px, 1.6vw, 24px); line-height: 1.4; letter-spacing: -.02em; }
 .ai-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; margin-top: clamp(28px, 4vw, 48px); }
 .ai-page main button.footer-email.ai-cta-pill { display: inline-flex; align-items: center; height: 44px; max-width: 100%; padding: 0 24px; border: 0; border-radius: 0; color: var(--ai-lilac); background: var(--ai-navy); font: 400 14px/1.4 Inter, sans-serif; letter-spacing: -.005em; white-space: nowrap; cursor: pointer; }
 .ai-page main button.footer-email.ai-cta-pill:hover { text-decoration: underline; text-underline-offset: 4px; }
