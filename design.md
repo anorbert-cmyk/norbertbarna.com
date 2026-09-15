@@ -413,26 +413,6 @@ Invent nothing here, and add no metric the owner has not stated. The same five r
 appear as described `hasOccupation` entries in the home `Person` schema; when a row
 changes, its schema entry changes with it.
 
-**The shared page mark (2026-09-15).** Every page other than the home page carries
-`.page-chevron-mark`, a small still chevron in its header, so one identity runs
-through the site instead of living only in the opening. It is decoration: aria
-hidden, pointer inert, absolutely positioned so it never takes a grid cell, changes
-a reading layout or pushes a documented fold. It is the same object the home hero
-assembles and the `/about` stage stands in the corridor, never a second hero, never
-a link, and never large enough to compete with a page's own title.
-
-**The mark turns with the page (2026-09-15).** Native scroll drives it, on every
-viewport including phones: the resolved gate hands over to the glass chevron and
-the chevron ends pointing down the page. Scroll owns it, so it stops when the
-reader stops and never idles. A mark pinned to the top of the document leaves a
-phone screen in about 130px, too fast to watch, so the owner holds it against the
-scroll for the length of the turn and then lets it travel away. Keep the handover
-short: two different silhouettes held at similar opacity read as ghosting rather
-than one object changing state. The arithmetic lives in the owner, not in CSS, so
-the stylesheet's defaults are the honest resting state. Every page carries a
-blanket `html.no-motion * { opacity: 1 !important }`, so reduced motion has to
-re-assert the gate explicitly or both poses show at once.
-
 **Case opening (one centered lilac template)**
 
 1. Desktop travelling site bar; stable compact bar with the Works disclosure
@@ -613,6 +593,7 @@ markup that is being retired: check the page before reusing it.
 `.home-work-footer` `.works-index` `.project-index-intro`
 
 **Home experience and services:** `.editorial-experience`
+`.editorial-experience-lead` `.awards-card-summary`
 `.editorial-experience-art` `.home-service-section` `.home-service-grid`
 `.home-service-title-area` `.home-service-card-title` `.home-about-area`
 `.about-section-title`
@@ -631,9 +612,8 @@ markup that is being retired: check the page before reusing it.
 `.story-perspective` `.story-perspective-art` `.story-sculpture`
 `.story-wing` `.story-backdrop` `.story-stage-shade` `.story-rail`
 `.story-rail-dot` `.story-next` `.story-next-links` `.story-footer`
-`.story-motion-toggle` `.story-draft-note` `.story-eyebrow` `.page-chevron-mark`
-`.editorial-experience-lead` `.awards-card-summary`
-`.story-closing-line` `.story-beginnings` `.story-text-link`
+`.story-motion-toggle` `.story-draft-note` `.story-eyebrow`
+`.story-sculpture-canvas` `.story-closing-line` `.story-beginnings` `.story-text-link`
 `.story-perspective-inner` `.story-sculpture-position` `.story-wing-left`
 `.story-wing-right` `.story-footer-top` `.story-footer-bottom`
 `.story-footer-name`
@@ -880,6 +860,10 @@ immutable header.
 
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis),
 respect `prefers-reduced-motion`, `html.no-motion` and `PortfolioMedia.isReduced()`.
+Every page carries a blanket `html.no-motion * { opacity: 1 !important }`, so
+anything that hides one of two stacked states has to re-assert it explicitly
+under `html.no-motion` or both show at once. Keep such arithmetic in the owner,
+not in CSS, so the stylesheet's defaults stay the honest resting state.
 No new runtime dependency, sound requirement, generated Lottie or visible
 Motion control. Original raw WebGL is the user-requested central hero exception,
 and since 2026-09-15 it serves two stages: the home hero and the Story in Motion
@@ -981,7 +965,11 @@ that has none. The chevron is taller than it is wide where the gate was wider th
 tall, so its slot narrows to hold the same standing height on the floor. The
 drawing stays as the fallback and the two never show at once: WebGL failure and
 reduced motion both resolve to the still, never to both. Outside the home hero
-this treatment belongs to Story in Motion alone; other pages carry no scene.
+this treatment belongs to Story in Motion alone; other pages carry no scene. The
+scene is its own owner inside the story: `PortfolioStoryMotion.destroy()` tears
+down story motion, not the glass, which keeps fitting its canvas to the viewport
+afterwards. Story motion writes on the opening, above the scene host, so the
+"no writes after destroy" guard counts its writes and ignores the scene's.
 Alternate atmospheric chapter openings with still, comfortably spaced reading
 sections. Long biography copy stays semantic and readable while decorative
 artwork moves; native scroll and chapter anchors remain in charge. The About

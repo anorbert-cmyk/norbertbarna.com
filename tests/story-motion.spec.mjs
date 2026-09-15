@@ -346,8 +346,13 @@ test("idle and suspended motion stop updating, and destroy restores readable flo
   await openStory(page);
   await page.evaluate(() => {
     window.__storyWrites = 0;
-    new MutationObserver((entries) => window.__storyWrites += entries.length)
-      .observe(document.querySelector("main[data-story]"), { subtree: true, attributes: true });
+    // The glass scene standing in the opening is a separate owner with its own
+    // lifecycle: it keeps fitting its canvas to the viewport after story motion
+    // is destroyed, which is correct. Story motion writes above that host, on
+    // the opening itself, so every write of its own is still counted here.
+    new MutationObserver((entries) => {
+      window.__storyWrites += entries.filter((entry) => !entry.target.closest("[data-glass-scene]")).length;
+    }).observe(document.querySelector("main[data-story]"), { subtree: true, attributes: true });
   });
   await page.waitForTimeout(100);
   const idle = await page.evaluate(() => window.__storyWrites);
