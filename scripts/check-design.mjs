@@ -62,6 +62,35 @@ const design = readFileSync(join(ROOT, "design.md"), "utf8");
 const raiffeisen = readFileSync(join(ROOT, "work/raiffeisen.html"), "utf8");
 const instructure = readFileSync(join(ROOT, "work/instructure.html"), "utf8");
 
+// iOS paints the northeast glyph as a blue emoji tile. Check the complete
+// served page inventory plus editable CSS/JS, not retired content-hash copies.
+{
+  const pages = ["", "work", "hu"].flatMap((directory) =>
+    readdirSync(join(ROOT, directory))
+      .filter((name) => name.endsWith(".html"))
+      .map((name) => join(directory, name))
+  );
+  const sources = ["assets/css", "assets/js"].flatMap((directory) =>
+    readdirSync(join(ROOT, directory))
+      .filter((name) => /\.(?:css|js)$/.test(name) && !/\.[a-f0-9]{12}\.(?:css|js)$/.test(name))
+      .map((name) => join(directory, name))
+  );
+  const northeastGlyph = /[\u2197\u279a\u2b08]|&#(?:0*8599|x0*2197);?|&(?:nearr|nearrow|UpperRightArrow);|\\(?:u\{0*2197\}|u2197|0*2197)(?![a-f0-9])/i;
+  for (const file of [...pages, ...sources]) {
+    const source = readFileSync(join(ROOT, file), "utf8");
+    if (northeastGlyph.test(source)) {
+      fail(`${file}: replace northeast-arrow emoji with a destination-specific monochrome SVG or the text label alone`);
+    }
+    if (!file.endsWith(".html")) continue;
+    for (const [icon, tag] of source.matchAll(/(<svg\b[^>]*class="[^"]*\blink-icon\b[^"]*"[^>]*>)[\s\S]*?<\/svg>/g)) {
+      if (!/\baria-hidden="true"/.test(tag) || !/\bfocusable="false"/.test(tag) ||
+          !/\b(?:fill|stroke)="currentColor"/.test(icon)) {
+        fail(`${file}: link icons must inherit the label ink and remain decorative, without a tab stop`);
+      }
+    }
+  }
+}
+
 const titles = (html) =>
   [...html.matchAll(/<a[^>]*class="work-title"[^>]*href="\/work\/([^"]+)"/g)].map((m) => m[1]);
 

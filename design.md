@@ -281,6 +281,16 @@ The home, work index, experience and footer share lilac `#D6D4ED`, navy
 its shipped colors. The 2026-09-14 user request supersedes the earlier mesh
 footer, video-backed experience and E′ Weighted index grid.
 
+**Link icons (2026-09-15 correction):** Never use northeast-arrow glyphs or
+platform emoji in navigation, project or contact controls. When an existing
+action needs a mark, use a small monochrome inline SVG: a fine list for Works,
+an envelope for native email, and the existing LinkedIn path for that link.
+`.link-icon` inherits the label ink, has no tile or decorative container, and
+stays `aria-hidden="true" focusable="false"`; visible labels and native
+destinations remain unchanged. Do not replace a rejected arrow with another
+northeast arrow. `check-design.mjs` checks every served HTML page and source
+CSS/JS for literal and encoded variants.
+
 **Editorial footer (2026-09-14)**
 
 One site-wide `.footer-section.editorial-footer` on all thirteen content pages.
@@ -1008,6 +1018,12 @@ waits for real fonts/critical images/scene readiness, then shows Enter. The
 counter reports completed real prerequisites; Enter additionally waits for
 the minimum name-assembly duration. It does not simulate bytes downloaded. Enter triggers a one-second upward curtain.
 Internal navigation skips it and cases retain their own bounded opening.
+The shared navigation script records a visit on every route before optional
+motion starts, including Works, About and both AI pages. It exposes whether
+the current document is the first arrival before setting the existing
+session flag for the next document. Same-origin referrers also skip the brand
+curtain when a link opens without shared storage. No page URL or analytics
+event is stored; unavailable session storage leaves the introduction skipped.
 Reduced motion, unavailable prerequisites, no JavaScript,
 restored scroll/hash navigation and user interaction must have prompt readable
 content. Bounded fail-open cleanup prevents an overlay trapping the page.
