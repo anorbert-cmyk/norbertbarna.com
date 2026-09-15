@@ -73,14 +73,19 @@ a drop-in file for a source render. This is a narrow exception to the image
 rule below, tied to these two boards. The selected and related work rows use
 the boards' own project marks, cropped the same way.
 
-The whole page is choreographed by the same owner (2026-09-15): the passage
-settles in and the action's rule draws on load; the bars arrive from the
-right and the numbered rule at the foot arrives a beat apart; the olive band
-slides in from the edge while the close's lines arrive; the second passage
-drifts against the page and the start rows arrive one after another. Every
-arrival is opacity only on reading text and transform only on artwork, every
-property falls back to the finished board, and the CSS keyframes are off
-under reduced motion and `html.no-motion`.
+The movement is CSS scroll-driven animation (2026-09-15), run by the
+compositor: each piece of artwork follows its own `view()` timeline, the
+ribbon camera follows the pinned stage's scroll on a desktop (a named
+`view-timeline` on the track, `contain` range) and the ribbon's sticky run on
+a phone. Every timeline sits inside `@supports (animation-timeline: view())`
+and is gated on `[data-ai-motion="on"]`, which only the owner sets, so
+browsers without scroll timelines, reduced motion, `html.no-motion` and no
+JavaScript all show the finished board. The owner (`ai-motion.js`) decides
+whether motion runs and in which mode, and keeps the 01 / 03 counter with
+the camera; it writes no styles. Artwork takes transforms and opacity;
+reading text never animates, except the three steps and the work row, which
+arrive by opacity with the camera as the boards intend. The passage settles
+in and the action's rule draws on load (time-based keyframes, same gate).
 
 The page has its own stylesheet and native-scroll owner (`ai-integration.css`,
 `ai-motion.js`), released as content-hashed files, loaded on these two routes
