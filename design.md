@@ -360,6 +360,12 @@ links, heading hierarchy and visible keyboard focus.
   keeping `Works / {Project}` on desktop. Compact hides that duplicate
   breadcrumb and includes a native Works link in the disclosure alongside
   LinkedIn. Shared entrances must never hide navigation indefinitely.
+- At widths up to 991px every page opens the same disclosure (owner request,
+  2026-09-15): the About page's panel is the pattern. It drops under the bar
+  at full width on the page's own field (lilac everywhere, navy on About),
+  with left-aligned 17px rows of 48px, no card, radius or shadow, and the
+  current page underlined in olive. `compact-navigation.css` owns it;
+  `story.css` only recolours it for About.
 - At widths up to 991px every page uses a stable lilac/navy top bar. No travel,
   reading-slot fade, footer relocation or expanded terminal wordmark. Preserve
   native scrolling, menu/focus behavior and browser-height changes.

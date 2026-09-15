@@ -39,7 +39,8 @@ body.ai-page {
   .ai-page .navbar .nav-logo-wrap img { filter: brightness(0) saturate(100%) invert(92%) sepia(8%) saturate(655%) hue-rotate(196deg) brightness(98%) contrast(88%); }
 }
 @media (max-width: 991px) {
-  .ai-lang { padding: 0 12px; }
+  .ai-lang { gap: 12px; padding: 0; }
+  .ai-lang .nav-link { width: auto; min-width: 32px; justify-content: center; }
   .ai-hero { min-height: calc(100svh - 64px); }
 }
 
