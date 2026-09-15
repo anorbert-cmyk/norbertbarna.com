@@ -2,6 +2,19 @@
 (function () {
   "use strict";
 
+  // Every page is a visit, even when it has no optional arrival animation.
+  // Keep the entry state separate from the marker we set for the next page,
+  // so a direct first visit can still play the introduction once.
+  var hasVisited = true;
+  try {
+    hasVisited = Boolean(sessionStorage.getItem("nb-arrival-seen-v2"));
+    sessionStorage.setItem("nb-arrival-seen-v2", "1");
+  } catch (error) {
+    // Storage restrictions must leave the content immediately available.
+    hasVisited = true;
+  }
+  window.PortfolioVisit = { firstArrival: !hasVisited };
+
   function initNavigation() {
     var root = document.documentElement;
     var primaryNavigation = document.querySelector(".nav-menu");
