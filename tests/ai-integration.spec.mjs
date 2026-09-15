@@ -81,6 +81,7 @@ for (const [language, path] of ROUTES) {
     expect(steps[2], "the last step has not arrived while the lens is on the first segment").toBeLessThan(0.05);
     await scrollToCamera(page, 0.5);
     expect(Math.abs(await stageTop()), "the stage stays pinned mid-journey").toBeLessThanOrEqual(1);
+    await expect(page.locator(".ai-pieces-count span"), "the counter follows the camera").toHaveText("02");
     expect(await ribbonIsIdentity(page), "the lens is close on the ribbon").toBe(false);
     steps = await opacities(page);
     expect(steps[0]).toBeGreaterThan(0.95);
@@ -88,6 +89,7 @@ for (const [language, path] of ROUTES) {
     expect(await readingTransforms(page), "reading text never receives a transform").toEqual([]);
     await scrollToCamera(page, 1);
     steps = await opacities(page);
+    await expect(page.locator(".ai-pieces-count span")).toHaveText("03");
     expect(steps.every((value) => value > 0.99), "the finished board shows every step").toBe(true);
     expect(await page.evaluate(() => Number(getComputedStyle(document.querySelector("[data-ai-work]")).opacity))).toBeGreaterThan(0.99);
     const scale = await page.evaluate(() => new DOMMatrix(getComputedStyle(document.querySelector("[data-ai-ribbon] img")).transform).a);
@@ -167,6 +169,7 @@ test.describe("without JavaScript", () => {
     expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-stage]")).position)).not.toBe("sticky");
     expect((await opacities(page)).every((value) => value > 0.99)).toBe(true);
     await expect(page.locator("main button.footer-email")).toBeVisible();
+    expect(await page.evaluate(() => [...document.querySelectorAll(".ai-start-body > *, .ai-steps-rule > li, .ai-better > *")].every((element) => Number(getComputedStyle(element).opacity) === 1)), "every row stands finished without the owner").toBe(true);
     await expect(page.locator('main a[href="/work/instructure"]').first()).toBeVisible();
   });
 });
