@@ -246,7 +246,7 @@ for (const page of ANIMATED_PAGES) {
     }
     const scripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map((match) => match[1]);
     if (scripts.filter((src) => src === `${assetPrefix(page)}assets/js/${immersiveNavigationFile}`).length !== 1) {
-      fail(`${page}: expected the current utility-header journey script once`);
+      fail(`${page}: expected the current stable utility-header script once`);
     }
     if (page === "index.html") {
       const sceneIndex = scripts.indexOf(`assets/js/${heroSceneFile}`);

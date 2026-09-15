@@ -461,9 +461,11 @@ if (!/\.home-mast\[data-glass-live\][^{]*\.home-mast-canvas\s*\{[^}]*visibility:
 if (!animationJs.includes("PortfolioHomeMorph")) {
   fail("the shared statement animation must yield ownership to the home composition");
 }
-if (!journeyJs.includes("scrollY / limit") || !journeyJs.includes("prefers-reduced-motion") ||
-    /preventDefault\(/.test(journeyJs)) {
-  fail("header journey must reflect native page progress while preserving native scroll and motion preferences");
+if (!journeyJs.includes("scrollY / limit") || /preventDefault\(/.test(journeyJs)) {
+  fail("header progress must reflect native page scrolling without intercepting it");
+}
+if (/readingClearance|header\.animate\(|--nav-travel|--nav-brand-scale|immersive-nav-landing/.test(journeyJs)) {
+  fail("TravellingWorkBar: navigation must stay in the top bar without reading-slot fades or footer relocation");
 }
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");
