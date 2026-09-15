@@ -38,7 +38,7 @@ body.ai-page {
 .ai-lang { display: inline-flex; align-items: center; gap: 10px; font: 400 14px/1.4 Inter, sans-serif; letter-spacing: .04em; }
 .ai-lang a { color: inherit; display: inline-flex; align-items: center; min-width: 32px; min-height: 44px; justify-content: center; text-decoration: none; }
 .ai-lang a[aria-current="page"] { text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 2px; }
-.ai-lang span { opacity: .55; }
+.ai-lang span { opacity: .74; }
 .ai-page .menu-button { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; padding: 10px; cursor: pointer; }
 .ai-page .w-icon-nav-menu { font-family: webflow-icons !important; font-size: 24px !important; }
 @media (min-width: 992px) {
@@ -110,3 +110,40 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
   .ai-hero-art img { transform: none !important; }
 }
 html.no-motion .ai-hero-art img { transform: none !important; }
+
+/* 2. Board 1 opening: the offer on the lilac field with the three glass bars. */
+.ai-shape { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); grid-template-rows: minmax(0, 1fr) auto; min-height: 100svh; padding: clamp(96px, 12svh, 150px) var(--ai-gutter) 0; overflow: hidden; background: var(--ai-lilac); color: var(--ai-ink); }
+.ai-shape-copy { position: relative; z-index: 2; grid-column: 1; align-self: center; padding-bottom: clamp(56px, 8svh, 110px); }
+.ai-eyebrow-rule { display: flex; align-items: center; gap: 14px; }
+.ai-eyebrow-rule::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+.ai-shape h2 { max-width: 13ch; margin-top: 26px; font-size: clamp(50px, 6vw, 104px); line-height: .92; overflow-wrap: normal; hyphens: manual; }
+html[lang="hu"] .ai-shape h2 { max-width: none; font-size: clamp(42px, 4.5vw, 84px); }
+.ai-shape-dek { max-width: 34ch; margin-top: clamp(24px, 3svh, 34px); font-size: clamp(17px, 1.35vw, 21px); line-height: 1.45; letter-spacing: -.015em; }
+.ai-shape-text { max-width: 42ch; margin-top: 16px; font-size: clamp(15px, 1.05vw, 17px); line-height: 1.55; letter-spacing: -.01em; }
+.ai-shape .ai-actions { margin-top: clamp(28px, 4svh, 44px); }
+.ai-page main a.ai-cta-pill, .ai-cta-pill { display: inline-flex; align-items: center; gap: 14px; min-height: 44px; padding: 0 24px; border: 0; border-radius: 0; color: var(--ai-lilac); background: var(--ai-navy); font: 400 14px/1.4 Inter, sans-serif; text-decoration: none; }
+a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
+.ai-cta-pill:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ai-shape-art { position: absolute; right: -2%; top: 6%; z-index: 1; width: 60%; pointer-events: none; }
+.ai-shape-art img { display: block; width: 100%; height: auto; transform: translateY(var(--ai-shape-y, 0px)) rotate(var(--ai-shape-rotate, 0deg)); transform-origin: 50% 70%; }
+.ai-shape-label { position: absolute; right: var(--ai-gutter); bottom: 92px; z-index: 2; text-align: right; }
+.ai-steps-rule { grid-column: 1 / -1; grid-row: 2; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; list-style: none; margin: 0; padding: 18px 0 22px; border-top: 1px solid var(--ai-rule); }
+.ai-steps-rule li { display: flex; gap: 14px; }
+.ai-steps-rule li span { opacity: .74; }
+@media (max-width: 991px) {
+  /* The phone mockup stacks copy, bars, then the actions: the copy block
+     dissolves into the grid so its children can take that order. */
+  .ai-shape { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; min-height: 0; padding-top: 64px; padding-bottom: 0; }
+  .ai-shape-copy { display: contents; }
+  .ai-shape > *, .ai-shape-copy > * { grid-column: 1; }
+  .ai-shape .ai-eyebrow-rule { order: 1; }
+  .ai-shape h2 { order: 2; font-size: clamp(40px, 9.6vw, 76px); max-width: none; }
+  html[lang="hu"] .ai-shape h2 { font-size: clamp(30px, 9.2vw, 72px); }
+  .ai-shape-dek { order: 3; }
+  .ai-shape-text { order: 4; }
+  .ai-shape-art { order: 5; position: relative; inset: auto; width: 100%; margin: 28px 0 8px; }
+  .ai-shape-label { order: 6; position: static; text-align: left; }
+  .ai-shape .ai-actions { order: 7; flex-direction: column; align-items: stretch; gap: 8px; margin: 28px 0 40px; }
+  .ai-shape .ai-actions .ai-cta-pill, .ai-shape .ai-actions .ai-link-plain { justify-content: center; }
+  .ai-steps-rule { order: 8; grid-row: auto; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+}
