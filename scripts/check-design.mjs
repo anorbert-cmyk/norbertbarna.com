@@ -165,6 +165,45 @@ if (worksLd) {
     fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
   }
 }
+// One identity across the site: every page other than the home page carries the
+// shared chevron mark, and /about stands the same object in its corridor. The
+// mark is decoration, so it stays aria-hidden and never becomes a link.
+{
+  const pages = [
+    "works.html", "about.html", "privacy.html", "ai-integration.html",
+    "hu/ai-integracio.html", "hu/adatvedelem.html",
+    ...WORK.map((slug) => `work/${slug}.html`),
+  ];
+  for (const page of pages) {
+    const markup = readFileSync(join(ROOT, page), "utf8");
+    const carries = page === "about.html"
+      ? /class="story-sculpture"[^>]*src="[^"]*hero-chevron\.svg"/.test(markup)
+      : /<div class="page-chevron-mark" aria-hidden="true"><img src="\/assets\/images\/hero-chevron\.svg"/.test(markup);
+    if (!carries) fail(`${page} carries no reference to the home hero object`);
+    if (/<a[^>]*>\s*<[^>]*class="page-chevron-mark"/.test(markup)) {
+      fail(`${page}: the shared page mark is decoration, not a link`);
+    }
+  }
+  if (/class="story-sculpture"[^>]*hero-final\.webp/.test(readFileSync(join(ROOT, "about.html"), "utf8"))) {
+    fail("/about must stand the glass chevron in its corridor, not the flat gate");
+  }
+}
+// The experience section is a career, not a list: a lead names the arc and every
+// row says what the step was. Each row must also stand alone in the schema.
+{
+  const rows = [...home.matchAll(/<div class="awards-card" role="listitem">([\s\S]*?)<\/div>\n<\/div>/g)];
+  const described = [...home.matchAll(/class="awards-card-summary">([^<]{80,})</g)];
+  if (!/class="editorial-experience-lead"/.test(home)) {
+    fail("the experience section must open with the arc its five rows belong to");
+  }
+  if (described.length !== 5) {
+    fail(`every experience row must say what the step was (${described.length} of 5 described)`);
+  }
+  const occupations = [...home.matchAll(/"@type": "Occupation",\n\s*"name": "[^"]+",\n\s*"description": "[^"]{80,}"/g)];
+  if (occupations.length !== 5) {
+    fail(`all five roles must carry a described Occupation entry (found ${occupations.length})`);
+  }
+}
 if (!/"jobTitle": "Product VP"/.test(home)) {
   fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
 }
@@ -606,7 +645,9 @@ for (const slug of WORK) {
     html.indexOf("</header>") + 9
   );
   if (slug === "kineticare") {
-    const mediaNodes = [...header.matchAll(/<(?:video|img|picture|iframe)\b/gi)];
+    // The shared page mark is site chrome, not hero media; count the hero slot.
+    const heroSlot = header.replace(/<div class="page-chevron-mark"[\s\S]*?<\/div>/gi, "");
+    const mediaNodes = [...heroSlot.matchAll(/<(?:video|img|picture|iframe)\b/gi)];
     if (mediaNodes.length !== 1 || !/<video[^>]*data-autoplay-video/.test(header)) {
       fail(`kineticare: case header must contain exactly one autoplaying video (found ${mediaNodes.length} media nodes)`);
     }

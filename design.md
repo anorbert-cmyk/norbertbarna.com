@@ -404,6 +404,22 @@ art, original summaries and native links. No “these aren’t mockups” manife
 **Home professional experience:** five chronological text rows on lilac, original
 roles/companies/dates, the original folded gate beside the heading. Company names
 are visually prominent. No decorative video, pointer/tap state or fake tab stop.
+A lead paragraph under the heading names the arc the five rows belong to, and each
+row carries one short paragraph saying what that step actually was, so the section
+reads as one career rather than five unconnected posts. Each row stands on its own:
+a reader or an answer engine can take one without the rest for context. Every claim
+in them is the owner's own, checkable, and carries the employer it belongs to.
+Invent nothing here, and add no metric the owner has not stated. The same five roles
+appear as described `hasOccupation` entries in the home `Person` schema; when a row
+changes, its schema entry changes with it.
+
+**The shared page mark (2026-09-15).** Every page other than the home page carries
+`.page-chevron-mark`, a small still chevron in its header, so one identity runs
+through the site instead of living only in the opening. It is decoration: aria
+hidden, pointer inert, absolutely positioned so it never takes a grid cell, changes
+a reading layout or pushes a documented fold. It is the same object the home hero
+assembles and the `/about` stage stands in the corridor, never a second hero, never
+a link, and never large enough to compete with a page's own title.
 
 **Case opening (one centered lilac template)**
 
@@ -603,7 +619,8 @@ markup that is being retired: check the page before reusing it.
 `.story-perspective` `.story-perspective-art` `.story-sculpture`
 `.story-wing` `.story-backdrop` `.story-stage-shade` `.story-rail`
 `.story-rail-dot` `.story-next` `.story-next-links` `.story-footer`
-`.story-motion-toggle` `.story-draft-note` `.story-eyebrow`
+`.story-motion-toggle` `.story-draft-note` `.story-eyebrow` `.page-chevron-mark`
+`.editorial-experience-lead` `.awards-card-summary`
 `.story-closing-line` `.story-beginnings` `.story-text-link`
 `.story-perspective-inner` `.story-sculpture-position` `.story-wing-left`
 `.story-wing-right` `.story-footer-top` `.story-footer-bottom`
@@ -937,6 +954,11 @@ for implementation. Its decorative corridor/fold images, the requested home
 sculpture and the unique geometric work-list images are narrow exceptions to
 the earlier blanket image-generation ban. They never replace real product
 evidence, portraits, logos or biography facts; no new palette is authorized.
+The object standing in the corridor is the glass chevron the home hero assembles,
+not the flat gate it morphs into (changed 2026-09-15): the two headers should read
+as the same object seen twice, and the gate keeps the editorial footer. The chevron
+is taller than it is wide where the gate was wider than tall, so its slot narrows
+to hold the same standing height on the floor.
 Alternate atmospheric chapter openings with still, comfortably spaced reading
 sections. Long biography copy stays semantic and readable while decorative
 artwork moves; native scroll and chapter anchors remain in charge. The About
