@@ -240,8 +240,8 @@ if (homeLd?.["@type"] !== "ProfilePage" || homeLd?.name !== "Norbert Barna — P
 if (homeLd?.mainEntity?.["@type"] !== "Person" || homeLd?.mainEntity?.name !== "Norbert Barna") {
   fail("JobTitleDrift: Person name must be Norbert Barna, not a job title");
 }
-if (homeLd?.mainEntity?.image !== "https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg") {
-  fail("PersonImageMissing: home Person image must be the existing OG portrait");
+if (homeLd?.mainEntity?.image || homeLd?.primaryImageOfPage?.["@type"] !== "ImageObject") {
+  fail("PreviewIdentityMixup: decorative artwork belongs to the page ImageObject, not the Person profile image");
 }
 const homeServices = home.match(/<section\b[^>]*class="home-service-section\b[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
 if (!homeServices || /footer-email|hero-work-link|footer-cta|linkedin\.com/.test(homeServices)) {
@@ -611,10 +611,10 @@ for (const page of SERVICE_PAGES) {
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
     return [...main.matchAll(/<(header|section)\b[^>]*\bid="([^"]+)"/g)].map(([, tag, id]) => `${tag}#${id}`).join(" ");
   };
-  const expected = "header#top section#shaped section#pieces section#selected-work section#start section#questions";
+  const expected = "header#top section#shaped section#pieces section#workflow section#selected-work section#start section#questions";
   const pages = SERVICE_PAGES.map((page) => [page, readFileSync(join(ROOT, page), "utf8")]);
   for (const [page, html] of pages) {
-    if (skeleton(html) !== expected) fail(`${page}: the six service sections must stand in order (${skeleton(html)})`);
+    if (skeleton(html) !== expected) fail(`${page}: the seven service chapters must stand in order (${skeleton(html)})`);
     for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-journey", "data-ai-ribbon", "data-ai-work"]) {
       if ((html.match(new RegExp(`\\b${hook}(?=[\\s>=])`, "g")) || []).length !== 1) fail(`${page}: exactly one ${hook} hook`);
     }

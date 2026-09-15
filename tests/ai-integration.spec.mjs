@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 // reading steps and case links are always available, including before the camera
 // reaches them. The Passage closing is the actual footer, after the FAQ.
 const ROUTES = [["en", "/ai-integration"], ["hu", "/hu/ai-integracio"]];
-const SECTIONS = ["#top", "#shaped", "#pieces", "#selected-work", "#start", "#questions"];
+const SECTIONS = ["#top", "#shaped", "#pieces", "#workflow", "#selected-work", "#start", "#questions"];
 let errors;
 test.beforeEach(async ({ page }) => {
   errors = [];
@@ -72,7 +72,7 @@ async function expectFallbackCaptionsReadable(page) {
   }
 }
 async function expectReadingAvailable(page) {
-  const unavailable = await page.locator("[data-ai-step], #selected-work a").evaluateAll((elements) => elements.flatMap((element) => {
+  const unavailable = await page.locator("[data-ai-step], #workflow li, #selected-work a").evaluateAll((elements) => elements.flatMap((element) => {
     let opacity = 1;
     for (let node = element; node; node = node.parentElement) {
       const style = getComputedStyle(node);
@@ -90,9 +90,16 @@ async function expectFocusedLinkPainted(page, link) {
   const state = await link.evaluate((element) => {
     const box = element.getBoundingClientRect();
     const navBottom = document.querySelector(".navbar").getBoundingClientRect().bottom;
-    const y = Math.max(navBottom + 5, box.top + 5);
+    // Inline contextual links can wrap: their union box contains unlinked gaps.
+    // Hit-test each painted line instead of sampling the empty middle of that box.
+    const visibleRects = [...element.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0 && rect.bottom > navBottom + 1 && rect.top < innerHeight - 1 && rect.right > 0 && rect.left < innerWidth);
+    const painted = visibleRects.length > 0 && visibleRects.every((rect) => {
+      const x = (Math.max(0, rect.left) + Math.min(innerWidth, rect.right)) / 2;
+      const y = (Math.max(navBottom + 1, rect.top) + Math.min(innerHeight - 1, rect.bottom)) / 2;
+      return element.contains(document.elementFromPoint(x, y));
+    });
     return { top: box.top, bottom: box.bottom, height: innerHeight, outline: getComputedStyle(element).outlineStyle,
-      painted: element.contains(document.elementFromPoint(box.left + box.width / 2, Math.min(innerHeight - 5, y))) };
+      painted };
   });
   expect(state.bottom, "the focused reference is in view").toBeGreaterThan(0);
   expect(state.top, "the focused reference is in view").toBeLessThan(state.height);
@@ -345,6 +352,10 @@ for (const [language, path] of ROUTES) {
     for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
       await page.keyboard.press("Tab");
       await expectFocusedLinkPainted(page, page.locator(`#selected-work a[href="/work/${slug}"]`));
+    }
+    for (const href of ["/work/sportsgambit", "/about#perspective"]) {
+      await page.keyboard.press("Tab");
+      await expectFocusedLinkPainted(page, page.locator(`#selected-work a[href="${href}"]`));
     }
   });
 

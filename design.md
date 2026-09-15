@@ -42,6 +42,10 @@ combining the approved **The Passage (01)** and **Systems in Motion (02)**
 concepts. Preserve the assembled page's copy and section sequence during
 visual refinements; reorganizing content requires an explicit request.
 Only the two AI routes receive this treatment; other footers stay unchanged.
+The 2026-09-15 content expansion explicitly adds a bilingual, natural-flow
+workflow chapter and grounded AI/development examples. Preserve the artwork,
+existing ribbon scene, owner biography and FAQ while enriching the service
+explanation. Contextual case links must identify what the case actually proves.
 
 1. **The Passage opening.** Dark stable navigation, oversized lilac title,
    original triangular forest/olive portal, and a native project contact
@@ -55,16 +59,21 @@ Only the two AI routes receive this treatment; other footers stay unchanged.
    when both natural content rows fit the viewport. The camera and 01–03
    counter travel together. Mobile keeps the ribbon under the 56px bar as the
    steps scroll naturally. No reading text or links fade or transform.
-4. **Selected work.** One semantic section outside the pinned scene, with
+4. **Working together.** A bilingual `#workflow` chapter in natural flow follows
+   the ribbon: map the task, define data access and human review, test a
+   prototype, build a bounded pilot, then measure and hand over. Each step has
+   a concrete output. These describe the proposed service, not historic results.
+   No additional pinning, hidden text, animation owner or metric guarantees.
+5. **Selected work.** One semantic section outside the pinned scene, with
    three whole-row links, factual contribution copy and the same high-resolution
    geometric imagery used by the portfolio. Mobile pairs a small left thumbnail
    with the title and description; enlarged text may reflow naturally. No
    northeast glyph, reserved icon column or duplicate reference list.
-5. **Start with your workflow.** A separately bounded architectural gate,
+6. **Start with your workflow.** A separately bounded architectural gate,
    practical preparation copy and the complete owner-authored biography.
-6. **Before we begin.** Five native details/summary disclosures, first open,
+7. **Before we begin.** Five native details/summary disclosures, first open,
    retaining the exact bilingual question/answer content. Language link follows.
-7. **Let’s build what’s next.** The selected dark Passage footer, with a
+8. **Let’s build what’s next.** The selected dark Passage footer, with a
    narrow olive light slit, live lilac headline, native email-app button,
    LinkedIn and quiet privacy/settings utilities. Contact copy is localized;
    the selected English headline also appears on HU with lang=en.
@@ -202,17 +211,14 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   assembles in 2.3 seconds, responds to pointer tilt/nearby fragmentation and drag.
   Use original dependency-free WebGL with a corresponding SVG fallback.
 - The real H1 remains Product VP, visible at the lower left in the starting pose. Works and the native scroll affordance occupy the lower edge. The user-selected 03/04 direction adds a 210svh native track: the same object turns and morphs to a matte forest/olive triangular folded ribbon on the right, matching the original 03 silhouette: broad sloped left plane, visible olive inner fold and a slimmer outward-leaning right leg. Avoid the earlier thick horizontal lintel and parallel blocky towers. The large live Product VP display, original name/dek, proof and employers resolve on the left; the semantic H1 remains unique. Short windows, no-JS, reduced motion and enlarged text use the final unpinned composition. That composition still carries the live object: phones, tablets and short desktop windows keep the assembled refractive chevron in the right-hand drawing slot the flat gate held, turned by their own native scroll. The flat gate drawing is the fallback, not the compact design.
-- During the home opening and Selected work, NB and destinations form a quiet stable lilac top bar. After that chapter, desktop resumes the distributed utility header: NB left, central wordmark, real page-progress
-  counter and existing destinations. On desktop it travels down the viewport with native
-  page progress and the wordmark expands at the footer. Keyboard focus and the
-  mobile menu return navigation to a stable top position. Reading and product
-  evidence across the main content have a 12px clearance: chrome chooses a
-  free slot above/below neighbouring blocks, or
-  docks at the top on an opaque navy field when enlarged text fills the view.
-  Large changes between reading slots relocate invisibly and settle in 180ms
-  with opacity only; never translate the menu across the paragraph.
-  The terminal wordmark has its own landing after the unchanged footer links;
-  a screen-space offset keeps the scaled letters centred inside that landing.
+- Home navigation stays in one opaque lilac top bar across the entire page,
+  including services, experience and the footer (owner correction, 2026-09-15).
+  NB stays left; Works, About, AI integration, LinkedIn and Email stay in normal
+  layout flow on the right. Do not restore chapter-based relocation, distributed
+  absolute link slots, a progress counter, reading-slot fades or a growing
+  terminal wordmark on Home. The hero still follows its approved morph.
+  Compact keeps the shared disclosure; enlarged desktop text can wrap safely.
+  Desktop case pages retain their existing utility journey independently.
 - `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`, or `setCompactProgress` while `data-glass-live` marks the unpinned slot; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
 - All seven cases inherit the branded arrival/chrome vocabulary; complete real
   product images and text remain. The lilac stage uses a large centered Funnel
@@ -299,7 +305,10 @@ Its lilac field continues the original 03/04 storyboard. A large live
 column; the original folded gate and four existing Work links form the right.
 The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
 
-- Reuse the original NB mark. Keep the real Person metadata and OG portrait.
+- Reuse the original NB mark and factual Person identity. Social previews use
+  the approved forest/olive artwork crop. Mark decorative artwork on the page
+  ImageObject, never as a Person portrait; omit Person.image until a real
+  profile photograph is supplied.
 - Preserve the native `button.footer-email`, its “Discuss your project” label,
   assign-only email handler and destination. Match the hero action with a navy
   capsule and lilac text, at least 48px tall, wrapping safely at enlarged text.
@@ -394,7 +403,9 @@ links, heading hierarchy and visible keyboard focus.
 **Header:**
 
 - Home: NB home link on the left; Works, About, AI integration, LinkedIn and
-  Email on the right, on the pale mast. Every primary navigation carries the
+  Email on the right, in a stable opaque lilac top bar for the full homepage.
+  Desktop links use normal layout flow and never share absolute slots.
+  Every primary navigation carries the
   AI integration item (2026-09-15, owner request); the Hungarian pages link
   its Hungarian pair as `AI-integráció`. Native links and 44px minimum targets; compact keeps the
   accessible disclosure. Email remains a native assign-only button.
@@ -533,7 +544,9 @@ the 16:9 frame (`inset: 0; z-index: 0`). Webflow background-video CSS
 
 ## Copy
 
-Use the shipped case copy. Do not rewrite claims.
+Use the shipped case copy. Do not rewrite claims. The explicitly requested
+AI service expansion may explain the proposed collaboration workflow and add
+contextual service links to cases, without changing their historic claims.
 
 **Search and answer engines (2026-09-15):** every page has a unique title with
 its primary phrase first (`/works` and cases keep starting with their H1, as
@@ -616,7 +629,7 @@ English-wash the screenshot.
 | NavyFlood | Dark artwork intrudes into navy reading text | Keep copy on lilac and reserve separate space for the sculpture |
 | GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid navy ink on lilac, and lilac ink on the dark arrival; sample worst relevant pixels behind glyphs, including reflow |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
-| PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
+| PreviewIdentityMixup | A decorative social image is presented as a Person portrait | Page `image` and `primaryImageOfPage` use the approved crop; omit Person `image` until a real portrait is supplied |
 | HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
@@ -714,6 +727,8 @@ markup that is being retired: check the page before reusing it.
 `.ai-faq-list` `.ai-related` `.ai-related-head` `.ai-related-list`
 `.ai-start-lang` `.ai-footer` `.ai-footer-art` `.ai-footer-content`
 `.ai-footer-top` `.ai-footer-invitation` `.ai-footer-note` `.ai-footer-bottom`
+`.ai-workflow` `.ai-workflow-intro` `.ai-workflow-steps` `.ai-workflow-output`
+`.ai-related-context` `.ai-related-context-after`
 
 **About (`/about` only):** `.story-page` `.story-opening`
 `.story-opening-stage` `.story-opening-copy` `.story-opening-dek`
@@ -780,7 +795,7 @@ only to the sitemap.
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
 | `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
 | `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
-| `compact-navigation.css` | Stable bar up to 991px and the desktop utility journey | 14 content pages |
+| `compact-navigation.css` | Stable Home bar at every width, shared compact bar/disclosure, desktop case utility journey | 14 content pages |
 | `case-opening.css` | Lilac case stage and the four-slice media reveal | cases |
 | `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
@@ -808,7 +823,7 @@ changes its dependencies, so keep a script where it is.
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
-| `immersive-navigation.js` | Compact bar and the desktop travelling header | yes |
+| `immersive-navigation.js` | Stable Home/compact bar and the desktop case travelling header | yes |
 | `case-opening.js` | Case title and media assembly, perspective settle | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
 | `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: hero drift, the bars' handoff, the ribbon camera and the phone pan | yes |
