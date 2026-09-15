@@ -1,0 +1,133 @@
+<!doctype html><meta charset="utf-8"><title>ribbon</title>
+<style>html,body{margin:0;background:transparent}canvas{display:block}</style>
+<body></body><script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const W = 976, H = 122;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: false, preserveDrawingBuffer: true });
+renderer.setPixelRatio(window.devicePixelRatio || 1);
+renderer.setSize(W, H);
+renderer.setClearColor(0x000000, 0);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.physicallyCorrectLights = true;
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.NoToneMapping;
+document.body.appendChild(renderer.domElement);
+
+// A small studio for reflections: a soft white light above, lilac ground, darker sides.
+function studio() {
+  const s = new THREE.Scene(); s.background = new THREE.Color(0xd6d4ed);
+  const light = (w, h, x, y, z, color, intensity, rx, ry) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
+    m.material.color.multiplyScalar(intensity); m.position.set(x, y, z); m.rotation.set(rx || 0, ry || 0, 0); s.add(m);
+  };
+  light(14, 6, 0, 8, 0, 0xffffff, 6, Math.PI / 2, 0);        // ceiling softbox
+  light(6, 3, -9, 3, 2, 0xffffff, 3, 0, Math.PI / 2);        // left key panel
+  light(6, 3, 9, 2, -2, 0xd6d4ed, 1.5, 0, -Math.PI / 2);     // right fill
+  light(40, 40, 0, -0.01, 0, 0xc9c6e6, 1, -Math.PI / 2, 0);  // floor
+  light(40, 20, 0, 5, -14, 0x2a2f4a, 1, 0, 0);               // dark backdrop
+  return s;
+}
+const pmrem = new THREE.PMREMGenerator(renderer); pmrem.compileEquirectangularShader();
+const env = pmrem.fromScene(studio(), 0.04).texture;
+
+const scene = new THREE.Scene(); scene.environment = env;
+const camera = new THREE.PerspectiveCamera(19, W / H, 0.1, 100);
+camera.position.set(-0.8, 1.7, 7.4); camera.lookAt(0.4, 0.5, 0);
+const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(-3, 9, 5);
+key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0004; key.shadow.radius = 8;
+Object.assign(key.shadow.camera, { left: -9, right: 9, top: 4, bottom: -4, near: 1, far: 30 }); scene.add(key);
+scene.add(new THREE.HemisphereLight(0xe2e0f5, 0x6f6aa6, 0.18));
+const rimRight = new THREE.DirectionalLight(0xfff6c8, 0.9); rimRight.position.set(6, 4, 3); scene.add(rimRight);
+
+// Materials: forest green, lilac glass, olive; the back faces darker.
+const green = new THREE.MeshStandardMaterial({ color: 0x173b30, roughness: 0.3, metalness: 0.06, envMapIntensity: 0.5, side: THREE.DoubleSide });
+const greenDark = new THREE.MeshStandardMaterial({ color: 0x0e2a23, roughness: 0.5, metalness: 0.05, envMapIntensity: 0.4 });
+const olive = new THREE.MeshStandardMaterial({ color: 0xbdb414, roughness: 0.28, metalness: 0.06, envMapIntensity: 0.55, side: THREE.DoubleSide });
+const oliveDark = new THREE.MeshStandardMaterial({ color: 0x86800f, roughness: 0.45, metalness: 0.05, envMapIntensity: 0.4 });
+// The glass is a translucent lilac body: the page's field shows through the transparent canvas.
+const glass = new THREE.MeshPhysicalMaterial({ color: 0xc9c5ee, roughness: 0.05, metalness: 0, transparent: true, opacity: 0.46, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 1.1, side: THREE.DoubleSide, depthWrite: false });
+
+// The ribbon: one band, green on its face and olive on its back, glass in the
+// middle, following a broken line and rolling about its own axis so the
+// corners fold and the back shows, as the board's ribbon does.
+const WIDTH = 1.0, DEPTH = 0.09, R = 0.3;
+const points = [[-9.5, 2.4], [-2.8, 1.3], [-2.3, 0.25], [1.85, -0.4], [2.6, 0.9], [6.3, 0.45], [7.6, -0.5], [11.5, -1.5]];
+const path = new THREE.CurvePath();
+const P = points.map(([x, z]) => new THREE.Vector3(x, 0, z));
+for (let i = 0; i < P.length - 1; i += 1) {
+  const a = P[i], b = P[i + 1];
+  const start = i > 0 ? a.clone().add(b.clone().sub(a).normalize().multiplyScalar(R)) : a.clone();
+  const end = i < P.length - 2 ? b.clone().sub(b.clone().sub(a).normalize().multiplyScalar(R)) : b.clone();
+  path.add(new THREE.LineCurve3(start, end));
+  if (i < P.length - 2) {
+    const c = P[i + 2];
+    const next = b.clone().add(c.clone().sub(b).normalize().multiplyScalar(R));
+    path.add(new THREE.QuadraticBezierCurve3(end, b.clone(), next));
+  }
+}
+const N = 520;
+const samples = path.getSpacedPoints(N);
+// Roll of the band about the path, in degrees, at fractions of its length.
+const rollKeys = [[0, 16], [0.30, 16], [0.345, 2], [0.60, 2], [0.64, -12], [0.80, -12], [0.86, 14], [1, 14]];
+const roll = (t) => {
+  for (let i = 1; i < rollKeys.length; i += 1) {
+    const [t0, r0] = rollKeys[i - 1], [t1, r1] = rollKeys[i];
+    if (t <= t1) { const u = (t - t0) / (t1 - t0), e = u * u * (3 - 2 * u); return (r0 + (r1 - r0) * e) * Math.PI / 180; }
+  }
+  return rollKeys[rollKeys.length - 1][1] * Math.PI / 180;
+};
+const glassTop = new THREE.MeshPhysicalMaterial({ color: 0xeeebfb, roughness: 0.04, metalness: 0, transparent: true, opacity: 0.85, clearcoat: 1, clearcoatRoughness: 0.05, envMapIntensity: 1.4 });
+// [from, to, face, back, top edge]: the tape's edge carries the other colour.
+const sections = [[0, 0.335, green, greenDark, olive], [0.335, 0.60, glass, glass, glassTop], [0.60, 0.82, olive, oliveDark, green], [0.82, 1.001, green, greenDark, olive]];
+const up = new THREE.Vector3(0, 1, 0);
+const geo = new THREE.BufferGeometry();
+const positions = [], normals = [];
+const sectionOf = (t) => Math.max(0, sections.findIndex(([a, b]) => t >= a && t < b));
+const faceIndex = sections.map(() => ({ front: [], back: [], top: [], bottom: [] }));
+const ring = [];
+for (let i = 0; i <= N; i += 1) {
+  const t = i / N, p = samples[i];
+  const prev = samples[Math.max(0, i - 1)], next = samples[Math.min(N, i + 1)];
+  const tangent = next.clone().sub(prev).normalize();
+  const w = up.clone().applyAxisAngle(tangent, roll(t)).normalize();      // across the band
+  const n = new THREE.Vector3().crossVectors(tangent, w).normalize();       // out of its face
+  const centre = p.clone().setY(WIDTH / 2 + 0.06);
+  const hw = w.clone().multiplyScalar(WIDTH / 2), hn = n.clone().multiplyScalar(DEPTH / 2);
+  const ids = [];
+  const add = (q, nn) => { ids.push(positions.length / 3); positions.push(q.x, q.y, q.z); normals.push(nn.x, nn.y, nn.z); };
+  const fb = centre.clone().add(hn).sub(hw), ft = centre.clone().add(hn).add(hw), bt = centre.clone().sub(hn).add(hw), bb = centre.clone().sub(hn).sub(hw);
+  add(fb, n); add(ft, n); add(bt, n.clone().negate()); add(bb, n.clone().negate());
+  add(ft, w); add(bt, w); add(fb, w.clone().negate()); add(bb, w.clone().negate());
+  ring.push(ids);
+}
+for (let i = 0; i < N; i += 1) {
+  const a = ring[i], b = ring[i + 1], s = faceIndex[sectionOf(i / N)];
+  s.front.push(a[0], b[0], b[1], a[0], b[1], a[1]);
+  s.back.push(b[3], a[3], a[2], b[3], a[2], b[2]);
+  s.top.push(a[4], b[4], b[5], a[4], b[5], a[5]);
+  s.bottom.push(a[7], b[7], b[6], a[7], b[6], a[6]);
+}
+geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+geo.setAttribute("normal", new THREE.Float32BufferAttribute(normals, 3));
+const materials = [], index = [];
+let offset = 0;
+faceIndex.forEach((s, k) => {
+  const [, , front, back, top] = sections[k];
+  [["front", front], ["back", back], ["top", top || front], ["bottom", top || back]].forEach(([face, material]) => {
+    const list = s[face]; if (!list.length) return;
+    index.push(...list); materials.push(material);
+    geo.addGroup(offset, list.length, materials.length - 1); offset += list.length;
+  });
+});
+geo.setIndex(index);
+const ribbon = new THREE.Mesh(geo, materials); ribbon.castShadow = true; ribbon.receiveShadow = false; ribbon.frustumCulled = false; scene.add(ribbon);
+
+// The floor receives the shadow; the page's field shows through it.
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 40), new THREE.ShadowMaterial({ opacity: 0.3 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+// A faint reflection: the ribbon mirrored under the floor, fading with depth.
+const mirror = ribbon.clone(); mirror.material = materials.map((m) => { const c = m.clone(); c.transparent = true; c.opacity = 0.22; c.depthWrite = false; return c; });
+mirror.scale.y = -1; mirror.castShadow = false; scene.add(mirror);
+renderer.render(scene, camera);
+window.__done = true;
+</script>

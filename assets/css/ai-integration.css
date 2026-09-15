@@ -180,7 +180,14 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 /* The ribbon crosses the stage on top of the reading rows, as it does on the board. */
 .ai-journey { display: contents; }
 .ai-ribbon { position: relative; z-index: 2; width: auto; margin: -18px calc(-1 * var(--ai-gutter) - 1.5vw) -12px; pointer-events: none; }
-.ai-ribbon img { display: block; width: 100%; height: auto; transform-origin: 50% 50%; }
+/* The ribbon is a render (tools/ribbon-scene); its labels are text laid on
+   the strip, so they stay sharp under the lens and read in each language. */
+.ai-ribbon-strip { position: relative; width: 100%; transform-origin: 50% 50%; }
+.ai-ribbon-strip img { display: block; width: 100%; height: auto; }
+.ai-ribbon-label { position: absolute; top: 50%; transform: translate(-50%, -50%) rotate(-3.5deg); font: 400 11px/1 Inter, sans-serif; letter-spacing: .26em; text-transform: uppercase; white-space: nowrap; }
+.ai-ribbon-label-insight { left: 16%; top: 68%; color: #F4F3FB; }
+.ai-ribbon-label-integration { left: 47%; top: 48%; transform: translate(-50%, -50%) rotate(-2deg); color: var(--ai-ink); }
+.ai-ribbon-label-impact { left: 70.5%; top: 46%; transform: translate(-50%, -50%) rotate(-4deg); color: var(--ai-ink); }
 .ai-pieces-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
 .ai-pieces-steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 16px; padding: 0 clamp(16px, 2.4vw, 36px); border-left: 1px solid var(--ai-rule); }
 .ai-pieces-steps li:first-child { padding-left: 0; border-left: 0; }
@@ -209,7 +216,11 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
   .ai-journey { display: block; position: relative; }
   .ai-ribbon { margin: 24px calc(-1 * var(--ai-gutter)) 0; padding: 10px 0 14px; overflow: hidden; background: var(--ai-lilac); }
   [data-ai-motion="on"] .ai-journey .ai-ribbon { position: sticky; top: 56px; z-index: 2; }
-  .ai-ribbon img { width: 180%; max-width: none; transform-origin: 0 50%; -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); }
+  .ai-ribbon-strip { width: 180%; max-width: none; transform-origin: 0 50%; }
+  .ai-ribbon-strip img { -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); }
+  .ai-ribbon-label { font-size: 10px; letter-spacing: .2em; }
+  .ai-ribbon-label-insight { left: 19%; }
+  .ai-ribbon-label-integration { left: 46%; }
   .ai-pieces-steps { padding-top: 10px; }
   .ai-pieces-steps { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .ai-pieces-steps li { padding: 18px 0 0; border-left: 0; border-top: 1px solid var(--ai-rule); }
@@ -292,7 +303,7 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
   [data-ai-motion="on"] .ai-shape-art { animation: ai-bars-in linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
   [data-ai-motion="on"] .ai-shape-art img { animation: ai-bars-leave linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
   [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-track { view-timeline: --ai-journey block; }
-  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-ribbon img { animation: ai-lens linear both; animation-timeline: --ai-journey; animation-range: contain 0% contain 100%; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-ribbon-strip { animation: ai-lens linear both; animation-timeline: --ai-journey; animation-range: contain 0% contain 100%; }
   [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-steps li { animation: ai-arrive linear both; animation-timeline: --ai-journey; }
   [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-steps li[data-ai-step="1"] { animation-range: contain 2% contain 16%; }
   [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-steps li[data-ai-step="2"] { animation-range: contain 36% contain 50%; }
@@ -302,7 +313,7 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
   [data-ai-motion="on"] .ai-start-art img { animation: ai-drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
   @media (max-width: 991px) {
     [data-ai-motion="on"] .ai-journey { view-timeline: --ai-run block; }
-    [data-ai-motion="on"] .ai-journey .ai-ribbon img { animation: ai-pan linear both; animation-timeline: --ai-run; animation-range: contain 0% contain 100%; }
+    [data-ai-motion="on"] .ai-journey .ai-ribbon-strip { animation: ai-pan linear both; animation-timeline: --ai-run; animation-range: contain 0% contain 100%; }
     [data-ai-motion="on"] .ai-pieces-steps li { animation: ai-arrive linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
   }
 }
@@ -310,16 +321,16 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 @keyframes ai-bars-in { from { opacity: 0; transform: translate(7%, 5%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); } to { opacity: 1; transform: none; } }
 @keyframes ai-bars-leave { from { transform: none; animation-timing-function: cubic-bezier(.4, 0, .8, .6); } to { opacity: .35; transform: translateY(16%) rotate(-5deg); } }
 @keyframes ai-lens {
-  0%, 22% { transform: translateX(47.85%) scale(1.45); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
-  42%, 50% { transform: translateX(0%) scale(1.45); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
-  70%, 78% { transform: translateX(-50.75%) scale(1.45); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  0%, 14% { transform: translateX(30%) scale(1.24); animation-timing-function: cubic-bezier(.5, 0, .1, 1); }
+  44%, 54% { transform: translateX(0%) scale(1.24); animation-timing-function: cubic-bezier(.5, 0, .1, 1); }
+  76%, 82% { transform: translateX(-31%) scale(1.24); animation-timing-function: cubic-bezier(.4, 0, .2, 1); }
   100% { transform: translateX(0%) scale(1); }
 }
 @keyframes ai-arrive { from { opacity: 0; animation-timing-function: cubic-bezier(.2, .7, .2, 1); } to { opacity: 1; } }
 @keyframes ai-band-in { from { opacity: 0; transform: translateX(12%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); } to { opacity: 1; transform: none; } }
 @keyframes ai-drift { from { transform: translateY(5%) scale(1.12); } to { transform: translateY(-5%) scale(1.04); } }
 @keyframes ai-pan {
-  0%, 18% { transform: translateX(0%); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
-  44%, 58% { transform: translateX(-27%); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
-  84%, 100% { transform: translateX(-44%); }
+  0%, 12% { transform: translateX(0%); animation-timing-function: cubic-bezier(.5, 0, .1, 1); }
+  46%, 56% { transform: translateX(-26%); animation-timing-function: cubic-bezier(.5, 0, .1, 1); }
+  90%, 100% { transform: translateX(-44%); }
 }

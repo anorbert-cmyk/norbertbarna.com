@@ -40,8 +40,8 @@ async function scrollToCamera(page, progress) {
   await settle(page);
 }
 const opacities = (page) => page.evaluate(() => [...document.querySelectorAll("[data-ai-step]")].map((step) => Number(getComputedStyle(step).opacity)));
-const ribbonTransform = (page) => page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-ribbon] img")).transform);
-const ribbonIsIdentity = (page) => page.evaluate(() => { const m = new DOMMatrix(getComputedStyle(document.querySelector("[data-ai-ribbon] img")).transform); return Math.abs(m.a - 1) < 1e-6 && Math.abs(m.e) < 1e-6; });
+const ribbonTransform = (page) => page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-ribbon] .ai-ribbon-strip")).transform);
+const ribbonIsIdentity = (page) => page.evaluate(() => { const m = new DOMMatrix(getComputedStyle(document.querySelector("[data-ai-ribbon] .ai-ribbon-strip")).transform); return Math.abs(m.a - 1) < 1e-6 && Math.abs(m.e) < 1e-6; });
 const readingTransforms = (page) => page.evaluate(() =>
   [...document.querySelectorAll("main h1, main h2, main h3, main p, main li > div")].map((element) => getComputedStyle(element).transform).filter((value) => value !== "none"));
 const inlineOwnerProperties = (page) => page.evaluate(() =>
@@ -92,7 +92,7 @@ for (const [language, path] of ROUTES) {
     await expect(page.locator(".ai-pieces-count span")).toHaveText("03");
     expect(steps.every((value) => value > 0.99), "the finished board shows every step").toBe(true);
     expect(await page.evaluate(() => Number(getComputedStyle(document.querySelector("[data-ai-work]")).opacity))).toBeGreaterThan(0.99);
-    const scale = await page.evaluate(() => new DOMMatrix(getComputedStyle(document.querySelector("[data-ai-ribbon] img")).transform).a);
+    const scale = await page.evaluate(() => new DOMMatrix(getComputedStyle(document.querySelector("[data-ai-ribbon] .ai-ribbon-strip")).transform).a);
     expect(Math.abs(scale - 1), "the lens has pulled out to the whole ribbon").toBeLessThan(0.01);
     // The scroll releases into the olive close.
     await page.mouse.wheel(0, 900);
