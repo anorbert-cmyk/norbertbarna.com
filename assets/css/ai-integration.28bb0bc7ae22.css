@@ -1,0 +1,112 @@
+/* AI integration service pages: the two approved concept boards (2026-09-15).
+   Board 2 "The passage" opens the page; board 1 "Systems in motion" carries the
+   offer, the ribbon journey and the olive close; board 2 returns for the start.
+   Reading text is never transformed; only the artwork moves. */
+body.ai-page {
+  --ai-navy: #0A1628;
+  --ai-lilac: #D6D4ED;
+  --ai-forest: #1B3A32;
+  --ai-olive: #BDB414;
+  --ai-ink: #0A1628;
+  --ai-gutter: clamp(24px, 5.2vw, 88px);
+  --ai-rule: rgb(10 22 40 / 26%);
+  --ai-rule-light: rgb(214 212 237 / 30%);
+  margin: 0; padding: 0; background: var(--ai-lilac); color: var(--ai-ink);
+  font-family: Inter, sans-serif;
+}
+.ai-page *, .ai-page *::before, .ai-page *::after { box-sizing: border-box; }
+.ai-page main { margin: 0; padding: 0; outline: none; }
+.ai-page :is(h1, h2, h3, p, ul, ol, figure) { margin: 0; color: inherit; }
+.ai-page :is(h1, h2) { font-family: Inter, sans-serif; font-weight: 700; letter-spacing: -.065em; overflow-wrap: anywhere; text-wrap: balance; }
+.ai-page main a { color: inherit; }
+.ai-page main :is(a, button):focus-visible { outline: 3px solid currentColor; outline-offset: 5px; }
+.ai-page section[id], .ai-page header[id] { scroll-margin-top: 72px; }
+.ai-eyebrow { font: 400 11px/1.8 Inter, sans-serif; letter-spacing: .22em; text-transform: uppercase; }
+
+/* Navigation: the site's compact bar stays as it is under 992px. On the desktop
+   boards the bar sits inside the opening field, so it is transparent there. */
+.ai-page .navbar { position: absolute; top: 0; left: 0; right: 0; z-index: 40; border: 0; background: transparent; padding: 0; }
+.ai-page .navbar[data-compact-nav] { position: sticky; }
+.ai-page .navbar .container { max-width: none; width: 100%; margin: 0; padding: 0 var(--ai-gutter) !important; }
+.ai-page .navbar .nav-wrap, .ai-page .navbar .nav-wrap.dark { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 64px; padding: 0; background: none; }
+.ai-page .nav-logo-wrap { display: inline-flex; align-items: center; flex: 0 0 auto; min-width: 44px; min-height: 44px; padding: 0; }
+.ai-page .navbar .nav-logo-wrap img { display: block; width: 35px; height: auto; }
+.ai-page .navbar .nav-menu { margin-left: auto; padding: 0; background: none; }
+.ai-page .nav-menu-area { display: flex; align-items: center; gap: 28px; padding: 0; margin: 0; background: none; }
+.ai-page .navbar .nav-link, .ai-page .navbar .nav-link.white { width: auto; min-height: 44px; margin: 0; padding: 12px 0; border-radius: 0; background: none; font: 400 14px/1.4 Inter, sans-serif; text-decoration: none; }
+.ai-page .navbar .nav-link.w--current { text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 2px; }
+.ai-lang { display: inline-flex; align-items: center; gap: 10px; font: 400 14px/1.4 Inter, sans-serif; letter-spacing: .04em; }
+.ai-lang a { color: inherit; display: inline-flex; align-items: center; min-width: 32px; min-height: 44px; justify-content: center; text-decoration: none; }
+.ai-lang a[aria-current="page"] { text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 2px; }
+.ai-lang span { opacity: .55; }
+.ai-page .menu-button { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; padding: 10px; cursor: pointer; }
+.ai-page .w-icon-nav-menu { font-family: webflow-icons !important; font-size: 24px !important; }
+@media (min-width: 992px) {
+  .ai-page .navbar, .ai-page .navbar .nav-link, .ai-page .navbar .nav-link.white, .ai-page .ai-lang, .ai-page .navbar .nav-logo-wrap img { color: var(--ai-lilac); }
+  .ai-page .navbar .nav-logo-wrap img { filter: brightness(0) saturate(100%) invert(92%) sepia(8%) saturate(655%) hue-rotate(196deg) brightness(98%) contrast(88%); }
+}
+
+/* 1. The passage: board 2 opening. Navy field, copy left, the lit gate right. */
+.ai-hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 55fr) minmax(0, 45fr); min-height: 100svh; overflow: hidden; background: var(--ai-navy); color: var(--ai-lilac); }
+.ai-hero-copy { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; gap: 0; padding: 120px var(--ai-gutter) 96px; }
+.ai-hero .ai-eyebrow { margin-bottom: clamp(24px, 4svh, 44px); }
+.ai-hero h1 { max-width: 15ch; font-size: clamp(56px, 6.1vw, 104px); line-height: .92; overflow-wrap: normal; hyphens: manual; }
+html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px); }
+.ai-hero-dek { margin-top: clamp(22px, 3.2svh, 38px); font-size: clamp(20px, 1.95vw, 30px); font-weight: 500; letter-spacing: -.03em; line-height: 1.25; }
+.ai-hero-services { margin-top: 14px; font-size: clamp(15px, 1.15vw, 18px); line-height: 1.5; letter-spacing: -.01em; }
+.ai-cta-underline { display: inline-flex; align-items: center; gap: 12px; align-self: flex-start; min-height: 44px; margin-top: clamp(26px, 4svh, 44px); padding: 6px 0 4px; border-bottom: 2px solid var(--ai-olive); color: var(--ai-olive); font: 500 clamp(18px, 1.5vw, 22px)/1.3 Inter, sans-serif; letter-spacing: -.02em; text-decoration: none; }
+.ai-cta-underline::after { content: "\2192"; font-size: 1.15em; line-height: 1; }
+.ai-cta-underline:hover { border-bottom-color: currentColor; }
+.ai-hero-foot { position: absolute; left: var(--ai-gutter); bottom: 34px; z-index: 2; display: flex; align-items: center; gap: 20px; max-width: 44%; opacity: .85; }
+.ai-hero-foot::after { content: ""; flex: 1 1 120px; height: 1px; background: var(--ai-rule-light); }
+.ai-hero-art { position: absolute; inset: 0 0 0 auto; width: 46%; z-index: 1; pointer-events: none; }
+.ai-hero-art img { position: absolute; right: 0; bottom: 0; width: 100%; height: 100%; object-fit: contain; object-position: right bottom; transform: translateY(var(--ai-hero-drift, 0px)) scale(var(--ai-hero-scale, 1)); transform-origin: 50% 100%; }
+.ai-triad { position: absolute; right: var(--ai-gutter); top: 42%; z-index: 2; list-style: none; padding: 26px 0 0; margin: 0; border-top: 1px solid var(--ai-lilac); font: 400 11px/1.9 Inter, sans-serif; letter-spacing: .24em; text-transform: uppercase; color: var(--ai-lilac); }
+.ai-triad::before { content: ""; position: absolute; left: 0; top: 0; width: 30px; height: 1px; background: var(--ai-lilac); }
+.ai-triad { border-top: 0; }
+
+/* 4. The olive close: board 1, bottom right. Holds the one real contact action. */
+.ai-better { position: relative; overflow: hidden; padding: clamp(72px, 10vw, 128px) var(--ai-gutter) 0; background: var(--ai-olive); color: var(--ai-ink); }
+.ai-better h2 { max-width: 12ch; font-size: clamp(54px, 7.6vw, 124px); line-height: .9; }
+.ai-better-dek { max-width: 30ch; margin-top: clamp(22px, 3vw, 36px); font-size: clamp(18px, 1.6vw, 24px); line-height: 1.4; letter-spacing: -.02em; }
+.ai-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; margin-top: clamp(28px, 4vw, 48px); }
+.ai-page main button.footer-email.ai-cta-pill { display: inline-flex; align-items: center; height: 44px; max-width: 100%; padding: 0 24px; border: 0; border-radius: 0; color: var(--ai-lilac); background: var(--ai-navy); font: 400 14px/1.4 Inter, sans-serif; letter-spacing: -.005em; white-space: nowrap; cursor: pointer; }
+.ai-page main button.footer-email.ai-cta-pill:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ai-link-plain { display: inline-flex; align-items: center; min-height: 44px; font: 400 15px/1.4 Inter, sans-serif; text-decoration: none; }
+.ai-link-plain:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ai-better-band { position: absolute; right: 0; bottom: calc(100% - 3px); z-index: 0; width: min(62%, 720px); height: auto; pointer-events: none; }
+.ai-better-band svg { display: block; width: 100%; height: auto; }
+.ai-better-bar { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; margin-top: clamp(64px, 9vw, 120px); padding: 18px 0 22px; border-top: 1px solid rgb(10 22 40 / 45%); }
+.ai-better-note { max-width: 62ch; margin-top: 26px; font-size: 15px; line-height: 1.6; }
+.ai-better-note a { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 991px) {
+  .ai-page .menu-button { display: flex; }
+  .ai-page .navbar .nav-menu.w-nav-menu { position: absolute; top: 64px; left: 0; right: 0; width: 100%; margin: 0; padding: 20px var(--ai-gutter) 28px; border: 0; border-bottom: 1px solid var(--ai-rule); border-radius: 0; background: var(--ai-lilac); box-shadow: none; }
+  html.nav-enhanced .ai-page .navbar .nav-menu:not([data-nav-menu-open]) { display: none; }
+  html.nav-enhanced .ai-page .navbar .nav-menu[data-nav-menu-open] { display: block; }
+  .ai-page .nav-menu-area { flex-direction: column; align-items: stretch; gap: 8px; }
+  .ai-page .navbar .nav-menu .nav-link { width: 100%; justify-content: flex-start; font-size: 17px; }
+  .ai-lang { justify-content: flex-start; font-size: 17px; }
+  .ai-hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(300px, 1fr); min-height: calc(100svh - 64px); }
+  .ai-hero-copy { padding: 28px var(--ai-gutter) 20px; justify-content: flex-start; }
+  .ai-hero h1 { font-size: clamp(40px, 11.5vw, 82px); line-height: .96; }
+  html[lang="hu"] .ai-hero h1 { font-size: clamp(30px, 10vw, 72px); }
+  .ai-hero-dek { font-size: clamp(18px, 3.2vw, 26px); }
+  .ai-hero-services { font-size: 15px; }
+  .ai-hero-art { position: relative; inset: auto; width: 100%; min-height: 300px; }
+  .ai-hero-art img { object-position: 60% bottom; }
+  .ai-hero-foot, .ai-triad { display: none; }
+  .ai-better-band { width: 78%; }
+}
+@media (max-width: 599px) {
+  body.ai-page { --ai-gutter: 20px; }
+  .ai-hero h1 { font-size: clamp(38px, 12.4vw, 60px); }
+  html[lang="hu"] .ai-hero h1 { font-size: clamp(30px, 10vw, 52px); }
+  .ai-better h2 { font-size: clamp(46px, 14vw, 72px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-page *, .ai-page *::before, .ai-page *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  .ai-hero-art img { transform: none !important; }
+}
+html.no-motion .ai-hero-art img { transform: none !important; }
