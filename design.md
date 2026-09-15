@@ -96,6 +96,9 @@ The page has its own stylesheet and native-scroll owner (`ai-integration.css`,
 only. The AI compact bar is dark over the opening, then lilac over the reading
 chapters; its existing menu panel stays lilac. Contact arrows use a separate
 aria-hidden span so the accessible name remains the approved visible label.
+AI scroll clearance includes the top safe-area inset and matches the actual
+bar; section anchors add only12px beyond it. Ribbon labels have an opaque navy
+backing. The footer reflection scrim preserves text AA, including utility links.
 Both final footer contact targets remain at least48px tall. Other routes keep
 their exact shared navigation/footer contracts.
 

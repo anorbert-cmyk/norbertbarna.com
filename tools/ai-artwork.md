@@ -51,5 +51,7 @@ Artwork has explicit intrinsic dimensions, is decorative (`alt=""` and
 aria-hidden wrapper), and loads lazily except the opening. The first mobile
 contact stays in document flow; the portal is masked below the text. The
 workflow image has its own square frame, independent of biography length.
-Final closing text and privacy controls are live HTML. All base compositions
+Final closing text and privacy controls are live HTML. A navy reflection scrim
+keeps their contrast independent of bright artwork. Ribbon labels use opaque
+navy backings so reduced-motion full-width composition is also legible. All base compositions
 are readable with no JavaScript, reduced motion and no scroll-timeline support.

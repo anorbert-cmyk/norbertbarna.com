@@ -33,9 +33,9 @@ async function expectStableBar(page, label) {
       if (channels.length === 3 || channels[3] === 1) { iconBacking = color; break; }
     }
     // The approved AI landing alone opens on navy; the bar turns lilac when
-    // the hero leaves its 64px reading boundary. Geometry remains unchanged.
+    // the hero leaves the actual bar, including safe-area clearance.
     const aiRoute = ["/ai-integration", "/hu/ai-integracio"].includes(location.pathname);
-    const opening = aiRoute && document.querySelector("[data-ai-hero]")?.getBoundingClientRect().bottom > 64;
+    const opening = aiRoute && document.querySelector("[data-ai-hero]")?.getBoundingClientRect().bottom > nav.getBoundingClientRect().height;
     return { y: nav.getBoundingClientRect().top, opacity: Number(style.opacity), animations: nav.getAnimations().length,
       background: style.backgroundColor, expectedBackground: opening ? "rgb(10, 22, 40)" : "rgb(214, 212, 237)", blend: style.mixBlendMode,
       iconInk: getComputedStyle(toggle.querySelector(".w-icon-nav-menu")).color, iconBacking,
