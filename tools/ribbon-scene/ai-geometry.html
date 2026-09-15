@@ -1,0 +1,153 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>AI service geometry source</title>
+<style>html,body{margin:0;background:transparent}canvas{display:block}</style>
+<body></body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Decorative artwork only. Geometry is original and uses the existing r128
+// source renderer; no Three/WebGL dependency is sent to the service page.
+const params = new URLSearchParams(location.search);
+const kind = params.get('kind') || 'bars';
+const W = kind === 'bars' ? 900 : 1400;
+const H = kind === 'bars' ? 550 : 240;
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(2);
+renderer.setSize(W, H);
+renderer.setClearColor(0x000000, 0);
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = .9;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.VSMShadowMap;
+document.body.appendChild(renderer.domElement);
+const colour = hex => new THREE.Color(hex).convertSRGBToLinear();
+const studio = new THREE.Scene(); studio.background = colour(0x89899c);
+function panel(w,h,x,y,z,c,intensity,rx=0,ry=0) {
+  const mat = new THREE.MeshBasicMaterial({ color:colour(c).multiplyScalar(intensity), side:THREE.DoubleSide });
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat);
+  plane.position.set(x,y,z); plane.rotation.set(rx,ry,0); studio.add(plane);
+}
+panel(18,8,0,8,0,0xffffff,3.0,Math.PI/2);
+panel(4,8,-8,3,5,0xffffff,2.4,0,Math.PI/2);
+panel(3,8,8,4,-4,0xffffff,1.8,0,-Math.PI/2);
+panel(5,10,5,1,12,0xffffff,3.6);
+panel(3,12,-4,1,12,0x193c31,.35);
+panel(40,20,0,5,-15,0x102721,0.5);
+panel(30,30,0,-1,0,0xd6d4ed,0.6,-Math.PI/2);
+const pmrem = new THREE.PMREMGenerator(renderer);
+const scene = new THREE.Scene(); scene.environment = pmrem.fromScene(studio,0.05).texture;
+const camera = new THREE.PerspectiveCamera(25,W/H,.1,100);
+const look = new THREE.Vector3(0,0.2,0);
+camera.position.set(-8,6.8,14); camera.lookAt(look);
+const key = new THREE.DirectionalLight(0xffffff,1.25); key.position.set(-6,10,7); key.castShadow=true;
+key.shadow.mapSize.set(2048,2048); key.shadow.bias=-0.00025; key.shadow.normalBias=0.025; key.shadow.radius=12;key.shadow.blurSamples=24;
+Object.assign(key.shadow.camera,{left:-20,right:20,top:15,bottom:-15,near:1,far:50}); scene.add(key);
+const rim = new THREE.DirectionalLight(0xf1e7c9,1.0);rim.position.set(8,4,-5);scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xd6d4ed,0x17251e,.35));
+const standard = (hex,roughness=.28) => new THREE.MeshPhysicalMaterial({color:colour(hex),roughness,metalness:.34,clearcoat:.25,clearcoatRoughness:.18,envMapIntensity:.9,side:THREE.DoubleSide});
+const forest = standard(0x1b3a32);
+const forestInner = standard(0x102a21,.34);
+const olive = standard(0xbdb414,.25);
+const oliveInner = standard(0x938a0d,.32);
+const glass = new THREE.MeshPhysicalMaterial({color:colour(0xa99ecc),metalness:.06,roughness:.08,transparent:true,opacity:kind==='bars'?.27:.44,clearcoat:.4,clearcoatRoughness:.07,envMapIntensity:.45,side:THREE.DoubleSide,depthWrite:false});
+const glassEdge = new THREE.MeshStandardMaterial({color:colour(0xbbb0dd),roughness:.15,metalness:.25,transparent:true,opacity:.64,envMapIntensity:.6});
+const pieces = {};
+const labelPoints = [];
+function box(w,h,d,x,y,z,material,parent) {
+  const bevel=Math.min(.014,w/5,h/5,d/5);
+  const shape=new THREE.Shape();
+  shape.moveTo(-w/2+bevel,-h/2+bevel);shape.lineTo(w/2-bevel,-h/2+bevel);shape.lineTo(w/2-bevel,h/2-bevel);shape.lineTo(-w/2+bevel,h/2-bevel);shape.closePath();
+  const geometry=new THREE.ExtrudeGeometry(shape,{depth:Math.max(d-2*bevel,.002),bevelEnabled:true,bevelThickness:bevel,bevelSize:bevel,bevelSegments:3,steps:1});
+  geometry.translate(0,0,-d/2+bevel);
+  const mesh = new THREE.Mesh(geometry,material);
+  mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;
+}
+function rail(name,length,material,inner,x,y,z,roll) {
+  const group = new THREE.Group(); group.position.set(x,y,z); group.rotation.z=roll;scene.add(group);pieces[name]=group;
+  const height=.92,depth=1.02,wall=.048;
+  // Thin walls preserve an open rectangular end and a deep inner face.
+  box(length,height,wall,0,0,-depth/2,inner,group);
+  box(length,height,wall,0,0,depth/2,material,group);
+  box(length,wall,depth,0,-height/2,0,inner,group);
+  // The top is an open channel: this is architectural folded sheet, not a solid brick.
+  if(name==='glass') {
+    box(length,wall,depth,0,height/2,0,material,group);
+    const geom = new THREE.BoxGeometry(length,height,depth);
+    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geom),new THREE.LineBasicMaterial({color:0xe4dfff,transparent:true,opacity:.64}));group.add(edges);
+    for(const end of [-1,1]) box(.045,height,depth,end*length/2,0,0,glassEdge,group);
+  } else {
+    box(wall,height,depth,length/2,0,0,material,group);
+    const trim = standard(name==='forest'?0x547564:0xdbd154,.26);
+    box(length,.015,.018,0,height/2,depth/2,trim,group);
+  }
+  group.updateMatrixWorld(true);
+  labelPoints.push({name,point:group.localToWorld(new THREE.Vector3(0,0,depth/2+.03)),along:group.localToWorld(new THREE.Vector3(1,0,depth/2+.03))});
+  return group;
+}
+if(kind==='bars') {
+  rail('forest',8.4,forest,forestInner,-.15,1.6,-.65,.105);
+  rail('glass',9.8,glass,glass,-.1,0,.25,-.035);
+  rail('olive',8.6,olive,oliveInner,.3,-1.43,.48,-.165);
+  camera.fov=25;
+} else {
+  // A continuous broad sheet joins a deep forest fold, a translucent span,
+  // then the olive return. Local planes turn 40 degrees, rather than a flat
+  // silhouette pretending to bend. Rounded joins are sampled in world space.
+  camera.position.set(-.4,7.8,15);camera.lookAt(0,.52,0);camera.fov=19;
+  // Crop only the empty studio margin in camera space, preserving every
+  // visible fold and its soft floor shadow at the existing horizontal scale.
+  camera.setViewOffset(1400,410,0,105,1400,240);
+  const P=[[-11,.7],[-4.6,2.4],[-3.1,1.6],[2.4,-1.42],[3.5,-1.1],[10.8,1.8]].map(([x,z])=>new THREE.Vector3(x,0,z));
+  const path = new THREE.CurvePath(), R=.45;
+  for(let i=0;i<P.length-1;i++){
+    const a=P[i],b=P[i+1],dir=b.clone().sub(a).normalize();
+    const s=i?a.clone().addScaledVector(dir,R):a;
+    const e=i<P.length-2?b.clone().addScaledVector(dir,-R):b;
+    path.add(new THREE.LineCurve3(s,e));
+    if(i<P.length-2)path.add(new THREE.QuadraticBezierCurve3(e,b,b.clone().addScaledVector(P[i+2].clone().sub(b).normalize(),R)));
+  }
+  const pts=path.getSpacedPoints(650), up=new THREE.Vector3(0,1,0);
+  for(const [name,t] of [['insight',.235],['integration',.48],['impact',.765]]) {
+    const p=path.getPointAt(t).setY(.68),q=path.getPointAt(t+.01).setY(.68);
+    labelPoints.push({name,point:p,along:q});
+  }
+  function segment(from,to,front,back) {
+    const pos=[],indices=[],uv=[];const start=Math.round(from*650),end=Math.round(to*650);
+    for(let i=start;i<=end;i++){
+      const p=pts[i].clone().setY(.68),prev=pts[Math.max(0,i-1)],next=pts[Math.min(650,i+1)];
+      const dir=next.clone().sub(prev).normalize(), n=new THREE.Vector3().crossVectors(dir,up).normalize();
+      for(const [yy,zz] of [[-.57,.048],[.57,.048],[-.57,-.048],[.57,-.048]]){
+        const q=p.clone().addScaledVector(up,yy).addScaledVector(n,zz);pos.push(q.x,q.y,q.z);uv.push((i-start)/(end-start),yy+.57);
+      }
+    }
+    const faces=[[],[],[],[]];
+    for(let k=0;k<end-start;k++){
+      const a=k*4,b=(k+1)*4;
+      faces[0].push(a,b,b+1,a,b+1,a+1);faces[1].push(a+2,a+3,b+3,a+2,b+3,b+2);
+      faces[2].push(a+1,b+1,b+3,a+1,b+3,a+3);faces[3].push(a+2,b+2,b,a+2,b,a);
+    }
+    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+    let off=0;faces.forEach((face,j)=>{indices.push(...face);geo.addGroup(off,face.length,j);off+=face.length;});geo.setIndex(indices);geo.computeVertexNormals();
+    const mesh=new THREE.Mesh(geo,[front,back,kind==='ribbon'&&front===glass?glassEdge:olive,back]);mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);
+  }
+  segment(0,.344,forest,olive); segment(.344,.616,glass,glass);segment(.616,1,olive,forest);
+}
+camera.updateProjectionMatrix();
+camera.updateMatrixWorld();
+window.__anchors=labelPoints.map(({name,point,along})=>{
+  const p=point.clone().project(camera),q=along.clone().project(camera);
+  const x=(p.x+1)/2*100,y=(1-p.y)/2*100;
+  const rotate=Math.atan2(-(q.y-p.y)*H,(q.x-p.x)*W)*180/Math.PI;
+  return {name,x:Number(x.toFixed(1)),y:Number(y.toFixed(1)),rotate:Number(rotate.toFixed(1))};
+});
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(70,45),new THREE.ShadowMaterial({opacity:kind==='bars'?.19:.25}));
+floor.rotation.x=-Math.PI/2;floor.position.y=kind==='bars'?-2.37:0;floor.receiveShadow=true;scene.add(floor);
+window.renderLayer=(name)=>{
+  Object.entries(pieces).forEach(([key,group])=>{group.visible=name==='all'||name===key;});
+  renderer.render(scene,camera);
+};
+window.previewOnLilac=()=>{renderer.setClearColor(0xd6d4ed,1);window.renderLayer('all');};
+window.renderLayer('all');
+window.__done=true;
+</script>

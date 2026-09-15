@@ -382,13 +382,16 @@ for (const viewport of viewports) {
           lang: element.closest("[lang]")?.lang,
         }));
         const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
-        const language = scope.main && route === "/hu/ai-integracio" ? "hu" : "en";
+        const language = route === "/hu/ai-integracio" ? "hu" : "en";
         const homeNav = scope.nav && route === "/";
         const label = privacyContact || homeNav ? "Email" : projectCopy[language].label;
         const accessibleName = homeNav ? "Email — discuss a project" : label;
         if (scope.nav && viewport.width < 992) await page.locator(".menu-button").click();
         await expect(button).toBeVisible();
-        await expect(button).toHaveText(label);
+        if (["/ai-integration", "/hu/ai-integracio"].includes(route)) {
+          await expect(button.locator('span[aria-hidden="true"]')).toHaveText("→");
+          expect(await button.evaluate((element) => [...element.childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join("").trim())).toBe(label);
+        } else await expect(button).toHaveText(label);
         await expect(button).toHaveAccessibleName(accessibleName);
         await expect(button).toHaveAttribute("type", "button");
         await expect(button).not.toHaveAttribute("href");
@@ -412,7 +415,8 @@ for (const viewport of viewports) {
             overflow: element.scrollWidth - element.clientWidth,
           };
         });
-        if (scope.footer) expect(size.height, "editorial footer contact target").toBeGreaterThanOrEqual(48);
+        if (scope.footer) expect(size.height, "footer contact target").toBeGreaterThanOrEqual(48);
+        else if (["/ai-integration", "/hu/ai-integracio"].includes(route)) expect(size.height, "AI project contact target").toBeGreaterThanOrEqual(44);
         else expect(size.height).toBe(homeNav && viewport.width < 992 ? 48 : 44);
         expect(size.width).toBeGreaterThanOrEqual(44);
         if (homeNav && viewport.width < 992) {

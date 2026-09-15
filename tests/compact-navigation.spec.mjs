@@ -32,14 +32,18 @@ async function expectStableBar(page, label) {
       const channels = color.match(/[\d.]+/g).map(Number);
       if (channels.length === 3 || channels[3] === 1) { iconBacking = color; break; }
     }
+    // The approved AI landing alone opens on navy; the bar turns lilac when
+    // the hero leaves its 64px reading boundary. Geometry remains unchanged.
+    const aiRoute = ["/ai-integration", "/hu/ai-integracio"].includes(location.pathname);
+    const opening = aiRoute && document.querySelector("[data-ai-hero]")?.getBoundingClientRect().bottom > 64;
     return { y: nav.getBoundingClientRect().top, opacity: Number(style.opacity), animations: nav.getAnimations().length,
-      background: style.backgroundColor, blend: style.mixBlendMode,
+      background: style.backgroundColor, expectedBackground: opening ? "rgb(10, 22, 40)" : "rgb(214, 212, 237)", blend: style.mixBlendMode,
       iconInk: getComputedStyle(toggle.querySelector(".w-icon-nav-menu")).color, iconBacking,
       toggleHit: toggle.contains(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)),
       overflow: document.documentElement.scrollWidth - innerWidth };
   });
   expect(Math.abs(state.y), label).toBeLessThanOrEqual(.5);
-  expect(state, label).toMatchObject({ opacity: 1, animations: 0, background: "rgb(214, 212, 237)", blend: "normal", toggleHit: true });
+  expect(state, label).toMatchObject({ opacity: 1, animations: 0, background: state.expectedBackground, blend: "normal", toggleHit: true });
   const ink = luminance(state.iconInk), backing = luminance(state.iconBacking);
   expect((Math.max(ink, backing) + .05) / (Math.min(ink, backing) + .05), `${label}: visible menu icon`).toBeGreaterThanOrEqual(3);
   expect(state.overflow, label).toBeLessThanOrEqual(1);
