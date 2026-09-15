@@ -11,7 +11,9 @@ This file follows the loop in
 1. **Guidance** (this file) — reader job, composition, named failures.
 2. **Stylesheets** — `assets/css/responsive.css` holds the site tokens, the
    chrome lock and the reflow rules; nine scoped companions own one surface
-   each. Pages load byte-identical `name.<sha256-12>.css` copies. Repeatable
+   each. Pages load byte-identical `name.<sha256-12>.css` copies of the nine
+   content-hashed families; `consent.css` is served unhashed and revalidates,
+   so a change to it ships without a new copy. Repeatable
    mechanics live in CSS. Never read a hashed copy into context. The full
    ownership map is in **System reference** below.
 3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
@@ -601,7 +603,11 @@ markup that is being retired: check the page before reusing it.
 `.story-perspective` `.story-perspective-art` `.story-sculpture`
 `.story-wing` `.story-backdrop` `.story-stage-shade` `.story-rail`
 `.story-rail-dot` `.story-next` `.story-next-links` `.story-footer`
-`.story-motion-toggle` `.story-draft-note`
+`.story-motion-toggle` `.story-draft-note` `.story-eyebrow`
+`.story-closing-line` `.story-beginnings` `.story-text-link`
+`.story-perspective-inner` `.story-sculpture-position` `.story-wing-left`
+`.story-wing-right` `.story-footer-top` `.story-footer-bottom`
+`.story-footer-name`
 
 **Buttons:** `.dark-button` `#000` on `#fff`. Editorial footer Email is a navy capsule with lilac ink and a native `<button type="button" class="footer-email">`; LinkedIn is a visible text link with its existing `in` icon. Both are at least 48px tall. Project contact labels follow the Copy contract above. The home nav uses text-only 44px targets. The scene Works action and intro View selected work use native underlined/text controls.
 
@@ -611,9 +617,12 @@ renaming one silently disables a feature. `data-hero-critical`
 slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow`
 `data-composition-nav` `data-autoplay-video` `data-motion-video`
 `data-video-urls` `data-poster-url` `data-video-label` `data-object-fit`
-`data-consent-settings` `data-story` `data-story-*` (`-art` `-backdrop`
-`-draft` `-line` `-mode` `-motion` `-motion-toggle` `-scene` `-sculpture`
-`-shade` `-stage` `-step` `-wing`). `data-w-id` is inherited Webflow state
+`data-consent-settings` `data-story` `data-story-*` (`-art` `-line` `-mode`
+`-motion` `-motion-toggle` `-reflow` `-scene` `-stage` `-step`). Five more
+`data-story-*` attributes in `about.html` — `-backdrop` `-draft` `-sculpture`
+`-shade` `-wing` — are markup state that no script queries; the animation binds
+to the matching classes, so adding one of those attributes without its class
+animates nothing. `data-w-id` is inherited Webflow state
 that `animations.js` strips; never author a new one.
 
 ## System reference
@@ -651,12 +660,12 @@ only to the sitemap.
 | `arrival.css` | First-session name assembly and curtain | `/`, cases |
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
 | `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
-| `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages |
-| `compact-navigation.css` | Stable bar up to 991px and the desktop utility journey | 13 content pages |
+| `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
+| `compact-navigation.css` | Stable bar up to 991px and the desktop utility journey | 14 content pages |
 | `case-opening.css` | Lilac case stage and the four-slice media reveal | cases |
 | `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
-| `consent.css` | Consent banner and `.footer-privacy` only | 13 content pages |
+| `consent.css` | Consent banner and `.footer-privacy` only | 14 content pages, unhashed |
 
 Two stylesheets must never grow brand rules: the Webflow base (inherited, being
 retired) and `consent.css` (narrow, separately revalidated). A new surface gets
@@ -664,7 +673,11 @@ a scoped companion; it does not get appended to `responsive.css`.
 
 ### Scripts and motion ownership
 
-One owner per animated target. Everything is `defer`.
+One owner per animated target. Three loading positions, not one: `webfont.js`
+is a blocking head script, the analytics trio (`analytics-config.js`,
+`consent.js`, `analytics.js`) is `defer`, and every other script is an ordinary
+end-of-body tag that runs in written order. Moving one across those positions
+changes its dependencies, so keep a script where it is.
 
 | File | Owns | Content-hashed |
 |---|---|---|
@@ -672,7 +685,7 @@ One owner per animated target. Everything is `defer`.
 | `consent.js` | Consent record, settings reveal, focus return | no |
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
-| `navigation.js` | Mobile disclosure; deliberately has no animation dependency | no |
+| `navigation.js` | Mobile disclosure, every `.footer-email` assign-only handler, and the mast text-enlargement/spacing reflow detector; deliberately has no animation dependency | no |
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
@@ -747,7 +760,7 @@ Motion and stage scope:
 |---|---|
 | `max-width: 479px` | Smallest phone tuning |
 | `max-width: 599px` / `min-width: 600px` | Compact stack turning into two-up |
-| `max-width: 767px` | Inherited Webflow tier. Do not author new rules here |
+| `max-width: 767px` | Inherited Webflow tier. Do not author new rules here. One existing exception: the arrival wordmark block in `arrival.css` |
 | `max-width: 991px` / `min-width: 992px` | **The** split: stable compact bar against the desktop utility journey |
 | `min-width: 1200px`, `min-width: 1800px` | Wide tuning only |
 | `(hover: hover) and (pointer: fine)` | Desktop pointer motion may run |
@@ -755,8 +768,12 @@ Motion and stage scope:
 | `prefers-reduced-motion: reduce` | Static composited state. The largest single rule group in the codebase |
 | `max-height: 600px` | Short viewport: role and primary action come before decoration |
 
-Desktop cinematic motion requires 992px **and** a fine pointer. A wide touch
-screen gets the compact contract, not the desktop one. The compact contract is
+The home hero's pointer motion requires 992px **and** a fine pointer, so a wide
+touch screen gets the compact contract there, not the desktop one. `/about` is
+the known exception: `story-motion.js` picks its cinematic mode from width and
+height alone (992px and 700px), with no pointer test, so a wide touch screen
+does get its cinematic layout. Do not document or test a pointer gate for
+`/about` until that runtime actually has one. The compact contract is
 a different motion budget, not the absence of the glass: the pinned 210svh track
 needs `innerHeight >= 780`, while the live object itself is present wherever the
 scene is ready and motion is allowed.
