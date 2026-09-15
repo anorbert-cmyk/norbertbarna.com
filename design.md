@@ -49,8 +49,11 @@ page is those boards in this order, and the Hungarian page is the same board:
 3. **Make the pieces work together.** The ribbon journey. On a desktop the
    stage pins for one scroll and the camera follows the ribbon from insight
    to integration to impact while the three steps arrive; it ends on the
-   board's finished panel with the selected work row. Phones follow the ribbon
-   in a panning window. No JavaScript, reduced motion, a short window and
+   board's finished panel with the selected work row. On a phone the ribbon
+   is the camera: it holds under the bar while the three steps pass beneath
+   it, the window travelling from insight to integration to impact as each
+   step arrives. The 01 / 03 counter beside the title follows the camera
+   on both. No JavaScript, reduced motion, a short window and
    every viewport under 992px show the finished panel; every owner property
    falls back to it. Reading text never receives a transform or opacity.
 4. **What could work better?** The olive close, the page's one native
@@ -69,6 +72,15 @@ about 1.5x, so they are soft where the lens goes close; the code treats each as
 a drop-in file for a source render. This is a narrow exception to the image
 rule below, tied to these two boards. The selected and related work rows use
 the boards' own project marks, cropped the same way.
+
+The whole page is choreographed by the same owner (2026-09-15): the passage
+settles in and the action's rule draws on load; the bars arrive from the
+right and the numbered rule at the foot arrives a beat apart; the olive band
+slides in from the edge while the close's lines arrive; the second passage
+drifts against the page and the start rows arrive one after another. Every
+arrival is opacity only on reading text and transform only on artwork, every
+property falls back to the finished board, and the CSS keyframes are off
+under reduced motion and `html.no-motion`.
 
 The page has its own stylesheet and native-scroll owner (`ai-integration.css`,
 `ai-motion.js`), released as content-hashed files, loaded on these two routes

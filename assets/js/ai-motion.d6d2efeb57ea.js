@@ -12,12 +12,22 @@
   var ribbon = pieces && pieces.querySelector("[data-ai-ribbon]");
   var steps = pieces ? Array.from(pieces.querySelectorAll("[data-ai-step]")) : [];
   var work = pieces && pieces.querySelector("[data-ai-work]");
+  var journey = pieces && pieces.querySelector("[data-ai-journey]");
+  var count = pieces && pieces.querySelector(".ai-pieces-count span");
+  var shapeRows = shape ? Array.from(shape.querySelectorAll(".ai-steps-rule > li")) : [];
+  var better = root.querySelector("[data-ai-better]");
+  var band = better && better.querySelector("[data-ai-band]");
+  var betterRows = better ? Array.from(better.querySelectorAll(":scope > h2, :scope > .ai-better-dek, :scope > .ai-actions, :scope > .ai-better-note")) : [];
+  var start = root.querySelector("[data-ai-start]");
+  var startArt = start && start.querySelector("[data-ai-start-art]");
+  var startRows = start ? Array.from(start.querySelectorAll(".ai-start-body > *")) : [];
+  var countFirst = count ? count.textContent : "";
   var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
   var listeners = new AbortController();
   var resizeObserver, intersectionObserver, preferenceObserver;
   var frame = 0, destroyed = false, failed = false, pageHidden = false, near = true, painted = false;
   var currentMotion = false, currentMode = "flow";
-  var owned = [], camera = [], pan = [];
+  var owned = [];
   var original = { motion: root.getAttribute("data-ai-motion"), mode: root.getAttribute("data-ai-mode") };
   var api = window.PortfolioAiMotion = { state: "static", mode: "flow", progress: 0, camera: 0, refresh: request, destroy: destroy };
 
@@ -47,15 +57,31 @@
   var write = {
     heroDrift: property(heroArt, "--ai-hero-drift"), heroScale: property(heroArt, "--ai-hero-scale"),
     shapeY: property(shapeArt, "--ai-shape-y"), shapeRotate: property(shapeArt, "--ai-shape-rotate"),
-    shapeFade: property(shapeArt, "--ai-shape-fade", camera),
-    ribbonX: property(ribbon, "--ai-ribbon-x", camera), ribbonS: property(ribbon, "--ai-ribbon-s", camera),
-    steps: steps.map(function (step) { return property(step, "--ai-step", camera); }),
-    work: property(work, "--ai-work", camera),
-    ribbonPan: property(ribbon, "--ai-ribbon-pan", pan)
+    shapeFade: property(shapeArt, "--ai-shape-fade"),
+    ribbonX: property(ribbon, "--ai-ribbon-x"), ribbonS: property(ribbon, "--ai-ribbon-s"),
+    steps: steps.map(function (step) { return property(step, "--ai-step"); }),
+    work: property(work, "--ai-work"),
+    ribbonPan: property(ribbon, "--ai-ribbon-pan"),
+    shapeIn: property(shapeArt, "--ai-shape-in"), shapeX: property(shapeArt, "--ai-shape-x"),
+    shapeRows: shapeRows.map(function (row) { return property(row, "--ai-row"); }),
+    band: property(band, "--ai-band"), bandX: property(band, "--ai-band-x"),
+    betterRows: betterRows.map(function (row) { return property(row, "--ai-row"); }),
+    startY: property(startArt, "--ai-start-y"), startS: property(startArt, "--ai-start-s"),
+    startRows: startRows.map(function (row) { return property(row, "--ai-row"); })
   };
+  var countShown = countFirst;
+  function showCount(index) {
+    if (!count) return;
+    var text = "0" + index;
+    if (text !== countShown) { count.textContent = text; countShown = text; }
+  }
+  // An element arrives as it rises through the lower fifth of the viewport;
+  // rows in one group arrive a beat apart. In view at load, it is simply there.
+  function arrival(element, height, index) {
+    var top = element.getBoundingClientRect().top;
+    return ramp(height * (.92 - (index || 0) * .04) - top, 0, height * .16).toFixed(4);
+  }
   function resetProperties() { owned.forEach(function (item) { item.restore(); }); }
-  function resetCamera() { camera.forEach(function (item) { item.restore(); }); }
-  function resetPan() { pan.forEach(function (item) { item.restore(); }); }
   function restoreAttribute(element, name, value) {
     if (value === null) element.removeAttribute(name); else element.setAttribute(name, value);
   }
@@ -88,11 +114,11 @@
     var cinematic = enabled && innerWidth >= 992 && innerHeight >= 740 && Boolean(stage);
     var mode = cinematic ? "cinematic" : "flow";
     if (currentMotion !== enabled || !painted) {
-      if (!enabled) resetProperties();
+      if (!enabled) { resetProperties(); if (count) { count.textContent = countFirst; countShown = countFirst; } }
       root.dataset.aiMotion = enabled ? "on" : "off"; currentMotion = enabled;
     }
     if (currentMode !== mode || !painted) {
-      if (mode === "flow") resetCamera(); else resetPan();
+      resetProperties();
       root.dataset.aiMode = mode; currentMode = mode;
     }
     api.state = reduced ? "reduced" : "active"; api.mode = mode;
@@ -108,9 +134,14 @@
       write.heroScale((1 + leave * (cinematic ? .06 : .03)).toFixed(4));
     }
     if (shape && shapeArt) {
-      // The bars lean and settle as their section leaves, handing over to the
-      // ribbon that opens the next stage in the same three materials.
+      // The bars arrive from the right as their section rises, then lean and
+      // settle as it leaves, handing over to the ribbon that opens the next
+      // stage in the same three materials.
       var shapeBox = shape.getBoundingClientRect();
+      var coming = ramp(height * .85 - shapeBox.top, 0, height * .45);
+      write.shapeIn((.2 + coming * .8).toFixed(4));
+      write.shapeX(((1 - coming) * (cinematic ? 90 : 36)).toFixed(2) + "px");
+      write.shapeRows.forEach(function (set, index) { set(arrival(shapeRows[index], height, index)); });
       var gone = smooth(-shapeBox.top / Math.max(1, shapeBox.height));
       write.shapeY((gone * (cinematic ? 90 : 28)).toFixed(2) + "px");
       write.shapeRotate((-gone * (cinematic ? 9 : 3)).toFixed(3) + "deg");
@@ -126,15 +157,44 @@
       var arrivals = [ramp(p, .02, .16), ramp(p, .36, .5), ramp(p, .64, .78)];
       write.steps.forEach(function (set, index) { set(arrivals[index].toFixed(4)); });
       write.work(ramp(p, .84, .98).toFixed(4));
+      showCount(p < .36 ? 1 : p < .64 ? 2 : 3);
     } else {
       api.camera = 1;
-      if (ribbon && innerWidth < 992) {
-        // The compact window pans from the green start to the olive end as
-        // the section crosses the viewport; the fallback shows the start.
-        var box = pieces.getBoundingClientRect();
-        var travel = smooth((height * .9 - box.top) / Math.max(1, height * .9 + box.height * .55));
-        write.ribbonPan((-travel * 56).toFixed(3) + "%");
+      if (ribbon && journey && innerWidth < 992) {
+        // The phone camera: the ribbon holds under the bar while the steps
+        // pass beneath it. The window (twice the viewport wide) travels from
+        // the green start to the olive end as the journey crosses the
+        // viewport, and each step arrives as it rises into view.
+        var box = journey.getBoundingClientRect();
+        var hold = parseFloat(getComputedStyle(ribbon).top) || 0;
+        var p = clamp((hold - box.top) / Math.max(1, box.height - ribbon.offsetHeight));
+        api.camera = p;
+        var focus = p < .2 ? .18 : p < .45 ? .18 + ramp(p, .2, .45) * .32 : p < .6 ? .5 : p < .85 ? .5 + ramp(p, .6, .85) * .34 : .84;
+        write.ribbonPan(Math.max(-50, Math.min(0, (25 - focus * 100))).toFixed(3) + "%");
+        showCount(focus < .34 ? 1 : focus < .67 ? 2 : 3);
+        steps.forEach(function (step, index) {
+          var top = step.getBoundingClientRect().top;
+          write.steps[index](ramp(height * .92 - top, 0, height * .22).toFixed(4));
+        });
       }
+    }
+    if (better && band) {
+      // The olive close: the band slides in from the right edge and the copy
+      // arrives line by line as the section rises.
+      var betterBox = better.getBoundingClientRect();
+      var opening = ramp(height * .9 - betterBox.top, 0, height * .5);
+      write.band((.1 + opening * .9).toFixed(4));
+      write.bandX(((1 - opening) * 14).toFixed(3) + "%");
+      write.betterRows.forEach(function (set, index) { set(arrival(betterRows[index], height, index)); });
+    }
+    if (start && startArt) {
+      // The second passage drifts against the page as it crosses the
+      // viewport, and the reading rows arrive a beat apart.
+      var startBox = start.getBoundingClientRect();
+      var crossing = clamp((height - startBox.top) / Math.max(1, height + startBox.height));
+      write.startY(((crossing - .5) * (cinematic ? -80 : -36)).toFixed(2) + "px");
+      write.startS((1.08 - Math.abs(crossing - .5) * .1).toFixed(4));
+      write.startRows.forEach(function (set, index) { set(arrival(startRows[index], height, index)); });
     }
     painted = true;
   }
@@ -145,6 +205,7 @@
     if (intersectionObserver) intersectionObserver.disconnect();
     if (preferenceObserver) preferenceObserver.disconnect();
     resetProperties();
+    if (count) { count.textContent = countFirst; countShown = countFirst; }
     restoreAttribute(root, "data-ai-motion", original.motion);
     restoreAttribute(root, "data-ai-mode", original.mode);
     api.state = "destroyed"; api.mode = "flow";

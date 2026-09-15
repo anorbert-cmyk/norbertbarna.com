@@ -583,7 +583,7 @@ for (const page of SERVICE_PAGES) {
   const pages = SERVICE_PAGES.map((page) => [page, readFileSync(join(ROOT, page), "utf8")]);
   for (const [page, html] of pages) {
     if (skeleton(html) !== expected) fail(`${page}: the five board sections must stand in order (${skeleton(html)})`);
-    for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-ribbon", "data-ai-work"]) {
+    for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-journey", "data-ai-ribbon", "data-ai-work"]) {
       if ((html.match(new RegExp(`\\b${hook}(?=[\\s>=])`, "g")) || []).length !== 1) fail(`${page}: exactly one ${hook} hook`);
     }
     if ((html.match(/\bdata-ai-step="[123]"/g) || []).length !== 3) fail(`${page}: the ribbon journey has three steps`);
@@ -596,7 +596,7 @@ for (const page of SERVICE_PAGES) {
     }
   }
   const aiCss = readFileSync(join(ROOT, "assets/css/ai-integration.css"), "utf8");
-  for (const token of ["--ai-ribbon-x, 0%", "--ai-ribbon-s, 1", "--ai-step-1, 1", "--ai-step-2, 1", "--ai-step-3, 1", "--ai-work, 1"]) {
+  for (const token of ["--ai-ribbon-x, 0%", "--ai-ribbon-s, 1", "--ai-step-1, 1", "--ai-step-2, 1", "--ai-step-3, 1", "--ai-work, 1", "--ai-row, 1", "--ai-band, 1", "--ai-band-x, 0%", "--ai-start-y, 0px", "--ai-shape-in, 1"]) {
     if (!aiCss.includes(token)) fail(`ai-integration.css: the finished board must be the fallback (${token})`);
   }
   if (!/\[data-ai-mode="cinematic"\] \.ai-pieces-stage \{ position: sticky/.test(aiCss)) fail("ai-integration.css: the ribbon stage pins only in cinematic mode");
