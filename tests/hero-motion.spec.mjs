@@ -107,121 +107,35 @@ for (const width of [320, 390, 1280]) {
   });
 }
 
-test("case header journey follows actual native page progress and becomes stable for keyboard navigation", async ({ page }) => {
+test("case header keeps native progress while navigation stays at the top", async ({ page }) => {
   await page.goto("/work/instructure", { waitUntil: "load" });
   const nav = page.locator(".navbar");
-  const top = await nav.boundingBox();
-  // The homepage is permanently stationary. Cases retain their approved
-  // reading-aware utility journey and its keyboard fallback.
-  const foundTravelSlot = await page.evaluate(async () => {
-    const start = 600;
-    const header = document.querySelector(".navbar");
-    for (let step = 0; step <= 8; step += 1) {
-      scrollTo(0, start + step * 96);
-      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      if (header.getBoundingClientRect().top > 100 && !header.hasAttribute("data-reading-dock") && !header.hasAttribute("data-composition-nav")) return true;
-    }
-    return false;
-  });
-  expect(foundTravelSlot, "the case reading chapter retains a real travelling slot").toBe(true);
-  await expect.poll(() => nav.evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(top.y + 100);
+  await page.evaluate(() => scrollTo(0, 1200));
   const actualProgress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
   await expect(page.locator(".home-nav-progress span")).toHaveText(actualProgress);
+  await expect.poll(() => nav.evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
   await page.keyboard.press("Tab");
   await page.locator(".navbar .nav-logo-wrap").focus();
-  await expect.poll(() => nav.evaluate((element) => Math.abs(element.getBoundingClientRect().top))).toBeLessThan(1);
   await expect(page.locator(".navbar .nav-logo-wrap")).toBeFocused();
+  await expect(nav).toHaveCSS("background-color", "rgb(10, 22, 40)");
 });
 
-test("case header changes reading slots through a bounded opacity settle and real keyboard or reduced motion cancels it", async ({ page }) => {
+test("case reading boundaries never fade or relocate the header", async ({ page }) => {
   await page.goto("/work/instructure", { waitUntil: "load" });
-  const nav = page.locator(".navbar");
-  const crossReadingBoundary = () => page.evaluate(async () => {
+  const states = await page.evaluate(async () => {
     const header = document.querySelector(".navbar");
-    const frames = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    const state = () => {
-      const animation = header.getAnimations()[0];
-      window.__observedSlotFade = animation;
-      const box = header.getBoundingClientRect();
-      const readingBoxes = [...document.querySelectorAll("main h1, main h2, main h3, main p, main li, main .awards-card, main figure")]
-        .filter((element) => {
-          if (element.closest('[aria-hidden="true"]')) return false;
-          let alpha = 1;
-          for (let node = element; node; node = node.parentElement) alpha *= Number(getComputedStyle(node).opacity);
-          return alpha > .99 && getComputedStyle(element).visibility === "visible";
-        }).map((element) => element.getBoundingClientRect()).filter((reading) => reading.width > 1 && reading.height > 1);
-      return {
-        frames: animation?.effect.getKeyframes(), duration: animation?.effect.getTiming().duration,
-        opacity: Number(getComputedStyle(header).opacity),
-        clear: readingBoxes.length > 0 && readingBoxes.every((reading) => box.bottom <= reading.top - 11 || box.top >= reading.bottom + 11),
-        y: scrollY, counter: document.querySelector(".home-nav-progress span").textContent,
-        progress: String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"),
-      };
-    };
-    const cross = async (from, to) => {
-      scrollTo(0, from); await frames();
-      await new Promise((resolve) => setTimeout(resolve, 220));
-      const previousTop = header.getBoundingClientRect().top;
-      scrollTo(0, to); await frames();
-      return Math.abs(header.getBoundingClientRect().top - previousTop);
-    };
-    if (window.__caseSlotCrossing) {
-      await cross(...window.__caseSlotCrossing);
-      return state();
+    const observations = [];
+    for (const ratio of [.1, .3, .5, .8, 1]) {
+      scrollTo(0, ratio * (document.documentElement.scrollHeight - innerHeight));
+      await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      observations.push({ top: header.getBoundingClientRect().top, opacity: Number(getComputedStyle(header).opacity), animations: header.getAnimations().length });
     }
-    // Preserve the case-only reading clearance and opacity transition.
-    const start = 600;
-    const limit = document.querySelector("footer").getBoundingClientRect().top + scrollY;
-    for (let from = start, attempt = 0; from < limit && attempt < 45; from += 64, attempt += 1) {
-      const to = from + 64;
-      const distance = await cross(from, to);
-      if (distance > header.offsetHeight * 2 && header.getAnimations().length && !header.hasAttribute("data-reading-dock")) {
-        window.__caseSlotCrossing = [from, to];
-        return state();
-      }
-    }
-    return state();
+    return observations;
   });
-  const settledState = () => nav.evaluate(async (header) => {
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    return { opacity: Number(getComputedStyle(header).opacity), count: header.getAnimations().length,
-      observedState: window.__observedSlotFade?.playState, y: scrollY };
-  });
-  const crossing = await crossReadingBoundary();
-  expect(crossing.frames, "the actual above-to-below crossing must settle visibly").toHaveLength(2);
-  expect(crossing.frames.map((frame) => frame.opacity)).toEqual(["0", "1"]);
-  expect(crossing.frames.every((frame) => !["transform", "translate", "scale", "rotate"].some((key) => key in frame)),
-    "the navigation must never animate through the reading text").toBe(true);
-  expect(crossing.duration).toBeGreaterThan(0);
-  expect(crossing.duration).toBeLessThanOrEqual(250);
-  expect(crossing.opacity).toBeLessThan(1);
-  expect(crossing.clear).toBe(true);
-  expect(crossing.counter).toBe(crossing.progress);
-  await page.waitForTimeout(220);
-  expect(await settledState()).toMatchObject({ opacity: 1, count: 0 });
-
-  // Select an existing focus predecessor whose next native Tab must reach a
-  // control below the current view, without manufacturing fixture controls.
-  const preparedNativeTab = await page.evaluate(() => {
-    const controls = [...document.querySelectorAll("main a[href], main button, footer a[href], footer button")]
-      .filter((element) => element.getClientRects().length && getComputedStyle(element).visibility === "visible" && element.tabIndex >= 0);
-    const next = controls.findIndex((element) => element.getBoundingClientRect().top > innerHeight + 80);
-    if (next < 1) return false;
-    controls[next - 1].focus({ preventScroll: true });
-    return true;
-  });
-  expect(preparedNativeTab).toBe(true);
-  const keyboardCrossing = await crossReadingBoundary();
-  await page.keyboard.press("Tab");
-  const keyboard = await settledState();
-  expect(keyboard).toMatchObject({ opacity: 1, count: 0, observedState: "idle" });
-  expect(Math.abs(keyboard.y - keyboardCrossing.y), "real Tab also exercises the browser's native focus scroll").toBeGreaterThan(20);
-
-  await page.goto("/work/instructure", { waitUntil: "load" });
-  await crossReadingBoundary();
+  for (const state of states) expect(state).toEqual({ top: 0, opacity: 1, animations: 0 });
+  await expect(page.locator(".immersive-nav-landing")).toHaveCount(0);
   await page.emulateMedia({ reducedMotion: "reduce" });
-  expect(await settledState(), "a preference change cancels the observed animation instead of waiting for it to finish")
-    .toMatchObject({ opacity: 1, count: 0, observedState: "idle" });
+  await expect(page.locator(".navbar")).toHaveCSS("opacity", "1");
 });
 
 test("reduced motion freezes the painted sculpture and keeps the home header stable", async ({ page }) => {

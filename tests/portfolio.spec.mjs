@@ -2149,7 +2149,7 @@ test.describe("editorial experience without JavaScript", () => {
 });
 
 for (const width of [1280, 390]) {
-  test(`${width}: case utility keeps real progress and ${width < 992 ? "a stable compact bar" : "its desktop journey"} with keyboard navigation`, async ({ page }) => {
+  test(`${width}: case utility keeps real progress and a stable top bar with keyboard navigation`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await openStable(page, "/work/instructure");
     const bar = await page.evaluate(() => {
@@ -2164,7 +2164,7 @@ for (const width of [1280, 390]) {
         motion: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
       };
     });
-    expect(bar.position).toBe("fixed");
+    expect(bar.position).toBe("sticky");
     expect(bar.height).toBeGreaterThanOrEqual(44);
     expect(bar.breadcrumb).toContain("Works");
     expect(bar.breadcrumb).toContain("Instructure");
@@ -2175,8 +2175,7 @@ for (const width of [1280, 390]) {
     const progress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
     await expect(page.locator(".home-nav-progress span")).toHaveText(progress);
     const travelled = await page.locator(".navbar").boundingBox();
-    if (width < 992) expect(Math.abs(travelled.y), "compact case navigation stays at the top").toBeLessThanOrEqual(.5);
-    else expect(travelled.y, "desktop case navigation follows native document progress").toBeGreaterThan(0);
+    expect(Math.abs(travelled.y), "case navigation stays at the top at every width").toBeLessThanOrEqual(.5);
     expect(travelled.y + travelled.height).toBeLessThanOrEqual(900);
     await page.keyboard.press("Tab");
     await page.locator(".navbar .nav-logo-wrap").focus();

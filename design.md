@@ -218,7 +218,7 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   absolute link slots, a progress counter, reading-slot fades or a growing
   terminal wordmark on Home. The hero still follows its approved morph.
   Compact keeps the shared disclosure; enlarged desktop text can wrap safely.
-  Desktop case pages retain their existing utility journey independently.
+  Works and case pages use the separate stable navy reference bar below.
 - `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`, or `setCompactProgress` while `data-glass-live` marks the unpinned slot; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
 - All seven cases inherit the branded arrival/chrome vocabulary; complete real
   product images and text remain. The lilac stage uses a large centered Funnel
@@ -409,17 +409,26 @@ links, heading hierarchy and visible keyboard focus.
   AI integration item (2026-09-15, owner request); the Hungarian pages link
   its Hungarian pair as `AI-integráció`. Native links and 44px minimum targets; compact keeps the
   accessible disclosure. Email remains a native assign-only button.
-- `/works` retains its sticky bar. Desktop cases share the travelling wordmark header,
-  keeping `Works / {Project}` on desktop. Compact hides that duplicate
-  breadcrumb and includes a native Works link in the disclosure alongside
-  LinkedIn. Shared entrances must never hide navigation indefinitely.
+- `/works` and all seven cases use one stable navy (`#0A1628`) top bar with
+  lilac (`#D6D4ED`) controls (owner screenshot correction, 2026-09-16).
+  Keep NB left, `Works / {Project}` on desktop cases, the centered
+  `NORBERT.BARNA` wordmark, real reading progress and native destinations.
+  Use equal outer grid tracks and in-flow groups, never colliding absolute
+  slots. Enlarged text may wrap; decorative progress/branding yields space
+  before essential links. No vertical travel, reading-slot fades, footer
+  relocation, growing terminal wordmark or extra landing space. The wordmark
+  is present in static HTML; the progress counter appears only after a real
+  calculation, and stays hidden without JavaScript. Compact hides the
+  duplicate breadcrumb and uses the existing lilac disclosure with a native
+  Works link. The dark work bar stays at the top throughout the document.
+  Shared entrances must never hide navigation indefinitely.
 - At widths up to 991px every page opens the same disclosure (owner request,
   2026-09-15): the About page's panel is the pattern. It drops under the bar
   at full width on the page's own field (lilac everywhere, navy on About),
   with left-aligned 17px rows of 48px, no card, radius or shadow, and the
   current page underlined in olive. `compact-navigation.css` owns it;
   `story.css` only recolours it for About.
-- At widths up to 991px every page uses a stable lilac/navy top bar. No travel,
+- At widths up to 991px every page uses a stable top bar in its page palette. No travel,
   reading-slot fade, footer relocation or expanded terminal wordmark. Preserve
   native scrolling, menu/focus behavior and browser-height changes.
 - No Motion control, sound requirement, Contact page, new form or invented
@@ -511,7 +520,7 @@ No lead paragraph and no per-row descriptions: the owner asked for the rows only
 
 **Case opening (one centered lilac template)**
 
-1. Desktop travelling site bar; stable compact bar with the Works disclosure
+1. Stable navy site bar with centered desktop identity and compact Works disclosure
 2. Opening grid: category, oversized responsive Funnel H1, centered complete
    `.case-hero-media`, then the original regular dek. Images keep
    `object-fit: contain`. Four alternating vertical masks reveal the actual
@@ -650,7 +659,8 @@ English-wash the screenshot.
 | BlogFooterCTA | Third-party or multi-field contact form | One native project button using the existing assign-only email handler |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
-| MeshParallaxCircus | Retired mesh motion or moving footer text returns | Footer content stays still; compact navigation stays at the top |
+| MeshParallaxCircus | Retired mesh motion or moving footer text returns | Footer content stays still; navigation stays at the top |
+| TravellingWorkBar | Case controls jump between reading slots, fade or grow at the footer | Preserve the reference navy bar at the top, with stable destinations and real progress only |
 | BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
 | DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
 | TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Selected work`; case titles start `{H1} —` |
@@ -678,7 +688,7 @@ markup that is being retired: check the page before reusing it.
 `.nav-wrap` `.nav-menu` `.nav-menu-area` `.nav-link` `.nav-logo-wrap`
 `.nav-cta` `.nav-breadcrumb` `.menu-button` `#primary-navigation`
 `.home-nav-monogram` `.home-nav-label` `.home-nav-wordmark`
-`.home-nav-progress`
+`.home-nav-progress` `.work-nav-start` `.work-nav-end`
 
 **Editorial footer:** `.footer-section` `.editorial-footer`
 `.editorial-footer-title` `.editorial-footer-art` `.editorial-linkedin-label`
@@ -795,7 +805,7 @@ only to the sitemap.
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
 | `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
 | `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
-| `compact-navigation.css` | Stable Home bar at every width, shared compact bar/disclosure, desktop case utility journey | 14 content pages |
+| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure | 14 content pages |
 | `case-opening.css` | Lilac case stage and the four-slice media reveal | cases |
 | `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
@@ -823,7 +833,7 @@ changes its dependencies, so keep a script where it is.
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
-| `immersive-navigation.js` | Stable Home/compact bar and the desktop case travelling header | yes |
+| `immersive-navigation.js` | Compact state, real Works/case progress and Home consent clearance; no navigation travel | yes |
 | `case-opening.js` | Case title and media assembly, perspective settle | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
 | `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: hero drift, the bars' handoff, the ribbon camera and the phone pan | yes |
@@ -888,7 +898,7 @@ Motion and stage scope:
 | `--case-stage-gutter` | `clamp(20px, 4vw, 72px)` | `case-opening.css` |
 | `--editorial-gutter` | `clamp(24px, 4.8vw, 80px)` | `editorial-sections.css` |
 | `--story-gutter` | `clamp(24px, 5.2vw, 88px)` | `story.css` |
-| `--immersive-link-ink` | `#0A1628` | `compact-navigation.css` |
+| `--immersive-link-ink` | navy on lilac; lilac on navy for work bars | `compact-navigation.css` |
 
 ### Breakpoints and media features
 
@@ -897,7 +907,7 @@ Motion and stage scope:
 | `max-width: 479px` | Smallest phone tuning |
 | `max-width: 599px` / `min-width: 600px` | Compact stack turning into two-up |
 | `max-width: 767px` | Inherited Webflow tier. Do not author new rules here. One existing exception: the arrival wordmark block in `arrival.css` |
-| `max-width: 991px` / `min-width: 992px` | **The** split: stable compact bar against the desktop utility journey |
+| `max-width: 991px` / `min-width: 992px` | **The** split: compact disclosure against the expanded stationary desktop bar |
 | `min-width: 1200px`, `min-width: 1800px` | Wide tuning only |
 | `(hover: hover) and (pointer: fine)` | Desktop pointer motion may run |
 | `(hover: none), (pointer: coarse)` | Restrained decorative depth only; a first tap always follows the link |
@@ -935,7 +945,7 @@ Playwright specs, grouped by what they defend:
 
 - **Arrival and hero:** `arrival-fidelity`, `arrival-pointer`, `hero-motion`,
   `hero-reference`, `home-composition`, `home-first-paint`.
-- **Chrome:** `compact-navigation`, `contact-copy`, `case-first-paint`.
+- **Chrome:** `compact-navigation`, `home-sticky-navigation`, `work-sticky-navigation`, `contact-copy`, `case-first-paint`.
 - **Content and access:** `portfolio` (the large accessibility and AA suite),
   `editorial-media`, `story-motion`.
 - **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,

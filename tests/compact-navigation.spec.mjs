@@ -32,12 +32,13 @@ async function expectStableBar(page, label) {
       const channels = color.match(/[\d.]+/g).map(Number);
       if (channels.length === 3 || channels[3] === 1) { iconBacking = color; break; }
     }
-    // The approved AI landing alone opens on navy; the bar turns lilac when
-    // the hero leaves the actual bar, including safe-area clearance.
+    // Work routes keep the navy reference bar. AI alone changes its bar to
+    // lilac when the hero leaves it, including safe-area clearance.
     const aiRoute = ["/ai-integration", "/hu/ai-integracio"].includes(location.pathname);
+    const workRoute = location.pathname === "/works" || location.pathname.startsWith("/work/");
     const opening = aiRoute && document.querySelector("[data-ai-hero]")?.getBoundingClientRect().bottom > nav.getBoundingClientRect().height;
     return { y: nav.getBoundingClientRect().top, opacity: Number(style.opacity), animations: nav.getAnimations().length,
-      background: style.backgroundColor, expectedBackground: opening ? "rgb(10, 22, 40)" : "rgb(214, 212, 237)", blend: style.mixBlendMode,
+      background: style.backgroundColor, expectedBackground: (opening || workRoute) ? "rgb(10, 22, 40)" : "rgb(214, 212, 237)", blend: style.mixBlendMode,
       iconInk: getComputedStyle(toggle.querySelector(".w-icon-nav-menu")).color, iconBacking,
       toggleHit: toggle.contains(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)),
       overflow: document.documentElement.scrollWidth - innerWidth };
@@ -129,18 +130,18 @@ test.describe("mobile touch and disclosure", () => {
   });
 });
 
-test("crossing the compact breakpoint cleans up movement and restores the desktop journey", async ({ page }) => {
+test("crossing the compact breakpoint preserves the same stationary work bar", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/work/instructure", { waitUntil: "load" });
   await page.evaluate(() => scrollTo(0, 1200));
   const top = () => page.locator(".navbar").evaluate((nav) => nav.getBoundingClientRect().top);
-  await expect.poll(top).toBeGreaterThan(0);
+  await expect.poll(top).toBe(0);
   await page.setViewportSize({ width: 390, height: 900 });
   await expectStableBar(page, "desktop to compact");
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.evaluate(() => scrollTo(0, 1200));
   await expect(page.locator(".navbar")).not.toHaveAttribute("data-compact-nav");
-  await expect.poll(top).toBeGreaterThan(0);
+  await expect.poll(top).toBe(0);
   await page.setViewportSize({ width: 390, height: 720 });
   await expectStableBar(page, "second compact transition");
 });
