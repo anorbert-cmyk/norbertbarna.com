@@ -49,8 +49,10 @@ page is those boards in this order, and the Hungarian page is the same board:
 3. **Make the pieces work together.** The ribbon journey. On a desktop the
    stage pins for one scroll and the camera follows the ribbon from insight
    to integration to impact while the three steps arrive; it ends on the
-   board's finished panel with the selected work row. Phones follow the ribbon
-   in a panning window. No JavaScript, reduced motion, a short window and
+   board's finished panel with the selected work row. On a phone the ribbon
+   is the camera: it holds under the bar while the three steps pass beneath
+   it, the window travelling from insight to integration to impact as each
+   step arrives. No JavaScript, reduced motion, a short window and
    every viewport under 992px show the finished panel; every owner property
    falls back to it. Reading text never receives a transform or opacity.
 4. **What could work better?** The olive close, the page's one native

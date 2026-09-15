@@ -583,7 +583,7 @@ for (const page of SERVICE_PAGES) {
   const pages = SERVICE_PAGES.map((page) => [page, readFileSync(join(ROOT, page), "utf8")]);
   for (const [page, html] of pages) {
     if (skeleton(html) !== expected) fail(`${page}: the five board sections must stand in order (${skeleton(html)})`);
-    for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-ribbon", "data-ai-work"]) {
+    for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-journey", "data-ai-ribbon", "data-ai-work"]) {
       if ((html.match(new RegExp(`\\b${hook}(?=[\\s>=])`, "g")) || []).length !== 1) fail(`${page}: exactly one ${hook} hook`);
     }
     if ((html.match(/\bdata-ai-step="[123]"/g) || []).length !== 3) fail(`${page}: the ribbon journey has three steps`);

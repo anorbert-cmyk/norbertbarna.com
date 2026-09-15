@@ -12,12 +12,13 @@
   var ribbon = pieces && pieces.querySelector("[data-ai-ribbon]");
   var steps = pieces ? Array.from(pieces.querySelectorAll("[data-ai-step]")) : [];
   var work = pieces && pieces.querySelector("[data-ai-work]");
+  var journey = pieces && pieces.querySelector("[data-ai-journey]");
   var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
   var listeners = new AbortController();
   var resizeObserver, intersectionObserver, preferenceObserver;
   var frame = 0, destroyed = false, failed = false, pageHidden = false, near = true, painted = false;
   var currentMotion = false, currentMode = "flow";
-  var owned = [], camera = [], pan = [];
+  var owned = [];
   var original = { motion: root.getAttribute("data-ai-motion"), mode: root.getAttribute("data-ai-mode") };
   var api = window.PortfolioAiMotion = { state: "static", mode: "flow", progress: 0, camera: 0, refresh: request, destroy: destroy };
 
@@ -47,15 +48,13 @@
   var write = {
     heroDrift: property(heroArt, "--ai-hero-drift"), heroScale: property(heroArt, "--ai-hero-scale"),
     shapeY: property(shapeArt, "--ai-shape-y"), shapeRotate: property(shapeArt, "--ai-shape-rotate"),
-    shapeFade: property(shapeArt, "--ai-shape-fade", camera),
-    ribbonX: property(ribbon, "--ai-ribbon-x", camera), ribbonS: property(ribbon, "--ai-ribbon-s", camera),
-    steps: steps.map(function (step) { return property(step, "--ai-step", camera); }),
-    work: property(work, "--ai-work", camera),
-    ribbonPan: property(ribbon, "--ai-ribbon-pan", pan)
+    shapeFade: property(shapeArt, "--ai-shape-fade"),
+    ribbonX: property(ribbon, "--ai-ribbon-x"), ribbonS: property(ribbon, "--ai-ribbon-s"),
+    steps: steps.map(function (step) { return property(step, "--ai-step"); }),
+    work: property(work, "--ai-work"),
+    ribbonPan: property(ribbon, "--ai-ribbon-pan")
   };
   function resetProperties() { owned.forEach(function (item) { item.restore(); }); }
-  function resetCamera() { camera.forEach(function (item) { item.restore(); }); }
-  function resetPan() { pan.forEach(function (item) { item.restore(); }); }
   function restoreAttribute(element, name, value) {
     if (value === null) element.removeAttribute(name); else element.setAttribute(name, value);
   }
@@ -92,7 +91,7 @@
       root.dataset.aiMotion = enabled ? "on" : "off"; currentMotion = enabled;
     }
     if (currentMode !== mode || !painted) {
-      if (mode === "flow") resetCamera(); else resetPan();
+      resetProperties();
       root.dataset.aiMode = mode; currentMode = mode;
     }
     api.state = reduced ? "reduced" : "active"; api.mode = mode;
@@ -128,12 +127,21 @@
       write.work(ramp(p, .84, .98).toFixed(4));
     } else {
       api.camera = 1;
-      if (ribbon && innerWidth < 992) {
-        // The compact window pans from the green start to the olive end as
-        // the section crosses the viewport; the fallback shows the start.
-        var box = pieces.getBoundingClientRect();
-        var travel = smooth((height * .9 - box.top) / Math.max(1, height * .9 + box.height * .55));
-        write.ribbonPan((-travel * 56).toFixed(3) + "%");
+      if (ribbon && journey && innerWidth < 992) {
+        // The phone camera: the ribbon holds under the bar while the steps
+        // pass beneath it. The window (twice the viewport wide) travels from
+        // the green start to the olive end as the journey crosses the
+        // viewport, and each step arrives as it rises into view.
+        var box = journey.getBoundingClientRect();
+        var hold = parseFloat(getComputedStyle(ribbon).top) || 0;
+        var p = clamp((hold - box.top) / Math.max(1, box.height - ribbon.offsetHeight));
+        api.camera = p;
+        var focus = p < .2 ? .18 : p < .45 ? .18 + ramp(p, .2, .45) * .32 : p < .6 ? .5 : p < .85 ? .5 + ramp(p, .6, .85) * .34 : .84;
+        write.ribbonPan(Math.max(-50, Math.min(0, (25 - focus * 100))).toFixed(3) + "%");
+        steps.forEach(function (step, index) {
+          var top = step.getBoundingClientRect().top;
+          write.steps[index](ramp(height * .92 - top, 0, height * .22).toFixed(4));
+        });
       }
     }
     painted = true;

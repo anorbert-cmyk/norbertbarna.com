@@ -99,19 +99,26 @@ for (const [language, path] of ROUTES) {
     expect(closeTop).toBeLessThan(900);
   });
 
-  test(`${language}: 390x844 flows without pinning, shows every step and pans the ribbon window`, async ({ page }) => {
+  test(`${language}: 390x844 flows without pinning the stage; the ribbon holds under the bar and the camera travels as the steps arrive`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await open(page, path);
     expect(await page.evaluate(() => window.PortfolioAiMotion.mode)).toBe("flow");
     expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-stage]")).position)).not.toBe("sticky");
-    await page.locator("#pieces").evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 400));
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-ribbon]")).position), "the ribbon is the phone's pinned camera").toBe("sticky");
+    const journeyTop = () => page.evaluate(() => document.querySelector("[data-ai-journey]").getBoundingClientRect().top + scrollY);
+    await page.evaluate((top) => window.scrollTo(0, top - 700), await journeyTop());
     await settle(page);
-    const before = await ribbonTransform(page);
-    expect((await opacities(page)).every((value) => value > 0.99)).toBe(true);
-    await page.locator("#pieces").evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY + 200));
+    const start = await ribbonTransform(page);
+    expect(await ribbonIsIdentity(page), "the window rests on the green start before the journey").toBe(true);
+    await page.evaluate(() => { const j = document.querySelector("[data-ai-journey]"); window.scrollTo(0, j.getBoundingClientRect().top + scrollY + j.offsetHeight * .45); });
     await settle(page);
     await settle(page);
-    expect(await ribbonTransform(page), "the window pans along the ribbon with the scroll").not.toBe(before);
+    expect(await ribbonTransform(page), "the window travels along the ribbon as the steps pass").not.toBe(start);
+    const stuck = await page.evaluate(() => document.querySelector("[data-ai-ribbon]").getBoundingClientRect().top);
+    expect(stuck, "the ribbon holds under the compact bar").toBeLessThanOrEqual(60);
+    await page.evaluate(() => { const j = document.querySelector("[data-ai-journey]"); window.scrollTo(0, j.getBoundingClientRect().top + scrollY + j.offsetHeight); });
+    await settle(page);
+    expect((await opacities(page)).every((value) => value > 0.99), "every step has arrived by the end of the journey").toBe(true);
     for (const y of [0, 0.3, 0.6, 1]) {
       await page.evaluate((fraction) => window.scrollTo(0, fraction * (document.documentElement.scrollHeight - innerHeight)), y);
       await settle(page);
