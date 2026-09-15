@@ -178,7 +178,10 @@ if (worksLd) {
     const markup = readFileSync(join(ROOT, page), "utf8");
     const carries = page === "about.html"
       ? /class="story-sculpture"[^>]*src="[^"]*hero-chevron\.svg"/.test(markup)
-      : /<div class="page-chevron-mark" aria-hidden="true"><img src="\/assets\/images\/hero-chevron\.svg"/.test(markup);
+      // Both poses: the gate at rest, the glass chevron the scroll turns to.
+      : /<div class="page-chevron-mark" aria-hidden="true">/.test(markup) &&
+        /class="page-mark-rest"[^>]*hero-gate\.svg/.test(markup) &&
+        /class="page-mark-glass"[^>]*hero-chevron\.svg/.test(markup);
     if (!carries) fail(`${page} carries no reference to the home hero object`);
     if (/<a[^>]*>\s*<[^>]*class="page-chevron-mark"/.test(markup)) {
       fail(`${page}: the shared page mark is decoration, not a link`);
@@ -186,6 +189,33 @@ if (worksLd) {
   }
   if (/class="story-sculpture"[^>]*hero-final\.webp/.test(readFileSync(join(ROOT, "about.html"), "utf8"))) {
     fail("/about must stand the glass chevron in its corridor, not the flat gate");
+  }
+}
+// The page mark turns on native scroll, not on a loop, and is not gated to
+// desktop: phones get it too. Reduced motion leaves the resolved gate alone.
+{
+  const motion = readFileSync(join(ROOT, "assets/js/animations.js"), "utf8");
+  if (!/function addPageMarkTurn\(\)/.test(motion) || !/--page-mark/.test(motion)) {
+    fail("the shared page mark has no owner in animations.js");
+  }
+  if (!/addPageMarkTurn\(\);[\s\S]*addPageMarkTurn\(\);/.test(motion)) {
+    fail("the page mark must turn on every viewport, not desktop alone");
+  }
+  if (!/function addPageMarkTurn\(\)[\s\S]{0,200}reducedMotion\) return/.test(motion)) {
+    fail("reduced motion must leave the page mark on its resolved pose");
+  }
+  if (/addPageMarkTurn[\s\S]{0,600}(?:repeat:\s*-1|setInterval)/.test(motion)) {
+    fail("the page mark must not idle: native scroll drives it or nothing does");
+  }
+  // Every page carries a blanket `html.no-motion * { opacity: 1 !important }`.
+  // Without an explicit re-assertion it reveals both poses of the mark at once.
+  const sections = readFileSync(join(ROOT, "assets/css/editorial-sections.css"), "utf8");
+  if (!/html\.no-motion[^{]*\.page-mark-glass\s*{[^}]*opacity:\s*0\s*!important/.test(sections)) {
+    fail("reduced motion must show one pose of the page mark, not both");
+  }
+  if (!/\.page-mark-rest\s*{\s*opacity:\s*var\(--page-mark-rest,\s*1\)/.test(sections) ||
+      !/\.page-mark-glass\s*{\s*opacity:\s*var\(--page-mark-glass,\s*0\)/.test(sections)) {
+    fail("with no owner the page mark must rest on the gate, not the glass");
   }
 }
 // The experience section is a career, not a list: a lead names the arc and every

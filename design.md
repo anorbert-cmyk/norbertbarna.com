@@ -421,6 +421,18 @@ a reading layout or pushes a documented fold. It is the same object the home her
 assembles and the `/about` stage stands in the corridor, never a second hero, never
 a link, and never large enough to compete with a page's own title.
 
+**The mark turns with the page (2026-09-15).** Native scroll drives it, on every
+viewport including phones: the resolved gate hands over to the glass chevron and
+the chevron ends pointing down the page. Scroll owns it, so it stops when the
+reader stops and never idles. A mark pinned to the top of the document leaves a
+phone screen in about 130px, too fast to watch, so the owner holds it against the
+scroll for the length of the turn and then lets it travel away. Keep the handover
+short: two different silhouettes held at similar opacity read as ghosting rather
+than one object changing state. The arithmetic lives in the owner, not in CSS, so
+the stylesheet's defaults are the honest resting state. Every page carries a
+blanket `html.no-motion * { opacity: 1 !important }`, so reduced motion has to
+re-assert the gate explicitly or both poses show at once.
+
 **Case opening (one centered lilac template)**
 
 1. Desktop travelling site bar; stable compact bar with the Works disclosure
