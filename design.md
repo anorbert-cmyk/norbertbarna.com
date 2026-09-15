@@ -37,46 +37,43 @@ remains supported, but is not the primary acquisition KPI. Preserve the
 Product VP role, work order and shipped evidence. The 2026-09-13
 KODE recreation brief below replaces the earlier semicircle composition.
 
-`/ai-integration` and `/hu/ai-integracio` explain the same core service offer in
-English and Hungarian, and since 2026-09-15 they are built from two concept
-boards the owner made and approved: "The passage" and "Systems in motion". The
-page is those boards in this order, and the Hungarian page is the same board:
+`/ai-integration` and `/hu/ai-integracio` present one coherent service story,
+combining the approved **The Passage (01)** and **Systems in Motion (02)**
+concepts. The 2026-09-15 owner-requested design audit completion supersedes the
+previous duplicated service/reference sections and olive middle closing.
+Only the two AI routes receive this treatment; other footers stay unchanged.
 
-1. **The passage.** Navy field, copy left, the lit gate right, the
-   people / products / possibilities column on the far wall.
-2. **AI, shaped around your workflow.** Lilac field, the three glass bars,
-   a navy pill to the close and LinkedIn beside it, the numbered rule at the foot.
-3. **Make the pieces work together.** The ribbon journey. On a desktop the
-   stage pins for one scroll and the camera follows the ribbon from insight
-   to integration to impact while the three steps arrive; it ends on the
-   board's finished panel with the selected work row. On a phone the ribbon
-   is the camera: it holds under the bar while the three steps pass beneath
-   it, the window travelling from insight to integration to impact as each
-   step arrives. The 01 / 03 counter beside the title follows the camera
-   on both. No JavaScript, reduced motion, a short window and
-   every viewport under 992px show the finished panel; every owner property
-   falls back to it. Reading text never receives a transform or opacity.
-4. **What could work better?** The olive close, the page's one native
-   project-contact button, the ribbon tapering into the closing rule.
-5. **Start with your workflow.** The passage from its other side, the three
-   steps as a list, the related work with its honest one-liners, the
-   language switch.
+1. **The Passage opening.** Dark stable navigation, oversized lilac title,
+   original triangular forest/olive portal, and a native project contact
+   button in the first mobile viewport. A quieter link leads to the approach.
+2. **Shaped around your workflow.** A shorter explanatory bridge on lilac.
+   Three registered forest, glass and olive architectural rails move
+   independently and converge into their final composition.
+3. **Make the pieces work together.** A continuous rendered ribbon crosses
+   three always-readable service steps. Desktop pins for a 240svh track only
+   when both natural content rows fit the viewport. The camera and 01–03
+   counter travel together. Mobile keeps the ribbon under the 56px bar as the
+   steps scroll naturally. No reading text or links fade or transform.
+4. **Selected work.** One semantic section outside the pinned scene, with
+   three whole-row links, factual contribution copy and the same high-resolution
+   geometric imagery used by the portfolio. No duplicate reference list.
+5. **Start with your workflow.** A separately bounded architectural gate,
+   practical preparation copy and the complete owner-authored biography.
+6. **Before we begin.** Five native details/summary disclosures, first open,
+   retaining the exact bilingual question/answer content. Language link follows.
+7. **Let’s build what’s next.** The selected dark Passage footer, with a
+   narrow olive light slit, live lilac headline, native email-app button,
+   LinkedIn and quiet privacy/settings utilities. Contact copy is localized;
+   the selected English headline also appears on HU with lang=en.
 
-The ribbon is a render (2026-09-15): `tools/ribbon-scene/ribbon3d.html` builds
-it in three.js as one band with the board's three materials and the board's
-line, `tools/ribbon-scene/render.mjs` renders it headless at 3x into
-`assets/images/ai/ribbon.webp`, and its three labels are text laid on the strip
-(`.ai-ribbon-label`), sharp under the lens and translated on the Hungarian
-page. The rest of the artwork is the owner's boards, cut out, not generated:
-the passage panel, the bars, the olive band and the second passage are crops with
-their baked labels filled from the surface around them, their field shifted to
-the CSS colour and keyed to alpha so the crop has no edge, the ribbon crossing
-the stage above the reading rows as it does on the board. They are board
-resolution (the band is the olive panel's own strip scaled 3x), shown up to
-about 1.5x, so they are soft where the lens goes close; the code treats each as
-a drop-in file for a source render. This is a narrow exception to the image
-rule below, tied to these two boards. The selected and related work rows use
-the boards' own project marks, cropped the same way.
+Artwork is an explicitly approved decorative exception; never fabricate
+product evidence. `tools/ribbon-scene/ai-geometry.html` and `render-ai.mjs`
+produce three 1800×1100 registered transparent bars and `ribbon-refined.webp`
+(2800×480). Runtime requires no Three.js. Ribbon labels stay live translated
+HTML. Final architecture images are separately generated clean source assets
+based on the approved board, with provenance in `tools/ai-artwork.md`.
+Original board crops and the author's earlier ribbon renderer remain available.
+Selected work uses existing `assets/images/geometry/{project}.*.webp` files.
 
 The movement is CSS scroll-driven animation (2026-09-15), run by the
 compositor: each piece of artwork follows its own `view()` timeline, the
@@ -87,17 +84,23 @@ and is gated on `[data-ai-motion="on"]`, which only the owner sets, so
 browsers without scroll timelines, reduced motion, `html.no-motion` and no
 JavaScript all show the finished board. The owner (`ai-motion.js`) decides
 whether motion runs and in which mode, and keeps the 01 / 03 counter with
-the camera; it writes no styles. Artwork takes transforms and opacity;
-reading text never animates, except the three steps and the work row, which
-arrive by opacity with the camera as the boards intend. The passage settles
-in and the action's rule draws on load (time-based keyframes, same gate).
+the camera; it writes no styles. Reading text and focusable content never
+fade or transform. The passage settles and the action rule draws on load.
+The mobile timeline window matches the sticky ribbon's rendered height;
+camera progress and counter therefore share the same interval. Below600px
+viewport height the mobile ribbon stays full-width in natural flow, as it
+does without JavaScript or motion permission.
 
 The page has its own stylesheet and native-scroll owner (`ai-integration.css`,
 `ai-motion.js`), released as content-hashed files, loaded on these two routes
-only. Under 992px the compact bar stays the lilac bar every route shares; the
-boards' phone mockups show a dark bar, and that is the one deliberate
-deviation, because a spec guards the bar on all thirteen routes. The real
-contact button carries no arrow, because the site checks it hugs its label.
+only. The AI compact bar is dark over the opening, then lilac over the reading
+chapters; its existing menu panel stays lilac. Contact arrows use a separate
+aria-hidden span so the accessible name remains the approved visible label.
+AI scroll clearance includes the top safe-area inset and matches the actual
+bar; section anchors add only12px beyond it. Ribbon labels have an opaque navy
+backing. The footer reflection scrim preserves text AA, including utility links.
+Both final footer contact targets remain at least48px tall. Other routes keep
+their exact shared navigation/footer contracts.
 
 The copy sells the offer in the reader's terms (fewer manual steps, faster
 decisions, lower running costs, people in control) with no figure the owner
@@ -684,17 +687,16 @@ markup that is being retired: check the page before reusing it.
 **AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
 `.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
 `.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
-`.ai-hero-art` `.ai-hero-kicker` `.ai-triad` `.ai-shape` `.ai-shape-copy` `.ai-shape-dek`
-`.ai-actions` `.ai-cta-pill` `.ai-link-plain` `.ai-shape-art`
-`.ai-shape-label` `.ai-steps-rule` `.ai-pieces` `.ai-pieces-track`
-`.ai-pieces-stage` `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider`
-`.ai-pieces-intro` `.ai-pieces-label` `.ai-ribbon` `.ai-ribbon-strip` `.ai-ribbon-label` `.ai-pieces-steps`
-`.ai-step-no` `.ai-step-inline` `.ai-pieces-work` `.ai-work-list`
-`.ai-pieces-work-label` `.ai-better` `.ai-better-dek` `.ai-better-note`
-`.ai-better-bar` `.ai-better-band` `.ai-start` `.ai-start-art`
-`.ai-start-art-label` `.ai-start-body` `.ai-start-steps` `.ai-start-bring`
-`.ai-who` `.ai-who-text` `.ai-faq` `.ai-faq-list`
-`.ai-related` `.ai-related-list` `.ai-start-lang` `.ai-eyebrow-rule-after`
+`.ai-hero-art` `.ai-hero-kicker` `.ai-hero-explore` `.ai-shape` `.ai-shape-copy`
+`.ai-shape-dek` `.ai-link-plain` `.ai-shape-art` `.ai-bar` `.ai-bar-forest`
+`.ai-bar-glass` `.ai-bar-olive` `.ai-pieces` `.ai-pieces-track` `.ai-pieces-stage`
+`.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider` `.ai-pieces-intro`
+`.ai-journey` `.ai-ribbon` `.ai-ribbon-strip` `.ai-ribbon-label`
+`.ai-pieces-steps` `.ai-step-no` `.ai-start` `.ai-start-art` `.ai-start-body`
+`.ai-start-bring` `.ai-who` `.ai-who-text` `.ai-faq` `.ai-faq-head`
+`.ai-faq-list` `.ai-related` `.ai-related-head` `.ai-related-list`
+`.ai-start-lang` `.ai-footer` `.ai-footer-art` `.ai-footer-content`
+`.ai-footer-top` `.ai-footer-invitation` `.ai-footer-note` `.ai-footer-bottom`
 
 **About (`/about` only):** `.story-page` `.story-opening`
 `.story-opening-stage` `.story-opening-copy` `.story-opening-dek`

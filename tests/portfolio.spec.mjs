@@ -1052,9 +1052,10 @@ for (const viewport of [viewports[0], viewports[4]]) {
       await page.setViewportSize(viewport);
       await page.emulateMedia({ reducedMotion: "reduce" });
       await openStable(page, route);
-      // Include native disclosures such as Kineticare's walkthrough prose.
-      for (const summary of await page.locator("main details:not([open]) > summary").all()) {
-        await summary.click();
+      // Keep stable indices while opening disclosures: filtering by [open]
+      // would remove each clicked item and shift the remaining nth locators.
+      for (const summary of await page.locator("main details > summary").all()) {
+        if (!await summary.evaluate((element) => element.parentElement.open)) await summary.click();
       }
       const results = await new AxeBuilder({ page }).analyze();
       const blockers = results.violations.filter(({ impact }) => impact === "serious" || impact === "critical");

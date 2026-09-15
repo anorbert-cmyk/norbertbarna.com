@@ -41,7 +41,8 @@ for (const file of SERVICE_PAGES) {
     assert(body.includes(`href="/work/${slug}"`), `${file}: linked first-hand evidence ${slug}`);
   }
   assert(/<button\b[^>]*\btype="button"[^>]*\bclass="[^"]*\bfooter-email\b/.test(body), `${file}: native contact action in main content`);
-  assert(!/mailto:|anorbert@pm\.me|<form\b|G-[A-Z0-9]{6,}|googletagmanager|analytics\.google|oaipixel/i.test(html), `${file}: no exposed email, form or unapproved tracking`);
+  // GA identifiers are uppercase; case-insensitive matching mistakes closing-passage.webp for a tracker.
+  assert(!/mailto:|anorbert@pm\.me|<form\b|googletagmanager|analytics\.google|oaipixel/i.test(html) && !/\bG-[A-Z0-9]{6,}\b/.test(html), `${file}: no exposed email, form or unapproved tracking`);
   const graph = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].flatMap(([, json]) => flatten(JSON.parse(json)));
   const pages = graph.filter(node => node["@type"] === "WebPage");
   const services = graph.filter(node => node["@type"] === "Service");

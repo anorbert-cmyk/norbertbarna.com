@@ -75,8 +75,7 @@
     var rootBox = root.getBoundingClientRect();
     api.progress = clamp(-rootBox.top / Math.max(1, root.offsetHeight - height));
     if (hero) {
-      var clearance = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 64;
-      var navTone = hero.getBoundingClientRect().bottom > clearance ? "dark" : "light";
+      var navTone = hero.getBoundingClientRect().bottom > 64 ? "dark" : "light";
       if (document.body.dataset.aiNav !== navTone) document.body.dataset.aiNav = navTone;
     }
     if (!enabled) { showCount(0); api.camera = 0; painted = true; return; }
