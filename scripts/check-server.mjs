@@ -25,7 +25,7 @@ const RELEASE_SOURCES = [
   "js/story-motion.js", "css/case-motion.css", "css/responsive.css",
   "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
-  "css/story.css",
+  "css/story.css", "js/ai-motion.js", "css/ai-integration.css",
 ];
 const approvedReleaseSources = new Set(RELEASE_SOURCES);
 

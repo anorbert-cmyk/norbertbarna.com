@@ -191,22 +191,6 @@ if (worksLd) {
     }
   }
 }
-// The experience section is a career, not a list: a lead names the arc and every
-// row says what the step was. Each row must also stand alone in the schema.
-{
-  const rows = [...home.matchAll(/<div class="awards-card" role="listitem">([\s\S]*?)<\/div>\n<\/div>/g)];
-  const described = [...home.matchAll(/class="awards-card-summary">([^<]{80,})</g)];
-  if (!/class="editorial-experience-lead"/.test(home)) {
-    fail("the experience section must open with the arc its five rows belong to");
-  }
-  if (described.length !== 5) {
-    fail(`every experience row must say what the step was (${described.length} of 5 described)`);
-  }
-  const occupations = [...home.matchAll(/"@type": "Occupation",\n\s*"name": "[^"]+",\n\s*"description": "[^"]{80,}"/g)];
-  if (occupations.length !== 5) {
-    fail(`all five roles must carry a described Occupation entry (found ${occupations.length})`);
-  }
-}
 if (!/"jobTitle": "Product VP"/.test(home)) {
   fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
 }
@@ -585,6 +569,39 @@ for (const page of SERVICE_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
   checkProjectContact(main, `${page}: main`, page.startsWith("hu/") ? "hu" : "en");
+}
+// The service pages are the owner's two approved boards, in this order, and
+// the Hungarian page is the same board: the section skeleton must match, the
+// reading text must stay outside the artwork, and the finished board must be
+// the stylesheet's resting state (every owner property falls back to it).
+{
+  const skeleton = (html) => {
+    const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
+    return [...main.matchAll(/<(header|section)\b[^>]*\bid="([^"]+)"/g)].map(([, tag, id]) => `${tag}#${id}`).join(" ");
+  };
+  const expected = "header#top section#shaped section#pieces section#work-better section#start";
+  const pages = SERVICE_PAGES.map((page) => [page, readFileSync(join(ROOT, page), "utf8")]);
+  for (const [page, html] of pages) {
+    if (skeleton(html) !== expected) fail(`${page}: the five board sections must stand in order (${skeleton(html)})`);
+    for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-ribbon", "data-ai-work"]) {
+      if ((html.match(new RegExp(`\\b${hook}(?=[\\s>=])`, "g")) || []).length !== 1) fail(`${page}: exactly one ${hook} hook`);
+    }
+    if ((html.match(/\bdata-ai-step="[123]"/g) || []).length !== 3) fail(`${page}: the ribbon journey has three steps`);
+    for (const still of ["passage-panel", "bars", "ribbon", "band", "workflow-passage"]) {
+      if (!html.includes(`/assets/images/ai/${still}.webp`)) fail(`${page}: the ${still} board crop is missing`);
+    }
+    // Board artwork is decorative: sized, empty alt, inside an aria-hidden node.
+    for (const [tag] of html.matchAll(/<img\b[^>]*assets\/images\/ai\/[^>]*>/g)) {
+      if (!/\balt=""/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag)) fail(`${page}: board artwork must be sized with empty alt`);
+    }
+  }
+  const aiCss = readFileSync(join(ROOT, "assets/css/ai-integration.css"), "utf8");
+  for (const token of ["--ai-ribbon-x, 0%", "--ai-ribbon-s, 1", "--ai-step-1, 1", "--ai-step-2, 1", "--ai-step-3, 1", "--ai-work, 1"]) {
+    if (!aiCss.includes(token)) fail(`ai-integration.css: the finished board must be the fallback (${token})`);
+  }
+  if (!/\[data-ai-mode="cinematic"\] \.ai-pieces-stage \{ position: sticky/.test(aiCss)) fail("ai-integration.css: the ribbon stage pins only in cinematic mode");
+  const aiJs = readFileSync(join(ROOT, "assets/js/ai-motion.js"), "utf8");
+  if (/\bgsap\b|ScrollTrigger|scroll-behavior|preventDefault/.test(aiJs)) fail("ai-motion.js must stay a native-scroll owner");
 }
 for (const page of PRIVACY_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");

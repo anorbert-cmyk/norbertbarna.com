@@ -138,6 +138,8 @@ const caseMotionFile = versionedAsset("assets/css/case-motion.css", "case-motion
 const responsiveFile = versionedAsset("assets/css/responsive.css", "responsive", "css");
 const storyCssFile = versionedAsset("assets/css/story.css", "story", "css");
 const storyMotionFile = versionedAsset("assets/js/story-motion.js", "story-motion", "js");
+const aiCssFile = versionedAsset("assets/css/ai-integration.css", "ai-integration", "css");
+const aiMotionFile = versionedAsset("assets/js/ai-motion.js", "ai-motion", "js");
 
 for (const page of ALL_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
@@ -160,6 +162,28 @@ for (const page of ALL_PAGES) {
     }
   } else if (storyStyles.length || storyScripts.length) {
     fail(`${page}: the About story owner must not change another route`);
+  }
+  // The AI service pages carry their own board stylesheet and native-scroll
+  // owner, released like the others, loaded after the shared motion layer,
+  // and on no other route.
+  const aiStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
+    .map(match => attribute(match[0], "href")).filter(href => /\/ai-integration(?:\.[a-f0-9]+)?\.css$/i.test(href));
+  const aiScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
+    .map(match => attribute(match[0], "src")).filter(src => /\/ai-motion(?:\.[a-f0-9]+)?\.js$/i.test(src));
+  if (UTILITY_PAGES.includes(page) && /\bai-integra/.test(page)) {
+    if (aiStyles.length !== 1 || aiStyles[0] !== `/assets/css/${aiCssFile}` ||
+        aiScripts.length !== 1 || aiScripts[0] !== `/assets/js/${aiMotionFile}`) {
+      fail(`${page}: the AI service stylesheet and owner must each load one current byte-matched asset`);
+    }
+    const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map(match => attribute(match[0], "src"));
+    if (scripts.indexOf(`/assets/js/${aiMotionFile}`) <= scripts.indexOf(`/assets/js/${animationsFile}`)) {
+      fail(`${page}: the AI service owner must initialize after the shared motion layer`);
+    }
+    if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
+      fail(`${page}: decorative service motion must not make the reading page inert`);
+    }
+  } else if (aiStyles.length || aiScripts.length || /assets\/images\/ai\//.test(html) || /\bai-page\b/.test(html)) {
+    fail(`${page}: the AI service boards belong to the two service pages alone`);
   }
   const compositionStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "href")).filter((href) => /\/home-composition(?:\.|\/)/.test(href));

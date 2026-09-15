@@ -52,15 +52,6 @@
   overflow-wrap: anywhere;
 }
 .editorial-experience .section-title span { display: block; }
-/* The arc the five rows belong to, so the section reads as one career rather
-   than five unconnected posts. */
-.editorial-experience-lead {
-  max-width: 34ch;
-  margin: 22px 0 0;
-  color: var(--editorial-navy);
-  font: 400 clamp(15px, 1.15vw, 18px)/1.5 Inter, sans-serif;
-  letter-spacing: -.015em;
-}
 .editorial-experience-art {
   width: 86%;
   max-width: 330px;
@@ -145,15 +136,6 @@
   font: 400 14px/1.5 Inter, sans-serif;
   letter-spacing: -.015em;
   white-space: nowrap;
-}
-/* What the step actually was. Each row stands on its own, so a reader or an
-   answer engine can take one without the rest for context. */
-.editorial-experience .awards-card-summary {
-  max-width: 64ch;
-  margin: 10px 0 0;
-  color: var(--editorial-navy);
-  font: 400 clamp(15px, 1.05vw, 17px)/1.55 Inter, sans-serif;
-  letter-spacing: -.01em;
 }
 /* These rows have no video state; the former paused-video backplates do not apply. */
 html.no-motion .editorial-experience .awards-card,
@@ -364,7 +346,6 @@ html.no-motion .editorial-experience .awards-card .awards-year {
 @media (max-width: 991px) {
   .editorial-experience .awards-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
   .editorial-experience .awards-title-area { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: center; gap: 24px; }
-  .editorial-experience-lead { grid-column: 1 / -1; max-width: 62ch; margin-top: 4px; }
   .editorial-experience .section-title { font-size: clamp(42px, 6.5vw, 64px); }
   .editorial-experience-art { justify-self: end; width: 100%; max-width: 220px; height: 230px; margin: 0; }
   .editorial-experience .awards-card .awards-card-text { font-size: clamp(28px, 4.5vw, 40px); }
@@ -385,7 +366,6 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   .editorial-experience .awards-year-wrap { grid-row: 1; padding: 0; }
   .editorial-experience .awards-card .awards-card-text { font-size: 30px; }
   .editorial-experience .awards-card .awards-card-title { font-size: 16px; }
-  .editorial-experience .awards-card-summary { max-width: none; margin-top: 8px; font-size: 15px; }
   .editorial-experience .awards-card .awards-year { font-size: 13px; }
   .editorial-footer .footer-chrome { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .editorial-footer .footer-ident { grid-column: 1; grid-row: 1; gap: 24px; }
