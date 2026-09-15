@@ -867,7 +867,10 @@ scroll hijack or infinite idle rotation.
 
 **Compact glass (2026-09-15).** Without the pin the same object stays live in
 the drawing slot rather than resolving to its flat endpoint, so phones, tablets
-and short desktop windows get glass instead of a drawing. The compact contract
+and short desktop windows get glass instead of a drawing. User-confirmed
+(2026-09-15) that phones keep it: do not trade the live object back for the
+static drawing on phones as a battery optimisation. The restraint below is
+where that cost is paid. The compact contract
 is restrained: the object never blends toward the flat artwork, its own scene's
 native scroll turns it within a bounded arc, and it holds still when the page
 does. No idle loop, no drag, no fragment scatter and no pointer response on a
