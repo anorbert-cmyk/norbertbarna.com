@@ -2035,6 +2035,7 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
       profileName: profile?.name || "",
       personName: person?.name || "",
       personImage: typeof person?.image === "string" ? person.image : person?.image?.url || "",
+      pageImage: profile?.primaryImageOfPage?.url || "",
       personDescription: person?.description || "",
     };
   });
@@ -2043,7 +2044,8 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   expect(schema.jobTitle).toBe("Product VP");
   expect(schema.profileName).toBe("Norbert Barna — Product VP");
   expect(schema.personName).toBe("Norbert Barna");
-  expect(schema.personImage).toBe("https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg");
+  expect(schema.personImage).toBe("");
+  expect(schema.pageImage).toBe("https://www.barnanorbert.com/assets/images/og/forest-olive-folds.jpg");
   expect(schema.personDescription).toMatch(/Product VP/);
   expect(schema.personDescription).not.toMatch(/design lead/i);
 
