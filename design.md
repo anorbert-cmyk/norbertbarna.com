@@ -126,7 +126,7 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   Geometry begins 200ms after Enter,
   assembles in 2.3 seconds, responds to pointer tilt/nearby fragmentation and drag.
   Use original dependency-free WebGL with a corresponding SVG fallback.
-- The real H1 remains Product VP, visible at the lower left in the starting pose. Works and the native scroll affordance occupy the lower edge. The user-selected 03/04 direction adds a 210svh native track: the same object turns and morphs to a matte forest/olive triangular folded ribbon on the right, matching the original 03 silhouette: broad sloped left plane, visible olive inner fold and a slimmer outward-leaning right leg. Avoid the earlier thick horizontal lintel and parallel blocky towers. The large live Product VP display, original name/dek, proof and employers resolve on the left; the semantic H1 remains unique. Short windows, no-JS, reduced motion and enlarged text use the final unpinned composition.
+- The real H1 remains Product VP, visible at the lower left in the starting pose. Works and the native scroll affordance occupy the lower edge. The user-selected 03/04 direction adds a 210svh native track: the same object turns and morphs to a matte forest/olive triangular folded ribbon on the right, matching the original 03 silhouette: broad sloped left plane, visible olive inner fold and a slimmer outward-leaning right leg. Avoid the earlier thick horizontal lintel and parallel blocky towers. The large live Product VP display, original name/dek, proof and employers resolve on the left; the semantic H1 remains unique. Short windows, no-JS, reduced motion and enlarged text use the final unpinned composition. That composition still carries the live object: phones, tablets and short desktop windows keep the assembled refractive chevron in the right-hand drawing slot the flat gate held, turned by their own native scroll. The flat gate drawing is the fallback, not the compact design.
 - During the home opening and Selected work, NB and destinations form a quiet stable lilac top bar. After that chapter, desktop resumes the distributed utility header: NB left, central wordmark, real page-progress
   counter and existing destinations. On desktop it travels down the viewport with native
   page progress and the wordmark expands at the footer. Keyboard focus and the
@@ -138,7 +138,7 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   with opacity only; never translate the menu across the paragraph.
   The terminal wordmark has its own landing after the unchanged footer links;
   a screen-space offset keeps the scaled letters centred inside that landing.
-- `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
+- `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`, or `setCompactProgress` while `data-glass-live` marks the unpinned slot; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
 - All seven cases inherit the branded arrival/chrome vocabulary; complete real
   product images and text remain. The lilac stage uses a large centered Funnel
   title, four-slice media assembly, and a short native-scroll perspective settle.
@@ -607,6 +607,8 @@ markup that is being retired: check the page before reusing it.
 
 **Behavioural hooks (attributes, not classes).** These are read by JavaScript;
 renaming one silently disables a feature. `data-hero-critical`
+`data-morph-active` (the pinned home track) `data-glass-live` (the unpinned
+slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow`
 `data-composition-nav` `data-autoplay-video` `data-motion-video`
 `data-video-urls` `data-poster-url` `data-video-label` `data-object-fit`
 `data-consent-settings` `data-story` `data-story-*` (`-art` `-backdrop`
@@ -671,8 +673,8 @@ One owner per animated target. Everything is `defer`.
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
 | `navigation.js` | Mobile disclosure; deliberately has no animation dependency | no |
-| `hero-scene.js` | Original WebGL chevron, SVG fallback, context loss, lifecycle | yes |
-| `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress` | yes |
+| `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle | yes |
+| `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
 | `immersive-navigation.js` | Compact bar and the desktop travelling header | yes |
 | `case-opening.js` | Case title and media assembly, perspective settle | yes |
@@ -754,7 +756,10 @@ Motion and stage scope:
 | `max-height: 600px` | Short viewport: role and primary action come before decoration |
 
 Desktop cinematic motion requires 992px **and** a fine pointer. A wide touch
-screen gets the compact contract, not the desktop one.
+screen gets the compact contract, not the desktop one. The compact contract is
+a different motion budget, not the absence of the glass: the pinned 210svh track
+needs `innerHeight >= 780`, while the live object itself is present wherever the
+scene is ready and motion is allowed.
 
 ### Checks
 
@@ -842,6 +847,19 @@ One owner
 per animated target; responsive and preference changes remove obsolete GSAP
 contexts and restore the correct static/composited state. No pinning, snap,
 scroll hijack or infinite idle rotation.
+
+**Compact glass (2026-09-15).** Without the pin the same object stays live in
+the drawing slot rather than resolving to its flat endpoint, so phones, tablets
+and short desktop windows get glass instead of a drawing. The compact contract
+is restrained: the object never blends toward the flat artwork, its own scene's
+native scroll turns it within a bounded arc, and it holds still when the page
+does. No idle loop, no drag, no fragment scatter and no pointer response on a
+coarse pointer; a fine pointer may still tilt it. Render density stays capped
+and the renderer sleeps offscreen. It must not overlap the role, dek, primary
+action or proof, and reduced motion, enlarged text and WebGL failure still fall
+back to the single static drawing. The stage hides the lettering here, so the
+same approved title artwork is painted into the refraction source behind the
+slot; it is what the glass shows through itself, never a second visible layer.
 
 First-session arrival assembles the horizontal brand for 220/60 seconds,
 waits for real fonts/critical images/scene readiness, then shows Enter. The

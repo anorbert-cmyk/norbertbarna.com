@@ -442,6 +442,22 @@ if (!compositionJs.includes("PortfolioHomeMorph") || !compositionJs.includes("se
     /(?:wheel|touchmove)[\s\S]{0,160}preventDefault\(|new\s+(?:window\.)?Lenis\b/.test(compositionJs)) {
   fail("home composition must own the hero pose without intercepting native input or scrolling");
 }
+// Compact glass: the unpinned composition keeps the live object in the drawing
+// slot instead of the flat gate, and the same owner still gates it on motion.
+if (!compositionJs.includes("setCompactProgress") || !compositionJs.includes("clearCompact") ||
+    !compositionJs.includes("data-glass-live") || !/glass\s*=[\s\S]{0,160}motionOff\(\)/.test(compositionJs)) {
+  fail("the unpinned home must hand the live object its own scroll pose and withhold it from reduced motion");
+}
+if (!sceneJs.includes("setCompactProgress") || !sceneJs.includes("compactPose") ||
+    !/compact\s*\?\s*0\s*:\s*morphProgress/.test(sceneJs)) {
+  fail("the compact hero pose must stay assembled glass rather than blending toward the flat endpoint");
+}
+const compositionCss = readFileSync(join(ROOT, "assets/css/home-composition.css"), "utf8");
+if (!/\.home-mast\[data-glass-live\][^{]*\.home-mast-canvas\s*\{[^}]*visibility:\s*visible/.test(compositionCss) ||
+    !/\.home-mast\[data-glass-live\][^{]*\.home-mast-gate-fallback\s*\{[^}]*opacity:\s*0/.test(compositionCss) ||
+    !/\.home-mast:not\(\[data-morph-active\]\)\s*\.home-mast-gate-fallback\s*\{[^}]*opacity:\s*1/.test(compositionCss)) {
+  fail("the unpinned slot must show exactly one of the live canvas and the static gate drawing");
+}
 if (!animationJs.includes("PortfolioHomeMorph")) {
   fail("the shared statement animation must yield ownership to the home composition");
 }
