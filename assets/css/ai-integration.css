@@ -205,3 +205,40 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
   .ai-work-list { flex-direction: column; gap: 4px; }
   .ai-work-list li + li { padding-left: 0; border-left: 0; }
 }
+
+/* 5. Board 2, "Start with your workflow": the passage from its other side,
+   the three steps as a list, and the related work with honest one-liners. */
+.ai-start { display: grid; grid-template-columns: minmax(0, 34fr) minmax(0, 66fr); overflow: hidden; background: var(--ai-lilac); color: var(--ai-ink); }
+.ai-start-art { position: relative; min-height: 560px; pointer-events: none; }
+.ai-start-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left center; }
+/* The label keeps its own backing so it reads AA on any crop of the wall. */
+.ai-start-art-label { position: absolute; left: var(--ai-gutter); bottom: 24%; display: flex; flex-direction: column; gap: 2px; padding: 12px 14px 12px 12px; margin-left: -12px; color: var(--ai-lilac); background: rgb(10 22 40 / 78%); }
+.ai-start-art-label::after { content: ""; width: 110px; height: 1px; margin-top: 10px; background: var(--ai-lilac); }
+.ai-start-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 40px clamp(32px, 4.5vw, 72px); align-content: start; padding: clamp(72px, 9vw, 124px) var(--ai-gutter) clamp(56px, 7vw, 96px) clamp(40px, 5vw, 72px); }
+.ai-start h2 { max-width: 9ch; font-size: clamp(40px, 4.6vw, 74px); line-height: .95; }
+.ai-start-steps { list-style: none; margin: 0; padding: 0; }
+.ai-start-steps li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--ai-rule); }
+.ai-start-steps li:first-child { padding-top: 0; }
+.ai-start-steps li > span { padding-top: 5px; opacity: .74; }
+.ai-start-steps h3 { font: 600 clamp(17px, 1.3vw, 21px)/1.25 Inter, sans-serif; letter-spacing: -.03em; }
+.ai-start-steps p { margin-top: 4px; font-size: 14px; line-height: 1.5; letter-spacing: -.01em; }
+.ai-start-bring { grid-column: 2; max-width: 42ch; font-size: 15px; line-height: 1.55; letter-spacing: -.01em; }
+.ai-related { grid-column: 1 / -1; padding-top: 22px; border-top: 1px solid var(--ai-rule); }
+.ai-related > .ai-eyebrow { margin-bottom: 22px; }
+.ai-related-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px clamp(20px, 3vw, 40px); list-style: none; margin: 0; padding: 0; }
+.ai-related-list a { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; align-items: start; min-height: 44px; text-decoration: none; }
+.ai-related-list a:hover span { text-decoration: underline; text-underline-offset: 4px; }
+.ai-related-list img { width: 64px; height: 27px; margin-top: 4px; object-fit: contain; }
+.ai-related-list span { display: block; font: 600 15px/1.25 Inter, sans-serif; letter-spacing: -.02em; }
+.ai-related-list small { display: block; margin-top: 4px; font: 400 13px/1.45 Inter, sans-serif; letter-spacing: 0; }
+.ai-start-lang { grid-column: 1 / -1; font-size: 14px; }
+.ai-start-lang a { text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 991px) {
+  .ai-start { grid-template-columns: minmax(0, 1fr); }
+  .ai-start-art { min-height: 0; aspect-ratio: 39 / 40; max-height: 460px; }
+  .ai-start-art-label { bottom: 26%; }
+  .ai-start-body { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 48px var(--ai-gutter) 56px; }
+  .ai-start h2 { max-width: none; font-size: clamp(36px, 9vw, 60px); }
+  .ai-start-bring { grid-column: 1; max-width: none; }
+  .ai-related-list { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+}
