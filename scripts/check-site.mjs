@@ -244,8 +244,13 @@ for (const page of PAGES) {
       fail(`${page}: Person jobTitle must be Product VP`);
     const personImage = typeof person?.image === "string" ? person.image : person?.image?.url;
     const ogImage = metaContent(html, "property", "og:image");
-    if (personImage !== ogImage || personImage !== "https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg")
-      fail(`${page}: Person image must be the existing OG portrait, not a generated asset`);
+    const previewImage = "https://www.barnanorbert.com/assets/images/og/forest-olive-folds.jpg";
+    if (ogImage !== previewImage || metaContent(html, "name", "twitter:image") !== previewImage ||
+        profile?.image !== previewImage || profile?.primaryImageOfPage?.url !== previewImage ||
+        profile?.primaryImageOfPage?.width !== 1200 || profile?.primaryImageOfPage?.height !== 630)
+      fail(`${page}: social and page JSON-LD images must share the approved 1200x630 forest/olive crop`);
+    if (personImage)
+      fail(`${page}: omit Person.image until a real profile portrait is provided; page artwork is not a portrait`);
   }
 
   if (page.startsWith("work/")) {

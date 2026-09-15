@@ -107,14 +107,14 @@ for (const width of [320, 390, 1280]) {
   });
 }
 
-test("header journey follows actual native page progress and becomes stable for keyboard navigation", async ({ page }) => {
-  await openScene(page);
+test("case header journey follows actual native page progress and becomes stable for keyboard navigation", async ({ page }) => {
+  await page.goto("/work/instructure", { waitUntil: "load" });
   const nav = page.locator(".navbar");
   const top = await nav.boundingBox();
-  // The opening/work chapter intentionally keeps its quiet top bar. Travel
-  // resumes in the following reading chapters; their position follows content.
-  const foundTravelSlot = await page.locator("#works").evaluate(async (work) => {
-    const start = work.getBoundingClientRect().bottom + scrollY + 10;
+  // The homepage is permanently stationary. Cases retain their approved
+  // reading-aware utility journey and its keyboard fallback.
+  const foundTravelSlot = await page.evaluate(async () => {
+    const start = 600;
     const header = document.querySelector(".navbar");
     for (let step = 0; step <= 8; step += 1) {
       scrollTo(0, start + step * 96);
@@ -123,7 +123,7 @@ test("header journey follows actual native page progress and becomes stable for 
     }
     return false;
   });
-  expect(foundTravelSlot, "the reading chapter must contain a real travelling slot beyond the quiet work chapter").toBe(true);
+  expect(foundTravelSlot, "the case reading chapter retains a real travelling slot").toBe(true);
   await expect.poll(() => nav.evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThan(top.y + 100);
   const actualProgress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
   await expect(page.locator(".home-nav-progress span")).toHaveText(actualProgress);
@@ -133,8 +133,8 @@ test("header journey follows actual native page progress and becomes stable for 
   await expect(page.locator(".navbar .nav-logo-wrap")).toBeFocused();
 });
 
-test("header changes reading slots through a bounded opacity settle and real keyboard or reduced motion cancels it", async ({ page }) => {
-  await openScene(page);
+test("case header changes reading slots through a bounded opacity settle and real keyboard or reduced motion cancels it", async ({ page }) => {
+  await page.goto("/work/instructure", { waitUntil: "load" });
   const nav = page.locator(".navbar");
   const crossReadingBoundary = () => page.evaluate(async () => {
     const header = document.querySelector(".navbar");
@@ -165,19 +165,18 @@ test("header changes reading slots through a bounded opacity settle and real key
       scrollTo(0, to); await frames();
       return Math.abs(header.getBoundingClientRect().top - previousTop);
     };
-    if (window.__homeSlotCrossing) {
-      await cross(...window.__homeSlotCrossing);
+    if (window.__caseSlotCrossing) {
+      await cross(...window.__caseSlotCrossing);
       return state();
     }
-    // The old intro is now sticky artwork. Find a real, bounded large reading
-    // slot change after the work chapter instead of relying on its old Y offset.
-    const start = document.querySelector("#works").getBoundingClientRect().bottom + scrollY + 10;
+    // Preserve the case-only reading clearance and opacity transition.
+    const start = 600;
     const limit = document.querySelector("footer").getBoundingClientRect().top + scrollY;
     for (let from = start, attempt = 0; from < limit && attempt < 45; from += 64, attempt += 1) {
       const to = from + 64;
       const distance = await cross(from, to);
       if (distance > header.offsetHeight * 2 && header.getAnimations().length && !header.hasAttribute("data-reading-dock")) {
-        window.__homeSlotCrossing = [from, to];
+        window.__caseSlotCrossing = [from, to];
         return state();
       }
     }
@@ -218,14 +217,14 @@ test("header changes reading slots through a bounded opacity settle and real key
   expect(keyboard).toMatchObject({ opacity: 1, count: 0, observedState: "idle" });
   expect(Math.abs(keyboard.y - keyboardCrossing.y), "real Tab also exercises the browser's native focus scroll").toBeGreaterThan(20);
 
-  await openScene(page);
+  await page.goto("/work/instructure", { waitUntil: "load" });
   await crossReadingBoundary();
   await page.emulateMedia({ reducedMotion: "reduce" });
   expect(await settledState(), "a preference change cancels the observed animation instead of waiting for it to finish")
     .toMatchObject({ opacity: 1, count: 0, observedState: "idle" });
 });
 
-test("reduced motion freezes the painted sculpture and the travelling header", async ({ page }) => {
+test("reduced motion freezes the painted sculpture and keeps the home header stable", async ({ page }) => {
   await openScene(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator("html")).toHaveClass(/no-motion/);
