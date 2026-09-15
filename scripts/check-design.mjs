@@ -165,37 +165,20 @@ if (worksLd) {
     fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
   }
 }
-// Only the Story in Motion page carries the scene treatment outside the home
-// hero, and it stands the glass chevron there, never the flat gate.
+// The corridor stands the chevron as a still, never the flat gate and never a
+// second live scene: the owner asked for the object's shape there, then asked
+// for the moving object to be left out. The home hero is the only running scene.
 {
   const about = readFileSync(join(ROOT, "about.html"), "utf8");
   if (/class="story-sculpture"[^>]*hero-(?:final|gate)/.test(about)) {
-    fail("/about must stand the glass chevron in its corridor, not the flat gate");
+    fail("/about must stand the chevron in its corridor, not the flat gate");
   }
-  // One renderer serves both stages, named by data hooks rather than the home
-  // page's classes, and the still stays as the fallback beside it.
-  if (!/data-glass-scene/.test(about) || !/hero-scene\.js/.test(about) ||
-      !/class="story-sculpture-canvas"/.test(about) || !/data-glass-backdrop/.test(about)) {
-    fail("/about must run the live scene, not a still of it");
-  }
-  // The owner chose the home page's bright lilac field here. The field is only a
-  // base fill with the backdrop artwork painted over it, so it goes inert behind
-  // a full-bleed backdrop such as the corridor, and a field with no artwork over
-  // it leaves the glass nothing to bend and it reads as a solid slab. Both halves
-  // have to hold for the object to read bright and still look like glass.
-  if (!/data-glass-field="#D6D4ED"/.test(about)) {
-    fail("/about must stand the glass on the home lilac field");
-  }
-  if (/<img[^>]*data-glass-backdrop[^>]*corridor/.test(about)) {
-    fail("/about: a full-bleed corridor backdrop paints over the field and makes it inert");
+  if (/data-glass-|hero-scene\.js|story-sculpture-canvas/.test(about)) {
+    fail("/about must stand a still, not run the live scene");
   }
   const scene = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
   if (/home-mast/.test(scene)) {
     fail("hero-scene.js must not reach for one stage's class names");
-  }
-  const story = readFileSync(join(ROOT, "assets/css/story.css"), "utf8");
-  if (!/html\.no-motion[^{]*\.story-sculpture-canvas\s*{[^}]*opacity:\s*0\s*!important/.test(story)) {
-    fail("reduced motion must leave the corridor on its still, not both forms");
   }
   const others = [
     "works.html", "privacy.html", "ai-integration.html",
@@ -204,7 +187,7 @@ if (worksLd) {
   ];
   for (const page of others) {
     if (/page-chevron-mark|story-sculpture/.test(readFileSync(join(ROOT, page), "utf8"))) {
-      fail(`${page}: the scene treatment belongs to Story in Motion alone`);
+      fail(`${page}: the corridor sculpture belongs to Story in Motion alone`);
     }
   }
 }

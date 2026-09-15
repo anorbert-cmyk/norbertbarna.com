@@ -613,7 +613,7 @@ markup that is being retired: check the page before reusing it.
 `.story-wing` `.story-backdrop` `.story-stage-shade` `.story-rail`
 `.story-rail-dot` `.story-next` `.story-next-links` `.story-footer`
 `.story-motion-toggle` `.story-draft-note` `.story-eyebrow`
-`.story-sculpture-canvas` `.story-closing-line` `.story-beginnings` `.story-text-link`
+`.story-closing-line` `.story-beginnings` `.story-text-link`
 `.story-perspective-inner` `.story-sculpture-position` `.story-wing-left`
 `.story-wing-right` `.story-footer-top` `.story-footer-bottom`
 `.story-footer-name`
@@ -866,11 +866,13 @@ under `html.no-motion` or both show at once. Keep such arithmetic in the owner,
 not in CSS, so the stylesheet's defaults stay the honest resting state.
 No new runtime dependency, sound requirement, generated Lottie or visible
 Motion control. Original raw WebGL is the user-requested central hero exception,
-and since 2026-09-15 it serves two stages: the home hero and the Story in Motion
-corridor. One renderer, not two. The host names itself with `data-glass-scene`,
-`data-glass-stage`, `data-glass-frame`, `data-glass-backdrop` and
-`data-glass-field` rather than the home page's class names, so neither stage
-owns the other's markup. No third stage without the same request.
+and the home hero is the only stage that runs it. A second stage was built in
+the Story in Motion corridor on 2026-09-15 and removed the same day at the
+owner's request; the corridor stands a still instead. The renderer still names
+its host with `data-glass-scene`, `data-glass-stage`, `data-glass-frame`,
+`data-glass-backdrop` and `data-glass-field` rather than the home page's class
+names, which is worth keeping whether or not a second stage exists. No second
+stage without an explicit request for one.
 Keep `.case-motion-rail` hidden.
 
 The central glass form assembles once, then responds to pointer tilt,
@@ -955,27 +957,21 @@ for implementation. Its decorative corridor/fold images, the requested home
 sculpture and the unique geometric work-list images are narrow exceptions to
 the earlier blanket image-generation ban. They never replace real product
 evidence, portraits, logos or biography facts; no new palette is authorized.
-The object standing in the corridor is the live glass chevron the home hero
-assembles, not the flat gate it morphs into and not a still of it (changed
-2026-09-15, at the owner's request). It runs the same `hero-scene.js`, so the two
-stages are one object seen twice. It stands on the home page's bright lilac
-field, `data-glass-field="#D6D4ED"` (the owner chose this over the dark corridor
-on 2026-09-15). The field alone is not enough and the reason is worth keeping:
-the refraction source is a base fill with artwork painted over it, so a
-full-bleed backdrop such as the corridor photograph covers the fill completely
-and the field colour becomes inert, while a bare field with nothing over it
-gives the glass nothing to bend and it reads as a solid slab. The chevron's own
-silhouette is the artwork over the field here, which is what makes the object
-read bright and dimensional rather than flat. The chevron is taller than it is
-wide where the gate was wider than tall, so its slot narrows to hold the same
-standing height on the floor. The
-drawing stays as the fallback and the two never show at once: WebGL failure and
-reduced motion both resolve to the still, never to both. Outside the home hero
-this treatment belongs to Story in Motion alone; other pages carry no scene. The
-scene is its own owner inside the story: `PortfolioStoryMotion.destroy()` tears
-down story motion, not the glass, which keeps fitting its canvas to the viewport
-afterwards. Story motion writes on the opening, above the scene host, so the
-"no writes after destroy" guard counts its writes and ignores the scene's.
+The object standing in the corridor is the chevron the home hero assembles, as a
+still, not the flat gate it morphs into (changed 2026-09-15, at the owner's
+request: he wanted the corridor to carry the home object's shape). The chevron is
+taller than it is wide where the gate was wider than tall, so its slot narrows to
+hold the same standing height on the floor.
+
+It is a still and stays one. The live renderer was run here on 2026-09-15 and the
+owner asked for it to be left out the same day, having seen it dark against the
+corridor, flat on a bare lilac field, and bright with its own silhouette
+refracted. Do not put a moving object back in this corridor without him asking
+for it again. If a later pass does, the reason the field alone never settles it
+is this: the refraction source is a base fill with the backdrop artwork painted
+over it, so a full-bleed backdrop such as the corridor photograph covers the fill
+and the field colour never reaches the glass, while a field with nothing over it
+leaves the glass nothing to bend and it reads as a solid slab.
 Alternate atmospheric chapter openings with still, comfortably spaced reading
 sections. Long biography copy stays semantic and readable while decorative
 artwork moves; native scroll and chapter anchors remain in charge. The About
