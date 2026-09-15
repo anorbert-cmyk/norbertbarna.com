@@ -25,27 +25,22 @@ body.ai-page {
 .ai-page section[id], .ai-page header[id] { scroll-margin-top: 72px; }
 .ai-eyebrow { font: 400 11px/1.8 Inter, sans-serif; letter-spacing: .22em; text-transform: uppercase; }
 
-/* Navigation: the site's compact bar stays as it is under 992px. On the desktop
-   boards the bar sits inside the opening field, so it is transparent there. */
-.ai-page .navbar { position: absolute; top: 0; left: 0; right: 0; z-index: 40; border: 0; background: transparent; padding: 0; }
+/* Navigation: the site's own bar and menu, the same markup and dropdown as the
+   work index, with the language pair added. On a desktop the boards seat the
+   bar inside the navy opening, so only its colour changes there. */
+.ai-page .navbar { position: absolute; top: 0; left: 0; right: 0; z-index: 40; border-bottom: 0; background: transparent; }
 .ai-page .navbar[data-compact-nav] { position: sticky; }
-.ai-page .navbar .container { max-width: none; width: 100%; margin: 0; padding: 0 var(--ai-gutter) !important; }
-.ai-page .navbar .nav-wrap, .ai-page .navbar .nav-wrap.dark { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 64px; padding: 0; background: none; }
-.ai-page .nav-logo-wrap { display: inline-flex; align-items: center; flex: 0 0 auto; min-width: 44px; min-height: 44px; padding: 0; }
-.ai-page .navbar .nav-logo-wrap img { display: block; width: 35px; height: auto; }
-.ai-page .navbar .nav-menu { margin-left: auto; padding: 0; background: none; }
-.ai-page .nav-menu-area { display: flex; align-items: center; gap: 28px; padding: 0; margin: 0; background: none; }
-.ai-page .navbar .nav-link, .ai-page .navbar .nav-link.white { width: auto; min-height: 44px; margin: 0; padding: 12px 0; border-radius: 0; background: none; font: 400 14px/1.4 Inter, sans-serif; text-decoration: none; }
-.ai-page .navbar .nav-link.w--current { text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 2px; }
-.ai-lang { display: inline-flex; align-items: center; gap: 10px; font: 400 14px/1.4 Inter, sans-serif; letter-spacing: .04em; }
-.ai-lang a { color: inherit; display: inline-flex; align-items: center; min-width: 32px; min-height: 44px; justify-content: center; text-decoration: none; }
-.ai-lang a[aria-current="page"] { text-decoration: underline; text-underline-offset: 8px; text-decoration-thickness: 2px; }
-.ai-lang span { opacity: .74; }
-.ai-page .menu-button { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; padding: 10px; cursor: pointer; }
-.ai-page .w-icon-nav-menu { font-family: webflow-icons !important; font-size: 24px !important; }
+.ai-lang { display: inline-flex; align-items: center; gap: 2px; }
+.ai-lang > span { opacity: .74; font-size: 12px; }
+.ai-lang .nav-link[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
 @media (min-width: 992px) {
-  .ai-page .navbar, .ai-page .navbar .nav-link, .ai-page .navbar .nav-link.white, .ai-page .ai-lang, .ai-page .navbar .nav-logo-wrap img { color: var(--ai-lilac); }
+  .ai-page .navbar .nav-link.white, .ai-page .ai-lang { color: var(--ai-lilac); }
+  .ai-page .navbar .nav-link.white:hover, .ai-page .navbar .nav-link.white.w--current { color: var(--ai-lilac); background: rgb(214 212 237 / 12%); }
   .ai-page .navbar .nav-logo-wrap img { filter: brightness(0) saturate(100%) invert(92%) sepia(8%) saturate(655%) hue-rotate(196deg) brightness(98%) contrast(88%); }
+}
+@media (max-width: 991px) {
+  .ai-lang { padding: 0 12px; }
+  .ai-hero { min-height: calc(100svh - 64px); }
 }
 
 /* 1. The passage: board 2 opening. Navy field, copy left, the lit gate right. */
@@ -53,7 +48,7 @@ body.ai-page {
 .ai-hero-copy { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; gap: 0; padding: 96px var(--ai-gutter) 200px; }
 .ai-hero .ai-eyebrow { margin-bottom: clamp(24px, 4svh, 44px); }
 /* On the board the kicker sits in the bar row beside the monogram. */
-.ai-hero-kicker { position: absolute; top: 25px; left: calc(var(--ai-gutter) + 58px); z-index: 41; margin: 0; }
+.ai-hero-kicker { position: absolute; top: 25px; left: max(calc(var(--ai-gutter) + 92px), calc(100% / 0.58 / 2 - 500px)); z-index: 41; margin: 0; }
 .ai-hero h1 { max-width: 15ch; font-size: clamp(56px, 6.1vw, 104px); line-height: .92; overflow-wrap: normal; hyphens: manual; }
 html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px); }
 .ai-hero-dek { margin-top: clamp(34px, 4.5svh, 52px); font-size: clamp(20px, 1.95vw, 30px); font-weight: 500; letter-spacing: -.03em; line-height: 1.25; }
@@ -87,14 +82,7 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 .ai-better-note a { text-decoration: underline; text-underline-offset: 4px; }
 
 @media (max-width: 991px) {
-  .ai-page .menu-button { display: flex; }
-  .ai-page .navbar .nav-menu.w-nav-menu { position: absolute; top: 64px; left: 0; right: 0; width: 100%; margin: 0; padding: 20px var(--ai-gutter) 28px; border: 0; border-bottom: 1px solid var(--ai-rule); border-radius: 0; background: var(--ai-lilac); box-shadow: none; }
-  html.nav-enhanced .ai-page .navbar .nav-menu:not([data-nav-menu-open]) { display: none; }
-  html.nav-enhanced .ai-page .navbar .nav-menu[data-nav-menu-open] { display: block; }
-  .ai-page .nav-menu-area { flex-direction: column; align-items: stretch; gap: 8px; }
-  .ai-page .navbar .nav-menu .nav-link { width: 100%; justify-content: flex-start; font-size: 17px; }
-  .ai-lang { justify-content: flex-start; font-size: 17px; }
-  .ai-hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(300px, 1fr); min-height: calc(100svh - 64px); }
+  .ai-hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(300px, 1fr); }
   .ai-hero-copy { padding: 28px var(--ai-gutter) 20px; justify-content: flex-start; }
   .ai-hero h1 { font-size: clamp(40px, 11.5vw, 82px); line-height: .96; }
   html[lang="hu"] .ai-hero h1 { font-size: clamp(30px, 10vw, 72px); }
@@ -263,3 +251,9 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 @media (max-width: 991px) {
   .ai-start-art img { object-position: 30% 50%; }
 }
+
+/* Who you work with: a few sentences, the rest of the story lives on /about. */
+.ai-who { grid-column: 1 / -1; padding-top: 22px; border-top: 1px solid var(--ai-rule); }
+.ai-who > .ai-eyebrow { margin-bottom: 14px; }
+.ai-who-text { max-width: 78ch; font-size: clamp(15px, 1.1vw, 17px); line-height: 1.55; letter-spacing: -.01em; }
+.ai-who-text a { text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }

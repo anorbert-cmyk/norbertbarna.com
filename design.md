@@ -445,14 +445,8 @@ art, original summaries and native links. No “these aren’t mockups” manife
 **Home professional experience:** five chronological text rows on lilac, original
 roles/companies/dates, the original folded gate beside the heading. Company names
 are visually prominent. No decorative video, pointer/tap state or fake tab stop.
-A lead paragraph under the heading names the arc the five rows belong to, and each
-row carries one short paragraph saying what that step actually was, so the section
-reads as one career rather than five unconnected posts. Each row stands on its own:
-a reader or an answer engine can take one without the rest for context. Every claim
-in them is the owner's own, checkable, and carries the employer it belongs to.
-Invent nothing here, and add no metric the owner has not stated. The same five roles
-appear as described `hasOccupation` entries in the home `Person` schema; when a row
-changes, its schema entry changes with it.
+No lead paragraph and no per-row descriptions: the owner asked for the rows only
+(2026-09-15). The career story lives on `/about` and a short note on the AI pages.
 
 **Case opening (one centered lilac template)**
 
@@ -634,7 +628,6 @@ markup that is being retired: check the page before reusing it.
 `.home-work-footer` `.works-index` `.project-index-intro`
 
 **Home experience and services:** `.editorial-experience`
-`.editorial-experience-lead` `.awards-card-summary`
 `.editorial-experience-art` `.home-service-section` `.home-service-grid`
 `.home-service-title-area` `.home-service-card-title` `.home-about-area`
 `.about-section-title`

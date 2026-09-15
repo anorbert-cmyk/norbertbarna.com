@@ -191,22 +191,6 @@ if (worksLd) {
     }
   }
 }
-// The experience section is a career, not a list: a lead names the arc and every
-// row says what the step was. Each row must also stand alone in the schema.
-{
-  const rows = [...home.matchAll(/<div class="awards-card" role="listitem">([\s\S]*?)<\/div>\n<\/div>/g)];
-  const described = [...home.matchAll(/class="awards-card-summary">([^<]{80,})</g)];
-  if (!/class="editorial-experience-lead"/.test(home)) {
-    fail("the experience section must open with the arc its five rows belong to");
-  }
-  if (described.length !== 5) {
-    fail(`every experience row must say what the step was (${described.length} of 5 described)`);
-  }
-  const occupations = [...home.matchAll(/"@type": "Occupation",\n\s*"name": "[^"]+",\n\s*"description": "[^"]{80,}"/g)];
-  if (occupations.length !== 5) {
-    fail(`all five roles must carry a described Occupation entry (found ${occupations.length})`);
-  }
-}
 if (!/"jobTitle": "Product VP"/.test(home)) {
   fail("JobTitleDrift: home JSON-LD jobTitle must match the footer Product VP line");
 }
