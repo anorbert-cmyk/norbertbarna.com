@@ -66,7 +66,7 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 .ai-hero-foot { position: absolute; left: var(--ai-gutter); bottom: 34px; z-index: 2; display: flex; align-items: center; gap: 24px; width: 40%; white-space: nowrap; opacity: .85; }
 .ai-hero-foot::after { content: ""; flex: 1 1 160px; height: 1px; background: var(--ai-rule-light); }
 .ai-hero-art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-.ai-hero-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; transform: translateY(var(--ai-hero-drift, 0px)) scale(var(--ai-hero-scale, 1)); transform-origin: 50% 100%; }
+.ai-hero-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; transform-origin: 50% 100%; }
 .ai-triad { position: absolute; right: var(--ai-gutter); top: 42%; z-index: 2; list-style: none; padding: 26px 0 0; margin: 0; border-top: 1px solid var(--ai-lilac); font: 400 11px/1.9 Inter, sans-serif; letter-spacing: .24em; text-transform: uppercase; color: var(--ai-lilac); }
 .ai-triad::before { content: ""; position: absolute; left: 0; top: 0; width: 30px; height: 1px; background: var(--ai-lilac); }
 .ai-triad { border-top: 0; }
@@ -74,7 +74,6 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 /* 4. The olive close: board 1, bottom right. Holds the one real contact action. */
 .ai-better { position: relative; overflow: hidden; padding: clamp(72px, 10vw, 128px) var(--ai-gutter) 0; background: var(--ai-olive); color: var(--ai-ink); }
 .ai-better > :not(.ai-better-bar) { position: relative; z-index: 1; }
-.ai-better :is(h2, .ai-better-dek, .ai-actions, .ai-better-note) { opacity: var(--ai-row, 1); }
 .ai-better h2 { max-width: none; font-size: clamp(58px, 10.4vw, 172px); line-height: .9; }
 .ai-better-dek { max-width: 26ch; margin-top: clamp(40px, 5vw, 72px); font-size: clamp(20px, 2vw, 30px); line-height: 1.4; letter-spacing: -.02em; }
 .ai-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; margin-top: clamp(28px, 4vw, 48px); }
@@ -84,7 +83,7 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 .ai-link-plain:hover { text-decoration: underline; text-underline-offset: 4px; }
 /* The band is the board's own strip: flat across the left, rising to the right edge, its field the section's olive. */
 .ai-better-band { position: absolute; left: 0; right: 0; bottom: 100%; z-index: 0; pointer-events: none; }
-.ai-better-band img { display: block; width: 100%; height: auto; opacity: var(--ai-band, 1); transform: translateX(var(--ai-band-x, 0%)); }
+.ai-better-band img { display: block; width: 100%; height: auto; }
 .ai-better-bar { position: relative; z-index: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; margin-top: clamp(64px, 9vw, 120px); padding: 18px 0 22px; border-top: 1px solid rgb(10 22 40 / 45%); }
 .ai-better-note { max-width: 62ch; margin-top: 40px; font-size: 15px; line-height: 1.6; }
 .ai-better-note a { display: inline-block; padding: 11px 0; margin: -11px 0; text-decoration: underline; text-underline-offset: 4px; }
@@ -117,9 +116,9 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 }
 @media (prefers-reduced-motion: reduce) {
   .ai-page *, .ai-page *::before, .ai-page *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
-  .ai-hero-art img, .ai-start-art img, .ai-better-band img { transform: none !important; animation: none !important; }
+  .ai-page :is(.ai-hero-art, .ai-shape-art, .ai-ribbon, .ai-better-band, .ai-start-art) :is(*, &) { animation: none !important; }
 }
-html.no-motion :is(.ai-hero-art img, .ai-start-art img, .ai-better-band img, .ai-cta-underline::before) { transform: none !important; animation: none !important; }
+html.no-motion .ai-page :is(*, *::before, *::after) { animation: none !important; }
 
 /* 2. Board 1 opening: the offer on the lilac field with the three glass bars. */
 .ai-shape { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 56fr) minmax(0, 44fr); grid-template-rows: minmax(0, 1fr) auto; min-height: 100svh; padding: clamp(96px, 12svh, 150px) var(--ai-gutter) 0; overflow: hidden; background: var(--ai-lilac); color: var(--ai-ink); }
@@ -135,10 +134,10 @@ html[lang="hu"] .ai-shape h2 { max-width: none; font-size: clamp(42px, 4.5vw, 84
 a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 .ai-cta-pill:hover { text-decoration: underline; text-underline-offset: 4px; }
 .ai-shape-art { position: absolute; right: 1%; top: 22%; z-index: 1; width: 60%; pointer-events: none; }
-.ai-shape-art img { display: block; width: 100%; height: auto; opacity: calc(var(--ai-shape-fade, 1) * var(--ai-shape-in, 1)); transform: translate(var(--ai-shape-x, 0px), var(--ai-shape-y, 0px)) rotate(var(--ai-shape-rotate, 0deg)); transform-origin: 50% 70%; }
+.ai-shape-art img { display: block; width: 100%; height: auto; transform-origin: 50% 70%; }
 .ai-shape-label { position: absolute; left: 90%; bottom: 84px; z-index: 2; text-align: left; }
 .ai-steps-rule { grid-column: 1 / -1; grid-row: 2; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; list-style: none; margin: 0; padding: 18px 0 22px; border-top: 1px solid var(--ai-rule); }
-.ai-steps-rule li { display: flex; gap: 14px; opacity: var(--ai-row, 1); }
+.ai-steps-rule li { display: flex; gap: 14px; }
 .ai-steps-rule li span { opacity: .74; }
 @media (max-width: 991px) {
   /* The phone mockup stacks copy, bars, then the actions: the copy block
@@ -181,18 +180,15 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 /* The ribbon crosses the stage on top of the reading rows, as it does on the board. */
 .ai-journey { display: contents; }
 .ai-ribbon { position: relative; z-index: 2; width: auto; margin: -18px calc(-1 * var(--ai-gutter) - 1.5vw) -12px; pointer-events: none; }
-.ai-ribbon img { display: block; width: 100%; height: auto; transform: translateX(var(--ai-ribbon-x, 0%)) scale(var(--ai-ribbon-s, 1)); transform-origin: 50% 50%; }
+.ai-ribbon img { display: block; width: 100%; height: auto; transform-origin: 50% 50%; }
 .ai-pieces-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
-.ai-pieces-steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 16px; padding: 0 clamp(16px, 2.4vw, 36px); border-left: 1px solid var(--ai-rule); opacity: var(--ai-step, 1); }
+.ai-pieces-steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 16px; padding: 0 clamp(16px, 2.4vw, 36px); border-left: 1px solid var(--ai-rule); }
 .ai-pieces-steps li:first-child { padding-left: 0; border-left: 0; }
-.ai-pieces-steps li[data-ai-step="1"] { --ai-step: var(--ai-step-1, 1); }
-.ai-pieces-steps li[data-ai-step="2"] { --ai-step: var(--ai-step-2, 1); }
-.ai-pieces-steps li[data-ai-step="3"] { --ai-step: var(--ai-step-3, 1); }
 .ai-step-no { padding-top: 5px; opacity: .74; }
 .ai-pieces-steps h3 { font: 600 clamp(18px, 1.4vw, 22px)/1.2 Inter, sans-serif; letter-spacing: -.03em; }
 .ai-step-inline { margin-right: 12px; font-weight: 400; opacity: .74; }
 .ai-pieces-steps p { margin-top: 8px; max-width: 34ch; font-size: clamp(14px, 1vw, 16px); line-height: 1.5; letter-spacing: -.01em; }
-.ai-pieces-work { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(20px, 3vw, 48px); align-items: center; padding-top: 20px; border-top: 1px solid var(--ai-rule); opacity: var(--ai-work, 1); }
+.ai-pieces-work { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: clamp(20px, 3vw, 48px); align-items: center; padding-top: 20px; border-top: 1px solid var(--ai-rule); }
 .ai-work-list { display: flex; flex-wrap: wrap; gap: 8px clamp(20px, 3vw, 48px); list-style: none; margin: 0; padding: 0; }
 .ai-work-list li + li { padding-left: clamp(20px, 3vw, 48px); border-left: 1px solid var(--ai-rule); }
 .ai-work-list a { display: inline-flex; align-items: center; gap: 14px; min-height: 44px; text-decoration: none; }
@@ -213,7 +209,7 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
   .ai-journey { display: block; position: relative; }
   .ai-ribbon { margin: 24px calc(-1 * var(--ai-gutter)) 0; padding: 10px 0 14px; overflow: hidden; background: var(--ai-lilac); }
   [data-ai-motion="on"] .ai-journey .ai-ribbon { position: sticky; top: 56px; z-index: 2; }
-  .ai-ribbon img { width: 200%; max-width: none; transform: translateX(var(--ai-ribbon-pan, 0%)); transform-origin: 0 50%; -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); }
+  .ai-ribbon img { width: 180%; max-width: none; transform-origin: 0 50%; -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); }
   .ai-pieces-steps { padding-top: 10px; }
   .ai-pieces-steps { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .ai-pieces-steps li { padding: 18px 0 0; border-left: 0; border-top: 1px solid var(--ai-rule); }
@@ -228,8 +224,7 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
    the three steps as a list, and the related work with honest one-liners. */
 .ai-start { display: grid; grid-template-columns: minmax(0, 38fr) minmax(0, 62fr); overflow: hidden; background: var(--ai-lilac); color: var(--ai-ink); }
 .ai-start-art { position: relative; min-height: 560px; pointer-events: none; }
-.ai-start-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 22% 50%; transform: translateY(var(--ai-start-y, 0px)) scale(var(--ai-start-s, 1)); transform-origin: 50% 50%; }
-.ai-start-body > * { opacity: var(--ai-row, 1); }
+.ai-start-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 22% 50%; transform-origin: 50% 50%; }
 /* The label keeps its own backing so it reads AA on any crop of the wall. */
 .ai-start-art-label { position: absolute; left: var(--ai-gutter); bottom: 24%; display: flex; flex-direction: column; gap: 2px; padding: 12px 14px 12px 12px; margin-left: -12px; color: var(--ai-lilac); background: rgb(10 22 40 / 78%); }
 .ai-start-art-label::after { content: ""; width: 110px; height: 1px; margin-top: 10px; background: var(--ai-lilac); }
@@ -284,4 +279,47 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 .ai-faq p { max-width: 46ch; margin-top: 8px; font-size: 15px; line-height: 1.55; letter-spacing: -.01em; }
 @media (max-width: 991px) {
   .ai-faq-list { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+}
+
+/* Motion. The movement is CSS scroll-driven animation, run by the compositor:
+   each piece of artwork follows its own view timeline, the ribbon camera
+   follows the pinned stage's scroll on a desktop and the sticky run on a
+   phone. The owner only decides whether motion runs (data-ai-motion) and in
+   which mode; browsers without scroll timelines, reduced motion and no
+   JavaScript all show the finished board. Reading text never animates. */
+@supports (animation-timeline: view()) {
+  [data-ai-motion="on"] .ai-hero-art { animation: ai-hero-leave linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+  [data-ai-motion="on"] .ai-shape-art { animation: ai-bars-in linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+  [data-ai-motion="on"] .ai-shape-art img { animation: ai-bars-leave linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-track { view-timeline: --ai-journey block; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-ribbon img { animation: ai-lens linear both; animation-timeline: --ai-journey; animation-range: contain 0% contain 100%; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-steps li { animation: ai-arrive linear both; animation-timeline: --ai-journey; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-steps li[data-ai-step="1"] { animation-range: contain 2% contain 16%; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-steps li[data-ai-step="2"] { animation-range: contain 36% contain 50%; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-steps li[data-ai-step="3"] { animation-range: contain 64% contain 78%; }
+  [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-work { animation: ai-arrive linear both; animation-timeline: --ai-journey; animation-range: contain 84% contain 98%; }
+  [data-ai-motion="on"] .ai-better-band img { animation: ai-band-in linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
+  [data-ai-motion="on"] .ai-start-art img { animation: ai-drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+  @media (max-width: 991px) {
+    [data-ai-motion="on"] .ai-journey { view-timeline: --ai-run block; }
+    [data-ai-motion="on"] .ai-journey .ai-ribbon img { animation: ai-pan linear both; animation-timeline: --ai-run; animation-range: contain 0% contain 100%; }
+    [data-ai-motion="on"] .ai-pieces-steps li { animation: ai-arrive linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+  }
+}
+@keyframes ai-hero-leave { to { transform: translateY(-9%) scale(1.06); } }
+@keyframes ai-bars-in { from { opacity: 0; transform: translate(7%, 5%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); } to { opacity: 1; transform: none; } }
+@keyframes ai-bars-leave { from { transform: none; animation-timing-function: cubic-bezier(.4, 0, .8, .6); } to { opacity: .35; transform: translateY(16%) rotate(-5deg); } }
+@keyframes ai-lens {
+  0%, 22% { transform: translateX(47.85%) scale(1.45); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  42%, 50% { transform: translateX(0%) scale(1.45); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  70%, 78% { transform: translateX(-50.75%) scale(1.45); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  100% { transform: translateX(0%) scale(1); }
+}
+@keyframes ai-arrive { from { opacity: 0; animation-timing-function: cubic-bezier(.2, .7, .2, 1); } to { opacity: 1; } }
+@keyframes ai-band-in { from { opacity: 0; transform: translateX(12%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); } to { opacity: 1; transform: none; } }
+@keyframes ai-drift { from { transform: translateY(5%) scale(1.12); } to { transform: translateY(-5%) scale(1.04); } }
+@keyframes ai-pan {
+  0%, 18% { transform: translateX(0%); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  44%, 58% { transform: translateX(-27%); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  84%, 100% { transform: translateX(-44%); }
 }

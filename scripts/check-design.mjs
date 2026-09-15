@@ -596,12 +596,17 @@ for (const page of SERVICE_PAGES) {
     }
   }
   const aiCss = readFileSync(join(ROOT, "assets/css/ai-integration.css"), "utf8");
-  for (const token of ["--ai-ribbon-x, 0%", "--ai-ribbon-s, 1", "--ai-step-1, 1", "--ai-step-2, 1", "--ai-step-3, 1", "--ai-work, 1", "--ai-row, 1", "--ai-band, 1", "--ai-band-x, 0%", "--ai-start-y, 0px", "--ai-shape-in, 1"]) {
-    if (!aiCss.includes(token)) fail(`ai-integration.css: the finished board must be the fallback (${token})`);
+  // The movement is compositor-run scroll animation, gated on the owner's
+  // attribute inside a support query, so every other case is the finished board.
+  if (!/@supports \(animation-timeline: view\(\)\)/.test(aiCss)) fail("ai-integration.css: scroll-driven motion must sit inside a support query");
+  for (const line of aiCss.split("\n").filter((line) => /animation-timeline:/.test(line) && !/^\s*@supports/.test(line))) {
+    if (!/\[data-ai-motion="on"\]/.test(line)) fail(`ai-integration.css: a timeline runs without the owner's gate (${line.trim().slice(0, 60)})`);
   }
+  if (/--ai-(?:step|row|ribbon|band|start|shape|work)[^:]*,\s*[01]/.test(aiCss)) fail("ai-integration.css: no owner-written property remains");
   if (!/\[data-ai-mode="cinematic"\] \.ai-pieces-stage \{ position: sticky/.test(aiCss)) fail("ai-integration.css: the ribbon stage pins only in cinematic mode");
   const aiJs = readFileSync(join(ROOT, "assets/js/ai-motion.js"), "utf8");
   if (/\bgsap\b|ScrollTrigger|scroll-behavior|preventDefault/.test(aiJs)) fail("ai-motion.js must stay a native-scroll owner");
+  if (/style\.setProperty|\.style\.transform|\.style\.opacity/.test(aiJs)) fail("ai-motion.js writes no styles: the stylesheet's timelines move the artwork");
 }
 for (const page of PRIVACY_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");

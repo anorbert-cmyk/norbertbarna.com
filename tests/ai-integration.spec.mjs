@@ -151,10 +151,13 @@ test("destroy restores the stylesheet's finished board", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await open(page, "/ai-integration");
   await scrollToCamera(page, 0.5);
-  expect((await inlineOwnerProperties(page)).length).toBeGreaterThan(0);
+  expect(await ribbonIsIdentity(page), "the lens is close before destroy").toBe(false);
+  await expect(page.locator(".ai-pieces-count span")).toHaveText("02");
   await page.evaluate(() => window.PortfolioAiMotion.destroy());
   await settle(page);
   expect(await inlineOwnerProperties(page)).toEqual([]);
+  expect(await ribbonIsIdentity(page), "the finished board returns when the owner is gone").toBe(true);
+  await expect(page.locator(".ai-pieces-count span")).toHaveText("01");
   await expect(page.locator("main[data-ai]")).toHaveAttribute("data-ai-motion", "off");
   expect((await opacities(page)).every((value) => value > 0.99)).toBe(true);
   expect(await page.evaluate(() => window.PortfolioAiMotion.state)).toBe("destroyed");
