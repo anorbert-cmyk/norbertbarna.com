@@ -1,0 +1,13 @@
+{
+  "source": "474544d:assets/images/ai/ribbon.webp",
+  "mode": "built-in image_gen edit",
+  "prompt": "Use case: precise-object-edit. Edit the attached narrow ribbon artwork, NOT a redesign. Preserve its exact elegant shallow-wave silhouette, the same perspective and folds, polished deep forest-green metal on the left, a translucent pale-lilac glass middle with crisp light-catching edges, and polished olive-gold metal on the right; preserve the forest-green back face behind the right-hand fold. This is the approved high-fidelity source for a website. Change only these things: remove all three tiny printed English labels cleanly from their surfaces, and reconstruct at much higher resolution without the old crop's tiny clipped stray mark along the upper edge. Keep the same specular highlights, rounded upright folds, transparent glass, soft directional floor shadows and material richness. Do not flatten the geometry or make rough/matte extrusions. No lettering, no icons, no UI, no black label plaques. Output a very wide studio artwork at 3072x1024: extend the plain surrounding lilac studio background (#D6D4ED) above and below so the original narrow ribbon still occupies only the central approximately 32% of the canvas height, centered at 50% vertical. The ribbon should run continuously out through both left and right edges exactly as in the reference, not have capped endpoints. This top/bottom background padding is intentional for a CSS crop; preserve the original narrow 8.5:1 composition in the central band, rather than stretching the object vertically. Keep the original folds at the same relative horizontal locations: near x27% forest to glass, near x66% glass to olive. The central band must retain the original camera and rich photographed-object finish.",
+  "sourceOutput": "exec-87afbbb6-1db1-435d-8acd-4166d988cf4a.png",
+  "outputDimensions": [
+    2172,
+    724
+  ],
+  "productionAsset": "assets/images/ai/ribbon-studio.webp",
+  "conversion": "WebP quality95 method6; no raster cropping",
+  "display": "CSS aspect-ratio7.5 and object-position50%49%"
+}
