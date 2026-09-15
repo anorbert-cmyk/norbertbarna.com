@@ -38,12 +38,51 @@ Product VP role, work order and shipped evidence. The 2026-09-13
 KODE recreation brief below replaces the earlier semicircle composition.
 
 `/ai-integration` and `/hu/ai-integracio` explain the same core service offer in
-English and Hungarian. Compose from existing type and reading-width primitives;
-no new palette, imagery, cards or service-page motion. One service H1, scoped offer, linked
-case evidence, engagement questions and the native Email action. These are
-WebPage/Service pages, not portfolio Articles. Use self canonicals and reciprocal
-en/hu hreflang; x-default points to the English offer. The Hungarian body is
-Hungarian; retained English navigation/footer chrome is explicitly `lang="en"`.
+English and Hungarian, and since 2026-09-15 they are built from two concept
+boards the owner made and approved: "The passage" and "Systems in motion". The
+page is those boards in this order, and the Hungarian page is the same board:
+
+1. **The passage.** Navy field, copy left, the lit gate right, the
+   people / products / possibilities column on the far wall.
+2. **AI, shaped around your workflow.** Lilac field, the three glass bars,
+   a navy pill to the close and LinkedIn beside it, the numbered rule at the foot.
+3. **Make the pieces work together.** The ribbon journey. On a desktop the
+   stage pins for one scroll and the camera follows the ribbon from insight
+   to integration to impact while the three steps arrive; it ends on the
+   board's finished panel with the selected work row. Phones follow the ribbon
+   in a panning window. No JavaScript, reduced motion, a short window and
+   every viewport under 992px show the finished panel; every owner property
+   falls back to it. Reading text never receives a transform or opacity.
+4. **What could work better?** The olive close, the page's one native
+   project-contact button, the ribbon tapering into the closing rule.
+5. **Start with your workflow.** The passage from its other side, the three
+   steps as a list, the related work with its honest one-liners, the
+   language switch.
+
+The artwork is the owner's boards, cut out, not generated: the passage, the
+bars, the ribbon and the second passage are crops with their baked labels
+filled from the surface around them and feathered into the CSS field; the
+closing ribbon is an SVG traced from the board. They are 288 to 976px wide and
+shown up to about 1.5x, so they are soft where the lens goes close; the code
+treats each as a drop-in file for a source render. This is a narrow exception
+to the image rule below, tied to these two boards. The related work row uses
+the site's own geometric project artwork, not the boards' cube marks.
+
+The page has its own stylesheet and native-scroll owner (`ai-integration.css`,
+`ai-motion.js`), released as content-hashed files, loaded on these two routes
+only. Under 992px the compact bar stays the lilac bar every route shares; the
+boards' phone mockups show a dark bar, and that is the one deliberate
+deviation, because a spec guards the bar on all thirteen routes. The real
+contact button carries no arrow, because the site checks it hugs its label.
+
+The copy sells the offer in the reader's terms (fewer manual steps, faster
+decisions, lower running costs, people in control) with no figure the owner
+has not stated, no dashes and no stock phrasing. One service H1, scoped offer,
+linked case evidence, what to bring, and the native Email action. These are
+WebPage/Service pages, not portfolio Articles; the Service description is the
+sentence the page shows. Use self canonicals and reciprocal en/hu hreflang;
+x-default points to the English offer. The Hungarian body is Hungarian;
+retained English navigation/footer chrome is explicitly `lang="en"`.
 Do not imply all linked cases were AI-integrations, or invent technical stacks,
 certifications, pricing, service levels or an OpenAI partnership. The existing
 home `AI products` card heading links to the English entry; its visible language
@@ -605,6 +644,20 @@ markup that is being retired: check the page before reusing it.
 `.case-toc__inner` `.case-toc__label` `.case-evidence-note` `.summary`
 `.case-related-projects` `.related-work-card` `.case-nav-works`
 
+**AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
+`.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
+`.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
+`.ai-hero-art` `.ai-triad` `.ai-shape` `.ai-shape-copy` `.ai-shape-dek`
+`.ai-shape-text` `.ai-actions` `.ai-cta-pill` `.ai-link-plain` `.ai-shape-art`
+`.ai-shape-label` `.ai-steps-rule` `.ai-pieces` `.ai-pieces-track`
+`.ai-pieces-stage` `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider`
+`.ai-pieces-intro` `.ai-pieces-label` `.ai-ribbon` `.ai-pieces-steps`
+`.ai-step-no` `.ai-step-inline` `.ai-pieces-work` `.ai-work-list`
+`.ai-pieces-work-label` `.ai-better` `.ai-better-dek` `.ai-better-note`
+`.ai-better-bar` `.ai-better-band` `.ai-start` `.ai-start-art`
+`.ai-start-art-label` `.ai-start-body` `.ai-start-steps` `.ai-start-bring`
+`.ai-related` `.ai-related-list` `.ai-start-lang`
+
 **About (`/about` only):** `.story-page` `.story-opening`
 `.story-opening-stage` `.story-opening-copy` `.story-opening-dek`
 `.story-opening-cue` `.story-chapter` `.story-chapter-number`
@@ -648,8 +701,8 @@ same change that caused the drift.
 | `/works` | `works.html` | Seven landscape project rows | `index, follow, max-image-preview:large` |
 | `/work/{slug}` | `work/*.html` (7) | Case studies | `index, follow, max-image-preview:large` |
 | `/about` | `about.html` | Story in Motion, explicit draft | `noindex, follow`, kept out of `sitemap.xml` |
-| `/ai-integration` | `ai-integration.html` | English service offer | default |
-| `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair, `lang="hu"` | default |
+| `/ai-integration` | `ai-integration.html` | English service offer, the two approved boards | default |
+| `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair of the same board, `lang="hu"` | default |
 | `/privacy` | `privacy.html` | Consent and analytics notice | default |
 | `/hu/adatvedelem` | `hu/adatvedelem.html` | Hungarian pair, `lang="hu"` | default |
 | (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
@@ -701,6 +754,7 @@ changes its dependencies, so keep a script where it is.
 | `immersive-navigation.js` | Compact bar and the desktop travelling header | yes |
 | `case-opening.js` | Case title and media assembly, perspective settle | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
+| `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: hero drift, the bars' handoff, the ribbon camera and the phone pan | yes |
 | `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field | yes |
 | `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
 
@@ -708,6 +762,7 @@ Load order is a contract, not a preference:
 
 - `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
 - `media.js` before any GSAP owner, so video never depends on animation.
+- On the AI service pages: `animations.js` → `ai-motion.js`, the last script.
 - On `/`: `hero-scene.js` → `home-composition.js` → `arrival.js` →
   `immersive-navigation.js` → `animations.js`.
 - `animations.js` waits for the Webflow IX2 takeover and for fonts before it
