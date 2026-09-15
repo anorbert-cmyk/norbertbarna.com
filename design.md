@@ -62,8 +62,13 @@ page is those boards in this order, and the Hungarian page is the same board:
    steps as a list, the related work with its honest one-liners, the
    language switch.
 
-The artwork is the owner's boards, cut out, not generated: the passage panel,
-the bars, the ribbon, the olive band and the second passage are crops with
+The ribbon is a render (2026-09-15): `tools/ribbon-scene/ribbon3d.html` builds
+it in three.js as one band with the board's three materials and the board's
+line, `tools/ribbon-scene/render.mjs` renders it headless at 3x into
+`assets/images/ai/ribbon.webp`, and its three labels are text laid on the strip
+(`.ai-ribbon-label`), sharp under the lens and translated on the Hungarian
+page. The rest of the artwork is the owner's boards, cut out, not generated:
+the passage panel, the bars, the olive band and the second passage are crops with
 their baked labels filled from the surface around them, their field shifted to
 the CSS colour and keyed to alpha so the crop has no edge, the ribbon crossing
 the stage above the reading rows as it does on the board. They are board
@@ -683,7 +688,7 @@ markup that is being retired: check the page before reusing it.
 `.ai-actions` `.ai-cta-pill` `.ai-link-plain` `.ai-shape-art`
 `.ai-shape-label` `.ai-steps-rule` `.ai-pieces` `.ai-pieces-track`
 `.ai-pieces-stage` `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider`
-`.ai-pieces-intro` `.ai-pieces-label` `.ai-ribbon` `.ai-pieces-steps`
+`.ai-pieces-intro` `.ai-pieces-label` `.ai-ribbon` `.ai-ribbon-strip` `.ai-ribbon-label` `.ai-pieces-steps`
 `.ai-step-no` `.ai-step-inline` `.ai-pieces-work` `.ai-work-list`
 `.ai-pieces-work-label` `.ai-better` `.ai-better-dek` `.ai-better-note`
 `.ai-better-bar` `.ai-better-band` `.ai-start` `.ai-start-art`
