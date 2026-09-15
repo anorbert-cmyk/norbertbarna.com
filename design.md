@@ -881,7 +881,12 @@ immutable header.
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis),
 respect `prefers-reduced-motion`, `html.no-motion` and `PortfolioMedia.isReduced()`.
 No new runtime dependency, sound requirement, generated Lottie or visible
-Motion control. Original raw WebGL is the user-requested central hero exception.
+Motion control. Original raw WebGL is the user-requested central hero exception,
+and since 2026-09-15 it serves two stages: the home hero and the Story in Motion
+corridor. One renderer, not two. The host names itself with `data-glass-scene`,
+`data-glass-stage`, `data-glass-frame`, `data-glass-backdrop` and
+`data-glass-field` rather than the home page's class names, so neither stage
+owns the other's markup. No third stage without the same request.
 Keep `.case-motion-rail` hidden.
 
 The central glass form assembles once, then responds to pointer tilt,
@@ -966,11 +971,17 @@ for implementation. Its decorative corridor/fold images, the requested home
 sculpture and the unique geometric work-list images are narrow exceptions to
 the earlier blanket image-generation ban. They never replace real product
 evidence, portraits, logos or biography facts; no new palette is authorized.
-The object standing in the corridor is the glass chevron the home hero assembles,
-not the flat gate it morphs into (changed 2026-09-15): the two headers should read
-as the same object seen twice, and the gate keeps the editorial footer. The chevron
-is taller than it is wide where the gate was wider than tall, so its slot narrows
-to hold the same standing height on the floor.
+The object standing in the corridor is the live glass chevron the home hero
+assembles, not the flat gate it morphs into and not a still of it (changed
+2026-09-15, at the owner's request). It runs the same `hero-scene.js`, so the two
+stages are one object seen twice. It refracts what is actually behind it, which
+here is the corridor photograph rather than the home page's lettering: that keeps
+the principle the home scene already follows and keeps the lilac field off a page
+that has none. The chevron is taller than it is wide where the gate was wider than
+tall, so its slot narrows to hold the same standing height on the floor. The
+drawing stays as the fallback and the two never show at once: WebGL failure and
+reduced motion both resolve to the still, never to both. Outside the home hero
+this treatment belongs to Story in Motion alone; other pages carry no scene.
 Alternate atmospheric chapter openings with still, comfortably spaced reading
 sections. Long biography copy stays semantic and readable while decorative
 artwork moves; native scroll and chapter anchors remain in charge. The About

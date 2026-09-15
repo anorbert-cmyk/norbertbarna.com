@@ -731,46 +731,8 @@
     return rail;
   }
 
-  // The shared page mark turns with native scroll: the resolved gate hands over
-  // to the glass chevron and the chevron ends pointing down the page. Scroll
-  // drives it, so it stops when the reader stops and never idles. Runs on every
-  // viewport, phones included; reduced motion leaves the gate alone.
-  function addPageMarkTurn() {
-    var mark = document.querySelector(".page-chevron-mark");
-    if (!mark || reducedMotion) return;
-    var progress = { value: 0 };
-    // A mark pinned to the top of the document leaves a phone screen in about
-    // 130px, which is too fast to watch. Hold it against the scroll for the
-    // length of the turn so it is actually seen, then let it travel away.
-    function hold() { return Math.min(innerHeight * 0.32, 220); }
-    function clamp01(value) { return Math.max(0, Math.min(1, value)); }
-    function render() {
-      var p = clamp01(progress.value);
-      mark.style.setProperty("--page-mark", p.toFixed(3));
-      mark.style.setProperty("--page-mark-y", (p * hold()).toFixed(2) + "px");
-      mark.style.setProperty("--page-mark-rest", clamp01(1 - p * 4.5).toFixed(3));
-      mark.style.setProperty("--page-mark-glass", clamp01(p * 5 - 0.9).toFixed(3));
-    }
-    gsap.timeline({
-      data: "page-mark-turn",
-      onUpdate: render,
-      scrollTrigger: {
-        trigger: document.documentElement,
-        start: "top top",
-        end: function () { return hold(); },
-        scrub: 0.3,
-        invalidateOnRefresh: true,
-      },
-    }).to(progress, { value: 1, duration: 1, ease: "none", data: "page-mark-turn" });
-    return function () {
-      ["--page-mark", "--page-mark-y", "--page-mark-rest", "--page-mark-glass"]
-        .forEach(function (name) { mark.style.removeProperty(name); });
-    };
-  }
-
   function initDesktopMotion() {
     if (reducedMotion) return function () {};
-    var releasePageMark = addPageMarkTurn();
     var listeners = new AbortController();
     var splits = [];
     var rail = null;
@@ -891,7 +853,6 @@
 
     return function () {
       listeners.abort();
-      if (releasePageMark) releasePageMark();
       if (removeHomeMastField) removeHomeMastField();
       if (removeWorkListMotion) removeWorkListMotion();
       if (rail) rail.remove();
@@ -908,7 +869,6 @@
 
   function initPortableMotion() {
     if (reducedMotion) return function () {};
-    var releasePageMark = addPageMarkTurn();
     var splits = [];
     var listeners = new AbortController();
     var removeWorkListMotion = null;
@@ -942,7 +902,6 @@
     requestLayoutRefresh();
     return function () {
       listeners.abort();
-      if (releasePageMark) releasePageMark();
       if (removeHomeMastField) removeHomeMastField();
       if (removeWorkListMotion) removeWorkListMotion();
       splits.reverse().forEach(function (split) { split.revert(); });

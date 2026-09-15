@@ -165,57 +165,36 @@ if (worksLd) {
     fail(`DualIndex: /works JSON-LD ItemList is ${ldOrder.join(", ")}`);
   }
 }
-// One identity across the site: every page other than the home page carries the
-// shared chevron mark, and /about stands the same object in its corridor. The
-// mark is decoration, so it stays aria-hidden and never becomes a link.
+// Only the Story in Motion page carries the scene treatment outside the home
+// hero, and it stands the glass chevron there, never the flat gate.
 {
-  const pages = [
-    "works.html", "about.html", "privacy.html", "ai-integration.html",
+  const about = readFileSync(join(ROOT, "about.html"), "utf8");
+  if (/class="story-sculpture"[^>]*hero-(?:final|gate)/.test(about)) {
+    fail("/about must stand the glass chevron in its corridor, not the flat gate");
+  }
+  // One renderer serves both stages, named by data hooks rather than the home
+  // page's classes, and the still stays as the fallback beside it.
+  if (!/data-glass-scene/.test(about) || !/hero-scene\.js/.test(about) ||
+      !/class="story-sculpture-canvas"/.test(about) || !/data-glass-backdrop/.test(about)) {
+    fail("/about must run the live scene, not a still of it");
+  }
+  const scene = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
+  if (/home-mast/.test(scene)) {
+    fail("hero-scene.js must not reach for one stage's class names");
+  }
+  const story = readFileSync(join(ROOT, "assets/css/story.css"), "utf8");
+  if (!/html\.no-motion[^{]*\.story-sculpture-canvas\s*{[^}]*opacity:\s*0\s*!important/.test(story)) {
+    fail("reduced motion must leave the corridor on its still, not both forms");
+  }
+  const others = [
+    "works.html", "privacy.html", "ai-integration.html",
     "hu/ai-integracio.html", "hu/adatvedelem.html",
     ...WORK.map((slug) => `work/${slug}.html`),
   ];
-  for (const page of pages) {
-    const markup = readFileSync(join(ROOT, page), "utf8");
-    const carries = page === "about.html"
-      ? /class="story-sculpture"[^>]*src="[^"]*hero-chevron\.svg"/.test(markup)
-      // Both poses: the gate at rest, the glass chevron the scroll turns to.
-      : /<div class="page-chevron-mark" aria-hidden="true">/.test(markup) &&
-        /class="page-mark-rest"[^>]*hero-gate\.svg/.test(markup) &&
-        /class="page-mark-glass"[^>]*hero-chevron\.svg/.test(markup);
-    if (!carries) fail(`${page} carries no reference to the home hero object`);
-    if (/<a[^>]*>\s*<[^>]*class="page-chevron-mark"/.test(markup)) {
-      fail(`${page}: the shared page mark is decoration, not a link`);
+  for (const page of others) {
+    if (/page-chevron-mark|story-sculpture/.test(readFileSync(join(ROOT, page), "utf8"))) {
+      fail(`${page}: the scene treatment belongs to Story in Motion alone`);
     }
-  }
-  if (/class="story-sculpture"[^>]*hero-final\.webp/.test(readFileSync(join(ROOT, "about.html"), "utf8"))) {
-    fail("/about must stand the glass chevron in its corridor, not the flat gate");
-  }
-}
-// The page mark turns on native scroll, not on a loop, and is not gated to
-// desktop: phones get it too. Reduced motion leaves the resolved gate alone.
-{
-  const motion = readFileSync(join(ROOT, "assets/js/animations.js"), "utf8");
-  if (!/function addPageMarkTurn\(\)/.test(motion) || !/--page-mark/.test(motion)) {
-    fail("the shared page mark has no owner in animations.js");
-  }
-  if (!/addPageMarkTurn\(\);[\s\S]*addPageMarkTurn\(\);/.test(motion)) {
-    fail("the page mark must turn on every viewport, not desktop alone");
-  }
-  if (!/function addPageMarkTurn\(\)[\s\S]{0,200}reducedMotion\) return/.test(motion)) {
-    fail("reduced motion must leave the page mark on its resolved pose");
-  }
-  if (/addPageMarkTurn[\s\S]{0,600}(?:repeat:\s*-1|setInterval)/.test(motion)) {
-    fail("the page mark must not idle: native scroll drives it or nothing does");
-  }
-  // Every page carries a blanket `html.no-motion * { opacity: 1 !important }`.
-  // Without an explicit re-assertion it reveals both poses of the mark at once.
-  const sections = readFileSync(join(ROOT, "assets/css/editorial-sections.css"), "utf8");
-  if (!/html\.no-motion[^{]*\.page-mark-glass\s*{[^}]*opacity:\s*0\s*!important/.test(sections)) {
-    fail("reduced motion must show one pose of the page mark, not both");
-  }
-  if (!/\.page-mark-rest\s*{\s*opacity:\s*var\(--page-mark-rest,\s*1\)/.test(sections) ||
-      !/\.page-mark-glass\s*{\s*opacity:\s*var\(--page-mark-glass,\s*0\)/.test(sections)) {
-    fail("with no owner the page mark must rest on the gate, not the glass");
   }
 }
 // The experience section is a career, not a list: a lead names the arc and every
@@ -675,9 +654,7 @@ for (const slug of WORK) {
     html.indexOf("</header>") + 9
   );
   if (slug === "kineticare") {
-    // The shared page mark is site chrome, not hero media; count the hero slot.
-    const heroSlot = header.replace(/<div class="page-chevron-mark"[\s\S]*?<\/div>/gi, "");
-    const mediaNodes = [...heroSlot.matchAll(/<(?:video|img|picture|iframe)\b/gi)];
+    const mediaNodes = [...header.matchAll(/<(?:video|img|picture|iframe)\b/gi)];
     if (mediaNodes.length !== 1 || !/<video[^>]*data-autoplay-video/.test(header)) {
       fail(`kineticare: case header must contain exactly one autoplaying video (found ${mediaNodes.length} media nodes)`);
     }
