@@ -185,8 +185,8 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 .ai-ribbon-strip { position: relative; width: 100%; transform-origin: 50% 50%; }
 .ai-ribbon-strip img { display: block; width: 100%; height: auto; }
 .ai-ribbon-label { position: absolute; top: 50%; transform: translate(-50%, -50%) rotate(-3.5deg); font: 400 11px/1 Inter, sans-serif; letter-spacing: .26em; text-transform: uppercase; white-space: nowrap; }
-.ai-ribbon-label-insight { left: 16%; color: #F4F3FB; }
-.ai-ribbon-label-integration { left: 47%; transform: translate(-50%, -50%) rotate(-2deg); color: var(--ai-ink); }
+.ai-ribbon-label-insight { left: 16%; top: 68%; color: #F4F3FB; }
+.ai-ribbon-label-integration { left: 47%; top: 48%; transform: translate(-50%, -50%) rotate(-2deg); color: var(--ai-ink); }
 .ai-ribbon-label-impact { left: 70.5%; top: 46%; transform: translate(-50%, -50%) rotate(-4deg); color: var(--ai-ink); }
 .ai-pieces-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
 .ai-pieces-steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 16px; padding: 0 clamp(16px, 2.4vw, 36px); border-left: 1px solid var(--ai-rule); }
@@ -218,6 +218,9 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
   [data-ai-motion="on"] .ai-journey .ai-ribbon { position: sticky; top: 56px; z-index: 2; }
   .ai-ribbon-strip { width: 180%; max-width: none; transform-origin: 0 50%; }
   .ai-ribbon-strip img { -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); }
+  .ai-ribbon-label { font-size: 10px; letter-spacing: .2em; }
+  .ai-ribbon-label-insight { left: 19%; }
+  .ai-ribbon-label-integration { left: 46%; }
   .ai-pieces-steps { padding-top: 10px; }
   .ai-pieces-steps { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .ai-pieces-steps li { padding: 18px 0 0; border-left: 0; border-top: 1px solid var(--ai-rule); }
