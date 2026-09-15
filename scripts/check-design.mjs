@@ -178,6 +178,17 @@ if (worksLd) {
       !/class="story-sculpture-canvas"/.test(about) || !/data-glass-backdrop/.test(about)) {
     fail("/about must run the live scene, not a still of it");
   }
+  // The owner chose the home page's bright lilac field here. The field is only a
+  // base fill with the backdrop artwork painted over it, so it goes inert behind
+  // a full-bleed backdrop such as the corridor, and a field with no artwork over
+  // it leaves the glass nothing to bend and it reads as a solid slab. Both halves
+  // have to hold for the object to read bright and still look like glass.
+  if (!/data-glass-field="#D6D4ED"/.test(about)) {
+    fail("/about must stand the glass on the home lilac field");
+  }
+  if (/<img[^>]*data-glass-backdrop[^>]*corridor/.test(about)) {
+    fail("/about: a full-bleed corridor backdrop paints over the field and makes it inert");
+  }
   const scene = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
   if (/home-mast/.test(scene)) {
     fail("hero-scene.js must not reach for one stage's class names");

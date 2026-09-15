@@ -958,11 +958,17 @@ evidence, portraits, logos or biography facts; no new palette is authorized.
 The object standing in the corridor is the live glass chevron the home hero
 assembles, not the flat gate it morphs into and not a still of it (changed
 2026-09-15, at the owner's request). It runs the same `hero-scene.js`, so the two
-stages are one object seen twice. It refracts what is actually behind it, which
-here is the corridor photograph rather than the home page's lettering: that keeps
-the principle the home scene already follows and keeps the lilac field off a page
-that has none. The chevron is taller than it is wide where the gate was wider than
-tall, so its slot narrows to hold the same standing height on the floor. The
+stages are one object seen twice. It stands on the home page's bright lilac
+field, `data-glass-field="#D6D4ED"` (the owner chose this over the dark corridor
+on 2026-09-15). The field alone is not enough and the reason is worth keeping:
+the refraction source is a base fill with artwork painted over it, so a
+full-bleed backdrop such as the corridor photograph covers the fill completely
+and the field colour becomes inert, while a bare field with nothing over it
+gives the glass nothing to bend and it reads as a solid slab. The chevron's own
+silhouette is the artwork over the field here, which is what makes the object
+read bright and dimensional rather than flat. The chevron is taller than it is
+wide where the gate was wider than tall, so its slot narrows to hold the same
+standing height on the floor. The
 drawing stays as the fallback and the two never show at once: WebGL failure and
 reduced motion both resolve to the still, never to both. Outside the home hero
 this treatment belongs to Story in Motion alone; other pages carry no scene. The
