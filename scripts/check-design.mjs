@@ -593,10 +593,11 @@ for (const page of SERVICE_PAGES) {
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
     const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)?.[0] || "";
     const language = page.startsWith("hu/") ? "hu" : "en";
-    for (const material of ["forest", "glass", "olive"]) {
-      if (!new RegExp(`<img\\b[^>]*class="[^\"]*\\bai-bar-${material}\\b[^\"]*"[^>]*src="/assets/images/ai/bars-${material}\\.webp"`).test(main)) fail(`${page}: the independently animated ${material} bar is missing`);
-    }
-    if (!main.includes('/assets/images/ai/ribbon-refined.webp')) fail(`${page}: the ribbon must use its refined source render`);
+    const shapeArt = main.match(/<div\b[^>]*class="ai-shape-art"[^>]*>([\s\S]*?)<\/div>/)?.[1] || "";
+    const shapeImages = [...shapeArt.matchAll(/<img\b[^>]*>/g)].map(([tag]) => tag);
+    if (shapeImages.length !== 1 || !shapeImages[0].includes('src="/assets/images/ai/bars.webp"') || /bars-(?:forest|glass|olive)|\bai-bar-/.test(shapeArt)) fail(`${page}: preserve the original approved bars picture rather than the rejected flat reconstruction`);
+    const ribbonImage = main.match(/<img\b[^>]*src="\/assets\/images\/ai\/ribbon-studio\.webp"[^>]*>/)?.[0] || "";
+    if (!ribbonImage || !/width="2172"/.test(ribbonImage) || !/height="724"/.test(ribbonImage) || main.includes('/assets/images/ai/ribbon-refined.webp')) fail(`${page}: the ribbon must use the faithful 2172×724 studio artwork with a sized decorative source`);
     if (!/class="ai-pieces-count"[^>]*><span>03<\/span>/.test(main)) fail(`${page}: the no-motion counter must show the finished third step`);
     if (/ai-step-inline|ai-start-steps|ai-pieces-work|ai-work-list|data-ai-better/.test(main)) fail(`${page}: duplicate numbers, service lists and premature closing scene must not return`);
     const pieces = main.match(/<section\b[^>]*\bid="pieces"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";

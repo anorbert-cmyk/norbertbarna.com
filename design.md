@@ -39,24 +39,27 @@ KODE recreation brief below replaces the earlier semicircle composition.
 
 `/ai-integration` and `/hu/ai-integracio` present one coherent service story,
 combining the approved **The Passage (01)** and **Systems in Motion (02)**
-concepts. The 2026-09-15 owner-requested design audit completion supersedes the
-previous duplicated service/reference sections and olive middle closing.
+concepts. Preserve the assembled page's copy and section sequence during
+visual refinements; reorganizing content requires an explicit request.
 Only the two AI routes receive this treatment; other footers stay unchanged.
 
 1. **The Passage opening.** Dark stable navigation, oversized lilac title,
    original triangular forest/olive portal, and a native project contact
    button in the first mobile viewport. A quieter link leads to the approach.
 2. **Shaped around your workflow.** A shorter explanatory bridge on lilac.
-   Three registered forest, glass and olive architectural rails move
-   independently and converge into their final composition.
-3. **Make the pieces work together.** A continuous rendered ribbon crosses
+   Restore the original static `bars.webp` composition: rich forest reflections,
+   crisp translucent glass and polished olive folds. Do not replace the
+   approved picture with simplified procedural U-profiles.
+3. **Make the pieces work together.** The approved shallow folded ribbon crosses
    three always-readable service steps. Desktop pins for a 240svh track only
    when both natural content rows fit the viewport. The camera and 01–03
    counter travel together. Mobile keeps the ribbon under the 56px bar as the
    steps scroll naturally. No reading text or links fade or transform.
 4. **Selected work.** One semantic section outside the pinned scene, with
    three whole-row links, factual contribution copy and the same high-resolution
-   geometric imagery used by the portfolio. No duplicate reference list.
+   geometric imagery used by the portfolio. Mobile pairs a small left thumbnail
+   with the title and description; enlarged text may reflow naturally. No
+   northeast glyph, reserved icon column or duplicate reference list.
 5. **Start with your workflow.** A separately bounded architectural gate,
    practical preparation copy and the complete owner-authored biography.
 6. **Before we begin.** Five native details/summary disclosures, first open,
@@ -67,12 +70,15 @@ Only the two AI routes receive this treatment; other footers stay unchanged.
    the selected English headline also appears on HU with lang=en.
 
 Artwork is an explicitly approved decorative exception; never fabricate
-product evidence. `tools/ribbon-scene/ai-geometry.html` and `render-ai.mjs`
-produce three 1800×1100 registered transparent bars and `ribbon-refined.webp`
-(2800×480). Runtime requires no Three.js. Ribbon labels stay live translated
-HTML. Final architecture images are separately generated clean source assets
-based on the approved board, with provenance in `tools/ai-artwork.md`.
-Original board crops and the author's earlier ribbon renderer remain available.
+product evidence. `bars.webp` is the unchanged original board artwork.
+`ribbon-studio.webp` (2172×724) is a high-resolution, label-free edit of the
+approved ribbon recovered from commit `474544d`, displayed as a 7.5:1 CSS
+crop. It preserves the rounded forest fold, translucent glass and olive/forest
+return. The earlier procedural renders remain in history, not in the page.
+Keep live translated labels as fine surface typography without dark plaques;
+full-width mobile fallback uses a readable three-column caption below the art.
+Provenance and generation prompt are in `tools/ai-artwork.md` and
+`tools/ai-ribbon-fidelity.json`. Runtime requires no Three.js.
 Selected work uses existing `assets/images/geometry/{project}.*.webp` files.
 
 The movement is CSS scroll-driven animation (2026-09-15), run by the
@@ -97,8 +103,9 @@ only. The AI compact bar is dark over the opening, then lilac over the reading
 chapters; its existing menu panel stays lilac. Contact arrows use a separate
 aria-hidden span so the accessible name remains the approved visible label.
 AI scroll clearance includes the top safe-area inset and matches the actual
-bar; section anchors add only12px beyond it. Ribbon labels have an opaque navy
-backing. The footer reflection scrim preserves text AA, including utility links.
+bar; section anchors add only12px beyond it. Ribbon camera endpoints must
+keep both cut image edges outside the visible window; mobile uses 300%
+overscan. The footer reflection scrim preserves text AA, including utility links.
 Both final footer contact targets remain at least48px tall. Other routes keep
 their exact shared navigation/footer contracts.
 

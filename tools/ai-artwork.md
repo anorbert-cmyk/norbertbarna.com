@@ -38,12 +38,26 @@ only the optimized WebP files under `assets/images/ai/`.
   reflective floor at bottom18%. No triangular portal in this closing, no
   extra objects, neon orange, lettering or UI.
 
-## Separately rendered motion assets
+## Ribbon fidelity correction
 
-See `ribbon-scene/README.md` for the reproducible Three.js offline renderer,
-registered independent bar layers, ribbon label coordinates and exact RGBA
-roundtrip export validation. JavaScript in the live website does not render
-WebGL or write artwork transforms; CSS view timelines own motion.
+The owner rejected the simplified procedural rails and ribbon as a visual
+regression. The original `bars.webp` is restored unchanged. The ribbon source
+is the approved board crop at `474544d:assets/images/ai/ribbon.webp` (976×114),
+before later alpha-keying damaged the glass and before the procedural renders.
+
+Built-in image generation edited that exact source to remove the tiny baked
+labels and reconstruct it at higher resolution. It preserved the shallow
+wave, rounded forest fold, glass edges, olive/forest return and soft shadows.
+This is a source-based edit, not a new geometry concept. The actual output is
+2172×724 (the requested3072×1024 is not the output size). Source PNG:
+`exec-87afbbb6-1db1-435d-8acd-4166d988cf4a.png`.
+The production `ribbon-studio.webp` uses WebP quality95/method6. Only format
+conversion was applied; the displayed7.5:1 crop is CSS, not a destructive edit.
+The full prompt and source provenance are in `ai-ribbon-fidelity.json`.
+
+The previous offline renderer remains under `ribbon-scene/` as historical
+source. It does not supply the restored page artwork. JavaScript in the live
+website does not render WebGL or write artwork transforms; CSS owns motion.
 
 ## Responsive treatment
 
@@ -52,6 +66,9 @@ aria-hidden wrapper), and loads lazily except the opening. The first mobile
 contact stays in document flow; the portal is masked below the text. The
 workflow image has its own square frame, independent of biography length.
 Final closing text and privacy controls are live HTML. A navy reflection scrim
-keeps their contrast independent of bright artwork. Ribbon labels use opaque
-navy backings so reduced-motion full-width composition is also legible. All base compositions
-are readable with no JavaScript, reduced motion and no scroll-timeline support.
+keeps their contrast independent of bright artwork. Ribbon labels are plain
+translated type on the surfaces, without boxes. Full-width mobile fallback
+places the same labels below the picture in three readable columns. Active
+mobile motion uses300% overscan; desktop camera bounds also keep cut image
+edges outside the viewport. All base compositions are readable with no
+JavaScript, reduced motion and no scroll-timeline support.
