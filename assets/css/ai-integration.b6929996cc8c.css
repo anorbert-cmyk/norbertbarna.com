@@ -79,7 +79,7 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 .ai-better-band img { display: block; width: 100%; height: auto; }
 .ai-better-bar { position: relative; z-index: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; margin-top: clamp(64px, 9vw, 120px); padding: 18px 0 22px; border-top: 1px solid rgb(10 22 40 / 45%); }
 .ai-better-note { max-width: 62ch; margin-top: 40px; font-size: 15px; line-height: 1.6; }
-.ai-better-note a { text-decoration: underline; text-underline-offset: 4px; }
+.ai-better-note a { display: inline-block; padding: 11px 0; margin: -11px 0; text-decoration: underline; text-underline-offset: 4px; }
 
 @media (max-width: 991px) {
   .ai-hero { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(300px, 1fr); }
@@ -198,7 +198,7 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
   .ai-pieces h2 { max-width: none; font-size: clamp(34px, 8vw, 56px); }
   /* A phone follows the ribbon too: a window shows it large and the owner pans it with the scroll. */
   .ai-ribbon { margin: 28px calc(-1 * var(--ai-gutter)); overflow: hidden; }
-  .ai-ribbon img { width: 190%; max-width: none; transform: translateX(var(--ai-ribbon-pan, 0%)); transform-origin: 0 50%; }
+  .ai-ribbon img { width: 240%; max-width: none; transform: translateX(var(--ai-ribbon-pan, 0%)); transform-origin: 0 50%; }
   .ai-pieces-steps { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .ai-pieces-steps li { padding: 18px 0 0; border-left: 0; border-top: 1px solid var(--ai-rule); }
   .ai-pieces-steps li:first-child { padding-top: 18px; border-top: 1px solid var(--ai-rule); }
@@ -234,7 +234,7 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 .ai-related-list span { display: block; font: 600 15px/1.25 Inter, sans-serif; letter-spacing: -.02em; }
 .ai-related-list small { display: block; margin-top: 4px; font: 400 13px/1.45 Inter, sans-serif; letter-spacing: 0; }
 .ai-start-lang { grid-column: 1 / -1; font-size: 14px; }
-.ai-start-lang a { text-decoration: underline; text-underline-offset: 4px; }
+.ai-start-lang a { display: inline-block; padding: 11px 0; margin: -11px 0; text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 991px) {
   .ai-start { grid-template-columns: minmax(0, 1fr); }
   .ai-start-art { min-height: 0; aspect-ratio: 39 / 40; max-height: 460px; }
@@ -256,4 +256,15 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
 .ai-who { grid-column: 1 / -1; padding-top: 22px; border-top: 1px solid var(--ai-rule); }
 .ai-who > .ai-eyebrow { margin-bottom: 14px; }
 .ai-who-text { max-width: 78ch; font-size: clamp(15px, 1.1vw, 17px); line-height: 1.55; letter-spacing: -.01em; }
-.ai-who-text a { text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }
+.ai-who-text a { display: inline-block; padding: 11px 0; margin: -11px 0; text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }
+
+/* Questions before a first conversation: each answer stands on its own, so a
+   reader or an answer engine can take one without the rest. */
+.ai-faq { grid-column: 1 / -1; padding-top: 22px; border-top: 1px solid var(--ai-rule); }
+.ai-faq > .ai-eyebrow { margin-bottom: 20px; }
+.ai-faq-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px clamp(28px, 4vw, 64px); }
+.ai-faq h3 { font: 600 clamp(16px, 1.2vw, 19px)/1.3 Inter, sans-serif; letter-spacing: -.025em; }
+.ai-faq p { max-width: 46ch; margin-top: 8px; font-size: 15px; line-height: 1.55; letter-spacing: -.01em; }
+@media (max-width: 991px) {
+  .ai-faq-list { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+}

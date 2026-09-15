@@ -327,8 +327,8 @@ test("header AA: 568x200 landscape menu keeps every control reachable with enlar
   await testInfo.attach("landscape-text-resize-snapshot", { body: JSON.stringify(snapshot, null, 2), contentType: "application/json" });
   await page.locator(".menu-button").click();
   const controls = page.locator("#primary-navigation a[href], #primary-navigation button");
-  await expect(page.locator("#primary-navigation a.nav-link")).toHaveText(["Works", "About"]);
-  await expect(controls).toHaveCount(4);
+  await expect(page.locator("#primary-navigation a.nav-link")).toHaveText(["Works", "About", "AI integration"]);
+  await expect(controls).toHaveCount(5);
   for (let index = 0; index < await controls.count(); index += 1) {
     const control = controls.nth(index);
     await control.focus();

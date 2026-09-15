@@ -351,8 +351,10 @@ links, heading hierarchy and visible keyboard focus.
 
 **Header:**
 
-- Home: NB home link on the left; Works, LinkedIn and Email on the right,
-  on the pale mast. Native links and 44px minimum targets; compact keeps the
+- Home: NB home link on the left; Works, About, AI integration, LinkedIn and
+  Email on the right, on the pale mast. Every primary navigation carries the
+  AI integration item (2026-09-15, owner request); the Hungarian pages link
+  its Hungarian pair as `AI-integráció`. Native links and 44px minimum targets; compact keeps the
   accessible disclosure. Email remains a native assign-only button.
 - `/works` retains its sticky bar. Desktop cases share the travelling wordmark header,
   keeping `Works / {Project}` on desktop. Compact hides that duplicate
@@ -484,6 +486,18 @@ the 16:9 frame (`inset: 0; z-index: 0`). Webflow background-video CSS
 ## Copy
 
 Use the shipped case copy. Do not rewrite claims.
+
+**Search and answer engines (2026-09-15):** every page has a unique title with
+its primary phrase first (`/works` and cases keep starting with their H1, as
+`check-site` holds), a 105–135 character description that carries the phrase
+and reads as a sentence, and structured data that repeats only what the page
+shows. The home Person lists what it can be found for (`knowsAbout`) and the
+working languages (`knowsLanguage`); the service pages carry a question-led
+block whose every answer stands on its own, in plain HTML, with no `FAQPage`
+schema and no figure, price, client or stack the owner has not stated. Long
+phrases are served by the copy itself (AI integration for businesses, custom
+AI development, AI workflow automation; AI-integráció vállalkozásoknak, egyedi
+AI-fejlesztés), never by keyword lists or hidden text.
 
 User-requested project contact copy (2026-09-04): the existing native
 `button.footer-email` opens an email app for a project enquiry; it does not
@@ -651,6 +665,7 @@ markup that is being retired: check the page before reusing it.
 `.ai-pieces-work-label` `.ai-better` `.ai-better-dek` `.ai-better-note`
 `.ai-better-bar` `.ai-better-band` `.ai-start` `.ai-start-art`
 `.ai-start-art-label` `.ai-start-body` `.ai-start-steps` `.ai-start-bring`
+`.ai-who` `.ai-who-text` `.ai-faq` `.ai-faq-list`
 `.ai-related` `.ai-related-list` `.ai-start-lang` `.ai-eyebrow-rule-after`
 
 **About (`/about` only):** `.story-page` `.story-opening`
@@ -660,7 +675,7 @@ markup that is being retired: check the page before reusing it.
 `.story-perspective` `.story-perspective-art` `.story-sculpture`
 `.story-wing` `.story-backdrop` `.story-stage-shade` `.story-rail`
 `.story-rail-dot` `.story-next` `.story-next-links` `.story-footer`
-`.story-motion-toggle` `.story-draft-note` `.story-eyebrow`
+`.story-motion-toggle` `.story-eyebrow`
 `.story-closing-line` `.story-beginnings` `.story-text-link`
 `.story-perspective-inner` `.story-sculpture-position` `.story-wing-left`
 `.story-wing-right` `.story-footer-top` `.story-footer-bottom`
@@ -676,7 +691,7 @@ slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow
 `data-video-urls` `data-poster-url` `data-video-label` `data-object-fit`
 `data-consent-settings` `data-story` `data-story-*` (`-art` `-line` `-mode`
 `-motion` `-motion-toggle` `-reflow` `-scene` `-stage` `-step`). Five more
-`data-story-*` attributes in `about.html` — `-backdrop` `-draft` `-sculpture`
+`data-story-*` attributes in `about.html` — `-backdrop` `-sculpture`
 `-shade` `-wing` — are markup state that no script queries; the animation binds
 to the matching classes, so adding one of those attributes without its class
 animates nothing. `data-w-id` is inherited Webflow state
@@ -695,7 +710,7 @@ same change that caused the drift.
 | `/` | `index.html` | Arrival, glass hero, Selected work, services, experience | `index, follow, max-image-preview:large` |
 | `/works` | `works.html` | Seven landscape project rows | `index, follow, max-image-preview:large` |
 | `/work/{slug}` | `work/*.html` (7) | Case studies | `index, follow, max-image-preview:large` |
-| `/about` | `about.html` | Story in Motion, explicit draft | `noindex, follow`, kept out of `sitemap.xml` |
+| `/about` | `about.html` | Story in Motion, the written biography | `index, follow, max-image-preview:large` |
 | `/ai-integration` | `ai-integration.html` | English service offer, the two approved boards | default |
 | `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair of the same board, `lang="hu"` | default |
 | `/privacy` | `privacy.html` | Consent and analytics notice | default |
@@ -703,7 +718,7 @@ same change that caused the drift.
 | (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
 
 Thirteen content pages carry chrome, consent and the editorial footer.
-`sitemap.xml` lists thirteen URLs. `server.js` owns canonicalisation: apex to
+`sitemap.xml` lists fourteen URLs. `server.js` owns canonicalisation: apex to
 `www`, and `/index`, `/{slug}`, trailing slashes and `.html` all 301 to one
 URL. Adding a page means adding it to the checks that enumerate pages, not
 only to the sitemap.
@@ -1029,12 +1044,13 @@ motion controller owns only its own `story-*` elements, listeners and frames.
 It must settle into readable static content with reduced motion, no JavaScript
 or missing animation assets, without hiding the sole copy or trapping focus.
 
-The final biography has not been supplied. `about.html` is therefore an
-explicit draft: `body.story-page[data-story-draft]`, one self-canonical `/about`
-URL, `AboutPage` structured data and `robots="noindex, follow"`. Do not invent
-career events or dates to fill the design. Keep the draft out of `sitemap.xml`
-until the supplied text is integrated and indexing is deliberately enabled.
-Existing content pages retain their `index, follow` contract. The shared main
+The biography is written from the owner's own career material (2026-09-15):
+security software at Balabit / Balasys / One Identity, Raiffeisen, Instructure,
+BlackRock and Kineticare, with only the facts and figures the owner supplied.
+`about.html` is indexed like every content page: one self-canonical `/about`
+URL, `AboutPage` structured data, `index, follow`, listed in `sitemap.xml`
+after the cases. Do not invent career events or dates. No draft note or
+`data-story-draft` marker returns. The shared main
 navigation includes a native About link; `/about.html` and `/about/` permanently
 redirect to `/about`, preserving query parameters. Shared navigation, consent,
 analytics and footer contact behavior remain available on this route.
