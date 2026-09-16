@@ -244,8 +244,13 @@ for (const page of PAGES) {
       fail(`${page}: Person jobTitle must be Product VP`);
     const personImage = typeof person?.image === "string" ? person.image : person?.image?.url;
     const ogImage = metaContent(html, "property", "og:image");
-    if (personImage !== ogImage || personImage !== "https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg")
-      fail(`${page}: Person image must be the existing OG portrait, not a generated asset`);
+    const previewImage = "https://www.barnanorbert.com/assets/images/og/forest-olive-folds.jpg";
+    if (ogImage !== previewImage || metaContent(html, "name", "twitter:image") !== previewImage ||
+        profile?.image !== previewImage || profile?.primaryImageOfPage?.url !== previewImage ||
+        profile?.primaryImageOfPage?.width !== 1200 || profile?.primaryImageOfPage?.height !== 630)
+      fail(`${page}: social and page JSON-LD images must share the approved 1200x630 forest/olive crop`);
+    if (personImage)
+      fail(`${page}: omit Person.image until a real profile portrait is provided; page artwork is not a portrait`);
   }
 
   if (page.startsWith("work/")) {
@@ -265,10 +270,13 @@ for (const page of PAGES) {
         if (Object.hasOwn(work, "headline") && work.headline !== title)
           fail(`${page}: Article/CreativeWork headline must match <title>`);
       }
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(article.datePublished || ""))
-        fail(`${page}: Article datePublished must use YYYY-MM-DD`);
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(article.dateModified || ""))
-        fail(`${page}: Article dateModified must use YYYY-MM-DD`);
+      // Modification timestamps have source-commit provenance. Historical
+      // publication times are optional: do not manufacture midnight precision.
+      const isoDateTime = value => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$/.test(value || "") && Number.isFinite(Date.parse(value));
+      if (article.datePublished !== undefined && !isoDateTime(article.datePublished))
+        fail(`${page}: Article datePublished must use an evidenced full DateTime/timezone, or be omitted`);
+      if (!isoDateTime(article.dateModified))
+        fail(`${page}: Article dateModified must retain an evidenced full DateTime/timezone`);
       if (metaContent(html, "property", "article:published_time") !== article.datePublished)
         fail(`${page}: article:published_time must match Article datePublished`);
       if (metaContent(html, "property", "article:modified_time") !== article.dateModified)

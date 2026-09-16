@@ -18,9 +18,24 @@
 .navbar[data-compact-nav] :is(.home-nav-wordmark, .home-nav-progress) { display: none !important; }
 body:has(.navbar[data-compact-nav]) .immersive-nav-landing { display: none; }
 
-/* The additional About destination owns a free slot in the desktop utility nav. */
+/* Home keeps the opening chapter's quiet bar for the whole document. All
+   destinations stay in normal flow, including without JavaScript, so adding
+   a link cannot reuse an absolute slot or collide with a central wordmark. */
 @media (min-width: 992px) {
-  body.home .navbar:not([data-composition-nav]) .nav-menu-area > .nav-link[href="/about"] { left: 86.5%; }
+  body.home .navbar.w-nav,
+  body.home .navbar.w-nav:is([data-keyboard="true"]:focus-within, :has(.w--open), [data-reading-dock]) {
+    position: fixed; inset: 0 0 auto; transform: none; mix-blend-mode: normal;
+    background: #D6D4ED; color: #0A1628; pointer-events: auto;
+    --immersive-link-ink: #0A1628;
+  }
+  body.home .navbar.w-nav .nav-wrap { gap: 28px; }
+  body.home .navbar.w-nav :is(.home-nav-wordmark, .home-nav-progress) { display: none; }
+  body.home .navbar.w-nav :is(.nav-link, .footer-contact-link, .footer-email, .home-nav-monogram, .home-nav-label) { color: #0A1628; }
+  body.home .navbar.w-nav :is(.nav-menu-area > .nav-link, .nav-cta > .footer-contact-link) { position: static; }
+  body.home .navbar.w-nav .nav-menu { min-width: 0; }
+  body.home .navbar.w-nav :is(.nav-menu-area, .nav-cta) { gap: 8px 28px; flex-wrap: wrap; justify-content: flex-end; }
+  body.home .navbar.w-nav .nav-cta { flex-shrink: 1; }
+  body.home .navbar.w-nav .nav-link { max-width: 100%; white-space: normal; }
 }
 
 /* One compact menu on every route (owner request, 2026-09-15): the About page's

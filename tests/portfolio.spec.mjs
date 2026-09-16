@@ -731,14 +731,49 @@ test("Kineticare adapted stage: separate text stays AA against a synthetic white
 
 async function openStable(page, route) {
   await page.goto(route, { waitUntil: "load" });
-  // Poll the FontFaceSet state; retaining its native promise through CDP can be garbage-collected.
-  await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
-  await page.waitForFunction(() => {
-    if (!document.fonts?.check) return true;
-    return document.fonts.check('700 48px "Funnel Display"')
-      || document.documentElement.classList.contains("wf-active");
-  }, { timeout: 8000 }).catch(() => {});
+  // Native faces load on demand: AI does not use Funnel, while 404 uses its
+  // 300 weight. Load only authored faces used by laid-out text, and surface
+  // missing/failed faces instead of waiting for the removed WebFont classes.
+  const readiness = await page.waitForFunction(async () => {
+    await document.fonts.ready;
+    const requests = new Map();
+    const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let node; (node = textNodes.nextNode());) {
+      if (!node.textContent.trim()) continue;
+      const element = node.parentElement;
+      if (!element?.getClientRects().length) continue;
+      const style = getComputedStyle(element);
+      if (style.visibility !== "visible") continue;
+      const family = style.fontFamily.split(",")[0].trim().replace(/["']/g, "");
+      if (!["Inter", "Funnel Display"].includes(family)) continue;
+      const font = `${style.fontStyle} ${style.fontWeight} 16px "${family}"`;
+      if (!requests.has(font)) requests.set(font, new Set());
+      for (const character of node.textContent) requests.get(font).add(character);
+    }
+    if (!requests.size) return { failures: ["No authored font faces found in the rendered page"] };
+    const entries = [...requests];
+    const results = await Promise.allSettled(entries.map(async ([font, characters]) => {
+      const faces = await document.fonts.load(font, [...characters].join(""));
+      return faces.length > 0 && faces.every((face) => face.status === "loaded");
+    }));
+    return { failures: results.flatMap((result, index) =>
+      result.status === "fulfilled" && result.value ? [] : [entries[index][0]]) };
+  }, undefined, { timeout: 8000 });
+  const { failures } = await readiness.jsonValue();
+  await readiness.dispose();
+  expect(failures, `Native font readiness failed on ${route}`).toEqual([]);
   await page.waitForTimeout(100);
+}
+
+for (const failure of ["font binary", "font stylesheet"]) {
+  test(`native font readiness rejects a failed ${failure}`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const requestPattern = failure === "font binary"
+      ? /\/assets\/fonts\/.*\.woff2$/
+      : /\/assets\/css\/fonts\.[a-f0-9]+\.css$/;
+    await page.route(requestPattern, (route) => route.abort());
+    await expect(openStable(page, "/ai-integration")).rejects.toThrow(/font|NetworkError/i);
+  });
 }
 
 async function expectContactLabelFit(locator) {
@@ -1052,9 +1087,10 @@ for (const viewport of [viewports[0], viewports[4]]) {
       await page.setViewportSize(viewport);
       await page.emulateMedia({ reducedMotion: "reduce" });
       await openStable(page, route);
-      // Include native disclosures such as Kineticare's walkthrough prose.
-      for (const summary of await page.locator("main details:not([open]) > summary").all()) {
-        await summary.click();
+      // Keep stable indices while opening disclosures: filtering by [open]
+      // would remove each clicked item and shift the remaining nth locators.
+      for (const summary of await page.locator("main details > summary").all()) {
+        if (!await summary.evaluate((element) => element.parentElement.open)) await summary.click();
       }
       const results = await new AxeBuilder({ page }).analyze();
       const blockers = results.violations.filter(({ impact }) => impact === "serious" || impact === "critical");
@@ -2034,6 +2070,7 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
       profileName: profile?.name || "",
       personName: person?.name || "",
       personImage: typeof person?.image === "string" ? person.image : person?.image?.url || "",
+      pageImage: profile?.primaryImageOfPage?.url || "",
       personDescription: person?.description || "",
     };
   });
@@ -2042,7 +2079,8 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   expect(schema.jobTitle).toBe("Product VP");
   expect(schema.profileName).toBe("Norbert Barna — Product VP");
   expect(schema.personName).toBe("Norbert Barna");
-  expect(schema.personImage).toBe("https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg");
+  expect(schema.personImage).toBe("");
+  expect(schema.pageImage).toBe("https://www.barnanorbert.com/assets/images/og/forest-olive-folds.jpg");
   expect(schema.personDescription).toMatch(/Product VP/);
   expect(schema.personDescription).not.toMatch(/design lead/i);
 
@@ -2146,7 +2184,7 @@ test.describe("editorial experience without JavaScript", () => {
 });
 
 for (const width of [1280, 390]) {
-  test(`${width}: case utility keeps real progress and ${width < 992 ? "a stable compact bar" : "its desktop journey"} with keyboard navigation`, async ({ page }) => {
+  test(`${width}: case utility keeps real progress and a stable top bar with keyboard navigation`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await openStable(page, "/work/instructure");
     const bar = await page.evaluate(() => {
@@ -2161,7 +2199,7 @@ for (const width of [1280, 390]) {
         motion: Boolean(document.querySelector("[data-motion-toggle], .site-motion-toggle")),
       };
     });
-    expect(bar.position).toBe("fixed");
+    expect(bar.position).toBe("sticky");
     expect(bar.height).toBeGreaterThanOrEqual(44);
     expect(bar.breadcrumb).toContain("Works");
     expect(bar.breadcrumb).toContain("Instructure");
@@ -2172,8 +2210,7 @@ for (const width of [1280, 390]) {
     const progress = await page.evaluate(() => String(Math.max(1, Math.round(scrollY / (document.documentElement.scrollHeight - innerHeight) * 100))).padStart(3, "0"));
     await expect(page.locator(".home-nav-progress span")).toHaveText(progress);
     const travelled = await page.locator(".navbar").boundingBox();
-    if (width < 992) expect(Math.abs(travelled.y), "compact case navigation stays at the top").toBeLessThanOrEqual(.5);
-    else expect(travelled.y, "desktop case navigation follows native document progress").toBeGreaterThan(0);
+    expect(Math.abs(travelled.y), "case navigation stays at the top at every width").toBeLessThanOrEqual(.5);
     expect(travelled.y + travelled.height).toBeLessThanOrEqual(900);
     await page.keyboard.press("Tab");
     await page.locator(".navbar .nav-logo-wrap").focus();

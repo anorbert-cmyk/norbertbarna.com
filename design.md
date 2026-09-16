@@ -37,62 +37,58 @@ remains supported, but is not the primary acquisition KPI. Preserve the
 Product VP role, work order and shipped evidence. The 2026-09-13
 KODE recreation brief below replaces the earlier semicircle composition.
 
-`/ai-integration` and `/hu/ai-integracio` explain the same core service offer in
-English and Hungarian, and since 2026-09-15 they are built from two concept
-boards the owner made and approved: "The passage" and "Systems in motion". The
-page is those boards in this order, and the Hungarian page is the same board:
+`/ai-integration` and `/hu/ai-integracio` present one coherent service story,
+combining the approved **The Passage (01)** and **Systems in Motion (02)**
+concepts. Preserve the assembled page's copy and section sequence during
+visual refinements; reorganizing content requires an explicit request.
+Only the two AI routes receive this treatment; other footers stay unchanged.
+The 2026-09-15 content expansion explicitly adds a bilingual, natural-flow
+workflow chapter and grounded AI/development examples. Preserve the artwork,
+existing ribbon scene, owner biography and FAQ while enriching the service
+explanation. Contextual case links must identify what the case actually proves.
 
-1. **The passage.** Navy field, copy left, the glass right, the
-   people / products / possibilities column on the far wall. Since 2026-09-16
-   the lit gate is not shown flat: the home page's refractive chevron stands
-   in the opening on a second stage of `hero-scene.js` (owner-requested), and
-   the passage panel is what the glass refracts, painted behind the object
-   through `data-glass-backdrop` and never a second visible layer. On a
-   desktop (992px and 740px tall or more) the opening holds for 80svh of the
-   180svh `.ai-hero-track` while native scroll turns and folds the object to
-   the matte gate, exactly as the home track does; the bar holds with the
-   opening (`data-ai-bar="held"`) and leaves with it (`released`, standing at
-   80svh). On a phone the object turns inside its own slot
-   (`data-glass-slot`) as the slot passes; the compact contract of the home
-   page applies. `data-ai-glass` on `main` is the owner's verdict: `pending`
-   in the HTML, then `pinned`, `slot` or `off`. Before the renderer reports,
-   the slot stands empty (the drawing waits three seconds by CSS, in case no
-   verdict ever comes); reduced motion, an unavailable renderer, no
-   JavaScript and a destroyed owner show the single chevron drawing and hide
-   the canvas. The glass does not need scroll timelines, only motion.
-2. **AI, shaped around your workflow.** Lilac field, the three glass bars,
-   a navy pill to the close and LinkedIn beside it, the numbered rule at the foot.
-3. **Make the pieces work together.** The ribbon journey. On a desktop the
-   stage pins for one scroll and the camera follows the ribbon from insight
-   to integration to impact while the three steps arrive; it ends on the
-   board's finished panel with the selected work row. On a phone the ribbon
-   is the camera: it holds under the bar while the three steps pass beneath
-   it, the window travelling from insight to integration to impact as each
-   step arrives. The 01 / 03 counter beside the title follows the camera
-   on both. No JavaScript, reduced motion, a short window and
-   every viewport under 992px show the finished panel; every owner property
-   falls back to it. Reading text never receives a transform or opacity.
-4. **What could work better?** The olive close, the page's one native
-   project-contact button, the ribbon tapering into the closing rule.
-5. **Start with your workflow.** The passage from its other side, the three
-   steps as a list, the related work with its honest one-liners, the
-   language switch.
+1. **The Passage opening.** Dark stable navigation, oversized lilac title,
+   original triangular forest/olive portal, and a native project contact
+   button in the first mobile viewport. A quieter link leads to the approach.
+2. **Shaped around your workflow.** A shorter explanatory bridge on lilac.
+   Restore the original static `bars.webp` composition: rich forest reflections,
+   crisp translucent glass and polished olive folds. Do not replace the
+   approved picture with simplified procedural U-profiles.
+3. **Make the pieces work together.** The approved shallow folded ribbon crosses
+   three always-readable service steps. Desktop pins for a 240svh track only
+   when both natural content rows fit the viewport. The camera and 01–03
+   counter travel together. Mobile keeps the ribbon under the 56px bar as the
+   steps scroll naturally. No reading text or links fade or transform.
+4. **Working together.** A bilingual `#workflow` chapter in natural flow follows
+   the ribbon: map the task, define data access and human review, test a
+   prototype, build a bounded pilot, then measure and hand over. Each step has
+   a concrete output. These describe the proposed service, not historic results.
+   No additional pinning, hidden text, animation owner or metric guarantees.
+5. **Selected work.** One semantic section outside the pinned scene, with
+   three whole-row links, factual contribution copy and the same high-resolution
+   geometric imagery used by the portfolio. Mobile pairs a small left thumbnail
+   with the title and description; enlarged text may reflow naturally. No
+   northeast glyph, reserved icon column or duplicate reference list.
+6. **Start with your workflow.** A separately bounded architectural gate,
+   practical preparation copy and the complete owner-authored biography.
+7. **Before we begin.** Five native details/summary disclosures, first open,
+   retaining the exact bilingual question/answer content. Language link follows.
+8. **Let’s build what’s next.** The selected dark Passage footer, with a
+   narrow olive light slit, live lilac headline, native email-app button,
+   LinkedIn and quiet privacy/settings utilities. Contact copy is localized;
+   the selected English headline also appears on HU with lang=en.
 
-The ribbon is a render (2026-09-15): `tools/ribbon-scene/ribbon3d.html` builds
-it in three.js as one band with the board's three materials and the board's
-line, `tools/ribbon-scene/render.mjs` renders it headless at 3x into
-`assets/images/ai/ribbon.webp`, and its three labels are text laid on the strip
-(`.ai-ribbon-label`), sharp under the lens and translated on the Hungarian
-page. The rest of the artwork is the owner's boards, cut out, not generated:
-the passage panel, the bars, the olive band and the second passage are crops with
-their baked labels filled from the surface around them, their field shifted to
-the CSS colour and keyed to alpha so the crop has no edge, the ribbon crossing
-the stage above the reading rows as it does on the board. They are board
-resolution (the band is the olive panel's own strip scaled 3x), shown up to
-about 1.5x, so they are soft where the lens goes close; the code treats each as
-a drop-in file for a source render. This is a narrow exception to the image
-rule below, tied to these two boards. The selected and related work rows use
-the boards' own project marks, cropped the same way.
+Artwork is an explicitly approved decorative exception; never fabricate
+product evidence. `bars.webp` is the unchanged original board artwork.
+`ribbon-studio.webp` (2172×724) is a high-resolution, label-free edit of the
+approved ribbon recovered from commit `474544d`, displayed as a 7.5:1 CSS
+crop. It preserves the rounded forest fold, translucent glass and olive/forest
+return. The earlier procedural renders remain in history, not in the page.
+Keep live translated labels as fine surface typography without dark plaques;
+full-width mobile fallback uses a readable three-column caption below the art.
+Provenance and generation prompt are in `tools/ai-artwork.md` and
+`tools/ai-ribbon-fidelity.json`. Runtime requires no Three.js.
+Selected work uses existing `assets/images/geometry/{project}.*.webp` files.
 
 The movement is CSS scroll-driven animation (2026-09-15), run by the
 compositor: each piece of artwork follows its own `view()` timeline, the
@@ -103,17 +99,40 @@ and is gated on `[data-ai-motion="on"]`, which only the owner sets, so
 browsers without scroll timelines, reduced motion, `html.no-motion` and no
 JavaScript all show the finished board. The owner (`ai-motion.js`) decides
 whether motion runs and in which mode, and keeps the 01 / 03 counter with
-the camera; it writes no styles. Artwork takes transforms and opacity;
-reading text never animates, except the three steps and the work row, which
-arrive by opacity with the camera as the boards intend. The passage settles
-in and the action's rule draws on load (time-based keyframes, same gate).
+the camera; it writes no styles. Reading text and focusable content never
+fade or transform. The action rule draws on load.
+
+**The passage's glass (2026-09-16, owner-requested).** The opening no longer
+shows the passage flat: the home page's refractive chevron stands in it on a
+second stage of `hero-scene.js`, and the passage panel is what the glass
+refracts, painted behind the object through `data-glass-backdrop` and never a
+second visible layer. On a desktop (992px and 740px tall or more) the opening
+sits in `.ai-hero-track` and holds under the sticky bar for 80svh while native
+scroll turns and folds the object to the matte gate, exactly as the home track
+does. On a phone the object turns inside its own slot (`data-glass-slot`) as
+the slot passes; the compact contract of the home page applies. `data-ai-glass`
+on `main` is the owner's verdict: `pending` in the HTML, then `pinned`, `slot`
+or `off`. Before the renderer reports, the slot stands empty (the drawing waits
+three seconds by CSS, in case no verdict ever comes); reduced motion, an
+unavailable renderer, no JavaScript and a destroyed owner show the single
+chevron drawing and hide the canvas. The glass does not need scroll timelines,
+only motion.
+The mobile timeline window matches the sticky ribbon's rendered height;
+camera progress and counter therefore share the same interval. Below600px
+viewport height the mobile ribbon stays full-width in natural flow, as it
+does without JavaScript or motion permission.
 
 The page has its own stylesheet and native-scroll owner (`ai-integration.css`,
 `ai-motion.js`), released as content-hashed files, loaded on these two routes
-only. Under 992px the compact bar stays the lilac bar every route shares; the
-boards' phone mockups show a dark bar, and that is the one deliberate
-deviation, because a spec guards the bar on all thirteen routes. The real
-contact button carries no arrow, because the site checks it hugs its label.
+only. The AI compact bar is dark over the opening, then lilac over the reading
+chapters; its existing menu panel stays lilac. Contact arrows use a separate
+aria-hidden span so the accessible name remains the approved visible label.
+AI scroll clearance includes the top safe-area inset and matches the actual
+bar; section anchors add only12px beyond it. Ribbon camera endpoints must
+keep both cut image edges outside the visible window; mobile uses 300%
+overscan. The footer reflection scrim preserves text AA, including utility links.
+Both final footer contact targets remain at least48px tall. Other routes keep
+their exact shared navigation/footer contracts.
 
 The copy sells the offer in the reader's terms (fewer manual steps, faster
 decisions, lower running costs, people in control) with no figure the owner
@@ -208,24 +227,14 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   assembles in 2.3 seconds, responds to pointer tilt/nearby fragmentation and drag.
   Use original dependency-free WebGL with a corresponding SVG fallback.
 - The real H1 remains Product VP, visible at the lower left in the starting pose. Works and the native scroll affordance occupy the lower edge. The user-selected 03/04 direction adds a 210svh native track: the same object turns and morphs to a matte forest/olive triangular folded ribbon on the right, matching the original 03 silhouette: broad sloped left plane, visible olive inner fold and a slimmer outward-leaning right leg. Avoid the earlier thick horizontal lintel and parallel blocky towers. The large live Product VP display, original name/dek, proof and employers resolve on the left; the semantic H1 remains unique. Short windows, no-JS, reduced motion and enlarged text use the final unpinned composition. That composition still carries the live object: phones, tablets and short desktop windows keep the assembled refractive chevron in the right-hand drawing slot the flat gate held, turned by their own native scroll. The flat gate drawing is the fallback, not the compact design.
-- During the home opening and Selected work, NB and destinations form a quiet stable lilac top bar. After that chapter, desktop resumes the distributed utility header: NB left, central wordmark, real page-progress
-  counter and existing destinations. On desktop it travels down the viewport with native
-  page progress and the wordmark expands at the footer. Keyboard focus and the
-  mobile menu return navigation to a stable top position. Reading and product
-  evidence across the main content have a 12px clearance: chrome chooses a
-  free slot above/below neighbouring blocks, or
-  docks at the top on an opaque navy field when enlarged text fills the view.
-  Large changes between reading slots relocate invisibly and settle in 180ms
-  with opacity only; never translate the menu across the paragraph.
-  The distributed header's slots (2026-09-16 audit): LinkedIn 14%, the wordmark
-  centred, Works 60%, AI integration 67%, the counter 80%, About 86.5%, Email at
-  the end; case pages lay their links in a row at the end and keep their counter
-  at 62%. Every link owns one slot and they clear each other from 992px up. The
-  Works and AI integration items had shared one slot since the menu item was
-  added, and the case counter had crossed About below 1100px; do not add a
-  destination to this header without giving it a measured slot.
-  The terminal wordmark has its own landing after the unchanged footer links;
-  a screen-space offset keeps the scaled letters centred inside that landing.
+- Home navigation stays in one opaque lilac top bar across the entire page,
+  including services, experience and the footer (owner correction, 2026-09-15).
+  NB stays left; Works, About, AI integration, LinkedIn and Email stay in normal
+  layout flow on the right. Do not restore chapter-based relocation, distributed
+  absolute link slots, a progress counter, reading-slot fades or a growing
+  terminal wordmark on Home. The hero still follows its approved morph.
+  Compact keeps the shared disclosure; enlarged desktop text can wrap safely.
+  Works and case pages use the separate stable navy reference bar below.
 - The reading pose starts to resolve at .6 of the smoothed track progress
   (2026-09-16), while the object is still folding, so the track never shows the
   object alone on an empty field for long; the lettering leaves by .33.
@@ -297,6 +306,16 @@ The home, work index, experience and footer share lilac `#D6D4ED`, navy
 its shipped colors. The 2026-09-14 user request supersedes the earlier mesh
 footer, video-backed experience and E′ Weighted index grid.
 
+**Link icons (2026-09-15 correction):** Never use northeast-arrow glyphs or
+platform emoji in navigation, project or contact controls. When an existing
+action needs a mark, use a small monochrome inline SVG: a fine list for Works,
+an envelope for native email, and the existing LinkedIn path for that link.
+`.link-icon` inherits the label ink, has no tile or decorative container, and
+stays `aria-hidden="true" focusable="false"`; visible labels and native
+destinations remain unchanged. Do not replace a rejected arrow with another
+northeast arrow. `check-design.mjs` checks every served HTML page and source
+CSS/JS for literal and encoded variants.
+
 **Editorial footer (2026-09-14)**
 
 One site-wide `.footer-section.editorial-footer` on all thirteen content pages.
@@ -305,7 +324,10 @@ Its lilac field continues the original 03/04 storyboard. A large live
 column; the original folded gate and four existing Work links form the right.
 The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
 
-- Reuse the original NB mark. Keep the real Person metadata and OG portrait.
+- Reuse the original NB mark and factual Person identity. Social previews use
+  the approved forest/olive artwork crop. Mark decorative artwork on the page
+  ImageObject, never as a Person portrait; omit Person.image until a real
+  profile photograph is supplied.
 - Preserve the native `button.footer-email`, its “Discuss your project” label,
   assign-only email handler and destination. Match the hero action with a navy
   capsule and lilac text, at least 48px tall, wrapping safely at enlarged text.
@@ -400,21 +422,32 @@ links, heading hierarchy and visible keyboard focus.
 **Header:**
 
 - Home: NB home link on the left; Works, About, AI integration, LinkedIn and
-  Email on the right, on the pale mast. Every primary navigation carries the
+  Email on the right, in a stable opaque lilac top bar for the full homepage.
+  Desktop links use normal layout flow and never share absolute slots.
+  Every primary navigation carries the
   AI integration item (2026-09-15, owner request); the Hungarian pages link
   its Hungarian pair as `AI-integráció`. Native links and 44px minimum targets; compact keeps the
   accessible disclosure. Email remains a native assign-only button.
-- `/works` retains its sticky bar. Desktop cases share the travelling wordmark header,
-  keeping `Works / {Project}` on desktop. Compact hides that duplicate
-  breadcrumb and includes a native Works link in the disclosure alongside
-  LinkedIn. Shared entrances must never hide navigation indefinitely.
+- `/works` and all seven cases use one stable navy (`#0A1628`) top bar with
+  lilac (`#D6D4ED`) controls (owner screenshot correction, 2026-09-16).
+  Keep NB left, `Works / {Project}` on desktop cases, the centered
+  `NORBERT.BARNA` wordmark, real reading progress and native destinations.
+  Use equal outer grid tracks and in-flow groups, never colliding absolute
+  slots. Enlarged text may wrap; decorative progress/branding yields space
+  before essential links. No vertical travel, reading-slot fades, footer
+  relocation, growing terminal wordmark or extra landing space. The wordmark
+  is present in static HTML; the progress counter appears only after a real
+  calculation, and stays hidden without JavaScript. Compact hides the
+  duplicate breadcrumb and uses the existing lilac disclosure with a native
+  Works link. The dark work bar stays at the top throughout the document.
+  Shared entrances must never hide navigation indefinitely.
 - At widths up to 991px every page opens the same disclosure (owner request,
   2026-09-15): the About page's panel is the pattern. It drops under the bar
   at full width on the page's own field (lilac everywhere, navy on About),
   with left-aligned 17px rows of 48px, no card, radius or shadow, and the
   current page underlined in olive. `compact-navigation.css` owns it;
   `story.css` only recolours it for About.
-- At widths up to 991px every page uses a stable lilac/navy top bar. No travel,
+- At widths up to 991px every page uses a stable top bar in its page palette. No travel,
   reading-slot fade, footer relocation or expanded terminal wordmark. Preserve
   native scrolling, menu/focus behavior and browser-height changes.
 - No Motion control, sound requirement, Contact page, new form or invented
@@ -506,7 +539,7 @@ No lead paragraph and no per-row descriptions: the owner asked for the rows only
 
 **Case opening (one centered lilac template)**
 
-1. Desktop travelling site bar; stable compact bar with the Works disclosure
+1. Stable navy site bar with centered desktop identity and compact Works disclosure
 2. Opening grid: category, oversized responsive Funnel H1, centered complete
    `.case-hero-media`, then the original regular dek. Images keep
    `object-fit: contain`. Four alternating vertical masks reveal the actual
@@ -539,7 +572,9 @@ the 16:9 frame (`inset: 0; z-index: 0`). Webflow background-video CSS
 
 ## Copy
 
-Use the shipped case copy. Do not rewrite claims.
+Use the shipped case copy. Do not rewrite claims. The explicitly requested
+AI service expansion may explain the proposed collaboration workflow and add
+contextual service links to cases, without changing their historic claims.
 
 **Search and answer engines (2026-09-15):** every page has a unique title with
 its primary phrase first (`/works` and cases keep starting with their H1, as
@@ -622,7 +657,7 @@ English-wash the screenshot.
 | NavyFlood | Dark artwork intrudes into navy reading text | Keep copy on lilac and reserve separate space for the sculpture |
 | GrainWash | Translucent or overly light text falls below WCAG AA on the live grain | Solid navy ink on lilac, and lilac ink on the dark arrival; sample worst relevant pixels behind glyphs, including reflow |
 | JobTitleDrift | Title, H1, meta, or JSON-LD name still say Design Lead | `jobTitle`, H1, and ProfilePage `name` are Product VP. Person `name` is `Norbert Barna` |
-| PersonImageMissing | Home Person JSON-LD omits `image` | Existing OG portrait URL on the Person entity |
+| PreviewIdentityMixup | A decorative social image is presented as a Person portrait | Page `image` and `primaryImageOfPage` use the approved crop; omit Person `image` until a real portrait is supplied |
 | HeadlineDrift | Case Article/CreativeWork `headline` disagrees with `<title>` | `headline` matches `<title>`, or omit it |
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
@@ -643,7 +678,8 @@ English-wash the screenshot.
 | BlogFooterCTA | Third-party or multi-field contact form | One native project button using the existing assign-only email handler |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
-| MeshParallaxCircus | Retired mesh motion or moving footer text returns | Footer content stays still; compact navigation stays at the top |
+| MeshParallaxCircus | Retired mesh motion or moving footer text returns | Footer content stays still; navigation stays at the top |
+| TravellingWorkBar | Case controls jump between reading slots, fade or grow at the footer | Preserve the reference navy bar at the top, with stable destinations and real progress only |
 | BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
 | DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
 | TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Selected work`; case titles start `{H1} —` |
@@ -671,7 +707,7 @@ markup that is being retired: check the page before reusing it.
 `.nav-wrap` `.nav-menu` `.nav-menu-area` `.nav-link` `.nav-logo-wrap`
 `.nav-cta` `.nav-breadcrumb` `.menu-button` `#primary-navigation`
 `.home-nav-monogram` `.home-nav-label` `.home-nav-wordmark`
-`.home-nav-progress`
+`.home-nav-progress` `.work-nav-start` `.work-nav-end`
 
 **Editorial footer:** `.footer-section` `.editorial-footer`
 `.editorial-footer-title` `.editorial-footer-art` `.editorial-linkedin-label`
@@ -710,17 +746,18 @@ markup that is being retired: check the page before reusing it.
 **AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
 `.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
 `.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
-`.ai-hero-art` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-fallback` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-triad` `.ai-shape` `.ai-shape-copy` `.ai-shape-dek`
-`.ai-actions` `.ai-cta-pill` `.ai-link-plain` `.ai-shape-art`
-`.ai-shape-label` `.ai-steps-rule` `.ai-pieces` `.ai-pieces-track`
-`.ai-pieces-stage` `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider`
-`.ai-pieces-intro` `.ai-pieces-label` `.ai-ribbon` `.ai-ribbon-strip` `.ai-ribbon-label` `.ai-pieces-steps`
-`.ai-step-no` `.ai-step-inline` `.ai-pieces-work` `.ai-work-list`
-`.ai-pieces-work-label` `.ai-better` `.ai-better-dek` `.ai-better-note`
-`.ai-better-bar` `.ai-better-band` `.ai-start` `.ai-start-art`
-`.ai-start-art-label` `.ai-start-body` `.ai-start-steps` `.ai-start-bring`
-`.ai-who` `.ai-who-text` `.ai-faq` `.ai-faq-list`
-`.ai-related` `.ai-related-list` `.ai-start-lang` `.ai-eyebrow-rule-after`
+`.ai-hero-art` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-fallback` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-hero-explore` `.ai-shape` `.ai-shape-copy`
+`.ai-shape-dek` `.ai-link-plain` `.ai-shape-art` `.ai-bar` `.ai-bar-forest`
+`.ai-bar-glass` `.ai-bar-olive` `.ai-pieces` `.ai-pieces-track` `.ai-pieces-stage`
+`.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider` `.ai-pieces-intro`
+`.ai-journey` `.ai-ribbon` `.ai-ribbon-strip` `.ai-ribbon-label`
+`.ai-pieces-steps` `.ai-step-no` `.ai-start` `.ai-start-art` `.ai-start-body`
+`.ai-start-bring` `.ai-who` `.ai-who-text` `.ai-faq` `.ai-faq-head`
+`.ai-faq-list` `.ai-related` `.ai-related-head` `.ai-related-list`
+`.ai-start-lang` `.ai-footer` `.ai-footer-art` `.ai-footer-content`
+`.ai-footer-top` `.ai-footer-invitation` `.ai-footer-note` `.ai-footer-bottom`
+`.ai-workflow` `.ai-workflow-intro` `.ai-workflow-steps` `.ai-workflow-output`
+`.ai-related-context` `.ai-related-context-after`
 
 **About (`/about` only):** `.story-page` `.story-opening`
 `.story-opening-stage` `.story-opening-copy` `.story-opening-dek`
@@ -781,13 +818,14 @@ only to the sitemap.
 
 | File | Owns | Loaded by |
 |---|---|---|
+| `fonts.css` | Self-hosted Inter and Funnel Display; Latin and Latin-ext faces | every page, including 404 |
 | `norbertbarna.webflow.*.css` | Inherited Webflow base | every page |
 | `responsive.css` | Site tokens, chrome lock, type scale, reflow, footer base | every page |
 | `arrival.css` | First-session name assembly and curtain | `/`, cases |
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
 | `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
 | `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
-| `compact-navigation.css` | Stable bar up to 991px and the desktop utility journey | 14 content pages |
+| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure | 14 content pages |
 | `case-opening.css` | Lilac case stage and the four-slice media reveal | cases |
 | `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
@@ -799,11 +837,30 @@ a scoped companion; it does not get appended to `responsive.css`.
 
 ### Scripts and motion ownership
 
-One owner per animated target. Three loading positions, not one: `webfont.js`
-is a blocking head script, the analytics trio (`analytics-config.js`,
-`consent.js`, `analytics.js`) is `defer`, and every other script is an ordinary
-end-of-body tag that runs in written order. Moving one across those positions
-changes its dependencies, so keep a script where it is.
+One owner per animated target. Fonts are native, self-hosted head CSS with
+critical subset preloads; no `webfont.js`, Google stylesheet, or JavaScript is
+needed to load them. The analytics trio (`analytics-config.js`, `consent.js`,
+`analytics.js`) is `defer`, and every other script is an ordinary end-of-body tag
+that runs in written order. Moving a script across those positions changes its
+dependencies, so keep a script where it is.
+
+`assets/css/fonts.css` and its SHA-256 release copy preserve the exact unmodified
+Google Fonts Funnel Display v3 and Inter v20 WOFF2 binaries used before this
+change. Keep the original discrete face weights (Funnel 300–800, Inter 200–900,
+in 100 steps), despite the variable font binaries: a continuous weight range
+would change existing authored 650/750 lettering that currently resolves to
+700/800. Do not substitute a different font version or normalize typography as a
+performance shortcut. Latin-ext includes Hungarian ő/ű. Each face uses
+`font-display: swap`; content remains readable during a slow font request.
+
+Preload Inter Latin everywhere for body/navigation/arrival. Also preload Funnel
+Latin where it renders the first heading (Works, About, cases, privacy and 404),
+and Inter Latin-ext on the Hungarian pages for visible Hungarian prose. Other
+subsets load on demand. CSS and WOFF2 filenames contain their real SHA-256 prefix
+and receive immutable caching; their source/provenance and OFL licenses live in
+`assets/fonts/`. Keep `document.fonts.ready` and the explicit Inter 700 arrival
+readiness load intact. No extra font family, timing shortcut, hiding class or
+JavaScript dependency is part of this contract.
 
 | File | Owns | Content-hashed |
 |---|---|---|
@@ -815,10 +872,10 @@ changes its dependencies, so keep a script where it is.
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
-| `immersive-navigation.js` | Compact bar and the desktop travelling header | yes |
+| `immersive-navigation.js` | Compact state, real Works/case progress and Home consent clearance; no navigation travel | yes |
 | `case-opening.js` | Case title and media assembly, perspective settle | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
-| `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: the motion and mode verdicts, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) with the bar posture | yes |
+| `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: the motion and mode verdicts, the bar tone, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) | yes |
 | `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field | yes |
 | `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
 
@@ -826,7 +883,7 @@ Load order is a contract, not a preference:
 
 - `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
 - `media.js` before any GSAP owner, so video never depends on animation.
-- On the AI service pages: `animations.js` → `ai-motion.js`, the last script.
+- On the AI service pages: `animations.js` → `hero-scene.js` → `ai-motion.js`, the last script.
 - On `/`: `hero-scene.js` → `home-composition.js` → `arrival.js` →
   `immersive-navigation.js` → `animations.js`.
 - `animations.js` waits for the Webflow IX2 takeover and for fonts before it
@@ -880,7 +937,7 @@ Motion and stage scope:
 | `--case-stage-gutter` | `clamp(20px, 4vw, 72px)` | `case-opening.css` |
 | `--editorial-gutter` | `clamp(24px, 4.8vw, 80px)` | `editorial-sections.css` |
 | `--story-gutter` | `clamp(24px, 5.2vw, 88px)` | `story.css` |
-| `--immersive-link-ink` | `#0A1628` | `compact-navigation.css` |
+| `--immersive-link-ink` | navy on lilac; lilac on navy for work bars | `compact-navigation.css` |
 
 ### Breakpoints and media features
 
@@ -889,7 +946,7 @@ Motion and stage scope:
 | `max-width: 479px` | Smallest phone tuning |
 | `max-width: 599px` / `min-width: 600px` | Compact stack turning into two-up |
 | `max-width: 767px` | Inherited Webflow tier. Do not author new rules here. One existing exception: the arrival wordmark block in `arrival.css` |
-| `max-width: 991px` / `min-width: 992px` | **The** split: stable compact bar against the desktop utility journey |
+| `max-width: 991px` / `min-width: 992px` | **The** split: compact disclosure against the expanded stationary desktop bar |
 | `min-width: 1200px`, `min-width: 1800px` | Wide tuning only |
 | `(hover: hover) and (pointer: fine)` | Desktop pointer motion may run |
 | `(hover: none), (pointer: coarse)` | Restrained decorative depth only; a first tap always follows the link |
@@ -927,7 +984,7 @@ Playwright specs, grouped by what they defend:
 
 - **Arrival and hero:** `arrival-fidelity`, `arrival-pointer`, `hero-motion`,
   `hero-reference`, `home-composition`, `home-first-paint`.
-- **Chrome:** `compact-navigation`, `contact-copy`, `case-first-paint`.
+- **Chrome:** `compact-navigation`, `home-sticky-navigation`, `work-sticky-navigation`, `contact-copy`, `case-first-paint`.
 - **Content and access:** `portfolio` (the large accessibility and AA suite),
   `editorial-media`, `story-motion`.
 - **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,
@@ -1037,6 +1094,12 @@ waits for real fonts/critical images/scene readiness, then shows Enter. The
 counter reports completed real prerequisites; Enter additionally waits for
 the minimum name-assembly duration. It does not simulate bytes downloaded. Enter triggers a one-second upward curtain.
 Internal navigation skips it and cases retain their own bounded opening.
+The shared navigation script records a visit on every route before optional
+motion starts, including Works, About and both AI pages. It exposes whether
+the current document is the first arrival before setting the existing
+session flag for the next document. Same-origin referrers also skip the brand
+curtain when a link opens without shared storage. No page URL or analytics
+event is stored; unavailable session storage leaves the introduction skipped.
 Reduced motion, unavailable prerequisites, no JavaScript,
 restored scroll/hash navigation and user interaction must have prompt readable
 content. Bounded fail-open cleanup prevents an overlay trapping the page.

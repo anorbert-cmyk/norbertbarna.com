@@ -29,7 +29,7 @@ const HOME_CONTACT = {
   title: "Opens your email app to discuss your project",
 };
 const contactButtons = (html) => [...html.matchAll(/(<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/button>/g)];
-function checkProjectContact(html, scope, language = "en") {
+function checkProjectContact(html, scope, language = "en", allowAiArrow = false) {
   const buttons = contactButtons(html);
   const copy = PROJECT_CONTACT[language];
   if (buttons.length !== 1) {
@@ -40,7 +40,10 @@ function checkProjectContact(html, scope, language = "en") {
   if (!/\btype="button"/.test(tag) || /\bhref=/.test(tag)) {
     fail(`${scope}: project contact must remain a type=button with no href`);
   }
-  if (text.trim() !== copy.label || !tag.includes(`title="${copy.title}"`)) {
+  // The chosen AI action alone includes a decorative, accessibility-hidden
+  // arrow. All other routes retain the exact original button markup contract.
+  const label = allowAiArrow ? text.replace(/<span aria-hidden="true">→<\/span>$/, "").trim() : text.trim();
+  if (label !== copy.label || !tag.includes(`title="${copy.title}"`)) {
     fail(`${scope}: project contact must say “${copy.label}” and explain that it opens the email app`);
   }
   if (language === "hu" && !/\blang="hu"/.test(tag)) {
@@ -58,6 +61,35 @@ const projectCss = readFileSync(join(ROOT, "assets/css/project-index.css"), "utf
 const design = readFileSync(join(ROOT, "design.md"), "utf8");
 const raiffeisen = readFileSync(join(ROOT, "work/raiffeisen.html"), "utf8");
 const instructure = readFileSync(join(ROOT, "work/instructure.html"), "utf8");
+
+// iOS paints the northeast glyph as a blue emoji tile. Check the complete
+// served page inventory plus editable CSS/JS, not retired content-hash copies.
+{
+  const pages = ["", "work", "hu"].flatMap((directory) =>
+    readdirSync(join(ROOT, directory))
+      .filter((name) => name.endsWith(".html"))
+      .map((name) => join(directory, name))
+  );
+  const sources = ["assets/css", "assets/js"].flatMap((directory) =>
+    readdirSync(join(ROOT, directory))
+      .filter((name) => /\.(?:css|js)$/.test(name) && !/\.[a-f0-9]{12}\.(?:css|js)$/.test(name))
+      .map((name) => join(directory, name))
+  );
+  const northeastGlyph = /[\u2197\u279a\u2b08]|&#(?:0*8599|x0*2197);?|&(?:nearr|nearrow|UpperRightArrow);|\\(?:u\{0*2197\}|u2197|0*2197)(?![a-f0-9])/i;
+  for (const file of [...pages, ...sources]) {
+    const source = readFileSync(join(ROOT, file), "utf8");
+    if (northeastGlyph.test(source)) {
+      fail(`${file}: replace northeast-arrow emoji with a destination-specific monochrome SVG or the text label alone`);
+    }
+    if (!file.endsWith(".html")) continue;
+    for (const [icon, tag] of source.matchAll(/(<svg\b[^>]*class="[^"]*\blink-icon\b[^"]*"[^>]*>)[\s\S]*?<\/svg>/g)) {
+      if (!/\baria-hidden="true"/.test(tag) || !/\bfocusable="false"/.test(tag) ||
+          !/\b(?:fill|stroke)="currentColor"/.test(icon)) {
+        fail(`${file}: link icons must inherit the label ink and remain decorative, without a tab stop`);
+      }
+    }
+  }
+}
 
 const titles = (html) =>
   [...html.matchAll(/<a[^>]*class="work-title"[^>]*href="\/work\/([^"]+)"/g)].map((m) => m[1]);
@@ -208,8 +240,8 @@ if (homeLd?.["@type"] !== "ProfilePage" || homeLd?.name !== "Norbert Barna — P
 if (homeLd?.mainEntity?.["@type"] !== "Person" || homeLd?.mainEntity?.name !== "Norbert Barna") {
   fail("JobTitleDrift: Person name must be Norbert Barna, not a job title");
 }
-if (homeLd?.mainEntity?.image !== "https://www.barnanorbert.com/assets/images/og/norbert-barna.jpg") {
-  fail("PersonImageMissing: home Person image must be the existing OG portrait");
+if (homeLd?.mainEntity?.image || homeLd?.primaryImageOfPage?.["@type"] !== "ImageObject") {
+  fail("PreviewIdentityMixup: decorative artwork belongs to the page ImageObject, not the Person profile image");
 }
 const homeServices = home.match(/<section\b[^>]*class="home-service-section\b[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
 if (!homeServices || /footer-email|hero-work-link|footer-cta|linkedin\.com/.test(homeServices)) {
@@ -405,12 +437,12 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
   fail("HiddenMontage: Instructure video must fill the 16:9 frame (inset 0, z-index 0)");
 }
 
-// Existing editorial routes share this footer. The selected About story has
-// its own navy closing composition, checked separately below.
+// Existing editorial routes share this footer. About and the two AI service
+// pages have explicitly selected navy closings, checked separately below.
 // Shared editorial footer: lilac field, geometric art, native contacts, Work only.
 // No Contact column, no form, no sitemap, no Ironclad dunes, no
 // back-to-top on the copyright row. Mail href is assembled on click.
-const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`), ...UTILITY_PAGES];
+const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`), ...PRIVACY_PAGES];
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
@@ -568,28 +600,52 @@ for (const page of footerPages) {
 for (const page of SERVICE_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
-  checkProjectContact(main, `${page}: main`, page.startsWith("hu/") ? "hu" : "en");
+  checkProjectContact(main, `${page}: main`, page.startsWith("hu/") ? "hu" : "en", true);
 }
-// The service pages are the owner's two approved boards, in this order, and
-// the Hungarian page is the same board: the section skeleton must match, the
-// reading text must stay outside the artwork, and the finished board must be
-// the stylesheet's resting state (every owner property falls back to it).
+// The approved AI refinement merges the two boards into one service story.
+// Cases stand outside the camera, FAQ is its own reading section and the
+// selected dark Passage footer is the only closing scene. Other routes retain
+// their existing exact editorial-footer contract above.
 {
   const skeleton = (html) => {
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
     return [...main.matchAll(/<(header|section)\b[^>]*\bid="([^"]+)"/g)].map(([, tag, id]) => `${tag}#${id}`).join(" ");
   };
-  const expected = "header#top section#shaped section#pieces section#work-better section#start";
+  const expected = "header#top section#shaped section#pieces section#workflow section#selected-work section#start section#questions";
   const pages = SERVICE_PAGES.map((page) => [page, readFileSync(join(ROOT, page), "utf8")]);
   for (const [page, html] of pages) {
-    if (skeleton(html) !== expected) fail(`${page}: the five board sections must stand in order (${skeleton(html)})`);
+    if (skeleton(html) !== expected) fail(`${page}: the seven service chapters must stand in order (${skeleton(html)})`);
     for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-journey", "data-ai-ribbon", "data-ai-work"]) {
       if ((html.match(new RegExp(`\\b${hook}(?=[\\s>=])`, "g")) || []).length !== 1) fail(`${page}: exactly one ${hook} hook`);
     }
     if ((html.match(/\bdata-ai-step="[123]"/g) || []).length !== 3) fail(`${page}: the ribbon journey has three steps`);
-    for (const still of ["passage-panel", "bars", "ribbon", "band", "workflow-passage"]) {
-      if (!html.includes(`/assets/images/ai/${still}.webp`)) fail(`${page}: the ${still} board crop is missing`);
+    const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
+    const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)?.[0] || "";
+    const language = page.startsWith("hu/") ? "hu" : "en";
+    const shapeArt = main.match(/<div\b[^>]*class="ai-shape-art"[^>]*>([\s\S]*?)<\/div>/)?.[1] || "";
+    const shapeImages = [...shapeArt.matchAll(/<img\b[^>]*>/g)].map(([tag]) => tag);
+    if (shapeImages.length !== 1 || !shapeImages[0].includes('src="/assets/images/ai/bars.webp"') || /bars-(?:forest|glass|olive)|\bai-bar-/.test(shapeArt)) fail(`${page}: preserve the original approved bars picture rather than the rejected flat reconstruction`);
+    const ribbonImage = main.match(/<img\b[^>]*src="\/assets\/images\/ai\/ribbon-studio\.webp"[^>]*>/)?.[0] || "";
+    if (!ribbonImage || !/width="2172"/.test(ribbonImage) || !/height="724"/.test(ribbonImage) || main.includes('/assets/images/ai/ribbon-refined.webp')) fail(`${page}: the ribbon must use the faithful 2172×724 studio artwork with a sized decorative source`);
+    if (!/class="ai-pieces-count"[^>]*><span>03<\/span>/.test(main)) fail(`${page}: the no-motion counter must show the finished third step`);
+    if (/ai-step-inline|ai-start-steps|ai-pieces-work|ai-work-list|data-ai-better/.test(main)) fail(`${page}: duplicate numbers, service lists and premature closing scene must not return`);
+    const pieces = main.match(/<section\b[^>]*\bid="pieces"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
+    if (/<a\b|<button\b|data-ai-work/.test(pieces)) fail(`${page}: the pinned camera must not contain hidden or clipped focus targets`);
+    for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
+      if ((main.match(new RegExp(`href="/work/${slug}"`, "g")) || []).length !== 1) fail(`${page}: ${slug} must appear in one semantic reference row`);
+      if (!main.includes(`/assets/images/geometry/${slug}.960.webp`)) fail(`${page}: ${slug} needs the existing landscape geometric artwork`);
     }
+    const faq = main.match(/<section\b[^>]*\bid="questions"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
+    if ((faq.match(/<details\b/g) || []).length !== 5 || (faq.match(/<summary><h3>/g) || []).length !== 5 || (faq.match(/<details open>/g) || []).length !== 1) fail(`${page}: five native FAQ disclosures must retain semantic question headings and one initially open answer`);
+    if (!/<footer\b[^>]*\bid="work-better"[^>]*class="footer-section ai-footer"/.test(footer) || /id="work-better"/.test(main)) fail(`${page}: the chosen Passage close must be the actual footer after main`);
+    if (!/<h2\b[^>]*id="footer-title"[^>]*>Let’s build<br>what’s next\.<\/h2>/.test(footer) || !/class="ai-footer-art" aria-hidden="true"/.test(footer) || !footer.includes('/assets/images/ai/closing-passage.webp')) fail(`${page}: the dark close needs its chosen headline and separate architectural artwork`);
+    checkProjectContact(footer, `${page}: AI footer`, language, true);
+    if (!footer.includes('68f9e9de8ed08e31e52c4188_NB.svg') || !footer.includes('Product VP') || !footer.includes(language === "hu" ? '© 2026 Barna Norbert' : '© 2026 Norbert Barna')) fail(`${page}: the AI close must retain the existing identity, role and copyright`);
+    const linkedin = [...footer.matchAll(/<a\b[^>]*class="[^\"]*\bfooter-contact-link\b[^\"]*"[^>]*>/g)];
+    if (linkedin.length !== 1 || !linkedin[0][0].includes('href="https://www.linkedin.com/in/barna-norbert/"') || !linkedin[0][0].includes('rel="noopener noreferrer"')) fail(`${page}: the AI footer must retain the real, protected LinkedIn contact`);
+    if (!footer.includes('href="/privacy"') || !footer.includes('href="/hu/adatvedelem"') || (footer.match(/data-consent-settings/g) || []).length !== 1 || !/<button\b[^>]*data-consent-settings[^>]*\shidden(?:\s|>)/.test(footer)) fail(`${page}: the AI footer must preserve privacy links and the initially hidden consent-settings hook`);
+    if (language === "hu" && (!/<h2\b[^>]*id="footer-title"[^>]*lang="en"/.test(footer) || !footer.includes('Analitikai beállítások'))) fail(`${page}: the chosen English headline must declare its language and the footer controls must be Hungarian`);
+    if (/footer-col|editorial-footer|footer-mesh|footer-dunes|<form\b|href="\/work\//.test(footer) || /mailto:|anorbert@pm\.me|href="\/contact"|data-motion-toggle/.test(html)) fail(`${page}: the scoped AI footer must not restore duplicated work columns, forms, raw email or motion controls`);
     // Board artwork is decorative: sized, empty alt, inside an aria-hidden node.
     for (const [tag] of html.matchAll(/<img\b[^>]*assets\/images\/ai\/[^>]*>/g)) {
       if (!/\balt=""/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag)) fail(`${page}: board artwork must be sized with empty alt`);

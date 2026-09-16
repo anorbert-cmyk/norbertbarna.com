@@ -11,13 +11,8 @@
   var journey = pieces && pieces.querySelector("[data-ai-journey]");
   var ribbon = pieces && pieces.querySelector("[data-ai-ribbon]");
   var count = pieces && pieces.querySelector(".ai-pieces-count span");
-  // The opening's glass: hero-scene.js renders it; this owner only tells it how
-  // far the opening has scrolled, and which bar posture that needs.
-  var heroTrack = root.querySelector("[data-ai-hero-track]");
   var hero = root.querySelector("[data-ai-hero]");
-  var art = root.querySelector("[data-ai-hero-art]");
-  var nav = document.querySelector(".navbar");
-  var currentGlass = "";
+  var head = pieces && pieces.querySelector(".ai-pieces-head");
   var countFirst = count ? count.textContent : "", countShown = countFirst;
   var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
   var listeners = new AbortController();
@@ -25,11 +20,10 @@
   var frame = 0, destroyed = false, failed = false, pageHidden = false, near = true, painted = false;
   var currentMotion = false, currentMode = "flow";
   var scrollDriven = Boolean(window.CSS && CSS.supports && CSS.supports("animation-timeline: view()"));
-  var original = { motion: root.getAttribute("data-ai-motion"), mode: root.getAttribute("data-ai-mode"), driver: root.getAttribute("data-ai-driver") };
-  var api = window.PortfolioAiMotion = { state: "static", mode: "flow", driver: scrollDriven ? "css" : "none", progress: 0, camera: 0, glass: "pending", fold: 0, refresh: request, destroy: destroy };
+  var original = { motion: root.getAttribute("data-ai-motion"), mode: root.getAttribute("data-ai-mode"), driver: root.getAttribute("data-ai-driver"), active: root.getAttribute("data-ai-active"), nav: document.body.getAttribute("data-ai-nav") };
+  var api = window.PortfolioAiMotion = { state: "static", mode: "flow", driver: scrollDriven ? "css" : "none", progress: 0, camera: 0, refresh: request, destroy: destroy };
 
   function clamp(value) { return Math.max(0, Math.min(1, value)); }
-  function smooth(value) { value = clamp(value); return value * value * (3 - 2 * value); }
   function on(target, name, handler, options) {
     target.addEventListener(name, handler, Object.assign({ signal: listeners.signal }, options || {}));
   }
@@ -38,6 +32,8 @@
       Boolean(window.PortfolioMedia && window.PortfolioMedia.isReduced());
   }
   function showCount(index) {
+    if (index) { if (root.dataset.aiActive !== String(index)) root.dataset.aiActive = String(index); }
+    else root.removeAttribute("data-ai-active");
     if (!count) return;
     var text = index ? "0" + index : countFirst;
     if (text !== countShown) { count.textContent = text; countShown = text; }
@@ -59,7 +55,16 @@
   }
   function paint() {
     var reduced = forcedReduced(), enabled = !reduced && scrollDriven;
-    var cinematic = enabled && innerWidth >= 992 && innerHeight >= 740 && Boolean(stage);
+    // Measure the two natural content rows rather than the pinned container:
+    // text enlargement or spacing must reflow, without a mode/height loop.
+    var fits = false;
+    if (stage && head && journey) {
+      var style = getComputedStyle(stage);
+      var needed = head.offsetHeight + journey.offsetHeight + (parseFloat(style.rowGap) || 0) +
+        (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0);
+      fits = needed <= innerHeight - 8;
+    }
+    var cinematic = enabled && innerWidth >= 992 && innerHeight >= 740 && fits;
     var mode = cinematic ? "cinematic" : "flow";
     if (currentMotion !== enabled || !painted) {
       root.dataset.aiMotion = enabled ? "on" : "off"; root.dataset.aiDriver = api.driver; currentMotion = enabled;
@@ -69,7 +74,10 @@
     var height = Math.max(1, innerHeight);
     var rootBox = root.getBoundingClientRect();
     api.progress = clamp(-rootBox.top / Math.max(1, root.offsetHeight - height));
-    paintGlass(reduced, height);
+    if (hero) {
+      var navTone = hero.getBoundingClientRect().bottom > 64 ? "dark" : "light";
+      if (document.body.dataset.aiNav !== navTone) document.body.dataset.aiNav = navTone;
+    }
     if (!enabled) { showCount(0); api.camera = 0; painted = true; return; }
     // The counter reads the same journey the stylesheet's timelines read: the
     // pinned stage's scroll on a desktop, the ribbon's sticky run on a phone.
@@ -78,7 +86,7 @@
       var p = clamp(-box.top / Math.max(1, pieces.offsetHeight - stage.offsetHeight));
       api.camera = p;
       showCount(p < .36 ? 1 : p < .64 ? 2 : 3);
-    } else if (journey && ribbon && innerWidth < 992) {
+    } else if (journey && ribbon && innerWidth < 992 && innerHeight >= 600) {
       var run = journey.getBoundingClientRect();
       var hold = parseFloat(getComputedStyle(ribbon).top) || 0;
       var q = clamp((hold - run.top) / Math.max(1, run.height - ribbon.offsetHeight));
@@ -86,38 +94,6 @@
       showCount(q < .34 ? 1 : q < .67 ? 2 : 3);
     } else { api.camera = 1; showCount(0); }
     painted = true;
-  }
-  function paintGlass(reduced, height) {
-    var scene = window.PortfolioHeroScene;
-    // The glass needs no scroll timeline, only motion; a renderer that has
-    // given up leaves the drawing. Pinning needs the room the desktop has.
-    var on = !reduced && Boolean(art) && (!scene || scene.status !== "fallback");
-    var pinned = on && Boolean(heroTrack) && Boolean(hero) && innerWidth >= 992 && innerHeight >= 740;
-    var glass = !on ? "off" : pinned ? "pinned" : "slot";
-    if (currentGlass !== glass) { root.dataset.aiGlass = glass; currentGlass = glass; }
-    api.glass = glass;
-    if (!scene || !on) {
-      api.fold = 0;
-      if (nav) delete nav.dataset.aiBar;
-      if (scene && scene.clearCompact) scene.clearCompact();
-      return;
-    }
-    if (pinned) {
-      if (scene.clearCompact) scene.clearCompact();
-      var track = heroTrack.getBoundingClientRect();
-      var raw = clamp(-track.top / Math.max(1, heroTrack.offsetHeight - hero.offsetHeight));
-      api.fold = smooth((raw - .04) / .74);
-      if (scene.setMorphProgress) scene.setMorphProgress(api.fold);
-      // The bar holds while the opening holds; once the opening leaves, the
-      // bar stands at the opening's resting top and leaves with it.
-      var posture = track.bottom >= height - .5 ? "held" : "released";
-      if (nav && nav.dataset.aiBar !== posture) nav.dataset.aiBar = posture;
-    } else {
-      if (nav) delete nav.dataset.aiBar;
-      var slot = art.getBoundingClientRect();
-      api.fold = 0;
-      if (scene.setCompactProgress) scene.setCompactProgress(clamp((height - slot.top) / Math.max(1, height + slot.height)));
-    }
   }
   function destroy() {
     if (destroyed) return;
@@ -129,23 +105,22 @@
     restoreAttribute(root, "data-ai-motion", original.motion);
     restoreAttribute(root, "data-ai-mode", original.mode);
     restoreAttribute(root, "data-ai-driver", original.driver);
-    // The glass is a verdict of its own: without the owner the drawing stands.
-    root.dataset.aiGlass = "off"; api.glass = "off"; api.fold = 0;
-    if (nav) delete nav.dataset.aiBar;
-    if (window.PortfolioHeroScene && window.PortfolioHeroScene.clearCompact) window.PortfolioHeroScene.clearCompact();
+    restoreAttribute(root, "data-ai-active", original.active);
+    restoreAttribute(document.body, "data-ai-nav", original.nav);
     api.state = "destroyed"; api.mode = "flow";
   }
   on(window, "scroll", request, { passive: true });
   on(window, "resize", request, { passive: true });
   on(window, "load", request, { once: true });
   on(window, "portfolio:motionchange", request);
-  on(window, "portfolio:heroready", request);
   on(reducedQuery, "change", request);
   on(window, "pagehide", function () { pageHidden = true; stop(); });
   on(window, "pageshow", function () { pageHidden = false; request(); });
   on(document, "visibilitychange", function () { if (document.hidden) stop(); else request(); });
   if (typeof ResizeObserver === "function") {
     resizeObserver = new ResizeObserver(request); resizeObserver.observe(root);
+    if (head) resizeObserver.observe(head);
+    if (journey) resizeObserver.observe(journey);
   }
   if (typeof IntersectionObserver === "function") {
     intersectionObserver = new IntersectionObserver(function (entries) {
