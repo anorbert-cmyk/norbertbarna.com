@@ -26,7 +26,7 @@
   var currentMotion = false, currentMode = "flow";
   var scrollDriven = Boolean(window.CSS && CSS.supports && CSS.supports("animation-timeline: view()"));
   var original = { motion: root.getAttribute("data-ai-motion"), mode: root.getAttribute("data-ai-mode"), driver: root.getAttribute("data-ai-driver"), active: root.getAttribute("data-ai-active"), nav: document.body.getAttribute("data-ai-nav") };
-  var api = window.PortfolioAiMotion = { state: "static", mode: "flow", driver: scrollDriven ? "css" : "none", progress: 0, camera: 0, glass: "pending", fold: 0, refresh: request, destroy: destroy };
+  var api = window.PortfolioAiMotion = { state: "static", mode: "flow", driver: scrollDriven ? "css" : "none", progress: 0, camera: 0, glass: "pending", turn: 0, refresh: request, destroy: destroy };
 
   function clamp(value) { return Math.max(0, Math.min(1, value)); }
   function smooth(value) { value = clamp(value); return value * value * (3 - 2 * value); }
@@ -105,29 +105,23 @@
   }
   function paintGlass(reduced, height) {
     var scene = window.PortfolioHeroScene;
-    // The glass needs no scroll timeline, only motion; a renderer that has
-    // given up leaves the drawing. Pinning needs the room the desktop has.
-    var on = !reduced && Boolean(art) && (!scene || scene.status !== "fallback");
-    var pinned = on && Boolean(heroTrack) && Boolean(hero) && innerWidth >= 992 && innerHeight >= 740;
+    // The glass stays glass here: it turns with the scroll and never folds into
+    // the flat gate artwork, and reduced motion simply leaves it still. Without
+    // a renderer the picture stands alone. Pinning needs the desktop's room.
+    var on = Boolean(art) && (!scene || scene.status !== "fallback");
+    var pinned = on && !reduced && Boolean(heroTrack) && Boolean(hero) && innerWidth >= 992 && innerHeight >= 740;
     var glass = !on ? "off" : pinned ? "pinned" : "slot";
     if (currentGlass !== glass) { root.dataset.aiGlass = glass; currentGlass = glass; }
     api.glass = glass;
-    if (!scene || !on) {
-      api.fold = 0;
-      if (scene && scene.clearCompact) scene.clearCompact();
-      return;
-    }
+    if (!scene || !on || !scene.setCompactProgress) { api.turn = 0; return; }
     if (pinned) {
-      if (scene.clearCompact) scene.clearCompact();
       var track = heroTrack.getBoundingClientRect();
-      var raw = clamp(-track.top / Math.max(1, heroTrack.offsetHeight - hero.offsetHeight));
-      api.fold = smooth((raw - .04) / .74);
-      if (scene.setMorphProgress) scene.setMorphProgress(api.fold);
+      api.turn = smooth(clamp(-track.top / Math.max(1, heroTrack.offsetHeight - hero.offsetHeight)));
     } else {
       var slot = art.getBoundingClientRect();
-      api.fold = 0;
-      if (scene.setCompactProgress) scene.setCompactProgress(clamp((height - slot.top) / Math.max(1, height + slot.height)));
+      api.turn = clamp((height - slot.top) / Math.max(1, height + slot.height));
     }
+    scene.setCompactProgress(api.turn);
   }
   function destroy() {
     if (destroyed) return;
@@ -141,9 +135,8 @@
     restoreAttribute(root, "data-ai-driver", original.driver);
     restoreAttribute(root, "data-ai-active", original.active);
     restoreAttribute(document.body, "data-ai-nav", original.nav);
-    // The glass is a verdict of its own: without the owner the drawing stands.
-    root.dataset.aiGlass = "off"; api.glass = "off"; api.fold = 0;
-    if (window.PortfolioHeroScene && window.PortfolioHeroScene.clearCompact) window.PortfolioHeroScene.clearCompact();
+    // The glass is a verdict of its own: without the owner the picture stands alone.
+    root.dataset.aiGlass = "off"; api.glass = "off"; api.turn = 0;
     api.state = "destroyed"; api.mode = "flow";
   }
   on(window, "scroll", request, { passive: true });

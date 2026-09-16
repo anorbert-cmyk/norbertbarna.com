@@ -410,10 +410,15 @@
       // The source SVG's default xMidYMid meet keeps its viewBox proportional
       // inside the tall mobile <img>. Match that painted area, not its empty box.
       var imageRatio = Number(artwork.getAttribute("width")) / Number(artwork.getAttribute("height")) || artwork.naturalWidth / artwork.naturalHeight;
-      var paintedWidth = Math.min(lettering.width, lettering.height * imageRatio);
+      // A cover-fitted backdrop (the AI passage) paints the box the other way
+      // round: the image overflows the box and object-position picks the crop.
+      var style = getComputedStyle(artwork), cover = style.objectFit === "cover";
+      var paintedWidth = cover ? Math.max(lettering.width, lettering.height * imageRatio) : Math.min(lettering.width, lettering.height * imageRatio);
       var paintedHeight = paintedWidth / imageRatio;
-      var left = lettering.left + (lettering.width - paintedWidth) / 2;
-      var top = lettering.top + (lettering.height - paintedHeight) / 2;
+      var position = (style.objectPosition || "50% 50%").split(/\s+/).map(function (part) { return parseFloat(part) / 100; });
+      var px = cover && Number.isFinite(position[0]) ? position[0] : .5, py = cover && Number.isFinite(position[1]) ? position[1] : .5;
+      var left = lettering.left + (lettering.width - paintedWidth) * px;
+      var top = lettering.top + (lettering.height - paintedHeight) * py;
       context.drawImage(artwork, (left - box.left) * scaleX, (top - box.top) * scaleY, paintedWidth * scaleX, paintedHeight * scaleY);
     }
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, backdropTexture);
