@@ -25,9 +25,16 @@ const RELEASE_SOURCES = [
   "js/story-motion.js", "css/case-motion.css", "css/responsive.css",
   "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
-  "css/story.css", "js/ai-motion.js", "css/ai-integration.css",
+  "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css",
 ];
-const approvedReleaseSources = new Set(RELEASE_SOURCES);
+// Font binaries are distributed once, under their digest-bearing names. Their
+// manifest replaces the unhashed source/release pair used by authored CSS/JS.
+const FONT_FAMILIES = [
+  "fonts/inter-latin.woff2", "fonts/inter-latin-ext.woff2",
+  "fonts/funnel-display-latin.woff2", "fonts/funnel-display-latin-ext.woff2",
+];
+const FONT_RELEASES = JSON.parse(readFileSync(join(ASSETS, "fonts/manifest.json"), "utf8")).fonts;
+const approvedReleaseSources = new Set([...RELEASE_SOURCES, ...FONT_FAMILIES]);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -58,7 +65,7 @@ function hasVerifiedReleaseDigest(filePath) {
   const [directory, fileName, extra] = assetPath(filePath).split("/");
   if (extra || !directory || !fileName) return false;
 
-  const match = fileName.match(/^(.+)\.([a-f0-9]{12})\.(js|css)$/i);
+  const match = fileName.match(/^(.+)\.([a-f0-9]{12})\.(js|css|woff2)$/i);
   if (!match || !approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
 
   const actual = createHash("sha256").update(readFileSync(filePath)).digest("hex").slice(0, 12);
@@ -366,7 +373,19 @@ try {
     );
   }
 
-  for (const inventedRelease of ["js/hero-scene.000000000000.js", "css/story.000000000000.css"]) {
+  assert(FONT_RELEASES.length === FONT_FAMILIES.length, "font manifest must list the four supported subsets");
+  const seenFonts = new Set();
+  for (const font of FONT_RELEASES) {
+    const sourceFamily = `fonts/${font.file.replace(/\.[a-f0-9]{12}(?=\.woff2$)/i, "")}`;
+    assert(FONT_FAMILIES.includes(sourceFamily) && !seenFonts.has(sourceFamily), `${font.file}: unexpected or duplicate font subset`);
+    seenFonts.add(sourceFamily);
+    const bytes = readFileSync(join(ASSETS, "fonts", font.file));
+    const digest = createHash("sha256").update(bytes).digest("hex");
+    assert(digest === font.sha256 && bytes.length === font.bytes, `${font.file}: manifest must describe actual distributed bytes`);
+    assert(hasVerifiedReleaseDigest(join(ASSETS, "fonts", font.file)), `${font.file}: filename must contain the actual digest`);
+  }
+
+  for (const inventedRelease of ["js/hero-scene.000000000000.js", "css/story.000000000000.css", "fonts/inter-latin.000000000000.woff2"]) {
     const response = await fetch(`${baseUrl}/assets/${inventedRelease}`, { method: "HEAD" });
     const cache = cacheDirectives(response.headers.get("cache-control") || "");
     assert(response.status === 404, `${inventedRelease} unexpectedly exists`);

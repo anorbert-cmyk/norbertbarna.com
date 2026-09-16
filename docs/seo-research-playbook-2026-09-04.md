@@ -1,5 +1,7 @@
 # barnanorbert.com — forrásolt SEO-kutatás és végrehajtási terv
 
+> Történeti pillanatkép (2026-09-04). A jelenlegi terv és a 14 oldalas linkaudit: [SEO/GEO audit, 2026-09-16](seo-strategy-audit-2026-09-16.md). Az akkori publikálási, analitikai és apex-404 állításokat ne kezeld mai státuszként. A pontos hitelesített analitikai és indexelési bizonyíték a git repón kívüli privát auditban marad.
+
 Dátum: 2026-09-04. Vizsgált kód: `90e6840010de3439de7cadbef0df8c17e4ee408e`.
 Kiinduló audit: az angol nyelvű, 9 tartalmi oldalas Product VP portfólió.
 A későbbi, ugyanaznapi ügyfélszerzési pontosítás és két új helyi szolgáltatásoldal

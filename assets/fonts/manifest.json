@@ -1,0 +1,39 @@
+{
+  "retrieved": "2026-09-16",
+  "format": "woff2",
+  "unmodified": true,
+  "fonts": [
+    {
+      "family": "Funnel Display",
+      "subset": "latin-ext",
+      "file": "funnel-display-latin-ext.20bc54b005a2.woff2",
+      "source": "https://fonts.gstatic.com/s/funneldisplay/v3/B50WF7FGv37QNVWgE0ga--4Pbb6TDYs0gnHAA4E.woff2",
+      "sha256": "20bc54b005a2bc3c074c7554090cc7f06495355d1babbcb014d9892d683912f0",
+      "bytes": 9512
+    },
+    {
+      "family": "Funnel Display",
+      "subset": "latin",
+      "file": "funnel-display-latin.96468ae77275.woff2",
+      "source": "https://fonts.gstatic.com/s/funneldisplay/v3/B50WF7FGv37QNVWgE0ga--4Pbb6dDYs0gnHA.woff2",
+      "sha256": "96468ae7727580c804f679aa5d29c75389e605fb2e41ae6a067ad86e5e9a86a9",
+      "bytes": 17712
+    },
+    {
+      "family": "Inter",
+      "subset": "latin-ext",
+      "file": "inter-latin-ext.a28eb6d3ccb5.woff2",
+      "source": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2",
+      "sha256": "a28eb6d3ccb534ae0c94ca999371df024aab60b08c3c8a5720ee9e32fa0faaa2",
+      "bytes": 85272
+    },
+    {
+      "family": "Inter",
+      "subset": "latin",
+      "file": "inter-latin.c940764593d0.woff2",
+      "source": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2",
+      "sha256": "c940764593d0fe5d596be327ca7558855e018039fb78509aa21921fd3644c3e4",
+      "bytes": 48432
+    }
+  ]
+}

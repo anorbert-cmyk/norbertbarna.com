@@ -270,10 +270,13 @@ for (const page of PAGES) {
         if (Object.hasOwn(work, "headline") && work.headline !== title)
           fail(`${page}: Article/CreativeWork headline must match <title>`);
       }
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(article.datePublished || ""))
-        fail(`${page}: Article datePublished must use YYYY-MM-DD`);
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(article.dateModified || ""))
-        fail(`${page}: Article dateModified must use YYYY-MM-DD`);
+      // Modification timestamps have source-commit provenance. Historical
+      // publication times are optional: do not manufacture midnight precision.
+      const isoDateTime = value => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$/.test(value || "") && Number.isFinite(Date.parse(value));
+      if (article.datePublished !== undefined && !isoDateTime(article.datePublished))
+        fail(`${page}: Article datePublished must use an evidenced full DateTime/timezone, or be omitted`);
+      if (!isoDateTime(article.dateModified))
+        fail(`${page}: Article dateModified must retain an evidenced full DateTime/timezone`);
       if (metaContent(html, "property", "article:published_time") !== article.datePublished)
         fail(`${page}: article:published_time must match Article datePublished`);
       if (metaContent(html, "property", "article:modified_time") !== article.dateModified)

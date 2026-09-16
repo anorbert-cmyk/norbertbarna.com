@@ -799,6 +799,7 @@ only to the sitemap.
 
 | File | Owns | Loaded by |
 |---|---|---|
+| `fonts.css` | Self-hosted Inter and Funnel Display; Latin and Latin-ext faces | every page, including 404 |
 | `norbertbarna.webflow.*.css` | Inherited Webflow base | every page |
 | `responsive.css` | Site tokens, chrome lock, type scale, reflow, footer base | every page |
 | `arrival.css` | First-session name assembly and curtain | `/`, cases |
@@ -817,11 +818,30 @@ a scoped companion; it does not get appended to `responsive.css`.
 
 ### Scripts and motion ownership
 
-One owner per animated target. Three loading positions, not one: `webfont.js`
-is a blocking head script, the analytics trio (`analytics-config.js`,
-`consent.js`, `analytics.js`) is `defer`, and every other script is an ordinary
-end-of-body tag that runs in written order. Moving one across those positions
-changes its dependencies, so keep a script where it is.
+One owner per animated target. Fonts are native, self-hosted head CSS with
+critical subset preloads; no `webfont.js`, Google stylesheet, or JavaScript is
+needed to load them. The analytics trio (`analytics-config.js`, `consent.js`,
+`analytics.js`) is `defer`, and every other script is an ordinary end-of-body tag
+that runs in written order. Moving a script across those positions changes its
+dependencies, so keep a script where it is.
+
+`assets/css/fonts.css` and its SHA-256 release copy preserve the exact unmodified
+Google Fonts Funnel Display v3 and Inter v20 WOFF2 binaries used before this
+change. Keep the original discrete face weights (Funnel 300–800, Inter 200–900,
+in 100 steps), despite the variable font binaries: a continuous weight range
+would change existing authored 650/750 lettering that currently resolves to
+700/800. Do not substitute a different font version or normalize typography as a
+performance shortcut. Latin-ext includes Hungarian ő/ű. Each face uses
+`font-display: swap`; content remains readable during a slow font request.
+
+Preload Inter Latin everywhere for body/navigation/arrival. Also preload Funnel
+Latin where it renders the first heading (Works, About, cases, privacy and 404),
+and Inter Latin-ext on the Hungarian pages for visible Hungarian prose. Other
+subsets load on demand. CSS and WOFF2 filenames contain their real SHA-256 prefix
+and receive immutable caching; their source/provenance and OFL licenses live in
+`assets/fonts/`. Keep `document.fonts.ready` and the explicit Inter 700 arrival
+readiness load intact. No extra font family, timing shortcut, hiding class or
+JavaScript dependency is part of this contract.
 
 | File | Owns | Content-hashed |
 |---|---|---|
