@@ -46,13 +46,12 @@ html[lang="hu"] .ai-hero h1 { font-size: clamp(48px, 5.1vw, 88px); }
 .ai-hero-foot { position: absolute; left: var(--ai-gutter); bottom: 28px; z-index: 2; display: flex; align-items: center; gap: 24px; width: 38%; }
 .ai-hero-foot::after { content: ""; flex: 1; height: 1px; background: rgb(214 212 237 / 30%); }
 /* The passage's glass (2026-09-16): the home page's refractive chevron stands in
-   the opening on a second stage of hero-scene.js. The passage is what the glass
-   refracts, painted behind the object and never shown flat; the drawing is the
-   fallback. On a desktop the opening holds under the sticky bar for 80svh of
-   its track while the object turns and folds to the matte gate; on a phone it
-   turns inside its own slot as the slot passes. Before the renderer's verdict
-   the slot stands empty, so no drawing is replaced by the glass in front of the
-   visitor; the drawing returns by itself after three seconds otherwise. */
+   the opening on a second stage of hero-scene.js and stays glass throughout:
+   it never folds into the flat gate artwork here, and there is no flat drawing
+   in reserve (owner: only the glass over the picture). On a desktop the opening
+   holds under the sticky bar for 80svh of its track while the object turns; on
+   a phone it turns inside its own slot as the slot passes. Without a renderer
+   the picture stands alone. */
 .ai-hero-track { position: relative; }
 [data-ai-glass="pinned"] .ai-hero-track { height: calc(180svh - var(--ai-nav-clearance)); }
 [data-ai-glass="pinned"] .ai-hero { position: sticky; top: var(--ai-nav-clearance); height: calc(100svh - var(--ai-nav-clearance)); min-height: 0; }
@@ -65,16 +64,11 @@ html[lang="hu"] .ai-hero h1 { font-size: clamp(48px, 5.1vw, 88px); }
 .ai-hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(10 22 40 / 40%), transparent 68%); }
 [data-ai-motion="on"] .ai-hero-bg img { animation: ai-settle 1.2s cubic-bezier(.2,.7,.2,1) both; }
 @keyframes ai-settle { from { transform: scale(1.05); } to { transform: none; } }
-.ai-hero-art { position: absolute; top: 0; bottom: 0; left: 54%; right: 4%; z-index: 1; pointer-events: none; }
-.ai-hero-art > img, .ai-hero-canvas { position: absolute; }
-.ai-hero-fallback { inset: 0; margin: auto; height: 60%; width: auto; max-width: 84%; object-fit: contain; opacity: 0; }
-.ai-hero-canvas { display: block; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.ai-hero-art { position: absolute; top: 0; bottom: 0; left: 46%; right: 6%; z-index: 1; pointer-events: none; }
+.ai-hero-canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
 [data-ai-glass="pinned"] .ai-hero-art[data-hero-scene="ready"] .ai-hero-canvas,
 [data-ai-glass="slot"] .ai-hero-art[data-hero-scene="ready"] .ai-hero-canvas { opacity: 1; }
-[data-ai-glass="off"] .ai-hero-canvas, html.no-motion .ai-hero-canvas { visibility: hidden; }
-[data-ai-glass="off"] .ai-hero-fallback, .ai-hero-art[data-hero-scene="fallback"] .ai-hero-fallback, html:not(.w-mod-js) .ai-hero-fallback { opacity: 1; }
-html.w-mod-js .ai-hero-art:not([data-hero-scene]) .ai-hero-fallback { animation: ai-drawing-wait .5s ease 3s both; }
-@keyframes ai-drawing-wait { from { opacity: 0; } to { opacity: 1; } }
+[data-ai-glass="off"] .ai-hero-canvas { visibility: hidden; }
 [data-ai-motion="on"] .ai-hero .ai-cta-underline::before { animation: ai-draw .8s .4s ease both; }
 @keyframes ai-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
@@ -213,7 +207,6 @@ html.w-mod-js .ai-hero-art:not([data-hero-scene]) .ai-hero-fallback { animation:
   .ai-hero-bg img { object-position: 82% 50%; }
   .ai-hero-bg::after { background: linear-gradient(180deg, var(--ai-navy) 0%, rgb(10 22 40 / 85%) 18%, transparent 70%); }
   .ai-hero-art { top: auto; left: 0; right: 0; height: 66%; }
-  .ai-hero-fallback { left: 30%; }
   .ai-shape { gap: 12px; grid-template-columns: 1fr; padding-top: 64px; padding-bottom: 48px; }
   .ai-shape h2 { max-width: 17ch; font-size: clamp(36px, 6vw, 58px); }
   .ai-shape-dek { max-width: 45ch; }

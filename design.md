@@ -108,17 +108,18 @@ second stage of `hero-scene.js`. The passage stays the visible full-bleed
 environment behind the copy (`.ai-hero-bg`, owner request the same day: he
 wanted the picture back), and it is also what the glass refracts through
 `data-glass-backdrop`, painted cover-fitted where it actually paints, so what
-shows through the object is what stands around it. On a desktop (992px and 740px tall or more) the opening
+shows through the object is what stands around it. The glass stays glass here
+(owner, the same day: only the glass over the picture, no flat drawing): it
+turns with the scroll through `setCompactProgress` and never folds into the
+flat gate artwork, reduced motion leaves it still, and there is no drawing in
+reserve; without a renderer or JavaScript the picture stands alone. On a desktop (992px and 740px tall or more) the opening
 sits in `.ai-hero-track` and holds under the sticky bar for 80svh while native
-scroll turns and folds the object to the matte gate, exactly as the home track
-does. On a phone the object turns inside its own slot (`data-glass-slot`) as
+scroll turns the object. On a phone the object turns inside its own slot (`data-glass-slot`) as
 the slot passes; the compact contract of the home page applies. `data-ai-glass`
 on `main` is the owner's verdict: `pending` in the HTML, then `pinned`, `slot`
-or `off`. Before the renderer reports, the slot stands empty (the drawing waits
-three seconds by CSS, in case no verdict ever comes); reduced motion, an
-unavailable renderer, no JavaScript and a destroyed owner show the single
-chevron drawing and hide the canvas. The glass does not need scroll timelines,
-only motion.
+or `off`. Before the renderer reports, only the picture shows; an unavailable
+renderer, no JavaScript and a destroyed owner hide the canvas and leave the
+picture. The glass does not need scroll timelines, only motion.
 The mobile timeline window matches the sticky ribbon's rendered height;
 camera progress and counter therefore share the same interval. Below600px
 viewport height the mobile ribbon stays full-width in natural flow, as it
@@ -748,7 +749,7 @@ markup that is being retired: check the page before reusing it.
 **AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
 `.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
 `.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
-`.ai-hero-art` `.ai-hero-bg` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-fallback` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-hero-explore` `.ai-shape` `.ai-shape-copy`
+`.ai-hero-art` `.ai-hero-bg` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-hero-explore` `.ai-shape` `.ai-shape-copy`
 `.ai-shape-dek` `.ai-link-plain` `.ai-shape-art` `.ai-bar` `.ai-bar-forest`
 `.ai-bar-glass` `.ai-bar-olive` `.ai-pieces` `.ai-pieces-track` `.ai-pieces-stage`
 `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider` `.ai-pieces-intro`
@@ -1053,7 +1054,7 @@ corridor stands a still instead. The renderer names its host with
 any page's class names. No further stage without an explicit request for one.
 
 **No drawing before the glass (2026-09-16).** On a scripted page the static
-drawings (`.home-mast-fallback`, `.home-mast-gate-fallback`, `.ai-hero-fallback`)
+drawings (`.home-mast-fallback`, `.home-mast-gate-fallback`)
 stay at opacity 0 until the renderer writes `data-hero-scene` (`ready` shows
 the canvas, `fallback` the drawing); a CSS animation returns the drawing after
 three seconds should no verdict come, and reduced motion, `html.no-motion` and
