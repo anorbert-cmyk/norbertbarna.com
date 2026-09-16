@@ -731,14 +731,49 @@ test("Kineticare adapted stage: separate text stays AA against a synthetic white
 
 async function openStable(page, route) {
   await page.goto(route, { waitUntil: "load" });
-  // Poll the FontFaceSet state; retaining its native promise through CDP can be garbage-collected.
-  await page.waitForFunction(() => !document.fonts || document.fonts.status === "loaded");
-  await page.waitForFunction(() => {
-    if (!document.fonts?.check) return true;
-    return document.fonts.check('700 48px "Funnel Display"')
-      || document.documentElement.classList.contains("wf-active");
-  }, { timeout: 8000 }).catch(() => {});
+  // Native faces load on demand: AI does not use Funnel, while 404 uses its
+  // 300 weight. Load only authored faces used by laid-out text, and surface
+  // missing/failed faces instead of waiting for the removed WebFont classes.
+  const readiness = await page.waitForFunction(async () => {
+    await document.fonts.ready;
+    const requests = new Map();
+    const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let node; (node = textNodes.nextNode());) {
+      if (!node.textContent.trim()) continue;
+      const element = node.parentElement;
+      if (!element?.getClientRects().length) continue;
+      const style = getComputedStyle(element);
+      if (style.visibility !== "visible") continue;
+      const family = style.fontFamily.split(",")[0].trim().replace(/["']/g, "");
+      if (!["Inter", "Funnel Display"].includes(family)) continue;
+      const font = `${style.fontStyle} ${style.fontWeight} 16px "${family}"`;
+      if (!requests.has(font)) requests.set(font, new Set());
+      for (const character of node.textContent) requests.get(font).add(character);
+    }
+    if (!requests.size) return { failures: ["No authored font faces found in the rendered page"] };
+    const entries = [...requests];
+    const results = await Promise.allSettled(entries.map(async ([font, characters]) => {
+      const faces = await document.fonts.load(font, [...characters].join(""));
+      return faces.length > 0 && faces.every((face) => face.status === "loaded");
+    }));
+    return { failures: results.flatMap((result, index) =>
+      result.status === "fulfilled" && result.value ? [] : [entries[index][0]]) };
+  }, undefined, { timeout: 8000 });
+  const { failures } = await readiness.jsonValue();
+  await readiness.dispose();
+  expect(failures, `Native font readiness failed on ${route}`).toEqual([]);
   await page.waitForTimeout(100);
+}
+
+for (const failure of ["font binary", "font stylesheet"]) {
+  test(`native font readiness rejects a failed ${failure}`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const requestPattern = failure === "font binary"
+      ? /\/assets\/fonts\/.*\.woff2$/
+      : /\/assets\/css\/fonts\.[a-f0-9]+\.css$/;
+    await page.route(requestPattern, (route) => route.abort());
+    await expect(openStable(page, "/ai-integration")).rejects.toThrow(/font|NetworkError/i);
+  });
 }
 
 async function expectContactLabelFit(locator) {
