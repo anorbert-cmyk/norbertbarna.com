@@ -2814,11 +2814,17 @@ body.home .navbar .nav-wrap, body.immersive-case .navbar .nav-wrap { position: r
 body.home .navbar .nav-logo-wrap { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 0; }
 .home-nav-monogram { font-family: Inter, sans-serif; font-size: 16px; font-weight: 400; color: #D6D4ED; }
 .home-nav-wordmark { position: absolute; inset: 0; width: max-content; height: 52px; display: flex; align-items: center; margin: auto; font-family: Inter, sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -.065em; line-height: 1; color: #D6D4ED; text-decoration: none; transform-origin: 50% 100%; transform: translateY(var(--nav-brand-offset, 0px)) scale(var(--nav-brand-scale, 1)); }
-.home-nav-progress { position: absolute; left: 74%; display: inline-flex; align-items: center; height: 52px; font-family: Inter, sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
+.home-nav-progress { position: absolute; left: 80%; display: inline-flex; align-items: center; height: 52px; font-family: Inter, sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
+/* Case pages lay their links in a row at the end, so their counter sits between the wordmark and that row. */
+body.immersive-case .home-nav-progress { left: 62%; }
 body.home .navbar .footer-icon { display: none; }
 body.home .navbar .home-nav-label { display: inline; }
 body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { gap: 18px; }
-body.home .navbar .nav-menu-area > .nav-link { position: absolute; left: 64%; }
+/* The distributed utility header: LinkedIn 14%, the wordmark centred, Works 60%,
+   AI integration 67%, the counter 80%, About 86.5% (compact-navigation.css), Email
+   at the end. The slots clear each other from 992px up; each link owns one. */
+body.home .navbar .nav-menu-area > .nav-link { position: absolute; left: 60%; }
+body.home .navbar .nav-menu-area > .nav-link[href="/ai-integration"] { left: 67%; }
 body.home .navbar .nav-cta > .footer-contact-link { position: absolute; left: 14%; }
 body.home .navbar :is(.nav-link, a.footer-contact-link, button.footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, button.footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
 body.home .navbar :is(a,button), body.immersive-case .navbar :is(a,button) { pointer-events: auto; }

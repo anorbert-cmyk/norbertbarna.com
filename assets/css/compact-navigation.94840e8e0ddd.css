@@ -20,7 +20,7 @@ body:has(.navbar[data-compact-nav]) .immersive-nav-landing { display: none; }
 
 /* The additional About destination owns a free slot in the desktop utility nav. */
 @media (min-width: 992px) {
-  body.home .navbar:not([data-composition-nav]) .nav-menu-area > .nav-link[href="/about"] { left: 84%; }
+  body.home .navbar:not([data-composition-nav]) .nav-menu-area > .nav-link[href="/about"] { left: 86.5%; }
 }
 
 /* One compact menu on every route (owner request, 2026-09-15): the About page's

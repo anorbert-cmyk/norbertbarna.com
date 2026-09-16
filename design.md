@@ -217,8 +217,18 @@ must prove the actual implementation. Do not copy KODE text, logos or model file
   docks at the top on an opaque navy field when enlarged text fills the view.
   Large changes between reading slots relocate invisibly and settle in 180ms
   with opacity only; never translate the menu across the paragraph.
+  The distributed header's slots (2026-09-16 audit): LinkedIn 14%, the wordmark
+  centred, Works 60%, AI integration 67%, the counter 80%, About 86.5%, Email at
+  the end; case pages lay their links in a row at the end and keep their counter
+  at 62%. Every link owns one slot and they clear each other from 992px up. The
+  Works and AI integration items had shared one slot since the menu item was
+  added, and the case counter had crossed About below 1100px; do not add a
+  destination to this header without giving it a measured slot.
   The terminal wordmark has its own landing after the unchanged footer links;
   a screen-space offset keeps the scaled letters centred inside that landing.
+- The reading pose starts to resolve at .6 of the smoothed track progress
+  (2026-09-16), while the object is still folding, so the track never shows the
+  object alone on an empty field for long; the lettering leaves by .33.
 - `home-composition.js` is the only home morph scroll owner. One coalesced native-scroll frame updates opacity/transform and calls `PortfolioHeroScene.setMorphProgress`, or `setCompactProgress` while `data-glass-live` marks the unpinned slot; no duplicated model, scroll interception, touch capture or second GSAP text owner. A real anchor marker at the track end supports the introductory hash. The scene suspends while hidden and restores on pageshow.
 - All seven cases inherit the branded arrival/chrome vocabulary; complete real
   product images and text remain. The lilac stage uses a large centered Funnel

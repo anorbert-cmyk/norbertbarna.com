@@ -62,7 +62,9 @@
       // unpinned endpoint now would complete the arrival before it is shown.
       if (hero.setMorphProgress && (active || hero.status !== 'loading')) hero.setMorphProgress(p);
     }
-    var reveal = smooth((p - .72) / .28);
+    // The reading pose starts to resolve while the object is still folding, so
+    // the track never shows the object alone on an empty field for long.
+    var reveal = smooth((p - .6) / .4);
     intro.style.opacity = String(reveal);
     intro.style.transform = active ? 'translate3d(0,' + ((1 - reveal) * 48).toFixed(2) + 'px,0)' : '';
     intro.toggleAttribute('data-morph-hidden', active && reveal < .015);
