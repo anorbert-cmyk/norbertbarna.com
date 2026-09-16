@@ -56,9 +56,17 @@ html[lang="hu"] .ai-hero h1 { font-size: clamp(48px, 5.1vw, 88px); }
 .ai-hero-track { position: relative; }
 [data-ai-glass="pinned"] .ai-hero-track { height: calc(180svh - var(--ai-nav-clearance)); }
 [data-ai-glass="pinned"] .ai-hero { position: sticky; top: var(--ai-nav-clearance); height: calc(100svh - var(--ai-nav-clearance)); min-height: 0; }
-.ai-hero-art { position: absolute; top: 0; bottom: 0; left: 54%; right: 4%; z-index: 0; pointer-events: none; }
+/* The passage itself stays the visible environment (owner request, 2026-09-16):
+   full-bleed behind the copy as the approved opening had it, and the glass
+   refracts this very image, so what shows through the object is what stands
+   around it. */
+.ai-hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.ai-hero-bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; transform-origin: 50% 100%; }
+.ai-hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(10 22 40 / 40%), transparent 68%); }
+[data-ai-motion="on"] .ai-hero-bg img { animation: ai-settle 1.2s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes ai-settle { from { transform: scale(1.05); } to { transform: none; } }
+.ai-hero-art { position: absolute; top: 0; bottom: 0; left: 54%; right: 4%; z-index: 1; pointer-events: none; }
 .ai-hero-art > img, .ai-hero-canvas { position: absolute; }
-.ai-hero-passage { left: -14%; top: 50%; width: 128%; height: auto; translate: 0 -50%; visibility: hidden; }
 .ai-hero-fallback { inset: 0; margin: auto; height: 60%; width: auto; max-width: 84%; object-fit: contain; opacity: 0; }
 .ai-hero-canvas { display: block; inset: 0; width: 100%; height: 100%; opacity: 0; }
 [data-ai-glass="pinned"] .ai-hero-art[data-hero-scene="ready"] .ai-hero-canvas,
@@ -201,6 +209,9 @@ html.w-mod-js .ai-hero-art:not([data-hero-scene]) .ai-hero-fallback { animation:
   .ai-page .ai-hero button.footer-email.ai-cta-underline { margin-top: 20px; }
   .ai-hero-explore { font-size: 13px; margin-top: 4px !important; }
   .ai-hero-foot { display: none; }
+  .ai-hero-bg { top: auto; height: 66%; }
+  .ai-hero-bg img { object-position: 82% 50%; }
+  .ai-hero-bg::after { background: linear-gradient(180deg, var(--ai-navy) 0%, rgb(10 22 40 / 85%) 18%, transparent 70%); }
   .ai-hero-art { top: auto; left: 0; right: 0; height: 66%; }
   .ai-hero-fallback { left: 30%; }
   .ai-shape { gap: 12px; grid-template-columns: 1fr; padding-top: 64px; padding-bottom: 48px; }
@@ -253,7 +264,8 @@ html.w-mod-js .ai-hero-art:not([data-hero-scene]) .ai-hero-fallback { animation:
   .ai-hero h1 { font-size: clamp(38px, 11.8vw, 60px); }
   html[lang="hu"] .ai-hero h1 { font-size: clamp(30px, 9.8vw, 52px); }
   .ai-hero-copy { padding-top: 26px; padding-bottom: 210px; }
-  .ai-hero-art { height: 60%; }
+  .ai-hero-bg, .ai-hero-art { height: 60%; }
+  .ai-hero-bg img { object-position: 78% 50%; }
   .ai-related { padding-top: 48px; padding-bottom: 64px; }
   .ai-related-list a { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; padding: 24px 0; }
   .ai-related-list img { flex: 0 0 88px; width: 88px; aspect-ratio: 1; object-fit: cover; }
@@ -271,6 +283,7 @@ html.w-mod-js .ai-hero-art:not([data-hero-scene]) .ai-hero-fallback { animation:
 
 /* Motion frames the approved artwork; reading text remains in normal flow. */
 @supports (animation-timeline: view()) {
+  [data-ai-motion="on"] .ai-hero-bg { animation: ai-hero-leave linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
   [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-track { view-timeline: --ai-journey block; }
   [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-ribbon-strip { animation: ai-lens linear both; animation-timeline: --ai-journey; animation-range: contain 0% contain 100%; }
   [data-ai-motion="on"] .ai-start-art img { animation: ai-drift linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
@@ -280,6 +293,7 @@ html.w-mod-js .ai-hero-art:not([data-hero-scene]) .ai-hero-fallback { animation:
     [data-ai-motion="on"] .ai-journey .ai-ribbon-strip { animation: ai-pan linear both; animation-timeline: --ai-run; animation-range: contain 0% contain 100%; }
   }
 }
+@keyframes ai-hero-leave { to { transform: translateY(-6%) scale(1.05); } }
 @keyframes ai-lens {
   0%, 12% { transform: translateX(22.5%) scale(1.45); animation-timing-function: cubic-bezier(.5,0,.1,1); }
   44%, 52% { transform: translateX(0) scale(1.45); animation-timing-function: cubic-bezier(.5,0,.1,1); }

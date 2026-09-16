@@ -103,10 +103,12 @@ the camera; it writes no styles. Reading text and focusable content never
 fade or transform. The action rule draws on load.
 
 **The passage's glass (2026-09-16, owner-requested).** The opening no longer
-shows the passage flat: the home page's refractive chevron stands in it on a
-second stage of `hero-scene.js`, and the passage panel is what the glass
-refracts, painted behind the object through `data-glass-backdrop` and never a
-second visible layer. On a desktop (992px and 740px tall or more) the opening
+shows the passage alone: the home page's refractive chevron stands in it on a
+second stage of `hero-scene.js`. The passage stays the visible full-bleed
+environment behind the copy (`.ai-hero-bg`, owner request the same day: he
+wanted the picture back), and it is also what the glass refracts through
+`data-glass-backdrop`, painted cover-fitted where it actually paints, so what
+shows through the object is what stands around it. On a desktop (992px and 740px tall or more) the opening
 sits in `.ai-hero-track` and holds under the sticky bar for 80svh while native
 scroll turns and folds the object to the matte gate, exactly as the home track
 does. On a phone the object turns inside its own slot (`data-glass-slot`) as
@@ -746,7 +748,7 @@ markup that is being retired: check the page before reusing it.
 **AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
 `.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
 `.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
-`.ai-hero-art` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-fallback` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-hero-explore` `.ai-shape` `.ai-shape-copy`
+`.ai-hero-art` `.ai-hero-bg` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-fallback` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-hero-explore` `.ai-shape` `.ai-shape-copy`
 `.ai-shape-dek` `.ai-link-plain` `.ai-shape-art` `.ai-bar` `.ai-bar-forest`
 `.ai-bar-glass` `.ai-bar-olive` `.ai-pieces` `.ai-pieces-track` `.ai-pieces-stage`
 `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider` `.ai-pieces-intro`
