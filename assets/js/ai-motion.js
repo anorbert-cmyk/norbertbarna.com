@@ -11,6 +11,13 @@
   var journey = pieces && pieces.querySelector("[data-ai-journey]");
   var ribbon = pieces && pieces.querySelector("[data-ai-ribbon]");
   var count = pieces && pieces.querySelector(".ai-pieces-count span");
+  // The opening's glass: hero-scene.js renders it; this owner only tells it how
+  // far the opening has scrolled, and which bar posture that needs.
+  var heroTrack = root.querySelector("[data-ai-hero-track]");
+  var hero = root.querySelector("[data-ai-hero]");
+  var art = root.querySelector("[data-ai-hero-art]");
+  var nav = document.querySelector(".navbar");
+  var currentGlass = "";
   var countFirst = count ? count.textContent : "", countShown = countFirst;
   var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
   var listeners = new AbortController();
@@ -19,9 +26,10 @@
   var currentMotion = false, currentMode = "flow";
   var scrollDriven = Boolean(window.CSS && CSS.supports && CSS.supports("animation-timeline: view()"));
   var original = { motion: root.getAttribute("data-ai-motion"), mode: root.getAttribute("data-ai-mode"), driver: root.getAttribute("data-ai-driver") };
-  var api = window.PortfolioAiMotion = { state: "static", mode: "flow", driver: scrollDriven ? "css" : "none", progress: 0, camera: 0, refresh: request, destroy: destroy };
+  var api = window.PortfolioAiMotion = { state: "static", mode: "flow", driver: scrollDriven ? "css" : "none", progress: 0, camera: 0, glass: "pending", fold: 0, refresh: request, destroy: destroy };
 
   function clamp(value) { return Math.max(0, Math.min(1, value)); }
+  function smooth(value) { value = clamp(value); return value * value * (3 - 2 * value); }
   function on(target, name, handler, options) {
     target.addEventListener(name, handler, Object.assign({ signal: listeners.signal }, options || {}));
   }
@@ -61,6 +69,7 @@
     var height = Math.max(1, innerHeight);
     var rootBox = root.getBoundingClientRect();
     api.progress = clamp(-rootBox.top / Math.max(1, root.offsetHeight - height));
+    paintGlass(reduced, height);
     if (!enabled) { showCount(0); api.camera = 0; painted = true; return; }
     // The counter reads the same journey the stylesheet's timelines read: the
     // pinned stage's scroll on a desktop, the ribbon's sticky run on a phone.
@@ -78,6 +87,38 @@
     } else { api.camera = 1; showCount(0); }
     painted = true;
   }
+  function paintGlass(reduced, height) {
+    var scene = window.PortfolioHeroScene;
+    // The glass needs no scroll timeline, only motion; a renderer that has
+    // given up leaves the drawing. Pinning needs the room the desktop has.
+    var on = !reduced && Boolean(art) && (!scene || scene.status !== "fallback");
+    var pinned = on && Boolean(heroTrack) && Boolean(hero) && innerWidth >= 992 && innerHeight >= 740;
+    var glass = !on ? "off" : pinned ? "pinned" : "slot";
+    if (currentGlass !== glass) { root.dataset.aiGlass = glass; currentGlass = glass; }
+    api.glass = glass;
+    if (!scene || !on) {
+      api.fold = 0;
+      if (nav) delete nav.dataset.aiBar;
+      if (scene && scene.clearCompact) scene.clearCompact();
+      return;
+    }
+    if (pinned) {
+      if (scene.clearCompact) scene.clearCompact();
+      var track = heroTrack.getBoundingClientRect();
+      var raw = clamp(-track.top / Math.max(1, heroTrack.offsetHeight - hero.offsetHeight));
+      api.fold = smooth((raw - .04) / .74);
+      if (scene.setMorphProgress) scene.setMorphProgress(api.fold);
+      // The bar holds while the opening holds; once the opening leaves, the
+      // bar stands at the opening's resting top and leaves with it.
+      var posture = track.bottom >= height - .5 ? "held" : "released";
+      if (nav && nav.dataset.aiBar !== posture) nav.dataset.aiBar = posture;
+    } else {
+      if (nav) delete nav.dataset.aiBar;
+      var slot = art.getBoundingClientRect();
+      api.fold = 0;
+      if (scene.setCompactProgress) scene.setCompactProgress(clamp((height - slot.top) / Math.max(1, height + slot.height)));
+    }
+  }
   function destroy() {
     if (destroyed) return;
     destroyed = true; stop(); listeners.abort();
@@ -88,12 +129,17 @@
     restoreAttribute(root, "data-ai-motion", original.motion);
     restoreAttribute(root, "data-ai-mode", original.mode);
     restoreAttribute(root, "data-ai-driver", original.driver);
+    // The glass is a verdict of its own: without the owner the drawing stands.
+    root.dataset.aiGlass = "off"; api.glass = "off"; api.fold = 0;
+    if (nav) delete nav.dataset.aiBar;
+    if (window.PortfolioHeroScene && window.PortfolioHeroScene.clearCompact) window.PortfolioHeroScene.clearCompact();
     api.state = "destroyed"; api.mode = "flow";
   }
   on(window, "scroll", request, { passive: true });
   on(window, "resize", request, { passive: true });
   on(window, "load", request, { once: true });
   on(window, "portfolio:motionchange", request);
+  on(window, "portfolio:heroready", request);
   on(reducedQuery, "change", request);
   on(window, "pagehide", function () { pageHidden = true; stop(); });
   on(window, "pageshow", function () { pageHidden = false; request(); });

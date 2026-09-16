@@ -42,8 +42,24 @@ English and Hungarian, and since 2026-09-15 they are built from two concept
 boards the owner made and approved: "The passage" and "Systems in motion". The
 page is those boards in this order, and the Hungarian page is the same board:
 
-1. **The passage.** Navy field, copy left, the lit gate right, the
-   people / products / possibilities column on the far wall.
+1. **The passage.** Navy field, copy left, the glass right, the
+   people / products / possibilities column on the far wall. Since 2026-09-16
+   the lit gate is not shown flat: the home page's refractive chevron stands
+   in the opening on a second stage of `hero-scene.js` (owner-requested), and
+   the passage panel is what the glass refracts, painted behind the object
+   through `data-glass-backdrop` and never a second visible layer. On a
+   desktop (992px and 740px tall or more) the opening holds for 80svh of the
+   180svh `.ai-hero-track` while native scroll turns and folds the object to
+   the matte gate, exactly as the home track does; the bar holds with the
+   opening (`data-ai-bar="held"`) and leaves with it (`released`, standing at
+   80svh). On a phone the object turns inside its own slot
+   (`data-glass-slot`) as the slot passes; the compact contract of the home
+   page applies. `data-ai-glass` on `main` is the owner's verdict: `pending`
+   in the HTML, then `pinned`, `slot` or `off`. Before the renderer reports,
+   the slot stands empty (the drawing waits three seconds by CSS, in case no
+   verdict ever comes); reduced motion, an unavailable renderer, no
+   JavaScript and a destroyed owner show the single chevron drawing and hide
+   the canvas. The glass does not need scroll timelines, only motion.
 2. **AI, shaped around your workflow.** Lilac field, the three glass bars,
    a navy pill to the close and LinkedIn beside it, the numbered rule at the foot.
 3. **Make the pieces work together.** The ribbon journey. On a desktop the
@@ -684,7 +700,7 @@ markup that is being retired: check the page before reusing it.
 **AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
 `.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
 `.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
-`.ai-hero-art` `.ai-hero-kicker` `.ai-triad` `.ai-shape` `.ai-shape-copy` `.ai-shape-dek`
+`.ai-hero-art` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-fallback` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-triad` `.ai-shape` `.ai-shape-copy` `.ai-shape-dek`
 `.ai-actions` `.ai-cta-pill` `.ai-link-plain` `.ai-shape-art`
 `.ai-shape-label` `.ai-steps-rule` `.ai-pieces` `.ai-pieces-track`
 `.ai-pieces-stage` `.ai-pieces-head` `.ai-pieces-count` `.ai-pieces-divider`
@@ -786,13 +802,13 @@ changes its dependencies, so keep a script where it is.
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
 | `navigation.js` | Mobile disclosure, every `.footer-email` assign-only handler, and the mast text-enlargement/spacing reflow detector; deliberately has no animation dependency | no |
-| `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle | yes |
+| `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
 | `immersive-navigation.js` | Compact bar and the desktop travelling header | yes |
 | `case-opening.js` | Case title and media assembly, perspective settle | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
-| `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: hero drift, the bars' handoff, the ribbon camera and the phone pan | yes |
+| `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: the motion and mode verdicts, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) with the bar posture | yes |
 | `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field | yes |
 | `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
 
@@ -959,13 +975,25 @@ under `html.no-motion` or both show at once. Keep such arithmetic in the owner,
 not in CSS, so the stylesheet's defaults stay the honest resting state.
 No new runtime dependency, sound requirement, generated Lottie or visible
 Motion control. Original raw WebGL is the user-requested central hero exception,
-and the home hero is the only stage that runs it. A second stage was built in
-the Story in Motion corridor on 2026-09-15 and removed the same day at the
-owner's request; the corridor stands a still instead. The renderer still names
-its host with `data-glass-scene`, `data-glass-stage`, `data-glass-frame`,
-`data-glass-backdrop` and `data-glass-field` rather than the home page's class
-names, which is worth keeping whether or not a second stage exists. No second
-stage without an explicit request for one.
+and two stages run it: the home hero and, since 2026-09-16 at the owner's
+explicit request, the AI openings. A stage in the Story in Motion corridor was
+built on 2026-09-15 and removed the same day at the owner's request; the
+corridor stands a still instead. The renderer names its host with
+`data-glass-scene`, `data-glass-stage`, `data-glass-frame`,
+`data-glass-backdrop`, `data-glass-field` and `data-glass-slot` rather than
+any page's class names. No further stage without an explicit request for one.
+
+**No drawing before the glass (2026-09-16).** On a scripted page the static
+drawings (`.home-mast-fallback`, `.home-mast-gate-fallback`, `.ai-hero-fallback`)
+stay at opacity 0 until the renderer writes `data-hero-scene` (`ready` shows
+the canvas, `fallback` the drawing); a CSS animation returns the drawing after
+three seconds should no verdict come, and reduced motion, `html.no-motion` and
+no JavaScript never wait. The home page also decides `data-morph-active` in an
+inline script at parse time, so the pinned scene is the first painted layout
+and the unpinned reading composition never flashes before it; the script
+removes the attribute after four seconds if no morph owner arrives. The owner
+reported the drawing-then-glass change on load as a defect; do not reintroduce
+a visible static state that the glass then replaces.
 Keep `.case-motion-rail` hidden.
 
 The central glass form assembles once, then responds to pointer tilt,

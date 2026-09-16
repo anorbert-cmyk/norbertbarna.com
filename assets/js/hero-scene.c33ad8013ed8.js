@@ -25,6 +25,10 @@
   var morphProgress = 0, morphPose = { x: 0, y: 0, scale: 1 }, finalAspect = 1, finalOrientation;
   var compact = false, compactTurn = .5, compactPose = { x: 0, y: 0, scale: 1 };
   var compactSlot = { x: .5, y: .5, height: .5 };
+  // A stage may name the slot fractions its object turns in (left right top
+  // bottom of the host); the home page's drawing slot is the default.
+  var slotOverride = (host.getAttribute("data-glass-slot") || "").trim().split(/[\s,]+/).map(Number);
+  if (slotOverride.length !== 4 || slotOverride.some(function (n) { return !Number.isFinite(n); })) slotOverride = null;
   var finalArtwork = null, finalTimer = 0, readyDeadline = 0, cancelFinalLoad;
   var observer, resizeObserver, consentObserver, layoutDirty = false, resolveReady, reflectionArtwork = null, reflectionTimer = 0;
   var DEG = Math.PI / 180, CHEVRON_EXTENT = 3.6;
@@ -141,7 +145,8 @@
   function fitCompact() {
     var narrow = innerWidth < 600;
     // Slot fractions of the unpinned stage, which is exactly one screen tall.
-    var box = narrow ? { left: .46, right: 1.02, top: .10, bottom: .38 }
+    var box = slotOverride ? { left: slotOverride[0], right: slotOverride[1], top: slotOverride[2], bottom: slotOverride[3] }
+      : narrow ? { left: .46, right: 1.02, top: .10, bottom: .38 }
       : { left: .56, right: .99, top: .12, bottom: .62 };
     var viewportHeight = 2 * cameraZ * Math.tan(75 * DEG / 2);
     // The turned chevron reads about .6 as wide as it is tall, and spans
@@ -323,7 +328,7 @@
       }, { once: true });
       on(artwork, "error", function () { complete(new Error("Hero artwork unavailable")); }, { once: true });
       finalTimer = setTimeout(function () { complete(new Error("Hero artwork decode timed out")); }, 1800);
-      artwork.src = new URL("assets/images/hero-final.webp", document.baseURI).href;
+      artwork.src = new URL("/assets/images/hero-final.webp", document.baseURI).href;
     });
   }
   function paintFinalArtwork() {
@@ -388,7 +393,11 @@
     // flat field and read as a solid slab. Paint the same approved title artwork
     // behind the slot: it stays a refraction source inside the object, never a
     // second visible layer, because the canvas shows only the glass over it.
-    if (compact && artwork && artwork.complete && artwork.naturalWidth) {
+    // A stage whose backdrop keeps a real box (the passage behind the AI
+    // opening) is painted where it stands even in the slot; only a hidden
+    // backdrop is painted around the slot.
+    var placed = artwork && artwork.getBoundingClientRect().width > 0;
+    if (compact && !placed && artwork && artwork.complete && artwork.naturalWidth) {
       var titleRatio = Number(artwork.getAttribute("width")) / Number(artwork.getAttribute("height")) ||
         artwork.naturalWidth / artwork.naturalHeight;
       var titleHeight = height * compactSlot.height * 1.5;

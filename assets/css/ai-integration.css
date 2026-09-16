@@ -60,13 +60,34 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
 .ai-cta-underline::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ai-olive); transform-origin: 0 50%; }
 .ai-cta-underline:hover::before { background: currentColor; }
 [data-ai-motion="on"] .ai-cta-underline::before { animation: ai-draw .9s .5s cubic-bezier(.2, .7, .2, 1) both; }
-[data-ai-motion="on"] .ai-hero-art img { animation: ai-settle 1.2s cubic-bezier(.2, .7, .2, 1) both; }
 @keyframes ai-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes ai-settle { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: none; } }
 .ai-hero-foot { position: absolute; left: var(--ai-gutter); bottom: 34px; z-index: 2; display: flex; align-items: center; gap: 24px; width: 40%; white-space: nowrap; opacity: .85; }
 .ai-hero-foot::after { content: ""; flex: 1 1 160px; height: 1px; background: var(--ai-rule-light); }
-.ai-hero-art { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-.ai-hero-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; transform-origin: 50% 100%; }
+/* The passage's glass (2026-09-16): the home page's refractive chevron stands in
+   the opening on a second stage of hero-scene.js. The passage panel is what the
+   glass refracts, painted behind the object and never shown flat; the drawing
+   is the fallback. On a desktop the opening holds for most of a scroll while
+   the object turns and folds to the matte gate; on a phone it turns inside its
+   own slot as the slot passes. Before the renderer's verdict the slot stands
+   empty, so no drawing is ever replaced by the glass in front of the visitor;
+   the drawing returns by itself after three seconds should no verdict come. */
+.ai-hero-track { position: relative; }
+[data-ai-glass="pinned"] .ai-hero-track { height: 180svh; }
+[data-ai-glass="pinned"] .ai-hero { position: sticky; top: 0; height: 100svh; min-height: 0; }
+.ai-hero-art { position: absolute; top: 0; bottom: 0; left: 52%; right: 6%; z-index: 0; pointer-events: none; }
+.ai-hero-art > img, .ai-hero-canvas { position: absolute; }
+.ai-hero-passage { left: -14%; top: 50%; width: 128%; height: auto; translate: 0 -50%; visibility: hidden; }
+.ai-hero-fallback { inset: 0; margin: auto; height: 60%; width: auto; max-width: 84%; object-fit: contain; opacity: 0; }
+.ai-hero-canvas { display: block; inset: 0; width: 100%; height: 100%; opacity: 0; }
+[data-ai-glass="pinned"] .ai-hero-art[data-hero-scene="ready"] .ai-hero-canvas,
+[data-ai-glass="slot"] .ai-hero-art[data-hero-scene="ready"] .ai-hero-canvas { opacity: 1; }
+[data-ai-glass="off"] .ai-hero-canvas, html.no-motion .ai-hero-canvas { visibility: hidden; }
+[data-ai-glass="off"] .ai-hero-fallback, .ai-hero-art[data-hero-scene="fallback"] .ai-hero-fallback, html:not(.w-mod-js) .ai-hero-fallback { opacity: 1; }
+html.w-mod-js .ai-hero-art:not([data-hero-scene]) .ai-hero-fallback { animation: ai-drawing-wait .5s ease 3s both; }
+@keyframes ai-drawing-wait { from { opacity: 0; } to { opacity: 1; } }
+/* While the opening holds, the bar holds with it; it leaves with the opening. */
+.ai-page .navbar[data-ai-bar="held"] { position: fixed; }
+.ai-page .navbar[data-ai-bar="released"] { top: 80svh; }
 .ai-triad { position: absolute; right: var(--ai-gutter); top: 42%; z-index: 2; list-style: none; padding: 26px 0 0; margin: 0; border-top: 1px solid var(--ai-lilac); font: 400 11px/1.9 Inter, sans-serif; letter-spacing: .24em; text-transform: uppercase; color: var(--ai-lilac); }
 .ai-triad::before { content: ""; position: absolute; left: 0; top: 0; width: 30px; height: 1px; background: var(--ai-lilac); }
 .ai-triad { border-top: 0; }
@@ -95,8 +116,8 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
   html[lang="hu"] .ai-hero h1 { font-size: clamp(30px, 10vw, 72px); }
   .ai-hero-dek { font-size: clamp(18px, 3.2vw, 26px); }
   .ai-hero-services { font-size: 15px; }
-  .ai-hero-art { position: relative; inset: auto; width: 100%; min-height: 380px; }
-  .ai-hero-art img { object-position: 85% 50%; }
+  .ai-hero-art { position: relative; inset: auto; width: 100%; height: min(100vw, 460px); }
+  .ai-hero-fallback { left: 26%; }
   .ai-hero-kicker { position: static; margin-bottom: 22px; }
   .ai-hero-foot, .ai-triad { display: none; }
   .ai-shape-label { display: none; }
@@ -105,7 +126,6 @@ html[lang="hu"] .ai-hero h1 { max-width: none; font-size: clamp(46px, 5vw, 94px)
   /* The phone mockup sets the action on the passage floor, under the copy. */
   .ai-hero { position: relative; }
   .ai-hero-copy { position: static; }
-  .ai-hero-art { min-height: 380px; }
   .ai-cta-underline { position: absolute; left: var(--ai-gutter); bottom: 44px; z-index: 3; margin: 0 0 0 -14px; padding: 8px 14px 6px; background: rgb(10 22 40 / 84%); }
 }
 @media (max-width: 599px) {
@@ -299,7 +319,6 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
    which mode; browsers without scroll timelines, reduced motion and no
    JavaScript all show the finished board. Reading text never animates. */
 @supports (animation-timeline: view()) {
-  [data-ai-motion="on"] .ai-hero-art { animation: ai-hero-leave linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
   [data-ai-motion="on"] .ai-shape-art { animation: ai-bars-in linear both; animation-timeline: view(); animation-range: entry 0% entry 100%; }
   [data-ai-motion="on"] .ai-shape-art img { animation: ai-bars-leave linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
   [data-ai-motion="on"][data-ai-mode="cinematic"] .ai-pieces-track { view-timeline: --ai-journey block; }
@@ -317,7 +336,6 @@ a.ai-cta-pill::after { content: "\2192"; font-size: 17px; line-height: 1; }
     [data-ai-motion="on"] .ai-pieces-steps li { animation: ai-arrive linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
   }
 }
-@keyframes ai-hero-leave { to { transform: translateY(-9%) scale(1.06); } }
 @keyframes ai-bars-in { from { opacity: 0; transform: translate(7%, 5%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); } to { opacity: 1; transform: none; } }
 @keyframes ai-bars-leave { from { transform: none; animation-timing-function: cubic-bezier(.4, 0, .8, .6); } to { opacity: .35; transform: translateY(16%) rotate(-5deg); } }
 @keyframes ai-lens {

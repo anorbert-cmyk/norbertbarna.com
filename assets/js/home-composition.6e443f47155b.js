@@ -44,6 +44,8 @@
     var p = active ? smooth((raw - .04) / .74) : 1;
     api.progress = p;
     var hero = window.PortfolioHeroScene;
+    // Without a renderer the drawings must not wait on a verdict that never comes.
+    if (!hero) { var sculpture = scene.querySelector('[data-glass-scene]'); if (sculpture && !sculpture.dataset.heroScene) sculpture.dataset.heroScene = 'fallback'; }
     // Without the pin the same object stays in the drawing slot as assembled
     // glass instead of its flat endpoint; this scene's own travel turns it.
     var glass = Boolean(hero) && hero.status === 'ready' && !motionOff() &&

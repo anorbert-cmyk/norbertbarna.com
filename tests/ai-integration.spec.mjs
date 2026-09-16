@@ -129,6 +129,104 @@ for (const [language, path] of ROUTES) {
   });
 }
 
+// The opening's glass: hero-scene.js's second stage. A desktop holds the opening
+// while the object folds; a phone turns it in its slot; without motion or a
+// renderer the drawing stands, and nothing static ever precedes the glass.
+const glassState = (page) => page.evaluate(() => ({
+  glass: document.querySelector("main[data-ai]").dataset.aiGlass, fold: window.PortfolioAiMotion.fold,
+  scene: document.querySelector("[data-ai-hero-art]").dataset.heroScene, status: window.PortfolioHeroScene?.status,
+  canvas: getComputedStyle(document.querySelector(".ai-hero-canvas")), drawing: getComputedStyle(document.querySelector(".ai-hero-fallback")),
+  heroTop: document.querySelector("[data-ai-hero]").getBoundingClientRect().top, bar: document.querySelector(".navbar").dataset.aiBar,
+  barTop: document.querySelector(".navbar").getBoundingClientRect().top,
+})).then((state) => ({ ...state, canvas: { opacity: state.canvas.opacity, visibility: state.canvas.visibility }, drawing: { opacity: state.drawing.opacity } }));
+const scrollOpening = (page, fraction) => page.evaluate((f) => {
+  const track = document.querySelector("[data-ai-hero-track]"), hero = document.querySelector("[data-ai-hero]");
+  window.scrollTo(0, f * (track.offsetHeight - hero.offsetHeight));
+}, fraction);
+
+test("1440x900: the opening holds while the glass folds to the gate, the bar holds with it, and the drawing never shows first", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.route("**/hero-final.webp", async (route) => { await new Promise((resolve) => setTimeout(resolve, 700)); await route.continue(); });
+  await page.goto("/ai-integration", { waitUntil: "domcontentloaded" });
+  // Before the renderer's verdict the slot stands empty: neither drawing nor canvas.
+  const early = await glassState(page);
+  expect(early.status).toBe("loading");
+  expect(early.drawing.opacity).toBe("0");
+  expect(early.canvas.opacity).toBe("0");
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
+  await settle(page);
+  let state = await glassState(page);
+  expect(state.glass).toBe("pinned");
+  expect(state.canvas.opacity).toBe("1");
+  expect(state.drawing.opacity).toBe("0");
+  expect(state.fold).toBe(0);
+  await scrollOpening(page, 0.5);
+  await settle(page); await settle(page);
+  state = await glassState(page);
+  expect(Math.abs(state.heroTop), "the opening holds mid-fold").toBeLessThanOrEqual(1);
+  expect(state.fold).toBeGreaterThan(0.3);
+  expect(state.fold).toBeLessThan(1);
+  expect(state.bar).toBe("held");
+  expect(Math.abs(state.barTop)).toBeLessThanOrEqual(1);
+  await scrollOpening(page, 1.15);
+  await settle(page); await settle(page);
+  state = await glassState(page);
+  expect(state.fold).toBe(1);
+  expect(state.bar).toBe("released");
+  expect(state.heroTop, "the opening leaves once the fold is done").toBeLessThan(-1);
+  expect(Math.abs(state.barTop - state.heroTop), "the bar leaves with the opening, not before it").toBeLessThanOrEqual(1);
+  expect(await readingTransforms(page)).toEqual([]);
+});
+
+test("390x844: the glass turns in its own slot without a pin", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, "/hu/ai-integracio");
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
+  await settle(page);
+  const state = await glassState(page);
+  expect(state.glass).toBe("slot");
+  expect(state.canvas.opacity).toBe("1");
+  expect(state.drawing.opacity).toBe("0");
+  expect(state.bar).toBeUndefined();
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-hero]")).position)).not.toBe("sticky");
+  const art = page.locator("[data-ai-hero-art]");
+  const before = await art.screenshot();
+  await page.evaluate(() => window.scrollTo(0, 260));
+  await settle(page); await settle(page);
+  expect(Buffer.compare(before, await art.screenshot()), "native scroll turns the object").not.toBe(0);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await settle(page);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+});
+
+test("reduced motion and an unavailable renderer leave the single drawing", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.addInitScript(() => sessionStorage.setItem("nb-arrival-seen-v2", "1"));
+  await open(page, "/ai-integration");
+  let state = await glassState(page);
+  expect(state.glass).toBe("off");
+  expect(state.drawing.opacity).toBe("1");
+  expect(state.canvas.visibility).toBe("hidden");
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-hero]")).position)).not.toBe("sticky");
+  await context.close();
+  const blind = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page2 = await blind.newPage();
+  await page2.addInitScript(() => {
+    sessionStorage.setItem("nb-arrival-seen-v2", "1");
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, ...args) { return /webgl/.test(type) ? null : getContext.call(this, type, ...args); };
+  });
+  await open(page2, "/ai-integration");
+  await expect.poll(() => page2.evaluate(() => window.PortfolioHeroScene?.status)).toBe("fallback");
+  await settle(page2);
+  state = await glassState(page2);
+  expect(state.glass).toBe("off");
+  expect(state.drawing.opacity).toBe("1");
+  expect(state.canvas.opacity).toBe("0");
+  await blind.close();
+});
+
 test("reduced motion shows the finished board and writes nothing to the artwork", async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
@@ -174,5 +272,7 @@ test.describe("without JavaScript", () => {
     await expect(page.locator("main button.footer-email")).toBeVisible();
     expect(await page.evaluate(() => [...document.querySelectorAll(".ai-start-body > *, .ai-steps-rule > li, .ai-better > *")].every((element) => Number(getComputedStyle(element).opacity) === 1)), "every row stands finished without the owner").toBe(true);
     await expect(page.locator('main a[href="/work/instructure"]').first()).toBeVisible();
+    await expect(page.locator(".ai-hero-fallback")).toHaveCSS("opacity", "1");
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-hero]")).position)).not.toBe("sticky");
   });
 });
