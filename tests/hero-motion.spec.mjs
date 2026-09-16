@@ -251,8 +251,10 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
     const state = () => media.evaluate((element) => {
       const image = element.querySelector("img");
       const box = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
       return {
-        transform: getComputedStyle(element).transform,
+        transform: style.transform,
+        pose: Object.fromEntries(["transform", "translate", "rotate", "scale", "mask-image"].map((property) => [property, style.getPropertyValue(property)])),
         width: box.width, height: box.height,
         inViewport: box.bottom > 0 && box.top < innerHeight,
         image: {
@@ -284,11 +286,19 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect(page.locator("html")).toHaveClass(/no-motion/);
     await page.evaluate(() => window.scrollTo(0, 0));
+    // The root flag precedes the media owner's computed-style settlement.
+    // Establish the explicit reduced-motion CSS contract, not an in-flight
+    // GSAP matrix, before measuring invariance under subsequent scrolling.
+    await expect.poll(() => state().then((value) => value.pose), {
+      message: "case media reaches its complete static reduced-motion pose", timeout: 2000,
+    }).toEqual({ transform: "none", translate: "none", rotate: "none", scale: "none", "mask-image": "none" });
     const reduced = await state();
     await page.evaluate(() => window.scrollTo(0, 250));
     await page.waitForTimeout(500);
     const reducedScrolled = await state();
-    expect(reducedScrolled.transform, "reduced motion stays static during native scrolling").toEqual(reduced.transform);
+    expect(reducedScrolled.pose, "reduced motion stays static during native scrolling").toEqual(reduced.pose);
+    expect({ width: reducedScrolled.width, height: reducedScrolled.height }, "scrolling cannot change the static media size")
+      .toEqual({ width: reduced.width, height: reduced.height });
     expect(reducedScrolled.image).toEqual(before.image);
   });
 }
