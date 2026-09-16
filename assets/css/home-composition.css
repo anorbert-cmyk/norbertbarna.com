@@ -137,7 +137,21 @@ body.home .navbar[data-composition-nav]:is([data-keyboard="true"]:focus-within, 
 @media (max-width: 599px) { .home-mast-gate-fallback { top: 12.5%; right: -2%; width: 60%; height: 29.5%; } }
 /* A missing morph owner still presents the endpoint drawing next to its copy. */
 .home-mast:not([data-morph-active]) .home-mast-canvas { visibility: hidden; }
-.home-mast:not([data-morph-active]) .home-mast-gate-fallback { opacity: 1 !important; }
+html:not(.w-mod-js) .home-mast:not([data-morph-active]) .home-mast-gate-fallback,
+html.no-motion .home-mast:not([data-morph-active]) .home-mast-gate-fallback,
+.home-mast:not([data-morph-active]) .home-mast-sculpture[data-hero-scene] .home-mast-gate-fallback { opacity: 1 !important; }
+/* While the scene is still deciding, a scripted page shows neither drawing:
+   the glass assembles into an empty slot instead of replacing a drawing the
+   visitor has already read. The drawings return on their own after three
+   seconds should no verdict ever arrive; reduced motion and no JavaScript
+   never wait. */
+html.w-mod-js .home-mast-sculpture:not([data-hero-scene]) :is(.home-mast-fallback, .home-mast-gate-fallback) { opacity: 0; animation: home-drawing-wait .5s ease 3s both; }
+html.w-mod-js.no-motion .home-mast-sculpture:not([data-hero-scene]) :is(.home-mast-fallback, .home-mast-gate-fallback) { opacity: 1; animation: none; }
+@keyframes home-drawing-wait { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+ .home-mast:not([data-morph-active]) .home-mast-gate-fallback { opacity: 1 !important; }
+ html.w-mod-js .home-mast-sculpture:not([data-hero-scene]) :is(.home-mast-fallback, .home-mast-gate-fallback) { opacity: 1; animation: none; }
+}
 @media (min-width: 600px) {
  .home-mast[data-morph-active] .home-mast-display { font-size: clamp(68px, calc(11.7vw - max(0px, var(--consent-cover, 0px) - 100px) * .8), 180px); }
 }
@@ -146,4 +160,4 @@ body.home .navbar[data-composition-nav]:is([data-keyboard="true"]:focus-within, 
 }
 /* Without the pin the live object keeps the drawing slot the flat gate held. */
 .home-mast[data-glass-live] .home-mast-canvas { visibility: visible; }
-.home-mast[data-glass-live] .home-mast-gate-fallback { opacity: 0 !important; }
+.home-mast[data-glass-live] .home-mast-sculpture[data-hero-scene] .home-mast-gate-fallback { opacity: 0 !important; }

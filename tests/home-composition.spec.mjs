@@ -171,3 +171,33 @@ test("the native introduction anchor survives a case visit and restores the visi
   await expect.poll(() => page.evaluate((previous) => Math.abs(scrollY - previous), previousScroll)).toBeLessThanOrEqual(1);
   await expect(project).toBeInViewport();
 });
+
+test("the opening decides its layout before the scripts and shows no drawing before the glass", async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 900 });
+  await page.addInitScript(() => sessionStorage.setItem("nb-arrival-seen-v2", "1"));
+  await page.route("**/hero-final.webp", async (route) => { await new Promise((resolve) => setTimeout(resolve, 800)); await route.continue(); });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  // The inline decision runs at parse time, so the pinned scene is the first painted layout.
+  await expect(page.locator(".home-mast")).toHaveAttribute("data-morph-active", "");
+  expect(await page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("loading");
+  const waiting = await page.evaluate(() => ({
+    chevron: getComputedStyle(document.querySelector(".home-mast-fallback")).opacity,
+    gate: getComputedStyle(document.querySelector(".home-mast-gate-fallback")).display,
+    canvas: getComputedStyle(document.querySelector(".home-mast-canvas")).opacity,
+    intro: getComputedStyle(document.querySelector(".home-mast-intro")).visibility,
+  }));
+  expect(waiting, "while the renderer decides, only the lettering shows").toEqual({ chevron: "0", gate: "none", canvas: "0", intro: "hidden" });
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
+  await expect(page.locator(".home-mast-canvas")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".home-mast-fallback")).toHaveCSS("opacity", "0");
+});
+
+test("a short window shows the live glass alone once the renderer is ready, never the gate drawing over it", async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 700 });
+  await page.addInitScript(() => sessionStorage.setItem("nb-arrival-seen-v2", "1"));
+  await page.goto("/", { waitUntil: "load" });
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
+  await expect(page.locator(".home-mast")).toHaveAttribute("data-glass-live", "");
+  await expect(page.locator(".home-mast-gate-fallback")).toHaveCSS("opacity", "0");
+  await expect(page.locator(".home-mast-canvas")).toBeVisible();
+});

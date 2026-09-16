@@ -418,6 +418,99 @@ for (const [language, path] of ROUTES) {
   }
 }
 
+// The opening's glass: hero-scene.js's second stage. A desktop holds the opening
+// under the sticky bar while the object folds; a phone turns it in its slot;
+// without motion or a renderer the drawing stands, and nothing static ever
+// precedes the glass.
+const glassState = (page) => page.evaluate(() => ({
+  glass: document.querySelector("main[data-ai]").dataset.aiGlass, fold: window.PortfolioAiMotion.fold,
+  scene: document.querySelector("[data-ai-hero-art]").dataset.heroScene, status: window.PortfolioHeroScene?.status,
+  canvas: getComputedStyle(document.querySelector(".ai-hero-canvas")), drawing: getComputedStyle(document.querySelector(".ai-hero-fallback")),
+  heroTop: document.querySelector("[data-ai-hero]").getBoundingClientRect().top,
+  clearance: parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0,
+})).then((state) => ({ ...state, canvas: { opacity: state.canvas.opacity, visibility: state.canvas.visibility }, drawing: { opacity: state.drawing.opacity } }));
+const scrollOpening = (page, fraction) => page.evaluate((f) => {
+  const track = document.querySelector("[data-ai-hero-track]"), hero = document.querySelector("[data-ai-hero]");
+  window.scrollTo(0, f * (track.offsetHeight - hero.offsetHeight));
+}, fraction);
+
+test("1440x900: the opening holds under the bar while the glass folds to the gate, and the drawing never shows first", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.route("**/hero-final.webp", async (route) => { await new Promise((resolve) => setTimeout(resolve, 700)); await route.continue(); });
+  await page.goto("/ai-integration", { waitUntil: "domcontentloaded" });
+  const early = await glassState(page);
+  expect(early.status).toBe("loading");
+  expect(early.drawing.opacity).toBe("0");
+  expect(early.canvas.opacity).toBe("0");
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
+  await settle(page);
+  let state = await glassState(page);
+  expect(state.glass).toBe("pinned");
+  expect(state.canvas.opacity).toBe("1");
+  expect(state.drawing.opacity).toBe("0");
+  expect(state.fold).toBe(0);
+  await scrollOpening(page, 0.5);
+  await settle(page); await settle(page);
+  state = await glassState(page);
+  expect(Math.abs(state.heroTop - state.clearance), "the opening holds under the bar mid-fold").toBeLessThanOrEqual(1);
+  expect(state.fold).toBeGreaterThan(0.3);
+  expect(state.fold).toBeLessThan(1);
+  await scrollOpening(page, 1.15);
+  await settle(page); await settle(page);
+  state = await glassState(page);
+  expect(state.fold).toBe(1);
+  expect(state.heroTop, "the opening leaves once the fold is done").toBeLessThan(state.clearance - 1);
+  expect(await readingTransforms(page)).toEqual([]);
+});
+
+test("390x844: the glass turns in its own slot without a pin", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, "/hu/ai-integracio");
+  await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
+  await settle(page);
+  const state = await glassState(page);
+  expect(state.glass).toBe("slot");
+  expect(state.canvas.opacity).toBe("1");
+  expect(state.drawing.opacity).toBe("0");
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-hero]")).position)).not.toBe("sticky");
+  const art = page.locator("[data-ai-hero-art]");
+  const before = await art.screenshot();
+  await page.evaluate(() => window.scrollTo(0, 260));
+  await settle(page); await settle(page);
+  expect(Buffer.compare(before, await art.screenshot()), "native scroll turns the object").not.toBe(0);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await settle(page);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+});
+
+test("reduced motion and an unavailable renderer leave the single drawing", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.addInitScript(() => sessionStorage.setItem("nb-arrival-seen-v2", "1"));
+  await open(page, "/ai-integration");
+  let state = await glassState(page);
+  expect(state.glass).toBe("off");
+  expect(state.drawing.opacity).toBe("1");
+  expect(state.canvas.visibility).toBe("hidden");
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector("[data-ai-hero]")).position)).not.toBe("sticky");
+  await context.close();
+  const blind = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page2 = await blind.newPage();
+  await page2.addInitScript(() => {
+    sessionStorage.setItem("nb-arrival-seen-v2", "1");
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, ...args) { return /webgl/.test(type) ? null : getContext.call(this, type, ...args); };
+  });
+  await open(page2, "/ai-integration");
+  await expect.poll(() => page2.evaluate(() => window.PortfolioHeroScene?.status)).toBe("fallback");
+  await settle(page2);
+  state = await glassState(page2);
+  expect(state.glass).toBe("off");
+  expect(state.drawing.opacity).toBe("1");
+  expect(state.canvas.opacity).toBe("0");
+  await blind.close();
+});
+
 test("reduced motion shows the finished board and 03 counter without writing artwork styles", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -520,6 +613,7 @@ test.describe("without JavaScript", () => {
       expect(await page.locator(".ai-ribbon-strip").evaluate((strip) => strip.getBoundingClientRect().width)).toBeLessThanOrEqual(391);
       await expectFallbackCaptionsReadable(page);
       await expect(page.locator("main button.footer-email")).toBeVisible();
+      await expect(page.locator(".ai-hero-fallback")).toHaveCSS("opacity", "1");
       const question = page.locator("#questions details").nth(1);
       await question.locator("summary").click();
       await expect(question.locator("p")).toBeVisible();
