@@ -117,6 +117,7 @@ body.contact-page {
   z-index: 3;
 }
 .contact-sheet-row { grid-area: 1 / 1; min-height: 0; overflow: hidden; }
+.contact-sheet-row[hidden] { display: none; }
 .contact-form {
   display: grid;
   gap: clamp(28px, 3vw, 40px);

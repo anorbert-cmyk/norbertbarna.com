@@ -71,6 +71,8 @@
   var counterLive = form.querySelector("[data-contact-count-live]");
   var sentEmail = sheet.querySelector("[data-contact-sent-email]");
   var sent = sheet.querySelector(".contact-sent");
+  var writtenRow = sheet.querySelector(".contact-sheet-written");
+  var sentRow = sheet.querySelector(".contact-sheet-sent");
   var sentTitle = sheet.querySelector(".contact-sent-title");
   var again = sheet.querySelector(".contact-again");
 
@@ -464,6 +466,7 @@
     // so the sheet is never a blank white rectangle between the two states.
     form.setAttribute("inert", "");
     var reveal = function () {
+      if (sentRow) sentRow.hidden = false;
       if (sent) sent.hidden = false;
       if (!instant && sent) foldHeight(startHeight, sent.getBoundingClientRect().height + 2);
       if (sentTitle) {
@@ -475,6 +478,7 @@
     };
     var finish = function () {
       form.hidden = true;
+      if (writtenRow) writtenRow.hidden = true;
       form.removeAttribute("inert");
       sheet.style.height = "";
     };
@@ -492,6 +496,8 @@
     updateCounter();
     say("");
     if (sent) sent.hidden = true;
+    if (sentRow) sentRow.hidden = true;
+    if (writtenRow) writtenRow.hidden = false;
     form.removeAttribute("inert");
     form.hidden = false;
     sheet.setAttribute("data-state", "idle");
