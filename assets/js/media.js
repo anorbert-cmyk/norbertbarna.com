@@ -173,11 +173,12 @@
       button.hidden = false;
       button.disabled = deviceReduced();
       button.setAttribute("aria-checked", String(!reduced));
+      var hungarian = /^hu(?:-|$)/i.test(root.lang);
       button.title = deviceReduced()
-        ? "Motion is off to respect your device's reduced-motion or data-saving setting."
-        : "Turn automatic video and page motion on or off.";
+        ? (hungarian ? "A mozgás ki van kapcsolva, mert az eszközöd csökkentett mozgást vagy adatforgalom-kímélést kér." : "Motion is off to respect your device's reduced-motion or data-saving setting.")
+        : (hungarian ? "Az automatikus videók és az oldalmozgás be- vagy kikapcsolása." : "Turn automatic video and page motion on or off.");
       var label = button.querySelector("[data-motion-state]");
-      if (label) label.textContent = reduced ? "Off" : "On";
+      if (label) label.textContent = reduced ? (hungarian ? "Ki" : "Off") : (hungarian ? "Be" : "On");
     });
   }
 

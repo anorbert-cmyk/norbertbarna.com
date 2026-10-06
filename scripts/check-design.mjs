@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PRIVACY_PAGES, SERVICE_PAGES, UTILITY_PAGES } from "./service-pages.mjs";
+import { CONTACT_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, UTILITY_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK = readdirSync(join(ROOT, "work"))
@@ -442,7 +442,8 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
 // Shared editorial footer: lilac field, geometric art, native contacts, Work only.
 // No Contact column, no form, no sitemap, no Ironclad dunes, no
 // back-to-top on the copyright row. Mail href is assembled on click.
-const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`), ...PRIVACY_PAGES];
+const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`), ...PRIVACY_PAGES, ...CONTACT_PAGES,
+  "hu/index.html", "hu/munkak.html", ...HU_WORK_PAGES];
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
@@ -452,7 +453,8 @@ const footerCanon = footerPages.map((page) => {
   return page.startsWith("hu/") ? footerStructure(sameAssets) : sameAssets;
 });
 function footerStructure(footer) {
-  return footer.replace(/\s(?:lang|hreflang|aria-label|title)="[^"]*"/g, "").replace(/>[^<]*</g, "><");
+  return footer.replace(/\s(?:lang|hreflang|aria-label|title)="[^"]*"/g, "").replace(/>[^<]*</g, "><")
+    .replace(/href="\/hu\/munka\//g, 'href="/work/').replace(/href="\/hu"/g, 'href="/"');
 }
 if (new Set(footerCanon.filter((_, index) => !footerPages[index].startsWith("hu/"))).size !== 1 ||
     footerCanon.some((footer, index) => footerPages[index].startsWith("hu/") && footer !== footerStructure(footerCanon[0]))) {
@@ -490,8 +492,8 @@ if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(storyFooter) ||
     /footer-mesh|mesh-blur|footer-dunes|data-story-art/.test(storyFooter)) {
   fail("About must close with its still navy identity and legal footer, without animated artwork");
 }
-if (/href="\/contact"|mailto:|anorbert@pm\.me/i.test(story)) {
-  fail("About contact must keep the existing native email owner and omit raw addresses or invented contact routes");
+if (/mailto:|anorbert@pm\.me/i.test(story)) {
+  fail("About contact must keep the existing native email owner and omit raw addresses");
 }
 const storyToggles = [...story.matchAll(/(<button\b[^>]*\bdata-story-motion-toggle\b[^>]*>)([\s\S]*?)<\/button>/g)];
 if (storyToggles.length !== 1 || !/\btype="button"/.test(storyToggles[0]?.[1] || "") ||
@@ -501,7 +503,18 @@ if (storyToggles.length !== 1 || !/\btype="button"/.test(storyToggles[0]?.[1] ||
   fail("About motion pause must be one named native toggle, initially hidden until its controller is ready");
 }
 // Latest user direction replaces the footer-mesh and video-backed experience.
-if (existsSync(join(ROOT, "contact.html"))) fail("/contact must stay unpublished; contact is the native footer Email action");
+// The contact form (owner request, 2026-10-06) is published in both languages.
+for (const page of CONTACT_PAGES) {
+  if (!existsSync(join(ROOT, page))) { fail(`${page}: the contact form page must exist`); continue; }
+  const html = readFileSync(join(ROOT, page), "utf8");
+  if (/mailto:|@pm\.me/i.test(html)) fail(`${page}: the contact page must never expose an address`);
+  if (!/<form\b[^>]*\bid="contact-form"/.test(html) || !/name="website"/.test(html) || !/assets\/js\/contact\.[a-f0-9]{12}\.js/.test(html)) {
+    fail(`${page}: contact form, honeypot and its content-hashed script are required`);
+  }
+  for (const field of ["name", "email", "topic", "message"]) {
+    if (!new RegExp(`name="${field}"`).test(html)) fail(`${page}: contact form needs the ${field} field`);
+  }
+}
 if (/footer-mesh|mesh-blur|footer-dunes/.test(footerCanon[0])) fail("Editorial footer must not restore the old gradient field");
 if (!/editorial-footer-title/.test(footerCanon[0])) fail("Editorial footer needs its personal contact title");
 // The folded gate belongs to the home opening only (owner, 2026-10-06): no copy in the footer or the experience list.
@@ -580,7 +593,7 @@ for (const page of footerPages) {
   } else if (!/linkedin\.com\/in\/barna-norbert/.test(linkedin[0])) {
     fail(`${page}: footer LinkedIn icon must reuse the site LinkedIn URL`);
   }
-  const workHrefs = [...footer.matchAll(/href="(\/work\/[^"]+)"/g)].map((m) => m[1]);
+  const workHrefs = [...footer.matchAll(/href="(\/(?:hu\/munka|work)\/[^"]+)"/g)].map((m) => m[1].replace("/hu/munka/", "/work/"));
   if (JSON.stringify(workHrefs) !== JSON.stringify([
     "/work/raiffeisen", "/work/instructure", "/work/bitpanda", "/work/kineticare",
   ])) {
@@ -589,8 +602,8 @@ for (const page of footerPages) {
   if (/footer-col-title">Contact/.test(footer) || /<p class="footer-col-title">Contact<\/p>/.test(footer)) {
     fail(`${page}: ContactColumn: Contact heading must not ship`);
   }
-  if (/href="\/contact"/.test(html)) {
-    fail(`${page}: must not link to /contact`);
+  if (/href="\/(?:hu\/kapcsolat|contact)"/.test(footer)) {
+    fail(`${page}: the footer keeps its native Email action; the contact page lives in the menu`);
   }
   if (/href="\/work\/(?:benker|sportsgambit|onrobot)"/.test(footer)) {
     fail(`${page}: footer Work must not list Benker, SportsGambit, or OnRobot`);
@@ -657,7 +670,7 @@ for (const page of SERVICE_PAGES) {
     if (linkedin.length !== 1 || !linkedin[0][0].includes('href="https://www.linkedin.com/in/barna-norbert/"') || !linkedin[0][0].includes('rel="noopener noreferrer"')) fail(`${page}: the AI footer must retain the real, protected LinkedIn contact`);
     if (!footer.includes('href="/privacy"') || !footer.includes('href="/hu/adatvedelem"') || (footer.match(/data-consent-settings/g) || []).length !== 1 || !/<button\b[^>]*data-consent-settings[^>]*\shidden(?:\s|>)/.test(footer)) fail(`${page}: the AI footer must preserve privacy links and the initially hidden consent-settings hook`);
     if (language === "hu" && (!/<h2\b[^>]*id="footer-title"[^>]*lang="hu"/.test(footer) || !footer.includes('Analitikai beállítások'))) fail(`${page}: the Hungarian headline must declare its language and the footer controls must be Hungarian`);
-    if (/footer-col|editorial-footer|footer-mesh|footer-dunes|<form\b|href="\/work\//.test(footer) || /mailto:|anorbert@pm\.me|href="\/contact"|data-motion-toggle/.test(html)) fail(`${page}: the scoped AI footer must not restore duplicated work columns, forms, raw email or motion controls`);
+    if (/footer-col|editorial-footer|footer-mesh|footer-dunes|<form\b|href="\/work\//.test(footer) || /mailto:|anorbert@pm\.me|data-motion-toggle/.test(html)) fail(`${page}: the scoped AI footer must not restore duplicated work columns, forms, raw email or motion controls`);
     // Board artwork is decorative: sized, empty alt, inside an aria-hidden node.
     for (const [tag] of html.matchAll(/<img\b[^>]*assets\/images\/ai\/[^>]*>/g)) {
       if (!/\balt=""/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag)) fail(`${page}: board artwork must be sized with empty alt`);

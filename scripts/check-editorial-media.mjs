@@ -5,9 +5,9 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { UTILITY_PAGES, PRIVACY_PAGES, isServicePage } from './service-pages.mjs';
+import { UTILITY_PAGES, PRIVACY_PAGES, isServicePage, baseOf, HU_PAGES } from './service-pages.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'works.html', 'about.html', ...readdirSync(join(root,'work')).filter(f=>f.endsWith('.html')).sort().map(f=>`work/${f}`), ...UTILITY_PAGES];
+const pages = ['index.html', 'works.html', 'about.html', ...readdirSync(join(root,'work')).filter(f=>f.endsWith('.html')).sort().map(f=>`work/${f}`), ...UTILITY_PAGES, ...HU_PAGES];
 const origin = 'https://www.barnanorbert.com';
 
 function attrs(tag) {
@@ -78,7 +78,7 @@ for (const page of pages) {
     seenTitles.add(title); seenDescriptions.add(description);
     const canonical=[...html.matchAll(/<link\b[^>]*>/gi)].map(([tag])=>attrs(tag)).filter(a=>a.get('rel')==='canonical');
     assert.equal(canonical.length,1,'canonical count');
-    const expected=origin+(page==='index.html' ? '/' : '/'+page.replace(/\.html$/,''));
+    const expected=origin+(baseOf(page)==='index.html' ? '/' : '/'+page.replace(/\.html$/,''));
     assert.equal(canonical[0].get('href'),expected,'canonical target');
     assert.equal(meta(html,'og:url'),expected,'OG URL');
     assert.equal(meta(html,'og:title'),title,'OG title drift');
@@ -99,9 +99,9 @@ for (const page of pages) {
     assert(blocks.length,'JSON-LD is missing');
     const graph=blocks.flatMap(([,json])=>nodes(JSON.parse(json)));
     const types=graph.flatMap(n=>[].concat(n['@type']));
-    assert(types.includes(page==='index.html'?'ProfilePage':page==='works.html'?'CollectionPage':page==='about.html'?'AboutPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':'Article'),'page schema');
+    assert(types.includes(baseOf(page)==='index.html'?'ProfilePage':baseOf(page)==='works.html'?'CollectionPage':baseOf(page)==='about.html'?'AboutPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':'Article'),'page schema');
     if(isServicePage(page)) assert(types.includes('Service'),'service schema');
-    if(page.startsWith('work/')) {
+    if(baseOf(page).startsWith('work/')) {
       assert(types.includes('BreadcrumbList'),'breadcrumb schema');
       assert.equal((html.match(/<p class="case-evidence-note">/g)||[]).length,1,'evidence-note count');
     }

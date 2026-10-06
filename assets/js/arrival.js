@@ -47,11 +47,21 @@
   curtain = document.createElement("div");
   curtain.className = "site-arrival" + (isCase ? " site-arrival--case" : "");
   curtain.setAttribute("role", "region");
-  curtain.setAttribute("aria-label", "Introduction");
+  var hungarian = /^hu(?:-|$)/i.test(document.documentElement.lang);
+  var copy = hungarian ? {
+    region: "Bevezető", enter: "Belépés a portfólióba", label: "[ BELÉPÉS ]",
+    preparing: "A portfólió betöltődik. Az Escape vagy a Tab billentyűvel átugorhatod a bevezetőt.",
+    ready: "NORBERT.BARNA. A portfólió elkészült. Az Enterrel továbbléphetsz, az Escape vagy a Tab billentyűvel átugorhatod."
+  } : {
+    region: "Introduction", enter: "Enter the portfolio", label: "[ ENTER ]",
+    preparing: "Preparing the portfolio. Press Escape or Tab to skip the introduction.",
+    ready: "NORBERT.BARNA. The portfolio is ready. Press Enter to continue, or Escape or Tab to skip."
+  };
+  curtain.setAttribute("aria-label", copy.region);
   curtain.innerHTML = '<div class="site-arrival__meter" aria-hidden="true"><span class="site-arrival__counter">000</span></div>' +
     '<div class="site-arrival__center"><p class="site-arrival__wordmark" aria-hidden="true"></p>' +
-    '<button class="site-arrival__enter" type="button" hidden aria-label="Enter the portfolio">[ ENTER ]</button></div>' +
-    '<p class="site-arrival__status" role="status" aria-live="polite">Preparing the portfolio. Press Escape or Tab to skip the introduction.</p>';
+    '<button class="site-arrival__enter" type="button" hidden aria-label="' + copy.enter + '">' + copy.label + '</button></div>' +
+    '<p class="site-arrival__status" role="status" aria-live="polite">' + copy.preparing + '</p>';
   var wordmark = curtain.querySelector(".site-arrival__wordmark");
   var counter = curtain.querySelector(".site-arrival__counter");
   var enter = curtain.querySelector(".site-arrival__enter");
@@ -135,7 +145,7 @@
     clearTimeout(watchdog);
     setState("ready");
     enter.hidden = false;
-    status.textContent = "NORBERT.BARNA. The portfolio is ready. Press Enter to continue, or Escape or Tab to skip.";
+    status.textContent = copy.ready;
   }
   function fitWordmark() {
     if (finished) return;

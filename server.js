@@ -2,6 +2,7 @@ const express = require("express");
 const compression = require("compression");
 const fs = require("fs");
 const path = require("path");
+const { createContactRouter } = require("./lib/contact");
 
 const GOOGLE_SITE_VERIFICATION = "";
 const GSC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,100}$/;
@@ -151,7 +152,7 @@ app.use((req, res, next) => {
 // docs, dotfiles). Decode first: express.static decodes percent-encoding when
 // resolving, so the filter must see the same path it would serve.
 const PRIVATE_PATH =
-  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$|design\.md$|agents\.md$|tools(?:\/|$))/i;
+  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$|design\.md$|agents\.md$|tools(?:\/|$)|lib(?:\/|$))/i;
 app.use((req, res, next) => {
   let decoded;
   try {
@@ -168,6 +169,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// Contact form: proof-of-work challenge and the Resend relay. Mounted after
+// the private-path filter so /api can never expose repository files.
+app.use("/api/contact", createContactRouter());
+
 // Only release files whose names contain the first 12 characters of their
 // SHA-256 digest are immutable. check-motion and check-editorial-media verify
 // these release families; check-server independently verifies every digest. Webflow
@@ -175,7 +180,7 @@ app.use((req, res, next) => {
 // so those assets must revalidate after a deployment.
 const ASSET_ROOT = path.join(__dirname, "assets");
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
+  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");
@@ -207,6 +212,15 @@ app.get("/", (req, res, next) => {
     if (err) return next(err);
     res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
     res.type("html").send(injectGoogleSiteVerification(html));
+  });
+});
+
+// The Hungarian home lives at hu/index.html. express.static only tries the
+// .html extension when a path is missing, and /hu is a directory, so route it.
+app.get("/hu", (req, res, next) => {
+  res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+  res.sendFile(path.join(__dirname, "hu", "index.html"), (err) => {
+    if (err) next(err.status === 404 || err.code === "ENOENT" ? undefined : err);
   });
 });
 

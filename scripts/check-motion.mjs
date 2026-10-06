@@ -11,14 +11,14 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, assetPrefix } from "./service-pages.mjs";
+import { UTILITY_PAGES, assetPrefix, baseOf, HU_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES];
+const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES, ...HU_PAGES];
 const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
 
 let failures = 0;
@@ -147,7 +147,7 @@ for (const page of ALL_PAGES) {
     .map(match => attribute(match[0], "href")).filter(href => /\/story(?:\.[a-f0-9]+)?\.css$/i.test(href));
   const storyScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
     .map(match => attribute(match[0], "src")).filter(src => /\/story-motion(?:\.[a-f0-9]+)?\.js$/i.test(src));
-  if (page === "about.html") {
+  if (baseOf(page) === "about.html") {
     if (storyStyles.length !== 1 || storyStyles[0] !== `assets/css/${storyCssFile}` ||
         storyScripts.length !== 1 || storyScripts[0] !== `assets/js/${storyMotionFile}`) {
       fail(`${page}: story CSS and motion JS must each load one current byte-matched asset`);
@@ -189,7 +189,7 @@ for (const page of ALL_PAGES) {
     .map((match) => attribute(match[0], "href")).filter((href) => /\/home-composition(?:\.|\/)/.test(href));
   const compositionScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "src")).filter((src) => /\/home-composition(?:\.|\/)/.test(src));
-  if (page === "index.html") {
+  if (baseOf(page) === "index.html") {
     if (compositionStyles.length !== 1 || compositionStyles[0] !== `assets/css/${homeCompositionCssFile}` ||
         compositionScripts.length !== 1 || compositionScripts[0] !== `assets/js/${homeCompositionFile}`) {
       fail("home composition CSS and JS must each load their own current byte-matched asset once");
@@ -212,8 +212,8 @@ for (const page of ALL_PAGES) {
 for (const page of ANIMATED_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
   for (const { stem, file } of editorialFiles) {
-    const required = stem === "editorial-sections" ? page !== "about.html"
-      : stem !== "project-index" || page === "index.html" || page === "works.html";
+    const required = stem === "editorial-sections" ? baseOf(page) !== "about.html"
+      : stem !== "project-index" || baseOf(page) === "index.html" || baseOf(page) === "works.html";
     const refs = [...html.matchAll(/<link\b[^>]*href="([^"]+)"/g)].map(m => m[1]).filter(href => href.includes(`/assets/css/${stem}.`) || href.startsWith(`assets/css/${stem}.`));
     if (required && (refs.length !== 1 || refs[0] !== `${assetPrefix(page)}assets/css/${file}`)) fail(`${page}: expected one current ${stem} stylesheet`);
   }
@@ -233,7 +233,7 @@ for (const page of ANIMATED_PAGES) {
   }
   const arrivalRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/arrival(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
     .map((match) => match[1]);
-  if (page === "index.html" || page.startsWith("work/")) {
+  if (baseOf(page) === "index.html" || baseOf(page).startsWith("work/")) {
     const expectedArrivalRef = `${assetPrefix(page)}assets/js/${arrivalFile}`;
     if (arrivalRefs.length !== 1 || arrivalRefs[0] !== expectedArrivalRef) {
       fail(`${page}: expected one current content-hashed arrival script`);
@@ -248,7 +248,7 @@ for (const page of ANIMATED_PAGES) {
     if (scripts.filter((src) => src === `${assetPrefix(page)}assets/js/${immersiveNavigationFile}`).length !== 1) {
       fail(`${page}: expected the current stable utility-header script once`);
     }
-    if (page === "index.html") {
+    if (baseOf(page) === "index.html") {
       const sceneIndex = scripts.indexOf(`assets/js/${heroSceneFile}`);
       const compositionIndex = scripts.indexOf(`assets/js/${homeCompositionFile}`);
       const arrivalIndex = scripts.indexOf(`assets/js/${arrivalFile}`);
@@ -269,7 +269,7 @@ for (const page of ANIMATED_PAGES) {
 
   checkBackToTop(page, html);
 
-  if (page.startsWith("work/")) {
+  if (baseOf(page).startsWith("work/")) {
     const openingStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
       .map((match) => attribute(match[0], "href"))
       .filter((href) => /\/case-opening\./.test(href));

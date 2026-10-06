@@ -813,10 +813,38 @@ same change that caused the drift.
 | `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair of the same board, `lang="hu"` | default |
 | `/privacy` | `privacy.html` | Consent and analytics notice | default |
 | `/hu/adatvedelem` | `hu/adatvedelem.html` | Hungarian pair, `lang="hu"` | default |
+| `/contact` | `contact.html` | Contact form (name, email, topic, message), origami fold on send | default |
+| `/hu/kapcsolat` | `hu/kapcsolat.html` | Hungarian pair, `lang="hu"` | default |
+| `/hu` | `hu/index.html` | Hungarian home; served by an explicit route because `/hu` is a directory | default |
+| `/hu/munkak` | `hu/munkak.html` | Hungarian works index | default |
+| `/hu/rolam` | `hu/rolam.html` | Hungarian About | default |
+| `/hu/munka/{slug}` | `hu/munka/*.html` (7) | Hungarian case studies | default |
 | (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
 
-Thirteen content pages carry chrome, consent and the editorial footer.
-`sitemap.xml` lists fourteen URLs. `server.js` owns canonicalisation: apex to
+**Whole-site language switch (owner request, 2026-10-06).** Every content page
+has an English and a Hungarian version with the same structure, classes and
+ids. The menu carries one `.lang-switch` (EN | HU) as the last item of
+`.nav-menu-area`; the current language has `aria-current="page"`. Hungarian
+pages link only Hungarian pages, except the footer's explicit English privacy
+link. `<head>` carries reciprocal `en`, `hu` and `x-default` (English)
+alternates. Checks treat `hu/…` pages as their English counterpart through
+`baseOf()` in `scripts/service-pages.mjs`. JavaScript strings (navigation,
+consent, arrival, media and About motion toggles) follow `<html lang>`.
+
+**Contact page (owner request, 2026-10-06).** The menu links Contact /
+Kapcsolat. The form posts JSON to `POST /api/contact` after a proof-of-work
+challenge from `GET /api/contact/challenge` (`lib/contact.js`). Spam defence:
+HMAC-signed challenge, SHA-256 proof of work, honeypot field `website`,
+minimum fill time, single-use challenges, same-origin and JSON-only posts,
+16 kB body limit, link limit, per-address and global rate limits. Delivery
+goes through Resend with `RESEND_API_KEY`, `CONTACT_TO` and `CONTACT_FROM`;
+the destination address lives only in `CONTACT_TO`, never in markup or
+source. Without configuration the API answers 503 and the page offers
+LinkedIn. The footer keeps its native Email action.
+
+Content pages carry chrome, consent and the editorial footer.
+`sitemap.xml` lists every canonical URL: the English pages in hiring order,
+then the utility pairs, then the Hungarian mirror. `server.js` owns canonicalisation: apex to
 `www`, and `/index`, `/{slug}`, trailing slashes and `.html` all 301 to one
 URL. Adding a page means adding it to the checks that enumerate pages, not
 only to the sitemap.
@@ -972,7 +1000,7 @@ scene is ready and motion is allowed.
 
 ### Checks
 
-`npm test` runs eight scripts in order; `npm run test:e2e` runs seventeen
+`npm test` runs ten scripts in order; `npm run test:e2e` runs seventeen
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 
@@ -986,6 +1014,7 @@ the file that already owns that subject.
 | `check-design.mjs` | This file. Named anti-patterns, work order, header lock, home H1 and JSON-LD identity |
 | `check-client-seo.mjs` | Service pages: visible offer, en/hu equivalence, no invented price or review |
 | `check-analytics.mjs` | Gate and owner order, hidden settings, EU host, the insights lock for project **265707** |
+| `check-contact.mjs` | Contact API: challenge, proof of work, honeypot, timing, validation, origin, limits, delivery; no page exposes an address |
 
 Playwright specs, grouped by what they defend:
 

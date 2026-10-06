@@ -27,8 +27,19 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 - [About: A story in motion](https://www.barnanorbert.com/about): the career story, from enterprise security software to banking, AI in enterprise learning and an AI platform in capital markets
 - [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and linked evidence
 - [AI-integráció vállalkozásoknak](https://www.barnanorbert.com/hu/ai-integracio): Hungarian version of the same offer
-- [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice (English)
+- [Contact](https://www.barnanorbert.com/contact): contact form for project, AI integration and role enquiries
+- [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice and contact form data use (English)
 - [Analitika és adatvédelem](https://www.barnanorbert.com/hu/adatvedelem): Hungarian analytics and privacy notice
+
+## Hungarian pages
+
+Every page has a Hungarian version with the same content. The menu's EN | HU switch moves between the pair.
+
+- [Főoldal](https://www.barnanorbert.com/hu): Hungarian home page
+- [Válogatott munkák](https://www.barnanorbert.com/hu/munkak): Hungarian portfolio index
+- [Rólam](https://www.barnanorbert.com/hu/rolam): Hungarian career story
+- Esettanulmányok: https://www.barnanorbert.com/hu/munka/raiffeisen, /hu/munka/instructure, /hu/munka/bitpanda, /hu/munka/benker, /hu/munka/sportsgambit, /hu/munka/kineticare, /hu/munka/onrobot
+- [Kapcsolat](https://www.barnanorbert.com/hu/kapcsolat): Hungarian contact form
 
 ## Case studies
 
@@ -63,7 +74,8 @@ Instructure and SportsGambit are AI product work. Raiffeisen, Bitpanda, Benker, 
 ## Contact
 
 - [LinkedIn](https://www.linkedin.com/in/barna-norbert/)
-- Project enquiries use the email button on the site; no address is published in this file.
+- [Contact form](https://www.barnanorbert.com/contact) (Hungarian: https://www.barnanorbert.com/hu/kapcsolat): name, email, topic (website or app development, AI integration, a product leadership role, something else) and message
+- Project enquiries can also use the email button on the site; no address is published in this file.
 
 ## Canonical and reuse guidance
 
