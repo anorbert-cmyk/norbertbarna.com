@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-const routes = ["/works", ...["benker", "bitpanda", "instructure", "kineticare", "onrobot", "raiffeisen", "sportsgambit"].map((slug) => `/work/${slug}`)];
+const routes = ["/works", ...["benker", "bitpanda", "instructure", "kineticare", "onrobot", "raiffeisen", "sportsgambit"].map((slug) => `/work/${slug}`),
+  // The Hungarian mirror uses the same navy reference bar.
+  "/hu/munkak", "/hu/munka/instructure", "/hu/munka/kineticare"];
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -118,3 +120,37 @@ test("an enlarged sticky header clears native case-section links", async ({ page
   await expect.poll(() => page.locator("#the-process").evaluate((heading) => heading.getBoundingClientRect().top - document.querySelector(".navbar").getBoundingClientRect().bottom)).toBeGreaterThanOrEqual(0);
   await expectBar(page, "native section destination");
 });
+
+// NN/g audit (2026-10-06): on the work and case bars the decorative counter
+// yields below 1440px and the repeated wordmark below 1200px, so destinations
+// stay on one row. The wordmark repeats the home link and stays out of the tab order.
+for (const route of ["/works", "/work/instructure", "/hu/munkak", "/hu/munka/instructure"]) {
+  test(`${route}: decorative counter and wordmark yield before destinations wrap`, async ({ page }) => {
+    await page.goto(route, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    const mark = page.locator(".navbar .home-nav-wordmark");
+    await expect(mark).toHaveAttribute("tabindex", "-1");
+    await expect(mark).toHaveAttribute("aria-hidden", "true");
+    // Hungarian Works labels are longer: there the counter yields up to 1600px (compact-navigation.css).
+    const counterFrom = route === "/hu/munkak" ? 1600 : 1440;
+    for (const width of [992, 1199, 1200, 1280, 1439, 1440, 1599, 1600, 1920]) {
+      await page.setViewportSize({ width, height: 900 });
+      const state = await expectBar(page, `${width}`);
+      const visible = await page.locator(".navbar").evaluate((nav) => {
+        const shown = (element) => Boolean(element) && element.getBoundingClientRect().width > 0 && getComputedStyle(element).visibility !== "hidden";
+        return { counter: shown(nav.querySelector(".home-nav-progress")), wordmark: shown(nav.querySelector(".home-nav-wordmark")) };
+      });
+      expect(visible.counter, `${width}: counter`).toBe(width >= counterFrom);
+      expect(visible.wordmark, `${width}: wordmark`).toBe(width >= 1200);
+      const destinations = state.controls.filter((control) => control.label !== "NORBERT.BARNA");
+      const centers = destinations.map((control) => control.y + control.height / 2);
+      expect(Math.max(...centers) - Math.min(...centers), `${width}: destinations share one row`).toBeLessThanOrEqual(2);
+    }
+    // Keyboard order: the logo, then real destinations; never the decorative wordmark.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.locator(".navbar .nav-logo-wrap").focus();
+    await page.keyboard.press("Tab");
+    expect(await page.evaluate(() => document.activeElement.classList.contains("home-nav-wordmark"))).toBe(false);
+    expect(await page.evaluate(() => Boolean(document.activeElement.closest(".navbar")))).toBe(true);
+  });
+}

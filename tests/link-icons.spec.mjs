@@ -9,11 +9,19 @@ test.beforeEach(async ({ page }) => {
 
 const routes = [
   { path: "/", controls: [{ selector: ".home-intro-work", name: "View selected work", href: "/works" }] },
+  { path: "/hu", controls: [{ selector: ".home-intro-work", name: "Válogatott munkáim", href: "/hu/munkak" }] },
   { path: "/about", controls: [
     { selector: ".story-perspective .story-text-link", name: "Explore the work", href: "/works" },
-    { selector: ".story-next a.story-text-link", name: "View works", href: "/works" },
-    { selector: ".story-next button.footer-email", name: "Get in touch", type: "button" },
+    { selector: '.story-next a.story-text-link[href="/works"]', name: "View works", href: "/works" },
+    // The closing contact action is a native link to the contact form (owner, 2026-10-06).
+    { selector: ".story-next a.footer-email", name: "Get in touch", href: "/contact", link: true },
     { selector: ".story-footer-top a[target='_blank']", name: "Find me on LinkedIn (opens in a new tab)", href: "https://www.linkedin.com/in/barna-norbert/" },
+  ] },
+  { path: "/hu/rolam", controls: [
+    { selector: ".story-perspective .story-text-link", name: "Nézd meg a munkáimat", href: "/hu/munkak" },
+    { selector: '.story-next a.story-text-link[href="/hu/munkak"]', name: "Munkáim", href: "/hu/munkak" },
+    { selector: ".story-next a.footer-email", name: "Írj nekem", href: "/hu/kapcsolat", link: true },
+    { selector: ".story-footer-top a[target='_blank']", name: "LinkedIn-profilom (új lapon nyílik meg)", href: "https://www.linkedin.com/in/barna-norbert/" },
   ] },
 ];
 
@@ -24,11 +32,17 @@ for (const viewport of [{ width: 320, height: 720 }, { width: 1366, height: 900 
       const response = await page.goto(route.path);
       expect(response.status()).toBe(200);
       await page.evaluate(() => document.fonts.ready);
-      for (const { selector, name, href, type } of route.controls) {
+      await expect(page.locator("button.footer-email")).toHaveCount(0);
+      for (const { selector, name, href, link } of route.controls) {
         const control = page.locator(selector);
+        await expect(control).toHaveCount(1);
         await expect(control).toHaveAccessibleName(name);
         if (href) await expect(control).toHaveAttribute("href", href);
-        if (type) await expect(control).toHaveAttribute("type", type);
+        if (link) {
+          await expect(control).toHaveJSProperty("tagName", "A");
+          expect(await control.getAttribute("type")).toBeNull();
+          expect(await control.getAttribute("title")).toBeNull();
+        }
         await control.scrollIntoViewIfNeeded();
         const icon = control.locator("svg.link-icon");
         await expect(icon).toBeVisible();

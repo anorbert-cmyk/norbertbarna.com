@@ -53,25 +53,39 @@ async function readingPositions(page) {
   });
 }
 
-for (const width of [992, 1280, 1920]) {
-  test(`${width}: home keeps one opaque top bar with separate destinations through every chapter`, async ({ page }) => {
+// One Contact entry, LinkedIn as the one external utility, the language link last (NN/g audit, 2026-10-06).
+const HOME_BARS = {
+  "/": { labels: ["NB", "Works", "About", "AI integration", "Contact", "LinkedIn", "Magyar"], ai: "/ai-integration", pair: "/hu" },
+  "/hu": { labels: ["NB", "Munkák", "Rólam", "AI-integráció", "Kapcsolat", "LinkedIn", "English"], ai: "/hu/ai-integracio", pair: "/" },
+};
+
+for (const [route, width] of [["/", 992], ["/", 1280], ["/", 1920], ["/hu", 992], ["/hu", 1280]]) {
+  test(`${width}${route === "/" ? "" : ` ${route}`}: home keeps one opaque top bar with separate destinations through every chapter`, async ({ page }) => {
+    const bar = HOME_BARS[route];
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/", { waitUntil: "load" });
+    await page.goto(route, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
     await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
     await settle(page);
     expect(await page.locator(".navbar").evaluate((nav) => nav.getBoundingClientRect().top), "the footer must not relocate the home menu").toBe(0);
     await page.evaluate(() => scrollTo(0, 0));
     const opening = await expectHomeBar(page, "opening");
-    expect(opening.controls.map((control) => control.label)).toEqual(["NB", "Works", "About", "AI integration", "LinkedIn", "Email"]);
+    expect(opening.controls.map((control) => control.label)).toEqual(bar.labels);
+    const languageLink = page.locator(".navbar a.lang-switch");
+    await expect(languageLink).toHaveAttribute("href", bar.pair);
+    expect(await languageLink.getAttribute("aria-label"), "the visible language name is the accessible name").toBeNull();
+    const centers = opening.controls.map((control) => control.y + control.height / 2);
+    expect(Math.max(...centers) - Math.min(...centers), "normal text keeps every destination on one row").toBeLessThanOrEqual(2);
+    expect(opening.controls.every((control, index, all) => index === 0 || control.x >= all[index - 1].x + all[index - 1].width - 1),
+      "destinations read left to right in source order").toBe(true);
     for (const y of await readingPositions(page)) {
       await page.evaluate((position) => scrollTo(0, position), y);
       const state = await expectHomeBar(page, `scroll ${y}`);
       expect(state.controls, "the menu never redistributes or fades after Selected work or at the footer").toEqual(opening.controls);
     }
     await expect(page.locator(".immersive-nav-landing")).toHaveCount(0);
-    await page.locator('.navbar a[href="/ai-integration"]').click();
-    await expect(page).toHaveURL(/\/ai-integration$/);
+    await page.locator(`.navbar a[href="${bar.ai}"]`).click();
+    await expect(page).toHaveURL(new RegExp(`${bar.ai}$`));
   });
 }
 
@@ -79,7 +93,7 @@ test("1024: doubled navigation text and WCAG spacing reflow without collisions",
   await page.setViewportSize({ width: 1024, height: 900 });
   await page.goto("/", { waitUntil: "load" });
   await page.locator(".navbar").evaluate((nav) => {
-    [...nav.querySelectorAll(".nav-link, .footer-email, .home-nav-label, .home-nav-monogram")].forEach((control) => {
+    [...nav.querySelectorAll(".nav-link, .home-nav-label, .home-nav-monogram")].forEach((control) => {
       control.style.fontSize = `${parseFloat(getComputedStyle(control).fontSize) * 2}px`;
       control.style.lineHeight = "1.5";
       control.style.letterSpacing = ".12em";
@@ -87,7 +101,8 @@ test("1024: doubled navigation text and WCAG spacing reflow without collisions",
     });
   });
   const opening = await expectHomeBar(page, "enlarged opening");
-  expect(opening.controls).toHaveLength(6);
+  // Enlarged labels may wrap to a second row, but every destination stays separate and hittable.
+  expect(opening.controls.map((control) => control.label)).toEqual(HOME_BARS["/"].labels);
   for (const y of await readingPositions(page)) {
     await page.evaluate((position) => scrollTo(0, position), y);
     expect((await expectHomeBar(page, `enlarged scroll ${y}`)).controls).toEqual(opening.controls);

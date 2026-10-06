@@ -57,22 +57,25 @@
 <script defer src="/assets/js/analytics-config.js"></script>
 <script defer src="/assets/js/consent.js"></script>
 <script defer src="/assets/js/analytics.js"></script>
-<link rel="stylesheet" href="/assets/css/editorial-sections.218567debbae.css"/><link rel="stylesheet" href="/assets/css/compact-navigation.3540d4fd9f9d.css"/><link rel="stylesheet" href="/assets/css/contact.7e4408e21bdf.css"/>
-<script defer src="/assets/js/contact.88f58fcc3045.js"></script>
+<link rel="stylesheet" href="/assets/css/editorial-sections.218567debbae.css"/><link rel="stylesheet" href="/assets/css/compact-navigation.3540d4fd9f9d.css"/><link rel="stylesheet" href="/assets/css/contact.css"/>
+<script defer src="/assets/js/contact.js"></script>
 </head>
 <body class="works-index contact-page">
 <a class="skip-to-content" href="#main-content">Skip to content</a>
 <div class="navbar w-nav" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner"><div class="container w-container"><div class="nav-wrap dark"><div class="work-nav-start"><a aria-label="Norbert Barna, home" class="nav-logo-wrap logo w-nav-brand" href="/"><img alt="Norbert Barna" decoding="async" src="/assets/images/68f9e9de8ed08e31e52c4188_NB.svg" width="62" height="34"/></a></div><a class="home-nav-wordmark" href="/" tabindex="-1" aria-hidden="true">NORBERT.BARNA</a><div class="work-nav-end"><span class="home-nav-progress" aria-hidden="true" hidden>[ <span>001</span> ]</span><button type="button" class="menu-button w-nav-button" aria-label="Open navigation" aria-controls="primary-navigation" aria-expanded="false"><span class="black w-icon-nav-menu"></span></button><nav id="primary-navigation" class="nav-menu grey w-nav-menu" role="navigation" aria-label="Main navigation"><div class="nav-menu-area"><a class="nav-link white w-nav-link" href="/works">Works</a><a class="nav-link white w-nav-link" href="/about">About</a><a class="nav-link white w-nav-link" href="/ai-integration">AI integration</a><a aria-current="page" class="nav-link white w-nav-link w--current" href="/contact">Contact</a><a aria-label="Find me on LinkedIn (opens in a new tab)" class="nav-link white w-nav-link" href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer">LinkedIn</a><a class="nav-link white w-nav-link lang-switch" href="/hu/kapcsolat" hreflang="hu" lang="hu" rel="alternate">Magyar</a></div></nav></div></div></div></div>
-<main id="main-content" tabindex="-1">
+<main id="main-content" tabindex="-1" data-contact-glass="pending">
+<section class="contact-stage" data-contact-stage data-glass-stage data-glass-frame aria-labelledby="contact-title">
+<div class="contact-stage-art" data-contact-art aria-hidden="true"><img class="contact-stage-picture" data-glass-backdrop src="/assets/images/story/fold-detail.webp" width="2172" height="724" alt="" fetchpriority="high" decoding="async"/><div class="contact-stage-glass" data-glass-scene data-glass-field="#D6D4ED" data-glass-slot="0.56 0.93 0.13 0.85"><canvas class="contact-stage-canvas" aria-hidden="true"></canvas></div></div>
 <div class="contact-layout">
+<div class="contact-paper">
 <header class="contact-opening">
 <p class="contact-eyebrow">Norbert Barna / Product VP</p>
-<h1 class="contact-title">Write to me.</h1>
+<h1 class="contact-title" id="contact-title">Write to me.</h1>
 <p class="contact-lede">For product work, AI integration, a website or app build, or a product leadership role. I read every message myself and answer personally.</p>
 </header>
 <div class="contact-sheet" data-state="idle" data-contact-sheet>
-<div class="contact-sheet-row contact-sheet-written">
-<form id="contact-form" class="contact-form" method="post" action="/api/contact" novalidate>
+<div class="contact-written" data-contact-written>
+<form id="contact-form" class="contact-form" novalidate>
 <div class="contact-error-summary" role="alert" tabindex="-1" hidden><h2 class="contact-error-summary-title">There is a problem</h2><ul class="contact-error-summary-list"></ul></div>
 <p class="contact-form-note">All fields are required.</p>
 <div class="contact-field" data-field="name">
@@ -88,10 +91,10 @@
 <fieldset class="contact-topics" data-field="topic">
 <legend class="contact-label">What do you want to talk about?</legend>
 <div class="contact-topic-grid">
-<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-web" type="radio" name="topic" value="web" required/><span class="contact-topic-fold" aria-hidden="true"></span><span class="contact-topic-text">Website or app development</span></label>
-<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-ai" type="radio" name="topic" value="ai"/><span class="contact-topic-fold" aria-hidden="true"></span><span class="contact-topic-text">AI integration</span></label>
-<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-role" type="radio" name="topic" value="role"/><span class="contact-topic-fold" aria-hidden="true"></span><span class="contact-topic-text">A product leadership role</span></label>
-<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-other" type="radio" name="topic" value="other"/><span class="contact-topic-fold" aria-hidden="true"></span><span class="contact-topic-text">Something else</span></label>
+<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-web" type="radio" name="topic" value="web" required/><svg class="contact-topic-mark" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="mark-sheet" d="M1.5 1.5v17h17Z"/><path class="mark-fold" d="M5 8.5V16h7.5Z"/></svg><span class="contact-topic-text">Website or app development</span></label>
+<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-ai" type="radio" name="topic" value="ai"/><svg class="contact-topic-mark" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="mark-sheet" d="M1.5 1.5v17h17Z"/><path class="mark-fold" d="M5 8.5V16h7.5Z"/></svg><span class="contact-topic-text">AI integration</span></label>
+<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-role" type="radio" name="topic" value="role"/><svg class="contact-topic-mark" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="mark-sheet" d="M1.5 1.5v17h17Z"/><path class="mark-fold" d="M5 8.5V16h7.5Z"/></svg><span class="contact-topic-text">A product leadership role</span></label>
+<label class="contact-topic"><input class="contact-topic-input" id="contact-topic-other" type="radio" name="topic" value="other"/><svg class="contact-topic-mark" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path class="mark-sheet" d="M1.5 1.5v17h17Z"/><path class="mark-fold" d="M5 8.5V16h7.5Z"/></svg><span class="contact-topic-text">Something else</span></label>
 </div>
 <p class="contact-error" id="contact-topic-error" hidden></p>
 </fieldset>
@@ -101,7 +104,7 @@
 <div class="contact-field-foot"><p class="contact-hint" id="contact-message-hint">At least 20 characters. A few lines about what you are working on is plenty.</p><p class="contact-counter" id="contact-message-counter"><span data-contact-count>0</span> / 5000</p><span class="contact-sr" aria-live="polite" data-contact-count-live></span></div>
 <p class="contact-error" id="contact-message-error" hidden></p>
 </div>
-<div class="contact-hp" aria-hidden="true"><label for="contact-website">Website</label><input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off"/></div>
+<div class="contact-hp" aria-hidden="true"><label for="contact-website">Website</label><input id="contact-website" name="hp_7f3" type="text" tabindex="-1" autocomplete="off"/></div>
 <div class="contact-actions">
 <button type="submit" class="contact-submit">Send message <svg class="link-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="m3 6 9 7 9-7"/></svg></button>
 <p class="contact-status" role="status" aria-live="polite"></p>
@@ -109,29 +112,24 @@
 <p class="contact-privacy">I use your details only to answer you. <a href="/privacy">Privacy</a></p>
 <noscript><p class="contact-noscript">Sending needs JavaScript: the spam check runs in your browser. You can also write to me on <a href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer">LinkedIn</a>.</p></noscript>
 </form>
+<p class="contact-aside-note">Prefer LinkedIn? <a href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer" aria-label="Find me on LinkedIn (opens in a new tab)"><svg class="footer-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 9.1H4.1V20h2.5V9.1ZM5.35 4.2a1.55 1.55 0 1 0 0 3.1 1.55 1.55 0 0 0 0-3.1ZM19.9 13.25c0-3.18-1.7-4.66-3.98-4.66-1.84 0-2.66 1.02-3.12 1.74V9.1h-2.48c.04.72 0 10.9 0 10.9h2.48v-6.08c0-.33.02-.66.12-.9.27-.66.87-1.35 1.89-1.35 1.33 0 1.87 1.02 1.87 2.5V20h2.22v-6.75Z"/></svg>Find me there</a></p>
 </div>
-<div class="contact-sheet-row contact-sheet-sent" hidden>
 <div class="contact-sent" hidden>
-<div class="contact-envelope-stage" aria-hidden="true"><div class="contact-envelope"><div class="contact-envelope-back"></div><div class="contact-envelope-letter"><span></span><span></span><span></span></div><div class="contact-envelope-side contact-envelope-side-left"></div><div class="contact-envelope-side contact-envelope-side-right"></div><div class="contact-envelope-bottom"></div><div class="contact-envelope-flap"></div></div></div>
+<div class="contact-fold" data-contact-fold aria-hidden="true" hidden><div class="contact-fold-sheet"><div class="contact-fold-panel is-top"><div class="contact-fold-half is-left"><span class="contact-fold-face is-front"></span><span class="contact-fold-face is-back"></span></div><div class="contact-fold-half is-right"><span class="contact-fold-face is-front"></span><span class="contact-fold-face is-back"></span></div></div><div class="contact-fold-panel is-mid"><div class="contact-fold-half is-left"><span class="contact-fold-face is-front"></span><span class="contact-fold-face is-back"></span></div><div class="contact-fold-half is-right"><span class="contact-fold-face is-front"></span><span class="contact-fold-face is-back"></span></div></div><div class="contact-fold-panel is-bottom"><div class="contact-fold-half is-left"><span class="contact-fold-face is-front"></span><span class="contact-fold-face is-back"></span></div><div class="contact-fold-half is-right"><span class="contact-fold-face is-front"></span><span class="contact-fold-face is-back"></span></div></div></div></div>
+<div class="contact-sent-copy" hidden>
 <h2 class="contact-sent-title" tabindex="-1">Sent. Thank you.</h2>
 <p class="contact-sent-text">Your message is on its way. I read every message myself and will reply to <strong data-contact-sent-email>your address</strong>.</p>
 <div class="contact-sent-actions"><button type="button" class="contact-again">Write another message</button><a class="contact-sent-link" href="/works">See selected work</a></div>
 </div>
 </div>
 </div>
-<aside class="contact-aside" aria-label="About this page">
-<div class="contact-aside-inner">
-<figure class="contact-figure">
-<svg viewBox="0 0 360 440" role="img" aria-labelledby="contact-figure-title"><title id="contact-figure-title">The crease pattern of an envelope: four flaps around a letter</title><rect x=".5" y=".5" width="359" height="439" fill="#D6D4ED"/><polygon points="0,0 360,0 180,220" fill="#BDB414"/><polygon points="360,0 360,440 180,220" fill="#1B3A32"/><polygon points="0,440 360,440 180,220" fill="#0A1628"/><polygon points="0,0 0,440 180,220" fill="#1B3A32" fill-opacity=".84"/><path d="M0 0 360 440M360 0 0 440" stroke="#D6D4ED" stroke-opacity=".7" stroke-width="1.5" stroke-dasharray="7 7"/><rect x="124" y="146" width="112" height="148" fill="#fff" stroke="#0A1628" stroke-opacity=".26"/><path d="M142 174h50M142 196h76M142 212h64M142 228h70M142 244h44" stroke="#0A1628" stroke-opacity=".32" stroke-width="3" stroke-linecap="square"/><rect x=".5" y=".5" width="359" height="439" fill="none" stroke="#0A1628" stroke-opacity=".26"/></svg>
-<figcaption data-caption-sent="Folded, sealed and on its way.">Your message, before it folds. The sheet becomes an envelope when you send it.</figcaption>
-</figure>
-<p class="contact-aside-note">Prefer LinkedIn? <a href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer" aria-label="Find me on LinkedIn (opens in a new tab)"><svg class="footer-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 9.1H4.1V20h2.5V9.1ZM5.35 4.2a1.55 1.55 0 1 0 0 3.1 1.55 1.55 0 0 0 0-3.1ZM19.9 13.25c0-3.18-1.7-4.66-3.98-4.66-1.84 0-2.66 1.02-3.12 1.74V9.1h-2.48c.04.72 0 10.9 0 10.9h2.48v-6.08c0-.33.02-.66.12-.9.27-.66.87-1.35 1.89-1.35 1.33 0 1.87 1.02 1.87 2.5V20h2.22v-6.75Z"/></svg>Find me there</a></p>
 </div>
-</aside>
 </div>
+</section>
 </main>
 <footer class="footer-section editorial-footer"><div class="container footer-inner"><div class="footer-chrome"><div class="footer-ident"><a class="footer-brand" href="/" aria-label="Norbert Barna, home"><img alt="" class="footer-wordmark" decoding="async" src="/assets/images/68f9e9de8ed08e31e52c4188_NB.svg" width="110" height="60"/></a><h2 class="editorial-footer-title">Let’s talk<br>product.</h2><p class="footer-lede">Product VP. I lead AI products in regulated finance and high-trust systems.</p><div class="footer-cta"><a class="footer-email" href="/contact" aria-current="page">Discuss your project</a><a class="footer-contact-link" href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer" aria-label="Find me on LinkedIn (opens in a new tab)"><svg class="footer-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 9.1H4.1V20h2.5V9.1ZM5.35 4.2a1.55 1.55 0 1 0 0 3.1 1.55 1.55 0 0 0 0-3.1ZM19.9 13.25c0-3.18-1.7-4.66-3.98-4.66-1.84 0-2.66 1.02-3.12 1.74V9.1h-2.48c.04.72 0 10.9 0 10.9h2.48v-6.08c0-.33.02-.66.12-.9.27-.66.87-1.35 1.89-1.35 1.33 0 1.87 1.02 1.87 2.5V20h2.22v-6.75Z"/></svg><span class="editorial-linkedin-label">LinkedIn</span></a></div></div><nav class="footer-nav" aria-label="Footer"><div class="footer-col"><p class="footer-col-title">Work</p><ul class="footer-col-list"><li><a href="/work/raiffeisen">Raiffeisen</a></li><li><a href="/work/instructure">Instructure</a></li><li><a href="/work/bitpanda">Bitpanda</a></li><li><a href="/work/kineticare">Kineticare</a></li><li><a href="/works">All work</a></li></ul></div></nav></div><div class="footer-bar"><p class="footer-copyright">© 2026 Norbert Barna</p><div class="footer-privacy"><a href="/privacy">Privacy</a><button type="button" data-consent-settings hidden>Analytics settings</button></div></div></div></footer>
 <script src="/assets/js/media.5551c5da65f7.js"></script>
 <script src="/assets/js/navigation.js"></script><script src="/assets/js/vendor/gsap.min.js"></script><script src="/assets/js/vendor/ScrollTrigger.min.js"></script><script src="/assets/js/immersive-navigation.431c65efbb7b.js"></script><script src="/assets/js/animations.6f9c127a116b.js"></script>
+<script src="/assets/js/hero-scene.b93c36afd90f.js"></script>
 </body>
 </html>

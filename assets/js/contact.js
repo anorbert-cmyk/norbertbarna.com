@@ -1,11 +1,61 @@
-/** Contact form owner: validation, proof-of-work challenge, send, fold.
- *  Plain ES2018, no dependencies. Strings follow the document language. */
+/** Contact page owners. Plain ES2018, no dependencies. Strings follow the
+ *  document language.
+ *  1. The glass: hero-scene.js renders the chevron in its own slot on the
+ *     paper; this owner only tells it how far the stage has scrolled
+ *     (the compact contract) and records its verdict on <main>.
+ *  2. The form: validation, proof-of-work challenge, send, fold. */
+(function () {
+  "use strict";
+  var root = document.querySelector("main[data-contact-glass]");
+  var stage = root && root.querySelector("[data-contact-stage]");
+  var art = stage && stage.querySelector("[data-contact-art]");
+  var host = stage && stage.querySelector("[data-glass-scene]");
+  if (!root || !stage || !art || !host) return;
+  var frame = 0, destroyed = false, near = true, current = "";
+  var listeners = new AbortController();
+  function on(target, name, handler, options) {
+    target.addEventListener(name, handler, Object.assign({ signal: listeners.signal }, options || {}));
+  }
+  function clamp(value) { return Math.max(0, Math.min(1, value)); }
+  function smooth(value) { value = clamp(value); return value * value * (3 - 2 * value); }
+  function stop() { if (frame) cancelAnimationFrame(frame); frame = 0; }
+  function request() { if (!frame && !destroyed && near && !document.hidden) frame = requestAnimationFrame(paint); }
+  function paint() {
+    frame = 0;
+    if (destroyed || document.hidden) return;
+    var scene = window.PortfolioHeroScene;
+    // Before the renderer reports, only the picture shows; an unavailable
+    // renderer, no JavaScript and a destroyed owner leave the picture alone.
+    var verdict = !scene ? "off" : scene.status === "fallback" || scene.status === "destroyed" ? "off" : scene.status === "ready" ? "on" : "pending";
+    if (verdict !== current) { root.dataset.contactGlass = verdict; current = verdict; }
+    if (!scene || verdict === "off" || typeof scene.setCompactProgress !== "function") return;
+    var box = stage.getBoundingClientRect();
+    var travel = Math.max(1, stage.offsetHeight - art.offsetHeight);
+    scene.setCompactProgress(smooth(-box.top / travel));
+  }
+  on(window, "scroll", request, { passive: true });
+  on(window, "resize", request, { passive: true });
+  on(window, "load", request, { once: true });
+  on(window, "portfolio:heroready", request);
+  on(window, "portfolio:motionchange", request);
+  on(window, "pageshow", request);
+  on(document, "visibilitychange", function () { if (document.hidden) stop(); else request(); });
+  if (typeof IntersectionObserver === "function") {
+    new IntersectionObserver(function (entries) {
+      near = entries.some(function (entry) { return entry.isIntersecting; });
+      if (near) request(); else stop();
+    }, { rootMargin: "120px 0px" }).observe(stage);
+  }
+  if (typeof ResizeObserver === "function") new ResizeObserver(request).observe(stage);
+  request();
+})();
+
 (function () {
   "use strict";
 
   var form = document.getElementById("contact-form");
   var sheet = document.querySelector("[data-contact-sheet]");
-  if (!form || !sheet || !window.fetch || !window.crypto || !window.crypto.subtle) return;
+  if (!form || !sheet) return;
 
   var isHungarian = /^hu(?:-|$)/i.test(document.documentElement.lang);
   var lang = isHungarian ? "hu" : "en";
@@ -27,6 +77,7 @@
       sent: "Your message is sent.",
       rate: "Too many messages from here for now. Please try again later.",
       failed: "Sending failed. Please try again, or reach me on " + linkedInLink("LinkedIn") + ".",
+      unsupported: "This browser cannot run the spam check. Please write to me on " + linkedInLink("LinkedIn") + ".",
       errorPrefix: "Error: ",
       summaryTitle: "There is a problem",
       remaining: function (n) { return n === 1 ? "You have 1 character left." : "You have " + n + " characters left."; },
@@ -45,6 +96,7 @@
       sent: "Az üzeneted elment.",
       rate: "Innen most túl sok üzenet érkezett. Próbáld újra később.",
       failed: "A küldés nem sikerült. Próbáld újra, vagy írj " + linkedInLink("LinkedInen") + ".",
+      unsupported: "Ebben a böngészőben nem fut a spamszűrő. Írj inkább " + linkedInLink("LinkedInen") + ".",
       errorPrefix: "Hiba: ",
       summaryTitle: "Hiba van az űrlapon",
       remaining: function (n) { return "Még " + n + " karaktert írhatsz."; },
@@ -52,27 +104,49 @@
     }
   };
   var t = STRINGS[lang];
+  var status = form.querySelector(".contact-status");
+
+  /* ---- Status line ----------------------------------------------------- */
+  function say(text, asHtml) {
+    if (!status) return;
+    if (asHtml) status.innerHTML = text; else status.textContent = text;
+  }
+
+  // The form has no native action: posting JSON needs the proof of work,
+  // which needs fetch and SubtleCrypto. Without them the submit must not
+  // leave the page for a raw API response; it offers LinkedIn instead.
+  if (!window.fetch || !window.crypto || !window.crypto.subtle || typeof TextEncoder !== "function") {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      say(t.unsupported, true);
+    });
+    return;
+  }
+
   var LIMITS = { nameMin: 2, nameMax: 100, emailMax: 254, messageMin: 20, messageMax: 5000 };
+  // The server drops any message that arrives too soon after its challenge
+  // was issued; an honest visitor needs this long anyway.
+  var MIN_CHALLENGE_AGE = 3300;
 
   var fields = {
     name: form.querySelector("#contact-name"),
     email: form.querySelector("#contact-email"),
     message: form.querySelector("#contact-message"),
-    website: form.querySelector("#contact-website")
+    honeypot: form.querySelector("#contact-website")
   };
   var topicGroup = form.querySelector(".contact-topics");
   var topics = Array.prototype.slice.call(form.querySelectorAll("input[name=\"topic\"]"));
   var submit = form.querySelector(".contact-submit");
-  var status = form.querySelector(".contact-status");
   var counter = form.querySelector("[data-contact-count]");
   var counterBox = form.querySelector("#contact-message-counter");
   var summary = form.querySelector(".contact-error-summary");
   var summaryList = form.querySelector(".contact-error-summary-list");
   var counterLive = form.querySelector("[data-contact-count-live]");
   var sentEmail = sheet.querySelector("[data-contact-sent-email]");
+  var written = sheet.querySelector("[data-contact-written]");
   var sent = sheet.querySelector(".contact-sent");
-  var writtenRow = sheet.querySelector(".contact-sheet-written");
-  var sentRow = sheet.querySelector(".contact-sheet-sent");
+  var sentCopy = sheet.querySelector(".contact-sent-copy");
+  var fold = sheet.querySelector("[data-contact-fold]");
   var sentTitle = sheet.querySelector(".contact-sent-title");
   var again = sheet.querySelector(".contact-again");
 
@@ -81,12 +155,6 @@
       return document.documentElement.classList.contains("no-motion") ||
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     } catch (error) { return true; }
-  }
-
-  /* ---- Status line ----------------------------------------------------- */
-  function say(text, asHtml) {
-    if (!status) return;
-    if (asHtml) status.innerHTML = text; else status.textContent = text;
   }
 
   /* ---- Field errors ---------------------------------------------------- */
@@ -266,8 +334,8 @@
 
   /* ---- Proof of work --------------------------------------------------- */
   var encoder = new TextEncoder();
-  var challenge = null;      // { token, nonce }
-  var solving = null;        // Promise<{token, nonce}>
+  var challenge = null;      // { token, nonce, receivedAt }
+  var solving = null;        // Promise<{token, nonce, receivedAt}>
   var armed = false;
 
   function leadingZeroBits(bytes) {
@@ -314,6 +382,7 @@
       // is a broken or hostile challenge, not something to grind through.
       throw new Error("challenge shape");
     }
+    data.receivedAt = Date.now();
     return data;
   }
 
@@ -323,7 +392,7 @@
     solving = (async function () {
       var data = await fetchChallenge();
       var nonce = await solve(data.salt, data.difficulty);
-      var ready = { token: data.token, nonce: nonce };
+      var ready = { token: data.token, nonce: nonce, receivedAt: data.receivedAt };
       challenge = ready;
       return ready;
     })();
@@ -357,7 +426,7 @@
       email: fields.email.value.trim(),
       topic: topic ? topic.value : "",
       message: fields.message.value,
-      website: fields.website ? fields.website.value : "",
+      hp_7f3: fields.honeypot ? fields.honeypot.value : "",
       token: ready.token,
       nonce: String(ready.nonce),
       lang: lang
@@ -381,6 +450,13 @@
     if (!ready) {
       say(t.checking);
       ready = await prepareChallenge(!solving);
+    }
+    // Never post before the challenge is old enough; the progress text stays
+    // up while we wait, on the first try and on a retry alike.
+    var wait = MIN_CHALLENGE_AGE - (Date.now() - (ready.receivedAt || 0));
+    if (wait > 0) {
+      say(t.checking);
+      await new Promise(function (resolve) { setTimeout(resolve, wait); });
     }
     say(t.sending);
     var result = await post(ready);
@@ -439,84 +515,92 @@
   });
 
   /* ---- Fold ------------------------------------------------------------ */
-  var caption = document.querySelector(".contact-figure figcaption[data-caption-sent]");
-  var captionIdle = caption ? caption.textContent : "";
-  function setCaption(sentState) {
-    if (!caption) return;
-    caption.textContent = sentState ? caption.getAttribute("data-caption-sent") : captionIdle;
-  }
-
-  // Measured height transition between the two pages of the sheet. A fr swap
-  // would let both tracks balloon mid-way; explicit heights keep it honest.
+  // The written page leaves the document and a decorative sheet of the same
+  // size takes its place, lifts, folds in thirds, then in half, and parks
+  // as a letter above the thank-you. Steps are classes; CSS transitions
+  // carry them, and reduced motion applies the final step at once.
   var foldTimers = [];
   function later(fn, ms) { foldTimers.push(setTimeout(fn, ms)); }
   function cancelFold() { foldTimers.forEach(clearTimeout); foldTimers = []; }
-
-  function foldHeight(from, to) {
-    sheet.style.height = from + "px";
-    void sheet.offsetHeight;
-    sheet.style.height = to + "px";
+  function narrow() {
+    try { return window.matchMedia("(max-width: 991px)").matches; } catch (error) { return false; }
+  }
+  function step(name) {
+    if (!fold) return;
+    var steps = (fold.getAttribute("data-fold-step") || "").split(/\s+/).filter(Boolean);
+    if (steps.indexOf(name) === -1) steps.push(name);
+    fold.setAttribute("data-fold-step", steps.join(" "));
   }
 
   function showSent() {
     var instant = reducedMotion();
+    var compact = narrow();
     say(t.sent);
     if (sentEmail) sentEmail.textContent = fields.email.value.trim();
-    var startHeight = sheet.getBoundingClientRect().height;
+    var height = sheet.getBoundingClientRect().height;
+    var width = sheet.getBoundingClientRect().width;
+    cancelFold();
     sheet.setAttribute("data-state", "sent");
-    setCaption(true);
-    // The written page fades while the sheet folds down to the envelope page
-    // underneath it. The form leaves the document only once the fold is done,
-    // so the sheet is never a blank white rectangle between the two states.
-    form.setAttribute("inert", "");
-    var reveal = function () {
-      if (sentRow) sentRow.hidden = false;
-      if (sent) sent.hidden = false;
-      if (!instant && sent) foldHeight(startHeight, sent.getBoundingClientRect().height + 2);
-      if (sentTitle) {
-        sentTitle.focus({ preventScroll: true });
-        try {
-          sentTitle.scrollIntoView({ block: "nearest", behavior: instant ? "auto" : "smooth" });
-        } catch (error) { /* older engines take no options */ }
-      }
+    if (written) written.hidden = true;
+    form.hidden = true;
+    if (sent) sent.hidden = false;
+    if (fold) {
+      fold.removeAttribute("data-fold-step");
+      fold.classList.toggle("is-narrow", compact);
+      fold.style.height = height + "px";
+      fold.hidden = false;
+    }
+    // The parked letter: a third of the sheet, scaled; its width follows.
+    var scale = compact ? .62 : .72;
+    var parkedHeight = Math.round(height / 3 * scale);
+    var parkedWidth = Math.round((compact ? width : width / 2) * scale);
+    var park = function () {
+      if (!fold) return;
+      step("park");
+      fold.style.height = parkedHeight + "px";
+      fold.style.width = parkedWidth + "px";
     };
     var finish = function () {
-      form.hidden = true;
-      if (writtenRow) writtenRow.hidden = true;
-      form.removeAttribute("inert");
-      sheet.style.height = "";
+      if (sentCopy) sentCopy.hidden = false;
+      if (sentTitle) {
+        sentTitle.focus({ preventScroll: true });
+        try { sentTitle.scrollIntoView({ block: "nearest", behavior: instant ? "auto" : "smooth" }); } catch (error) { /* older engines take no options */ }
+      }
     };
-    cancelFold();
-    if (instant) { reveal(); finish(); return; }
-    later(reveal, 240);
-    later(finish, 1100);
+    if (instant || !fold) {
+      if (fold) { step("one"); step("two"); if (!compact) step("three"); park(); }
+      finish();
+      return;
+    }
+    if (sentCopy) sentCopy.hidden = true;
+    void fold.offsetHeight;
+    later(function () { step("lift"); }, 30);
+    later(function () { step("one"); }, 340);
+    later(function () { step("two"); }, 900);
+    later(function () { if (!compact) step("three"); }, 1460);
+    later(park, compact ? 1560 : 2080);
+    later(finish, compact ? 2200 : 2720);
   }
 
   function reset() {
     // A quick second message must not be undone by a fold still in flight.
     cancelFold();
-    var instant = reducedMotion();
-    var startHeight = sheet.getBoundingClientRect().height;
     form.reset();
     ORDER.forEach(clearError);
     hideSummary();
     updateCounter();
     say("");
     if (sent) sent.hidden = true;
-    if (sentRow) sentRow.hidden = true;
-    if (writtenRow) writtenRow.hidden = false;
-    form.removeAttribute("inert");
+    if (sentCopy) sentCopy.hidden = true;
+    if (fold) { fold.hidden = true; fold.removeAttribute("data-fold-step"); fold.style.height = ""; fold.style.width = ""; }
+    if (written) written.hidden = false;
     form.hidden = false;
     sheet.setAttribute("data-state", "idle");
-    setCaption(false);
-    sheet.style.height = "";
-    if (!instant) {
-      foldHeight(startHeight, form.getBoundingClientRect().height + 2);
-      later(function () { sheet.style.height = ""; }, 850);
-    }
     prepareChallenge(true);
-    if (fields.name) fields.name.focus({ preventScroll: true });
-    try { fields.name.scrollIntoView({ block: "center", behavior: instant ? "auto" : "smooth" }); } catch (error) { /* ignore */ }
+    if (fields.name) {
+      fields.name.focus({ preventScroll: true });
+      try { fields.name.scrollIntoView({ block: "center", behavior: reducedMotion() ? "auto" : "smooth" }); } catch (error) { /* ignore */ }
+    }
   }
   if (again) again.addEventListener("click", reset);
 })();

@@ -8,7 +8,13 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = JSON.parse(readFileSync(resolve(root, "assets/fonts/manifest.json"), "utf8"));
 const canonicalPaths = [...readFileSync(resolve(root, "sitemap.xml"), "utf8").matchAll(/<loc>(.*?)<\/loc>/g)]
   .map((match) => new URL(match[1]).pathname);
-const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : `${route.slice(1)}.html`);
+// `/hu` is a directory served by an explicit route (design.md, Pages and routes).
+const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : route === "/hu" ? "hu/index.html" : `${route.slice(1)}.html`);
+const slugs = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
+// English pages in hiring order, then the utility pairs, then the Hungarian mirror.
+const expectedCanonicalPaths = ["/", "/works", ...slugs.map((slug) => `/work/${slug}`), "/about",
+  "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
+  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam"];
 const cssSource = readFileSync(resolve(root, "assets/css/fonts.css"), "utf8");
 const cssDigest = createHash("sha256").update(cssSource).digest("hex").slice(0, 12);
 const sample = "Norbert Barna ÁÉÍÓÖŐÚÜŰ árvíztűrő tükörfúrógép";
@@ -33,7 +39,7 @@ const originalRanges = {
 };
 
 test("every canonical page and 404 load licensed, content-hashed fonts directly from the head", () => {
-  expect(canonicalPaths).toHaveLength(14);
+  expect(canonicalPaths).toEqual(expectedCanonicalPaths);
   expect(readFileSync(resolve(root, `assets/css/fonts.${cssDigest}.css`), "utf8")).toBe(cssSource);
   for (const route of [...canonicalPaths, "/404"]) {
     const html = readFileSync(htmlFor(route), "utf8");
