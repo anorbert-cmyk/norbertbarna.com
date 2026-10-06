@@ -18,6 +18,13 @@
   var steps = Array.from(document.querySelectorAll("[data-story-step]"));
   var toggle = root.querySelector("[data-story-motion-toggle]");
   var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
+  var copy = /^hu(?:-|$)/i.test(document.documentElement.lang) ? {
+    reduced: "Mozgás csökkentve", resume: "Mozgás folytatása", pause: "Mozgás szüneteltetése",
+    reducedTitle: "A mozgás az eszközöd vagy az oldal beállítását követi.", title: "A díszítő kameramozgás szüneteltetése vagy folytatása."
+  } : {
+    reduced: "Motion reduced", resume: "Resume motion", pause: "Pause motion",
+    reducedTitle: "Motion follows your device or site preference.", title: "Pause or resume the decorative camera movement."
+  };
   var listeners = new AbortController();
   var resizeObserver, intersectionObserver, preferenceObserver;
   var frame = 0, restoreFrame = 0, destroyed = false, failed = false, pageHidden = false, near = true;
@@ -146,10 +153,10 @@
     api.mode = mode;
     if (toggle) {
       toggle.hidden = false; toggle.disabled = reduced;
-      var label = reduced ? "Motion reduced" : locallyPaused ? "Resume motion" : "Pause motion";
+      var label = reduced ? copy.reduced : locallyPaused ? copy.resume : copy.pause;
       if (toggle.textContent !== label) toggle.textContent = label;
       toggle.setAttribute("aria-pressed", String(!enabled));
-      toggle.title = reduced ? "Motion follows your device or site preference." : "Pause or resume the decorative camera movement.";
+      toggle.title = reduced ? copy.reducedTitle : copy.title;
     }
 
     // Measure first, then write compositor-only properties. Reading elements

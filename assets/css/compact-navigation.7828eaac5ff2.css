@@ -116,3 +116,32 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
   body:is(.works-index, .immersive-case) .navbar :is(.home-nav-wordmark, .home-nav-progress, .nav-breadcrumb) { display: none; }
   body:is(.works-index, .immersive-case) .navbar :is(.menu-button, .menu-button .w-icon-nav-menu, .menu-button.w--open .w-icon-nav-menu) { color: #D6D4ED !important; }
 }
+
+/* EN | HU switch (owner request, 2026-10-06): every page links its
+   counterpart in the other language from the same place in the menu. The
+   current language is underlined in olive like the current page. */
+.lang-switch { display: inline-flex; align-items: center; gap: 2px; color: inherit; white-space: nowrap; }
+.lang-switch > span { color: inherit; opacity: .74; font-size: 12px; padding-inline: 2px; }
+.navbar .lang-switch .nav-link { min-width: 44px; justify-content: center; }
+/* The work and case bars give the menu its whole outside column. Words never
+   break inside a destination; on narrow desktops the row wraps whole items. */
+@media (min-width: 992px) {
+  body:is(.works-index, .immersive-case) .navbar .nav-menu { flex: 0 1 auto; max-width: none; }
+  body:is(.works-index, .immersive-case) .navbar .nav-menu-area { gap: 4px clamp(12px, 1.1vw, 18px); }
+  body:is(.works-index, .immersive-case) .navbar .nav-menu-area > .nav-link { white-space: nowrap; overflow-wrap: normal; }
+  .navbar .lang-switch .nav-link { min-width: 0 !important; padding-inline: 6px !important; }
+}
+/* Below 1440px the decorative reading counter yields its room to the menu. */
+@media (min-width: 992px) and (max-width: 1439px) {
+  body:is(.works-index, .immersive-case) .navbar .home-nav-progress { display: none; }
+}
+/* Hungarian labels are longer; the counter yields up to 1600px there. */
+@media (min-width: 1440px) and (max-width: 1599px) {
+  html[lang="hu"] body.works-index .navbar .home-nav-progress { display: none; }
+}
+@media (max-width: 991px) {
+  html body .navbar .nav-menu .lang-switch { display: flex; flex-direction: row; align-items: center; gap: 16px; width: 100%; margin-top: 4px; }
+  html body .navbar .nav-menu .lang-switch .nav-link { width: auto; min-width: 44px; justify-content: flex-start; }
+  html body .navbar .nav-menu .lang-switch > span { color: #0A1628; }
+  html body.story-page .navbar .nav-menu .lang-switch > span { color: #D6D4ED; }
+}

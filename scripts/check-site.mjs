@@ -204,16 +204,18 @@ for (const page of PAGES) {
   if (!is404) {
     const navigation = html.match(/<nav\b[^>]*\bid=["']primary-navigation["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
     const aboutHref = hungarian ? "/hu/rolam" : "/about";
-    const aboutLinks = [...navigation.matchAll(new RegExp(`<a\\b[^>]*\\bhref=["']${aboutHref}["'][^>]*>([\\s\\S]*?)<\\/a>`, "gi"))];
+    const aboutLinks = [...navigation.matchAll(new RegExp(`<a\\b[^>]*\\bhref=["']${aboutHref}["'][^>]*>([\\s\\S]*?)<\\/a>`, "gi"))]
+      .filter(([tag]) => !/\bhreflang=/.test(tag));
     if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== (hungarian ? "Rólam" : "About")) {
       fail(`${page}: primary navigation must have one native About link to ${aboutHref}`);
     }
     // The EN | HU switch (owner request, 2026-10-06) links both languages of
     // this page and marks the current one.
-    const pairHref = (lang) => [...navigation.matchAll(new RegExp(`<a\\b[^>]*\\bhreflang="${lang}"[^>]*>`, "g"))].map(([tag]) => tag);
-    const enSwitch = pairHref("en").filter(tag => />$/.test(tag) && /\blang="en"/.test(tag));
-    const huSwitch = pairHref("hu").filter(tag => /\blang="hu"/.test(tag));
-    if (!/class="[^"]*\blang-switch\b/.test(navigation) || enSwitch.length !== 1 || huSwitch.length !== 1) {
+    const switchMarkup = navigation.match(/class="[^"]*\blang-switch\b[^"]*">([\s\S]*?<\/a>)<\/span>/)?.[1] || "";
+    const switchLinks = [...switchMarkup.matchAll(/<a\b[^>]*>/g)].map(([tag]) => tag);
+    const enSwitch = switchLinks.filter(tag => /\bhreflang="en"/.test(tag) && /\blang="en"/.test(tag));
+    const huSwitch = switchLinks.filter(tag => /\bhreflang="hu"/.test(tag) && /\blang="hu"/.test(tag));
+    if (switchLinks.length !== 2 || enSwitch.length !== 1 || huSwitch.length !== 1) {
       fail(`${page}: primary navigation needs one EN | HU language switch`);
     } else if (!(hungarian ? huSwitch[0] : enSwitch[0]).includes('aria-current="page"')) {
       fail(`${page}: the language switch must mark the current language`);
@@ -320,7 +322,7 @@ for (const page of PAGES) {
     if (!html.includes('<article aria-labelledby="case-title" class="case-study-article">') ||
         !html.includes('<h1 id="case-title"'))
       fail(`${page}: case-study article must be named by its H1`);
-    if (!html.includes(`<section class="case-facts-section" aria-label="${hungarian ? "A projekt adatai" : "Project facts"}">`))
+    if (!html.includes(`<section class="case-facts-section" aria-label="${hungarian ? "Projektadatok" : "Project facts"}">`))
       fail(`${page}: missing recruiter-friendly project facts`);
 
     if (base === "work/kineticare.html") {

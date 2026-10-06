@@ -77,6 +77,7 @@ body.contact-page {
    row opens, so the paper visibly shrinks into the object it becomes. */
 .contact-sheet {
   grid-column: 1;
+  align-self: start;
   position: relative;
   display: grid;
   grid-template-rows: 1fr 0fr;
@@ -86,8 +87,9 @@ body.contact-page {
   transition: grid-template-rows .8s var(--contact-ease);
 }
 .contact-sheet[data-state="sent"] { grid-template-rows: 0fr 1fr; }
-/* Dog-ear: the top right corner is turned back. The upper triangle shows the
-   lilac field through the missing corner; the lower one is the folded flap. */
+/* Dog-ear: the top right corner is turned back. The upper triangle is the
+   lilac field showing through the cut corner; the lower one is the back of
+   the paper, with its two crease edges and the fold line. */
 .contact-sheet::before {
   content: "";
   position: absolute;
@@ -95,22 +97,20 @@ body.contact-page {
   right: -1px;
   width: 52px;
   height: 52px;
-  background: linear-gradient(225deg, var(--contact-lilac) 0 50%, rgb(10 22 40 / 12%) 50% 100%);
+  background: linear-gradient(225deg, var(--contact-lilac) 0 50%, rgb(214 212 237 / 55%) 50% 100%);
   border-left: 1px solid var(--contact-rule);
   border-bottom: 1px solid var(--contact-rule);
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
   pointer-events: none;
   z-index: 2;
 }
 .contact-sheet::after {
-  /* The field edge of the fold, so the corner reads as cut, not painted. */
   content: "";
   position: absolute;
   top: -1px;
   right: -1px;
   width: 52px;
   height: 52px;
-  background: linear-gradient(225deg, transparent calc(50% - 1px), var(--contact-rule) calc(50% - 1px) calc(50% + .5px), transparent calc(50% + .5px));
+  background: linear-gradient(225deg, transparent calc(50% - .5px), var(--contact-rule) calc(50% - .5px) calc(50% + 1px), transparent calc(50% + 1px));
   pointer-events: none;
   z-index: 3;
 }
@@ -208,7 +208,7 @@ body.contact-page {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  margin: 8px 0 0;
+  margin: 12px 0 0;
   font: 600 14px/1.45 Inter, sans-serif;
   letter-spacing: -.008em;
   color: var(--contact-navy);
@@ -274,11 +274,12 @@ body.contact-page {
   right: -1px;
   width: 26px;
   height: 26px;
-  background: linear-gradient(225deg, var(--contact-paper) 0 50%, var(--contact-lilac) 50% 100%);
+  background:
+    linear-gradient(225deg, transparent calc(50% - .5px), var(--contact-rule) calc(50% - .5px) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(225deg, var(--contact-paper) 0 50%, var(--contact-lilac) 50% 100%);
   border-left: 1px solid var(--contact-rule);
   border-bottom: 1px solid var(--contact-rule);
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
-  transition: background .22s var(--contact-ease), width .22s var(--contact-ease), height .22s var(--contact-ease);
+  transition: width .22s var(--contact-ease), height .22s var(--contact-ease);
 }
 .contact-topic-text { position: relative; }
 .contact-topic:hover { border-color: var(--contact-navy); }
@@ -295,7 +296,9 @@ body.contact-page {
 .contact-topic:has(.contact-topic-input:checked) .contact-topic-fold {
   width: 34px;
   height: 34px;
-  background: linear-gradient(225deg, var(--contact-paper) 0 50%, var(--contact-olive) 50% 100%);
+  background:
+    linear-gradient(225deg, transparent calc(50% - .5px), var(--contact-navy) calc(50% - .5px) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(225deg, var(--contact-paper) 0 50%, var(--contact-olive) 50% 100%);
   border-color: var(--contact-navy);
 }
 .contact-topics[data-invalid] .contact-topic { border-color: var(--contact-navy); }
@@ -421,6 +424,7 @@ body.contact-page {
    and olive; only decorative planes move, and only without reduced motion. */
 .contact-sent {
   display: grid;
+  align-content: start;
   justify-items: start;
   gap: 14px;
   padding: clamp(28px, 3.6vw, 52px) clamp(22px, 3.4vw, 52px) clamp(28px, 3.4vw, 48px);
@@ -431,9 +435,13 @@ body.contact-page {
 .contact-envelope-stage {
   width: min(100%, 340px);
   margin: 0 0 18px;
-  padding-top: 32%;
+  padding-top: 6%;
   perspective: 1100px;
+  /* Headroom for the open flap and the arriving letter, released as the
+     flap closes so the finished envelope sits where the page was. */
+  animation: contact-stage-settle .75s var(--contact-ease) .78s both;
 }
+@keyframes contact-stage-settle { from { padding-top: 34%; } to { padding-top: 6%; } }
 .contact-envelope {
   position: relative;
   aspect-ratio: 5 / 3;
