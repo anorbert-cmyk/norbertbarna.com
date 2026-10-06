@@ -509,7 +509,7 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 2. Semantic H1 `Product VP` in Inter 400 at the lower left. The large
    `PRODUCT / WITH / PURPOSE` artwork does not replace the accessible role.
 3. Native scrolling transforms the same glass chevron to the right-hand matte folded gate. The left editorial composition preserves the plain name `Norbert Barna` and
-   `AI products for fintech, Web3, regulated teams — strategy to ship.`
+   `AI products for fintech, Web3, regulated teams. I take them from strategy to ship.`
 4. Preserve proofs: multi-country banking / Raiffeisen and enterprise EdTech
    AI / Instructure. No invented results or metrics.
 5. `[ Works ]` in the scene and `View selected work` in the intro link
@@ -601,7 +601,7 @@ The split-address handler remains. The current editorial footer uses the
 - Shared English footer and English service CTA: `Discuss your project`; title
   `Opens your email app to discuss your project`.
 - Screenshot-directed home navigation exception: visible `Email`; accessible
-  name `Email — discuss a project`; the same explanatory title and secure
+  name `Email to discuss a project`; the same explanatory title and secure
   split-address handler remain.
 - Hungarian service main CTA: `Beszéljünk a projektedről`, `lang="hu"`;
   title `Megnyitja a leveleződet, hogy a projektedről írhass.`.

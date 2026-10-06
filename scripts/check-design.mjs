@@ -25,7 +25,7 @@ const PROJECT_CONTACT = {
 };
 const HOME_CONTACT = {
   label: "Email",
-  accessibleName: "Email — discuss a project",
+  accessibleName: "Email to discuss a project",
   title: "Opens your email app to discuss your project",
 };
 const contactButtons = (html) => [...html.matchAll(/(<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/button>/g)];
@@ -548,7 +548,7 @@ for (const page of footerPages) {
   if (/AI Product Design Lead|AI Governance|BlackRock|All rights reserved/.test(footer)) {
     fail(`${page}: footer copy is off the lock`);
   }
-  if (!footer.includes("Product VP — I lead AI products in regulated finance and high-trust systems.")) {
+  if (!footer.includes("Product VP. I lead AI products in regulated finance and high-trust systems.")) {
     fail(`${page}: footer must use the Product VP line`);
   }
   if (!footer.includes("© 2026 Norbert Barna") || /All rights reserved/.test(footer)) {

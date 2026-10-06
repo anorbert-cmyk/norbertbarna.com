@@ -385,7 +385,7 @@ for (const viewport of viewports) {
         const language = route === "/hu/ai-integracio" ? "hu" : "en";
         const homeNav = scope.nav && route === "/";
         const label = privacyContact || homeNav ? "Email" : projectCopy[language].label;
-        const accessibleName = homeNav ? "Email — discuss a project" : label;
+        const accessibleName = homeNav ? "Email to discuss a project" : label;
         if (scope.nav && viewport.width < 992) await page.locator(".menu-button").click();
         await expect(button).toBeVisible();
         if (["/ai-integration", "/hu/ai-integracio"].includes(route)) {

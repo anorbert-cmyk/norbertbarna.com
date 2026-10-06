@@ -50,7 +50,7 @@ async function expectWorkflowInFlow(page) {
 for (const [language, path] of ROUTES) {
   test(`${language}: expanded workflow has accessible steps and distinct case evidence`, async ({ page }) => {
     await open(page, path);
-    const workflow = page.getByRole("region", { name: language === "en" ? "From a useful question to a working product." : "Egy jó kérdéstől a működő termékig." });
+    const workflow = page.getByRole("region", { name: language === "en" ? "How a useful question becomes a working product." : "Egy jó kérdéstől a működő termékig." });
     await expect(workflow).toHaveAttribute("id", "workflow");
     await expect(workflow.locator("ol > li")).toHaveCount(5);
     await expect(workflow.getByRole("heading", { level: 3 })).toHaveCount(5);

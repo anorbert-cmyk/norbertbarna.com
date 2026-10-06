@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test";
 const PROJECT_LABEL = "Discuss your project";
 const PROJECT_TITLE = "Opens your email app to discuss your project";
 const HOME_EMAIL_LABEL = "Email";
-const HOME_EMAIL_NAME = "Email — discuss a project";
+const HOME_EMAIL_NAME = "Email to discuss a project";
 
 const viewports = [
   { name: "mobile-360", width: 360, height: 800 },
@@ -1265,7 +1265,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     const footer = page.locator("footer");
     await expect(footer.locator("form, .footer-mesh, .footer-dunes, .back-to-top-wrap, a.footer-email")).toHaveCount(0);
     await expect(footer.locator(".editorial-footer-title")).toHaveText(/Let’s talk\s*product\./);
-    await expect(footer.locator(".footer-lede")).toHaveText("Product VP — I lead AI products in regulated finance and high-trust systems.");
+    await expect(footer.locator(".footer-lede")).toHaveText("Product VP. I lead AI products in regulated finance and high-trust systems.");
     await expect(footer.locator(".footer-copyright")).toHaveText("© 2026 Norbert Barna");
     await expect(footer.locator(".footer-col-title")).toHaveText(["Work"]);
     await expect(footer.locator(".footer-col a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare"]);
@@ -1314,7 +1314,7 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   expect(html).not.toMatch(/mailto:/i);
   expect(html).not.toMatch(/anorbert@pm\.me/i);
   expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/);
-  expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*aria-label="Email — discuss a project"[^>]*>Email<\/button>/);
+  expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*aria-label="Email to discuss a project"[^>]*>Email<\/button>/);
   expect(html).not.toMatch(/<a[^>]*footer-email/);
   expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(1);
   expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Email<\/button>/g) || []).length).toBe(1);
@@ -1981,7 +1981,7 @@ test("1440 home opening: original centered artwork and semantic role lead into t
   await expect(page.locator(".home-banner-title")).toBeInViewport();
   await expect(page.locator(".hero-work-link")).toBeInViewport();
   await expect(page.locator(".home-mast .hero-kicker")).toHaveText("Norbert Barna");
-  await expect(page.locator(".home-banner-subtitle")).toHaveText(/AI products for fintech, Web3,\s*regulated teams — strategy to ship\./);
+  await expect(page.locator(".home-banner-subtitle")).toHaveText(/AI products for fintech, Web3,\s*regulated teams\. I take them from strategy to ship\./);
   await expect(page.locator(".home-mast-proof-chips li")).toHaveText(["Multi-country bankingRaiffeisen", "Enterprise EdTech AIInstructure"]);
   await expect(page.locator(".home-banner-outcomes li")).toHaveText(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
   const email = page.locator(".navbar button.footer-email");
