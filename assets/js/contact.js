@@ -444,18 +444,28 @@
     caption.textContent = sentState ? caption.getAttribute("data-caption-sent") : captionIdle;
   }
 
+  // Measured height transition between the two pages of the sheet. A fr swap
+  // would let both tracks balloon mid-way; explicit heights keep it honest.
+  function foldHeight(from, to) {
+    sheet.style.height = from + "px";
+    void sheet.offsetHeight;
+    sheet.style.height = to + "px";
+  }
+
   function showSent() {
     var instant = reducedMotion();
     say(t.sent);
     if (sentEmail) sentEmail.textContent = fields.email.value.trim();
+    var startHeight = sheet.getBoundingClientRect().height;
     sheet.setAttribute("data-state", "sent");
     setCaption(true);
-    // The written page fades while its row folds shut; the envelope row opens
+    // The written page fades while the sheet folds down to the envelope page
     // underneath it. The form leaves the document only once the fold is done,
     // so the sheet is never a blank white rectangle between the two states.
     form.setAttribute("inert", "");
     var reveal = function () {
       if (sent) sent.hidden = false;
+      if (!instant && sent) foldHeight(startHeight, sent.getBoundingClientRect().height + 2);
       if (sentTitle) {
         sentTitle.focus({ preventScroll: true });
         try {
@@ -466,13 +476,16 @@
     var finish = function () {
       form.hidden = true;
       form.removeAttribute("inert");
+      sheet.style.height = "";
     };
     if (instant) { reveal(); finish(); return; }
-    setTimeout(reveal, 260);
-    setTimeout(finish, 1000);
+    setTimeout(reveal, 240);
+    setTimeout(finish, 1100);
   }
 
   function reset() {
+    var instant = reducedMotion();
+    var startHeight = sheet.getBoundingClientRect().height;
     form.reset();
     ORDER.forEach(clearError);
     hideSummary();
@@ -483,9 +496,13 @@
     form.hidden = false;
     sheet.setAttribute("data-state", "idle");
     setCaption(false);
+    if (!instant) {
+      foldHeight(startHeight, form.getBoundingClientRect().height + 2);
+      setTimeout(function () { sheet.style.height = ""; }, 850);
+    }
     prepareChallenge(true);
     if (fields.name) fields.name.focus({ preventScroll: true });
-    try { fields.name.scrollIntoView({ block: "center", behavior: reducedMotion() ? "auto" : "smooth" }); } catch (error) { /* ignore */ }
+    try { fields.name.scrollIntoView({ block: "center", behavior: instant ? "auto" : "smooth" }); } catch (error) { /* ignore */ }
   }
   if (again) again.addEventListener("click", reset);
 })();
