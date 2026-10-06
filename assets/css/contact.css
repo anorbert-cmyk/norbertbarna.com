@@ -751,8 +751,11 @@ body.contact-page {
   .contact-topic:focus-within { outline-color: Highlight; }
   .contact-error::before { background: CanvasText; }
   .contact-error-summary { border-color: CanvasText; }
-  .contact-fold-face { background: Canvas; box-shadow: inset 0 0 0 1px CanvasText; }
+  /* Shadows are dropped in forced colors; a real border keeps the folded
+     letter's leaves visible. */
+  .contact-fold-face { background: Canvas; box-shadow: none; border: 1px solid CanvasText; }
   .contact-fold-face.is-back { background: Canvas; }
+  .contact-submit[aria-disabled="true"] { border-color: GrayText; color: GrayText; }
 }
 
 /* Stillness: the state changes instantly, nothing transforms. */

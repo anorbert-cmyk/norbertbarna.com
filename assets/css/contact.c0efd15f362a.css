@@ -18,13 +18,15 @@ body.contact-page {
   --contact-crease: rgb(10 22 40 / 42%);
   /* Control boundaries hold 3:1 on the frosted lilac. */
   --contact-control: rgb(10 22 40 / 70%);
-  --contact-glass: rgb(214 212 237 / 80%);
+  --contact-glass: rgb(214 212 237 / 84%);
   --contact-glass-edge: rgb(255 255 255 / 64%);
   --contact-paper: #ecebf7;
   --contact-paper-back: #c9c6e3;
   --contact-nav: var(--work-nav-height, 64px);
   --contact-gutter: clamp(20px, 4.2vw, 60px);
   --contact-pad: clamp(24px, 3.4vw, 56px);
+  --contact-pane: 640px;
+  --contact-art-x: 44%;
   --contact-ease: cubic-bezier(.16, 1, .3, 1);
   --contact-fold-ease: cubic-bezier(.6, 0, .3, 1);
   margin: 0;
@@ -45,12 +47,15 @@ body.contact-page {
   isolation: isolate;
   background: var(--contact-forest);
 }
+/* The art is one screen tall and sticky under the bar; the letter is laid
+   over it with a negative top margin. The art keeps its own margin box, so
+   when the stage ends the whole frame rises with it and leaves under the bar
+   as one piece: the footer never slides across the object. */
 .contact-stage-art {
   position: sticky;
   top: var(--contact-nav);
   z-index: 0;
   height: calc(100svh - var(--contact-nav));
-  margin-bottom: calc(-100svh + var(--contact-nav));
   overflow: hidden;
   pointer-events: none;
 }
@@ -59,9 +64,16 @@ body.contact-page {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 46% 50%;
+  object-position: var(--contact-art-x) 50%;
 }
-.contact-stage-glass { position: absolute; inset: 0; }
+/* The object's slot is the clear column beside the pane. */
+.contact-stage-glass {
+  position: absolute;
+  top: 8%;
+  right: var(--contact-gutter);
+  left: calc(var(--contact-gutter) + var(--contact-pane) + 24px);
+  height: 84%;
+}
 .contact-stage-canvas {
   display: block;
   position: absolute;
@@ -74,15 +86,12 @@ body.contact-page {
 [data-contact-glass="off"] .contact-stage-canvas,
 .contact-stage-glass[data-hero-scene="fallback"] .contact-stage-canvas { visibility: hidden; }
 
-@media (min-width: 992px) and (max-width: 1199px) {
-  .contact-stage-glass { top: 14%; height: 68%; }
-  .contact-layout { grid-template-columns: minmax(0, 560px) minmax(0, 1fr); }
-}
 .contact-layout {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 640px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, var(--contact-pane)) minmax(0, 1fr);
+  margin-top: calc(-100svh + var(--contact-nav));
   padding: clamp(40px, 6svh, 72px) var(--contact-gutter) clamp(72px, 9vw, 128px);
 }
 
@@ -93,8 +102,8 @@ body.contact-page {
   min-width: 0;
   color: var(--contact-navy);
   background: linear-gradient(118deg, rgb(255 255 255 / 22%), rgb(255 255 255 / 0%) 46%), var(--contact-glass);
-  -webkit-backdrop-filter: blur(30px) saturate(1.4) brightness(1.1);
-  backdrop-filter: blur(30px) saturate(1.4) brightness(1.1);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--contact-glass-edge);
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 72%),
@@ -104,6 +113,9 @@ body.contact-page {
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .contact-paper { background: rgb(214 212 237 / 94%); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .contact-paper { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(214 212 237 / 96%); }
 }
 .contact-opening {
   position: relative;
@@ -145,21 +157,30 @@ body.contact-page {
 }
 
 /* The writing area holds three pages in one cell: the form, the folding
-   sheet and the thank-you. Only one is in the document at a time. */
+   sheet and the thank-you. Only one is in the document at a time. The status
+   line and the closing lines live outside the cell, so they survive the swap. */
 .contact-sheet {
   position: relative;
   display: grid;
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto auto;
   min-width: 0;
+  scroll-margin-top: calc(var(--contact-nav) + 16px);
 }
 .contact-written { grid-area: 1 / 1; min-width: 0; }
-.contact-written[hidden], .contact-sent[hidden], .contact-fold[hidden], .contact-form[hidden] { display: none; }
+.contact-written[hidden], .contact-sent[hidden], .contact-fold[hidden], .contact-form[hidden], .contact-foot[hidden] { display: none; }
 .contact-form {
   display: grid;
   gap: clamp(26px, 3vw, 38px);
   padding: clamp(28px, 3.4vw, 44px) var(--contact-pad) 0;
 }
-.contact-form[aria-busy="true"] { cursor: progress; }
+.contact-fields {
+  display: grid;
+  gap: clamp(26px, 3vw, 38px);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
 
 /* Fields are lines on the paper: a label above, the written text, a rule. */
 .contact-field { position: relative; min-width: 0; }
@@ -168,8 +189,8 @@ body.contact-page {
   display: block;
   padding: 0;
   margin: 0 0 4px;
-  font: 600 13px/1.4 Inter, sans-serif;
-  letter-spacing: -.005em;
+  font: 600 15px/1.4 Inter, sans-serif;
+  letter-spacing: -.008em;
   color: var(--contact-navy);
 }
 .contact-input,
@@ -191,9 +212,13 @@ body.contact-page {
 }
 .contact-field[data-field="name"] .contact-input { max-width: 34ch; }
 .contact-field[data-field="email"] .contact-input { max-width: 40ch; }
+/* The message field grows with its text instead of showing a resize grip. */
 .contact-textarea {
   min-height: 168px;
-  resize: vertical;
+  max-height: 60svh;
+  overflow: auto;
+  resize: none;
+  field-sizing: content;
   line-height: 1.5;
 }
 .contact-input:hover,
@@ -235,7 +260,7 @@ body.contact-page {
 .contact-hint,
 .contact-counter {
   margin: 0;
-  font: 400 13px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, sans-serif;
   color: var(--contact-muted);
 }
 .contact-counter { white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -254,47 +279,50 @@ body.contact-page {
 }
 .contact-form-note {
   margin: 0;
-  font: 400 14px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, sans-serif;
   color: var(--contact-muted);
 }
 .contact-form-note + .contact-field { margin-top: -8px; }
 
-/* Error summary: one place that lists every problem and links to it. */
+/* Error summary: one place that lists every problem and links to it. It is
+   focused on submit, so it needs no live role. */
 .contact-error-summary {
-  padding: 18px 20px 16px;
-  border: 2px solid var(--contact-navy);
+  padding: 18px 20px 12px;
+  border: 1px solid var(--contact-navy);
+  scroll-margin-top: calc(var(--contact-nav) + 24px);
 }
 .contact-error-summary[hidden] { display: none; }
-.contact-error-summary:focus { outline: 3px solid var(--contact-navy); outline-offset: 4px; }
+.contact-error-summary:focus { outline: none; }
+.contact-error-summary:focus-visible { outline: 3px solid var(--contact-navy); outline-offset: 4px; }
 .contact-error-summary-title {
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   font: 600 18px/1.3 Inter, sans-serif;
   letter-spacing: -.015em;
 }
 .contact-error-summary-list {
   display: grid;
-  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .contact-error-summary-list a {
-  display: inline-block;
-  min-height: 24px;
-  padding: 2px 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
   color: var(--contact-navy);
   font: 400 15px/1.45 Inter, sans-serif;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
 .contact-error-summary-list a:hover { text-decoration-thickness: 2px; }
-.contact-error-summary-list a:focus-visible { outline: 3px solid var(--contact-navy); outline-offset: 3px; }
+.contact-error-summary-list a:focus-visible { outline: 3px solid var(--contact-navy); outline-offset: 0; }
 .contact-error {
   display: flex;
   align-items: flex-start;
   gap: 8px;
   margin: 12px 0 0;
-  font: 600 14px/1.45 Inter, sans-serif;
+  font: 600 15px/1.45 Inter, sans-serif;
   letter-spacing: -.008em;
   color: var(--contact-navy);
 }
@@ -311,8 +339,8 @@ body.contact-page {
   clip-path: polygon(0 100%, 100% 100%, 100% 0);
 }
 
-/* Topic: four ruled lines, each with a small square that folds its corner
-   over in olive when chosen. Arrow keys move the choice natively. */
+/* Topic: four ruled lines, each with a round mark whose corner folds over
+   in olive when chosen. Arrow keys move the choice natively. */
 .contact-topics {
   min-width: 0;
   padding: 0;
@@ -367,13 +395,12 @@ body.contact-page {
   fill: transparent;
   stroke: currentColor;
   stroke-width: 1.5;
-  stroke-linejoin: round;
   transition: fill .22s var(--contact-ease), stroke .18s ease;
 }
 .contact-topic-mark .mark-fold {
   fill: var(--contact-olive);
   transform: scale(0);
-  transform-origin: 2px 18px;
+  transform-origin: 10px 10px;
   transition: transform .26s var(--contact-ease);
 }
 .contact-topic-text { position: relative; }
@@ -389,8 +416,17 @@ body.contact-page {
 .contact-topics[data-invalid] .contact-topic-grid { border-top-color: var(--contact-navy); }
 .contact-topics[data-invalid] .contact-topic { border-bottom-color: var(--contact-navy); }
 
-/* Actions. The Send capsule is the site's navy action; the status line
-   beside it is the polite live region. */
+/* The human check (Cloudflare Turnstile) renders into a reserved row above
+   the action, so the page never shifts when it arrives. Its light theme sits
+   on the frosted pane; the frame is Cloudflare's and keeps its own focus
+   order. */
+.contact-check { min-height: 65px; min-width: 0; }
+.contact-turnstile { min-height: 65px; }
+.contact-turnstile iframe { display: block; max-width: 100%; }
+
+/* Actions. The Send capsule is the site's navy action. While a message is on
+   its way the capsule says so and turns forest; it is never disabled while it
+   has focus. */
 .contact-actions {
   display: flex;
   flex-wrap: wrap;
@@ -421,20 +457,36 @@ body.contact-page {
 }
 .contact-submit:hover,
 .contact-again:hover { text-decoration: underline; text-underline-offset: 4px; }
+.contact-submit[aria-disabled="true"],
 .contact-submit:disabled {
   cursor: progress;
   background: var(--contact-forest);
   border-color: var(--contact-forest);
+  text-decoration: none;
 }
 .contact-submit .link-icon { flex: 0 0 auto; width: 18px; height: 18px; }
+/* The status line is always in the document, so assistive technology hears
+   every change; it only takes room when it has something to say. */
 .contact-status {
-  flex: 1 1 220px;
+  grid-row: 2;
   min-width: 0;
   margin: 0;
+  padding: 14px var(--contact-pad) 0;
   font: 400 15px/1.5 Inter, sans-serif;
   color: var(--contact-navy);
 }
-.contact-status:empty { display: none; }
+.contact-status:empty { padding-top: 0; }
+.contact-sheet[data-state="sent"] .contact-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .contact-status a,
 .contact-privacy a,
 .contact-aside-note a,
@@ -449,17 +501,24 @@ body.contact-page {
 .contact-privacy a:hover,
 .contact-aside-note a:hover,
 .contact-sent-link:hover { text-decoration-thickness: 2px; }
+.contact-foot { grid-row: 3; min-width: 0; }
 .contact-privacy {
   margin: 0;
-  font: 400 13px/1.5 Inter, sans-serif;
+  padding: clamp(22px, 2.6vw, 30px) var(--contact-pad) 0;
+  font: 400 15px/1.5 Inter, sans-serif;
   color: var(--contact-muted);
 }
-.contact-privacy a { color: var(--contact-navy); }
+.contact-privacy a {
+  display: inline-block;
+  padding: 11px 0;
+  margin: -11px 0;
+  color: var(--contact-navy);
+}
 .contact-noscript {
   margin: 0;
   padding: 14px 16px;
   border: 1px solid var(--contact-rule);
-  font: 400 14px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, sans-serif;
 }
 /* Honeypot: off screen for people, present for scripts. Never display:none. */
 .contact-hp {
@@ -476,10 +535,10 @@ body.contact-page {
   flex-wrap: wrap;
   align-items: center;
   gap: 2px 10px;
-  margin: 0;
+  margin: clamp(18px, 2vw, 26px) 0 0;
   padding: clamp(18px, 2vw, 26px) var(--contact-pad) clamp(24px, 3vw, 40px);
   border-top: 1px solid var(--contact-rule);
-  font: 400 14px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, sans-serif;
   color: var(--contact-navy);
 }
 .contact-aside-note a {
@@ -596,10 +655,10 @@ body.contact-page {
 .contact-sent-title {
   margin: 0;
   font-family: "Funnel Display", sans-serif;
-  font-size: clamp(36px, 4vw, 56px);
+  font-size: clamp(32px, 3.4vw, 48px);
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -.05em;
+  line-height: 1.02;
+  letter-spacing: -.045em;
   text-wrap: balance;
 }
 .contact-sent-title:focus { outline: none; }
@@ -626,19 +685,35 @@ body.contact-page {
 }
 
 /* ---- Reflow ---- */
+@media (min-width: 992px) {
+  /* The title keeps its two lines; the second carries the full stop. */
+  .contact-title { max-width: 6ch; }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  body.contact-page { --contact-pane: 520px; }
+  .contact-stage-glass { top: 12%; height: 76%; }
+}
+/* Between 1200 and 1799px the pane's edge would otherwise meet the olive
+   plane's edge; the picture sits a little to the right so a forest strip
+   separates them. */
+@media (min-width: 1200px) and (max-width: 1799px) {
+  body.contact-page { --contact-art-x: 35%; }
+}
 @media (max-width: 991px) {
-  body.contact-page { --contact-nav: var(--work-nav-height, 56px); --contact-pad: clamp(20px, 5vw, 36px); }
-  /* The object stands in the upper right of the first screen; the letter
+  body.contact-page { --contact-nav: var(--work-nav-height, 56px); --contact-pad: clamp(20px, 5vw, 36px); --contact-art-x: 61%; }
+  /* The object stands over the lilac gap in the first screen; the letter
      begins beneath it and rises over the paper as the visitor scrolls. */
-  .contact-stage-glass { left: -16%; right: 7%; top: 0; bottom: auto; height: 54%; }
+  .contact-stage-glass { left: 0; right: 0; top: 0; height: 54%; }
   .contact-layout {
     grid-template-columns: minmax(0, 1fr);
     padding-top: 46svh;
     padding-bottom: 72px;
   }
+  /* Over the brighter paper the glass is a touch denser, so it never reads beige. */
+  .contact-paper { background: linear-gradient(118deg, rgb(255 255 255 / 20%), rgb(255 255 255 / 0%) 46%), rgb(214 212 237 / 88%); }
   .contact-title { font-size: clamp(52px, 13.5vw, 88px); line-height: .94; }
   .contact-lede { max-width: 40ch; }
-  .contact-form { gap: 26px; }
+  .contact-form, .contact-fields { gap: 26px; }
 }
 @media (max-width: 599px) {
   body.contact-page { --contact-gutter: 16px; }
@@ -650,8 +725,7 @@ body.contact-page {
   .contact-field-foot { flex-wrap: wrap; gap: 4px 16px; }
   .contact-actions { gap: 14px; }
   .contact-submit, .contact-again { width: 100%; }
-  .contact-status { flex-basis: 100%; }
-  .contact-sent-title { font-size: clamp(32px, 10vw, 40px); }
+  .contact-sent-title { font-size: clamp(28px, 8.6vw, 36px); }
   .contact-sent-actions { flex-direction: column; align-items: stretch; }
   .contact-sent-link { justify-content: center; }
 }
@@ -659,11 +733,29 @@ body.contact-page {
   .contact-title { font-size: 46px; }
 }
 @media (min-width: 1800px) {
-  .contact-layout { grid-template-columns: minmax(0, 700px) minmax(0, 1fr); }
-  .contact-stage-picture { object-position: 48% 50%; }
+  body.contact-page { --contact-pane: 700px; --contact-art-x: 48%; }
 }
 @media (max-height: 600px) and (min-width: 992px) {
   .contact-layout { padding-top: 28px; }
+}
+
+/* ---- Forced colors: marks, chosen state and glyphs use system colors ---- */
+@media (forced-colors: active) {
+  .contact-paper { background: Canvas; border-color: CanvasText; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+  .contact-opening::after { background: CanvasText; }
+  .contact-input, .contact-textarea { border-bottom-color: CanvasText; }
+  .contact-topic-mark { forced-color-adjust: none; color: CanvasText; }
+  .contact-topic-mark .mark-sheet { fill: Canvas; stroke: CanvasText; }
+  .contact-topic-input:checked ~ .contact-topic-mark .mark-sheet { fill: Highlight; stroke: Highlight; }
+  .contact-topic-mark .mark-fold { fill: HighlightText; }
+  .contact-topic:focus-within { outline-color: Highlight; }
+  .contact-error::before { background: CanvasText; }
+  .contact-error-summary { border-color: CanvasText; }
+  /* Shadows are dropped in forced colors; a real border keeps the folded
+     letter's leaves visible. */
+  .contact-fold-face { background: Canvas; box-shadow: none; border: 1px solid CanvasText; }
+  .contact-fold-face.is-back { background: Canvas; }
+  .contact-submit[aria-disabled="true"] { border-color: GrayText; color: GrayText; }
 }
 
 /* Stillness: the state changes instantly, nothing transforms. */
