@@ -7,7 +7,7 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 ## Who
 
 - Name: Norbert Barna (also written Barna Norbert)
-- Role: Product VP. He leads product and strategy for an AI platform at BlackRock used by investment professionals across more than 10 trillion dollars in assets under management.
+- Role: Product VP. He is a Vice President at BlackRock and leads a product that manages 15 trillion dollars across its full portfolio; his team owns its AI development and feature design.
 - Experience: 17 years across enterprise security software, banking, enterprise EdTech and capital markets
 - Languages: English and Hungarian
 - Profile: https://www.linkedin.com/in/barna-norbert/
