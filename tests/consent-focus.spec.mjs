@@ -91,7 +91,8 @@ test("a nested click returns to the actual invoker, not the first settings butto
 });
 
 test("API opening still returns to the previously focused control", async ({ page }) => {
-  const previous = page.locator("main button.footer-email");
+  const previous = page.locator("#top a.footer-email");
+  await expect(previous).toHaveAttribute("href", "/contact");
   await previous.focus();
   await page.evaluate(() => window.PortfolioConsent.open());
   await expect(page.locator("#portfolio-consent-title")).toBeFocused();

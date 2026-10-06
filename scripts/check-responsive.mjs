@@ -7,6 +7,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { UTILITY_PAGES, baseOf, HU_PAGES } from "./service-pages.mjs";
+import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
@@ -205,7 +206,7 @@ for (const page of ALL_PAGES) {
         !linkedinIcon) {
       fail(`${page}: footer must expose a LinkedIn icon and one project link to ${contactPath}`);
     }
-    if (/mailto:/i.test(html) || /anorbert@pm\.me/i.test(html)) {
+    if (/mailto:/i.test(html) || exposesInbox(html)) {
       fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
     }
     if (/footer-col-title">(?:Contact|Kapcsolat)/.test(html)) {
@@ -400,7 +401,7 @@ if (!navigationJs.includes('primaryNavigation.setAttribute("data-nav-menu-open",
     !animationJs.includes('window.addEventListener("portfolio:motionchange"')) {
   fail("independent menu and shared motion preference bridge are incomplete");
 }
-if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
+if (exposesInbox(navigationJs) || /mailto:/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }
 // NN/g audit (2026-10-06): contact goes through the form; no script assembles

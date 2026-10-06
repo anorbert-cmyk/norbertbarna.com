@@ -8,6 +8,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CONTACT_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, UTILITY_PAGES } from "./service-pages.mjs";
+import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK = readdirSync(join(ROOT, "work"))
@@ -142,7 +143,7 @@ if (!/class="footer-contact-link"/.test(homeNav) || !/linkedin\.com\/in\/barna-n
 if (!/<a\b[^>]*href="\/contact">Contact<\/a>/.test(homeNav) || /footer-email/.test(homeNav)) {
   fail("home top bar: one Contact link is the only contact entry (NN/g contact-us guideline)");
 }
-if (/href="[^"]*mailto:/.test(homeNav) || /anorbert@pm\.me/.test(homeNav)) {
+if (/href="[^"]*mailto:/.test(homeNav) || exposesInbox(homeNav)) {
   fail("MailtoInHtml: home Email must not expose mailto or the address");
 }
 if (!/class="home-nav-monogram"[^>]*>NB<\/span>/.test(homeNav) ||
@@ -482,7 +483,7 @@ if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(storyFooter) ||
     /footer-mesh|mesh-blur|footer-dunes|data-story-art/.test(storyFooter)) {
   fail("About must close with its still navy identity and legal footer, without animated artwork");
 }
-if (/mailto:|anorbert@pm\.me/i.test(story)) {
+if (/mailto:/i.test(story) || exposesInbox(story)) {
   fail("About contact must keep the existing native email owner and omit raw addresses");
 }
 const storyToggles = [...story.matchAll(/(<button\b[^>]*\bdata-story-motion-toggle\b[^>]*>)([\s\S]*?)<\/button>/g)];
@@ -497,7 +498,7 @@ if (storyToggles.length !== 1 || !/\btype="button"/.test(storyToggles[0]?.[1] ||
 for (const page of CONTACT_PAGES) {
   if (!existsSync(join(ROOT, page))) { fail(`${page}: the contact form page must exist`); continue; }
   const html = readFileSync(join(ROOT, page), "utf8");
-  if (/mailto:|@pm\.me/i.test(html)) fail(`${page}: the contact page must never expose an address`);
+  if (/mailto:/i.test(html) || exposesInbox(html)) fail(`${page}: the contact page must never expose an address`);
   if (!/<form\b[^>]*\bid="contact-form"/.test(html) || !/name="website"/.test(html) || !/assets\/js\/contact\.[a-f0-9]{12}\.js/.test(html)) {
     fail(`${page}: contact form, honeypot and its content-hashed script are required`);
   }
@@ -592,7 +593,7 @@ for (const page of footerPages) {
   if (!footer.includes("68f9e9de8ed08e31e52c4188_NB.svg")) {
     fail(`${page}: footer must reuse the existing nb wordmark`);
   }
-  if (/mailto:/i.test(html) || /anorbert@pm\.me/i.test(html)) {
+  if (/mailto:/i.test(html) || exposesInbox(html)) {
     fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
   }
   if (html.includes("data-motion-toggle") || html.includes("site-motion-toggle")) {
@@ -649,7 +650,7 @@ for (const page of SERVICE_PAGES) {
     if (linkedin.length !== 1 || !linkedin[0][0].includes('href="https://www.linkedin.com/in/barna-norbert/"') || !linkedin[0][0].includes('rel="noopener noreferrer"')) fail(`${page}: the AI footer must retain the real, protected LinkedIn contact`);
     if (!footer.includes('href="/privacy"') || !footer.includes('href="/hu/adatvedelem"') || (footer.match(/data-consent-settings/g) || []).length !== 1 || !/<button\b[^>]*data-consent-settings[^>]*\shidden(?:\s|>)/.test(footer)) fail(`${page}: the AI footer must preserve privacy links and the initially hidden consent-settings hook`);
     if (language === "hu" && (!/<h2\b[^>]*id="footer-title"[^>]*lang="hu"/.test(footer) || !footer.includes('Analitikai beállítások'))) fail(`${page}: the Hungarian headline must declare its language and the footer controls must be Hungarian`);
-    if (/footer-col|editorial-footer|footer-mesh|footer-dunes|<form\b|href="\/work\//.test(footer) || /mailto:|anorbert@pm\.me|data-motion-toggle/.test(html)) fail(`${page}: the scoped AI footer must not restore duplicated work columns, forms, raw email or motion controls`);
+    if (/footer-col|editorial-footer|footer-mesh|footer-dunes|<form\b|href="\/work\//.test(footer) || (/mailto:|data-motion-toggle/.test(html) || exposesInbox(html))) fail(`${page}: the scoped AI footer must not restore duplicated work columns, forms, raw email or motion controls`);
     // Board artwork is decorative: sized, empty alt, inside an aria-hidden node.
     for (const [tag] of html.matchAll(/<img\b[^>]*assets\/images\/ai\/[^>]*>/g)) {
       if (!/\balt=""/.test(tag) || !/\bwidth="\d+"/.test(tag) || !/\bheight="\d+"/.test(tag)) fail(`${page}: board artwork must be sized with empty alt`);
@@ -680,7 +681,7 @@ for (const page of PRIVACY_PAGES) {
 }
 
 const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8");
-if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
+if (exposesInbox(navigationJs) || /mailto:/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }
 if (/\["mai", "lto"\]|location\.assign|footerMailHref/.test(navigationJs)) {
@@ -692,7 +693,7 @@ if (!/querySelectorAll\(\s*["']a,\s*button["']\s*\)/.test(navigationJs)) {
 if (/setAttribute\(\s*["']href["']/.test(navigationJs)) {
   fail("MailtoInHtml: do not write mailto onto href or use a fake Email link");
 }
-if (/mailto:/i.test(css) || /anorbert@pm\.me/i.test(css)) {
+if (/mailto:/i.test(css) || exposesInbox(css)) {
   fail("MailtoInHtml: stylesheet must not contain mailto: or the contact address");
 }
 

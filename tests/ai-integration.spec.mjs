@@ -5,6 +5,11 @@ import { expect, test } from "@playwright/test";
 // reaches them. The Passage closing is the actual footer, after the FAQ.
 const ROUTES = [["en", "/ai-integration"], ["hu", "/hu/ai-integracio"]];
 const SECTIONS = ["#top", "#shaped", "#pieces", "#workflow", "#selected-work", "#start", "#questions"];
+// Hungarian pages link only Hungarian pages (whole-site language switch, 2026-10-06).
+const caseHref = (language, slug) => language === "hu" ? `/hu/munka/${slug}` : `/work/${slug}`;
+const aboutHref = (language) => language === "hu" ? "/hu/rolam" : "/about";
+const contactHref = (language) => language === "hu" ? "/hu/kapcsolat" : "/contact";
+const contactLabel = (language) => language === "hu" ? "Beszéljünk a projektedről" : "Discuss your project";
 let errors;
 test.beforeEach(async ({ page }) => {
   errors = [];
@@ -131,12 +136,30 @@ for (const [language, path] of ROUTES) {
       await expect(label).toHaveCSS("background-image", "none");
     }
     for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
-      await expect(page.locator(`main a[href="/work/${slug}"]`)).toHaveCount(1);
-      await expect(page.locator(`#selected-work a[href="/work/${slug}"] img`)).toHaveAttribute("src", `/assets/images/geometry/${slug}.960.webp`);
+      await expect(page.locator(`main a[href="${caseHref(language, slug)}"]`)).toHaveCount(1);
+      await expect(page.locator(`#selected-work a[href="${caseHref(language, slug)}"] img`)).toHaveAttribute("src", `/assets/images/geometry/${slug}.960.webp`);
     }
-    await expect(page.locator(`main a[href="${language === "en" ? "/hu/ai-integracio" : "/ai-integration"}"]`)).toHaveCount(1);
-    await expect(page.locator("main button.footer-email")).toHaveCount(1);
-    await expect(page.locator("#top button.footer-email")).toHaveCount(1);
+    const pair = language === "en" ? "/hu/ai-integracio" : "/ai-integration";
+    await expect(page.locator(`main a[href="${pair}"]`)).toHaveCount(1);
+    // The menu's single language link names the other language in that language.
+    const languageLink = page.locator(".navbar a.nav-link.lang-switch");
+    await expect(languageLink).toHaveCount(1);
+    await expect(languageLink).toHaveAttribute("href", pair);
+    await expect(languageLink).toHaveText(language === "en" ? "Magyar" : "English");
+    await expect(languageLink).toHaveAttribute("rel", "alternate");
+    await expect(languageLink).toHaveAttribute("hreflang", language === "en" ? "hu" : "en");
+    // The opening and the close both link the contact form; no mail button remains.
+    await expect(page.locator("button.footer-email")).toHaveCount(0);
+    await expect(page.locator("main a.footer-email")).toHaveCount(1);
+    await expect(page.locator("#top a.footer-email")).toHaveCount(1);
+    await expect(page.locator("#top a.footer-email")).toHaveAttribute("href", contactHref(language));
+    if (language === "hu") {
+      // Hungarian reading content and menu stay in Hungarian; only explicit language links lead to English.
+      const english = await page.locator("main a[href^='/'], .navbar a[href^='/']").evaluateAll((links) => links
+        .filter((link) => !link.matches(".lang-switch, [hreflang='en']") && !/^\/hu(?:\/|$|#)/.test(link.getAttribute("href")))
+        .map((link) => link.getAttribute("href")));
+      expect(english, "Hungarian content links only Hungarian pages").toEqual([]);
+    }
     const footer = page.locator("footer.ai-footer");
     await expect(footer).toHaveAttribute("id", "work-better");
     await expect(page.locator("main footer, main #work-better")).toHaveCount(0);
@@ -144,11 +167,12 @@ for (const [language, path] of ROUTES) {
     await expect(footer).toHaveCSS("background-color", "rgb(10, 22, 40)");
     await expect(footer.locator(".ai-footer-art")).toHaveAttribute("aria-hidden", "true");
     await expect(footer.locator(".footer-brand img")).toHaveAttribute("src", /68f9e9de8ed08e31e52c4188_NB\.svg$/);
-    await expect(footer.locator("button.footer-email")).toHaveAccessibleName(language === "hu" ? "Beszéljünk a projektedről" : "Discuss your project");
-    await expect(footer.locator("button.footer-email")).toHaveAttribute("type", "button");
+    await expect(footer.locator("a.footer-email")).toHaveAccessibleName(contactLabel(language));
+    await expect(footer.locator("a.footer-email")).toHaveAttribute("href", contactHref(language));
+    await expect(footer.locator("a.footer-email span[aria-hidden='true']")).toHaveText("→");
     await expect(footer.locator("a.footer-contact-link")).toHaveAttribute("href", "https://www.linkedin.com/in/barna-norbert/");
     await expect(footer.locator('.footer-privacy a[href="/privacy"], .footer-privacy a[href="/hu/adatvedelem"], [data-consent-settings]')).toHaveCount(3);
-    await expect(footer.locator('.footer-col, a[href^="/work/"]')).toHaveCount(0);
+    await expect(footer.locator('.footer-col, a[href^="/work/"], a[href^="/hu/munka/"]')).toHaveCount(0);
     if (language === "hu") await expect(footer.locator("h2")).toHaveAttribute("lang", "hu");
     const artwork = await page.locator("main img, .ai-footer-art img").evaluateAll((images) => images.map((image) => ({
       alt: image.alt, decorative: Boolean(image.closest('[aria-hidden="true"]')) || image.closest("a") !== null,
@@ -184,7 +208,9 @@ for (const [language, path] of ROUTES) {
   test(`${language}: mobile opening keeps the contact action in view and uses a stable, theme-aware header`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await open(page, path);
-    const cta = page.locator("#top button.footer-email");
+    const cta = page.locator("#top a.footer-email");
+    await expect(cta).toHaveAttribute("href", contactHref(language));
+    await expect(cta).toHaveAccessibleName(contactLabel(language));
     const box = await cta.boundingBox();
     expect(box.y, "contact starts below the navigation").toBeGreaterThanOrEqual(56);
     expect(box.y + box.height, "the whole primary contact action is visible before scrolling").toBeLessThanOrEqual(844);
@@ -351,9 +377,9 @@ for (const [language, path] of ROUTES) {
     await page.locator(".ai-hero-explore").focus();
     for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
       await page.keyboard.press("Tab");
-      await expectFocusedLinkPainted(page, page.locator(`#selected-work a[href="/work/${slug}"]`));
+      await expectFocusedLinkPainted(page, page.locator(`#selected-work a[href="${caseHref(language, slug)}"]`));
     }
-    for (const href of ["/work/sportsgambit", "/about#perspective"]) {
+    for (const href of [caseHref(language, "sportsgambit"), `${aboutHref(language)}#perspective`]) {
       await page.keyboard.press("Tab");
       await expectFocusedLinkPainted(page, page.locator(`#selected-work a[href="${href}"]`));
     }
@@ -629,17 +655,18 @@ test.describe("without JavaScript", () => {
       await expect(page.locator(".ai-pieces-count span")).toHaveText("03");
       expect(await page.locator(".ai-ribbon-strip").evaluate((strip) => strip.getBoundingClientRect().width)).toBeLessThanOrEqual(391);
       await expectFallbackCaptionsReadable(page);
-      await expect(page.locator("main button.footer-email")).toBeVisible();
+      await expect(page.locator("#top a.footer-email")).toBeVisible();
+      await expect(page.locator("#top a.footer-email")).toHaveAttribute("href", contactHref(language));
       await expect(page.locator(".ai-hero-canvas")).toHaveCSS("opacity", "0");
       await expect(page.locator(".ai-hero-bg img")).toBeVisible();
       const question = page.locator("#questions details").nth(1);
       await question.locator("summary").click();
       await expect(question.locator("p")).toBeVisible();
-      const link = page.locator('#selected-work a[href="/work/instructure"]');
+      const link = page.locator(`#selected-work a[href="${caseHref(language, "instructure")}"]`);
       await link.focus();
       await expect(link).toBeFocused();
       await link.press("Enter");
-      await expect(page).toHaveURL(/\/work\/instructure$/);
+      await expect(page).toHaveURL(new RegExp(`${caseHref(language, "instructure")}$`));
     });
   }
 });

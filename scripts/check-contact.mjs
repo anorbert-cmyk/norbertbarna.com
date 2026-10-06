@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
@@ -75,6 +76,8 @@ async function solved(ip = "203.0.113.1") {
   return { token: issued.body.token, nonce: solve(issued.body) };
 }
 
+// Behave as behind Railway's edge, where the forwarded client address counts.
+process.env.RAILWAY_ENVIRONMENT = "check";
 process.env.RESEND_API_KEY = "re_test_key";
 process.env.CONTACT_TO = "inbox@example.test";
 delete process.env.CONTACT_DRY_RUN;
@@ -109,9 +112,18 @@ try {
       "visitor values are HTML-escaped in the notification");
   }
 
-  // Replay of a spent challenge.
+  // Replay of a spent challenge, including non-canonical spellings of its signature.
   result = await post({ ...message, ...proof });
   expect(result.status === 403 && result.body.error === "challenge", "a spent challenge is refused");
+  {
+    const [p, sig] = proof.token.split(".");
+    const before = sent.length;
+    for (const variant of [`${p}.${sig}=`, `${p}.${sig}!`, `${p}.${sig.slice(0, 5)}~${sig.slice(5)}`, `${p}.${sig}.x`]) {
+      result = await post({ ...message, token: variant, nonce: proof.nonce }, { headers: { "X-Forwarded-For": "203.0.113.50" } });
+      expect(result.status === 403, `a re-spelled spent token is refused (${variant.slice(-6)})`);
+    }
+    expect(sent.length === before, "no replay variant is delivered");
+  }
 
   // Wrong nonce, forged token, missing proof.
   proof = await solved("203.0.113.2");
@@ -205,10 +217,18 @@ for (const dir of [".", "work", "hu", "hu/munka"]) {
 for (const page of pages) {
   const html = readFileSync(join(ROOT, page), "utf8");
   if (/mailto:/i.test(html)) fail(`${page} contains a mailto link`);
-  if (/@pm\.me|anorbert@/i.test(html)) fail(`${page} exposes the private inbox`);
+  if (exposesInbox(html)) fail(`${page} exposes the private inbox`);
+}
+// Every served asset too: retired release copies once carried the address in a comment.
+for (const dir of ["assets/css", "assets/js"]) {
+  for (const name of readdirSync(join(ROOT, dir))) {
+    if (!/\.(?:css|js)$/.test(name)) continue;
+    const source = readFileSync(join(ROOT, dir, name), "utf8");
+    if (exposesInbox(source) || /mailto:/i.test(source)) fail(`${dir}/${name} exposes the inbox or a mail link`);
+  }
 }
 const serverSource = readFileSync(join(ROOT, "server.js"), "utf8") + readFileSync(join(ROOT, "lib", "contact.js"), "utf8");
-if (/@pm\.me/i.test(serverSource)) fail("the destination address must come from CONTACT_TO, not source");
+if (exposesInbox(serverSource)) fail("the destination address must come from CONTACT_TO, not source");
 
 if (failures) {
   console.error(`check-contact: ${failures} failure(s)`);

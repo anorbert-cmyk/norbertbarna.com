@@ -57,10 +57,17 @@ for (const [language, path] of ROUTES) {
     await expect(workflow.locator(".ai-workflow-output")).toHaveCount(5);
     await expect(page.locator("#pieces [data-ai-step]")).toHaveCount(3);
     await expect(page.locator("#pieces #workflow, #pieces a, #pieces button")).toHaveCount(0);
-    await expect(page.locator('#selected-work a[href="/work/sportsgambit"]')).toHaveAccessibleName(/SportsGambit.*MVP/);
-    await expect(page.locator('#selected-work a[href="/about#perspective"]')).toHaveAccessibleName(/BlackRock/);
-    if (language === "hu") {
-      for (const link of await page.locator('#selected-work a[href^="/work/"], #selected-work a[href^="/about"]').all()) await expect(link).toHaveAttribute("hreflang", "en");
+    // Each language links its own case and About pages (whole-site language switch, 2026-10-06).
+    const caseRoot = language === "hu" ? "/hu/munka/" : "/work/";
+    const about = language === "hu" ? "/hu/rolam" : "/about";
+    await expect(page.locator(`#selected-work a[href="${caseRoot}sportsgambit"]`)).toHaveAccessibleName(/SportsGambit.*MVP/);
+    await expect(page.locator(`#selected-work a[href="${about}#perspective"]`)).toHaveAccessibleName(/BlackRock/);
+    const evidence = await page.locator("#selected-work a[href]").evaluateAll((links) => links.map((link) => ({
+      href: link.getAttribute("href"), hreflang: link.getAttribute("hreflang") })));
+    expect(evidence.length).toBeGreaterThanOrEqual(5);
+    for (const link of evidence) {
+      expect(link.href, "case evidence stays in the page language").toMatch(language === "hu" ? /^\/hu\/(munka\/|rolam)/ : /^\/(work\/|about)/);
+      expect(link.hreflang, "same-language evidence carries no cross-language hreflang").toBeNull();
     }
     await expectWorkflowInFlow(page);
   });
@@ -108,6 +115,11 @@ test("contextual case and Works links form a crawlable route back to the service
     ["/work/sportsgambit", '.summary a[href="/ai-integration#workflow"]', "/ai-integration#workflow"],
     ["/work/kineticare", '.summary a[href="/ai-integration#workflow"]', "/ai-integration#workflow"],
     ["/works", '.project-index-intro p a[href="/ai-integration"]', "/ai-integration"],
+    // The Hungarian mirror routes back to the Hungarian service page, never to the English one.
+    ["/hu/munka/instructure", '.summary a[href="/hu/ai-integracio#workflow"]', "/hu/ai-integracio#workflow"],
+    ["/hu/munka/sportsgambit", '.summary a[href="/hu/ai-integracio#workflow"]', "/hu/ai-integracio#workflow"],
+    ["/hu/munka/kineticare", '.summary a[href="/hu/ai-integracio#workflow"]', "/hu/ai-integracio#workflow"],
+    ["/hu/munkak", '.project-index-intro p a[href="/hu/ai-integracio"]', "/hu/ai-integracio"],
   ]) {
     const response = await request.get(path);
     expect(response.status()).toBe(200);
@@ -122,6 +134,7 @@ test("contextual case and Works links form a crawlable route back to the service
     destinations.add(expectedHref);
   }
   destinations.add("/about#perspective");
+  destinations.add("/hu/rolam#perspective");
   for (const destination of destinations) {
     const [path, fragment] = destination.split("#");
     const response = await request.get(path);

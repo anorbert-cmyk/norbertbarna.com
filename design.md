@@ -843,7 +843,15 @@ Kapcsolat. The form posts JSON to `POST /api/contact` after a proof-of-work
 challenge from `GET /api/contact/challenge` (`lib/contact.js`). Spam defence:
 HMAC-signed challenge, SHA-256 proof of work, honeypot field `website`,
 minimum fill time, single-use challenges, same-origin and JSON-only posts,
-16 kB body limit, link limit, per-address and global rate limits. Delivery
+16 kB body limit, link limit, per-address (5 per 15 minutes, 10 per day) and
+site-wide daily limits. Only the canonical signature spelling is accepted and
+spent challenges are keyed by their signed salt; every in-memory map is
+bounded. The client address is Railway's `X-Real-IP` (else the edge-appended
+`X-Forwarded-For` entry), validated as an IP, IPv6 grouped per /64. Checks run
+challenge, validation, per-address limit, then the silent honeypot and timing
+drop, then the site-wide cap (503, so the page offers LinkedIn). The client
+waits until a challenge is at least 3.3 s old before posting. Guards never spell
+the inbox: `scripts/private-inbox.mjs` compares a SHA-256 digest. Delivery
 goes through Resend with `RESEND_API_KEY`, `CONTACT_TO` and `CONTACT_FROM`;
 the destination address lives only in `CONTACT_TO`, never in markup or
 source. Without configuration the API answers 503 and the page offers
