@@ -52,19 +52,8 @@
   overflow-wrap: anywhere;
 }
 .editorial-experience .section-title span { display: block; }
-.editorial-experience-art {
-  width: 86%;
-  max-width: 330px;
-  margin: 42px 0 0;
-  pointer-events: none;
-}
-.editorial-experience-art img,
-.editorial-footer-art img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+/* The folded gate stands in the home opening only (owner, 2026-10-06): the
+   experience list and the footer carry no artwork. */
 .editorial-experience .awards-card-wrap {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -242,17 +231,10 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   color: var(--editorial-navy);
   background: transparent;
 }
-.editorial-footer-art {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: center;
-  width: min(100%, 350px);
-  height: clamp(260px, 28vw, 410px);
-  pointer-events: none;
-}
 .editorial-footer .footer-nav {
   grid-column: 2;
-  grid-row: 2;
+  grid-row: 1 / 3;
+  align-self: end;
   display: block;
   width: 100%;
   max-width: none;
@@ -345,13 +327,10 @@ html.no-motion .editorial-experience .awards-card .awards-year {
 
 @media (max-width: 991px) {
   .editorial-experience .awards-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-  .editorial-experience .awards-title-area { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: center; gap: 24px; }
   .editorial-experience .section-title { font-size: clamp(42px, 6.5vw, 64px); }
-  .editorial-experience-art { justify-self: end; width: 100%; max-width: 220px; height: 230px; margin: 0; }
   .editorial-experience .awards-card .awards-card-text { font-size: clamp(28px, 4.5vw, 40px); }
   .editorial-footer-title { font-size: clamp(56px, 8vw, 86px); }
   .editorial-footer .footer-chrome { gap: 28px; }
-  .editorial-footer-art { height: 290px; }
 }
 @media (max-width: 599px) {
   .editorial-experience,
@@ -360,7 +339,6 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   .editorial-experience .awards-grid { gap: 36px; padding-top: 30px; padding-bottom: 48px; }
   .editorial-experience .awards-title-area { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .editorial-experience .section-title { font-size: clamp(38px, 10vw, 54px); }
-  .editorial-experience-art { justify-self: end; width: 50%; height: 180px; }
   .editorial-experience .awards-card { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 24px 0; }
   .editorial-experience .awards-card:first-child { padding-top: 0; }
   .editorial-experience .awards-year-wrap { grid-row: 1; padding: 0; }
@@ -371,7 +349,6 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   .editorial-footer .footer-ident { grid-column: 1; grid-row: 1; gap: 24px; }
   .editorial-footer-title { font-size: clamp(56px, 14vw, 80px); }
   .editorial-footer .footer-lede { font-size: 16px; }
-  .editorial-footer-art { grid-column: 1; grid-row: 2; justify-self: end; width: 68%; height: 250px; }
   .editorial-footer .footer-nav { grid-column: 1; grid-row: 3; }
   .editorial-footer .footer-bar { margin-top: 36px; gap: 8px; }
   .editorial-footer .footer-copyright { width: 100%; }

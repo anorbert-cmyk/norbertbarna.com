@@ -1277,7 +1277,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
     await expect(footer).toHaveCSS("background-color", "rgb(214, 212, 237)");
     await expect(footer.locator(".footer-bar")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(footer.locator(".footer-bar")).toHaveCSS("border-top-width", "1px");
-    await expect(footer.locator(".editorial-footer-art")).toHaveAttribute("aria-hidden", "true");
+    await expect(footer.locator(".editorial-footer-art"), "the folded gate stays in the home opening only").toHaveCount(0);
     const email = footer.locator("button.footer-email"), linkedin = footer.locator("a.footer-contact-link");
     await expect(email).toHaveCount(1);
     await expect(email).toHaveText(PROJECT_LABEL);
@@ -1418,25 +1418,20 @@ for (const width of [390, 1440]) {
       await openStable(page, "/");
       await expect(page.locator(".home-mast")).toHaveAttribute("data-morph-active");
       await alignFooterBottom(page);
-      const read = () => page.locator("footer .footer-ident, footer .editorial-footer-art, footer .footer-nav, footer .footer-bar").evaluateAll((elements) => elements.map((element) => {
+      const read = () => page.locator("footer .footer-ident, footer .footer-nav, footer .footer-bar").evaluateAll((elements) => elements.map((element) => {
         const box = element.getBoundingClientRect();
         return { left: box.left, right: box.right, top: box.top, bottom: box.bottom, width: box.width, height: box.height };
       }));
       const before = await read();
-      const [ident, art, work, legal] = before;
+      const [ident, work, legal] = before;
       for (const box of before) {
         expect(box.width).toBeGreaterThan(0);
         expect(box.left).toBeGreaterThanOrEqual(0);
         expect(box.right).toBeLessThanOrEqual(width);
       }
-      if (width < 600) {
-        expect(art.top).toBeGreaterThanOrEqual(ident.bottom);
-        expect(work.top).toBeGreaterThanOrEqual(art.bottom);
-      } else {
-        expect(art.left).toBeGreaterThanOrEqual(ident.right);
-        expect(work.top).toBeGreaterThanOrEqual(art.bottom);
-      }
-      expect(legal.top).toBeGreaterThanOrEqual(Math.max(ident.bottom, art.bottom, work.bottom));
+      if (width < 600) expect(work.top).toBeGreaterThanOrEqual(ident.bottom);
+      else expect(work.left).toBeGreaterThanOrEqual(ident.right);
+      expect(legal.top).toBeGreaterThanOrEqual(Math.max(ident.bottom, work.bottom));
       await page.mouse.move(width * .88, 780);
       await page.waitForTimeout(240);
       expect(await read(), "pointer input does not relocate the editorial close").toEqual(before);
@@ -1461,7 +1456,7 @@ for (const width of [390, 1440]) {
         window.__captureFooter = true;
         const sample = (time) => {
           window.__footerFrames.push({ time, focused: document.activeElement === document.querySelector("footer button.footer-email"), boxes:
-            [...document.querySelectorAll("footer, footer .footer-ident, footer .editorial-footer-art, footer .footer-nav, footer .footer-bar")].map((element) => {
+            [...document.querySelectorAll("footer, footer .footer-ident, footer .footer-nav, footer .footer-bar")].map((element) => {
               const box = element.getBoundingClientRect();
               return { x: box.x, y: box.y, width: box.width, height: box.height };
             }) });
@@ -1545,7 +1540,7 @@ test.describe("editorial footer without JavaScript", () => {
     const footer = page.locator("footer");
     await expect(footer.locator(".editorial-footer-title")).toBeVisible();
     await expect(footer.locator(".footer-col a")).toHaveCount(4);
-    await expect(footer.locator(".editorial-footer-art img")).toHaveAttribute("alt", "");
+    await expect(footer.locator(".editorial-footer-art")).toHaveCount(0);
     const work = footer.locator('.footer-col a[href="/work/instructure"]');
     await work.focus();
     await expect(work).toBeFocused();
@@ -2129,8 +2124,7 @@ async function expectEditorialExperience(page, { pointer = false } = {}) {
   expect(await rows.evaluateAll((elements) => elements.map((element) =>
     [".awards-card-title", ".awards-card-text", ".awards-year"].map((selector) => element.querySelector(selector).textContent.trim())))).toEqual(experienceFacts);
   await expect(section.locator('video, button, a, [tabindex="0"], [role="button"]')).toHaveCount(0);
-  await expect(section.locator(".editorial-experience-art")).toHaveAttribute("aria-hidden", "true");
-  await expect(section.locator(".editorial-experience-art img")).toHaveAttribute("alt", "");
+  await expect(section.locator(".editorial-experience-art"), "the experience list carries no artwork").toHaveCount(0);
   for (const row of await rows.all()) {
     await row.scrollIntoViewIfNeeded();
     for (const target of await row.locator(".awards-card-title, .awards-card-text, .awards-year").all()) {

@@ -498,7 +498,9 @@ if (storyToggles.length !== 1 || !/\btype="button"/.test(storyToggles[0]?.[1] ||
 // Latest user direction replaces the footer-mesh and video-backed experience.
 if (existsSync(join(ROOT, "contact.html"))) fail("/contact must stay unpublished; contact is the native footer Email action");
 if (/footer-mesh|mesh-blur|footer-dunes/.test(footerCanon[0])) fail("Editorial footer must not restore the old gradient field");
-if (!/editorial-footer-title/.test(footerCanon[0]) || !/editorial-footer-art/.test(footerCanon[0])) fail("Editorial footer needs its personal contact title and original folded geometry");
+if (!/editorial-footer-title/.test(footerCanon[0])) fail("Editorial footer needs its personal contact title");
+// The folded gate belongs to the home opening only (owner, 2026-10-06): no copy in the footer or the experience list.
+if (/editorial-footer-art|editorial-experience-art/.test(footerCanon[0] + home)) fail("The folded gate artwork must not return to the footer or the experience section");
 for (const color of ["#D6D4ED", "#0A1628"]) {
   if (!editorialCss.includes(color)) fail(`Editorial sections must use the original ${color} palette token`);
 }
