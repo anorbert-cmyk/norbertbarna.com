@@ -394,8 +394,11 @@
     say(t.sent);
     sheet.setAttribute("data-state", "sent");
     setCaption(true);
+    // The written page fades while its row folds shut; the envelope row opens
+    // underneath it. The form leaves the document only once the fold is done,
+    // so the sheet is never a blank white rectangle between the two states.
+    form.setAttribute("inert", "");
     var reveal = function () {
-      form.hidden = true;
       if (sent) sent.hidden = false;
       if (sentTitle) {
         sentTitle.focus({ preventScroll: true });
@@ -404,7 +407,13 @@
         } catch (error) { /* older engines take no options */ }
       }
     };
-    if (instant) reveal(); else setTimeout(reveal, 300);
+    var finish = function () {
+      form.hidden = true;
+      form.removeAttribute("inert");
+    };
+    if (instant) { reveal(); finish(); return; }
+    setTimeout(reveal, 260);
+    setTimeout(finish, 1000);
   }
 
   function reset() {
@@ -413,6 +422,7 @@
     updateCounter();
     say("");
     if (sent) sent.hidden = true;
+    form.removeAttribute("inert");
     form.hidden = false;
     sheet.setAttribute("data-state", "idle");
     setCaption(false);
