@@ -96,9 +96,18 @@ try {
   const mail = sent[0] || {};
   expect(mail.to === "inbox@example.test", "delivery goes to CONTACT_TO");
   expect(mail.replyTo === "ada@example.com", "Reply-To is the visitor");
-  expect(/AI integration/.test(mail.subject) && /Ada Lovelace/.test(mail.subject), "subject names topic and sender");
-  expect(/onboarding/.test(mail.text), "body carries the message");
+  expect(/AI-integráció/.test(mail.subject) && /Ada Lovelace/.test(mail.subject), "subject names topic and sender");
+  expect(/onboarding/.test(mail.text) && /onboarding/.test(mail.html), "text and HTML bodies carry the message");
+  expect(!/\{\{\{/.test(mail.html) && /mailto:ada%40example\.com/.test(mail.html), "HTML template is fully filled, with a reply link");
   expect(typeof mail.idempotencyKey === "string" && mail.idempotencyKey.length === 64, "idempotency key is set");
+
+  // Visitor text can never add markup to the owner's inbox.
+  {
+    const hostile = contact.composeEmail({ name: '<img src=x onerror=alert(1)>', email: 'a"b@example.com', topic: "web",
+      message: '<a href="https://evil.example">click</a>\nsecond line', lang: "hu" });
+    expect(!/<img src=x|<a href="https:\/\/evil/.test(hostile.html) && /&lt;img src=x/.test(hostile.html) && /second line/.test(hostile.html) && /<br>second line/.test(hostile.html),
+      "visitor values are HTML-escaped in the notification");
+  }
 
   // Replay of a spent challenge.
   result = await post({ ...message, ...proof });

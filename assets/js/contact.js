@@ -448,6 +448,10 @@
 
   // Measured height transition between the two pages of the sheet. A fr swap
   // would let both tracks balloon mid-way; explicit heights keep it honest.
+  var foldTimers = [];
+  function later(fn, ms) { foldTimers.push(setTimeout(fn, ms)); }
+  function cancelFold() { foldTimers.forEach(clearTimeout); foldTimers = []; }
+
   function foldHeight(from, to) {
     sheet.style.height = from + "px";
     void sheet.offsetHeight;
@@ -482,12 +486,15 @@
       form.removeAttribute("inert");
       sheet.style.height = "";
     };
+    cancelFold();
     if (instant) { reveal(); finish(); return; }
-    setTimeout(reveal, 240);
-    setTimeout(finish, 1100);
+    later(reveal, 240);
+    later(finish, 1100);
   }
 
   function reset() {
+    // A quick second message must not be undone by a fold still in flight.
+    cancelFold();
     var instant = reducedMotion();
     var startHeight = sheet.getBoundingClientRect().height;
     form.reset();
@@ -502,9 +509,10 @@
     form.hidden = false;
     sheet.setAttribute("data-state", "idle");
     setCaption(false);
+    sheet.style.height = "";
     if (!instant) {
       foldHeight(startHeight, form.getBoundingClientRect().height + 2);
-      setTimeout(function () { sheet.style.height = ""; }, 850);
+      later(function () { sheet.style.height = ""; }, 850);
     }
     prepareChallenge(true);
     if (fields.name) fields.name.focus({ preventScroll: true });
