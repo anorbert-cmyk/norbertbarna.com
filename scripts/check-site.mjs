@@ -108,7 +108,7 @@ for (const page of PAGES) {
     }
   }
   if (page.startsWith("work/") && h1) {
-    if (!title.startsWith(`${h1} — `)) {
+    if (!title.startsWith(`${h1}: `)) {
       fail(`TitleDrift: ${page} <title> must start with the case H1`);
     }
     const ogTitle = metaContent(html, "property", "og:title");
@@ -200,7 +200,7 @@ for (const page of PAGES) {
   if (!is404) {
     const navigation = html.match(/<nav\b[^>]*\bid=["']primary-navigation["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
     const aboutLinks = [...navigation.matchAll(/<a\b[^>]*\bhref=["']\/about["'][^>]*>([\s\S]*?)<\/a>/gi)];
-    if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== "About") {
+    if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== (page.startsWith("hu/") ? "Rólam" : "About")) {
       fail(`${page}: primary navigation must have one native About link to /about`);
     }
   }
@@ -226,8 +226,8 @@ for (const page of PAGES) {
     const profile = nodes.find((node) => node["@type"] === "ProfilePage");
     if (profile?.isPartOf?.["@id"] !== "https://www.barnanorbert.com/#website")
       fail(`${page}: ProfilePage must link to the canonical WebSite entity`);
-    if (profile?.name !== "Norbert Barna — Product VP")
-      fail(`${page}: ProfilePage name must be Norbert Barna — Product VP`);
+    if (profile?.name !== "Norbert Barna, Product VP")
+      fail(`${page}: ProfilePage name must be Norbert Barna, Product VP`);
     // Google ProfilePage expects DateTime, unlike schema.org's broader Date range.
     // Omit this optional field when the exact profile modification time is unknown.
     // https://developers.google.com/search/docs/appearance/structured-data/profile-page

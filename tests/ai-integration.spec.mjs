@@ -140,7 +140,7 @@ for (const [language, path] of ROUTES) {
     const footer = page.locator("footer.ai-footer");
     await expect(footer).toHaveAttribute("id", "work-better");
     await expect(page.locator("main footer, main #work-better")).toHaveCount(0);
-    await expect(footer.locator("h2")).toHaveText(/Let’s build\s*what’s next\./);
+    await expect(footer.locator("h2")).toHaveText(language === "hu" ? /Építsük meg,\s*ami következik\./ : /Let’s build\s*what’s next\./);
     await expect(footer).toHaveCSS("background-color", "rgb(10, 22, 40)");
     await expect(footer.locator(".ai-footer-art")).toHaveAttribute("aria-hidden", "true");
     await expect(footer.locator(".footer-brand img")).toHaveAttribute("src", /68f9e9de8ed08e31e52c4188_NB\.svg$/);
@@ -149,7 +149,7 @@ for (const [language, path] of ROUTES) {
     await expect(footer.locator("a.footer-contact-link")).toHaveAttribute("href", "https://www.linkedin.com/in/barna-norbert/");
     await expect(footer.locator('.footer-privacy a[href="/privacy"], .footer-privacy a[href="/hu/adatvedelem"], [data-consent-settings]')).toHaveCount(3);
     await expect(footer.locator('.footer-col, a[href^="/work/"]')).toHaveCount(0);
-    if (language === "hu") await expect(footer.locator("h2")).toHaveAttribute("lang", "en");
+    if (language === "hu") await expect(footer.locator("h2")).toHaveAttribute("lang", "hu");
     const artwork = await page.locator("main img, .ai-footer-art img").evaluateAll((images) => images.map((image) => ({
       alt: image.alt, decorative: Boolean(image.closest('[aria-hidden="true"]')) || image.closest("a") !== null,
       sized: Number(image.getAttribute("width")) > 0 && Number(image.getAttribute("height")) > 0,

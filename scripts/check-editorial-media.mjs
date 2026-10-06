@@ -106,7 +106,18 @@ for (const page of pages) {
       assert.equal((html.match(/<p class="case-evidence-note">/g)||[]).length,1,'evidence-note count');
     }
     if(page==='work/kineticare.html') assert(types.includes('FAQPage'),'existing FAQ data was lost');
-    assert(!/name=["']keywords["']/i.test(html),'meta keywords must not be introduced');
+    // Meta keywords (owner, 2026-10-06): one honest, page-specific tag, at most
+    // eight terms, never a stuffed list.
+    const keywordTags=[...html.matchAll(/<meta\b[^>]*name=["']keywords["'][^>]*>/gi)];
+    if(page!=='404.html'){
+      assert.equal(keywordTags.length,1,'one meta keywords tag');
+      const terms=(keywordTags[0][0].match(/content="([^"]*)"/)?.[1]||'').split(',').map(t=>t.trim()).filter(Boolean);
+      assert(terms.length>=3&&terms.length<=8,'meta keywords must hold 3 to 8 terms');
+      assert.equal(new Set(terms.map(t=>t.toLowerCase())).size,terms.length,'meta keywords must not repeat a term');
+    }
+    // Search snippets stay inside 105 to 135 characters (design.md).
+    const snippet=(html.match(/<meta\b[^>]*name=["']description["'][^>]*>/i)?.[0].match(/content="([^"]*)"/)?.[1]||'').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'");
+    if(page!=='404.html') assert(snippet.length>=105&&snippet.length<=135,`meta description must be 105 to 135 characters (${snippet.length})`);
     const switches=[...html.matchAll(/<button\b[^>]*\bdata-motion-toggle\b[^>]*>/g)];
     assert.equal(switches.length,0,'Motion control must not return');
     assert(html.includes(`assets/js/${mediaFile}`),'active media fingerprint is missing');

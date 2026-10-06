@@ -31,7 +31,7 @@
     summary: "PostHog: oldallátogatások és kapcsolatfelvételi kattintások.",
     details: "Részletek",
     description: "Az engedélyeddel a PostHog segítségével mérem az oldallátogatásokat és a kapcsolatfelvételi linkek használatát. Nincs munkamenet-felvétel vagy hirdetési követés. Az oldal mérés nélkül is használható.",
-    retention: "A döntésed ebben a böngészőben 180 napig érvényes. Az Analytics settings pontban bármikor módosíthatod.",
+    retention: "A döntésed ebben a böngészőben 180 napig érvényes. Az Analitikai beállítások gombbal bármikor módosíthatod.",
     privacy: "Adatvédelmi tájékoztató",
     privacyPath: "/hu/adatvedelem",
     reject: "Mérés elutasítása",
@@ -39,7 +39,7 @@
     close: "Beállítások bezárása",
     enabled: "A mérés jelenleg engedélyezve van.",
     disabled: "A mérés jelenleg ki van kapcsolva.",
-    error: "Ezen az oldalon a mérés kikapcsolva marad. A böngésző nem tudta elmenteni a döntésedet. Másik oldal megnyitásakor újra szükség lehet a választásodra."
+    error: "Ezen az oldalon a mérés kikapcsolva marad. A böngésző nem tudta elmenteni a döntésedet. Másik oldal megnyitásakor lehet, hogy újra választanod kell."
   } : {
     title: "Optional analytics",
     summary: "Optional PostHog analytics for page visits and contact-link clicks.",

@@ -276,7 +276,7 @@
     " float edge=pow(max(0.0,dot(r,normalize(vec3(.8,.1,-.45)))),70.0);",
     " return env+vec3(.839,.831,.929)*strip*1.6+vec3(.741,.706,.078)*edge*.8;}",
     "void main(){",
-    " if(vFinalFace<.5&&uMorph>=.16)discard;vec4 artwork=texture2D(uFinalArtwork,vArtworkUV);if(uMorph>=.45){gl_FragColor=artwork;return;}vec3 n=normalize(vNormal);if(!gl_FrontFacing)n=-n;vec3 v=normalize(uCamera-vPosition);",
+    " if(vFinalFace<.5&&uMorph>=.16)discard;vec4 artwork=texture2D(uFinalArtwork,vArtworkUV);if(uMorph>=.45){gl_FragColor=artwork;return;}vec3 artworkColor=artwork.a>.001?artwork.rgb/artwork.a:vec3(0.0);vec3 n=normalize(vNormal);if(!gl_FrontFacing)n=-n;vec3 v=normalize(uCamera-vPosition);",
     " float nv=max(dot(n,v),.001);vec3 r=reflect(-v,n);",
     // An IOR of two bends the camera ray through a virtual thickness behind the
     // front face. The backdrop contains the actual DOM lettering, not an env-map
@@ -300,8 +300,8 @@
     // Material interpolation occurs on this one surface, never on two DOM
     // silhouettes. The alpha artwork owns all endpoint light and shadow.
     " float reveal=smoothstep(.02,.45,uMorph);",
-    " float alpha=1.0;if(vFinalFace>.5){color=mix(color,artwork.rgb,reveal);alpha=mix(1.0,artwork.a,smoothstep(.001,.16,uMorph));}else{alpha=1.0-smoothstep(.001,.16,uMorph);}",
-    " gl_FragColor=vec4(clamp(color,0.0,1.0),alpha);}",
+    " float alpha=1.0;if(vFinalFace>.5){color=mix(color,artworkColor,reveal);alpha=mix(1.0,artwork.a,smoothstep(.001,.16,uMorph));}else{alpha=1.0-smoothstep(.001,.16,uMorph);}",
+    " gl_FragColor=vec4(clamp(color,0.0,1.0)*alpha,alpha);}",
   ].join("\n");
 
   function compile(type, source) {
@@ -337,8 +337,13 @@
     if (finalArtwork.naturalWidth > limit || finalArtwork.naturalHeight > limit) throw new Error("Hero artwork exceeds texture size");
     gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, finalTexture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    // The canvas is composited as premultiplied alpha everywhere (WKWebView in
+    // Instagram and other in-app browsers ignores premultipliedAlpha:false), so
+    // the artwork is premultiplied on upload: a transparent texel carries no
+    // colour and linear filtering cannot bleed its RGB into the soft shadow.
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, finalArtwork);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     // NPOT artwork is valid in WebGL1 with clamp/linear sampling. No oversized
     // resampling canvas or repeated uploads are needed for viewport changes.
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -431,7 +436,9 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   }
   function initialize() {
-    gl = canvas.getContext("webgl", { alpha: true, antialias: true, premultipliedAlpha: false, powerPreference: "low-power" });
+    // Premultiplied output is the one alpha model every compositor agrees on;
+    // the shader writes colour already multiplied by its alpha.
+    gl = canvas.getContext("webgl", { alpha: true, antialias: true, premultipliedAlpha: true, powerPreference: "low-power" });
     if (!gl) throw new Error("WebGL unavailable");
     var precision = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
     var vertex = compile(gl.VERTEX_SHADER, vertexSource);

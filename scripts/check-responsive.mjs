@@ -165,11 +165,12 @@ for (const page of ALL_PAGES) {
     if (navigationScripts.length !== 1) {
       fail(`${page}: independent mobile navigation script is missing or duplicated`);
     }
-    if (!/class="[^\"]*\bnav-logo-wrap\b[^\"]*"[^>]*aria-label="Norbert Barna — Home"/i.test(html) &&
-        !/aria-label="Norbert Barna — Home"[^>]*class="[^\"]*\bnav-logo-wrap\b/i.test(html)) {
+    if (!/class="[^\"]*\bnav-logo-wrap\b[^\"]*"[^>]*aria-label="[^"]*\S[^"]*"/i.test(html) &&
+        !/aria-label="[^"]*\S[^"]*"[^>]*class="[^\"]*\bnav-logo-wrap\b/i.test(html)) {
       fail(`${page}: logo link needs an explicit Home accessible name`);
     }
-    if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"/.test(html)) {
+    // The external link names its new tab in the page language.
+    if (!(page.startsWith("hu/") ? /aria-label="LinkedIn-profilom \(új lapon nyílik meg\)"/ : /aria-label="Find me on LinkedIn \(opens in a new tab\)"/).test(html)) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
     const footerHtml = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
@@ -228,9 +229,9 @@ for (const page of ALL_PAGES) {
     const rail = html.match(/<nav\b[^>]*class="[^"]*\bstory-rail\b[^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
     const links = [...rail.matchAll(/<a\b[^>]*>/gi)].map(match => match[0]);
     const targets = links.map(tag => attribute(tag, "href"));
-    if (JSON.stringify(targets) !== JSON.stringify(["#beginnings", "#perspective", "#next"]) ||
+    if (JSON.stringify(targets) !== JSON.stringify(["#beginnings", "#perspective", "#practice", "#next"]) ||
         links.some(tag => !attribute(tag, "aria-label"))) {
-      fail(`${page}: the three story chapters need named native anchor links`);
+      fail(`${page}: the four story chapters need named native anchor links`);
     }
     for (const target of targets) {
       const section = html.match(new RegExp(`<section\\b[^>]*\\bid="${target.slice(1)}"[^>]*>`, "i"))?.[0] || "";

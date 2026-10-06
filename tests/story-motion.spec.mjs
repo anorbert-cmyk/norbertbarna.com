@@ -88,7 +88,7 @@ test("About is the written biography with canonical identity and native destinat
     const href = link.getAttribute("href");
     return { href, target: Boolean(document.querySelector(href)), label: link.getAttribute("aria-label") };
   }));
-  expect(sections.map(({ href }) => href)).toEqual(["#beginnings", "#perspective", "#next"]);
+  expect(sections.map(({ href }) => href)).toEqual(["#beginnings", "#perspective", "#practice", "#next"]);
   for (const section of sections) { expect(section.target).toBe(true); expect(section.label).toBeTruthy(); }
   const schema = await page.locator('script[type="application/ld+json"]').textContent();
   expect(JSON.parse(schema)).toMatchObject({ "@type": "AboutPage", mainEntity: { name: "Norbert Barna", jobTitle: "Product VP" } });
@@ -157,7 +157,7 @@ test("device reduced motion is complete and live changes preserve focused readin
   await expect(root).toHaveAttribute("data-story-motion", "off");
   await expect(root).toHaveAttribute("data-story-mode", "flow");
   await expect(page.locator("[data-story-motion-toggle]")).toBeDisabled();
-  for (const id of ["beginnings-title", "between-title", "perspective-title", "next-title"]) await readable(page.locator(`#${id}`));
+  for (const id of ["beginnings-title", "between-title", "perspective-title", "practice-title", "next-title"]) await readable(page.locator(`#${id}`));
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(root).toHaveAttribute("data-story-mode", "cinematic");
   const link = page.locator('#beginnings .story-text-link');
@@ -318,7 +318,7 @@ test.describe("without JavaScript", () => {
   test("the complete article and visible native navigation remain usable", async ({ page }) => {
     await page.goto("/about", { waitUntil: "load" });
     await expect(page.locator("h1")).toBeVisible();
-    for (const id of ["beginnings-title", "between-title", "perspective-title", "next-title"]) await expect(page.locator(`#${id}`)).toBeVisible();
+    for (const id of ["beginnings-title", "between-title", "perspective-title", "practice-title", "next-title"]) await expect(page.locator(`#${id}`)).toBeVisible();
     await expect(page.locator("[data-story-motion-toggle]")).toBeHidden();
     const works = page.locator('.navbar a[href="/works"]');
     await expect(works).toBeVisible();
@@ -333,7 +333,7 @@ test("a missing motion script leaves all chapters in accessible native flow", as
   await page.goto("/about", { waitUntil: "load" });
   await expect(page.locator("main[data-story]")).toHaveAttribute("data-story-mode", "flow");
   await expect(page.locator("[data-story-motion-toggle]")).toBeHidden();
-  for (const id of ["beginnings-title", "between-title", "perspective-title", "next-title"]) await readable(page.locator(`#${id}`));
+  for (const id of ["beginnings-title", "between-title", "perspective-title", "practice-title", "next-title"]) await readable(page.locator(`#${id}`));
   const link = page.locator('#beginnings a[href="#perspective"]');
   await link.click();
   await expect(page).toHaveURL(/#perspective$/);

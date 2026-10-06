@@ -156,8 +156,8 @@ try {
     assert(pageCache.get("max-age") === "0", `${pagePath} must use max-age=0`);
     assert(pageCache.has("must-revalidate"), `${pagePath} must revalidate after a deploy`);
     assert(
-      /connect-src\s+'self'\s+fonts\.googleapis\.com\s+https:\/\/eu\.i\.posthog\.com(?:;|$)/i.test(contentSecurityPolicy),
-      `${pagePath} must keep Fonts and the EU PostHog capture host`
+      /connect-src\s+'self'\s+https:\/\/eu\.i\.posthog\.com(?:;|$)/i.test(contentSecurityPolicy),
+      `${pagePath} must keep only the EU PostHog capture host`
     );
     assert(!contentSecurityPolicy.includes("eu-assets"), `${pagePath}: must not allow the PostHog JS SDK asset host`);
     assert(!/script-src[^;]*posthog/i.test(contentSecurityPolicy), `${pagePath}: PostHog must not be on script-src`);
@@ -167,7 +167,7 @@ try {
   const llmsCache = cacheDirectives(llms.headers.get("cache-control") || "");
   assert(llms.ok, `/llms.txt returned ${llms.status}`);
   assert(/text\/plain/i.test(llms.headers.get("content-type") || ""), "/llms.txt is not text/plain");
-  assert((await llms.text()).includes("Norbert Barna — Product VP Portfolio"), "/llms.txt content is incomplete");
+  assert((await llms.text()).includes("# Norbert Barna, Product VP"), "/llms.txt content is incomplete");
   assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
 
   const homeWithoutToken = await fetch(`${baseUrl}/`);
@@ -401,4 +401,35 @@ try {
   await new Promise((resolveClose, rejectClose) => {
     server.close((error) => (error ? rejectClose(error) : resolveClose()));
   });
+}
+
+// Script CSP is hash-based (2026-10-06). Every executable inline script on a
+// served page must carry a hash in server.js, or the browser blocks it and the
+// feature fails silently (for example the home opening's layout decision).
+{
+  const { createHash } = await import("node:crypto");
+  const { readFileSync: readText, readdirSync: listDir, existsSync: exists } = await import("node:fs");
+  const serverSource = readText(new URL("../server.js", import.meta.url), "utf8");
+  const root = new URL("../", import.meta.url);
+  const pages = [];
+  for (const dir of ["", "work/", "hu/"]) {
+    const url = new URL(dir, root);
+    if (!exists(url)) continue;
+    for (const name of listDir(url)) if (name.endsWith(".html")) pages.push(dir + name);
+  }
+  const missing = new Set();
+  for (const page of pages) {
+    const html = readText(new URL(page, root), "utf8");
+    for (const [, attrs, body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+      if (/\bsrc=/.test(attrs) || /application\/ld\+json/.test(attrs)) continue;
+      const hash = `'sha256-${createHash("sha256").update(body).digest("base64")}'`;
+      if (!serverSource.includes(hash)) missing.add(`${page}: ${hash}`);
+    }
+  }
+  if (missing.size) {
+    console.error(`FAIL: inline scripts without a CSP hash in server.js:\n${[...missing].join("\n")}`);
+    process.exitCode = 1;
+  } else {
+    console.log("OK: every executable inline script has its CSP hash");
+  }
 }

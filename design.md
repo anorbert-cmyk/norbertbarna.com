@@ -509,7 +509,7 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 2. Semantic H1 `Product VP` in Inter 400 at the lower left. The large
    `PRODUCT / WITH / PURPOSE` artwork does not replace the accessible role.
 3. Native scrolling transforms the same glass chevron to the right-hand matte folded gate. The left editorial composition preserves the plain name `Norbert Barna` and
-   `AI products for fintech, Web3, regulated teams — strategy to ship.`
+   `AI products for fintech, Web3, regulated teams. I take them from strategy to ship.`
 4. Preserve proofs: multi-country banking / Raiffeisen and enterprise EdTech
    AI / Instructure. No invented results or metrics.
 5. `[ Works ]` in the scene and `View selected work` in the intro link
@@ -589,7 +589,11 @@ block whose every answer stands on its own, in plain HTML, with no `FAQPage`
 schema and no figure, price, client or stack the owner has not stated. Long
 phrases are served by the copy itself (AI integration for businesses, custom
 AI development, AI workflow automation; AI-integráció vállalkozásoknak, egyedi
-AI-fejlesztés), never by keyword lists or hidden text.
+AI-fejlesztés), never by keyword lists or hidden text. Since 2026-10-06 (owner
+request) each page also carries one honest `meta name="keywords"` tag of 3 to 8
+page-specific terms; Google ignores it and Bing reads stuffing as spam, so it
+stays short and every term must be backed by visible copy. The long-tail map
+is in `docs/seo-keywords.md`.
 
 User-requested project contact copy (2026-09-04): the existing native
 `button.footer-email` opens an email app for a project enquiry; it does not
@@ -601,7 +605,7 @@ The split-address handler remains. The current editorial footer uses the
 - Shared English footer and English service CTA: `Discuss your project`; title
   `Opens your email app to discuss your project`.
 - Screenshot-directed home navigation exception: visible `Email`; accessible
-  name `Email — discuss a project`; the same explanatory title and secure
+  name `Email to discuss a project`; the same explanatory title and secure
   split-address handler remain.
 - Hungarian service main CTA: `Beszéljünk a projektedről`, `lang="hu"`;
   title `Megnyitja a leveleződet, hogy a projektedről írhass.`.
@@ -685,7 +689,7 @@ English-wash the screenshot.
 | TravellingWorkBar | Case controls jump between reading slots, fade or grow at the footer | Preserve the reference navy bar at the top, with stable destinations and real progress only |
 | BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
 | DualHome | `/` and `/index` both return 200 | `/index` and `/index.html` 301 to `/` |
-| TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Selected work`; case titles start `{H1} —` |
+| TitleDrift | Case or `/works` H1 does not lead the `<title>` | `/works` H1 is `Selected work`; case titles start `{H1}: ` (no dash, owner 2026-10-06) |
 | InventedSocial | A made-up `twitter:site` handle or GSC verification token | Omit both until a real handle or token is documented |
 | TightAwardVideo | Retired award-video cards or fake interactions return | Five readable factual experience rows with no video or tab stops |
 
