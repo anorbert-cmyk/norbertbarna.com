@@ -31,7 +31,10 @@
     if (!scene || verdict === "off" || typeof scene.setCompactProgress !== "function") return;
     var box = stage.getBoundingClientRect();
     var travel = Math.max(1, stage.offsetHeight - art.offsetHeight);
-    scene.setCompactProgress(smooth(-box.top / travel));
+    // The object meets the visitor three-quarters on and settles toward the
+    // home page's resting angle as the letter scrolls past it; it never turns
+    // edge-on.
+    scene.setCompactProgress(.25 + .5 * smooth(-box.top / travel));
   }
   on(window, "scroll", request, { passive: true });
   on(window, "resize", request, { passive: true });
@@ -147,6 +150,7 @@
   var sent = sheet.querySelector(".contact-sent");
   var sentCopy = sheet.querySelector(".contact-sent-copy");
   var fold = sheet.querySelector("[data-contact-fold]");
+  var foldSheet = fold && fold.querySelector(".contact-fold-sheet");
   var sentTitle = sheet.querySelector(".contact-sent-title");
   var again = sheet.querySelector(".contact-again");
 
@@ -548,6 +552,8 @@
       fold.removeAttribute("data-fold-step");
       fold.classList.toggle("is-narrow", compact);
       fold.style.height = height + "px";
+      fold.style.width = "";
+      if (foldSheet) { foldSheet.style.width = width + "px"; foldSheet.style.height = height + "px"; }
       fold.hidden = false;
     }
     // The parked letter: a third of the sheet, scaled; its width follows.
@@ -593,6 +599,7 @@
     if (sent) sent.hidden = true;
     if (sentCopy) sentCopy.hidden = true;
     if (fold) { fold.hidden = true; fold.removeAttribute("data-fold-step"); fold.style.height = ""; fold.style.width = ""; }
+    if (foldSheet) { foldSheet.style.width = ""; foldSheet.style.height = ""; }
     if (written) written.hidden = false;
     form.hidden = false;
     sheet.setAttribute("data-state", "idle");

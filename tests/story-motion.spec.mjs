@@ -19,8 +19,8 @@ test.afterEach(() => expect(errors, "About has no uncaught runtime errors").toEq
 async function settle(page) {
   await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 }
-async function openStory(page, suffix = "") {
-  const response = await page.goto(`/about${suffix}`, { waitUntil: "load" });
+async function openStory(page, suffix = "", path = "/about") {
+  const response = await page.goto(`${path}${suffix}`, { waitUntil: "load" });
   expect(response.status()).toBe(200);
   await page.evaluate(() => document.fonts.ready);
   await expect.poll(() => page.evaluate(() => window.PortfolioStoryMotion?.state)).toMatch(/active|paused|reduced/);
@@ -94,6 +94,40 @@ test("About is the written biography with canonical identity and native destinat
   expect(JSON.parse(schema)).toMatchObject({ "@type": "AboutPage", mainEntity: { name: "Norbert Barna", jobTitle: "Product VP" } });
   await page.locator("#next").scrollIntoViewIfNeeded();
   await readable(page.locator("#next-title"));
+  await overflow(page);
+});
+
+// The Hungarian About (/hu/rolam) shares the story controller: its Pause labels
+// follow <html lang>, and the opening copy stays observed (a shadowed label table
+// once made ResizeObserver throw and stopped the camera from re-measuring).
+test("Hungarian About runs the same controller with Hungarian Pause labels and native destinations", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openStory(page, "", "/hu/rolam");
+  await expect(page.locator("html")).toHaveAttribute("lang", "hu");
+  await expect(page.locator("main[data-story]")).toHaveAttribute("data-story-mode", "cinematic");
+  await expect(page.locator('.navbar a[aria-current="page"]')).toHaveAttribute("href", "/hu/rolam");
+  await expect(page.locator(".navbar a.lang-switch")).toHaveAttribute("href", "/about");
+  await expect(page.locator(".story-next a.footer-email")).toHaveAttribute("href", "/hu/kapcsolat");
+  const toggle = page.locator("[data-story-motion-toggle]");
+  await alignReading(page, "[data-story-motion-toggle]");
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveText("Mozgás szüneteltetése");
+  await expect(toggle).toHaveAttribute("title", "A díszítő kameramozgás szüneteltetése vagy folytatása.");
+  await toggle.focus();
+  await toggle.press("Enter");
+  await expect(toggle).toHaveText("Mozgás folytatása");
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await toggle.press("Enter");
+  await expect(toggle).toHaveText("Mozgás szüneteltetése");
+  // Resizing the opening copy is observed without a runtime error.
+  await page.locator(".story-opening-copy").evaluate((copy) => { copy.style.paddingBottom = "120px"; });
+  await settle(page);
+  await page.setViewportSize({ width: 1180, height: 860 });
+  await settle(page);
+  expect(await page.evaluate(() => window.PortfolioStoryMotion.state)).toMatch(/active|paused/);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(toggle).toHaveText("Mozgás csökkentve");
+  await expect(toggle).toHaveAttribute("title", "A mozgás az eszközöd vagy az oldal beállítását követi.");
   await overflow(page);
 });
 

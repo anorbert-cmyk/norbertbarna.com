@@ -248,6 +248,24 @@ try {
     assert(redirect.headers.get("location") === expectedLocation, `${legacyPath} lost its canonical path or query`);
   }
 
+  // Every canonical page in the sitemap has exactly one URL: its .html and
+  // trailing-slash spellings permanently redirect there (no duplicate 200s).
+  const sitemapXml = (await import("node:fs")).readFileSync(new URL("../sitemap.xml", import.meta.url), "utf8");
+  const sitemapPaths = [...sitemapXml.matchAll(/<loc>(.*?)<\/loc>/g)]
+    .map((match) => new URL(match[1]).pathname).filter((pathname) => pathname !== "/");
+  assert(sitemapPaths.length >= 25, "sitemap lists every canonical page");
+  for (const pathname of sitemapPaths) {
+    // /hu is served from hu/index.html, so its file spellings are the index ones.
+    const variants = pathname === "/hu" ? ["/hu/", "/hu/index.html", "/hu/index"] : [`${pathname}.html`, `${pathname}/`];
+    for (const variant of variants) {
+      const redirect = await fetch(`${baseUrl}${variant}?ref=check`, { redirect: "manual" });
+      assert(redirect.status === 301, `${variant} must 301 to ${pathname}, got ${redirect.status}`);
+      assert(redirect.headers.get("location") === `${pathname}?ref=check`, `${variant} must keep its query on ${pathname}`);
+    }
+    const canonical = await fetch(`${baseUrl}${pathname}`, { redirect: "manual" });
+    assert(canonical.status === 200, `${pathname} must serve 200`);
+  }
+
   const apexRobots = await rawGet(address.port, "/robots.txt", {
     host: "barnanorbert.com",
   });

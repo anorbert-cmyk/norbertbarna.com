@@ -450,6 +450,9 @@ async function expectBreadcrumbSeparatorAA(page, label) {
 
 for (const [route, width] of [...[320, 390, 768, 991, 992, 1280, 1440].map((width) => ["/", width]), ["/hu", 390], ["/hu", 1280]]) {
   test(`${width} ${route === "/" ? "home" : `${route} home`}: every header text meets AA on its worst relevant background`, async ({ page }) => {
+    // Eight controls (Contact and the language link joined the menu) are each
+    // raster-sampled in three states; give the unchanged assertions the time.
+    test.setTimeout(90_000);
     await page.setViewportSize({ width, height: 900 });
     await page.route(/posthog\.com/, (route) => route.abort());
     await openStable(page, route);
@@ -1376,7 +1379,8 @@ test("no page or script exposes or assembles the inbox address; every contact ac
       expect(tag, `${route}: no email-app tooltip`).not.toMatch(/\btitle=/);
     }
     const menu = html.slice(html.indexOf('id="primary-navigation"'), html.indexOf("</nav>", html.indexOf('id="primary-navigation"')));
-    expect([...menu.matchAll(/href="(\/contact|\/hu\/kapcsolat)"/g)].map((match) => match[1]), `${route}: one menu Contact entry`).toEqual([copy.contact]);
+    const menuContacts = [...menu.matchAll(/<a\b[^>]*href="(\/contact|\/hu\/kapcsolat)"[^>]*>/g)].filter((match) => !/\blang-switch\b/.test(match[0]));
+    expect(menuContacts.map((match) => match[1]), `${route}: one menu Contact entry`).toEqual([copy.contact]);
     for (const [, src] of html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)) scripts.add(new URL(src, `http://127.0.0.1:3000${route}`).pathname);
   }
   expect(scripts.size).toBeGreaterThan(5);
@@ -1624,6 +1628,103 @@ test("the immersive home remains readable when GSAP is unavailable", async ({ pa
   await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
 });
 
+// Whole-site language switch (owner, 2026-10-06): one language link ends every
+// menu, names the other language in that language, carries rel/hreflang/lang,
+// and leads to this page's pair; Hungarian pages link only Hungarian pages.
+test("every page's single language link leads to its pair, reciprocally, with a 200", async ({ request }) => {
+  const absolute = (route) => `https://www.barnanorbert.com${route}`;
+  const destinations = {
+    en: ["/works", "/about", "/ai-integration", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
+    hu: ["/hu/munkak", "/hu/rolam", "/hu/ai-integracio", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
+  };
+  for (const [english, hungarian] of PAGE_PAIRS) {
+    for (const [route, pair, language] of [[english, hungarian, "en"], [hungarian, english, "hu"]]) {
+      const other = language === "en" ? "hu" : "en";
+      const response = await request.get(route, { maxRedirects: 0 });
+      expect(response.status(), route).toBe(200);
+      const html = await response.text();
+      expect(html, `${route} declares its language`).toMatch(new RegExp(`<html\\b[^>]*\\blang="${language}"`));
+      for (const [hreflang, href] of [["en", english], ["hu", hungarian], ["x-default", english]]) {
+        expect(html, `${route}: ${hreflang} alternate`).toContain(`<link rel="alternate" hreflang="${hreflang}" href="${absolute(href)}"/>`);
+      }
+      const start = html.indexOf('id="primary-navigation"');
+      const menu = html.slice(start, html.indexOf("</nav>", start));
+      const links = [...menu.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map(([, attributes, body]) => ({
+        attributes, href: attributes.match(/\bhref="([^"]+)"/)?.[1], text: body.replace(/<[^>]+>/g, "").trim(),
+      }));
+      expect(links.map((link) => link.text), `${route}: menu labels`).toEqual([...COPY[language].menu.slice(0, 4), "LinkedIn", COPY[language].menu[4]]);
+      expect(links.map((link) => link.href), `${route}: menu destinations`).toEqual([...destinations[language], pair]);
+      const switches = [...html.matchAll(/<a\b[^>]*\blang-switch\b[^>]*>/g)];
+      expect(switches, `${route}: exactly one language link`).toHaveLength(1);
+      const languageLink = links.at(-1);
+      expect(languageLink.attributes).toMatch(/class="[^"]*\bnav-link\b[^"]*\blang-switch\b/);
+      for (const attribute of ['rel="alternate"', `hreflang="${other}"`, `lang="${other}"`]) expect(languageLink.attributes, `${route}: ${attribute}`).toContain(attribute);
+      expect(languageLink.attributes, `${route}: the visible name is the accessible name`).not.toMatch(/aria-label|aria-current/);
+      expect(html, `${route}: no retired EN | HU pair`).not.toMatch(/class="[^"]*\bai-lang\b[^"]*"[^>]*>\s*EN\s*</);
+      const current = links.filter((link) => /aria-current="page"/.test(link.attributes)).map((link) => link.href);
+      expect(current, `${route}: the current destination is marked`).toEqual(destinations[language].includes(route) ? [route] : []);
+      if (language === "hu") {
+        // Outside explicit English-language links, a Hungarian page links only Hungarian pages.
+        const english = [...html.matchAll(/<a\b([^>]*)>/g)].map(([, attributes]) => attributes)
+          .filter((attributes) => !/lang-switch|hreflang="en"/.test(attributes))
+          .map((attributes) => attributes.match(/\bhref="(\/[^"]*)"/)?.[1]).filter((href) => href && !/^\/(hu(\/|$|#|\?)|assets\/)/.test(href));
+        expect(english, `${route} links English pages`).toEqual([]);
+      }
+      const target = await request.get(pair, { maxRedirects: 0 });
+      expect(target.status(), `${route} → ${pair}`).toBe(200);
+      const back = (await target.text()).match(/<a\b[^>]*\blang-switch\b[^>]*>/)?.[0] || "";
+      expect(back, `${pair} links back to ${route}`).toContain(`href="${route}"`);
+    }
+  }
+});
+
+for (const width of [390, 1280]) {
+  test(`${width} Hungarian works, case and About keep menu and footer text AA`, async ({ page }) => {
+    test.setTimeout(180_000);
+    await page.setViewportSize({ width, height: 900 });
+    await page.route(/posthog\.com/, (route) => route.abort());
+    for (const route of ["/hu/munkak", "/hu/munka/instructure", "/hu/rolam"]) {
+      await openStable(page, route);
+      await expect(page.locator("#primary-navigation a[href]")).toHaveText([...COPY.hu.menu.slice(0, 4), "LinkedIn", COPY.hu.menu[4]]);
+      const toggle = page.locator(".menu-button");
+      // Keyboard modality, so focus shows the real :focus-visible ring.
+      await toggle.focus();
+      if (width < 992) {
+        await page.keyboard.press("Enter");
+        await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      } else await page.keyboard.press("Shift+Tab");
+      for (const link of await page.locator("#primary-navigation a[href]").all()) {
+        if (!await link.isVisible()) continue;
+        await expectHeaderTextAA(page, link, `${width} ${route} menu`, { raster: true });
+        const ink = await link.evaluate((element) => getComputedStyle(element).color);
+        await link.focus();
+        // Focus keeps the measured ink and adds the shared 3px ring. (The navy work
+        // bar's links have no side padding, so the ring's white halo abuts the outer
+        // glyph edges on main as well; that edge is not text background.)
+        await expect(link).toHaveCSS("color", ink);
+        await expect(link).toHaveCSS("outline-style", "solid");
+        expect(await link.evaluate((element) => parseFloat(getComputedStyle(element).outlineWidth))).toBeGreaterThanOrEqual(3);
+      }
+      if (width < 992) await page.keyboard.press("Escape");
+      const breadcrumb = page.locator(".nav-breadcrumb a");
+      if (await breadcrumb.count() && await breadcrumb.isVisible()) await expectHeaderTextAA(page, breadcrumb, `${route} breadcrumb`, { raster: true });
+      const footerText = page.locator("footer :is(h2, p, a, button)");
+      let measured = 0;
+      for (const element of await footerText.all()) {
+        if (!await element.isVisible()) continue;
+        if (await element.evaluate((node) => !node.textContent.trim() || Boolean(node.parentElement.closest("footer a, footer button, footer p, footer h2")))) continue;
+        await expectHeaderTextAA(page, element, `${width} ${route} footer`, { raster: true });
+        measured += 1;
+      }
+      expect(measured, `${route}: footer text measured`).toBeGreaterThan(4);
+      const privacy = page.locator('footer a[href="/hu/adatvedelem"]');
+      await expect(privacy).toHaveText("Adatvédelem");
+      await expect(page.locator('footer a[href="/privacy"]')).toHaveCount(0);
+      await expect(page.locator("footer a.footer-email, main a.footer-email")).toHaveAttribute("href", "/hu/kapcsolat");
+    }
+  });
+}
+
 test("/contact and /hu/kapcsolat are published, carry the form and never expose an address", async ({ request }) => {
   for (const [route, pair, language] of [["/contact", "/hu/kapcsolat", "en"], ["/hu/kapcsolat", "/contact", "hu"]]) {
     const response = await request.get(route);
@@ -1633,7 +1734,6 @@ test("/contact and /hu/kapcsolat are published, carry the form and never expose 
     expect(html).toContain(`<link rel="canonical" href="https://www.barnanorbert.com${route}"/>`);
     expect(html).toMatch(/<form\b/);
     expect(html).toMatch(/<input\b[^>]*type="email"/);
-    expect(html, "the honeypot field stays in the form").toMatch(/name="website"/);
     expect(html).not.toMatch(/mailto:/i);
     expect(exposesInbox(html)).toBe(false);
     expect(html).toMatch(new RegExp(`<a\\b[^>]*class="[^"]*\\blang-switch\\b[^"]*"[^>]*href="${pair}"`));

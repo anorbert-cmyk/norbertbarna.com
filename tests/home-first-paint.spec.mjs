@@ -21,7 +21,7 @@ test("the short desktop home paints its final navigation layout before the compo
     await gate;
     await route.continue();
   });
-  const rects = () => page.locator('.navbar, .navbar a[href="/works"], .navbar a[href="/about"], .navbar .footer-contact-link, .navbar button.footer-email, .home-mast-intro, .home-mast-proof-chips, #works').evaluateAll((elements) => elements.map((element) => ({
+  const rects = () => page.locator('.navbar, .navbar a[href="/works"], .navbar a[href="/about"], .navbar .footer-contact-link, .navbar a[href="/contact"], .navbar a.lang-switch, .home-mast-intro, .home-mast-proof-chips, #works').evaluateAll((elements) => elements.map((element) => ({
     tag: element.tagName, text: element.textContent.trim().slice(0,40), box: element.getBoundingClientRect().toJSON(),
   })));
   const paint = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));

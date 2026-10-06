@@ -100,6 +100,15 @@ const REDIRECTS = {
   "/work/raiffesen/": "/work/raiffeisen",
   "/work/raiffesen.html": "/work/raiffeisen",
 };
+// Pages added with the Hungarian mirror and the contact form (2026-10-06)
+// need the same .html and trailing-slash variants as every other page.
+for (const page of ["/contact", "/hu/kapcsolat", "/hu/munkak", "/hu/rolam", ...WORK_SLUGS.map((slug) => `/hu/munka/${slug}`)]) {
+  REDIRECTS[`${page}.html`] = page;
+  REDIRECTS[`${page}/`] = page;
+}
+REDIRECTS["/hu/"] = "/hu";
+REDIRECTS["/hu/index"] = "/hu";
+REDIRECTS["/hu/index.html"] = "/hu";
 for (const slug of WORK_SLUGS) {
   REDIRECTS[`/work/${slug}.html`] = `/work/${slug}`;
   REDIRECTS[`/work/${slug}/`] = `/work/${slug}`;

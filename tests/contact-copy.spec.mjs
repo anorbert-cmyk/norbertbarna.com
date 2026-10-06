@@ -371,7 +371,7 @@ for (const viewport of viewports) {
       });
       page.on("request", (sent) => { if (/^mailto:/i.test(sent.url())) mailHandoffs.push(sent.url()); });
       page.on("response", async (response) => {
-        if (response.request().resourceType() === "script" && response.url().startsWith("http://127.0.0.1:3000/")) {
+        if (response.request().resourceType() === "script" && new URL(response.url()).hostname === "127.0.0.1") {
           scripts.push({ url: response.url(), body: await response.text().catch(() => "") });
         }
       });
