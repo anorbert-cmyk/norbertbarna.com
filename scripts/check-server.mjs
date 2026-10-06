@@ -162,6 +162,12 @@ try {
       `${pagePath} must keep only the EU PostHog capture host`
     );
     assert(!contentSecurityPolicy.includes("eu-assets"), `${pagePath}: must not allow the PostHog JS SDK asset host`);
+    // Cloudflare Turnstile (script + iframe) is allowed on the contact pages alone.
+    const turnstilePage = pagePath === "/contact" || pagePath === "/hu/kapcsolat";
+    assert(/script-src[^;]*https:\/\/challenges\.cloudflare\.com/.test(contentSecurityPolicy) === turnstilePage &&
+      /frame-src https:\/\/challenges\.cloudflare\.com(?:;|$)/.test(contentSecurityPolicy) === turnstilePage,
+      `${pagePath}: Turnstile hosts belong to the contact pages only`);
+    assert(!/unsafe-(?:inline|eval)[^;]*;?/.test(contentSecurityPolicy.match(/script-src[^;]*/)?.[0] || ""), `${pagePath}: script-src stays hash-based`);
     assert(!/script-src[^;]*posthog/i.test(contentSecurityPolicy), `${pagePath}: PostHog must not be on script-src`);
   }
 

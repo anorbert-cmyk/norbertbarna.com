@@ -36,6 +36,8 @@ app.disable("x-powered-by");
 // Enable gzip compression
 app.use(compression());
 
+const TURNSTILE_PAGES = new Set(["/contact", "/hu/kapcsolat"]);
+
 // Security headers
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -50,6 +52,8 @@ app.use((req, res, next) => {
   // No popup or OAuth flow needs an opener; isolate the browsing context group.
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // The contact pages alone load Cloudflare Turnstile (script and iframe).
+  const turnstile = TURNSTILE_PAGES.has(req.path);
   res.setHeader(
     "Content-Security-Policy",
     [
@@ -59,7 +63,7 @@ app.use((req, res, next) => {
       // home mast morph gate inside .home-mast in index.html. Hash them so no
       // other inline script can run. JSON-LD blocks are data, not scripts, and
       // need no hash. check-server must fail when either body changes.
-      "script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE='",
+      `script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
       // Inline style attributes and GSAP-driven styles need 'unsafe-inline';
       // fonts are self-hosted (assets/fonts) and the Webflow CSS still embeds
       // data: fonts. Google Fonts is no longer referenced by any page.
@@ -72,6 +76,8 @@ app.use((req, res, next) => {
       "base-uri 'self'",
       "frame-ancestors 'self'",
       "form-action 'self'",
+      // Cloudflare Turnstile runs on the two contact pages only.
+      ...(turnstile ? ["frame-src https://challenges.cloudflare.com"] : []),
     ].join("; ")
   );
   next();

@@ -867,7 +867,17 @@ bounded. The client address is Railway's `X-Real-IP` (else the edge-appended
 `X-Forwarded-For` entry), validated as an IP, IPv6 grouped per /64. Checks run
 challenge, validation, per-address limit, then the silent honeypot and timing
 drop, then the site-wide cap (503, so the page offers LinkedIn). The client
-waits until a challenge is at least 3.3 s old before posting. Guards never spell
+waits until a challenge is at least 3.3 s old before posting. Cloudflare
+Turnstile (owner spec, 2026-10-06) sits on top of all of this, on the contact
+pages only: Managed widget, action `contact`, site key public in `contact.js`
+(Cloudflare's dummy pass key on any host other than barnanorbert.com), the
+secret only in Railway's `TURNSTILE_SECRET_KEY`. The server verifies with
+siteverify (5 s timeout, hostname and action checked) after every cheaper
+check and before delivery, and fails closed: a missing or bad token is 400
+`captcha_failed`, an unreachable Cloudflare or missing secret is 503
+`captcha_unavailable`; only Cloudflare error codes are logged. The CSP adds
+`https://challenges.cloudflare.com` to `script-src` and `frame-src` on
+`/contact` and `/hu/kapcsolat` alone (`lib/turnstile.js`, `server.js`). Guards never spell
 the inbox: `scripts/private-inbox.mjs` compares a SHA-256 digest. Delivery
 goes through Resend with `RESEND_API_KEY`, `CONTACT_TO` and `CONTACT_FROM`;
 the destination address lives only in `CONTACT_TO`, never in markup or
