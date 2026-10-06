@@ -499,7 +499,7 @@ for (const page of CONTACT_PAGES) {
   if (!existsSync(join(ROOT, page))) { fail(`${page}: the contact form page must exist`); continue; }
   const html = readFileSync(join(ROOT, page), "utf8");
   if (/mailto:/i.test(html) || exposesInbox(html)) fail(`${page}: the contact page must never expose an address`);
-  if (!/<form\b[^>]*\bid="contact-form"/.test(html) || !/name="website"/.test(html) || !/assets\/js\/contact\.[a-f0-9]{12}\.js/.test(html)) {
+  if (!/<form\b[^>]*\bid="contact-form"/.test(html) || !/name="hp_7f3"/.test(html) || !/assets\/js\/contact\.[a-f0-9]{12}\.js/.test(html)) {
     fail(`${page}: contact form, honeypot and its content-hashed script are required`);
   }
   for (const field of ["name", "email", "topic", "message"]) {

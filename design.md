@@ -817,7 +817,7 @@ same change that caused the drift.
 | `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair of the same board, `lang="hu"` | default |
 | `/privacy` | `privacy.html` | Consent and analytics notice | default |
 | `/hu/adatvedelem` | `hu/adatvedelem.html` | Hungarian pair, `lang="hu"` | default |
-| `/contact` | `contact.html` | Contact form (name, email, topic, message), origami fold on send | default |
+| `/contact` | `contact.html` | “Paper”: the About fold-detail still full-bleed and sticky, the home glass chevron as a third hero-scene stage, the form on one frosted lilac glass letter that folds into thirds on send | default |
 | `/hu/kapcsolat` | `hu/kapcsolat.html` | Hungarian pair, `lang="hu"` | default |
 | `/hu` | `hu/index.html` | Hungarian home; served by an explicit route because `/hu` is a directory | default |
 | `/hu/munkak` | `hu/munkak.html` | Hungarian works index | default |
@@ -837,6 +837,23 @@ the page language. `<head>` carries reciprocal `en`, `hu` and `x-default` (Engli
 alternates. Checks treat `hu/…` pages as their English counterpart through
 `baseOf()` in `scripts/service-pages.mjs`. JavaScript strings (navigation,
 consent, arrival, media and About motion toggles) follow `<html lang>`.
+
+**Contact page design (owner request, 2026-10-06, redone after the owner
+rejected a flat white sheet).** The page reuses the site's own material: the
+About chapter's `assets/images/story/fold-detail.webp` stands full-bleed and
+sticky behind the page (decorative, `alt=""`); the home refractive chevron
+(`hero-scene.js`, third stage, compact contract, owned by `contact.js`) stands
+on the paper and turns with the scroll; the letter is one pane of frosted lilac
+glass with a dashed origami crease between letterhead and form. On send the
+form leaves the document and a decorative, `aria-hidden` sheet folds in thirds
+and in half, then parks above the thank-you. Reduced motion and `no-motion`
+change state instantly; without JavaScript the picture and form show, the
+submit is hidden and LinkedIn is offered. AI artwork stays on the AI pages.
+Primitives: `.contact-stage`, `.contact-paper`, `.contact-sheet`,
+`.contact-written`, `.contact-form`, `.contact-field`, `.contact-topics`,
+`.contact-topic`, `.contact-error-summary`, `.contact-sent`, `.contact-fold`
+and their parts in `assets/css/contact.css`; hooks `data-contact-glass`,
+`data-contact-stage`, `data-contact-sheet`, `data-contact-fold`.
 
 **Contact page (owner request, 2026-10-06).** The menu links Contact /
 Kapcsolat. The form posts JSON to `POST /api/contact` after a proof-of-work
@@ -1107,7 +1124,7 @@ built on 2026-09-15 and removed the same day at the owner's request; the
 corridor stands a still instead. The renderer names its host with
 `data-glass-scene`, `data-glass-stage`, `data-glass-frame`,
 `data-glass-backdrop`, `data-glass-field` and `data-glass-slot` rather than
-any page's class names. No further stage without an explicit request for one.
+any page's class names. No further stage without an explicit request for one. The contact page holds the third stage (owner request, 2026-10-06), owned by `contact.js`.
 
 **No drawing before the glass (2026-09-16).** On a scripted page the static
 drawings (`.home-mast-fallback`, `.home-mast-gate-fallback`)
