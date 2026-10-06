@@ -81,7 +81,7 @@ for (const page of ALL_PAGES) {
       const candidates = srcset.split(",").map((candidate) => candidate.trim().split(/\s+/)[0]).filter(Boolean);
       if (candidates.length < 3) fail(`${page}: project cover srcset is incomplete`);
       for (const candidate of candidates) {
-        const local = join(ROOT, dirname(page), candidate);
+        const local = candidate.startsWith("/") ? join(ROOT, candidate) : join(ROOT, dirname(page), candidate);
         if (!existsSync(local)) fail(`${page}: project cover candidate is missing: ${candidate}`);
       }
       if (baseOf(page) === "works.html") {
@@ -174,21 +174,23 @@ for (const page of ALL_PAGES) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
     const footerHtml = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
-    const emailCta = [...footerHtml.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+    // NN/g audit (2026-10-06): the project action is a link to the contact
+    // form in the page language; no page assembles or opens a mail address.
+    const contactPath = page.startsWith("hu/") ? "/hu/kapcsolat" : "/contact";
+    const emailCta = [...footerHtml.matchAll(/<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
       /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(footerHtml);
     if (baseOf(page) === "about.html") {
       // The chosen story board closes with a quiet navy footer; its native
       // Email actions live in the header and final reading section.
       const closing = html.match(/<section\b[^>]*\bid="next"[^>]*>[\s\S]*?<\/section>/i)?.[0] || "";
-      const closingEmail = [...closing.matchAll(/<button\b[^>]*>/gi)]
+      const closingEmail = [...closing.matchAll(/<a\b[^>]*>/gi)]
         .map(match => match[0]).filter(tag => hasClass(tag, "footer-email"));
       const storyLinkedIn = [...footerHtml.matchAll(/<a\b[^>]*>/gi)]
         .map(match => match[0]).filter(tag => attribute(tag, "href") === "https://www.linkedin.com/in/barna-norbert/");
       if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(footerHtml) ||
-          closingEmail.length !== 1 || attribute(closingEmail[0], "type") !== "button" ||
-          attribute(closingEmail[0], "href")) {
-        fail(`${page}: the story closing needs a native Email button followed by its own footer`);
+          closingEmail.length !== 1 || attribute(closingEmail[0], "href") !== contactPath) {
+        fail(`${page}: the story closing needs one contact-page link followed by its own footer`);
       }
       if (storyLinkedIn.length !== 1 || attribute(storyLinkedIn[0], "target") !== "_blank" ||
           !/\bnoopener\b/.test(attribute(storyLinkedIn[0], "rel")) ||
@@ -198,18 +200,16 @@ for (const page of ALL_PAGES) {
     } else if (count(footerHtml, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
         count(footerHtml, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
         emailCta.length !== 1 ||
-        !/\btype="button"/.test(emailCta[0] || "") ||
-        /href=/.test(emailCta[0] || "") ||
-        /mailto:/i.test(emailCta[0] || "") ||
-        /<a[^>]*footer-email/.test(footerHtml) ||
+        attribute(emailCta[0], "href") !== contactPath ||
+        /<button[^>]*footer-email/.test(footerHtml) ||
         !linkedinIcon) {
-      fail(`${page}: footer must expose a LinkedIn icon and a native Email button with no mailto href`);
+      fail(`${page}: footer must expose a LinkedIn icon and one project link to ${contactPath}`);
     }
     if (/mailto:/i.test(html) || /anorbert@pm\.me/i.test(html)) {
       fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
     }
-    if (/footer-col-title">Contact/.test(html) || /href="\/contact"/.test(html)) {
-      fail(`${page}: Contact column and /contact links must not ship`);
+    if (/footer-col-title">(?:Contact|Kapcsolat)/.test(html)) {
+      fail(`${page}: a Contact column must not ship; the project action covers it`);
     }
 
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
@@ -373,7 +373,7 @@ const cssContracts = [
 ];
 for (const [pattern, message] of cssContracts) if (!pattern.test(responsiveCss)) fail(message);
 const editorialCss = readFileSync(join(ROOT, "assets/css/editorial-sections.css"), "utf8");
-for (const selector of ["button\\.footer-email", "a\\.footer-contact-link"]) {
+for (const selector of ["\\.footer-email", "a\\.footer-contact-link"]) {
   const rule = new RegExp(`\\.footer-section\\.editorial-footer ${selector}\\s*\\{([^}]+)\\}`).exec(editorialCss)?.[1] || "";
   if (!/min-height:\s*48px/.test(rule) || !/height:\s*auto/.test(rule)) fail(`Editorial ${selector}: needs a 48px minimum with text reflow`);
 }
@@ -403,10 +403,10 @@ if (!navigationJs.includes('primaryNavigation.setAttribute("data-nav-menu-open",
 if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }
-if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes("button.footer-email") ||
-    !navigationJs.includes("location.assign") || /setAttribute\(\s*["']href["']/.test(navigationJs) ||
-    /a\.footer-email/.test(navigationJs)) {
-  fail("Email click must location.assign from split parts on a native button, without writing href");
+// NN/g audit (2026-10-06): contact goes through the form; no script assembles
+// or opens a mail address any more.
+if (/mailto|\["mai", "lto"\]|footerMailHref/.test(navigationJs)) {
+  fail("No script may assemble or open a mail address; contact goes through the form");
 }
 const takeoverIndex = animationJs.indexOf("var webflowMotionReady = scheduleWebflowMotionTakeover()");
 const startIndex = animationJs.indexOf("function startResponsiveMotion()");

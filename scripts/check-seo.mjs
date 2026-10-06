@@ -61,8 +61,8 @@ const pages = files.map(file => {
 const byUrl = new Map(pages.map(page => [page.canonical, page]));
 const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
-const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service"]);
-check(pages.length === 14 && byUrl.size === 14, "expected fourteen distinct indexable content routes");
+const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage"]);
+check(pages.length === files.length && byUrl.size === files.length && files.length === 26, "expected twenty-six distinct indexable content routes (13 English, 13 Hungarian)");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
     const previous = definitions.get(node["@id"]);
@@ -84,11 +84,11 @@ for (const page of pages) {
   const robots = page.metas("robots");
   check(robots.length === 1 && /\bindex\b/.test(robots[0]) && /\bfollow\b/.test(robots[0]), `${file}: explicit index/follow`);
   check(![...robots, ...page.metas("googlebot")].some(value => /\b(noindex|nofollow|none)\b/i.test(value)), `${file}: conflicting crawl directives`);
-  check(page.language === (page.route.startsWith("/hu/") ? "hu" : "en"), `${file}: document language`);
+  check(page.language === (/^\/hu(?:\/|$)/.test(page.route) ? "hu" : "en"), `${file}: document language`);
   const bingVerification = page.metas("msvalidate.01");
   check(baseOf(file) === "index.html" ? bingVerification.length === 1 && /^[A-F0-9]{32}$/i.test(bingVerification[0]) : bingVerification.length === 0,
     `${file}: one provider-issued Bing verification value belongs on the homepage only`);
-  const expectedType = baseOf(file) === "index.html" ? "ProfilePage" : baseOf(file) === "works.html" ? "CollectionPage" : baseOf(file) === "about.html" ? "AboutPage" : baseOf(file).startsWith("work/") ? "Article" : "WebPage";
+  const expectedType = baseOf(file) === "index.html" ? "ProfilePage" : baseOf(file) === "works.html" ? "CollectionPage" : baseOf(file) === "about.html" ? "AboutPage" : baseOf(file).startsWith("work/") ? "Article" : /^(?:contact|hu\/kapcsolat)\.html$/.test(file) ? "ContactPage" : "WebPage";
   const primary = roots.filter(node => types(node).includes(expectedType));
   check(primary.length === 1, `${file}: exactly one ${expectedType}`);
   if (primary[0]) {

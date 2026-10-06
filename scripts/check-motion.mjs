@@ -148,13 +148,13 @@ for (const page of ALL_PAGES) {
   const storyScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
     .map(match => attribute(match[0], "src")).filter(src => /\/story-motion(?:\.[a-f0-9]+)?\.js$/i.test(src));
   if (baseOf(page) === "about.html") {
-    if (storyStyles.length !== 1 || storyStyles[0] !== `assets/css/${storyCssFile}` ||
-        storyScripts.length !== 1 || storyScripts[0] !== `assets/js/${storyMotionFile}`) {
+    if (storyStyles.length !== 1 || storyStyles[0] !== `${assetPrefix(page)}assets/css/${storyCssFile}` ||
+        storyScripts.length !== 1 || storyScripts[0] !== `${assetPrefix(page)}assets/js/${storyMotionFile}`) {
       fail(`${page}: story CSS and motion JS must each load one current byte-matched asset`);
     }
     const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map(match => attribute(match[0], "src"));
-    const storyIndex = scripts.indexOf(`assets/js/${storyMotionFile}`);
-    if (storyIndex <= scripts.indexOf(`assets/js/${animationsFile}`)) {
+    const storyIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${storyMotionFile}`);
+    if (storyIndex <= scripts.indexOf(`${assetPrefix(page)}assets/js/${animationsFile}`)) {
       fail(`${page}: the independent story owner must initialize after the shared motion layer`);
     }
     if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
@@ -190,8 +190,8 @@ for (const page of ALL_PAGES) {
   const compositionScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "src")).filter((src) => /\/home-composition(?:\.|\/)/.test(src));
   if (baseOf(page) === "index.html") {
-    if (compositionStyles.length !== 1 || compositionStyles[0] !== `assets/css/${homeCompositionCssFile}` ||
-        compositionScripts.length !== 1 || compositionScripts[0] !== `assets/js/${homeCompositionFile}`) {
+    if (compositionStyles.length !== 1 || compositionStyles[0] !== `${assetPrefix(page)}assets/css/${homeCompositionCssFile}` ||
+        compositionScripts.length !== 1 || compositionScripts[0] !== `${assetPrefix(page)}assets/js/${homeCompositionFile}`) {
       fail("home composition CSS and JS must each load their own current byte-matched asset once");
     }
   } else if (compositionStyles.length || compositionScripts.length) {
@@ -214,7 +214,7 @@ for (const page of ANIMATED_PAGES) {
   for (const { stem, file } of editorialFiles) {
     const required = stem === "editorial-sections" ? baseOf(page) !== "about.html"
       : stem !== "project-index" || baseOf(page) === "index.html" || baseOf(page) === "works.html";
-    const refs = [...html.matchAll(/<link\b[^>]*href="([^"]+)"/g)].map(m => m[1]).filter(href => href.includes(`/assets/css/${stem}.`) || href.startsWith(`assets/css/${stem}.`));
+    const refs = [...html.matchAll(/<link\b[^>]*href="([^"]+)"/g)].map(m => m[1]).filter(href => href.includes(`/assets/css/${stem}.`) || href.startsWith(`${assetPrefix(page)}assets/css/${stem}.`));
     if (required && (refs.length !== 1 || refs[0] !== `${assetPrefix(page)}assets/css/${file}`)) fail(`${page}: expected one current ${stem} stylesheet`);
   }
   const animationRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/animations(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
@@ -249,10 +249,10 @@ for (const page of ANIMATED_PAGES) {
       fail(`${page}: expected the current stable utility-header script once`);
     }
     if (baseOf(page) === "index.html") {
-      const sceneIndex = scripts.indexOf(`assets/js/${heroSceneFile}`);
-      const compositionIndex = scripts.indexOf(`assets/js/${homeCompositionFile}`);
-      const arrivalIndex = scripts.indexOf(`assets/js/${arrivalFile}`);
-      const motionIndex = scripts.indexOf(`assets/js/${animationsFile}`);
+      const sceneIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${heroSceneFile}`);
+      const compositionIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${homeCompositionFile}`);
+      const arrivalIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${arrivalFile}`);
+      const motionIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${animationsFile}`);
       if (sceneIndex < 0 || sceneIndex >= arrivalIndex || arrivalIndex >= motionIndex) {
         fail("home scene readiness must initialize before arrival, followed by shared animation ownership");
       }
@@ -275,14 +275,14 @@ for (const page of ANIMATED_PAGES) {
       .filter((href) => /\/case-opening\./.test(href));
     const openingScripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)]
       .map((match) => match[1]).filter((src) => /\/case-opening\./.test(src));
-    if (openingStyles.length !== 1 || openingStyles[0] !== `../assets/css/${caseOpeningCssFile}` ||
-        openingScripts.length !== 1 || openingScripts[0] !== `../assets/js/${caseOpeningFile}`) {
+    if (openingStyles.length !== 1 || openingStyles[0] !== `${assetPrefix(page)}assets/css/${caseOpeningCssFile}` ||
+        openingScripts.length !== 1 || openingScripts[0] !== `${assetPrefix(page)}assets/js/${caseOpeningFile}`) {
       fail(`${page}: case-opening CSS and JS must each load their own current byte-matched asset once`);
     }
     const caseMotionRefs = [...html.matchAll(/<link\b[^>]*>/gi)]
       .map((match) => attribute(match[0], "href"))
       .filter((href) => /\/case-motion(?:\.[a-f0-9]+)?\.css$/i.test(href));
-    const expectedCaseMotionRef = `../assets/css/${caseMotionFile}`;
+    const expectedCaseMotionRef = `${assetPrefix(page)}assets/css/${caseMotionFile}`;
 
     if (caseMotionRefs.length !== 1) {
       fail(`${page}: expected one active content-hashed case-motion stylesheet, found ${caseMotionRefs.length}`);

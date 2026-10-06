@@ -74,7 +74,7 @@ explanation. Contextual case links must identify what the case actually proves.
 7. **Before we begin.** Five native details/summary disclosures, first open,
    retaining the exact bilingual question/answer content. Language link follows.
 8. **Let’s build what’s next.** The selected dark Passage footer, with a
-   narrow olive light slit, live lilac headline, native email-app button,
+   narrow olive light slit, live lilac headline, a link to the contact form,
    LinkedIn and quiet privacy/settings utilities. Contact copy is localized;
    the selected English headline also appears on HU with lang=en.
 
@@ -140,7 +140,7 @@ their exact shared navigation/footer contracts.
 The copy sells the offer in the reader's terms (fewer manual steps, faster
 decisions, lower running costs, people in control) with no figure the owner
 has not stated, no dashes and no stock phrasing. One service H1, scoped offer,
-linked case evidence, what to bring, and the native Email action. These are
+linked case evidence, what to bring, and the link to the contact form. These are
 WebPage/Service pages, not portfolio Articles; the Service description is the
 sentence the page shows. Use self canonicals and reciprocal en/hu hreflang;
 x-default points to the English offer. The Hungarian body is Hungarian;
@@ -180,7 +180,8 @@ When requirements compete, protect them in this order:
 | `/` | Identify a Product VP and open work | Role in H1 and Works in the opening scene; proof in the following statement. Central 3D chevron and vector title, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Identify the project and inspect real product evidence | Centered title and complete UI on the lilac stage; dek beneath; four facts follow the opening |
-| Footer / nav | Start a project conversation | Large personal contact close, native Email and LinkedIn, original folded geometry on lilac; integrated privacy/settings controls. See Editorial footer below. |
+| Footer / nav | Start a project conversation | Large personal contact close, one “Discuss your project” link to the contact form, then LinkedIn, on lilac; integrated privacy/settings controls. See Editorial footer below. |
+| `/contact` | Write a message and know it arrived | One-column form, visible labels, invisible spam defence, clear success with what happens next |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -191,12 +192,12 @@ If a change helps a designer-flex and hurts one of those jobs, reject it.
 The executive path on `/` is: name, role, live proof in the highlights,
 how to see the work, how to reach him. The audit path is the case studies.
 
-Do not invent metrics or emails. The one real contact address is
-`anorbert@pm.me`. HTML must not contain `mailto:` or that address as
-text, including after the Email click. The footer Email button only
-`location.assign`s the assembled href from split JS parts — do not write
-`mailto:` onto an `href` or into the DOM. Do not put a multi-field form
-back in the footer.
+Do not invent metrics or emails. The destination address lives only in the
+server's `CONTACT_TO` variable. No page, script or stylesheet contains
+`mailto:` or the address, and no script assembles it (NN/g audit,
+2026-10-06: a mail-app button fails silently for webmail users). Every
+contact action is a link to `/contact` (`/hu/kapcsolat`). Do not put a form
+in the footer.
 Do not restore a Contact column.
 Do not restore removed SportsGambit figures (`35% first-day activation`,
 `70% of wagers`).
@@ -312,7 +313,7 @@ footer, video-backed experience and E′ Weighted index grid.
 **Link icons (2026-09-15 correction):** Never use northeast-arrow glyphs or
 platform emoji in navigation, project or contact controls. When an existing
 action needs a mark, use a small monochrome inline SVG: a fine list for Works,
-an envelope for native email, and the existing LinkedIn path for that link.
+an envelope for the contact action, and the existing LinkedIn path for that link.
 `.link-icon` inherits the label ink, has no tile or decorative container, and
 stays `aria-hidden="true" focusable="false"`; visible labels and native
 destinations remain unchanged. Do not replace a rejected arrow with another
@@ -334,10 +335,13 @@ The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
 - Preserve the native `button.footer-email`, its “Discuss your project” label,
   assign-only email handler and destination. Match the hero action with a navy
   capsule and lilac text, at least 48px tall, wrapping safely at enlarged text.
-- Keep one real LinkedIn link, with its icon and visible label. No new Contact
-  page, form, endpoint, invented address or social account.
+- The primary action leads in source and visual order: “Discuss your project”
+  links to the contact form, then the one real LinkedIn link with its icon and
+  visible label (NN/g footers and contact-us guidelines). No footer form,
+  invented address or social account.
 - Preserve Raiffeisen, Instructure, Bitpanda and Kineticare links and copyright.
-- Integrate Privacy, Adatvédelem and Analytics settings into the same lilac
+- The Work list ends with “All work” / “Összes munka”.
+- Integrate the page-language privacy link and Analytics settings into the same lilac
   footer field with a fine top rule. This is an in-flow utility row, without
   a separate dark slab. Preserve all consent hooks, language attributes and
   focus return; targets remain at least 44px tall.
@@ -453,9 +457,9 @@ links, heading hierarchy and visible keyboard focus.
 - At widths up to 991px every page uses a stable top bar in its page palette. No travel,
   reading-slot fade, footer relocation or expanded terminal wordmark. Preserve
   native scrolling, menu/focus behavior and browser-height changes.
-- No Motion control, sound requirement, Contact page, new form or invented
-  address. `prefers-reduced-motion` controls decorative animation. Contact and
-  privacy behavior retain their existing owners.
+- No Motion control, sound requirement or invented address.
+  `prefers-reduced-motion` controls decorative animation. Contact goes through
+  the menu's Contact link and the contact form; privacy keeps its owner.
 
 **Site-wide text accessibility (WCAG 2.2 AA):** normal text must reach 4.5:1;
 large text (24px regular or 18.667px bold) must reach 3:1. Apply this to every
@@ -622,7 +626,7 @@ regulated), not “I’ve spent the last 16 years designing”. Do not invent
 metrics. Home descriptions for search and social previews summarize the actual
 portfolio and expertise, not availability for engagements. The dedicated service
 pages retain their visible offers; do not move a home-only solicitation into
-structured data. The home has one H1 and does not add `/contact`.
+structured data. The home has one H1; its menu links Contact like every page.
 
 Forbidden template strings:
 
@@ -669,11 +673,11 @@ English-wash the screenshot.
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
-| LinkedInHitSquare | LinkedIn collapses into an undersized icon | Keep a visible label and at least 48px target beside the native Email button |
+| LinkedInHitSquare | LinkedIn collapses into an undersized icon | Keep a visible label and at least 48px target beside the project link |
 | FilledEmailPill | An oversized or clipped capsule obscures its label | The requested navy capsule may wrap safely; text must remain fully inside at 200% |
-| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Email in nav and footer ident; Work column only |
-| MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML (before or after click), or the complete address is one JS string | `location.assign` the assembled href; never write it onto `href` or into the DOM |
-| FakeEmailLink | Email is an `<a role="link">` without href | Native `<button type="button" class="footer-email">`; Space/Enter come for free |
+| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Contact in the menu and the footer's project link; Work column only |
+| MailtoInHtml | `mailto:` or the inbox address appears in page HTML, CSS or JS, or a script assembles it | The address stays in `CONTACT_TO`; contact goes through the form |
+| FakeEmailLink | A mail button or a link without href that opens nothing visible | `<a class="footer-email" href="/contact">` in the page language |
 | SaaSFooter | Product / Company / Resources / Legal sitemap columns or extra socials | Personal contact close, existing Work links and one integrated privacy row |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | Navy dek on the new lilac case stage; do not revive the superseded dark-video text override |
@@ -682,7 +686,7 @@ English-wash the screenshot.
 | StaggerHole | Dummy columns, stagger offsets or empty gaps interrupt project scanning | A single landscape list on home and Works |
 | RowClearfixHole | Webflow `.w-row::before/::after` (`grid-area: 1 / 1`) occupy column 1 so a 7/5 pair cannot share a row | `content: none` on `.work-section .work-grid` pseudos; do not restyle every `.w-row` |
 | WorksDomainChip | Decorative pills or invented metrics clutter the list | Large name, original factual summary and quiet domain text |
-| BlogFooterCTA | Third-party or multi-field contact form | One native project button using the existing assign-only email handler |
+| BlogFooterCTA | Third-party or multi-field contact form in the footer | One project link to the contact form |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 | MeshParallaxCircus | Retired mesh motion or moving footer text returns | Footer content stays still; navigation stays at the top |
@@ -823,10 +827,13 @@ same change that caused the drift.
 
 **Whole-site language switch (owner request, 2026-10-06).** Every content page
 has an English and a Hungarian version with the same structure, classes and
-ids. The menu carries one `.lang-switch` (EN | HU) as the last item of
-`.nav-menu-area`; the current language has `aria-current="page"`. Hungarian
-pages link only Hungarian pages, except the footer's explicit English privacy
-link. `<head>` carries reciprocal `en`, `hu` and `x-default` (English)
+ids. The menu ends with one language link, `a.nav-link.lang-switch`, that
+names the other language in that language (“Magyar” on English pages,
+“English” on Hungarian pages) and leads to this page's pair, with
+`rel="alternate"`, `hreflang` and `lang` (USWDS two-language pattern, GOV.UK
+language navigation; its visible text is its accessible name, WCAG 2.5.3).
+Hungarian pages link only Hungarian pages. Footers carry one privacy link in
+the page language. `<head>` carries reciprocal `en`, `hu` and `x-default` (English)
 alternates. Checks treat `hu/…` pages as their English counterpart through
 `baseOf()` in `scripts/service-pages.mjs`. JavaScript strings (navigation,
 consent, arrival, media and About motion toggles) follow `<html lang>`.
@@ -840,7 +847,15 @@ minimum fill time, single-use challenges, same-origin and JSON-only posts,
 goes through Resend with `RESEND_API_KEY`, `CONTACT_TO` and `CONTACT_FROM`;
 the destination address lives only in `CONTACT_TO`, never in markup or
 source. Without configuration the API answers 503 and the page offers
-LinkedIn. The footer keeps its native Email action.
+LinkedIn. Every other contact action on the site links to this page.
+
+**Navigation (NN/g audit, 2026-10-06).** One Contact entry in every menu,
+LinkedIn as the one external utility link, the language link last. The
+current page carries an olive underline on every bar at every width. An open
+compact menu shows a close glyph. On the work and case bars the decorative
+counter yields below 1440px and the repeated wordmark below 1200px, so the
+destinations stay on one row; the wordmark is out of the tab order because
+the logo already links home. Privacy pages use the lilac bar.
 
 Content pages carry chrome, consent and the editorial footer.
 `sitemap.xml` lists every canonical URL: the English pages in hiring order,
@@ -1221,8 +1236,8 @@ redirect to `/about`, preserving query parameters. Shared navigation, consent,
 analytics and footer contact behavior remain available on this route.
 
 About uses the selected board's quiet navy footer rather than the editorial
-Work-column footer on the other routes. Its header Email and closing Get in
-touch actions reuse the existing native email owner; the footer retains the
+Work-column footer on the other routes. Its menu Contact link and closing Get
+in touch link lead to the contact form; the footer retains the
 real LinkedIn link, identity, copyright, privacy links and analytics settings.
 Its chapter rail uses named native anchors. The story-only Pause motion button
 starts hidden and is exposed by the story controller; it does not restore the

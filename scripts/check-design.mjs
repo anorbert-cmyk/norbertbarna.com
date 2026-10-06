@@ -19,36 +19,26 @@ const fail = (message) => {
   failures += 1;
   console.error(`FAIL: ${message}`);
 };
+// NN/g audit (owner request, 2026-10-06): every project action is a link to
+// the contact form in the page language. No page or script opens a mail app.
 const PROJECT_CONTACT = {
-  en: { label: "Discuss your project", title: "Opens your email app to discuss your project" },
-  hu: { label: "Beszéljünk a projektedről", title: "Megnyitja a leveleződet, hogy a projektedről írhass." },
+  en: { label: "Discuss your project", href: "/contact" },
+  hu: { label: "Beszéljünk a projektedről", href: "/hu/kapcsolat" },
 };
-const HOME_CONTACT = {
-  label: "Email",
-  accessibleName: "Email to discuss a project",
-  title: "Opens your email app to discuss your project",
-};
-const contactButtons = (html) => [...html.matchAll(/(<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/button>/g)];
+const contactButtons = (html) => [...html.matchAll(/(<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/a>/g)];
 function checkProjectContact(html, scope, language = "en", allowAiArrow = false) {
-  const buttons = contactButtons(html);
+  const links = contactButtons(html);
   const copy = PROJECT_CONTACT[language];
-  if (buttons.length !== 1) {
-    fail(`${scope}: expected one native project-contact button (got ${buttons.length})`);
+  if (/<button\b[^>]*\bfooter-email\b/.test(html)) fail(`${scope}: FakeEmailLink: the project action must not reopen a mail button`);
+  if (links.length !== 1) {
+    fail(`${scope}: expected one project-contact link (got ${links.length})`);
     return;
   }
-  const [, tag, text] = buttons[0];
-  if (!/\btype="button"/.test(tag) || /\bhref=/.test(tag)) {
-    fail(`${scope}: project contact must remain a type=button with no href`);
-  }
-  // The chosen AI action alone includes a decorative, accessibility-hidden
-  // arrow. All other routes retain the exact original button markup contract.
+  const [, tag, text] = links[0];
+  if (!tag.includes(`href="${copy.href}"`)) fail(`${scope}: the project action must lead to ${copy.href}`);
+  // The chosen AI action alone includes a decorative, accessibility-hidden arrow.
   const label = allowAiArrow ? text.replace(/<span aria-hidden="true">→<\/span>$/, "").trim() : text.trim();
-  if (label !== copy.label || !tag.includes(`title="${copy.title}"`)) {
-    fail(`${scope}: project contact must say “${copy.label}” and explain that it opens the email app`);
-  }
-  if (language === "hu" && !/\blang="hu"/.test(tag)) {
-    fail(`${scope}: the Hungarian project-contact button must declare lang=hu`);
-  }
+  if (label !== copy.label) fail(`${scope}: project contact must say “${copy.label}”`);
 }
 
 const home = readFileSync(join(ROOT, "index.html"), "utf8");
@@ -149,12 +139,8 @@ if (!/class="nav-link[^"]*"[^>]*href="\/works">Works<\/a>/.test(homeNav)) {
 if (!/class="footer-contact-link"/.test(homeNav) || !/linkedin\.com\/in\/barna-norbert/.test(homeNav)) {
   fail("home top bar must keep the LinkedIn destination");
 }
-const homeContact = contactButtons(homeNav);
-if (homeContact.length !== 1 || homeContact[0][2].trim() !== HOME_CONTACT.label ||
-    !/\btype="button"/.test(homeContact[0][1]) || /\bhref=/.test(homeContact[0][1]) ||
-    !homeContact[0][1].includes(`aria-label="${HOME_CONTACT.accessibleName}"`) ||
-    !homeContact[0][1].includes(`title="${HOME_CONTACT.title}"`)) {
-  fail("home top bar: Email must stay a native, securely assembled project-contact action");
+if (!/<a\b[^>]*href="\/contact">Contact<\/a>/.test(homeNav) || /footer-email/.test(homeNav)) {
+  fail("home top bar: one Contact link is the only contact entry (NN/g contact-us guideline)");
 }
 if (/href="[^"]*mailto:/.test(homeNav) || /anorbert@pm\.me/.test(homeNav)) {
   fail("MailtoInHtml: home Email must not expose mailto or the address");
@@ -247,8 +233,8 @@ const homeServices = home.match(/<section\b[^>]*class="home-service-section\b[^>
 if (!homeServices || /footer-email|hero-work-link|footer-cta|linkedin\.com/.test(homeServices)) {
   fail("home services must remain a professional overview without the removed engagement actions");
 }
-if (contactButtons(home).length !== 2) {
-  fail("home keeps project contact only in the navigation and footer");
+if (contactButtons(home).length !== 1) {
+  fail("home keeps its project action in the footer only; the menu carries Contact");
 }
 const homeHead = home.slice(0, home.indexOf("</head>"));
 if (/AI Product Design Lead|product design lead/i.test(homeHead)) {
@@ -454,7 +440,9 @@ const footerCanon = footerPages.map((page) => {
 });
 function footerStructure(footer) {
   return footer.replace(/\s(?:lang|hreflang|aria-label|title)="[^"]*"/g, "").replace(/>[^<]*</g, "><")
-    .replace(/href="\/hu\/munka\//g, 'href="/work/').replace(/href="\/hu"/g, 'href="/"');
+    .replace(/href="\/hu\/munka\//g, 'href="/work/').replace(/href="\/hu"/g, 'href="/"')
+    .replace(/href="\/hu\/munkak"/g, 'href="/works"').replace(/href="\/hu\/kapcsolat"/g, 'href="/contact"')
+    .replace(/href="\/hu\/adatvedelem"/g, 'href="/privacy"').replace(/\saria-current="page"/g, "");
 }
 if (new Set(footerCanon.filter((_, index) => !footerPages[index].startsWith("hu/"))).size !== 1 ||
     footerCanon.some((footer, index) => footerPages[index].startsWith("hu/") && footer !== footerStructure(footerCanon[0]))) {
@@ -478,12 +466,13 @@ for (const color of ["#D6D4ED", "#0A1628", "#1B3A32", "#BDB414"]) {
 if (!storyCss.includes("Funnel Display") || !storyCss.includes("Inter")) {
   fail("About must use Funnel Display headings and Inter reading text");
 }
-for (const [scope, markup] of [["navigation", storyNavigation], ["closing chapter", storyClosing]]) {
-  const buttons = contactButtons(markup);
-  if (buttons.length !== 1 || !/\btype="button"/.test(buttons[0]?.[1] || "") ||
-      /\bhref=/.test(buttons[0]?.[1] || "") ||
-      !buttons[0]?.[2].replace(/<[^>]+>/g, "").trim()) {
-    fail(`About ${scope} must retain one named native Email action`);
+if (!/<a\b[^>]*href="\/contact">Contact<\/a>/.test(storyNavigation) || /footer-email/.test(storyNavigation)) {
+  fail("About navigation carries one Contact link and no mail button");
+}
+{
+  const closingLinks = contactButtons(storyClosing);
+  if (closingLinks.length !== 1 || !closingLinks[0][1].includes('href="/contact"') || !closingLinks[0][2].replace(/<[^>]+>/g, "").trim()) {
+    fail("About closing chapter must offer one named link to the contact form");
   }
 }
 if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(storyFooter) ||
@@ -523,7 +512,7 @@ for (const color of ["#D6D4ED", "#0A1628"]) {
   if (!editorialCss.includes(color)) fail(`Editorial sections must use the original ${color} palette token`);
 }
 if (!/\.editorial-footer \.footer-bar[\s\S]{0,500}background:\s*transparent/.test(editorialCss)) fail("Privacy controls must be integrated into the footer field");
-if (!/\.footer-section\.editorial-footer button\.footer-email[\s\S]{0,200}min-height:\s*48px/.test(editorialCss)) fail("Project contact needs a readable 48px native control");
+if (!/\.footer-section\.editorial-footer \.footer-email \{[\s\S]{0,200}min-height:\s*48px/.test(editorialCss)) fail("Project contact needs a readable 48px native control");
 if (!/\.editorial-footer :is\(a, button\):focus-visible/.test(editorialCss)) fail("Editorial footer must retain visible keyboard focus");
 const experience = home.match(/<section class="bottom-space-section editorial-experience"[\s\S]*?<\/section>/)?.[0] || "";
 if ((experience.match(/class="awards-card"/g) || []).length !== 5 || /<video|tabindex="0"|role="button"/.test(experience)) fail("Experience must retain five factual, readable rows without fake interactions");
@@ -578,15 +567,6 @@ for (const page of footerPages) {
     fail(`${page}: copyright must be ${copyright}`);
   }
   checkProjectContact(footer, `${page}: footer`, footerLanguage);
-  const emailTag = [...footer.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
-  if (emailTag.length !== 1) {
-    fail(`${page}: footer needs exactly one Email button (got ${emailTag.length})`);
-  } else if (!/\btype="button"/.test(emailTag[0]) || /href=/.test(emailTag[0]) || /mailto:/i.test(emailTag[0])) {
-    fail(`${page}: FakeEmailLink: Email must be type=button with no href`);
-  }
-  if (/<a[^>]*footer-email/.test(footer)) {
-    fail(`${page}: FakeEmailLink: Email must not be an anchor`);
-  }
   const linkedin = [...footer.matchAll(/<a[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
   if (linkedin.length !== 1) {
     fail(`${page}: footer needs exactly one LinkedIn icon (got ${linkedin.length})`);
@@ -601,9 +581,6 @@ for (const page of footerPages) {
   }
   if (/footer-col-title">Contact/.test(footer) || /<p class="footer-col-title">Contact<\/p>/.test(footer)) {
     fail(`${page}: ContactColumn: Contact heading must not ship`);
-  }
-  if (/href="\/(?:hu\/kapcsolat|contact)"/.test(footer)) {
-    fail(`${page}: the footer keeps its native Email action; the contact page lives in the menu`);
   }
   if (/href="\/work\/(?:benker|sportsgambit|onrobot)"/.test(footer)) {
     fail(`${page}: footer Work must not list Benker, SportsGambit, or OnRobot`);
@@ -657,7 +634,8 @@ for (const page of SERVICE_PAGES) {
     const pieces = main.match(/<section\b[^>]*\bid="pieces"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
     if (/<a\b|<button\b|data-ai-work/.test(pieces)) fail(`${page}: the pinned camera must not contain hidden or clipped focus targets`);
     for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
-      if ((main.match(new RegExp(`href="/work/${slug}"`, "g")) || []).length !== 1) fail(`${page}: ${slug} must appear in one semantic reference row`);
+      const caseHref = page.startsWith("hu/") ? `/hu/munka/${slug}` : `/work/${slug}`;
+      if ((main.match(new RegExp(`href="${caseHref}"`, "g")) || []).length !== 1) fail(`${page}: ${slug} must appear in one semantic reference row`);
       if (!main.includes(`/assets/images/geometry/${slug}.960.webp`)) fail(`${page}: ${slug} needs the existing landscape geometric artwork`);
     }
     const faq = main.match(/<section\b[^>]*\bid="questions"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
@@ -693,10 +671,10 @@ for (const page of PRIVACY_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
   const buttons = contactButtons(main);
-  if (buttons.length !== 1 || buttons[0][2].trim() !== "Email" ||
-      !/\btype="button"/.test(buttons[0][1]) || /\bhref=/.test(buttons[0][1]) ||
-      Object.values(PROJECT_CONTACT).some((copy) => buttons[0][1].includes(copy.title))) {
-    fail(`${page}: privacy main contact must stay a native Email button, not a project enquiry`);
+  const hungarianPage = page.startsWith("hu/");
+  if (buttons.length !== 1 || buttons[0][2].trim() !== (hungarianPage ? "Kapcsolatfelvételi űrlap" : "Contact form") ||
+      !buttons[0][1].includes(`href="${hungarianPage ? "/hu/kapcsolat" : "/contact"}"`)) {
+    fail(`${page}: privacy requests go through one link to the contact form`);
   }
 }
 
@@ -704,15 +682,13 @@ const navigationJs = readFileSync(join(ROOT, "assets/js/navigation.js"), "utf8")
 if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }
-if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes('["ano", "rbert"]') ||
-    !navigationJs.includes('["pm", ".", "me"]') || !navigationJs.includes("button.footer-email") ||
-    !navigationJs.includes("location.assign")) {
-  fail("Email click must location.assign a href assembled from split parts");
+if (/\["mai", "lto"\]|location\.assign|footerMailHref/.test(navigationJs)) {
+  fail("No script may assemble or open a mail address; contact goes through the form");
 }
-if (!/querySelectorAll\(\s*["']a,\s*button\.footer-email["']\s*\)/.test(navigationJs)) {
-  fail("mobile nav must close on header Email as well as links");
+if (!/querySelectorAll\(\s*["']a,\s*button["']\s*\)/.test(navigationJs)) {
+  fail("mobile nav must close when any link or button in it is used");
 }
-if (/a\.footer-email/.test(navigationJs) || /setAttribute\(\s*["']href["']/.test(navigationJs)) {
+if (/setAttribute\(\s*["']href["']/.test(navigationJs)) {
   fail("MailtoInHtml: do not write mailto onto href or use a fake Email link");
 }
 if (/mailto:/i.test(css) || /anorbert@pm\.me/i.test(css)) {

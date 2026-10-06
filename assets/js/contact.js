@@ -10,7 +10,9 @@
   var isHungarian = /^hu(?:-|$)/i.test(document.documentElement.lang);
   var lang = isHungarian ? "hu" : "en";
   var linkedIn = "https://www.linkedin.com/in/barna-norbert/";
-  var linkedInLink = "<a href=\"" + linkedIn + "\" target=\"_blank\" rel=\"noopener noreferrer\">LinkedIn</a>";
+  var linkedInLink = function (label) {
+    return "<a href=\"" + linkedIn + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + label + "</a>";
+  };
   var STRINGS = {
     en: {
       nameShort: "Please tell me your name (at least 2 characters).",
@@ -20,31 +22,33 @@
       topic: "Please choose what you want to talk about.",
       messageShort: "Please write at least 20 characters so I know how I can help.",
       messageLong: "The message can be at most 5000 characters.",
-      checkFields: "Please check the highlighted fields.",
       checking: "Checking you are human…",
       sending: "Sending…",
       sent: "Your message is sent.",
       rate: "Too many messages from here for now. Please try again later.",
-      failed: "Sending failed. Please try again, or reach me on " + linkedInLink + ".",
-      counter: " / 5000",
-      remaining: function (n) { return n === 1 ? "1 character left" : n + " characters left"; }
+      failed: "Sending failed. Please try again, or reach me on " + linkedInLink("LinkedIn") + ".",
+      errorPrefix: "Error: ",
+      summaryTitle: "There is a problem",
+      remaining: function (n) { return n === 1 ? "You have 1 character left." : "You have " + n + " characters left."; },
+      overLimit: function (n) { return "You are " + n + (n === 1 ? " character" : " characters") + " over the limit."; }
     },
     hu: {
       nameShort: "Add meg a neved (legalább 2 karakter).",
       nameLong: "A név legfeljebb 100 karakter lehet.",
-      emailInvalid: "Adj meg egy e-mail címet, amire válaszolhatok.",
-      emailLong: "Az e-mail cím legfeljebb 254 karakter lehet.",
+      emailInvalid: "Adj meg egy e-mail-címet, amire válaszolhatok.",
+      emailLong: "Az e-mail-cím legfeljebb 254 karakter lehet.",
       topic: "Válaszd ki, miről szeretnél beszélni.",
       messageShort: "Írj legalább 20 karaktert, hogy tudjam, miben segíthetek.",
       messageLong: "Az üzenet legfeljebb 5000 karakter lehet.",
-      checkFields: "Nézd át a megjelölt mezőket.",
       checking: "Ellenőrzöm, hogy nem robot vagy…",
       sending: "Küldés…",
       sent: "Az üzeneted elment.",
       rate: "Innen most túl sok üzenet érkezett. Próbáld újra később.",
-      failed: "A küldés nem sikerült. Próbáld újra, vagy írj " + linkedInLink + "-en.",
-      counter: " / 5000",
-      remaining: function (n) { return "még " + n + " karakter"; }
+      failed: "A küldés nem sikerült. Próbáld újra, vagy írj " + linkedInLink("LinkedInen") + ".",
+      errorPrefix: "Hiba: ",
+      summaryTitle: "Hiba van az űrlapon",
+      remaining: function (n) { return "Még " + n + " karaktert írhatsz."; },
+      overLimit: function (n) { return n + " karakterrel több a megengedettnél."; }
     }
   };
   var t = STRINGS[lang];
@@ -62,6 +66,10 @@
   var status = form.querySelector(".contact-status");
   var counter = form.querySelector("[data-contact-count]");
   var counterBox = form.querySelector("#contact-message-counter");
+  var summary = form.querySelector(".contact-error-summary");
+  var summaryList = form.querySelector(".contact-error-summary-list");
+  var counterLive = form.querySelector("[data-contact-count-live]");
+  var sentEmail = sheet.querySelector("[data-contact-sent-email]");
   var sent = sheet.querySelector(".contact-sent");
   var sentTitle = sheet.querySelector(".contact-sent-title");
   var again = sheet.querySelector(".contact-again");
@@ -97,7 +105,12 @@
     var node = errorNode(key);
     var control = controlFor(key);
     if (!node || !control) return;
-    node.textContent = message;
+    node.textContent = "";
+    var prefix = document.createElement("span");
+    prefix.className = "contact-sr";
+    prefix.textContent = t.errorPrefix;
+    node.appendChild(prefix);
+    node.appendChild(document.createTextNode(message));
     node.hidden = false;
     control.setAttribute("data-invalid", "");
     inputsFor(key).forEach(function (input) {
@@ -112,6 +125,11 @@
     if (!node || !control) return;
     if (!node.hidden) { node.hidden = true; node.textContent = ""; }
     control.removeAttribute("data-invalid");
+    if (summaryList) {
+      var stale = summaryList.querySelector("a[data-contact-field=\"" + key + "\"]");
+      if (stale && stale.parentNode) summaryList.removeChild(stale.parentNode);
+      if (summary && !summaryList.children.length) summary.hidden = true;
+    }
     inputsFor(key).forEach(function (input) {
       input.removeAttribute("aria-invalid");
       describedBy(input, node.id, false);
@@ -150,17 +168,12 @@
 
   var ORDER = ["name", "email", "topic", "message"];
   function validateAll() {
-    var firstInvalid = null;
+    var invalid = [];
     ORDER.forEach(function (key) {
       var message = validateField(key);
-      if (message) {
-        setError(key, message);
-        if (!firstInvalid) firstInvalid = key;
-      } else {
-        clearError(key);
-      }
+      if (message) { setError(key, message); invalid.push(key); } else { clearError(key); }
     });
-    return firstInvalid;
+    return invalid;
   }
 
   function focusField(key) {
@@ -170,6 +183,42 @@
       target = topics.filter(function (input) { return input.checked; })[0] || topics[0];
     }
     if (target && typeof target.focus === "function") target.focus();
+  }
+
+  /* ---- Error summary (GOV.UK pattern): every problem, linked to its field. */
+  function hideSummary() {
+    if (!summary) return;
+    summary.hidden = true;
+    if (summaryList) summaryList.textContent = "";
+  }
+
+  function showSummary(keys) {
+    if (!summary || !summaryList) { focusField(keys[0]); return; }
+    summaryList.textContent = "";
+    keys.forEach(function (key) {
+      var node = errorNode(key);
+      var target = inputsFor(key)[0];
+      if (!node || !target) return;
+      var item = document.createElement("li");
+      var link = document.createElement("a");
+      link.href = "#" + target.id;
+      link.setAttribute("data-contact-field", key);
+      link.textContent = node.textContent.replace(t.errorPrefix, "");
+      item.appendChild(link);
+      summaryList.appendChild(item);
+    });
+    summary.hidden = false;
+    summary.focus({ preventScroll: true });
+    try { summary.scrollIntoView({ block: "nearest", behavior: reducedMotion() ? "auto" : "smooth" }); } catch (error) { /* ignore */ }
+  }
+
+  if (summaryList) {
+    summaryList.addEventListener("click", function (event) {
+      var link = event.target.closest("a[data-contact-field]");
+      if (!link) return;
+      event.preventDefault();
+      focusField(link.getAttribute("data-contact-field"));
+    });
   }
 
   // Validate a field once the visitor leaves it, and clear its error as soon
@@ -191,19 +240,22 @@
   });
 
   /* ---- Counter --------------------------------------------------------- */
+  // The count stays quiet until the last 10%, then it turns navy and the
+  // remaining number is announced once per 100-character step, not per key.
+  var lastAnnounced = null;
   function updateCounter() {
     if (!counter || !fields.message) return;
     var length = fields.message.value.length;
+    var left = LIMITS.messageMax - length;
     counter.textContent = String(length);
-    if (counterBox) {
-      var near = length >= LIMITS.messageMax - 200;
-      counterBox.setAttribute("data-near", near ? "true" : "false");
-      if (near) {
-        counterBox.setAttribute("title", t.remaining(Math.max(0, LIMITS.messageMax - length)));
-      } else {
-        counterBox.removeAttribute("title");
-      }
-    }
+    var near = left <= 500;
+    if (counterBox) counterBox.setAttribute("data-near", near ? "true" : "false");
+    if (!counterLive) return;
+    if (!near) { lastAnnounced = null; if (counterLive.textContent) counterLive.textContent = ""; return; }
+    var step = left < 0 ? "over" : String(Math.floor(left / 100));
+    if (step === lastAnnounced) return;
+    lastAnnounced = step;
+    counterLive.textContent = left < 0 ? t.overLimit(-left) : t.remaining(left);
   }
   if (fields.message) {
     fields.message.addEventListener("input", updateCounter);
@@ -255,7 +307,9 @@
     if (!response.ok) throw new Error("challenge " + response.status);
     var data = await response.json();
     if (!data || typeof data.token !== "string" || typeof data.salt !== "string" ||
-        typeof data.difficulty !== "number") {
+        typeof data.difficulty !== "number" || !(data.difficulty >= 0 && data.difficulty <= 24)) {
+      // 24 leading zero bits is already millions of hashes; anything beyond
+      // is a broken or hostile challenge, not something to grind through.
       throw new Error("challenge shape");
     }
     return data;
@@ -340,15 +394,15 @@
     if (result.status === 400 && result.data.error === "invalid") {
       var names = Array.isArray(result.data.fields) ? result.data.fields : [];
       var fallback = { name: t.nameShort, email: t.emailInvalid, topic: t.topic, message: t.messageShort };
-      var marked = null;
+      var marked = [];
       ORDER.forEach(function (name) {
         if (names.indexOf(name) === -1) return;
         // The server saw something the client check let through; its own
         // rule for that field is the honest message to show.
         setError(name, validateField(name) || fallback[name]);
-        if (!marked) marked = name;
+        marked.push(name);
       });
-      return { ok: false, kind: "invalid", field: marked };
+      return { ok: false, kind: "invalid", fields: marked };
     }
     if (result.status === 429) return { ok: false, kind: "rate" };
     return { ok: false, kind: "failed" };
@@ -357,20 +411,21 @@
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     if (busy) return;
-    var firstInvalid = validateAll();
-    if (firstInvalid) {
-      say(t.checkFields);
-      focusField(firstInvalid);
+    var invalid = validateAll();
+    if (invalid.length) {
+      say("");
+      showSummary(invalid);
       return;
     }
+    hideSummary();
     say("");
     setBusy(true);
     send(true).then(function (result) {
       setBusy(false);
       if (result.ok) { showSent(); return; }
       if (result.kind === "invalid") {
-        say(t.checkFields);
-        if (result.field) focusField(result.field);
+        say("");
+        if (result.fields && result.fields.length) showSummary(result.fields); else say(t.failed, true);
         return;
       }
       if (result.kind === "rate") { say(t.rate); return; }
@@ -392,6 +447,7 @@
   function showSent() {
     var instant = reducedMotion();
     say(t.sent);
+    if (sentEmail) sentEmail.textContent = fields.email.value.trim();
     sheet.setAttribute("data-state", "sent");
     setCaption(true);
     // The written page fades while its row folds shut; the envelope row opens
@@ -419,6 +475,7 @@
   function reset() {
     form.reset();
     ORDER.forEach(clearError);
+    hideSummary();
     updateCounter();
     say("");
     if (sent) sent.hidden = true;

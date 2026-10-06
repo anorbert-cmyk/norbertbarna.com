@@ -878,8 +878,8 @@ html.no-motion .footer-mesh-yellow {
   height: 17px;
 }
 
-.footer-section button.footer-email,
-.navbar button.footer-email {
+.footer-section .footer-email,
+.navbar .footer-email {
   appearance: none;
   -webkit-appearance: none;
   display: inline-flex;
@@ -899,14 +899,15 @@ html.no-motion .footer-mesh-yellow {
   font-weight: 500;
   line-height: 1.2;
   white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
   transition: background-color .18s ease;
 }
 
-.footer-section button.footer-email:hover,
-.footer-section button.footer-email:focus-visible,
-.navbar button.footer-email:hover,
-.navbar button.footer-email:focus-visible {
+.footer-section .footer-email:hover,
+.footer-section .footer-email:focus-visible,
+.navbar .footer-email:hover,
+.navbar .footer-email:focus-visible {
   background-color: rgb(17 17 17 / 6%);
   color: var(--footer-ink, #111111);
 }
@@ -2410,7 +2411,7 @@ h2.work-title-heading {
   gap: 9px;
 }
 
-.navbar button.footer-email {
+.navbar .footer-email {
   flex: 0 1 auto;
   max-width: 100%;
   height: auto;
@@ -2828,7 +2829,7 @@ body.home .navbar .home-nav-label { display: inline; }
 body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { gap: 18px; }
 body.home .navbar .nav-menu-area > .nav-link { position: absolute; left: 64%; }
 body.home .navbar .nav-cta > .footer-contact-link { position: absolute; left: 14%; }
-body.home .navbar :is(.nav-link, a.footer-contact-link, button.footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, button.footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
+body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
 body.home .navbar :is(a,button), body.immersive-case .navbar :is(a,button) { pointer-events: auto; }
 body.home .navbar :is(a,button):hover, body.immersive-case .navbar :is(a,button):hover { text-decoration: underline; text-underline-offset: 4px; }
 body.home .navbar .nav-link.white:is(:hover, .w--current), body.immersive-case .navbar .nav-link.white:is(:hover, .w--current) { color: var(--immersive-link-ink, #D6D4ED); background: transparent; }
@@ -2859,7 +2860,7 @@ body.home .navbar[data-reading-dock], body.immersive-case .navbar[data-reading-d
  body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { flex-direction: column; align-items: stretch; gap: 4px; }
  body.home .navbar .menu-button, body.immersive-case .navbar .menu-button { min-width: 44px; min-height: 44px; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; }
  body.home .navbar .menu-button .w-icon-nav-menu, body.immersive-case .navbar .menu-button .w-icon-nav-menu { color: inherit; }
- body.home .navbar :is(.nav-link, a.footer-contact-link, button.footer-email) { justify-content: flex-start; width: 100%; min-height: 48px; padding: 12px; color: #0A1628; font-size: 17px; }
+ body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { justify-content: flex-start; width: 100%; min-height: 48px; padding: 12px; color: #0A1628; font-size: 17px; }
  body.home .navbar .home-nav-label { color: #0A1628; }
  .work-row { grid-template-columns: 72px minmax(0, 1fr) auto; gap: 10px 14px; }
  .work-row-thumb { width: 72px; height: 72px; }
@@ -2887,7 +2888,7 @@ html.no-motion .navbar { --nav-travel: 0px !important; --nav-brand-scale: 1 !imp
  body.home .navbar :is(.nav-menu, .nav-menu-area, .nav-cta) { position: static; }
 }
 @media (max-width: 991px) {
- body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, button.footer-email) { color: #0A1628; background: transparent; }
+ body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { color: #0A1628; background: transparent; }
  body.immersive-case .navbar .nav-menu-area, body.immersive-case .navbar .nav-cta { flex-direction: column; align-items: stretch; gap: 4px; }
 }
 

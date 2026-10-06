@@ -193,8 +193,8 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   gap: 12px 24px;
   width: 100%;
 }
-.footer-section.editorial-footer button.footer-email {
-  order: -1;
+/* The primary action leads in source and visual order (NN/g footers; WCAG 2.4.3). */
+.footer-section.editorial-footer .footer-email {
   max-width: 100%;
   min-height: 48px;
   height: auto;
@@ -206,6 +206,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   font: 400 14px/1.4 Inter, sans-serif;
   white-space: normal;
   text-align: center;
+  text-decoration: none;
 }
 .footer-section.editorial-footer a.footer-contact-link {
   width: auto;
@@ -221,7 +222,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   text-decoration: underline;
   text-underline-offset: 4px;
 }
-.footer-section.editorial-footer button.footer-email:is(:hover, :focus-visible) {
+.footer-section.editorial-footer .footer-email:is(:hover, :focus-visible) {
   color: var(--editorial-lilac);
   background: var(--editorial-navy);
   text-decoration: underline;

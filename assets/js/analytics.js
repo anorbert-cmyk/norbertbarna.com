@@ -154,9 +154,10 @@
     if (!window.PortfolioConsent || !window.PortfolioConsent.hasConsent()) revoke();
     else { withdrawn = false; pageview(); }
   });
-  // Capture phase does not cancel, replace or delay the native Email handler.
+  // Capture phase never cancels, replaces or delays the native navigation to
+  // the contact page. Language links are not contact intent.
   document.addEventListener('click', function (event) {
-    var button = event.target instanceof Element ? event.target.closest('button.footer-email') : null;
+    var button = event.target instanceof Element ? event.target.closest('.footer-email, a[href="/contact"], a[href="/hu/kapcsolat"]') : null;
     if (!button) return;
     var placement = button.closest('footer') ? 'footer' : button.closest('.navbar, header') ? 'navigation' : 'content';
     capture('contact_intent', placement);

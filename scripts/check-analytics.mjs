@@ -16,7 +16,8 @@ for (const page of pages) {
   assert(/<script defer src="\/assets\/js\/analytics.js"><\/script>/.test(html), `${page}: analytics deferred`);
   assert.equal((html.match(/href="\/assets\/css\/consent.css"/g) || []).length, 1, `${page}: consent stylesheet`);
   const footer = html.match(/<footer[\s\S]*?<\/footer>/)?.[0] || '';
-  assert(footer.includes('data-consent-settings') && footer.includes('href="/privacy"') && footer.includes('href="/hu/adatvedelem"'), `${page}: withdrawal and privacy always reachable`);
+  // One privacy link in the page language; the header language link reaches the pair.
+  assert(footer.includes('data-consent-settings') && footer.includes(page.startsWith('hu/') ? 'href="/hu/adatvedelem"' : 'href="/privacy"'), `${page}: withdrawal and privacy always reachable`);
   assert(!/posthog-js|eu-assets\.i\.posthog|googletagmanager|oaipixel/i.test(html), `${page}: no duplicate vendor tracker`);
 }
 const consent = read('assets/js/consent.js');

@@ -43,7 +43,7 @@ body.home .navbar[data-composition-nav] { transform: none; mix-blend-mode: norma
 body.home .navbar[data-composition-nav] .nav-wrap { gap: 28px; }
 body.home .navbar[data-composition-nav] .home-nav-wordmark,
 body.home .navbar[data-composition-nav] .home-nav-progress { display: none; }
-body.home .navbar[data-composition-nav] :is(.nav-link, a.footer-contact-link, button.footer-email, .home-nav-monogram, .home-nav-label, .menu-button) { color: #0A1628; --immersive-link-ink: #0A1628; }
+body.home .navbar[data-composition-nav] :is(.nav-link, a.footer-contact-link, .footer-email, .home-nav-monogram, .home-nav-label, .menu-button) { color: #0A1628; --immersive-link-ink: #0A1628; }
 body.home .navbar[data-composition-nav] :is(.nav-menu-area > .nav-link, .nav-cta > .footer-contact-link) { position: static; }
 body.home .navbar[data-composition-nav] :is(.nav-menu-area, .nav-cta) { gap: 28px; }
 body.home #works { background: #D6D4ED; color: #0A1628; padding: 28px var(--composition-gutter) 80px; }

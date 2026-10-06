@@ -5,7 +5,7 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { UTILITY_PAGES, PRIVACY_PAGES, isServicePage, baseOf, HU_PAGES } from './service-pages.mjs';
+import { UTILITY_PAGES, PRIVACY_PAGES, isServicePage, isContactPage, baseOf, HU_PAGES, urlOf } from './service-pages.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const pages = ['index.html', 'works.html', 'about.html', ...readdirSync(join(root,'work')).filter(f=>f.endsWith('.html')).sort().map(f=>`work/${f}`), ...UTILITY_PAGES, ...HU_PAGES];
 const origin = 'https://www.barnanorbert.com';
@@ -78,7 +78,7 @@ for (const page of pages) {
     seenTitles.add(title); seenDescriptions.add(description);
     const canonical=[...html.matchAll(/<link\b[^>]*>/gi)].map(([tag])=>attrs(tag)).filter(a=>a.get('rel')==='canonical');
     assert.equal(canonical.length,1,'canonical count');
-    const expected=origin+(baseOf(page)==='index.html' ? '/' : '/'+page.replace(/\.html$/,''));
+    const expected=origin+urlOf(page);
     assert.equal(canonical[0].get('href'),expected,'canonical target');
     assert.equal(meta(html,'og:url'),expected,'OG URL');
     assert.equal(meta(html,'og:title'),title,'OG title drift');
@@ -99,7 +99,7 @@ for (const page of pages) {
     assert(blocks.length,'JSON-LD is missing');
     const graph=blocks.flatMap(([,json])=>nodes(JSON.parse(json)));
     const types=graph.flatMap(n=>[].concat(n['@type']));
-    assert(types.includes(baseOf(page)==='index.html'?'ProfilePage':baseOf(page)==='works.html'?'CollectionPage':baseOf(page)==='about.html'?'AboutPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':'Article'),'page schema');
+    assert(types.includes(baseOf(page)==='index.html'?'ProfilePage':baseOf(page)==='works.html'?'CollectionPage':baseOf(page)==='about.html'?'AboutPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':isContactPage(page)?'ContactPage':'Article'),'page schema');
     if(isServicePage(page)) assert(types.includes('Service'),'service schema');
     if(baseOf(page).startsWith('work/')) {
       assert(types.includes('BreadcrumbList'),'breadcrumb schema');
@@ -132,7 +132,7 @@ for (const page of pages) {
       assert(Number(a.get('width'))>0 && Number(a.get('height'))>0,'video dimensions');
       assert.equal(a.get('preload'),'none','initial reduced-motion bandwidth guard');
       assert(a.get('poster'),'poster is required');
-      assert(existsSync(resolve(root,dirname(page),a.get('poster'))),'poster file does not exist');
+      assert(existsSync(a.get('poster').startsWith('/') ? join(root,a.get('poster')) : resolve(root,dirname(page),a.get('poster'))),'poster file does not exist');
     }
     totalVideos+=videos.length;
     report.push({page,videos:videos.length,structuredData:[...new Set(types)],socialImage:`${dim.width}x${dim.height}`});
