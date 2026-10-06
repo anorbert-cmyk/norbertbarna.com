@@ -40,23 +40,37 @@ app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "SAMEORIGIN");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.setHeader("Permissions-Policy", "interest-cohort=()");
+  // The site uses no sensor, camera, payment or ad-measurement API; deny them
+  // all so a future third-party script cannot opt in silently.
+  res.setHeader(
+    "Permissions-Policy",
+    "accelerometer=(), browsing-topics=(), camera=(), geolocation=(), gyroscope=(), interest-cohort=(), magnetometer=(), microphone=(), payment=(), usb=()"
+  );
+  // No popup or OAuth flow needs an opener; isolate the browsing context group.
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   res.setHeader(
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
-      // scheme-less hosts so both the http dev server and https prod match;
-      // data: fonts are embedded in the Webflow CSS
-      "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
-      "font-src 'self' fonts.gstatic.com data:",
+      // Exactly two executable inline scripts exist: the Webflow w-mod touch
+      // class setter (first script on every page except About and 404) and the
+      // home mast morph gate inside .home-mast in index.html. Hash them so no
+      // other inline script can run. JSON-LD blocks are data, not scripts, and
+      // need no hash. check-server must fail when either body changes.
+      "script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE='",
+      // Inline style attributes and GSAP-driven styles need 'unsafe-inline';
+      // fonts are self-hosted (assets/fonts) and the Webflow CSS still embeds
+      // data: fonts. Google Fonts is no longer referenced by any page.
+      "style-src 'self' 'unsafe-inline'",
+      "font-src 'self' data:",
       "img-src 'self' data:",
       "media-src 'self'",
-      "connect-src 'self' fonts.googleapis.com https://eu.i.posthog.com",
+      "connect-src 'self' https://eu.i.posthog.com",
       "object-src 'none'",
       "base-uri 'self'",
       "frame-ancestors 'self'",
+      "form-action 'self'",
     ].join("; ")
   );
   next();
@@ -137,7 +151,7 @@ app.use((req, res, next) => {
 // docs, dotfiles). Decode first: express.static decodes percent-encoding when
 // resolving, so the filter must see the same path it would serve.
 const PRIVATE_PATH =
-  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$)/i;
+  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$|design\.md$|agents\.md$|tools(?:\/|$))/i;
 app.use((req, res, next) => {
   let decoded;
   try {
@@ -201,6 +215,9 @@ app.get("/", (req, res, next) => {
 app.use(
   express.static(__dirname, {
     extensions: ["html"],
+    // A bare directory path (/work, /hu) must not 301 to a trailing-slash
+    // URL that then 404s; fall through to the error document in one hop.
+    redirect: false,
     maxAge: 0,
     setHeaders(res, filePath) {
       if (path.extname(filePath).toLowerCase() === ".html") {
@@ -218,6 +235,17 @@ function sendNotFound(res) {
   });
 }
 app.use((req, res) => sendNotFound(res));
+
+// Express's default error handler echoes a stack trace unless NODE_ENV is
+// production. Keep failures generic; the header middleware already ran.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+  const status = err && Number.isInteger(err.status) && err.status >= 400 && err.status < 600 ? err.status : 500;
+  if (status === 404) return sendNotFound(res);
+  res.setHeader("Cache-Control", "no-store");
+  res.status(status).type("text").send(status >= 500 ? "Internal server error" : "Request failed");
+});
 
 if (require.main === module) {
   app.listen(PORT, () => {
