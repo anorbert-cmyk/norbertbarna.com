@@ -171,7 +171,7 @@ for (const [language, path] of ROUTES) {
     await expect(footer.locator("a.footer-email")).toHaveAttribute("href", contactHref(language));
     await expect(footer.locator("a.footer-email span[aria-hidden='true']")).toHaveText("→");
     await expect(footer.locator("a.footer-contact-link")).toHaveAttribute("href", "https://www.linkedin.com/in/barna-norbert/");
-    await expect(footer.locator('.footer-privacy a[href="/privacy"], .footer-privacy a[href="/hu/adatvedelem"], [data-consent-settings]')).toHaveCount(3);
+    await expect(footer.locator('.footer-privacy a[href="/privacy"], .footer-privacy a[href="/hu/adatvedelem"], [data-consent-settings]')).toHaveCount(2);
     await expect(footer.locator('.footer-col, a[href^="/work/"], a[href^="/hu/munka/"]')).toHaveCount(0);
     if (language === "hu") await expect(footer.locator("h2")).toHaveAttribute("lang", "hu");
     const artwork = await page.locator("main img, .ai-footer-art img").evaluateAll((images) => images.map((image) => ({

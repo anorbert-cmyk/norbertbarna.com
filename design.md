@@ -332,8 +332,8 @@ The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
   the approved forest/olive artwork crop. Mark decorative artwork on the page
   ImageObject, never as a Person portrait; omit Person.image until a real
   profile photograph is supplied.
-- Preserve the native `button.footer-email`, its “Discuss your project” label,
-  assign-only email handler and destination. Match the hero action with a navy
+- Preserve `a.footer-email`, its “Discuss your project” label and its link to
+  the contact form (`/contact`, `/hu/kapcsolat`). Match the hero action with a navy
   capsule and lilac text, at least 48px tall, wrapping safely at enlarged text.
 - The primary action leads in source and visual order: “Discuss your project”
   links to the contact form, then the one real LinkedIn link with its icon and
@@ -434,7 +434,7 @@ links, heading hierarchy and visible keyboard focus.
   Every primary navigation carries the
   AI integration item (2026-09-15, owner request); the Hungarian pages link
   its Hungarian pair as `AI-integráció`. Native links and 44px minimum targets; compact keeps the
-  accessible disclosure. Email remains a native assign-only button.
+  accessible disclosure. Contact is a plain link to the form.
 - `/works` and all seven cases use one stable navy (`#0A1628`) top bar with
   lilac (`#D6D4ED`) controls (owner screenshot correction, 2026-09-16).
   Keep NB left, `Works / {Project}` on desktop cases, the centered
@@ -599,11 +599,11 @@ page-specific terms; Google ignores it and Bing reads stuffing as spam, so it
 stays short and every term must be backed by visible copy. The long-tail map
 is in `docs/seo-keywords.md`.
 
-User-requested project contact copy (2026-09-04): the existing native
-`button.footer-email` opens an email app for a project enquiry; it does not
-send a message, book a meeting or create a confirmed lead. This explicit
+User-requested project contact copy (2026-09-04), updated 2026-10-06: the
+project action `a.footer-email` (“Discuss your project”) links to the contact
+form; it never opens a mail app. This explicit
 copy update supersedes the older literal `Email` label/72–76px width lock.
-The split-address handler remains. The current editorial footer uses the
+ The current editorial footer uses the
 48px capsule defined below; service-page buttons retain their existing chrome.
 
 - Shared English footer and English service CTA: `Discuss your project`; title
@@ -943,7 +943,7 @@ JavaScript dependency is part of this contract.
 | `consent.js` | Consent record, settings reveal, focus return | no |
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
-| `navigation.js` | Mobile disclosure, every `.footer-email` assign-only handler, and the mast text-enlargement/spacing reflow detector; deliberately has no animation dependency | no |
+| `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; no mail handler; deliberately has no animation dependency | no |
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
