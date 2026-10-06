@@ -182,6 +182,13 @@ app.use((req, res, next) => {
 // the private-path filter so /api can never expose repository files.
 app.use("/api/contact", createContactRouter());
 
+// A native form post (no JavaScript) must never put a message in a URL or a
+// log: answer the page itself without reading the body.
+app.post(["/contact", "/hu/kapcsolat"], (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.redirect(303, req.path);
+});
+
 // Only release files whose names contain the first 12 characters of their
 // SHA-256 digest are immutable. check-motion and check-editorial-media verify
 // these release families; check-server independently verifies every digest. Webflow

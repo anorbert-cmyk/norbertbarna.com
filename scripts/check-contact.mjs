@@ -44,6 +44,7 @@ app.use(
   })
 );
 const server = app.listen(0);
+server.keepAliveTimeout = 60000;
 const base = `http://127.0.0.1:${server.address().port}`;
 const origin = base;
 
