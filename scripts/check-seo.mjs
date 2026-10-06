@@ -73,7 +73,7 @@ for (const page of pages) for (const node of page.nodes) {
 
 for (const page of pages) {
   const { file, html, canonical, roots, nodes } = page;
-  const titleTags = [...html.matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)];
+  const titleTags = [...(html.split(/<\/head>/i)[0]).matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)];
   const title = text(titleTags[0]?.[1] || "");
   const description = page.metas("description");
   check(titleTags.length === 1 && title && !titles.has(title.toLowerCase()), `${file}: one unique nonempty title`);

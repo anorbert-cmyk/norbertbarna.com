@@ -26,6 +26,7 @@ const RELEASE_SOURCES = [
   "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
   "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css",
+  "css/contact.css", "js/contact.js",
 ];
 // Font binaries are distributed once, under their digest-bearing names. Their
 // manifest replaces the unhashed source/release pair used by authored CSS/JS.

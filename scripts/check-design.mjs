@@ -433,7 +433,8 @@ const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${s
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
-  const sameAssets = footer.replaceAll(/(?:\.\.\/|\/)assets\//g, "assets/");
+  // The contact page's own project link carries aria-current; compare the rest.
+  const sameAssets = footer.replaceAll(/(?:\.\.\/|\/)assets\//g, "assets/").replace(/ aria-current="page"/g, "");
   // A Hungarian page carries the same footer in Hungarian (owner, 2026-10-06:
   // switching language changes everything). Compare its structure, not its words.
   return page.startsWith("hu/") ? footerStructure(sameAssets) : sameAssets;
