@@ -447,10 +447,15 @@ const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
   const sameAssets = footer.replaceAll(/(?:\.\.\/|\/)assets\//g, "assets/");
-  // Hungarian content retains the locked English chrome with an explicit language.
-  return page.startsWith("hu/") ? sameAssets.replace(' lang="en"', '') : sameAssets;
+  // A Hungarian page carries the same footer in Hungarian (owner, 2026-10-06:
+  // switching language changes everything). Compare its structure, not its words.
+  return page.startsWith("hu/") ? footerStructure(sameAssets) : sameAssets;
 });
-if (new Set(footerCanon).size !== 1) {
+function footerStructure(footer) {
+  return footer.replace(/\s(?:lang|hreflang|aria-label|title)="[^"]*"/g, "").replace(/>[^<]*</g, "><");
+}
+if (new Set(footerCanon.filter((_, index) => !footerPages[index].startsWith("hu/"))).size !== 1 ||
+    footerCanon.some((footer, index) => footerPages[index].startsWith("hu/") && footer !== footerStructure(footerCanon[0]))) {
   fail("editorial footer markup must match across its existing routes (asset prefix aside)");
 }
 
@@ -548,13 +553,18 @@ for (const page of footerPages) {
   if (/AI Product Design Lead|AI Governance|BlackRock|All rights reserved/.test(footer)) {
     fail(`${page}: footer copy is off the lock`);
   }
-  if (!footer.includes("Product VP. I lead AI products in regulated finance and high-trust systems.")) {
+  const footerLanguage = page.startsWith("hu/") ? "hu" : "en";
+  const footerLede = footerLanguage === "hu"
+    ? "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben."
+    : "Product VP. I lead AI products in regulated finance and high-trust systems.";
+  if (!footer.includes(footerLede)) {
     fail(`${page}: footer must use the Product VP line`);
   }
-  if (!footer.includes("© 2026 Norbert Barna") || /All rights reserved/.test(footer)) {
-    fail(`${page}: copyright must be © 2026 Norbert Barna`);
+  const copyright = footerLanguage === "hu" ? "© 2026 Barna Norbert" : "© 2026 Norbert Barna";
+  if (!footer.includes(copyright) || /All rights reserved/.test(footer)) {
+    fail(`${page}: copyright must be ${copyright}`);
   }
-  checkProjectContact(footer, `${page}: footer`);
+  checkProjectContact(footer, `${page}: footer`, footerLanguage);
   const emailTag = [...footer.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
   if (emailTag.length !== 1) {
     fail(`${page}: footer needs exactly one Email button (got ${emailTag.length})`);
@@ -640,13 +650,13 @@ for (const page of SERVICE_PAGES) {
     const faq = main.match(/<section\b[^>]*\bid="questions"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
     if ((faq.match(/<details\b/g) || []).length !== 5 || (faq.match(/<summary><h3>/g) || []).length !== 5 || (faq.match(/<details open>/g) || []).length !== 1) fail(`${page}: five native FAQ disclosures must retain semantic question headings and one initially open answer`);
     if (!/<footer\b[^>]*\bid="work-better"[^>]*class="footer-section ai-footer"/.test(footer) || /id="work-better"/.test(main)) fail(`${page}: the chosen Passage close must be the actual footer after main`);
-    if (!/<h2\b[^>]*id="footer-title"[^>]*>Let’s build<br>what’s next\.<\/h2>/.test(footer) || !/class="ai-footer-art" aria-hidden="true"/.test(footer) || !footer.includes('/assets/images/ai/closing-passage.webp')) fail(`${page}: the dark close needs its chosen headline and separate architectural artwork`);
+    if (!(language === "hu" ? /<h2\b[^>]*id="footer-title"[^>]*>Építsük meg,<br>ami következik\.<\/h2>/ : /<h2\b[^>]*id="footer-title"[^>]*>Let’s build<br>what’s next\.<\/h2>/).test(footer) || !/class="ai-footer-art" aria-hidden="true"/.test(footer) || !footer.includes('/assets/images/ai/closing-passage.webp')) fail(`${page}: the dark close needs its chosen headline and separate architectural artwork`);
     checkProjectContact(footer, `${page}: AI footer`, language, true);
     if (!footer.includes('68f9e9de8ed08e31e52c4188_NB.svg') || !footer.includes('Product VP') || !footer.includes(language === "hu" ? '© 2026 Barna Norbert' : '© 2026 Norbert Barna')) fail(`${page}: the AI close must retain the existing identity, role and copyright`);
     const linkedin = [...footer.matchAll(/<a\b[^>]*class="[^\"]*\bfooter-contact-link\b[^\"]*"[^>]*>/g)];
     if (linkedin.length !== 1 || !linkedin[0][0].includes('href="https://www.linkedin.com/in/barna-norbert/"') || !linkedin[0][0].includes('rel="noopener noreferrer"')) fail(`${page}: the AI footer must retain the real, protected LinkedIn contact`);
     if (!footer.includes('href="/privacy"') || !footer.includes('href="/hu/adatvedelem"') || (footer.match(/data-consent-settings/g) || []).length !== 1 || !/<button\b[^>]*data-consent-settings[^>]*\shidden(?:\s|>)/.test(footer)) fail(`${page}: the AI footer must preserve privacy links and the initially hidden consent-settings hook`);
-    if (language === "hu" && (!/<h2\b[^>]*id="footer-title"[^>]*lang="en"/.test(footer) || !footer.includes('Analitikai beállítások'))) fail(`${page}: the chosen English headline must declare its language and the footer controls must be Hungarian`);
+    if (language === "hu" && (!/<h2\b[^>]*id="footer-title"[^>]*lang="hu"/.test(footer) || !footer.includes('Analitikai beállítások'))) fail(`${page}: the Hungarian headline must declare its language and the footer controls must be Hungarian`);
     if (/footer-col|editorial-footer|footer-mesh|footer-dunes|<form\b|href="\/work\//.test(footer) || /mailto:|anorbert@pm\.me|href="\/contact"|data-motion-toggle/.test(html)) fail(`${page}: the scoped AI footer must not restore duplicated work columns, forms, raw email or motion controls`);
     // Board artwork is decorative: sized, empty alt, inside an aria-hidden node.
     for (const [tag] of html.matchAll(/<img\b[^>]*assets\/images\/ai\/[^>]*>/g)) {

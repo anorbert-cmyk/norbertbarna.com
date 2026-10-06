@@ -200,7 +200,7 @@ for (const page of PAGES) {
   if (!is404) {
     const navigation = html.match(/<nav\b[^>]*\bid=["']primary-navigation["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
     const aboutLinks = [...navigation.matchAll(/<a\b[^>]*\bhref=["']\/about["'][^>]*>([\s\S]*?)<\/a>/gi)];
-    if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== "About") {
+    if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== (page.startsWith("hu/") ? "Rólam" : "About")) {
       fail(`${page}: primary navigation must have one native About link to /about`);
     }
   }

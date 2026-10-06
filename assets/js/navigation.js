@@ -17,6 +17,8 @@
 
   function initNavigation() {
     var root = document.documentElement;
+    var isHungarian = /^hu(?:-|$)/i.test(root.lang);
+    var navLabels = isHungarian ? { open: "Navigáció megnyitása", close: "Navigáció bezárása" } : { open: "Open navigation", close: "Close navigation" };
     var primaryNavigation = document.querySelector(".nav-menu");
     var menuButton = document.querySelector(".menu-button");
     if (!primaryNavigation || !menuButton || menuButton.dataset.navigationReady === "true") return;
@@ -46,7 +48,7 @@
       menuButton.classList.toggle("w--open", isOpen);
       if (isOpen) primaryNavigation.setAttribute("data-nav-menu-open", "");
       else primaryNavigation.removeAttribute("data-nav-menu-open");
-      menuButton.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+      menuButton.setAttribute("aria-label", isOpen ? navLabels.close : navLabels.open);
       // External links and mail leave this document in place. Never leave
       // keyboard focus on a control that has just become display:none.
       if (restoreFocus) menuButton.focus({ preventScroll: true });

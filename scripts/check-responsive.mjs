@@ -169,7 +169,8 @@ for (const page of ALL_PAGES) {
         !/aria-label="[^"]*\S[^"]*"[^>]*class="[^\"]*\bnav-logo-wrap\b/i.test(html)) {
       fail(`${page}: logo link needs an explicit Home accessible name`);
     }
-    if (!/aria-label="Find me on LinkedIn \(opens in a new tab\)"/.test(html)) {
+    // The external link names its new tab in the page language.
+    if (!(page.startsWith("hu/") ? /aria-label="LinkedIn-profilom \(új lapon nyílik meg\)"/ : /aria-label="Find me on LinkedIn \(opens in a new tab\)"/).test(html)) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
     const footerHtml = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
