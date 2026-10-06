@@ -33,7 +33,7 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 ## Case studies
 
 - [Raiffeisen](https://www.barnanorbert.com/work/raiffeisen): multi-country mobile banking redesign with a unified design system and safer everyday money journeys (Product Lead, 2020–2022)
-- [Instructure](https://www.barnanorbert.com/work/instructure): explainable, human-reviewable AI workflows for enterprise learning (2022–2025)
+- [Instructure](https://www.barnanorbert.com/work/instructure): explainable, human-reviewable AI workflows for enterprise learning (2022–2025), on a product used daily by several million people
 - [Bitpanda](https://www.barnanorbert.com/work/bitpanda): crypto trading, deposit, KYC and portfolio redesign on one shared product system (2021–2022)
 - [Benker](https://www.barnanorbert.com/work/benker): regulated onboarding, KYC and transaction flows for a blockchain banking platform
 - [SportsGambit](https://www.barnanorbert.com/work/sportsgambit): prediction-market MVP with explainable AI recommendations and guided agent setup
