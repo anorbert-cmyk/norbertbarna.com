@@ -234,8 +234,8 @@ try {
   homeLd = null;
   fail("home JSON-LD must parse");
 }
-if (homeLd?.["@type"] !== "ProfilePage" || homeLd?.name !== "Norbert Barna — Product VP") {
-  fail("JobTitleDrift: ProfilePage name must be Norbert Barna — Product VP");
+if (homeLd?.["@type"] !== "ProfilePage" || homeLd?.name !== "Norbert Barna, Product VP") {
+  fail("JobTitleDrift: ProfilePage name must be Norbert Barna, Product VP");
 }
 if (homeLd?.mainEntity?.["@type"] !== "Person" || homeLd?.mainEntity?.name !== "Norbert Barna") {
   fail("JobTitleDrift: Person name must be Norbert Barna, not a job title");

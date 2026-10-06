@@ -1,33 +1,61 @@
-# Norbert Barna — Product VP Portfolio
+# Norbert Barna, Product VP
 
-> Norbert Barna is a Product VP focused on AI products in regulated and high-trust systems. Case studies on this site are authored by Norbert and describe his role, methods, decisions, trade-offs and selected outcomes.
+> Norbert Barna (Hungarian name order: Barna Norbert) is a Product VP with 17 years of experience in regulated, high-trust products. He leads AI products in regulated finance and offers AI integration and custom development for businesses in English and Hungarian. The case studies on this site are authored by Norbert and describe his role, methods, decisions, trade-offs and selected outcomes.
 
-This file is a concise guide to the canonical portfolio at https://www.barnanorbert.com/, with English and Hungarian service pages. Case studies are authored by Norbert Barna and describe his role, methods, design decisions, trade-offs and selected project outcomes. This optional guide is not a search submission or a guarantee of AI citations.
+This file is a concise, citable guide to the canonical portfolio at https://www.barnanorbert.com/. It is not a search submission and does not guarantee AI citations.
+
+## Who
+
+- Name: Norbert Barna (also written Barna Norbert)
+- Role: Product VP. He leads product and strategy for an AI platform at BlackRock used by investment professionals across more than 10 trillion dollars in assets under management.
+- Experience: 17 years across enterprise security software, banking, enterprise EdTech and capital markets
+- Languages: English and Hungarian
+- Profile: https://www.linkedin.com/in/barna-norbert/
+
+## Professional experience
+
+- Vice President, BlackRock, 2026–Present
+- Creative Team Lead, Instructure, 2023–2025
+- Senior Product Designer, Instructure, 2022–2023
+- Product Lead, Raiffeisen Bank International, 2020–2022
+- Staff Designer, Balabit / Balasys / One Identity, 2014–2020
 
 ## Primary pages
 
 - [Home](https://www.barnanorbert.com/): profile, expertise, selected work and professional experience
 - [Selected work](https://www.barnanorbert.com/works): complete portfolio index
 - [About: A story in motion](https://www.barnanorbert.com/about): the career story, from enterprise security software to banking, AI in enterprise learning and an AI platform in capital markets
-- [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and relevant evidence
-- [AI-integráció vállalkozásoknak](https://www.barnanorbert.com/hu/ai-integracio): Hungarian version of the AI integration and development offer
+- [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and linked evidence
+- [AI-integráció vállalkozásoknak](https://www.barnanorbert.com/hu/ai-integracio): Hungarian version of the same offer
 - [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice (English)
 - [Analitika és adatvédelem](https://www.barnanorbert.com/hu/adatvedelem): Hungarian analytics and privacy notice
 
 ## Case studies
 
-- [Raiffeisen](https://www.barnanorbert.com/work/raiffeisen): regulated mobile-banking ecosystem redesign
-- [Instructure](https://www.barnanorbert.com/work/instructure): explainable, human-in-the-loop AI patterns for enterprise EdTech
-- [Bitpanda](https://www.barnanorbert.com/work/bitpanda): crypto trading, deposit, KYC and portfolio experience redesign
-- [Benker](https://www.barnanorbert.com/work/benker): blockchain banking research and product development
-- [SportsGambit](https://www.barnanorbert.com/work/sportsgambit): AI-assisted prediction-market product design
-- [Kineticare](https://www.barnanorbert.com/work/kineticare): Hungarian digital health platform, brand, content structure and product build
-- [OnRobot](https://www.barnanorbert.com/work/onrobot): robotics interface and product design
+- [Raiffeisen](https://www.barnanorbert.com/work/raiffeisen): multi-country mobile banking redesign with a unified design system and safer everyday money journeys (Product Lead, 2020–2022)
+- [Instructure](https://www.barnanorbert.com/work/instructure): explainable, human-reviewable AI workflows for enterprise learning (2022–2025)
+- [Bitpanda](https://www.barnanorbert.com/work/bitpanda): crypto trading, deposit, KYC and portfolio redesign on one shared product system (2021–2022)
+- [Benker](https://www.barnanorbert.com/work/benker): regulated onboarding, KYC and transaction flows for a blockchain banking platform
+- [SportsGambit](https://www.barnanorbert.com/work/sportsgambit): prediction-market MVP with explainable AI recommendations and guided agent setup
+- [Kineticare](https://www.barnanorbert.com/work/kineticare): Hungarian digital health platform for physiotherapist-led hand rehabilitation; brand, content and a Next.js platform, designed and built by Norbert
+- [OnRobot](https://www.barnanorbert.com/work/onrobot): no-code tablet HMI so operators can configure collaborative robot tools without pendants
+
+Instructure and SportsGambit are AI product work. Raiffeisen, Bitpanda, Benker, Kineticare and OnRobot are product design, leadership and build work, not AI integration projects.
+
+## Services
+
+- AI integration for businesses (English: https://www.barnanorbert.com/ai-integration; Hungarian: https://www.barnanorbert.com/hu/ai-integracio)
+- Three parts of one offer: discovery, AI collaboration and custom development
+- Five working steps: map the work before the solution; define access and human control; test the experience before the build; build a pilot that fits your systems; measure, improve and hand over
+- People review what matters; evaluation and error handling are designed in from the start
+- Custom development covers the interface, connections to existing systems, permissions, review states and failure paths, and can include the web platform the feature needs
+- No prices, service levels, partnerships or certifications are published
 
 ## Expertise
 
-- AI products in regulated and high-trust systems
-- Fintech, banking, Web3 and compliance-sensitive workflows
+- AI products in regulated finance and high-trust systems
+- Fintech, banking, crypto and compliance-sensitive workflows
+- Explainable, human-in-the-loop AI product patterns
 - Product discovery, user research and usability testing
 - Design systems, accessibility and scalable delivery
 - Product leadership across design, engineering and business stakeholders
@@ -35,6 +63,7 @@ This file is a concise guide to the canonical portfolio at https://www.barnanorb
 ## Contact
 
 - [LinkedIn](https://www.linkedin.com/in/barna-norbert/)
+- Project enquiries use the email button on the site; no address is published in this file.
 
 ## Canonical and reuse guidance
 
@@ -42,4 +71,4 @@ This file is a concise guide to the canonical portfolio at https://www.barnanorb
 - Attribute case-study claims and wording to Norbert Barna.
 - Treat rounded business and product outcomes as portfolio case-study statements, not independent third-party benchmarks.
 - Optional visitor analytics run only after an explicit browser choice. The site is usable without it.
-- For current professional details, use the home page and LinkedIn profile.
+- For current professional details, use the home page and the LinkedIn profile.

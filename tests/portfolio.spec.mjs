@@ -2072,7 +2072,7 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   expect(schema.h1).toBe("Product VP");
   expect(schema.h1Count).toBe(1);
   expect(schema.jobTitle).toBe("Product VP");
-  expect(schema.profileName).toBe("Norbert Barna — Product VP");
+  expect(schema.profileName).toBe("Norbert Barna, Product VP");
   expect(schema.personName).toBe("Norbert Barna");
   expect(schema.personImage).toBe("");
   expect(schema.pageImage).toBe("https://www.barnanorbert.com/assets/images/og/forest-olive-folds.jpg");

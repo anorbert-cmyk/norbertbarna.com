@@ -157,7 +157,7 @@ try {
     assert(pageCache.has("must-revalidate"), `${pagePath} must revalidate after a deploy`);
     assert(
       /connect-src\s+'self'\s+https:\/\/eu\.i\.posthog\.com(?:;|$)/i.test(contentSecurityPolicy),
-      `${pagePath} must keep Fonts and the EU PostHog capture host`
+      `${pagePath} must keep only the EU PostHog capture host`
     );
     assert(!contentSecurityPolicy.includes("eu-assets"), `${pagePath}: must not allow the PostHog JS SDK asset host`);
     assert(!/script-src[^;]*posthog/i.test(contentSecurityPolicy), `${pagePath}: PostHog must not be on script-src`);
@@ -167,7 +167,7 @@ try {
   const llmsCache = cacheDirectives(llms.headers.get("cache-control") || "");
   assert(llms.ok, `/llms.txt returned ${llms.status}`);
   assert(/text\/plain/i.test(llms.headers.get("content-type") || ""), "/llms.txt is not text/plain");
-  assert((await llms.text()).includes("Norbert Barna — Product VP Portfolio"), "/llms.txt content is incomplete");
+  assert((await llms.text()).includes("# Norbert Barna, Product VP"), "/llms.txt content is incomplete");
   assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
 
   const homeWithoutToken = await fetch(`${baseUrl}/`);
