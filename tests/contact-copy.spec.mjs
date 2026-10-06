@@ -382,7 +382,7 @@ for (const viewport of viewports) {
           lang: element.closest("[lang]")?.lang,
         }));
         const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
-        const language = route === "/hu/ai-integracio" ? "hu" : "en";
+        const language = route.startsWith("/hu/") ? "hu" : "en";
         const homeNav = scope.nav && route === "/";
         const label = privacyContact || homeNav ? "Email" : projectCopy[language].label;
         const accessibleName = homeNav ? "Email to discuss a project" : label;
