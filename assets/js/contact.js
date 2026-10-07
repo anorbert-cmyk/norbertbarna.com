@@ -1260,7 +1260,11 @@
     // already moved on elsewhere on the page while the letter folded.
     var active = document.activeElement;
     if (active && active !== document.body && !sheet.contains(active)) return;
-    scrollTo(sentTitle, "start", instant);
+    // Already fully on screen below the bar: no second nudge while the
+    // visitor starts reading; the scroll is only for short viewports.
+    var titleBox = sentTitle.getBoundingClientRect();
+    var letterTop = sheet.getBoundingClientRect().top;
+    if (!(letterTop >= navHeight() && titleBox.top >= navHeight() && titleBox.bottom <= window.innerHeight - 24)) scrollTo(sentTitle, "start", instant);
     sentTitle.focus({ preventScroll: true });
   }
 
