@@ -300,6 +300,8 @@ test.describe("compact visit", () => {
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
     await expect(works).toBeHidden();
     await toggle.tap();
+    // The disclosure drops from the bar (about .26 s); each row is a target once the clip has passed it.
+    await page.locator("#primary-navigation").evaluate((menu) => Promise.all(menu.getAnimations().map((animation) => animation.finished)));
     const box = await works.boundingBox();
     expect(box.height).toBeGreaterThanOrEqual(44);
     expect(await works.evaluate((link) => { const r = link.getBoundingClientRect(); return link.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)); })).toBe(true);
@@ -419,6 +421,7 @@ test("the shared About entry leaves existing Home, Works and case navigation ind
         if (width === 390) {
           const toggle = page.locator(".menu-button");
           if (await toggle.getAttribute("aria-expanded") !== "true") await toggle.click();
+          await page.locator("#primary-navigation").evaluate((menu) => Promise.all(menu.getAnimations().map((animation) => animation.finished)));
         }
         await expect(page.locator('.navbar a[href="/about"]'), `${route}: About has a native entry`).toBeVisible();
         const controls = await page.locator(".navbar").evaluate((nav) => [...nav.querySelectorAll("a,button")].flatMap((element) => {

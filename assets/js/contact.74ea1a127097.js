@@ -792,10 +792,10 @@
       }
       if (result.kind === "rate") { say(t.rate, true); return; }
       if (result.kind === "unavailable") { say(t.unavailable, true); return; }
-      if (result.kind === "captchaError") { say(t.captchaError, true, "captcha"); return; }
-      if (result.kind === "captchaStuck") { say(t.captchaStuck, false, "captcha"); return; }
-      if (result.kind === "captchaFailed") { say(t.captchaFailed, false, "captcha"); return; }
-      if (result.kind === "captchaUnavailable") { say(t.captchaUnavailable, true, "captcha"); return; }
+      if (result.kind === "captchaError") { if (statusKind !== "captcha") say(t.captchaError, true, "captcha"); return; }
+      if (result.kind === "captchaStuck") { say(t.captchaStuck); return; }
+      if (result.kind === "captchaFailed") { say(t.captchaFailed); return; }
+      if (result.kind === "captchaUnavailable") { say(t.captchaUnavailable, true); return; }
       say(t.failed, true);
     }).catch(function () {
       setBusy(false);
