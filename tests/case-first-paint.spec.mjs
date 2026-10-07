@@ -63,6 +63,8 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     if (viewport.width < 992) {
       await page.getByRole("button", { name: "Open navigation", exact: true }).click();
       await expect(page.locator(".menu-button")).toHaveAttribute("aria-expanded", "true");
+      // The disclosure drops from the bar (about .26 s); each row is a target once the clip has passed it.
+      await page.locator("#primary-navigation").evaluate((menu) => Promise.all(menu.getAnimations().map((animation) => animation.finished)));
     }
     await expect(works).toBeVisible();
     expect(await works.evaluate((link) => {

@@ -119,9 +119,10 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
 
 /* The open disclosure drops from the bar (2026-10-07): its clip opens downward
    on a critically damped spring (omega 28 rad/s, zeta 1, sampled into linear(),
-   about .23 s), while every row is in place and interactive from the first
-   frame. The close glyph turns a quarter into place (omega 26, zeta .7). Closing
-   is instant, navigation.js stays animation-free, and reduced motion gets none. */
+   about .23 s). Rows never slide or fade and nothing is disabled: each row is a
+   live target as soon as the clip has passed it (all within .26 s). The close
+   glyph turns a quarter into place (omega 26, zeta .7). Closing is instant,
+   navigation.js stays animation-free, and reduced motion gets none. */
 @media (max-width: 991px) {
   html body .navbar .nav-menu.w-nav-menu[data-nav-menu-open] {
     animation: compact-menu-drop 260ms cubic-bezier(.22, .8, .3, 1);

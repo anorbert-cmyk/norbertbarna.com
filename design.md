@@ -456,9 +456,9 @@ links, heading hierarchy and visible keyboard focus.
   `story.css` only recolours it for About. Opening shows that it drops from
   the bar (owner-approved, 2026-10-07): a CSS clip opens downward on a
   critically damped spring (ω 28 rad/s, ζ 1, sampled into `linear()`, about
-  .23 s) while every row is in place and interactive from the first frame,
-  and the close glyph turns a quarter into place (ω 26, ζ .7). Closing is
-  instant. `navigation.js` stays animation-free; reduced motion and
+  .23 s). Rows never slide or fade and nothing is disabled: each row is a live
+  target as soon as the clip has passed it, all within .26 s. The close glyph
+  turns a quarter into place (ω 26, ζ .7). Closing is instant. `navigation.js` stays animation-free; reduced motion and
   `html.no-motion` get no movement.
 - At widths up to 991px every page uses a stable top bar in its page palette. No travel,
   reading-slot fade, footer relocation or expanded terminal wordmark. Preserve

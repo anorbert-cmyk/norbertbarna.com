@@ -119,6 +119,8 @@ test("home keeps one top bar across compact/desktop breakpoints and keyboard foc
     if (width < 992) {
       await page.locator(".menu-button").click();
       await expect(page.locator(".menu-button")).toHaveAttribute("aria-expanded", "true");
+      // The disclosure drops from the bar (about .26 s); each row is a target once the clip has passed it.
+      await page.locator("#primary-navigation").evaluate((menu) => Promise.all(menu.getAnimations().map((animation) => animation.finished)));
       await expectHomeBar(page, `open disclosure ${width}`);
       await page.keyboard.press("Escape");
       await expect(page.locator(".menu-button")).toBeFocused();
