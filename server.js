@@ -58,12 +58,14 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      // Exactly two executable inline scripts exist: the Webflow w-mod touch
-      // class setter (first script on every page except About and 404) and the
-      // home mast morph gate inside .home-mast in index.html. Hash them so no
-      // other inline script can run. JSON-LD blocks are data, not scripts, and
-      // need no hash. check-server must fail when either body changes.
-      `script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
+      // Exactly four executable inline scripts exist: the Webflow w-mod touch
+      // class setter (first script on every page except About and 404), the
+      // home mast morph gate inside .home-mast in index.html, the arrival
+      // pre-curtain gate (first in the head of the two homes and the fourteen
+      // cases) and the case-opening pending gate (after it on the cases). Hash
+      // them so no other inline script can run. JSON-LD blocks are data, not
+      // scripts, and need no hash. check-server fails when a body changes.
+      `script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE=' 'sha256-kFAFn3NkiuErEZDGYIGhtN8V/TAKmruXqYqBGtzpn/k=' 'sha256-omJdRt4l13xsZ2235O8IiiERzUD4GMpSC1kV3l1j1Sc='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
       // Inline style attributes and GSAP-driven styles need 'unsafe-inline';
       // fonts are self-hosted (assets/fonts) and the Webflow CSS still embeds
       // data: fonts. Google Fonts is no longer referenced by any page.

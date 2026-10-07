@@ -72,15 +72,6 @@
     else root.setAttribute("data-case-opening", state);
   }
   function fixed(value, digits) { return String(Math.round(value * Math.pow(10, digits)) / Math.pow(10, digits)); }
-  // A painter writes a custom property only when its rounded value changed.
-  function writer(element) {
-    var written = {};
-    return function (key, value) {
-      if (written[key] === value) return;
-      written[key] = value;
-      element.style.setProperty(key, value);
-    };
-  }
 
   /* ---- Title letters ---------------------------------------------------- */
   function splitHeading() {
@@ -142,19 +133,18 @@
       var start = LETTER.at + index * LETTER.stagger;
       var spring = world.spring({ name: "letter-" + index, from: 1, to: 1, frequency: hz(LETTER.omega), damping: LETTER.zeta, precision: .001 });
       world.at(start, function () { spring.set(0); });
-      return { write: writer(element), spring: spring, start: start };
+      return { element: element, spring: spring, start: start };
     });
-    var write = writer(media);
     world.paint(function (current, alpha) {
       var time = current.time - current.step * (1 - alpha);
-      write("--case-enter-angle", fixed(plate.at(alpha), 3));
-      write("--case-enter-rise", fixed(rise.at(alpha), 4));
-      for (var index = 0; index < slices.length; index += 1) write(SLICES[index], fixed(slices[index].at(alpha) * 100, 2) + "%");
-      for (var letter = 0; letter < bodies.length; letter += 1) {
-        var body = bodies[letter];
-        body.write("--case-letter-rise", fixed(body.spring.at(alpha), 4));
-        body.write("--case-letter-ink", fixed(Math.min(1, Math.max(0, (time - body.start) / LETTER.ink)), 3));
-      }
+      media.style.setProperty("--case-enter-angle", fixed(plate.at(alpha), 3));
+      media.style.setProperty("--case-enter-rise", fixed(rise.at(alpha), 4));
+      slices.forEach(function (slice, index) { media.style.setProperty(SLICES[index], fixed(slice.at(alpha) * 100, 2) + "%"); });
+      bodies.forEach(function (body) {
+        var ink = Math.min(1, Math.max(0, (time - body.start) / LETTER.ink));
+        body.element.style.setProperty("--case-letter-rise", fixed(body.spring.at(alpha), 4));
+        body.element.style.setProperty("--case-letter-ink", fixed(ink, 3));
+      });
     });
     return world;
   }
@@ -200,13 +190,7 @@
     if (!geometry) measure();
     return 1 - Math.min(1, Math.max(0, (window.scrollY - geometry.start) / geometry.range));
   }
-  var paintedSettle = null;
-  function paintSettle(value) {
-    var text = fixed(value, 4);
-    if (text === paintedSettle) return;
-    paintedSettle = text;
-    media.style.setProperty("--case-settle", text);
-  }
+  function paintSettle(value) { media.style.setProperty("--case-settle", fixed(value, 4)); }
   function onScroll() {
     if (!settleOn) return;
     var target = settleTarget();
@@ -223,7 +207,6 @@
   function removeSettle() {
     settleOn = false;
     if (settle) { settle.world.destroy(); settle = null; }
-    paintedSettle = null;
     media.style.removeProperty("--case-settle");
   }
   function installSettle() {
