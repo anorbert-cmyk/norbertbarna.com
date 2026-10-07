@@ -442,6 +442,21 @@ if (JSON.stringify(sitemapPaths) !== JSON.stringify(hiringSitemap)) {
   fail(`sitemap.xml order is ${sitemapPaths.join(", ")} (must be hiring-first)`);
 }
 
+// Every content-hashed CSS/JS reference names the current release of its
+// source: assets/<kind>/<stem>.<12 hex>.<ext> must carry the first 12 hex of
+// the SHA-256 of assets/<kind>/<stem>.<ext> when that source exists.
+const sourceHashes = new Map();
+for (const page of PAGES) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  for (const [, kind, stem, hash, ext] of html.matchAll(/assets\/(js|css)\/([\w-]+)\.([0-9a-f]{12})\.(js|css)\b/g)) {
+    const source = join(ROOT, "assets", kind, `${stem}.${ext}`);
+    if (!existsSync(source)) continue;
+    if (!sourceHashes.has(source)) sourceHashes.set(source, createHash("sha256").update(readFileSync(source)).digest("hex").slice(0, 12));
+    const current = sourceHashes.get(source);
+    if (hash !== current) fail(`${page}: references ${stem}.${hash}.${ext} but assets/${kind}/${stem}.${ext} releases as ${stem}.${current}.${ext}`);
+  }
+}
+
 if (failures) {
   console.error(`\n${failures} check(s) failed`);
   process.exit(1);
