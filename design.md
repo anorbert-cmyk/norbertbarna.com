@@ -25,6 +25,13 @@ Judgment stays here. When a review correction repeats, encode it here
 (prose), in `responsive.css` (mechanic), or in `check-design.mjs` (check).
 Do not hand-tune a single page and leave the rule unwritten.
 
+**Working method.** `docs/craft-handbook.md` is the how-to that sits beside
+this file: how the contact page reached the review bar (brief, reuse of the
+site's own art and glass, independent review rounds, fix rounds), how to pick
+spring values for `physics.js`, how to measure motion, and the pre-ship
+checklist. This file stays the authority on contracts; where the two differ,
+this file wins and the handbook is corrected.
+
 ## Scope
 
 Hiring portfolio for Norbert Barna, Product VP.
@@ -616,19 +623,19 @@ copy update supersedes the older literal `Email` label/72–76px width lock.
  The current editorial footer uses the
 48px capsule defined below; service-page buttons retain their existing chrome.
 
-- Shared English footer and English service CTA: `Discuss your project`; title
-  `Opens your email app to discuss your project`.
-- Screenshot-directed home navigation exception: visible `Email`; accessible
-  name `Email to discuss a project`; the same explanatory title and secure
-  split-address handler remain.
-- Hungarian service main CTA: `Beszéljünk a projektedről`, `lang="hu"`;
-  title `Megnyitja a leveleződet, hogy a projektedről írhass.`.
-- Privacy-page main contact buttons remain `Email`: data-rights enquiries
-  must not be presented as project enquiries. The shared English footer
-  retains the project CTA and its existing English language scope.
+- Shared English footer and English service CTA: `Discuss your project`,
+  `<a class="footer-email" href="/contact">`. No title: the visible label is
+  the whole name.
+- Hungarian footer and service CTA: `Beszéljünk a projektedről`,
+  `<a class="footer-email" href="/hu/kapcsolat">`.
+- Privacy pages: the data-rights control is a plain link to the form in the
+  page language (`Contact form` / `Kapcsolatfelvételi űrlap`, styled
+  `footer-email hero-work-link`), so data-rights enquiries are not presented
+  as project enquiries.
+- No page opens a mail app, and no menu has an Email button (NN/g audit,
+  2026-10-06).
 
-Keep the visible label as the accessible name. The title only clarifies
-the email-app action; do not replace the visible text with a tooltip-only
+Keep the visible label as the accessible name; do not add a tooltip-only
 label or an unrelated aria-label. Labels must fit at 320px without clipping.
 
 Home About opens on Product VP ownership (strategy → ship, teams,
@@ -793,7 +800,7 @@ markup that is being retired: check the page before reusing it.
 `.story-wing-right` `.story-footer-top` `.story-footer-bottom`
 `.story-footer-name`
 
-**Buttons:** `.dark-button` `#000` on `#fff`. Editorial footer Email is a navy capsule with lilac ink and a native `<button type="button" class="footer-email">`; LinkedIn is a visible text link with its existing `in` icon. Both are at least 48px tall. Project contact labels follow the Copy contract above. The home nav uses text-only 44px targets. The scene Works action and intro View selected work use native underlined/text controls.
+**Buttons:** `.dark-button` `#000` on `#fff`. The editorial footer project link is a navy capsule with lilac ink, `<a class="footer-email">` to the contact page in the page language; LinkedIn is a visible text link with its existing `in` icon. Both are at least 48px tall. Project contact labels follow the Copy contract above. The home nav uses text-only 44px targets. The scene Works action and intro View selected work use native underlined/text controls.
 
 **Behavioural hooks (attributes, not classes).** These are read by JavaScript;
 renaming one silently disables a feature. `data-hero-critical`
@@ -880,10 +887,12 @@ and their parts in `assets/css/contact.css`; hooks `data-contact-glass`,
 **Contact page (owner request, 2026-10-06).** The menu links Contact /
 Kapcsolat. The form posts JSON to `POST /api/contact` after a proof-of-work
 challenge from `GET /api/contact/challenge` (`lib/contact.js`). Spam defence:
-HMAC-signed challenge, SHA-256 proof of work, honeypot field `website`,
+HMAC-signed challenge, SHA-256 proof of work, honeypot field `hp_7f3` (`website` still accepted),
 minimum fill time, single-use challenges, same-origin and JSON-only posts,
-16 kB body limit, link limit, per-address (5 per 15 minutes, 10 per day) and
-site-wide daily limits. Only the canonical signature spelling is accepted and
+16 kB body limit, link limit, per-address (5 per 15 minutes, 3 per day;
+the daily one is skipped when `CONTACT_DRY_RUN=1`) and a site-wide cap
+counted in rolling 6-hour windows of a quarter of `CONTACT_DAILY_CAP`
+(default 80). Only the canonical signature spelling is accepted and
 spent challenges are keyed by their signed salt; every in-memory map is
 bounded. The client address is Railway's `X-Real-IP` (else the edge-appended
 `X-Forwarded-For` entry), validated as an IP, IPv6 grouped per /64. Checks run
