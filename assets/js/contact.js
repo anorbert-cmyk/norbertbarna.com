@@ -5,7 +5,9 @@
  *  2. The form: validation that mirrors the server's rules, the challenge,
  *     send, and the finale. The fold motion lives in one function,
  *     runFold(), which receives the layer and sheet and resolves when the
- *     sheet has parked; reduced motion takes runFoldInstant() instead.
+ *     sheet has parked; reduced motion takes runFoldInstant() instead. Both
+ *     run the same physics scene (window.PortfolioPhysics, physics.js, which
+ *     loads first); the instant one runs it to rest without animating.
  *  3. The glass: hero-scene.js renders the chevron in its own slot on the
  *     paper; this owner only tells it how far the stage has scrolled.
  *  The form binds first and nothing before its submit handler can throw, so
@@ -482,8 +484,13 @@
 
   // A field that takes focus is brought fully into view when the bar or the
   // viewport edge would otherwise clip it, so keyboard visitors always see
-  // where they are writing.
+  // where they are writing. Focus from a press is left alone: scrolling
+  // between mousedown and mouseup (instantly, with reduced motion) would
+  // move the button from under the pointer and lose the click.
+  var pressedAt = 0;
+  form.addEventListener("pointerdown", function () { pressedAt = Date.now(); }, true);
   form.addEventListener("focusin", function (event) {
+    if (Date.now() - pressedAt < 600) return;
     var target = event.target.closest(".contact-field, .contact-topic, .contact-actions");
     if (!target) return;
     var box = target.getBoundingClientRect();
@@ -719,13 +726,72 @@
 
   /* ---- Fold ------------------------------------------------------------ */
   // The motion of the send fold lives here and nowhere else. runFold()
-  // receives the decorative layer and its sheet, drives the steps through
-  // the stylesheet's transitions, and resolves once the sheet has parked;
-  // runFoldInstant() is the reduced-motion path. Both leave the layer in
-  // the same final state. Replace runFold() to change the choreography.
+  // receives the decorative layer and its sheet and resolves once the letter
+  // has parked; runFoldInstant() is the reduced-motion path. Both build the
+  // same scene on PortfolioPhysics (physics.js) and differ only in whether
+  // its world is animated or run to rest at once, so they end in exactly the
+  // same state.
+  //
+  // The written area lifts off the glass as a sheet of the same frosted
+  // lilac, keeping the lines the form drew. The bottom third, then the top
+  // third, are pushed just past upright and laid down by their own weight;
+  // on a desktop the left half is then pressed over the right. Each panel is
+  // a hinged plate with gravity, air drag, limit stops and crease memory;
+  // its face is shaded by its normal, a turning panel casts a contact shadow
+  // on the sheet beneath and every layer a drop shadow on the glass. The
+  // last crease keeps its memory, so the letter parks with that leaf a
+  // little open under its own spring, its olive inner fold along the hinge.
+  // Only transforms and opacity change per frame; sizes change once per
+  // fold, when a crease splits a piece of the sheet in two.
+  var Physics = window.PortfolioPhysics || null;
+  var DEG = Math.PI / 180;
+  var FOLD = {
+    perspective: 1600,
+    lift: 26,           // px the sheet rises off the glass
+    rest: 6,            // px the parked letter keeps above it
+    layer: 1.2,         // px between stacked layers, in sheet space
+    margin: 20,         // px kept clear under the sheet while it folds
+    // A4 stationery at 120 g/m2: thirds 99 mm deep across 210 mm, a half
+    // 105 mm across 99 mm. A laid fold is pushed just past upright and falls
+    // by its own weight onto the stack; the last fold is pressed nearly shut
+    // and keeps its crease (through three layers on a desktop).
+    third: { length: 0.099, width: 0.21, grammage: 0.12, restitution: 0.34, crease: { strength: 0.3, elastic: 40 * DEG } },
+    last: { length: 0.105, width: 0.099, grammage: 0.12, layers: 3, restitution: 0.3, friction: 13, crease: { strength: 1.9, elastic: 55 * DEG } },
+    lastCompact: { length: 0.099, width: 0.21, grammage: 0.12, restitution: 0.3, friction: 13, crease: { strength: 1.9, elastic: 55 * DEG } },
+    // Hand torques, in multiples of the panel's own weight torque m g L / 2.
+    laid: { torque: 1.6, until: 100 * DEG },
+    pressed: { torque: 3.2, until: 165 * DEG },
+    start: 0.06,        // s: the first fold begins while the sheet still rises
+    next: 150 * DEG,    // the next fold begins as the previous one lands
+    // Tone from light.tone(): irradiance against the flat sheet, minus one,
+    // from -0.55 (only ambient) to +0.18 (facing the key light).
+    shade: 0.5,         // navy per unit of lost light
+    shine: 1.2,         // white per unit of extra light
+    // Drop shadow per layer on the glass (light.contact): none while the
+    // film touches the glass, fading as a layer rises; `spread` is the soft
+    // edge's half width.
+    ground: { strength: 0.12, touch: 5, reach: 120, spread: 13 },
+    cast: 0.5
+  };
+  var PIECES = [
+    { row: "mid", col: "R", marks: [] },
+    { row: "bottom", col: "R", marks: [["bottom", "top"]] },
+    { row: "top", col: "R", marks: [["top", "bottom"]] },
+    { row: "mid", col: "L", marks: [["half", "right"]] },
+    { row: "bottom", col: "L", marks: [["bottom", "top"], ["half", "right"]] },
+    { row: "top", col: "L", marks: [["top", "bottom"], ["half", "right"]] }
+  ];
   var foldTimers = [];
+  var foldScene = null;
+  var foldParts = null;
+  var foldRun = 0;
   function later(fn, ms) { foldTimers.push(setTimeout(fn, ms)); }
-  function cancelFold() { foldTimers.forEach(clearTimeout); foldTimers = []; }
+  function cancelFold() {
+    foldRun += 1;
+    foldTimers.forEach(clearTimeout);
+    foldTimers = [];
+    if (foldScene) { foldScene.world.destroy(); foldScene = null; }
+  }
   function step(layer, name) {
     var steps = (layer.getAttribute("data-fold-step") || "").split(/\s+/).filter(Boolean);
     if (steps.indexOf(name) === -1) steps.push(name);
@@ -743,44 +809,307 @@
     if (sheetNode) { sheetNode.style.width = width + "px"; sheetNode.style.height = height + "px"; }
     layer.hidden = false;
   }
-  function park(layer, size) {
+  // The parked letter sits inside the pane's padding; the layer keeps just
+  // its room, so the thank-you follows it.
+  function park(layer, size, pad) {
     step(layer, "park");
-    layer.style.height = size.height + "px";
-    layer.style.width = size.width + "px";
+    layer.style.height = Math.round(pad + size.height) + "px";
   }
-  function runFold(layer, sheetNode, options) {
+
+  // The lines of the written page, in sheet coordinates, so the lifted sheet
+  // keeps them where the form drew them.
+  function measureRules(scope, origin) {
+    var rules = [];
+    function add(node, side) {
+      var style = getComputedStyle(node);
+      var width = parseFloat(style["border" + side + "Width"]) || 0;
+      var box = node.getBoundingClientRect();
+      if (!width || style["border" + side + "Style"] === "none" || !box.width) return;
+      rules.push("linear-gradient(" + style["border" + side + "Color"] + "," + style["border" + side + "Color"] + ") " +
+        Math.round(box.left - origin.left) + "px " + Math.round((side === "Top" ? box.top : box.bottom - width) - origin.top) + "px / " +
+        Math.round(box.width) + "px " + width + "px no-repeat");
+    }
+    Array.prototype.forEach.call(scope.querySelectorAll(".contact-input, .contact-textarea, .contact-topic"), function (node) { add(node, "Bottom"); });
+    Array.prototype.forEach.call(scope.querySelectorAll(".contact-topic-grid, .contact-aside-note"), function (node) { add(node, "Top"); });
+    return rules.join(", ");
+  }
+
+  function part(className, parent) {
+    var node = document.createElement("div");
+    node.className = className;
+    parent.appendChild(node);
+    return { node: node, last: {} };
+  }
+  // Inline and important, so no blanket stylesheet rule (html.no-motion) can
+  // undo the state the physics wrote; unchanged values are not rewritten.
+  function put(item, name, value) {
+    if (item.last[name] === value) return;
+    item.last[name] = value;
+    item.node.style.setProperty(name, value, "important");
+  }
+  function flag(item, name, value) {
+    if (item.last["@" + name] === value) return;
+    item.last["@" + name] = value;
+    item.node.setAttribute(name, value);
+  }
+  function buildParts(sheetNode) {
+    if (foldParts && foldParts.sheet === sheetNode) return foldParts;
+    sheetNode.textContent = "";
+    var parts = { sheet: sheetNode, camera: { node: sheetNode, last: {} }, grounds: [], casts: {}, pieces: [] };
+    PIECES.forEach(function () { parts.grounds.push(part("contact-fold-ground", sheetNode)); });
+    ["bottom", "top", "half"].forEach(function (name) { parts.casts[name] = part("contact-fold-cast", sheetNode); });
+    PIECES.forEach(function (spec) {
+      var piece = part("contact-fold-piece", sheetNode);
+      piece.spec = spec;
+      piece.film = part("contact-fold-film", piece.node);
+      piece.print = part("contact-fold-print", piece.node);
+      piece.marks = spec.marks.map(function (mark) {
+        var liner = part("contact-fold-liner", piece.node);
+        liner.node.setAttribute("data-edge", mark[1]);
+        return { hinge: mark[0], edge: mark[1], liner: liner };
+      });
+      piece.tone = part("contact-fold-tone", piece.node);
+      piece.marks.forEach(function (mark) {
+        mark.crease = part("contact-fold-crease", piece.node);
+        mark.crease.node.setAttribute("data-edge", mark.edge);
+      });
+      parts.pieces.push(piece);
+    });
+    foldParts = parts;
+    return parts;
+  }
+
+  function createFoldScene(layer, sheetNode, options) {
+    var M = Physics.mat;
+    var light = Physics.light;
+    var W = options.width, H = options.height, compact = options.compact;
+    var x1 = Math.round(W / 2), y1 = Math.round(H / 3), y2 = Math.round(H * 2 / 3);
+    var gap = FOLD.layer;
+    var parkScale = compact ? .62 : .72;
+    var room = Math.max(160, options.room || H);
+    var fit = Math.min(1, room / H);
+    var fitX = (W - W * fit) / 2;
+    var fitY = (options.offset || 0) + Math.max(0, (room - H * fit) / 2);
+    var parkX = options.pad - parkScale * (compact ? 0 : x1);
+    var parkY = options.pad - parkScale * y1;
+    var eye = [W / 2, fitY + H * fit / 2, FOLD.perspective];
+    var cast = light.cast(1);
+    var parts = buildParts(sheetNode);
+    var world = Physics.createWorld({ reduced: Boolean(options.instant) });
+    var lift = world.spring({ name: "lift", preset: "paper", from: 0, precision: 0.002 });
+    var scale = world.spring({ name: "scale", preset: "glass", from: 1, precision: 0.0002 });
+    var shiftX = world.spring({ name: "x", preset: "glass", from: 0, precision: 0.05 });
+    var shiftY = world.spring({ name: "y", preset: "glass", from: 0, precision: 0.05 });
+    var hinges = {
+      bottom: world.hinge(Physics.paper(Object.assign({ name: "bottom" }, FOLD.third))),
+      top: world.hinge(Physics.paper(Object.assign({ name: "top" }, compact ? FOLD.lastCompact : FOLD.third))),
+      half: compact ? null : world.hinge(Physics.paper(Object.assign({ name: "half" }, FOLD.last)))
+    };
+    var last = hinges.half || hinges.top;
+    var split = { bottom: false, top: false, cols: false };
+    var dirty = true;
+    var detached = 0;
+    var parked = false;
+    var done = false;
+    var listeners = [];
+
+    function push(hinge, how) { hinge.push(how.torque * hinge.weight, how.until); }
+    function near(spring, pixels) { return Math.abs(spring.value - spring.target) < pixels; }
+    function formed(hinge) { return hinge ? Math.max(0, Math.min(1, (hinge.peak - 20 * DEG) / (100 * DEG))) : 0; }
+
+    // Choreography, in simulated time.
+    world.at(0, function () {
+      lift.set(1);
+      scale.set(fit);
+      shiftX.set(fitX);
+      shiftY.set(fitY);
+      step(layer, "lift");
+    });
+    world.at(FOLD.start, function () {
+      split.bottom = true;
+      dirty = true;
+      push(hinges.bottom, FOLD.laid);
+      step(layer, "one");
+    });
+    world.when(function () { return split.bottom && hinges.bottom.angle > FOLD.next; }, function () {
+      split.top = true;
+      dirty = true;
+      push(hinges.top, compact ? FOLD.pressed : FOLD.laid);
+      step(layer, "two");
+    });
+    if (hinges.half) {
+      world.when(function () { return split.top && hinges.top.angle > FOLD.next; }, function () {
+        split.cols = true;
+        dirty = true;
+        push(hinges.half, FOLD.pressed);
+        step(layer, "three");
+      });
+    }
+    // The last crease has met the stack and sprung open to its widest: the
+    // letter travels to its place and settles onto the glass while the leaf
+    // finds its rest.
+    world.when(function () { return last.impacts.length > 0 && last.velocity >= 0; }, function () {
+      parked = true;
+      lift.set(FOLD.rest / FOLD.lift);
+      scale.set(parkScale);
+      shiftX.set(parkX);
+      shiftY.set(parkY);
+    });
+    world.when(function () {
+      return parked && near(shiftX, 0.75) && near(shiftY, 0.75) &&
+        Math.abs(scale.value - scale.target) * H < 0.75 && Math.abs(lift.value - lift.target) * FOLD.lift < 0.5;
+    }, function () {
+      done = true;
+      listeners.splice(0).forEach(function (fn) { fn(); });
+    });
+
+    function layout() {
+      dirty = false;
+      parts.pieces.forEach(function (piece, index) {
+        var spec = piece.spec;
+        var ground = parts.grounds[index];
+        var shown = (spec.col === "R" || split.cols) && (spec.row === "mid" || split[spec.row]);
+        var left = spec.col === "L" ? 0 : split.cols ? x1 : 0;
+        var right = spec.col === "L" ? x1 : W;
+        var top = spec.row === "top" ? 0 : spec.row === "bottom" ? y2 : split.top ? y1 : 0;
+        var bottom = spec.row === "top" ? y1 : spec.row === "bottom" ? H : split.bottom ? y2 : H;
+        piece.rect = { x: left, y: top, w: right - left, h: bottom - top };
+        piece.shown = shown;
+        flag(piece, "data-shown", shown ? "true" : "false");
+        flag(ground, "data-shown", shown ? "true" : "false");
+        if (!shown) return;
+        put(piece, "width", piece.rect.w + "px");
+        put(piece, "height", piece.rect.h + "px");
+        // Sheet-sized layers, offset by a transform so the split moves
+        // nothing in layout (and is no layout shift).
+        [piece.film, piece.print].forEach(function (sheetLayer) {
+          put(sheetLayer, "width", W + "px");
+          put(sheetLayer, "height", H + "px");
+          put(sheetLayer, "transform", "translate(" + -left + "px," + -top + "px)");
+        });
+        put(piece.print, "background", options.rules || "none");
+        ground.inset = Math.max(0, Math.min(FOLD.ground.spread, piece.rect.w / 2 - 1, piece.rect.h / 2 - 1));
+        put(ground, "width", (piece.rect.w - 2 * ground.inset) + "px");
+        put(ground, "height", (piece.rect.h - 2 * ground.inset) + "px");
+      });
+      put(parts.casts.bottom, "width", W + "px");
+      put(parts.casts.bottom, "height", (H - y2) + "px");
+      put(parts.casts.top, "width", W + "px");
+      put(parts.casts.top, "height", y1 + "px");
+      put(parts.casts.half, "width", (y2 - y1) + "px");
+      put(parts.casts.half, "height", x1 + "px");
+    }
+
+    // A shadow on the plane z = 0 (the glass) of a piece drawn by `matrix`,
+    // cast along the key light: an affine map of the piece's own rectangle.
+    function onGlass(matrix, inset) {
+      var m = matrix;
+      var g = [
+        m[0] + cast[0] * m[2], m[1] + cast[1] * m[2], 0, 0,
+        m[4] + cast[0] * m[6], m[5] + cast[1] * m[6], 0, 0,
+        0, 0, 1, 0,
+        m[12] + cast[0] * m[14], m[13] + cast[1] * m[14], 0, 1
+      ];
+      return M.multiply(g, M.translate(inset, inset, 0));
+    }
+    function groundOpacity(height) { return light.contact(height, FOLD.ground).opacity; }
+    // A turning panel's shadow on the sheet beneath it, along the key light.
+    function castShadow(item, active, angle, u, origin, toward, layers, G) {
+      var sin = Math.sin(angle), cos = Math.cos(angle);
+      var v = toward === "down" ? [cast[0] * sin, cos + cast[1] * sin] :
+        toward === "up" ? [cast[0] * sin, -cos + cast[1] * sin] : [-cos + cast[0] * sin, cast[1] * sin];
+      // How much of it falls on the sheet that receives it rather than behind
+      // the hinge, where the panel came from.
+      var onto = toward === "down" ? -v[1] : toward === "up" ? v[1] : v[0];
+      var area = Math.abs(u[0] * v[1] - u[1] * v[0]);
+      var strength = active ? FOLD.cast * Math.pow(Math.max(0, sin), .75) * Math.max(0, Math.min(1, onto / .3, area / .3)) * layers : 0;
+      put(item, "opacity", strength.toFixed(3));
+      if (strength <= 0) return;
+      var local = [u[0], u[1], 0, 0, v[0], v[1], 0, 0, 0, 0, 1, 0, origin[0], origin[1], origin[2], 1];
+      put(item, "transform", M.css(M.multiply(G, local)));
+    }
+
+    function paint(w, alpha) {
+      if (dirty) layout();
+      var s = scale.at(alpha);
+      var E = lift.at(alpha) * FOLD.lift;
+      var G = M.chain(M.translate(shiftX.at(alpha), shiftY.at(alpha), E), M.scale(s, s, s));
+      var tb = hinges.bottom.at(alpha), tt = hinges.top.at(alpha), th = hinges.half ? hinges.half.at(alpha) : 0;
+      var rows = {
+        mid: M.identity(),
+        bottom: M.about(M.rotateX(tb), 0, y2, gap / 2),
+        top: M.about(M.rotateX(-tt), 0, y1, gap)
+      };
+      var halfFold = M.about(M.rotateY(th), x1, 0, gap * 2.5);
+      // A film in optical contact with the glass is invisible; it shows as a
+      // sheet once air gets under it.
+      detached = Math.max(detached, Math.min(1, lift.at(alpha) / .35));
+      put(parts.camera, "perspective", FOLD.perspective + "px");
+      put(parts.camera, "perspective-origin", eye[0].toFixed(1) + "px " + eye[1].toFixed(1) + "px");
+      parts.pieces.forEach(function (piece, index) {
+        if (!piece.shown) return;
+        var spec = piece.spec, rect = piece.rect;
+        var fold = spec.col === "L" ? M.multiply(halfFold, rows[spec.row]) : rows[spec.row];
+        var matrix = M.chain(G, fold, M.translate(rect.x, rect.y, 0));
+        put(piece, "transform", M.css(matrix));
+        // Which side faces the eye, and how the key light falls on it.
+        var normal = M.direction(fold, [0, 0, 1]);
+        var centre = M.apply(matrix, [rect.w / 2, rect.h / 2, 0]);
+        var back = normal[0] * (eye[0] - centre[0]) + normal[1] * (eye[1] - centre[1]) + normal[2] * (eye[2] - centre[2]) < 0;
+        var tone = light.tone(back ? [-normal[0], -normal[1], -normal[2]] : normal);
+        flag(piece.tone, "data-tone", tone < 0 ? "shade" : "shine");
+        put(piece.tone, "opacity", Math.min(.32, tone < 0 ? -tone * FOLD.shade : tone * FOLD.shine).toFixed(3));
+        put(piece.film, "opacity", detached.toFixed(3));
+        // The lines show through the frosted film, faintly, from behind.
+        put(piece.print, "opacity", back ? ".18" : "1");
+        piece.marks.forEach(function (mark) {
+          var hinge = hinges[mark.hinge];
+          var made = formed(hinge);
+          // The dashed crease marks a fold while it is open and fades as the
+          // panel lies down; the olive inner fold stays.
+          put(mark.crease, "opacity", Math.min(made, 1.4 * Math.sin(hinge.at(alpha))).toFixed(3));
+          put(mark.liner, "opacity", (back ? made : 0).toFixed(3));
+        });
+        var ground = parts.grounds[index];
+        var shadow = onGlass(matrix, ground.inset);
+        put(ground, "transform", M.css(shadow));
+        // A shadow squeezed thin by the projection is spread by the penumbra
+        // in reality; its blur here is fixed, so it fades with its area.
+        var area = Math.abs(shadow[0] * shadow[5] - shadow[1] * shadow[4]) / (s * s);
+        put(ground, "opacity", (groundOpacity(centre[2]) * Math.min(1, area / .45)).toFixed(3));
+      });
+      castShadow(parts.casts.bottom, split.bottom, tb, [1, 0], [0, y2, gap / 2], "down", 1, G);
+      castShadow(parts.casts.top, split.top, tt, [1, 0], [0, y1, gap * 1.5], "up", 1, G);
+      castShadow(parts.casts.half, split.cols, th, [0, 1], [x1, y1, gap * 2.5], "left", 1.6, G);
+    }
+    world.paint(paint);
+
+    return {
+      world: world,
+      onParked: function (fn) { if (done) fn(); else listeners.push(fn); }
+    };
+  }
+
+  function playFold(layer, sheetNode, options, instant) {
     var compact = options.compact;
     var size = parkedSize(options.width, options.height, compact);
+    var pad = options.pad || 0;
     prepareLayer(layer, sheetNode, options.width, options.height, compact);
-    void layer.offsetHeight;
+    if (foldScene) { foldScene.world.destroy(); foldScene = null; }
+    if (!Physics || !sheetNode) {
+      // Without the physics module there is nothing to draw the letter with;
+      // the thank-you follows at once.
+      layer.hidden = true;
+      return Promise.resolve();
+    }
+    var scene = foldScene = createFoldScene(layer, sheetNode, Object.assign({}, options, { instant: instant, pad: pad }));
     return new Promise(function (resolve) {
-      var done = false;
-      function finish() {
-        if (done) return;
-        done = true;
-        layer.removeEventListener("transitionend", onEnd);
-        resolve();
-      }
-      function onEnd(event) {
-        if (event.target === layer && event.propertyName === "height") finish();
-      }
-      layer.addEventListener("transitionend", onEnd);
-      later(function () { step(layer, "lift"); }, 30);
-      later(function () { step(layer, "one"); }, 340);
-      later(function () { step(layer, "two"); }, 900);
-      later(function () { if (!compact) step(layer, "three"); }, 1460);
-      later(function () { park(layer, size); }, compact ? 1560 : 2080);
-      // The height transition ends the sequence; a lost event must not.
-      later(finish, (compact ? 1560 : 2080) + 1200);
+      scene.onParked(function () { park(layer, size, pad); resolve(); });
+      scene.world.start();
     });
   }
-  function runFoldInstant(layer, sheetNode, options) {
-    var compact = options.compact;
-    prepareLayer(layer, sheetNode, options.width, options.height, compact);
-    step(layer, "one"); step(layer, "two"); if (!compact) step(layer, "three");
-    park(layer, parkedSize(options.width, options.height, compact));
-    return Promise.resolve();
-  }
+  function runFold(layer, sheetNode, options) { return playFold(layer, sheetNode, options, false); }
+  function runFoldInstant(layer, sheetNode, options) { return playFold(layer, sheetNode, options, true); }
 
   /* ---- Finale ---------------------------------------------------------- */
   function scrollTo(node, block, instant) {
@@ -800,13 +1129,28 @@
     var instant = reducedMotion();
     var compact = narrow();
     cancelFold();
+    var run = foldRun;
     say(t.sentStatus);
     if (sentEmail) sentEmail.textContent = fields.email.value.trim();
     // The sheet comes into frame before it folds, and keeps its height while
-    // the sheet folds so the page under it does not jump.
+    // the sheet folds so the page under it does not jump. Where it will rest
+    // is known now, so the fold is framed for that place even if the scroll
+    // is still finishing.
+    var startBox = sheet.getBoundingClientRect();
+    var scrollY = window.pageYOffset || 0;
+    var maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    var target = Math.min(maxScroll, Math.max(0, scrollY + startBox.top - (navHeight() + 16)));
+    var restingTop = startBox.top - (target - scrollY);
     scrollTo(sheet, "start", instant);
+    var started = false;
     var begin = function () {
+      document.removeEventListener("scrollend", begin);
+      if (started || run !== foldRun) return;
+      started = true;
       var box = sheet.getBoundingClientRect();
+      var rules = measureRules(sheet, box);
+      var top = instant ? box.top : restingTop;
+      var clear = Math.max(top, navHeight() + 12);
       sheet.style.minHeight = Math.round(box.height) + "px";
       sheet.setAttribute("data-state", "folding");
       if (written) written.hidden = true;
@@ -814,16 +1158,34 @@
       form.hidden = true;
       if (sentCopy) sentCopy.hidden = true;
       if (sent) sent.hidden = false;
-      var run = (instant || !fold) ? runFoldInstant : runFold;
-      var finished = fold ? run(fold, foldSheet, { width: box.width, height: box.height, compact: compact }) : Promise.resolve();
-      finished.then(function () {
+      var folded = fold ? (instant ? runFoldInstant : runFold)(fold, foldSheet, {
+        width: box.width,
+        height: box.height,
+        compact: compact,
+        rules: rules,
+        // The visible room under the bar, and how far below the sheet's top it starts.
+        room: window.innerHeight - clear - FOLD.margin,
+        offset: clear - top,
+        pad: status ? parseFloat(getComputedStyle(status).paddingLeft) || 0 : 0
+      }) : Promise.resolve();
+      folded.then(function () {
+        if (run !== foldRun) return;
         if (sentCopy) sentCopy.hidden = false;
         sheet.setAttribute("data-state", "sent");
-        sheet.style.minHeight = "";
+        // The sheet gives back the height it held, but never so much that
+        // the page under it rises into view: what is on screen stays put.
+        var floor = Math.round(window.innerHeight - sheet.getBoundingClientRect().top);
+        sheet.style.minHeight = floor > 0 ? Math.min(Math.round(box.height), floor) + "px" : "";
         settle(instant);
       });
     };
-    if (instant) begin(); else later(begin, 420);
+    // Begin when the scroll has arrived, never later than before (420 ms);
+    // at once when nothing needs to scroll.
+    if (instant || Math.abs(target - scrollY) < 2) begin();
+    else {
+      document.addEventListener("scrollend", begin);
+      later(begin, 420);
+    }
   }
 
   function reset() {

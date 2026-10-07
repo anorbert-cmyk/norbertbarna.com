@@ -845,13 +845,22 @@ sticky behind the page (decorative, `alt=""`); the home refractive chevron
 (`hero-scene.js`, third stage, compact contract, owned by `contact.js`) stands
 on the paper and turns with the scroll; the letter is one pane of frosted lilac
 glass with a dashed origami crease between letterhead and form. On send the
-form leaves the document and a decorative, `aria-hidden` sheet folds in thirds
-and in half, then parks above the thank-you. Reduced motion and `no-motion`
-change state instantly; without JavaScript the picture and form show, the
+sheet, the pane's own glass carrying the form's drawn lines, lifts and folds
+in thirds and then in half under real physics (`assets/js/physics.js`): each
+panel is a thin plate on a hinge (I = mL²/3) pushed past 100° and laid down by
+gravity torque and air drag, with elasto-plastic crease memory, a stop with
+restitution, normal-based light (key light from the upper left, faces darken
+as they turn) and contact shadows; the letter parks about 28° open with a drop
+shadow and an olive inner fold, at about 1.5 s on desktop and 1.2 s on phones,
+fully on screen. Reduced motion and `no-motion` run the same simulation to
+rest synchronously and paint the end state once; the loop stops at rest and
+pauses in hidden tabs. Without JavaScript the picture and form show, the
 submit is hidden and LinkedIn is offered. AI artwork stays on the AI pages.
 Primitives: `.contact-stage`, `.contact-paper`, `.contact-sheet`,
 `.contact-written`, `.contact-form`, `.contact-field`, `.contact-topics`,
 `.contact-topic`, `.contact-error-summary`, `.contact-sent`, `.contact-fold`
+(built by the script: `.contact-fold-piece`, `-film`, `-print`, `-tone`,
+`-liner`, `-crease`, `-ground`, `-cast`)
 and their parts in `assets/css/contact.css`; hooks `data-contact-glass`,
 `data-contact-stage`, `data-contact-sheet`, `data-contact-fold`.
 
@@ -953,6 +962,7 @@ JavaScript dependency is part of this contract.
 | `consent.js` | Consent record, settings reveal, focus return | no |
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
+| `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory and stops, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; loaded by the contact pages | yes |
 | `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; no mail handler; deliberately has no animation dependency | no |
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
