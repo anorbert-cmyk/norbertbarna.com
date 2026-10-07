@@ -54,7 +54,9 @@
   "use strict";
 
   var STEP = 1 / 240;
-  var MAX_FRAME = 1 / 15;
+  // A slow device still finishes in about real time: long frames run up to a
+  // quarter second of fixed steps (60 at 1/240 s) instead of slowing the motion.
+  var MAX_FRAME = 1 / 4;
   var GRAVITY = 9.81;
   var AIR_DENSITY = 1.2;
   var PLATE_DRAG = 1.17;

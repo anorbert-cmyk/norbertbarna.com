@@ -137,7 +137,9 @@
     production: "0x4AAAAAAFPwDpb1_iHcZbA9",
     test: "1x00000000000000000000AA",
     hosts: ["www.barnanorbert.com", "barnanorbert.com"],
-    loadTimeout: 10000
+    script: "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit",
+    loadTimeout: 10000,
+    answerTimeout: 30000
   };
 
   var isHungarian = /^hu(?:-|$)/i.test(document.documentElement.lang);
@@ -155,18 +157,18 @@
       topic: { empty: "Choose what you want to talk about." },
       message: { empty: "Write your message.", short: "Write at least 20 characters so I know how I can help.", long: "Your message must be 5000 characters or fewer.", links: "Your message can include up to 3 links. Remove the others." },
       checking: "Running the spam check in your browser…",
-      still: "Still working…",
+      still: "The spam check is still running…",
       sending: "Sending…",
       sentStatus: "Thank you, your message is on its way.",
       rate: "Too many messages have come from your network recently. What you wrote is still here. Try again later, or write to me on " + linkedInLink("LinkedIn") + ".",
       failed: "Your message was not sent. What you wrote is still here. Try again, or write to me on " + linkedInLink("LinkedIn") + ".",
       unavailable: "The form is paused for now. What you wrote is still here. Write to me on " + linkedInLink("LinkedIn") + " instead.",
       unsupported: "This browser cannot run the spam check, so the form cannot send. Write to me on " + linkedInLink("LinkedIn") + " instead.",
-      captchaWaiting: "Waiting for the human check to finish…",
-      captchaExpired: "The human check expired. It will refresh on its own; then send again.",
-      captchaError: "The human check could not load. Check your connection and try again, or write to me on " + linkedInLink("LinkedIn") + ".",
-      captchaFailed: "The human check did not go through. It has refreshed; send again.",
-      captchaUnavailable: "The human check is not available right now. Your message is still here. Try again in a minute, or write to me on " + linkedInLink("LinkedIn") + ".",
+      captchaWaiting: "Your message will go as soon as the human check above is done. If it shows a checkbox, tick it.",
+      captchaStuck: "The human check has not finished, so your message was not sent. What you wrote is still here. Tick the box in the check if it shows one, then send again.",
+      captchaError: "The human check could not load. Check your internet connection and send again, or write to me on " + linkedInLink("LinkedIn") + ".",
+      captchaFailed: "The human check did not go through, so your message was not sent. What you wrote is still here. Send it again.",
+      captchaUnavailable: "The human check is not available right now. What you wrote is still here. Try again later, or write to me on " + linkedInLink("LinkedIn") + ".",
       errorPrefix: "Error: ",
       remaining: function (n) { return n === 1 ? "You have 1 character left." : "You have " + n + " characters left."; },
       overLimit: function (n) { return "You are " + n + (n === 1 ? " character" : " characters") + " over the limit."; }
@@ -177,18 +179,18 @@
       topic: { empty: "Válaszd ki, miről szeretnél beszélni." },
       message: { empty: "Írd meg az üzeneted.", short: "Írj legalább 20 karaktert, hogy tudjam, miben segíthetek.", long: "Az üzeneted legfeljebb 5000 karakter lehet.", links: "Az üzenetben legfeljebb 3 link lehet. A többit töröld." },
       checking: "Fut a spamszűrő a böngésződben…",
-      still: "Még dolgozom rajta…",
+      still: "Még fut a spamszűrő…",
       sending: "Küldés…",
       sentStatus: "Köszönöm, az üzeneted elment.",
       rate: "A hálózatodról az utóbbi időben túl sok üzenet érkezett. Amit írtál, itt maradt. Próbáld újra később, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
       failed: "Az üzeneted nem ment el. Amit írtál, itt maradt. Próbáld újra, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
       unavailable: "Az űrlap most szünetel. Amit írtál, itt maradt. Írj nekem inkább " + linkedInLink("LinkedInen") + ".",
       unsupported: "Ebben a böngészőben nem fut le a spamszűrő, ezért az űrlap nem tudja elküldeni az üzenetet. Írj nekem inkább " + linkedInLink("LinkedInen") + ".",
-      captchaWaiting: "Várakozás az emberellenőrzésre…",
-      captchaExpired: "Lejárt az emberellenőrzés. Magától frissül, utána küldd el újra.",
-      captchaError: "Nem töltött be az emberellenőrzés. Ellenőrizd a kapcsolatot és próbáld újra, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
-      captchaFailed: "Nem sikerült az emberellenőrzés. Frissült, küldd el újra.",
-      captchaUnavailable: "Az emberellenőrzés most nem érhető el. Az üzeneted itt maradt. Próbáld újra egy perc múlva, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
+      captchaWaiting: "Az üzeneted elmegy, amint kész a fenti emberellenőrzés. Ha jelölőnégyzetet látsz benne, pipáld be.",
+      captchaStuck: "Az emberellenőrzés nem fejeződött be, ezért az üzeneted nem ment el. Amit írtál, itt maradt. Ha jelölőnégyzetet látsz benne, pipáld be, és küldd el újra.",
+      captchaError: "Nem töltött be az emberellenőrzés. Ellenőrizd az internetkapcsolatod, és küldd el újra, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
+      captchaFailed: "Nem sikerült az emberellenőrzés, ezért az üzeneted nem ment el. Amit írtál, itt maradt. Küldd el újra.",
+      captchaUnavailable: "Az emberellenőrzés most nem érhető el. Amit írtál, itt maradt. Próbáld újra később, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
       errorPrefix: "Hiba: ",
       remaining: function (n) { return "Még " + n + " karaktert írhatsz."; },
       overLimit: function (n) { return "Az üzeneted " + n + " karakterrel hosszabb a megengedettnél."; }
@@ -200,9 +202,13 @@
   var submitLabel = submit && submit.querySelector(".contact-submit-label");
   var fieldsBox = form.querySelector(".contact-fields");
 
-  function say(text, asHtml) {
+  // The status line remembers what kind of message it shows, so a human
+  // check that completes can clear its own earlier notice and nothing else.
+  var statusKind = "";
+  function say(text, asHtml, kind) {
     if (!status) return;
     if (asHtml) status.innerHTML = text; else status.textContent = text;
+    statusKind = text ? (kind || "") : "";
   }
   function enableForm() {
     if (fieldsBox) fieldsBox.disabled = false;
@@ -270,29 +276,46 @@
 
   /* ---- Human check (Turnstile) ------------------------------------------ */
   var checkBox = form.querySelector("[data-contact-turnstile]");
-  var captcha = { token: null, widget: null, failed: false, waiters: [] };
+  var checkRow = form.querySelector("[data-contact-check]");
+  var captcha = { token: null, widget: null, failed: false, script: null, loading: false, waiters: [] };
   function siteKey() {
     return TURNSTILE.hosts.indexOf(location.hostname) !== -1 ? TURNSTILE.production : TURNSTILE.test;
+  }
+  function widgetSize() {
+    // Cloudflare's frame is a fixed 300 x 65; where the pane is narrower
+    // the compact widget fits, and below 600px the flexible one lines up
+    // with the full-width Send capsule.
+    if (!checkBox) return "normal";
+    if (checkBox.clientWidth < 300) return "compact";
+    return window.innerWidth < 600 ? "flexible" : "normal";
   }
   function settleWaiters(error) {
     var waiters = captcha.waiters;
     captcha.waiters = [];
-    waiters.forEach(function (waiter) { if (error) waiter.reject(error); else waiter.resolve(captcha.token); });
+    waiters.forEach(function (waiter) {
+      clearTimeout(waiter.timer);
+      if (error) waiter.reject(error); else waiter.resolve(captcha.token);
+    });
   }
   function captchaReady(token) {
     captcha.token = token || null;
     captcha.failed = false;
+    // A notice about the check itself is stale once the check has answered.
+    if (statusKind === "captcha" && !busy) say("");
     if (captcha.token) settleWaiters(null);
   }
+  // A token lives 300 s; one that runs out while the visitor is still
+  // writing is simply replaced, without a word.
   function captchaExpired() {
     captcha.token = null;
     resetCaptcha();
-    if (!busy) say(t.captchaExpired);
   }
   function captchaError() {
     captcha.token = null;
     captcha.failed = true;
-    say(t.captchaError, true);
+    captcha.loading = false;
+    if (checkRow) checkRow.hidden = true;
+    say(t.captchaError, true, "captcha");
     settleWaiters(new Error("captcha"));
   }
   function resetCaptcha() {
@@ -300,13 +323,20 @@
     try { if (window.turnstile && captcha.widget !== null) window.turnstile.reset(captcha.widget); } catch (error) { /* the widget is gone */ }
   }
   function renderCaptcha() {
-    if (!checkBox || !window.turnstile || captcha.widget !== null) return;
+    if (!checkBox || !window.turnstile) return;
+    if (captcha.widget !== null) {
+      try { window.turnstile.remove(captcha.widget); } catch (error) { /* already gone */ }
+      captcha.widget = null;
+      checkBox.textContent = "";
+    }
+    if (checkRow) checkRow.hidden = false;
     try {
       captcha.widget = window.turnstile.render(checkBox, {
         sitekey: siteKey(),
         action: "contact",
         theme: "light",
         language: lang,
+        size: widgetSize(),
         appearance: "always",
         "response-field": false,
         callback: captchaReady,
@@ -316,27 +346,50 @@
       });
     } catch (error) { captchaError(); }
   }
-  // The script loads async; render as soon as it is there, and give up with
-  // a clear message rather than a dead button if it never arrives.
-  (function awaitTurnstile() {
-    if (!checkBox) return;
-    var script = document.querySelector("[data-contact-turnstile-script]");
+  // The script is injected here, with its error listener attached before it
+  // is appended, so a failed load is known at once rather than after the
+  // timeout. A retry removes the old tag and injects a fresh one.
+  function injectTurnstile() {
+    if (captcha.script && captcha.script.parentNode) captcha.script.parentNode.removeChild(captcha.script);
+    var script = document.createElement("script");
+    script.src = TURNSTILE.script;
+    script.async = true;
+    script.addEventListener("error", captchaError, { once: true });
+    captcha.script = script;
+    (document.head || document.documentElement).appendChild(script);
+  }
+  function startCaptcha() {
+    if (!checkBox || captcha.loading) return;
+    captcha.failed = false;
+    captcha.loading = true;
+    if (checkRow) checkRow.hidden = false;
+    if (window.turnstile) { captcha.loading = false; renderCaptcha(); return; }
+    injectTurnstile();
     var started = Date.now();
-    if (script) script.addEventListener("error", captchaError, { once: true });
     (function poll() {
-      if (captcha.failed) return;
-      if (window.turnstile) { renderCaptcha(); return; }
+      if (!captcha.loading) return;
+      if (window.turnstile) { captcha.loading = false; renderCaptcha(); return; }
       if (Date.now() - started > TURNSTILE.loadTimeout) { captchaError(); return; }
       setTimeout(poll, 150);
     })();
-  })();
+  }
+  startCaptcha();
   // Resolves with a token: at once when one is held, or when the check
-  // completes; rejects if the check cannot load.
+  // completes. A check that failed to load is started again first; one that
+  // never answers gives up after a while so the button is never stuck.
   function ensureCaptcha() {
     if (captcha.token) return Promise.resolve(captcha.token);
-    if (captcha.failed) return Promise.reject(new Error("captcha"));
-    say(t.captchaWaiting);
-    return new Promise(function (resolve, reject) { captcha.waiters.push({ resolve: resolve, reject: reject }); });
+    if (captcha.failed) startCaptcha();
+    say(t.captchaWaiting, false, "captcha");
+    return new Promise(function (resolve, reject) {
+      var waiter = { resolve: resolve, reject: reject, timer: 0 };
+      waiter.timer = setTimeout(function () {
+        var index = captcha.waiters.indexOf(waiter);
+        if (index !== -1) captcha.waiters.splice(index, 1);
+        reject(new Error("stuck"));
+      }, TURNSTILE.answerTimeout);
+      captcha.waiters.push(waiter);
+    });
   }
 
   /* ---- Field errors ---------------------------------------------------- */
@@ -500,13 +553,30 @@
 
   // Validate a field once the visitor leaves it, and clear its error as soon
   // as they fix it. Never scold while the field is still being typed into.
+  // A blur caused by a press is checked only after the press has ended and
+  // its click has landed: an error line appearing between mousedown and
+  // mouseup would move the target from under the pointer.
+  var pointerHeld = false;
+  var deferredChecks = [];
+  function runDeferredChecks() {
+    var checks = deferredChecks;
+    deferredChecks = [];
+    checks.forEach(function (check) { check(); });
+  }
+  document.addEventListener("pointerdown", function () { pointerHeld = true; }, true);
+  ["pointerup", "pointercancel"].forEach(function (name) {
+    document.addEventListener(name, function () { pointerHeld = false; setTimeout(runDeferredChecks, 0); }, true);
+  });
   ["name", "email", "message"].forEach(function (key) {
     var input = fields[key];
     if (!input) return;
     input.addEventListener("blur", function () {
-      if (input.value.trim() === "" && !controlFor(key).hasAttribute("data-invalid")) return;
-      var message = validateField(key);
-      if (message) setError(key, message); else clearError(key);
+      var check = function () {
+        if (input.value.trim() === "" && !controlFor(key).hasAttribute("data-invalid")) return;
+        var message = validateField(key);
+        if (message) setError(key, message); else clearError(key);
+      };
+      if (pointerHeld) deferredChecks.push(check); else check();
     });
     input.addEventListener("input", function () {
       if (controlFor(key).hasAttribute("data-invalid") && !validateField(key)) clearError(key);
@@ -608,7 +678,11 @@
     busy = flag;
     if (!submit) return;
     if (flag) submit.setAttribute("aria-disabled", "true"); else submit.removeAttribute("aria-disabled");
-    if (submitLabel) submitLabel.textContent = flag ? t.sending : idleLabel;
+    if (!flag && submitLabel) submitLabel.textContent = idleLabel;
+  }
+  // The capsule says "Sending" only while the message is actually leaving.
+  function setLabel(text) {
+    if (submitLabel) submitLabel.textContent = text;
   }
 
   function payload(ready) {
@@ -643,18 +717,23 @@
   async function send(allowRetry) {
     var ready = challenge;
     var stillTimer = 0;
+    var stillShown = false;
+    // Once "still running" has been said, the progress line does not step
+    // back to the first message.
+    function progress(text) { if (!stillShown) say(text); }
     // The human check must have answered before anything is posted.
-    try { await ensureCaptcha(); } catch (error) { return { ok: false, kind: "captchaError" }; }
+    try { await ensureCaptcha(); } catch (error) { return { ok: false, kind: error && error.message === "stuck" ? "captchaStuck" : "captchaError" }; }
     if (!ready) {
-      say(t.checking);
-      stillTimer = setTimeout(function () { if (busy) say(t.still); }, STILL_WORKING_AFTER);
+      progress(t.checking);
+      stillTimer = setTimeout(function () { if (busy) { stillShown = true; say(t.still); } }, STILL_WORKING_AFTER);
       try { ready = await prepareChallenge(!solving); } finally { clearTimeout(stillTimer); }
     }
     // Never post before the challenge is old enough; the progress text stays
     // up while we wait, on the first try and on a retry alike.
     var age = MIN_CHALLENGE_AGE - (Date.now() - (ready.receivedAt || 0));
-    if (age > 0) { say(t.checking); await wait(age); }
+    if (age > 0) { progress(t.checking); await wait(age); }
     say(t.sending);
+    setLabel(t.sending);
     // The token is spent the moment it leaves; a lost response must never
     // re-post it, so it is forgotten before the request goes out.
     challenge = null;
@@ -667,6 +746,7 @@
     // Every other answer needs a fresh challenge for the next attempt.
     prepareChallenge(true);
     if (result.status === 403 && result.data.error === "challenge" && allowRetry) {
+      setLabel(idleLabel);
       say(t.checking);
       return send(false);
     }
@@ -712,9 +792,10 @@
       }
       if (result.kind === "rate") { say(t.rate, true); return; }
       if (result.kind === "unavailable") { say(t.unavailable, true); return; }
-      if (result.kind === "captchaError") { say(t.captchaError, true); return; }
-      if (result.kind === "captchaFailed") { say(t.captchaFailed); return; }
-      if (result.kind === "captchaUnavailable") { say(t.captchaUnavailable, true); return; }
+      if (result.kind === "captchaError") { say(t.captchaError, true, "captcha"); return; }
+      if (result.kind === "captchaStuck") { say(t.captchaStuck, false, "captcha"); return; }
+      if (result.kind === "captchaFailed") { say(t.captchaFailed, false, "captcha"); return; }
+      if (result.kind === "captchaUnavailable") { say(t.captchaUnavailable, true, "captcha"); return; }
       say(t.failed, true);
     }).catch(function () {
       setBusy(false);
@@ -797,8 +878,13 @@
     if (steps.indexOf(name) === -1) steps.push(name);
     layer.setAttribute("data-fold-step", steps.join(" "));
   }
+  // The parked letter never takes more than about a third of the viewport's
+  // height, so the heading beneath it still fits on a short screen.
+  function parkScaleFor(height, compact) {
+    return Math.min(compact ? .62 : .72, window.innerHeight * .3 / (height / 3));
+  }
   function parkedSize(width, height, compact) {
-    var scale = compact ? .62 : .72;
+    var scale = parkScaleFor(height, compact);
     return { height: Math.round(height / 3 * scale), width: Math.round((compact ? width : width / 2) * scale) };
   }
   function prepareLayer(layer, sheetNode, width, height, compact) {
@@ -832,6 +918,46 @@
     Array.prototype.forEach.call(scope.querySelectorAll(".contact-input, .contact-textarea, .contact-topic"), function (node) { add(node, "Bottom"); });
     Array.prototype.forEach.call(scope.querySelectorAll(".contact-topic-grid, .contact-aside-note"), function (node) { add(node, "Top"); });
     return rules.join(", ");
+  }
+
+  // The writing itself, as it stood on the form: every label, each field's
+  // text and the chosen topic with its filled mark, placed at its own
+  // rectangle in sheet coordinates with its computed type, at 1x; the
+  // sheet's transform scales it with the paper.
+  function measurePrint(scope, origin) {
+    var out = [];
+    function escape(text) {
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function place(node, text, inline, single) {
+      if (!node || !text) return;
+      var box = node.getBoundingClientRect();
+      if (!box.width || !box.height) return;
+      var style = getComputedStyle(node);
+      out.push("<span style=\"position:absolute;left:" + (box.left - origin.left).toFixed(1) + "px;top:" + (box.top - origin.top).toFixed(1) + "px;width:" + box.width.toFixed(1) + "px;height:" + box.height.toFixed(1) + "px;box-sizing:border-box;margin:0;" +
+        "padding:" + style.paddingTop + " " + style.paddingRight + " " + style.paddingBottom + " " + style.paddingLeft + ";" +
+        "font:" + style.font + ";line-height:" + style.lineHeight + ";letter-spacing:" + style.letterSpacing + ";color:" + style.color + ";" +
+        "text-transform:" + style.textTransform + ";text-align:" + style.textAlign + (single ? ";white-space:nowrap;overflow:visible;" : ";white-space:pre-wrap;overflow-wrap:anywhere;overflow:hidden;") +
+        (inline ? "display:flex;align-items:center;" : "display:block;") + "\">" + escape(text) + "</span>");
+    }
+    Array.prototype.forEach.call(scope.querySelectorAll(".contact-label"), function (node) { place(node, node.textContent, false, true); });
+    Array.prototype.forEach.call(scope.querySelectorAll(".contact-input"), function (node) { place(node, node.value, true); });
+    Array.prototype.forEach.call(scope.querySelectorAll(".contact-textarea"), function (node) { place(node, node.value, false); });
+    var chosen = scope.querySelector(".contact-topic-input:checked");
+    if (chosen) {
+      var row = chosen.closest(".contact-topic");
+      var text = row && row.querySelector(".contact-topic-text");
+      var mark = row && row.querySelector(".contact-topic-mark");
+      if (text) place(text, text.textContent, false);
+      if (mark) {
+        var box = mark.getBoundingClientRect();
+        var ink = getComputedStyle(mark).color;
+        out.push("<svg viewBox=\"0 0 20 20\" aria-hidden=\"true\" style=\"position:absolute;left:" + (box.left - origin.left).toFixed(1) + "px;top:" + (box.top - origin.top).toFixed(1) + "px;width:" + box.width.toFixed(1) + "px;height:" + box.height.toFixed(1) + "px;overflow:visible\">" +
+          "<circle cx=\"10\" cy=\"10\" r=\"8.75\" fill=\"" + ink + "\" stroke=\"" + ink + "\" stroke-width=\"1.5\"/>" +
+          "<path d=\"M10 10v8.75A8.75 8.75 0 0 0 18.75 10Z\" fill=\"#BDB414\"/></svg>");
+      }
+    }
+    return out.join("");
   }
 
   function part(className, parent) {
@@ -885,9 +1011,11 @@
     var W = options.width, H = options.height, compact = options.compact;
     var x1 = Math.round(W / 2), y1 = Math.round(H / 3), y2 = Math.round(H * 2 / 3);
     var gap = FOLD.layer;
-    var parkScale = compact ? .62 : .72;
+    var parkScale = parkScaleFor(H, compact);
     var room = Math.max(160, options.room || H);
-    var fit = Math.min(1, room / H);
+    // On a short viewport the sheet is fitted to what shows, but never below
+    // the scale it will park at: the lower third may start below the edge.
+    var fit = Math.max(parkScale, Math.min(1, room / H));
     var fitX = (W - W * fit) / 2;
     var fitY = (options.offset || 0) + Math.max(0, (room - H * fit) / 2);
     var parkX = options.pad - parkScale * (compact ? 0 : x1);
@@ -988,6 +1116,7 @@
           put(sheetLayer, "transform", "translate(" + -left + "px," + -top + "px)");
         });
         put(piece.print, "background", options.rules || "none");
+        if (piece.printed !== options.print) { piece.printed = options.print || ""; piece.print.node.innerHTML = piece.printed; }
         ground.inset = Math.max(0, Math.min(FOLD.ground.spread, piece.rect.w / 2 - 1, piece.rect.h / 2 - 1));
         put(ground, "width", (piece.rect.w - 2 * ground.inset) + "px");
         put(ground, "height", (piece.rect.h - 2 * ground.inset) + "px");
@@ -1117,10 +1246,20 @@
   }
   function settle(instant) {
     // Both the parked letter and the heading stay on screen: the heading's
-    // scroll margin reaches back to the top of the sheet, under the bar.
+    // scroll margin reaches back to the top of the sheet, under the bar, but
+    // never so far that the heading itself would leave a short viewport.
     if (!sentTitle) return;
     var offset = sentTitle.getBoundingClientRect().top - sheet.getBoundingClientRect().top;
-    sentTitle.style.scrollMarginTop = Math.round(navHeight() + 16 + Math.max(0, offset)) + "px";
+    var room = window.innerHeight - sentTitle.offsetHeight - 24;
+    var wanted = Math.max(navHeight() + 16, Math.min(navHeight() + 16 + Math.max(0, offset), room));
+    // The page already keeps the bar clear through scroll-padding; the margin
+    // adds only what is left.
+    var padding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    sentTitle.style.scrollMarginTop = Math.round(Math.max(0, wanted - padding)) + "px";
+    // The view and the focus move to the heading unless the visitor has
+    // already moved on elsewhere on the page while the letter folded.
+    var active = document.activeElement;
+    if (active && active !== document.body && !sheet.contains(active)) return;
     scrollTo(sentTitle, "start", instant);
     sentTitle.focus({ preventScroll: true });
   }
@@ -1144,11 +1283,11 @@
     scrollTo(sheet, "start", instant);
     var started = false;
     var begin = function () {
-      document.removeEventListener("scrollend", begin);
       if (started || run !== foldRun) return;
       started = true;
       var box = sheet.getBoundingClientRect();
       var rules = measureRules(sheet, box);
+      var print = measurePrint(sheet, box);
       var top = instant ? box.top : restingTop;
       var clear = Math.max(top, navHeight() + 12);
       sheet.style.minHeight = Math.round(box.height) + "px";
@@ -1163,6 +1302,7 @@
         height: box.height,
         compact: compact,
         rules: rules,
+        print: print,
         // The visible room under the bar, and how far below the sheet's top it starts.
         room: window.innerHeight - clear - FOLD.margin,
         offset: clear - top,
@@ -1179,13 +1319,9 @@
         settle(instant);
       });
     };
-    // Begin when the scroll has arrived, never later than before (420 ms);
-    // at once when nothing needs to scroll.
-    if (instant || Math.abs(target - scrollY) < 2) begin();
-    else {
-      document.addEventListener("scrollend", begin);
-      later(begin, 420);
-    }
+    // The world starts at once: the layer scrolls with the sheet, so the eye
+    // stays on the letter while the page settles under the bar.
+    begin();
   }
 
   function reset() {

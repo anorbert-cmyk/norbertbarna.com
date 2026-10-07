@@ -425,8 +425,14 @@ body.contact-page {
    on the frosted pane; the frame is Cloudflare's and keeps its own focus
    order. */
 .contact-check { min-height: 65px; min-width: 0; }
+.contact-check[hidden] { display: none; }
 .contact-turnstile { min-height: 65px; }
-.contact-turnstile iframe { display: block; max-width: 100%; }
+.contact-turnstile iframe { display: block; }
+/* Below 374px the pane's writing width is under the 300px frame, so the
+   compact widget is rendered; its taller row is reserved so nothing shifts. */
+@media (max-width: 373px) {
+  .contact-check, .contact-turnstile { min-height: 140px; }
+}
 
 /* Actions. The Send capsule is the site's navy action. While a message is on
    its way the capsule says so and turns forest; it is never disabled while it
@@ -678,7 +684,9 @@ body.contact-page {
   letter-spacing: -.045em;
   text-wrap: balance;
 }
-.contact-sent-title:focus { outline: none; }
+/* A keyboard visitor sees the ring on the focused heading; focus set by the
+   script after a pointer send shows nothing odd. */
+.contact-sent-title:focus:not(:focus-visible) { outline: none; }
 .contact-sent-text strong { font-weight: 600; overflow-wrap: anywhere; }
 .contact-sent-text {
   max-width: 46ch;

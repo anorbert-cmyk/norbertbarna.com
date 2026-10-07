@@ -93,7 +93,7 @@
       var letter = document.createElement("span");
       letter.className = "case-opening-letter";
       letter.setAttribute("aria-hidden", "true");
-      letter.textContent = character === " " ? " " : character;
+      letter.textContent = character === " " ? "\u00a0" : character;
       heading.appendChild(letter);
       return letter;
     });

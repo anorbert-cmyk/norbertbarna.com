@@ -1083,7 +1083,7 @@ scene is ready and motion is allowed.
 
 ### Checks
 
-`npm test` runs ten scripts in order; `npm run test:e2e` runs seventeen
+`npm test` runs ten scripts in order; `npm run test:e2e` runs twenty-seven
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 
@@ -1164,7 +1164,11 @@ anything that hides one of two stacked states has to re-assert it explicitly
 under `html.no-motion` or both show at once. Keep such arithmetic in the owner,
 not in CSS, so the stylesheet's defaults stay the honest resting state.
 No new runtime dependency, sound requirement, generated Lottie or visible
-Motion control. Original raw WebGL is the user-requested central hero exception,
+Motion control. Physical motion (springs, hinges, stops) runs on the
+first-party fixed-step `physics.js`: each loop stops at rest, 60 and 120 Hz
+end identically, reduced motion and `html.no-motion` get the end state with no
+physics frame, and only transform, opacity, clip-path, mask and the custom
+properties feeding them change per frame. Original raw WebGL is the user-requested central hero exception,
 and two stages run it: the home hero and, since 2026-09-16 at the owner's
 explicit request, the AI openings. A stage in the Story in Motion corridor was
 built on 2026-09-15 and removed the same day at the owner's request; the
