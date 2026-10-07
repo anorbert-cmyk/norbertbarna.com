@@ -2,6 +2,7 @@ const express = require("express");
 const compression = require("compression");
 const fs = require("fs");
 const path = require("path");
+const { createContactRouter } = require("./lib/contact");
 
 const GOOGLE_SITE_VERIFICATION = "";
 const GSC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,100}$/;
@@ -35,6 +36,8 @@ app.disable("x-powered-by");
 // Enable gzip compression
 app.use(compression());
 
+const TURNSTILE_PAGES = new Set(["/contact", "/hu/kapcsolat"]);
+
 // Security headers
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -49,16 +52,20 @@ app.use((req, res, next) => {
   // No popup or OAuth flow needs an opener; isolate the browsing context group.
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // The contact pages alone load Cloudflare Turnstile (script and iframe).
+  const turnstile = TURNSTILE_PAGES.has(req.path);
   res.setHeader(
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      // Exactly two executable inline scripts exist: the Webflow w-mod touch
-      // class setter (first script on every page except About and 404) and the
-      // home mast morph gate inside .home-mast in index.html. Hash them so no
-      // other inline script can run. JSON-LD blocks are data, not scripts, and
-      // need no hash. check-server must fail when either body changes.
-      "script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE='",
+      // Exactly four executable inline scripts exist: the Webflow w-mod touch
+      // class setter (first script on every page except About and 404), the
+      // home mast morph gate inside .home-mast in index.html, the arrival
+      // pre-curtain gate (first in the head of the two homes and the fourteen
+      // cases) and the case-opening pending gate (after it on the cases). Hash
+      // them so no other inline script can run. JSON-LD blocks are data, not
+      // scripts, and need no hash. check-server fails when a body changes.
+      `script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE=' 'sha256-kFAFn3NkiuErEZDGYIGhtN8V/TAKmruXqYqBGtzpn/k=' 'sha256-omJdRt4l13xsZ2235O8IiiERzUD4GMpSC1kV3l1j1Sc='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
       // Inline style attributes and GSAP-driven styles need 'unsafe-inline';
       // fonts are self-hosted (assets/fonts) and the Webflow CSS still embeds
       // data: fonts. Google Fonts is no longer referenced by any page.
@@ -71,6 +78,8 @@ app.use((req, res, next) => {
       "base-uri 'self'",
       "frame-ancestors 'self'",
       "form-action 'self'",
+      // Cloudflare Turnstile runs on the two contact pages only.
+      ...(turnstile ? ["frame-src https://challenges.cloudflare.com"] : []),
     ].join("; ")
   );
   next();
@@ -99,6 +108,15 @@ const REDIRECTS = {
   "/work/raiffesen/": "/work/raiffeisen",
   "/work/raiffesen.html": "/work/raiffeisen",
 };
+// Pages added with the Hungarian mirror and the contact form (2026-10-06)
+// need the same .html and trailing-slash variants as every other page.
+for (const page of ["/contact", "/hu/kapcsolat", "/hu/munkak", "/hu/rolam", ...WORK_SLUGS.map((slug) => `/hu/munka/${slug}`)]) {
+  REDIRECTS[`${page}.html`] = page;
+  REDIRECTS[`${page}/`] = page;
+}
+REDIRECTS["/hu/"] = "/hu";
+REDIRECTS["/hu/index"] = "/hu";
+REDIRECTS["/hu/index.html"] = "/hu";
 for (const slug of WORK_SLUGS) {
   REDIRECTS[`/work/${slug}.html`] = `/work/${slug}`;
   REDIRECTS[`/work/${slug}/`] = `/work/${slug}`;
@@ -151,7 +169,7 @@ app.use((req, res, next) => {
 // docs, dotfiles). Decode first: express.static decodes percent-encoding when
 // resolving, so the filter must see the same path it would serve.
 const PRIVATE_PATH =
-  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$|design\.md$|agents\.md$|tools(?:\/|$))/i;
+  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$|design\.md$|agents\.md$|tools(?:\/|$)|lib(?:\/|$))/i;
 app.use((req, res, next) => {
   let decoded;
   try {
@@ -168,6 +186,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Contact form: proof-of-work challenge and the Resend relay. Mounted after
+// the private-path filter so /api can never expose repository files.
+app.use("/api/contact", createContactRouter());
+
+// A native form post (no JavaScript) must never put a message in a URL or a
+// log: answer the page itself without reading the body.
+app.post(["/contact", "/hu/kapcsolat"], (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.redirect(303, req.path);
+});
+
 // Only release files whose names contain the first 12 characters of their
 // SHA-256 digest are immutable. check-motion and check-editorial-media verify
 // these release families; check-server independently verifies every digest. Webflow
@@ -175,7 +204,7 @@ app.use((req, res, next) => {
 // so those assets must revalidate after a deployment.
 const ASSET_ROOT = path.join(__dirname, "assets");
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
+  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");
@@ -207,6 +236,15 @@ app.get("/", (req, res, next) => {
     if (err) return next(err);
     res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
     res.type("html").send(injectGoogleSiteVerification(html));
+  });
+});
+
+// The Hungarian home lives at hu/index.html. express.static only tries the
+// .html extension when a path is missing, and /hu is a directory, so route it.
+app.get("/hu", (req, res, next) => {
+  res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+  res.sendFile(path.join(__dirname, "hu", "index.html"), (err) => {
+    if (err) next(err.status === 404 || err.code === "ENOENT" ? undefined : err);
   });
 });
 

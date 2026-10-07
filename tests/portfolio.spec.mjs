@@ -1,11 +1,25 @@
 import { inflateSync } from "node:zlib";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { exposesInbox } from "../scripts/private-inbox.mjs";
 
+// Every contact action links the contact form in the page language (owner,
+// 2026-10-06). The inbox address lives only in CONTACT_TO; tests compare a
+// digest (scripts/private-inbox.mjs) and never spell it.
 const PROJECT_LABEL = "Discuss your project";
-const PROJECT_TITLE = "Opens your email app to discuss your project";
-const HOME_EMAIL_LABEL = "Email";
-const HOME_EMAIL_NAME = "Email to discuss a project";
+const COPY = {
+  en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "About", "AI integration", "Contact", "Magyar"],
+    caseRoot: "/work/", works: "/works", privacy: "/privacy", privacyLabel: "Privacy", allWork: "All work", workTitle: "Work",
+    footerTitle: /Let’s talk\s*product\./, lede: "Product VP. I lead AI products in regulated finance and high-trust systems.", copyright: "© 2026 Norbert Barna" },
+  hu: { home: "/hu", contact: "/hu/kapcsolat", project: "Beszéljünk a projektedről", menu: ["Munkák", "Rólam", "AI-integráció", "Kapcsolat", "English"],
+    caseRoot: "/hu/munka/", works: "/hu/munkak", privacy: "/hu/adatvedelem", privacyLabel: "Adatvédelem", allWork: "Összes munka", workTitle: "Munkák",
+    footerTitle: /Beszéljünk\s*termékről\./, lede: "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben.", copyright: "© 2026 Barna Norbert" },
+};
+const languageOf = (route) => route === "/hu" || route.startsWith("/hu/") ? "hu" : "en";
+const SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
+// Every published content page with its language pair (whole-site language switch, 2026-10-06).
+const PAGE_PAIRS = [["/", "/hu"], ["/works", "/hu/munkak"], ["/about", "/hu/rolam"], ["/ai-integration", "/hu/ai-integracio"],
+  ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"], ...SLUGS.map((slug) => [`/work/${slug}`, `/hu/munka/${slug}`])];
 
 const viewports = [
   { name: "mobile-360", width: 360, height: 800 },
@@ -434,11 +448,14 @@ async function expectBreadcrumbSeparatorAA(page, label) {
   expect(worst, `${label}: visible breadcrumb separator must meet AA on its actual blended field`).toBeGreaterThanOrEqual(4.5);
 }
 
-for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
-  test(`${width} home: every header text meets AA on its worst relevant background`, async ({ page }) => {
+for (const [route, width] of [...[320, 390, 768, 991, 992, 1280, 1440].map((width) => ["/", width]), ["/hu", 390], ["/hu", 1280]]) {
+  test(`${width} ${route === "/" ? "home" : `${route} home`}: every header text meets AA on its worst relevant background`, async ({ page }) => {
+    // Eight controls (Contact and the language link joined the menu) are each
+    // raster-sampled in three states; give the unchanged assertions the time.
+    test.setTimeout(90_000);
     await page.setViewportSize({ width, height: 900 });
     await page.route(/posthog\.com/, (route) => route.abort());
-    await openStable(page, "/");
+    await openStable(page, route);
     const text = page.locator(".home-mast .hero-kicker, .home-mast h1, .home-mast .home-mast-display, .home-mast .home-banner-subtitle, .home-mast .metric-context, .home-mast .home-mast-proof-chips li, .home-mast .home-banner-outcomes li");
     await expect(text).toHaveCount(12);
     for (let index = 0; index < await text.count(); index += 1) {
@@ -447,9 +464,11 @@ for (const width of [320, 390, 768, 991, 992, 1280, 1440]) {
       await expect(target).toBeVisible();
       await expectHeaderTextAA(page, target, `${width} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
-    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About", "AI integration"]);
-    await expect(controls).toHaveCount(7);
+    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link");
+    await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY[languageOf(route)].menu);
+    await expect(page.locator(".navbar button")).toHaveCount(1);
+    // Hero action, logo, five menu links (Contact and the language link included) and LinkedIn.
+    await expect(controls).toHaveCount(8);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = await readableHomeTarget(page, controls.nth(index));
       if (!await control.isVisible()) await page.locator(".menu-button").click();
@@ -624,9 +643,9 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
       if (await target.evaluate((element) => element.matches(".metric-context") && getComputedStyle(element).display === "none")) continue;
       await expectHeaderTextAA(page, target, `${width} ${adjustment} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link, .navbar button.footer-email");
-    await expect(page.locator(".navbar a.nav-link")).toHaveText(["Works", "About", "AI integration"]);
-    await expect(controls).toHaveCount(7);
+    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link");
+    await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY.en.menu);
+    await expect(controls).toHaveCount(8);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
       const toggle = page.locator(".menu-button");
@@ -913,9 +932,29 @@ for (const width of [360, 768, 991]) {
     await button.focus();
     await page.keyboard.press("Space");
     await expect(button).toHaveAttribute("aria-expanded", "true");
-    const mailRequest = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
-    await page.locator(".navbar button.footer-email").click();
-    expect((await mailRequest).url()).toBe("mailto:anorbert@pm.me");
+    // The open disclosure holds every destination in order, ending with the language link.
+    await expect(navigation.locator("a.nav-link")).toHaveText(COPY.en.menu);
+    await expect(navigation.locator("button")).toHaveCount(0);
+    const order = [...COPY.en.menu.slice(0, 4), "LinkedIn", "Magyar"];
+    await page.keyboard.press("Tab");
+    for (const label of order) {
+      expect(await page.evaluate(() => document.activeElement.textContent.trim()), "keyboard order through the disclosure").toBe(label);
+      expect(await page.evaluate(() => Boolean(document.activeElement.closest("#primary-navigation")))).toBe(true);
+      await page.keyboard.press("Tab");
+    }
+    expect(await page.evaluate(() => Boolean(document.activeElement.closest(".navbar"))), "the disclosure is not a focus trap").toBe(false);
+    await button.focus();
+    await page.keyboard.press("Escape");
+    await expect(button).toHaveAttribute("aria-expanded", "false");
+    await button.click();
+    const mail = [];
+    page.on("request", (request) => { if (/^mailto:/i.test(request.url())) mail.push(request.url()); });
+    // Contact is a native menu link to the published form; it closes the menu as it leaves.
+    await navigation.locator('a.nav-link[href="/contact"]').click();
+    await expect(page).toHaveURL(/\/contact$/);
+    expect(mail).toEqual([]);
+    await page.goBack();
+    await expect(page).toHaveURL(/\/$/);
     await expect(button).toHaveAttribute("aria-expanded", "false");
     await button.click();
     await expect(button).toHaveAttribute("aria-expanded", "true");
@@ -1258,36 +1297,45 @@ for (const width of [320, 390, 768, 991, 1440]) {
   });
 }
 
-for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
+for (const route of ["/", "/works", "/work/instructure", "/work/kineticare", "/hu", "/hu/munkak", "/hu/munka/instructure"]) {
   test(`${route}: editorial footer preserves native contact, factual links and integrated legal controls`, async ({ page }) => {
+    const copy = COPY[languageOf(route)];
     await page.setViewportSize({ width: 1280, height: 900 });
     await openStable(page, route);
     const footer = page.locator("footer");
-    await expect(footer.locator("form, .footer-mesh, .footer-dunes, .back-to-top-wrap, a.footer-email")).toHaveCount(0);
-    await expect(footer.locator(".editorial-footer-title")).toHaveText(/Let’s talk\s*product\./);
-    await expect(footer.locator(".footer-lede")).toHaveText("Product VP. I lead AI products in regulated finance and high-trust systems.");
-    await expect(footer.locator(".footer-copyright")).toHaveText("© 2026 Norbert Barna");
-    await expect(footer.locator(".footer-col-title")).toHaveText(["Work"]);
-    await expect(footer.locator(".footer-col a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare"]);
+    // No form, retired mesh, Contact column or mail button in the footer (BlogFooterCTA, ContactColumn, FakeEmailLink).
+    await expect(footer.locator("form, .footer-mesh, .footer-dunes, .back-to-top-wrap, button.footer-email, a.footer-email:not([href])")).toHaveCount(0);
+    await expect(footer.locator(".editorial-footer-title")).toHaveText(copy.footerTitle);
+    await expect(footer.locator(".footer-lede")).toHaveText(copy.lede);
+    await expect(footer.locator(".footer-copyright")).toHaveText(copy.copyright);
+    await expect(footer.locator(".footer-col-title")).toHaveText([copy.workTitle]);
+    await expect(footer.locator(".footer-col a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare", copy.allWork]);
     expect(await footer.locator(".footer-col a").evaluateAll((links) => links.map((link) => link.getAttribute("href"))))
-      .toEqual(["/work/raiffeisen", "/work/instructure", "/work/bitpanda", "/work/kineticare"]);
-    await expect(footer.locator('.footer-privacy a[href="/privacy"]')).toHaveText("Privacy");
-    await expect(footer.locator('.footer-privacy a[href="/hu/adatvedelem"]')).toHaveAttribute("lang", "hu");
+      .toEqual([...["raiffeisen", "instructure", "bitpanda", "kineticare"].map((slug) => `${copy.caseRoot}${slug}`), copy.works]);
+    // One privacy link, in the page language.
+    await expect(footer.locator(".footer-privacy a")).toHaveCount(1);
+    await expect(footer.locator(".footer-privacy a")).toHaveAttribute("href", copy.privacy);
+    await expect(footer.locator(".footer-privacy a")).toHaveText(copy.privacyLabel);
     await expect(footer.locator("[data-consent-settings]")).toHaveCount(1);
     await expect(footer).toHaveCSS("background-color", "rgb(214, 212, 237)");
     await expect(footer.locator(".footer-bar")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(footer.locator(".footer-bar")).toHaveCSS("border-top-width", "1px");
     await expect(footer.locator(".editorial-footer-art"), "the folded gate stays in the home opening only").toHaveCount(0);
-    const email = footer.locator("button.footer-email"), linkedin = footer.locator("a.footer-contact-link");
-    await expect(email).toHaveCount(1);
-    await expect(email).toHaveText(PROJECT_LABEL);
-    await expect(email).toHaveAttribute("type", "button");
-    await expect(email).toHaveAttribute("title", PROJECT_TITLE);
-    expect(await email.getAttribute("href")).toBeNull();
+    const contact = footer.locator("a.footer-email"), linkedin = footer.locator("a.footer-contact-link");
+    await expect(contact).toHaveCount(1);
+    await expect(contact).toHaveText(copy.project);
+    await expect(contact).toHaveAccessibleName(copy.project);
+    await expect(contact).toHaveAttribute("href", copy.contact);
+    expect(await contact.getAttribute("title"), "no tooltip promises an email app").toBeNull();
+    expect(await contact.getAttribute("type")).toBeNull();
     await expect(linkedin).toHaveCount(1);
     await expect(linkedin).toHaveAttribute("href", "https://www.linkedin.com/in/barna-norbert/");
-    await expectContactLabelFit(email);
-    for (const control of [email, linkedin]) {
+    expect(await contact.evaluate((element, other) => Boolean(element.compareDocumentPosition(document.querySelector(other)) & Node.DOCUMENT_POSITION_FOLLOWING),
+      "footer a.footer-contact-link"), "the project link leads, then LinkedIn").toBe(true);
+    await expectContactLabelFit(contact);
+    const [contactBox, linkedinBox] = [await contact.boundingBox(), await linkedin.boundingBox()];
+    expect(contactBox.x + contactBox.width <= linkedinBox.x + 1 || contactBox.y + contactBox.height <= linkedinBox.y + 1, "the project link comes first visually").toBe(true);
+    for (const control of [contact, linkedin]) {
       await control.scrollIntoViewIfNeeded();
       const box = await control.boundingBox();
       expect(box.height).toBeGreaterThanOrEqual(48);
@@ -1300,49 +1348,62 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare"]) {
       expect(await control.evaluate((element) => parseFloat(getComputedStyle(element).outlineWidth))).toBeGreaterThanOrEqual(3);
       await expectHeaderTextAA(page, control, `${route} footer focus`, { raster: true });
     }
-    await expect(email).toHaveCSS("background-color", "rgb(10, 22, 40)");
-    await expect(email).toHaveCSS("color", "rgb(214, 212, 237)");
-    const request = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
-    await email.press("Enter");
-    expect((await request).url()).toBe("mailto:anorbert@pm.me");
-    expect(await page.content()).not.toMatch(/mailto:|anorbert@pm\.me/i);
+    await expect(contact).toHaveCSS("background-color", "rgb(10, 22, 40)");
+    await expect(contact).toHaveCSS("color", "rgb(214, 212, 237)");
+    const mail = [];
+    page.on("request", (request) => { if (/^mailto:/i.test(request.url())) mail.push(request.url()); });
+    const html = await page.content();
+    expect(html).not.toMatch(/mailto:/i);
+    expect(exposesInbox(html)).toBe(false);
+    await contact.press("Enter");
+    await expect(page).toHaveURL(new RegExp(`${copy.contact}$`));
+    expect(mail).toEqual([]);
   });
 }
 
-test("home HTML has no mailto or address; Email button assigns mail without writing the DOM", async ({ page, request }) => {
-  const html = await (await request.get("/")).text();
-  expect(html).not.toMatch(/mailto:/i);
-  expect(html).not.toMatch(/anorbert@pm\.me/i);
-  expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/);
-  expect(html).toMatch(/<button\b[^>]*class="footer-email"[^>]*aria-label="Email to discuss a project"[^>]*>Email<\/button>/);
-  expect(html).not.toMatch(/<a[^>]*footer-email/);
-  expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Discuss your project<\/button>/g) || []).length).toBe(1);
-  expect((html.match(/<button\b[^>]*class="footer-email"[^>]*>Email<\/button>/g) || []).length).toBe(1);
-  expect(html).not.toMatch(/open for engagements|open to client engagements|I[’']m open for enterprise/i);
-  expect(html).not.toMatch(/footer-col-title">Contact/);
-  expect(html).not.toMatch(/href="\/contact"/);
-  expect([...html.slice(html.indexOf("<footer"), html.indexOf("</footer>")).matchAll(/href="(\/work\/[^"]+)"/g)].map((match) => match[1])).toEqual([
-    "/work/raiffeisen",
-    "/work/instructure",
-    "/work/bitpanda",
-    "/work/kineticare",
-  ]);
-
-  const navJs = await (await request.get("/assets/js/navigation.js")).text();
-  expect(navJs).not.toMatch(/anorbert@pm\.me/);
-  expect(navJs).not.toMatch(/mailto:anorbert/);
-  expect(navJs).not.toMatch(/setAttribute\(\s*["']href["']/);
-  expect(navJs).toMatch(/button\.footer-email/);
-  expect(navJs).toMatch(/location\.assign/);
+test("no page or script exposes or assembles the inbox address; every contact action links the form", async ({ page, request }) => {
+  const scripts = new Set();
+  for (const route of PAGE_PAIRS.flat()) {
+    const copy = COPY[languageOf(route)];
+    const response = await request.get(route);
+    expect(response.status(), route).toBe(200);
+    const html = await response.text();
+    expect(html, route).not.toMatch(/mailto:/i);
+    expect(exposesInbox(html), `${route} exposes the inbox`).toBe(false);
+    expect(html, `${route}: no mail button`).not.toMatch(/<button\b[^>]*footer-email/);
+    expect(html, `${route}: no Contact column (ContactColumn)`).not.toMatch(/footer-col-title">(Contact|Kapcsolat)/);
+    const contacts = [...html.matchAll(/<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/g)].map((match) => match[0]);
+    expect(contacts.length, `${route}: at least one contact action`).toBeGreaterThan(0);
+    for (const tag of contacts) {
+      expect(tag, `${route}: contact links the form in the page language`).toContain(`href="${copy.contact}"`);
+      expect(tag, `${route}: no email-app tooltip`).not.toMatch(/\btitle=/);
+    }
+    const menu = html.slice(html.indexOf('id="primary-navigation"'), html.indexOf("</nav>", html.indexOf('id="primary-navigation"')));
+    const menuContacts = [...menu.matchAll(/<a\b[^>]*href="(\/contact|\/hu\/kapcsolat)"[^>]*>/g)].filter((match) => !/\blang-switch\b/.test(match[0]));
+    expect(menuContacts.map((match) => match[1]), `${route}: one menu Contact entry`).toEqual([copy.contact]);
+    for (const [, src] of html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)) scripts.add(new URL(src, `http://127.0.0.1:3000${route}`).pathname);
+  }
+  expect(scripts.size).toBeGreaterThan(5);
+  for (const script of scripts) {
+    const source = await (await request.get(script)).text();
+    expect(source, `${script} carries no mail scheme`).not.toMatch(/mailto/i);
+    expect(exposesInbox(source), `${script} exposes the inbox`).toBe(false);
+    // Assembly from fragments (MailtoInHtml): no split scheme or split address.
+    expect(source, `${script} assembles no mail scheme`).not.toMatch(/["'`]mai["'`]\s*[,+]\s*["'`]lto|["'`]@["'`]/);
+  }
+  const navigation = await (await request.get("/assets/js/navigation.js")).text();
+  expect(navigation, "navigation.js has no mail handler").not.toMatch(/footer-email|location\.assign|footerMailHref/);
 
   await openStable(page, "/");
+  const mail = [];
+  page.on("request", (sent) => { if (/^mailto:/i.test(sent.url())) mail.push(sent.url()); });
+  page.on("popup", (popup) => mail.push(`popup ${popup.url()}`));
   const liveHtml = await page.content();
   expect(liveHtml).not.toMatch(/mailto:/i);
-  expect(liveHtml).not.toMatch(/anorbert@pm\.me/i);
+  expect(exposesInbox(liveHtml)).toBe(false);
 
-  const email = page.locator("footer button.footer-email");
-  const headerEmail = page.locator(".navbar button.footer-email");
-  await expect(page.locator(".home-service-section button.footer-email, .home-service-section a.hero-work-link")).toHaveCount(0);
+  const contact = page.locator("footer a.footer-email");
+  await expect(page.locator(".home-service-section .footer-email, .home-service-section a.hero-work-link")).toHaveCount(0);
   await expect(page.locator(".home-service-section h2")).toHaveText(["The Work I Drive"]);
   const serviceLink = page.locator('.home-service-card-title a[href="/ai-integration"]');
   await expect(serviceLink).toBeVisible();
@@ -1364,31 +1425,17 @@ test("home HTML has no mailto or address; Email button assigns mail without writ
   await expect(serviceLink).toHaveCSS("text-decoration-line", "underline");
   await expect(serviceLink).toHaveCSS("outline-style", "solid");
   await expect(serviceLink).toHaveCSS("outline-width", "3px");
-  await expect(email).toBeVisible();
-  await expect(headerEmail).toBeVisible();
-  await expect(email).toHaveText(PROJECT_LABEL);
-  await expect(email).toHaveAccessibleName(PROJECT_LABEL);
-  await expect(headerEmail).toHaveText(HOME_EMAIL_LABEL);
-  await expect(headerEmail).toHaveAccessibleName(HOME_EMAIL_NAME);
-  for (const locator of [email, headerEmail]) await expect(locator).toHaveAttribute("title", PROJECT_TITLE);
-  await expect(email).toHaveJSProperty("tagName", "BUTTON");
-  expect(await email.getAttribute("type")).toBe("button");
-  expect(await headerEmail.getAttribute("type")).toBe("button");
-  expect(await email.getAttribute("href")).toBeNull();
-  expect(await headerEmail.getAttribute("href")).toBeNull();
-
-  for (const locator of [headerEmail, email]) {
-    const mailRequestPromise = page.waitForRequest((req) => /^mailto:/i.test(req.url()), { timeout: 4000 });
-    await locator.click();
-    expect((await mailRequestPromise).url()).toBe("mailto:anorbert@pm.me");
-    expect(await locator.getAttribute("href")).toBeNull();
-    expect(await locator.evaluate((el) => el.outerHTML)).not.toMatch(/mailto:/i);
-    expect(await locator.evaluate((el) => el.outerHTML)).not.toMatch(/anorbert@pm\.me/i);
-  }
-
-  const afterHtml = await page.content();
-  expect(afterHtml).not.toMatch(/mailto:/i);
-  expect(afterHtml).not.toMatch(/anorbert@pm\.me/i);
+  await expect(contact).toBeVisible();
+  await expect(contact).toHaveText(PROJECT_LABEL);
+  await expect(contact).toHaveAccessibleName(PROJECT_LABEL);
+  await expect(contact).toHaveJSProperty("tagName", "A");
+  await expect(contact).toHaveAttribute("href", "/contact");
+  await contact.click();
+  await expect(page).toHaveURL(/\/contact$/);
+  const formHtml = await page.content();
+  expect(formHtml).not.toMatch(/mailto:/i);
+  expect(exposesInbox(formHtml)).toBe(false);
+  expect(mail, "no contact action hands off to an email app").toEqual([]);
 });
 
 for (const width of [390, 1440]) {
@@ -1435,7 +1482,8 @@ for (const width of [390, 1440]) {
       await page.mouse.move(width * .88, 780);
       await page.waitForTimeout(240);
       expect(await read(), "pointer input does not relocate the editorial close").toEqual(before);
-      const email = page.locator("footer button.footer-email");
+      const email = page.locator("footer a.footer-email");
+      await expect(email).toHaveAttribute("href", "/contact");
       await email.focus();
       await expect(email).toBeFocused();
       const ordinaryCLS = await page.evaluate(() => window.__cumulativeLayoutShift);
@@ -1455,7 +1503,7 @@ for (const width of [390, 1440]) {
         window.__footerFrames = [];
         window.__captureFooter = true;
         const sample = (time) => {
-          window.__footerFrames.push({ time, focused: document.activeElement === document.querySelector("footer button.footer-email"), boxes:
+          window.__footerFrames.push({ time, focused: document.activeElement === document.querySelector("footer a.footer-email"), boxes:
             [...document.querySelectorAll("footer, footer .footer-ident, footer .footer-nav, footer .footer-bar")].map((element) => {
               const box = element.getBoundingClientRect();
               return { x: box.x, y: box.y, width: box.width, height: box.height };
@@ -1539,8 +1587,14 @@ test.describe("editorial footer without JavaScript", () => {
     await openStable(page, "/works");
     const footer = page.locator("footer");
     await expect(footer.locator(".editorial-footer-title")).toBeVisible();
-    await expect(footer.locator(".footer-col a")).toHaveCount(4);
+    await expect(footer.locator(".footer-col a")).toHaveCount(5);
+    await expect(footer.locator(".footer-col a").last()).toHaveAttribute("href", "/works");
     await expect(footer.locator(".editorial-footer-art")).toHaveCount(0);
+    // The project contact is a plain link: it works without any script.
+    const contact = footer.locator('a.footer-email[href="/contact"]');
+    await contact.focus();
+    await expect(contact).toBeFocused();
+    await expect(contact).toHaveCSS("outline-style", "solid");
     const work = footer.locator('.footer-col a[href="/work/instructure"]');
     await work.focus();
     await expect(work).toBeFocused();
@@ -1574,9 +1628,125 @@ test("the immersive home remains readable when GSAP is unavailable", async ({ pa
   await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
 });
 
-test("/contact stays unpublished", async ({ request }) => {
-  const response = await request.get("/contact");
-  expect(response.status()).toBe(404);
+// Whole-site language switch (owner, 2026-10-06): one language link ends every
+// menu, names the other language in that language, carries rel/hreflang/lang,
+// and leads to this page's pair; Hungarian pages link only Hungarian pages.
+test("every page's single language link leads to its pair, reciprocally, with a 200", async ({ request }) => {
+  const absolute = (route) => `https://www.barnanorbert.com${route}`;
+  const destinations = {
+    en: ["/works", "/about", "/ai-integration", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
+    hu: ["/hu/munkak", "/hu/rolam", "/hu/ai-integracio", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
+  };
+  for (const [english, hungarian] of PAGE_PAIRS) {
+    for (const [route, pair, language] of [[english, hungarian, "en"], [hungarian, english, "hu"]]) {
+      const other = language === "en" ? "hu" : "en";
+      const response = await request.get(route, { maxRedirects: 0 });
+      expect(response.status(), route).toBe(200);
+      const html = await response.text();
+      expect(html, `${route} declares its language`).toMatch(new RegExp(`<html\\b[^>]*\\blang="${language}"`));
+      for (const [hreflang, href] of [["en", english], ["hu", hungarian], ["x-default", english]]) {
+        expect(html, `${route}: ${hreflang} alternate`).toContain(`<link rel="alternate" hreflang="${hreflang}" href="${absolute(href)}"/>`);
+      }
+      const start = html.indexOf('id="primary-navigation"');
+      const menu = html.slice(start, html.indexOf("</nav>", start));
+      const links = [...menu.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map(([, attributes, body]) => ({
+        attributes, href: attributes.match(/\bhref="([^"]+)"/)?.[1], text: body.replace(/<[^>]+>/g, "").trim(),
+      }));
+      expect(links.map((link) => link.text), `${route}: menu labels`).toEqual([...COPY[language].menu.slice(0, 4), "LinkedIn", COPY[language].menu[4]]);
+      expect(links.map((link) => link.href), `${route}: menu destinations`).toEqual([...destinations[language], pair]);
+      const switches = [...html.matchAll(/<a\b[^>]*\blang-switch\b[^>]*>/g)];
+      expect(switches, `${route}: exactly one language link`).toHaveLength(1);
+      const languageLink = links.at(-1);
+      expect(languageLink.attributes).toMatch(/class="[^"]*\bnav-link\b[^"]*\blang-switch\b/);
+      for (const attribute of ['rel="alternate"', `hreflang="${other}"`, `lang="${other}"`]) expect(languageLink.attributes, `${route}: ${attribute}`).toContain(attribute);
+      expect(languageLink.attributes, `${route}: the visible name is the accessible name`).not.toMatch(/aria-label|aria-current/);
+      expect(html, `${route}: no retired EN | HU pair`).not.toMatch(/class="[^"]*\bai-lang\b[^"]*"[^>]*>\s*EN\s*</);
+      const current = links.filter((link) => /aria-current="page"/.test(link.attributes)).map((link) => link.href);
+      expect(current, `${route}: the current destination is marked`).toEqual(destinations[language].includes(route) ? [route] : []);
+      if (language === "hu") {
+        // Outside explicit English-language links, a Hungarian page links only Hungarian pages.
+        const english = [...html.matchAll(/<a\b([^>]*)>/g)].map(([, attributes]) => attributes)
+          .filter((attributes) => !/lang-switch|hreflang="en"/.test(attributes))
+          .map((attributes) => attributes.match(/\bhref="(\/[^"]*)"/)?.[1]).filter((href) => href && !/^\/(hu(\/|$|#|\?)|assets\/)/.test(href));
+        expect(english, `${route} links English pages`).toEqual([]);
+      }
+      const target = await request.get(pair, { maxRedirects: 0 });
+      expect(target.status(), `${route} → ${pair}`).toBe(200);
+      const back = (await target.text()).match(/<a\b[^>]*\blang-switch\b[^>]*>/)?.[0] || "";
+      expect(back, `${pair} links back to ${route}`).toContain(`href="${route}"`);
+    }
+  }
+});
+
+for (const width of [390, 1280]) {
+  test(`${width} Hungarian works, case and About keep menu and footer text AA`, async ({ page }) => {
+    test.setTimeout(180_000);
+    await page.setViewportSize({ width, height: 900 });
+    await page.route(/posthog\.com/, (route) => route.abort());
+    for (const route of ["/hu/munkak", "/hu/munka/instructure", "/hu/rolam"]) {
+      await openStable(page, route);
+      await expect(page.locator("#primary-navigation a[href]")).toHaveText([...COPY.hu.menu.slice(0, 4), "LinkedIn", COPY.hu.menu[4]]);
+      const toggle = page.locator(".menu-button");
+      // Keyboard modality, so focus shows the real :focus-visible ring.
+      await toggle.focus();
+      if (width < 992) {
+        await page.keyboard.press("Enter");
+        await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      } else await page.keyboard.press("Shift+Tab");
+      for (const link of await page.locator("#primary-navigation a[href]").all()) {
+        if (!await link.isVisible()) continue;
+        await expectHeaderTextAA(page, link, `${width} ${route} menu`, { raster: true });
+        const ink = await link.evaluate((element) => getComputedStyle(element).color);
+        await link.focus();
+        // Focus keeps the measured ink and adds the shared 3px ring. (The navy work
+        // bar's links have no side padding, so the ring's white halo abuts the outer
+        // glyph edges on main as well; that edge is not text background.)
+        await expect(link).toHaveCSS("color", ink);
+        await expect(link).toHaveCSS("outline-style", "solid");
+        expect(await link.evaluate((element) => parseFloat(getComputedStyle(element).outlineWidth))).toBeGreaterThanOrEqual(3);
+      }
+      if (width < 992) await page.keyboard.press("Escape");
+      const breadcrumb = page.locator(".nav-breadcrumb a");
+      if (await breadcrumb.count() && await breadcrumb.isVisible()) await expectHeaderTextAA(page, breadcrumb, `${route} breadcrumb`, { raster: true });
+      const footerText = page.locator("footer :is(h2, p, a, button)");
+      let measured = 0;
+      for (const element of await footerText.all()) {
+        if (!await element.isVisible()) continue;
+        if (await element.evaluate((node) => !node.textContent.trim() || Boolean(node.parentElement.closest("footer a, footer button, footer p, footer h2")))) continue;
+        await expectHeaderTextAA(page, element, `${width} ${route} footer`, { raster: true });
+        measured += 1;
+      }
+      expect(measured, `${route}: footer text measured`).toBeGreaterThan(4);
+      const privacy = page.locator('footer a[href="/hu/adatvedelem"]');
+      await expect(privacy).toHaveText("Adatvédelem");
+      await expect(page.locator('footer a[href="/privacy"]')).toHaveCount(0);
+      await expect(page.locator("footer a.footer-email, main a.footer-email")).toHaveAttribute("href", "/hu/kapcsolat");
+    }
+  });
+}
+
+test("/contact and /hu/kapcsolat are published, carry the form and never expose an address", async ({ request }) => {
+  for (const [route, pair, language] of [["/contact", "/hu/kapcsolat", "en"], ["/hu/kapcsolat", "/contact", "hu"]]) {
+    const response = await request.get(route);
+    expect(response.status(), route).toBe(200);
+    const html = await response.text();
+    expect(html).toMatch(new RegExp(`<html[^>]*\\blang="${language}"`));
+    expect(html).toContain(`<link rel="canonical" href="https://www.barnanorbert.com${route}"/>`);
+    expect(html).toMatch(/<form\b/);
+    expect(html).toMatch(/<input\b[^>]*type="email"/);
+    expect(html).not.toMatch(/mailto:/i);
+    expect(exposesInbox(html)).toBe(false);
+    expect(html).toMatch(new RegExp(`<a\\b[^>]*class="[^"]*\\blang-switch\\b[^"]*"[^>]*href="${pair}"`));
+    for (const variant of [`${route}/`, `${route}.html`]) {
+      const redirect = await request.get(variant, { maxRedirects: 0 });
+      expect(redirect.status(), variant).toBe(301);
+      expect(new URL(redirect.headers().location, "http://127.0.0.1:3000").pathname).toBe(route);
+    }
+  }
+  const challenge = await request.get("/api/contact/challenge");
+  expect(challenge.status()).toBe(200);
+  expect(challenge.headers()["content-type"]).toMatch(/json/);
+  expect(exposesInbox(await challenge.text())).toBe(false);
 });
 
 test("1280 home selected work: wide landscape media, hiring order and stable title color", async ({ page }) => {
@@ -1789,7 +1959,13 @@ test("selected-work repeated hover and interrupted reversals preserve smooth int
   await page.clock.runFor(64);
   const entering = await expectIntermediate("interrupted enter");
   await reverseContinuously(leave);
+  // The row's spring keeps its velocity through a reversal (2026-10-07 lock):
+  // the frame decelerates for a moment, never jumps backwards, then returns.
   await page.clock.runFor(32);
+  const turning = await workMotionState(page, 0);
+  expect(turning.scale, "a reversal carries the current velocity instead of flipping it").toBeGreaterThanOrEqual(entering.scale - 0.0005);
+  expect(turning.scale, "the carried momentum is small and bounded").toBeLessThan(entering.scale + 0.006);
+  await page.clock.runFor(96);
   const leaving = await workMotionState(page, 0);
   expect(leaving.scale).toBeGreaterThan(1.001);
   expect(leaving.scale).toBeLessThan(entering.scale);
@@ -1810,13 +1986,12 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
   await openStable(page, "/");
   const list = page.locator(".work-list");
   await expect(list).toHaveAttribute("data-work-motion", "pointer");
+  // Pointer hover runs on one first-party physics world: one clamped spring per row.
   const allocated = await page.evaluate(() => {
-    window.__workMotionAnimations = new Set(gsap.globalTimeline.getChildren(true, true, true)
-      .filter((animation) => animation.vars.data === "work-list-motion"));
-    return window.__workMotionAnimations.size;
+    window.__workMotionWorld = window.PortfolioHover.rows;
+    return window.__workMotionWorld && !window.__workMotionWorld.destroyed ? window.__workMotionWorld.bodies.length : 0;
   });
-  expect(allocated, "the six rows use a bounded preallocated animation set").toBeGreaterThan(0);
-  expect(allocated).toBeLessThanOrEqual(6 * 6);
+  expect(allocated, "the six rows use one preallocated spring each").toBe(6);
   await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
   const rows = await page.locator(".work-row").all();
   for (let step = 0; step < 18; step += 1) {
@@ -1827,9 +2002,8 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
     expect(await row.evaluate((element, target) => element.contains(document.elementFromPoint(target.x, target.y)), point),
       "the pointer samples a visible point inside the intended row").toBe(true);
     await page.mouse.move(point.x, point.y);
-    expect(await page.evaluate(() => gsap.globalTimeline.getChildren(true, true, true)
-      .filter((animation) => animation.vars.data === "work-list-motion")
-      .every((animation) => window.__workMotionAnimations.has(animation))), "rapid pointer input must reuse its original controllers").toBe(true);
+    expect(await page.evaluate(() => window.PortfolioHover.rows === window.__workMotionWorld &&
+      window.__workMotionWorld.bodies.length === 6), "rapid pointer input must reuse its original controllers").toBe(true);
     await expectWorkMotionBounds(page, false);
   }
   await expectWorkMotionAt(page, 5, { scale: 1.06, y: -2, x: 4 });
@@ -1841,27 +2015,38 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
       window.__workPreviousAnimations = gsap.globalTimeline.getChildren(true, true, true)
         .filter((animation) => animation.vars.data === "work-list-motion");
       window.__workPreviousTriggers = ScrollTrigger.getAll().filter((trigger) => trigger.trigger?.matches(".work-row"));
+      window.__workPreviousWorld = window.PortfolioHover.rows;
     });
     if (next.width) await page.setViewportSize({ width: next.width, height: 1000 });
     else await page.emulateMedia({ reducedMotion: next.reduced });
     if (next.mode) await expect(list).toHaveAttribute("data-work-motion", next.mode);
     else await expect(list).not.toHaveAttribute("data-work-motion");
+    // A deliberate preference or breakpoint change re-lays out the home opening
+    // (pinned track against the unpinned composition); like the text-adjustment
+    // tests above, that expected reflow is not counted as a layout shift.
+    await page.waitForTimeout(100);
+    await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
     await expect.poll(() => page.evaluate(() => {
       const live = gsap.globalTimeline.getChildren(true, true, true);
       return window.__workPreviousAnimations.every((animation) => !live.includes(animation)) &&
-        window.__workPreviousTriggers.every((trigger) => !ScrollTrigger.getAll().includes(trigger));
+        window.__workPreviousTriggers.every((trigger) => !ScrollTrigger.getAll().includes(trigger)) &&
+        (!window.__workPreviousWorld || window.__workPreviousWorld.destroyed);
     })).toBe(true);
     const resources = await page.evaluate(() => ({
       animations: gsap.globalTimeline.getChildren(true, true, true).filter((animation) => animation.vars.data === "work-list-motion").length,
       triggers: ScrollTrigger.getAll().filter((trigger) => trigger.trigger?.matches(".work-row")).length,
+      springs: window.PortfolioHover.rows && !window.PortfolioHover.rows.destroyed ? window.PortfolioHover.rows.bodies.length : 0,
     }));
     expect(resources.triggers).toBe(next.mode === "scroll" ? 6 : 0);
     expect(resources.animations).toBeLessThanOrEqual(6 * 6);
+    expect(resources.springs, "pointer mode owns exactly one spring per row, other modes none").toBe(next.mode === "pointer" ? 6 : 0);
     if (!next.mode) {
       expect(resources.animations).toBe(0);
       for (let index = 0; index < 6; index += 1) await expectWorkMotionAt(page, index);
     } else {
-      expect(resources.animations).toBeGreaterThan(0);
+      // Compact rows scrub on GSAP ScrollTrigger; pointer rows use no GSAP tween.
+      if (next.mode === "scroll") expect(resources.animations).toBeGreaterThan(0);
+      else expect(resources.animations).toBe(0);
       await expectWorkMotionBounds(page, next.mode === "scroll");
     }
   }
@@ -1984,11 +2169,15 @@ test("1440 home opening: original centered artwork and semantic role lead into t
   await expect(page.locator(".home-banner-subtitle")).toHaveText(/AI products for fintech, Web3,\s*regulated teams\. I take them from strategy to ship\./);
   await expect(page.locator(".home-mast-proof-chips li")).toHaveText(["Multi-country bankingRaiffeisen", "Enterprise EdTech AIInstructure"]);
   await expect(page.locator(".home-banner-outcomes li")).toHaveText(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
-  const email = page.locator(".navbar button.footer-email");
-  await expect(email).toHaveAttribute("type", "button");
-  await expect(email).not.toHaveAttribute("href");
-  await expect(email).toHaveAttribute("aria-label", HOME_EMAIL_NAME);
-  await expect(email).toHaveAttribute("title", PROJECT_TITLE);
+  // One Contact entry and the language link replace the old Email button.
+  await expect(page.locator(".navbar button.footer-email, .navbar .footer-email")).toHaveCount(0);
+  const contact = page.locator('.navbar a.nav-link[href="/contact"]');
+  await expect(contact).toHaveText("Contact");
+  await expect(contact).toHaveAccessibleName("Contact");
+  expect(await contact.getAttribute("title")).toBeNull();
+  const language = page.locator(".navbar a.nav-link.lang-switch");
+  await expect(language).toHaveText("Magyar");
+  await expect(language).toHaveAccessibleName("Magyar");
   await expect(page.locator(".navbar .home-nav-wordmark")).toHaveText("NORBERT.BARNA");
   await expect(page.locator(".navbar .home-nav-progress")).toHaveAttribute("aria-hidden", "true");
 });
@@ -2039,7 +2228,8 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   const h1 = page.locator(".home-mast h1").first();
   const firstBullet = page.locator(".home-mast .home-banner-outcomes li").first();
   const lastBullet = page.locator(".home-mast .home-banner-outcomes li").last();
-  const email = page.locator(".navbar button.footer-email").first();
+  const contact = page.locator('.navbar a.nav-link[href="/contact"]').first();
+  const language = page.locator(".navbar a.nav-link.lang-switch").first();
   const linkedin = page.locator(".navbar a.footer-contact-link").first();
 
   const schema = await page.evaluate(() => {
@@ -2079,7 +2269,7 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   expect(schema.personDescription).toMatch(/Product VP/);
   expect(schema.personDescription).not.toMatch(/design lead/i);
 
-  for (const [name, text] of [["kicker", kicker], ["title", h1], ["first employer", firstBullet], ["last employer", lastBullet], ["email", email], ["LinkedIn", linkedin]]) {
+  for (const [name, text] of [["kicker", kicker], ["title", h1], ["first employer", firstBullet], ["last employer", lastBullet], ["contact", contact], ["LinkedIn", linkedin], ["language", language]]) {
     await expectHeaderTextAA(page, text, `1440 immersive ${name}`, { raster: true });
   }
 });

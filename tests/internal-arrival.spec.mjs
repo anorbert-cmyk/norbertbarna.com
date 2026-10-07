@@ -26,8 +26,11 @@ async function expectNoBrandArrival(page, project = "Raiffeisen") {
 const entries = [
   { path: '/works', selector: '.work-title[href="/work/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen' },
   { path: '/ai-integration', selector: '.ai-related-list a[href="/work/instructure"]', slug: 'instructure', title: 'Instructure' },
-  { path: '/hu/ai-integracio', selector: '.ai-related-list a[href="/work/instructure"]', slug: 'instructure', title: 'Instructure' },
+  // Hungarian pages link their Hungarian cases (whole-site language switch, 2026-10-06).
+  { path: '/hu/ai-integracio', selector: '.ai-related-list a[href="/hu/munka/instructure"]', slug: 'instructure', title: 'Instructure', caseRoot: '/hu/munka/' },
   { path: '/about', viaWorks: true, selector: '.work-title[href="/work/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen' },
+  { path: '/hu/munkak', selector: '.work-title[href="/hu/munka/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen', caseRoot: '/hu/munka/' },
+  { path: '/hu/rolam', viaWorks: '/hu/munkak', selector: '.work-title[href="/hu/munka/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen', caseRoot: '/hu/munka/' },
 ];
 
 for (const width of [390, 1280]) for (const entry of entries) {
@@ -35,11 +38,12 @@ for (const width of [390, 1280]) for (const entry of entries) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(entry.path);
     if (entry.viaWorks) {
-      await page.locator('.story-text-link[href="/works"]').first().click();
-      await expect(page).toHaveURL(/\/works$/);
+      const works = entry.viaWorks === true ? '/works' : entry.viaWorks;
+      await page.locator(`.story-text-link[href="${works}"]`).first().click();
+      await expect(page).toHaveURL(new RegExp(`${works}$`));
     }
     await page.locator(entry.selector).first().click();
-    await expect(page).toHaveURL(new RegExp(`/work/${entry.slug}$`));
+    await expect(page).toHaveURL(new RegExp(`${entry.caseRoot || '/work/'}${entry.slug}$`));
     await expectNoBrandArrival(page, entry.title);
   });
 }

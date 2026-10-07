@@ -57,7 +57,7 @@
     menuButton.addEventListener("click", function () {
       setMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
     });
-    primaryNavigation.querySelectorAll("a, button.footer-email").forEach(function (control) {
+    primaryNavigation.querySelectorAll("a, button").forEach(function (control) {
       control.addEventListener("click", function () {
         setMenuOpen(false);
       });
@@ -91,28 +91,6 @@
       compactNavigation.addListener(closeAtBreakpoint);
     }
     setMenuOpen(false);
-  }
-
-  /** Assemble the mail href from split parts so a bundle scrape is not one literal. */
-  function footerMailHref() {
-    var scheme = ["mai", "lto"].join("");
-    var user = ["ano", "rbert"].join("");
-    var host = ["pm", ".", "me"].join("");
-    return scheme + ":" + user + "@" + host;
-  }
-
-  function initFooterMail() {
-    document.querySelectorAll("button.footer-email").forEach(function (button) {
-      if (button.dataset.mailReady === "true") return;
-      button.dataset.mailReady = "true";
-      button.addEventListener("click", function () {
-        try {
-          window.location.assign(footerMailHref());
-        } catch (err) {
-          /* sandboxed documents may block assign */
-        }
-      });
-    });
   }
 
   function initMastTextReflow() {
@@ -177,7 +155,6 @@
 
   function init() {
     initNavigation();
-    initFooterMail();
     initMastTextReflow();
   }
 

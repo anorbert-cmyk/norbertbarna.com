@@ -14,12 +14,12 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, SERVICE_PAGES } from "./service-pages.mjs";
+import { UTILITY_PAGES, SERVICE_PAGES, baseOf, HU_PAGES, urlOf } from "./service-pages.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const origin = "https://www.barnanorbert.com";
 const files = ["index.html", "works.html", "about.html", ...UTILITY_PAGES,
-  ...readdirSync(join(root, "work")).filter(f => f.endsWith(".html")).map(f => `work/${f}`)];
+  ...readdirSync(join(root, "work")).filter(f => f.endsWith(".html")).map(f => `work/${f}`), ...HU_PAGES];
 const errors = [];
 const check = (condition, message) => { if (!condition) errors.push(message); };
 const decode = value => String(value).replace(/&#x([0-9a-f]+);|&#(\d+);|&(amp|quot|apos|nbsp|lt|gt);/gi,
@@ -38,7 +38,7 @@ const url = value => { try { return new URL(value); } catch { return null; } };
 const today = new Date().toISOString().slice(0, 10);
 const pages = files.map(file => {
   const html = readFileSync(join(root, file), "utf8");
-  const route = file === "index.html" ? "/" : `/${file.replace(/\.html$/, "")}`;
+  const route = urlOf(file);
   const meta = tags(html, "meta");
   const roots = [];
   for (const [, source] of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
@@ -61,8 +61,8 @@ const pages = files.map(file => {
 const byUrl = new Map(pages.map(page => [page.canonical, page]));
 const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
-const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service"]);
-check(pages.length === 14 && byUrl.size === 14, "expected fourteen distinct indexable content routes");
+const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage"]);
+check(pages.length === files.length && byUrl.size === files.length && files.length === 26, "expected twenty-six distinct indexable content routes (13 English, 13 Hungarian)");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
     const previous = definitions.get(node["@id"]);
@@ -73,7 +73,7 @@ for (const page of pages) for (const node of page.nodes) {
 
 for (const page of pages) {
   const { file, html, canonical, roots, nodes } = page;
-  const titleTags = [...html.matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)];
+  const titleTags = [...(html.split(/<\/head>/i)[0]).matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)];
   const title = text(titleTags[0]?.[1] || "");
   const description = page.metas("description");
   check(titleTags.length === 1 && title && !titles.has(title.toLowerCase()), `${file}: one unique nonempty title`);
@@ -84,11 +84,11 @@ for (const page of pages) {
   const robots = page.metas("robots");
   check(robots.length === 1 && /\bindex\b/.test(robots[0]) && /\bfollow\b/.test(robots[0]), `${file}: explicit index/follow`);
   check(![...robots, ...page.metas("googlebot")].some(value => /\b(noindex|nofollow|none)\b/i.test(value)), `${file}: conflicting crawl directives`);
-  check(page.language === (page.route.startsWith("/hu/") ? "hu" : "en"), `${file}: document language`);
+  check(page.language === (/^\/hu(?:\/|$)/.test(page.route) ? "hu" : "en"), `${file}: document language`);
   const bingVerification = page.metas("msvalidate.01");
-  check(file === "index.html" ? bingVerification.length === 1 && /^[A-F0-9]{32}$/i.test(bingVerification[0]) : bingVerification.length === 0,
+  check(baseOf(file) === "index.html" ? bingVerification.length === 1 && /^[A-F0-9]{32}$/i.test(bingVerification[0]) : bingVerification.length === 0,
     `${file}: one provider-issued Bing verification value belongs on the homepage only`);
-  const expectedType = file === "index.html" ? "ProfilePage" : file === "works.html" ? "CollectionPage" : file === "about.html" ? "AboutPage" : file.startsWith("work/") ? "Article" : "WebPage";
+  const expectedType = baseOf(file) === "index.html" ? "ProfilePage" : baseOf(file) === "works.html" ? "CollectionPage" : baseOf(file) === "about.html" ? "AboutPage" : baseOf(file).startsWith("work/") ? "Article" : /^(?:contact|hu\/kapcsolat)\.html$/.test(file) ? "ContactPage" : "WebPage";
   const primary = roots.filter(node => types(node).includes(expectedType));
   check(primary.length === 1, `${file}: exactly one ${expectedType}`);
   if (primary[0]) {
@@ -155,7 +155,10 @@ for (const page of pages) {
   }
 }
 
-for (const [english, hungarian] of [["/ai-integration", "/hu/ai-integracio"], ["/privacy", "/hu/adatvedelem"]]) {
+// Every page has a reciprocal language pair (owner request, 2026-10-06).
+const LANGUAGE_PAIRS = [["/ai-integration", "/hu/ai-integracio"], ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"],
+  ...HU_PAGES.map(page => [urlOf(baseOf(page)), urlOf(page)])];
+for (const [english, hungarian] of LANGUAGE_PAIRS) {
   const expected = { en: origin + english, hu: origin + hungarian, "x-default": origin + english };
   for (const route of [english, hungarian]) {
     const page = byUrl.get(origin + route);

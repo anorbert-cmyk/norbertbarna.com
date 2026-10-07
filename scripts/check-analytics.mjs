@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { UTILITY_PAGES } from './service-pages.mjs';
+import { UTILITY_PAGES, baseOf, HU_PAGES } from './service-pages.mjs';
 const root = new URL('../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
-const pages = ['index.html', 'works.html', 'about.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p)];
+const pages = ['index.html', 'works.html', 'about.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p), ...HU_PAGES];
 for (const page of pages) {
   const html = read(page);
   assert.equal((html.match(/src="\/assets\/js\/analytics-config.js"/g) || []).length, 1, `${page}: one release gate`);
@@ -16,7 +16,8 @@ for (const page of pages) {
   assert(/<script defer src="\/assets\/js\/analytics.js"><\/script>/.test(html), `${page}: analytics deferred`);
   assert.equal((html.match(/href="\/assets\/css\/consent.css"/g) || []).length, 1, `${page}: consent stylesheet`);
   const footer = html.match(/<footer[\s\S]*?<\/footer>/)?.[0] || '';
-  assert(footer.includes('data-consent-settings') && footer.includes('href="/privacy"') && footer.includes('href="/hu/adatvedelem"'), `${page}: withdrawal and privacy always reachable`);
+  // One privacy link in the page language; the header language link reaches the pair.
+  assert(footer.includes('data-consent-settings') && footer.includes(page.startsWith('hu/') ? 'href="/hu/adatvedelem"' : 'href="/privacy"'), `${page}: withdrawal and privacy always reachable`);
   assert(!/posthog-js|eu-assets\.i\.posthog|googletagmanager|oaipixel/i.test(html), `${page}: no duplicate vendor tracker`);
 }
 const consent = read('assets/js/consent.js');

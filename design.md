@@ -17,7 +17,7 @@ This file follows the loop in
    mechanics live in CSS. Never read a hashed copy into context. The full
    ownership map is in **System reference** below.
 3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
-   scripts and seventeen Playwright specs. Mechanical failures that have
+   scripts and twenty-seven Playwright specs. Mechanical failures that have
    already been named must fail CI. **System reference → Checks** says which
    file owns which rule, so a new rule lands in one place.
 
@@ -74,7 +74,7 @@ explanation. Contextual case links must identify what the case actually proves.
 7. **Before we begin.** Five native details/summary disclosures, first open,
    retaining the exact bilingual question/answer content. Language link follows.
 8. **Let’s build what’s next.** The selected dark Passage footer, with a
-   narrow olive light slit, live lilac headline, native email-app button,
+   narrow olive light slit, live lilac headline, a link to the contact form,
    LinkedIn and quiet privacy/settings utilities. Contact copy is localized;
    the selected English headline also appears on HU with lang=en.
 
@@ -140,7 +140,7 @@ their exact shared navigation/footer contracts.
 The copy sells the offer in the reader's terms (fewer manual steps, faster
 decisions, lower running costs, people in control) with no figure the owner
 has not stated, no dashes and no stock phrasing. One service H1, scoped offer,
-linked case evidence, what to bring, and the native Email action. These are
+linked case evidence, what to bring, and the link to the contact form. These are
 WebPage/Service pages, not portfolio Articles; the Service description is the
 sentence the page shows. Use self canonicals and reciprocal en/hu hreflang;
 x-default points to the English offer. The Hungarian body is Hungarian;
@@ -180,7 +180,8 @@ When requirements compete, protect them in this order:
 | `/` | Identify a Product VP and open work | Role in H1 and Works in the opening scene; proof in the following statement. Central 3D chevron and vector title, **no** product screenshot |
 | `/works` | Scan the hiring-order list and open a case | First case card on the fold |
 | `/work/*` | Identify the project and inspect real product evidence | Centered title and complete UI on the lilac stage; dek beneath; four facts follow the opening |
-| Footer / nav | Start a project conversation | Large personal contact close, native Email and LinkedIn, original folded geometry on lilac; integrated privacy/settings controls. See Editorial footer below. |
+| Footer / nav | Start a project conversation | Large personal contact close, one “Discuss your project” link to the contact form, then LinkedIn, on lilac; integrated privacy/settings controls. See Editorial footer below. |
+| `/contact` | Write a message and know it arrived | One-column form, visible labels, invisible spam defence, clear success with what happens next |
 
 If a change helps a designer-flex and hurts one of those jobs, reject it.
 
@@ -191,12 +192,12 @@ If a change helps a designer-flex and hurts one of those jobs, reject it.
 The executive path on `/` is: name, role, live proof in the highlights,
 how to see the work, how to reach him. The audit path is the case studies.
 
-Do not invent metrics or emails. The one real contact address is
-`anorbert@pm.me`. HTML must not contain `mailto:` or that address as
-text, including after the Email click. The footer Email button only
-`location.assign`s the assembled href from split JS parts — do not write
-`mailto:` onto an `href` or into the DOM. Do not put a multi-field form
-back in the footer.
+Do not invent metrics or emails. The destination address lives only in the
+server's `CONTACT_TO` variable. No page, script or stylesheet contains
+`mailto:` or the address, and no script assembles it (NN/g audit,
+2026-10-06: a mail-app button fails silently for webmail users). Every
+contact action is a link to `/contact` (`/hu/kapcsolat`). Do not put a form
+in the footer.
 Do not restore a Contact column.
 Do not restore removed SportsGambit figures (`35% first-day activation`,
 `70% of wagers`).
@@ -312,7 +313,7 @@ footer, video-backed experience and E′ Weighted index grid.
 **Link icons (2026-09-15 correction):** Never use northeast-arrow glyphs or
 platform emoji in navigation, project or contact controls. When an existing
 action needs a mark, use a small monochrome inline SVG: a fine list for Works,
-an envelope for native email, and the existing LinkedIn path for that link.
+an envelope for the contact action, and the existing LinkedIn path for that link.
 `.link-icon` inherits the label ink, has no tile or decorative container, and
 stays `aria-hidden="true" focusable="false"`; visible labels and native
 destinations remain unchanged. Do not replace a rejected arrow with another
@@ -331,13 +332,16 @@ The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
   the approved forest/olive artwork crop. Mark decorative artwork on the page
   ImageObject, never as a Person portrait; omit Person.image until a real
   profile photograph is supplied.
-- Preserve the native `button.footer-email`, its “Discuss your project” label,
-  assign-only email handler and destination. Match the hero action with a navy
+- Preserve `a.footer-email`, its “Discuss your project” label and its link to
+  the contact form (`/contact`, `/hu/kapcsolat`). Match the hero action with a navy
   capsule and lilac text, at least 48px tall, wrapping safely at enlarged text.
-- Keep one real LinkedIn link, with its icon and visible label. No new Contact
-  page, form, endpoint, invented address or social account.
+- The primary action leads in source and visual order: “Discuss your project”
+  links to the contact form, then the one real LinkedIn link with its icon and
+  visible label (NN/g footers and contact-us guidelines). No footer form,
+  invented address or social account.
 - Preserve Raiffeisen, Instructure, Bitpanda and Kineticare links and copyright.
-- Integrate Privacy, Adatvédelem and Analytics settings into the same lilac
+- The Work list ends with “All work” / “Összes munka”.
+- Integrate the page-language privacy link and Analytics settings into the same lilac
   footer field with a fine top rule. This is an in-flow utility row, without
   a separate dark slab. Preserve all consent hooks, language attributes and
   focus return; targets remain at least 44px tall.
@@ -430,7 +434,7 @@ links, heading hierarchy and visible keyboard focus.
   Every primary navigation carries the
   AI integration item (2026-09-15, owner request); the Hungarian pages link
   its Hungarian pair as `AI-integráció`. Native links and 44px minimum targets; compact keeps the
-  accessible disclosure. Email remains a native assign-only button.
+  accessible disclosure. Contact is a plain link to the form.
 - `/works` and all seven cases use one stable navy (`#0A1628`) top bar with
   lilac (`#D6D4ED`) controls (owner screenshot correction, 2026-09-16).
   Keep NB left, `Works / {Project}` on desktop cases, the centered
@@ -449,13 +453,19 @@ links, heading hierarchy and visible keyboard focus.
   at full width on the page's own field (lilac everywhere, navy on About),
   with left-aligned 17px rows of 48px, no card, radius or shadow, and the
   current page underlined in olive. `compact-navigation.css` owns it;
-  `story.css` only recolours it for About.
+  `story.css` only recolours it for About. Opening shows that it drops from
+  the bar (owner-approved, 2026-10-07): a CSS clip opens downward on a
+  critically damped spring (ω 28 rad/s, ζ 1, sampled into `linear()`, about
+  .23 s). Rows never slide or fade and nothing is disabled: each row is a live
+  target as soon as the clip has passed it, all within .26 s. The close glyph
+  turns a quarter into place (ω 26, ζ .7). Closing is instant. `navigation.js` stays animation-free; reduced motion and
+  `html.no-motion` get no movement.
 - At widths up to 991px every page uses a stable top bar in its page palette. No travel,
   reading-slot fade, footer relocation or expanded terminal wordmark. Preserve
   native scrolling, menu/focus behavior and browser-height changes.
-- No Motion control, sound requirement, Contact page, new form or invented
-  address. `prefers-reduced-motion` controls decorative animation. Contact and
-  privacy behavior retain their existing owners.
+- No Motion control, sound requirement or invented address.
+  `prefers-reduced-motion` controls decorative animation. Contact goes through
+  the menu's Contact link and the contact form; privacy keeps its owner.
 
 **Site-wide text accessibility (WCAG 2.2 AA):** normal text must reach 4.5:1;
 large text (24px regular or 18.667px bold) must reach 3:1. Apply this to every
@@ -546,8 +556,12 @@ No lead paragraph and no per-row descriptions: the owner asked for the rows only
 2. Opening grid: category, oversized responsive Funnel H1, centered complete
    `.case-hero-media`, then the original regular dek. Images keep
    `object-fit: contain`. Four alternating vertical masks reveal the actual
-   media over 2.3 seconds; title letters restore the original semantic nodes.
+   media within 2.3 seconds; title letters restore the original semantic nodes.
    A separate 150–220px native-scroll interval settles the panel perspective.
+   The entrance runs on first-party physics (2026-10-07, see **Motion → Case
+   opening**): the panel is a plate hinged on its lower edge that stands up
+   against the reading plane, and a parse-time gate keeps the finished title
+   and panel from painting before the entrance.
 3. Fact band with four keys directly under the hero
 4. No visible byline. “Written by / Published / Updated” never appears on
    the page; authorship and dates live in meta tags and JSON-LD only.
@@ -595,11 +609,11 @@ page-specific terms; Google ignores it and Bing reads stuffing as spam, so it
 stays short and every term must be backed by visible copy. The long-tail map
 is in `docs/seo-keywords.md`.
 
-User-requested project contact copy (2026-09-04): the existing native
-`button.footer-email` opens an email app for a project enquiry; it does not
-send a message, book a meeting or create a confirmed lead. This explicit
+User-requested project contact copy (2026-09-04), updated 2026-10-06: the
+project action `a.footer-email` (“Discuss your project”) links to the contact
+form; it never opens a mail app. This explicit
 copy update supersedes the older literal `Email` label/72–76px width lock.
-The split-address handler remains. The current editorial footer uses the
+ The current editorial footer uses the
 48px capsule defined below; service-page buttons retain their existing chrome.
 
 - Shared English footer and English service CTA: `Discuss your project`; title
@@ -622,7 +636,7 @@ regulated), not “I’ve spent the last 16 years designing”. Do not invent
 metrics. Home descriptions for search and social previews summarize the actual
 portfolio and expertise, not availability for engagements. The dedicated service
 pages retain their visible offers; do not move a home-only solicitation into
-structured data. The home has one H1 and does not add `/contact`.
+structured data. The home has one H1; its menu links Contact like every page.
 
 Forbidden template strings:
 
@@ -669,11 +683,11 @@ English-wash the screenshot.
 | NeonMeshYellow | Bottom of the footer is neon `#FFE000` | Muted olive-chartreuse `#BDB414` |
 | BrightMeshLilac | Type band is bright `#E1E1F5` | Greyer-lilac `#D6D4ED` |
 | FooterBackToTop | 44px outlined double-arrow on the copyright row | Lock has none; do not restore it |
-| LinkedInHitSquare | LinkedIn collapses into an undersized icon | Keep a visible label and at least 48px target beside the native Email button |
+| LinkedInHitSquare | LinkedIn collapses into an undersized icon | Keep a visible label and at least 48px target beside the project link |
 | FilledEmailPill | An oversized or clipped capsule obscures its label | The requested navy capsule may wrap safely; text must remain fully inside at 200% |
-| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Email in nav and footer ident; Work column only |
-| MailtoInHtml | `mailto:` or `anorbert@pm.me` appears in page HTML (before or after click), or the complete address is one JS string | `location.assign` the assembled href; never write it onto `href` or into the DOM |
-| FakeEmailLink | Email is an `<a role="link">` without href | Native `<button type="button" class="footer-email">`; Space/Enter come for free |
+| ContactColumn | A Contact heading (empty or with a mailto line) beside Work | Contact in the menu and the footer's project link; Work column only |
+| MailtoInHtml | `mailto:` or the inbox address appears in page HTML, CSS or JS, or a script assembles it | The address stays in `CONTACT_TO`; contact goes through the form |
+| FakeEmailLink | A mail button or a link without href that opens nothing visible | `<a class="footer-email" href="/contact">` in the page language |
 | SaaSFooter | Product / Company / Resources / Legal sitemap columns or extra socials | Personal contact close, existing Work links and one integrated privacy row |
 | MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | Navy dek on the new lilac case stage; do not revive the superseded dark-video text override |
@@ -682,7 +696,7 @@ English-wash the screenshot.
 | StaggerHole | Dummy columns, stagger offsets or empty gaps interrupt project scanning | A single landscape list on home and Works |
 | RowClearfixHole | Webflow `.w-row::before/::after` (`grid-area: 1 / 1`) occupy column 1 so a 7/5 pair cannot share a row | `content: none` on `.work-section .work-grid` pseudos; do not restyle every `.w-row` |
 | WorksDomainChip | Decorative pills or invented metrics clutter the list | Large name, original factual summary and quiet domain text |
-| BlogFooterCTA | Third-party or multi-field contact form | One native project button using the existing assign-only email handler |
+| BlogFooterCTA | Third-party or multi-field contact form in the footer | One project link to the contact form |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
 | HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 | MeshParallaxCircus | Retired mesh motion or moving footer text returns | Footer content stays still; navigation stays at the top |
@@ -744,7 +758,7 @@ markup that is being retired: check the page before reusing it.
 `.about-section-title`
 
 **Case:** `article.case-study-article` `.case-study-header`
-`.case-opening-fold` `h1#case-title` `.banner-section` `.banner-content-area`
+`h1#case-title` `.banner-section` `.banner-content-area`
 `.banner-content-wrap` `.banner-title` `.banner-text` `.case-hero-media`
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-toc__inner` `.case-toc__label` `.case-evidence-note` `.summary`
@@ -787,7 +801,10 @@ renaming one silently disables a feature. `data-hero-critical`
 slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow`
 `data-composition-nav` `data-autoplay-video` `data-motion-video`
 `data-video-urls` `data-poster-url` `data-video-label` `data-object-fit`
-`data-consent-settings` `data-story` `data-story-*` (`-art` `-line` `-mode`
+`data-consent-settings` `data-arrival-gate` (root, parse time: the
+pre-curtain veil) `data-case-opening` (root: `pending` from the parse-time
+gate, then `assembling`, `settled`) `data-case-flat` (the case panel rests
+untransformed) `data-work-motion` `data-story` `data-story-*` (`-art` `-line` `-mode`
 `-motion` `-motion-toggle` `-reflow` `-scene` `-stage` `-step`). Five more
 `data-story-*` attributes in `about.html` — `-backdrop` `-sculpture`
 `-shade` `-wing` — are markup state that no script queries; the animation binds
@@ -813,10 +830,93 @@ same change that caused the drift.
 | `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair of the same board, `lang="hu"` | default |
 | `/privacy` | `privacy.html` | Consent and analytics notice | default |
 | `/hu/adatvedelem` | `hu/adatvedelem.html` | Hungarian pair, `lang="hu"` | default |
+| `/contact` | `contact.html` | “Paper”: the About fold-detail still full-bleed and sticky, the home glass chevron as a third hero-scene stage, the form on one frosted lilac glass letter that folds into thirds on send | default |
+| `/hu/kapcsolat` | `hu/kapcsolat.html` | Hungarian pair, `lang="hu"` | default |
+| `/hu` | `hu/index.html` | Hungarian home; served by an explicit route because `/hu` is a directory | default |
+| `/hu/munkak` | `hu/munkak.html` | Hungarian works index | default |
+| `/hu/rolam` | `hu/rolam.html` | Hungarian About | default |
+| `/hu/munka/{slug}` | `hu/munka/*.html` (7) | Hungarian case studies | default |
 | (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
 
-Thirteen content pages carry chrome, consent and the editorial footer.
-`sitemap.xml` lists fourteen URLs. `server.js` owns canonicalisation: apex to
+**Whole-site language switch (owner request, 2026-10-06).** Every content page
+has an English and a Hungarian version with the same structure, classes and
+ids. The menu ends with one language link, `a.nav-link.lang-switch`, that
+names the other language in that language (“Magyar” on English pages,
+“English” on Hungarian pages) and leads to this page's pair, with
+`rel="alternate"`, `hreflang` and `lang` (USWDS two-language pattern, GOV.UK
+language navigation; its visible text is its accessible name, WCAG 2.5.3).
+Hungarian pages link only Hungarian pages. Footers carry one privacy link in
+the page language. `<head>` carries reciprocal `en`, `hu` and `x-default` (English)
+alternates. Checks treat `hu/…` pages as their English counterpart through
+`baseOf()` in `scripts/service-pages.mjs`. JavaScript strings (navigation,
+consent, arrival, media and About motion toggles) follow `<html lang>`.
+
+**Contact page design (owner request, 2026-10-06, redone after the owner
+rejected a flat white sheet).** The page reuses the site's own material: the
+About chapter's `assets/images/story/fold-detail.webp` stands full-bleed and
+sticky behind the page (decorative, `alt=""`); the home refractive chevron
+(`hero-scene.js`, third stage, compact contract, owned by `contact.js`) stands
+on the paper and turns with the scroll; the letter is one pane of frosted lilac
+glass with a dashed origami crease between letterhead and form. On send the
+sheet, the pane's own glass carrying the form's drawn lines, lifts and folds
+in thirds and then in half under real physics (`assets/js/physics.js`): each
+panel is a thin plate on a hinge (I = mL²/3) pushed past 100° and laid down by
+gravity torque and air drag, with elasto-plastic crease memory, a stop with
+restitution, normal-based light (key light from the upper left, faces darken
+as they turn) and contact shadows; the letter parks about 28° open with a drop
+shadow and an olive inner fold, at about 1.5 s on desktop and 1.2 s on phones,
+fully on screen. Reduced motion and `no-motion` run the same simulation to
+rest synchronously and paint the end state once; the loop stops at rest and
+pauses in hidden tabs. Without JavaScript the picture and form show, the
+submit is hidden and LinkedIn is offered. AI artwork stays on the AI pages.
+Primitives: `.contact-stage`, `.contact-paper`, `.contact-sheet`,
+`.contact-written`, `.contact-form`, `.contact-field`, `.contact-topics`,
+`.contact-topic`, `.contact-error-summary`, `.contact-sent`, `.contact-fold`
+(built by the script: `.contact-fold-piece`, `-film`, `-print`, `-tone`,
+`-liner`, `-crease`, `-ground`, `-cast`)
+and their parts in `assets/css/contact.css`; hooks `data-contact-glass`,
+`data-contact-stage`, `data-contact-sheet`, `data-contact-fold`.
+
+**Contact page (owner request, 2026-10-06).** The menu links Contact /
+Kapcsolat. The form posts JSON to `POST /api/contact` after a proof-of-work
+challenge from `GET /api/contact/challenge` (`lib/contact.js`). Spam defence:
+HMAC-signed challenge, SHA-256 proof of work, honeypot field `website`,
+minimum fill time, single-use challenges, same-origin and JSON-only posts,
+16 kB body limit, link limit, per-address (5 per 15 minutes, 10 per day) and
+site-wide daily limits. Only the canonical signature spelling is accepted and
+spent challenges are keyed by their signed salt; every in-memory map is
+bounded. The client address is Railway's `X-Real-IP` (else the edge-appended
+`X-Forwarded-For` entry), validated as an IP, IPv6 grouped per /64. Checks run
+challenge, validation, per-address limit, then the silent honeypot and timing
+drop, then the site-wide cap (503, so the page offers LinkedIn). The client
+waits until a challenge is at least 3.3 s old before posting. Cloudflare
+Turnstile (owner spec, 2026-10-06) sits on top of all of this, on the contact
+pages only: Managed widget, action `contact`, site key public in `contact.js`
+(Cloudflare's dummy pass key on any host other than barnanorbert.com), the
+secret only in Railway's `TURNSTILE_SECRET_KEY`. The server verifies with
+siteverify (5 s timeout, hostname and action checked) after every cheaper
+check and before delivery, and fails closed: a missing or bad token is 400
+`captcha_failed`, an unreachable Cloudflare or missing secret is 503
+`captcha_unavailable`; only Cloudflare error codes are logged. The CSP adds
+`https://challenges.cloudflare.com` to `script-src` and `frame-src` on
+`/contact` and `/hu/kapcsolat` alone (`lib/turnstile.js`, `server.js`). Guards never spell
+the inbox: `scripts/private-inbox.mjs` compares a SHA-256 digest. Delivery
+goes through Resend with `RESEND_API_KEY`, `CONTACT_TO` and `CONTACT_FROM`;
+the destination address lives only in `CONTACT_TO`, never in markup or
+source. Without configuration the API answers 503 and the page offers
+LinkedIn. Every other contact action on the site links to this page.
+
+**Navigation (NN/g audit, 2026-10-06).** One Contact entry in every menu,
+LinkedIn as the one external utility link, the language link last. The
+current page carries an olive underline on every bar at every width. An open
+compact menu shows a close glyph. On the work and case bars the decorative
+counter yields below 1440px and the repeated wordmark below 1200px, so the
+destinations stay on one row; the wordmark is out of the tab order because
+the logo already links home. Privacy pages use the lilac bar.
+
+Content pages carry chrome, consent and the editorial footer.
+`sitemap.xml` lists every canonical URL: the English pages in hiring order,
+then the utility pairs, then the Hungarian mirror. `server.js` owns canonicalisation: apex to
 `www`, and `/index`, `/{slug}`, trailing slashes and `.html` all 301 to one
 URL. Adding a page means adding it to the checks that enumerate pages, not
 only to the sitemap.
@@ -828,12 +928,12 @@ only to the sitemap.
 | `fonts.css` | Self-hosted Inter and Funnel Display; Latin and Latin-ext faces | every page, including 404 |
 | `norbertbarna.webflow.*.css` | Inherited Webflow base | every page |
 | `responsive.css` | Site tokens, chrome lock, type scale, reflow, footer base | every page |
-| `arrival.css` | First-session name assembly and curtain | `/`, cases |
+| `arrival.css` | First-session name assembly, curtain and the pre-curtain gate | `/`, cases |
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
 | `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
 | `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
-| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure | 14 content pages |
-| `case-opening.css` | Lilac case stage and the four-slice media reveal | cases |
+| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure and its drop | 14 content pages |
+| `case-opening.css` | Lilac case stage, the composed entrance/settle transform, the four-slice media reveal and the pending gate | cases |
 | `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
 | `consent.css` | Consent banner and `.footer-privacy` only | 14 content pages, unhashed |
@@ -875,20 +975,31 @@ JavaScript dependency is part of this contract.
 | `consent.js` | Consent record, settings reveal, focus return | no |
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
-| `navigation.js` | Mobile disclosure, every `.footer-email` assign-only handler, and the mast text-enlargement/spacing reflow detector; deliberately has no animation dependency | no |
+| `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory and stops, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; a deferred head script on the contact pages, the fourteen cases and both homes | yes |
+| `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; no mail handler; deliberately has no animation dependency | no |
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
 | `immersive-navigation.js` | Compact state, real Works/case progress and Home consent clearance; no navigation travel | yes |
-| `case-opening.js` | Case title and media assembly, perspective settle | yes |
+| `case-opening.js` | Case title and media entrance on `PortfolioPhysics` (hinged panel, rise, mask springs, letter springs) and the native-scroll perspective settle; no GSAP | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
 | `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: the motion and mode verdicts, the bar tone, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) | yes |
-| `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field | yes |
+| `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field; the home selected-work and related-card pointer hover on `PortfolioPhysics` springs | yes |
 | `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
 
 Load order is a contract, not a preference:
 
 - `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
+- `physics.js` follows the analytics trio as a deferred head script on the
+  contact pages, the cases, `/` and `/hu`. Deferred scripts run after the
+  end-of-body owners and before `DOMContentLoaded`, so an owner reads
+  `window.PortfolioPhysics` only once that event has fired (`case-opening.js`
+  starts on it; `animations.js` starts after `load`) and settles to its end
+  state if the module is missing.
+- The parse-time gates are inline head scripts placed before the first
+  stylesheet, each with its CSP hash in `server.js`: the arrival pre-curtain
+  gate on `/`, `/hu` and the cases, then the case-opening pending gate on the
+  cases. `check-motion.mjs` holds their bodies, order and fail-open timings.
 - `media.js` before any GSAP owner, so video never depends on animation.
 - On the AI service pages: `animations.js` → `hero-scene.js` → `ai-motion.js`, the last script.
 - On `/`: `hero-scene.js` → `home-composition.js` → `arrival.js` →
@@ -972,7 +1083,7 @@ scene is ready and motion is allowed.
 
 ### Checks
 
-`npm test` runs eight scripts in order; `npm run test:e2e` runs seventeen
+`npm test` runs ten scripts in order; `npm run test:e2e` runs twenty-seven
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 
@@ -986,12 +1097,16 @@ the file that already owns that subject.
 | `check-design.mjs` | This file. Named anti-patterns, work order, header lock, home H1 and JSON-LD identity |
 | `check-client-seo.mjs` | Service pages: visible offer, en/hu equivalence, no invented price or review |
 | `check-analytics.mjs` | Gate and owner order, hidden settings, EU host, the insights lock for project **265707** |
+| `check-contact.mjs` | Contact API: challenge, proof of work, honeypot, timing, validation, origin, limits, delivery; no page exposes an address |
 
 Playwright specs, grouped by what they defend:
 
 - **Arrival and hero:** `arrival-fidelity`, `arrival-pointer`, `hero-motion`,
   `hero-reference`, `home-composition`, `home-first-paint`.
 - **Chrome:** `compact-navigation`, `home-sticky-navigation`, `work-sticky-navigation`, `contact-copy`, `case-first-paint`.
+- **Motion physics:** `motion-physics` (case opening, parse-time gates, hover
+  springs and the compact menu drop, read from the module's world samples and
+  a frame tracer).
 - **Content and access:** `portfolio` (the large accessibility and AA suite),
   `editorial-media`, `story-motion`.
 - **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,
@@ -1008,10 +1123,11 @@ one-year immutable policy **only** to files whose name carries the first
 twelve characters of their own SHA-256 digest, in these families:
 
 - JS: `animations`, `media`, `arrival`, `hero-scene`, `home-composition`,
-  `immersive-navigation`, `case-opening`, `story-motion`
+  `immersive-navigation`, `case-opening`, `story-motion`, `ai-motion`,
+  `contact`, `physics`
 - CSS: `case-motion`, `responsive`, `arrival`, `home-composition`,
   `case-opening`, `editorial-sections`, `compact-navigation`, `project-index`,
-  `story`
+  `story`, `ai-integration`, `fonts`, `contact`
 
 After editing one of those sources: recompute the digest, write the hashed
 copy beside the source, update every page reference, and delete nothing. Stale
@@ -1048,14 +1164,18 @@ anything that hides one of two stacked states has to re-assert it explicitly
 under `html.no-motion` or both show at once. Keep such arithmetic in the owner,
 not in CSS, so the stylesheet's defaults stay the honest resting state.
 No new runtime dependency, sound requirement, generated Lottie or visible
-Motion control. Original raw WebGL is the user-requested central hero exception,
+Motion control. Physical motion (springs, hinges, stops) runs on the
+first-party fixed-step `physics.js`: each loop stops at rest, 60 and 120 Hz
+end identically, reduced motion and `html.no-motion` get the end state with no
+physics frame, and only transform, opacity, clip-path, mask and the custom
+properties feeding them change per frame. Original raw WebGL is the user-requested central hero exception,
 and two stages run it: the home hero and, since 2026-09-16 at the owner's
 explicit request, the AI openings. A stage in the Story in Motion corridor was
 built on 2026-09-15 and removed the same day at the owner's request; the
 corridor stands a still instead. The renderer names its host with
 `data-glass-scene`, `data-glass-stage`, `data-glass-frame`,
 `data-glass-backdrop`, `data-glass-field` and `data-glass-slot` rather than
-any page's class names. No further stage without an explicit request for one.
+any page's class names. No further stage without an explicit request for one. The contact page holds the third stage (owner request, 2026-10-06), owned by `contact.js`.
 
 **No drawing before the glass (2026-09-16).** On a scripted page the static
 drawings (`.home-mast-fallback`, `.home-mast-gate-fallback`)
@@ -1068,7 +1188,8 @@ and the unpinned reading composition never flashes before it; the script
 removes the attribute after four seconds if no morph owner arrives. The owner
 reported the drawing-then-glass change on load as a defect; do not reintroduce
 a visible static state that the glass then replaces.
-Keep `.case-motion-rail` hidden.
+The PROJECT FLOW rail is retired with the case fold (2026-10-07): no script
+creates either, and `responsive.css` keeps `.case-motion-rail` hidden as a guard.
 
 The central glass form assembles once, then responds to pointer tilt,
 fragment hover and drag. Its raw WebGL renderer sleeps when idle/offscreen.
@@ -1110,12 +1231,59 @@ event is stored; unavailable session storage leaves the introduction skipped.
 Reduced motion, unavailable prerequisites, no JavaScript,
 restored scroll/hash navigation and user interaction must have prompt readable
 content. Bounded fail-open cleanup prevents an overlay trapping the page.
+
+**Pre-curtain gate (owner-approved, 2026-10-07).** On a slow network the page
+used to paint before `arrival.js` could add the curtain (first paint 1.0 s,
+curtain 1.9 s on slow 4G). An inline head script now marks the root
+`data-arrival-gate` at parse time when the first-arrival conditions hold (no
+session marker, no same-origin referrer, no hash, not back/forward, visible
+tab, no reduced motion), and `arrival.css` paints the curtain's own navy field
+as a `body::after` veil. It is visual only: the document stays readable,
+focusable and in the accessibility tree. `arrival.js` lifts it in the same
+task that adds the curtain, and on every path where the arrival does not run;
+without `arrival.js` the veil hides itself after four seconds.
 Do not make the document inert or hide its only semantic copy as an animation
 prerequisite. The skip link and native navigation retain keyboard behavior.
 
 Case reveals decorate existing title/media and settle into complete readable
 geometry; users can immediately scroll or follow the TOC. Kineticare's video
 remains solely owned by `media.js`, with its existing 4.5-second cap.
+
+**Case opening (first-party physics, owner-approved 2026-10-07).** The former
+GSAP scroll scrub wrote inline `translate/rotate/scale: none` over the
+entrance, so the rise and tilt never rendered, and on a slow network the
+finished opening painted first and was then hidden and assembled again.
+`case-opening.js` now owns the opening alone on `PortfolioPhysics` (no GSAP).
+Frequencies are ω in rad/s (f = ω/2π), ζ the damping ratio:
+
+- The panel is a plate hinged on its lower edge (`transform-origin: 50% 100%`).
+  It starts 13° back (7° compact) and a crease spring (ω 3.6, ζ .55) stands it
+  up against a stop at 0° with restitution .25: first contact .71 s after its
+  release, one bounce under .5°, under .05° by 1.65 s. It rises 60px (28px
+  compact) and grows from .92 on one critically damped progress (ω 5.5,
+  within 2% by 1.08 s). Both are released with the first mask at .2 s.
+- The four alternating masks open on critically damped springs (ω 3.3) aimed
+  3% past a stop at 100%, so each lands exactly; they start .14 s apart from
+  .2 s and the last lands at 2.27 s.
+- Each title letter rises 95% and turns from -35° on its own spring (ω 9,
+  ζ .75: 2.5% overshoot, settled .62 s), 35 ms apart from .12 s, and inks in
+  linearly over 160 ms; the title is opaque by about .6 s. When the opening
+  rests the original text nodes return.
+- The entrance and the native-scroll settle write separate custom properties
+  that `case-opening.css` composes into one transform, so neither overwrites
+  the other. The settle keeps its 150–220px range and pose; a critically
+  damped follower (ω 20) replaces the .3 s scrub. In the reading plane, with
+  no entrance running, the panel carries no transform at all
+  (`data-case-flat`), so it rasterises exactly as the reduced-motion page.
+- Parse-time gate: an inline head script marks the root
+  `data-case-opening="pending"` when an entrance may run (no hash, not
+  back/forward, visible tab, no reduced motion). Until the owner starts, the
+  title and panel are unpainted; dek, category and stage paint normally. The
+  stylesheet releases them by itself 2.9 s after they first resolve, and the
+  owner then leaves them finished rather than hiding them again.
+- Reduced motion, `html.no-motion`, history and deep-link visits, a hidden
+  tab, user input during the entrance and a missing physics module all give
+  the finished opening at once, with no physics frame.
 
 Footer content and geometry stay still. The earlier gradient/mesh motion is
 retired; no decorative footer loop or pointer-triggered layout movement.
@@ -1124,19 +1292,27 @@ retired; no decorative footer loop or pointer-triggered layout movement.
 
 The home reference rows stay on paper, with no hover background field. On
 desktop fine pointers, animate the existing thumbnail frame to 1.06 scale and
--2px y while its arrow moves 4px right (0.36s power3.out in, 0.28s power2.out
-out). Keyboard focus has priority over pointer exit and preserves the instant
-visible outline. Keep text, row geometry, separators and native link targets
-still. Scale the complete frame without introducing another image crop.
+-2px y while its arrow moves 4px right. Since 2026-10-07 (owner-approved) each
+row has one spring clamped to [0, 1] on `PortfolioPhysics`, critically damped,
+ω 17 rad/s in (about .37 s) and ω 21 out (about .30 s); a reversal keeps the
+current velocity, so the frame decelerates and turns back instead of jumping
+(the former eases moved 13% in their first frame and flipped direction within
+one frame). Related project cards on the cases use the same model: image
+scale to 1.025 at ω 13 and the title line at ω 18. Keyboard focus has
+priority over pointer exit and preserves the instant visible outline. Keep
+text, row geometry, separators and native link targets still. Scale the
+complete frame without introducing another image crop. `/works` rows have no
+hover motion (owner decision, 2026-10-07).
 
 On compact layouts or coarse pointers, use native scroll through each row:
 thumbnail 1 → 1.04 → 1 scale, 0 → -1 → 0px y, arrow 0 → 3 → 0px x. The range
 runs from top 82% to bottom 28% with 0.2s scrub. A first tap follows the native
 link immediately. No pinning, snap, scroll hijacking, loops or new plugins.
 Create reusable controllers inside the existing responsive motion context;
-remove only their own listeners, transforms and ScrollTriggers on breakpoint
-or motion-preference changes. Reduced motion, no JavaScript and unavailable
-GSAP leave static readable rows and native links.
+remove only their own listeners, transforms, ScrollTriggers and physics
+worlds on breakpoint or motion-preference changes. Reduced motion, no
+JavaScript and unavailable GSAP or physics leave static readable rows and
+native links.
 
 Professional experience keeps the five original role/company/date tuples.
 Its new `.editorial-experience` layout uses a large section title with the
@@ -1192,8 +1368,8 @@ redirect to `/about`, preserving query parameters. Shared navigation, consent,
 analytics and footer contact behavior remain available on this route.
 
 About uses the selected board's quiet navy footer rather than the editorial
-Work-column footer on the other routes. Its header Email and closing Get in
-touch actions reuse the existing native email owner; the footer retains the
+Work-column footer on the other routes. Its menu Contact link and closing Get
+in touch link lead to the contact form; the footer retains the
 real LinkedIn link, identity, copyright, privacy links and analytics settings.
 Its chapter rail uses named native anchors. The story-only Pause motion button
 starts hidden and is exposed by the story controller; it does not restore the

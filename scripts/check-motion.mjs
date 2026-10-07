@@ -11,14 +11,14 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, assetPrefix } from "./service-pages.mjs";
+import { UTILITY_PAGES, assetPrefix, baseOf, HU_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES];
+const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES, ...HU_PAGES];
 const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
 
 let failures = 0;
@@ -140,6 +140,29 @@ const storyCssFile = versionedAsset("assets/css/story.css", "story", "css");
 const storyMotionFile = versionedAsset("assets/js/story-motion.js", "story-motion", "js");
 const aiCssFile = versionedAsset("assets/css/ai-integration.css", "ai-integration", "css");
 const aiMotionFile = versionedAsset("assets/js/ai-motion.js", "ai-motion", "js");
+const physicsFile = versionedAsset("assets/js/physics.js", "physics", "js");
+
+// Parse-time gates (2026-10-07). Each is an inline head script that runs before
+// any stylesheet can block it: the arrival pre-curtain gate on the pages that
+// run the arrival, and the case-opening pending gate on the cases. Their
+// stylesheets fail them open (4 s and 2.9 s), so they may never hide content
+// without a bounded release.
+const ARRIVAL_GATE = '<script>(function(r){try{var n=performance.getEntriesByType("navigation")[0],f=document.referrer;if(location.hash||n&&n.type==="back_forward"||document.hidden||matchMedia("(prefers-reduced-motion: reduce)").matches||sessionStorage.getItem("nb-arrival-seen-v2")||f&&new URL(f).origin===location.origin)return;r.setAttribute("data-arrival-gate","")}catch(e){}})(document.documentElement)</script>';
+const CASE_GATE = '<script>(function(r){try{var n=performance.getEntriesByType("navigation")[0];if(location.hash||n&&n.type==="back_forward"||document.hidden||matchMedia("(prefers-reduced-motion: reduce)").matches)return;r.setAttribute("data-case-opening","pending")}catch(e){}})(document.documentElement)</script>';
+{
+  const arrivalCss = readFileSync(join(ROOT, "assets/css/arrival.css"), "utf8");
+  const openingCss = readFileSync(join(ROOT, "assets/css/case-opening.css"), "utf8");
+  if (!/html\[data-arrival-gate\] body::after\s*\{[^}]*animation:\s*arrival-gate-release 0s linear 4s forwards/.test(arrivalCss)) {
+    fail("the arrival pre-curtain gate must fail open by itself after four seconds");
+  }
+  if (!/html\[data-case-opening="pending"\][^{]*\{[^}]*opacity:\s*0;[^}]*animation:\s*case-opening-release 0s linear 2\.9s forwards/.test(openingCss)) {
+    fail("the case-opening pending gate must fail open by itself after 2.9 s");
+  }
+  const caseJs = readFileSync(join(ROOT, "assets/js/case-opening.js"), "utf8");
+  if (/window\.gsap|ScrollTrigger/.test(caseJs) || !caseJs.includes("PortfolioPhysics")) {
+    fail("the case opening runs on PortfolioPhysics, not GSAP");
+  }
+}
 
 for (const page of ALL_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
@@ -147,14 +170,14 @@ for (const page of ALL_PAGES) {
     .map(match => attribute(match[0], "href")).filter(href => /\/story(?:\.[a-f0-9]+)?\.css$/i.test(href));
   const storyScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
     .map(match => attribute(match[0], "src")).filter(src => /\/story-motion(?:\.[a-f0-9]+)?\.js$/i.test(src));
-  if (page === "about.html") {
-    if (storyStyles.length !== 1 || storyStyles[0] !== `assets/css/${storyCssFile}` ||
-        storyScripts.length !== 1 || storyScripts[0] !== `assets/js/${storyMotionFile}`) {
+  if (baseOf(page) === "about.html") {
+    if (storyStyles.length !== 1 || storyStyles[0] !== `${assetPrefix(page)}assets/css/${storyCssFile}` ||
+        storyScripts.length !== 1 || storyScripts[0] !== `${assetPrefix(page)}assets/js/${storyMotionFile}`) {
       fail(`${page}: story CSS and motion JS must each load one current byte-matched asset`);
     }
     const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map(match => attribute(match[0], "src"));
-    const storyIndex = scripts.indexOf(`assets/js/${storyMotionFile}`);
-    if (storyIndex <= scripts.indexOf(`assets/js/${animationsFile}`)) {
+    const storyIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${storyMotionFile}`);
+    if (storyIndex <= scripts.indexOf(`${assetPrefix(page)}assets/js/${animationsFile}`)) {
       fail(`${page}: the independent story owner must initialize after the shared motion layer`);
     }
     if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
@@ -189,9 +212,9 @@ for (const page of ALL_PAGES) {
     .map((match) => attribute(match[0], "href")).filter((href) => /\/home-composition(?:\.|\/)/.test(href));
   const compositionScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "src")).filter((src) => /\/home-composition(?:\.|\/)/.test(src));
-  if (page === "index.html") {
-    if (compositionStyles.length !== 1 || compositionStyles[0] !== `assets/css/${homeCompositionCssFile}` ||
-        compositionScripts.length !== 1 || compositionScripts[0] !== `assets/js/${homeCompositionFile}`) {
+  if (baseOf(page) === "index.html") {
+    if (compositionStyles.length !== 1 || compositionStyles[0] !== `${assetPrefix(page)}assets/css/${homeCompositionCssFile}` ||
+        compositionScripts.length !== 1 || compositionScripts[0] !== `${assetPrefix(page)}assets/js/${homeCompositionFile}`) {
       fail("home composition CSS and JS must each load their own current byte-matched asset once");
     }
   } else if (compositionStyles.length || compositionScripts.length) {
@@ -212,9 +235,9 @@ for (const page of ALL_PAGES) {
 for (const page of ANIMATED_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
   for (const { stem, file } of editorialFiles) {
-    const required = stem === "editorial-sections" ? page !== "about.html"
-      : stem !== "project-index" || page === "index.html" || page === "works.html";
-    const refs = [...html.matchAll(/<link\b[^>]*href="([^"]+)"/g)].map(m => m[1]).filter(href => href.includes(`/assets/css/${stem}.`) || href.startsWith(`assets/css/${stem}.`));
+    const required = stem === "editorial-sections" ? baseOf(page) !== "about.html"
+      : stem !== "project-index" || baseOf(page) === "index.html" || baseOf(page) === "works.html";
+    const refs = [...html.matchAll(/<link\b[^>]*href="([^"]+)"/g)].map(m => m[1]).filter(href => href.includes(`/assets/css/${stem}.`) || href.startsWith(`${assetPrefix(page)}assets/css/${stem}.`));
     if (required && (refs.length !== 1 || refs[0] !== `${assetPrefix(page)}assets/css/${file}`)) fail(`${page}: expected one current ${stem} stylesheet`);
   }
   const animationRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/animations(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
@@ -233,7 +256,7 @@ for (const page of ANIMATED_PAGES) {
   }
   const arrivalRefs = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']*\/arrival(?:\.[a-f0-9]+)?\.js)["'][^>]*><\/script>/gi)]
     .map((match) => match[1]);
-  if (page === "index.html" || page.startsWith("work/")) {
+  if (baseOf(page) === "index.html" || baseOf(page).startsWith("work/")) {
     const expectedArrivalRef = `${assetPrefix(page)}assets/js/${arrivalFile}`;
     if (arrivalRefs.length !== 1 || arrivalRefs[0] !== expectedArrivalRef) {
       fail(`${page}: expected one current content-hashed arrival script`);
@@ -248,11 +271,11 @@ for (const page of ANIMATED_PAGES) {
     if (scripts.filter((src) => src === `${assetPrefix(page)}assets/js/${immersiveNavigationFile}`).length !== 1) {
       fail(`${page}: expected the current stable utility-header script once`);
     }
-    if (page === "index.html") {
-      const sceneIndex = scripts.indexOf(`assets/js/${heroSceneFile}`);
-      const compositionIndex = scripts.indexOf(`assets/js/${homeCompositionFile}`);
-      const arrivalIndex = scripts.indexOf(`assets/js/${arrivalFile}`);
-      const motionIndex = scripts.indexOf(`assets/js/${animationsFile}`);
+    if (baseOf(page) === "index.html") {
+      const sceneIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${heroSceneFile}`);
+      const compositionIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${homeCompositionFile}`);
+      const arrivalIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${arrivalFile}`);
+      const motionIndex = scripts.indexOf(`${assetPrefix(page)}assets/js/${animationsFile}`);
       if (sceneIndex < 0 || sceneIndex >= arrivalIndex || arrivalIndex >= motionIndex) {
         fail("home scene readiness must initialize before arrival, followed by shared animation ownership");
       }
@@ -263,26 +286,44 @@ for (const page of ANIMATED_PAGES) {
     if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
       fail(`${page}: arrival must never leave the native page inert`);
     }
+    // The gates run before the first stylesheet, so no paint precedes them.
+    const head = html.slice(0, html.indexOf("</head>"));
+    const firstStyle = head.search(/<link\b[^>]*rel="stylesheet"|<link\b[^>]*stylesheet/);
+    const gates = [ARRIVAL_GATE, ...(baseOf(page).startsWith("work/") ? [CASE_GATE] : [])];
+    for (const gate of gates) {
+      const at = head.indexOf(gate);
+      if (at < 0 || head.indexOf(gate, at + 1) >= 0 || (firstStyle >= 0 && at > firstStyle)) {
+        fail(`${page}: expected one parse-time ${gate === CASE_GATE ? "case-opening" : "arrival"} gate before the first stylesheet`);
+      }
+    }
+    // physics.js: one current, deferred head copy, read by the owners after DOMContentLoaded.
+    const physicsTags = [...html.matchAll(/<script\b[^>]*\bsrc="([^"]*\/physics(?:\.[a-f0-9]+)?\.js)"[^>]*>/g)];
+    if (physicsTags.length !== 1 || physicsTags[0][1] !== `${assetPrefix(page)}assets/js/${physicsFile}` ||
+        !/\bdefer\b/.test(physicsTags[0][0]) || html.indexOf(physicsTags[0][0]) > html.indexOf("</head>")) {
+      fail(`${page}: expected one current deferred physics.js in the head`);
+    }
   } else if (arrivalRefs.length !== 0) {
     fail(`${page}: arrival is scoped to the home and project openings`);
+  } else if (html.includes('data-arrival-gate') || html.includes('data-case-opening","pending')) {
+    fail(`${page}: the parse-time gates belong to the pages that run the arrival and the case opening`);
   }
 
   checkBackToTop(page, html);
 
-  if (page.startsWith("work/")) {
+  if (baseOf(page).startsWith("work/")) {
     const openingStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
       .map((match) => attribute(match[0], "href"))
       .filter((href) => /\/case-opening\./.test(href));
     const openingScripts = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)]
       .map((match) => match[1]).filter((src) => /\/case-opening\./.test(src));
-    if (openingStyles.length !== 1 || openingStyles[0] !== `../assets/css/${caseOpeningCssFile}` ||
-        openingScripts.length !== 1 || openingScripts[0] !== `../assets/js/${caseOpeningFile}`) {
+    if (openingStyles.length !== 1 || openingStyles[0] !== `${assetPrefix(page)}assets/css/${caseOpeningCssFile}` ||
+        openingScripts.length !== 1 || openingScripts[0] !== `${assetPrefix(page)}assets/js/${caseOpeningFile}`) {
       fail(`${page}: case-opening CSS and JS must each load their own current byte-matched asset once`);
     }
     const caseMotionRefs = [...html.matchAll(/<link\b[^>]*>/gi)]
       .map((match) => attribute(match[0], "href"))
       .filter((href) => /\/case-motion(?:\.[a-f0-9]+)?\.css$/i.test(href));
-    const expectedCaseMotionRef = `../assets/css/${caseMotionFile}`;
+    const expectedCaseMotionRef = `${assetPrefix(page)}assets/css/${caseMotionFile}`;
 
     if (caseMotionRefs.length !== 1) {
       fail(`${page}: expected one active content-hashed case-motion stylesheet, found ${caseMotionRefs.length}`);
@@ -291,8 +332,9 @@ for (const page of ANIMATED_PAGES) {
     }
 
     checkRichTextImages(page, html);
-    if (!/class="case-opening-fold"[^>]*aria-hidden="true"/.test(html)) {
-      fail(`${page}: case opening fold must be decorative and hidden from assistive technology`);
+    // The folded corner retired with its GSAP path (2026-10-07); only case-opening.js animates the opening.
+    if (/case-opening-fold/.test(html)) {
+      fail(`${page}: the retired case-opening fold markup must not return`);
     }
   }
 }

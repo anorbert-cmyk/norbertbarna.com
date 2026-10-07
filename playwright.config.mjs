@@ -17,6 +17,13 @@ export default defineConfig({
     command: "node server.js",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
+    // The test server never sends mail and uses Cloudflare's documented
+    // always-pass Turnstile secret; production sets the real one on Railway.
+    env: {
+      CONTACT_DRY_RUN: "1",
+      CONTACT_POW_BITS: process.env.CONTACT_POW_BITS || "12",
+      TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY || "1x0000000000000000000000000000000AA",
+    },
     timeout: 20_000,
   },
 });

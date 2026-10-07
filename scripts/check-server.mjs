@@ -26,6 +26,7 @@ const RELEASE_SOURCES = [
   "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
   "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css",
+  "css/contact.css", "js/contact.js", "js/physics.js",
 ];
 // Font binaries are distributed once, under their digest-bearing names. Their
 // manifest replaces the unhashed source/release pair used by authored CSS/JS.
@@ -147,7 +148,8 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem"]) {
+  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem",
+    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure"]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -160,6 +162,12 @@ try {
       `${pagePath} must keep only the EU PostHog capture host`
     );
     assert(!contentSecurityPolicy.includes("eu-assets"), `${pagePath}: must not allow the PostHog JS SDK asset host`);
+    // Cloudflare Turnstile (script + iframe) is allowed on the contact pages alone.
+    const turnstilePage = pagePath === "/contact" || pagePath === "/hu/kapcsolat";
+    assert(/script-src[^;]*https:\/\/challenges\.cloudflare\.com/.test(contentSecurityPolicy) === turnstilePage &&
+      /frame-src https:\/\/challenges\.cloudflare\.com(?:;|$)/.test(contentSecurityPolicy) === turnstilePage,
+      `${pagePath}: Turnstile hosts belong to the contact pages only`);
+    assert(!/unsafe-(?:inline|eval)[^;]*;?/.test(contentSecurityPolicy.match(/script-src[^;]*/)?.[0] || ""), `${pagePath}: script-src stays hash-based`);
     assert(!/script-src[^;]*posthog/i.test(contentSecurityPolicy), `${pagePath}: PostHog must not be on script-src`);
   }
 
@@ -246,6 +254,24 @@ try {
     assert(redirect.headers.get("location") === expectedLocation, `${legacyPath} lost its canonical path or query`);
   }
 
+  // Every canonical page in the sitemap has exactly one URL: its .html and
+  // trailing-slash spellings permanently redirect there (no duplicate 200s).
+  const sitemapXml = (await import("node:fs")).readFileSync(new URL("../sitemap.xml", import.meta.url), "utf8");
+  const sitemapPaths = [...sitemapXml.matchAll(/<loc>(.*?)<\/loc>/g)]
+    .map((match) => new URL(match[1]).pathname).filter((pathname) => pathname !== "/");
+  assert(sitemapPaths.length >= 25, "sitemap lists every canonical page");
+  for (const pathname of sitemapPaths) {
+    // /hu is served from hu/index.html, so its file spellings are the index ones.
+    const variants = pathname === "/hu" ? ["/hu/", "/hu/index.html", "/hu/index"] : [`${pathname}.html`, `${pathname}/`];
+    for (const variant of variants) {
+      const redirect = await fetch(`${baseUrl}${variant}?ref=check`, { redirect: "manual" });
+      assert(redirect.status === 301, `${variant} must 301 to ${pathname}, got ${redirect.status}`);
+      assert(redirect.headers.get("location") === `${pathname}?ref=check`, `${variant} must keep its query on ${pathname}`);
+    }
+    const canonical = await fetch(`${baseUrl}${pathname}`, { redirect: "manual" });
+    assert(canonical.status === 200, `${pathname} must serve 200`);
+  }
+
   const apexRobots = await rawGet(address.port, "/robots.txt", {
     host: "barnanorbert.com",
   });
@@ -324,8 +350,10 @@ try {
   for (const notFoundPath of [
     "/404",
     "/404.html",
-    "/contact",
     "/cv",
+    "/lib/contact.js",
+    "/lib/contact",
+    "/api/contact/nope",
     "/definitely-not-a-real-page",
     "/tests/portfolio.spec.mjs",
     "/playwright.config.mjs",
@@ -412,7 +440,7 @@ try {
   const serverSource = readText(new URL("../server.js", import.meta.url), "utf8");
   const root = new URL("../", import.meta.url);
   const pages = [];
-  for (const dir of ["", "work/", "hu/"]) {
+  for (const dir of ["", "work/", "hu/", "hu/munka/"]) {
     const url = new URL(dir, root);
     if (!exists(url)) continue;
     for (const name of listDir(url)) if (name.endsWith(".html")) pages.push(dir + name);

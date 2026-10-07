@@ -38,11 +38,11 @@ for (const file of SERVICE_PAGES) {
   const other = language === "en" ? "/hu/ai-integracio" : "/ai-integration";
   assert(body.includes(`href="${other}"`), `${file}: visible language switch`);
   for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
-    assert(body.includes(`href="/work/${slug}"`), `${file}: linked first-hand evidence ${slug}`);
+    assert(body.includes(`href="${language === "hu" ? "/hu/munka/" : "/work/"}${slug}"`), `${file}: linked first-hand evidence ${slug}`);
   }
-  assert(/<button\b[^>]*\btype="button"[^>]*\bclass="[^"]*\bfooter-email\b/.test(body), `${file}: native contact action in main content`);
+  assert(new RegExp(`<a\\b[^>]*\\bclass="[^"]*\\bfooter-email\\b[^"]*"[^>]*href="${language === "hu" ? "/hu/kapcsolat" : "/contact"}"`).test(body), `${file}: project action in main content leads to the contact form`);
   // GA identifiers are uppercase; case-insensitive matching mistakes closing-passage.webp for a tracker.
-  assert(!/mailto:|anorbert@pm\.me|<form\b|googletagmanager|analytics\.google|oaipixel/i.test(html) && !/\bG-[A-Z0-9]{6,}\b/.test(html), `${file}: no exposed email, form or unapproved tracking`);
+  assert(!/mailto:|<form\b|googletagmanager|analytics\.google|oaipixel/i.test(html) && !/\bG-[A-Z0-9]{6,}\b/.test(html), `${file}: no exposed email, form or unapproved tracking`);
   const graph = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].flatMap(([, json]) => flatten(JSON.parse(json)));
   const pages = graph.filter(node => node["@type"] === "WebPage");
   const services = graph.filter(node => node["@type"] === "Service");

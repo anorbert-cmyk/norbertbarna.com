@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 
-const paths = ['/', '/works', '/ai-integration', '/hu/ai-integracio', '/privacy', '/hu/adatvedelem',
-  '/work/raiffeisen', '/work/instructure', '/work/bitpanda', '/work/benker', '/work/sportsgambit', '/work/kineticare', '/work/onrobot'];
+const slugs = ['raiffeisen', 'instructure', 'bitpanda', 'benker', 'sportsgambit', 'kineticare', 'onrobot'];
+// Every content page in both languages, including the contact form pair (owner, 2026-10-06).
+const paths = ['/', '/works', '/about', '/ai-integration', '/privacy', '/contact', ...slugs.map(slug => `/work/${slug}`),
+  '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-integracio', '/hu/adatvedelem', '/hu/kapcsolat', ...slugs.map(slug => `/hu/munka/${slug}`)];
+const privacyContact = { '/privacy': ['/contact', 'Contact form'], '/hu/adatvedelem': ['/hu/kapcsolat', 'Kapcsolatfelvételi űrlap'] };
 
 async function interceptVendor(page) {
   const vendor = [];
@@ -59,8 +62,15 @@ for (const path of paths) {
     await expect(page.locator('[data-consent-banner]')).toBeVisible();
     await expect(page.locator('[data-consent-settings]')).toBeVisible();
     expect(vendor).toEqual([]);
-    if (path === '/privacy' || path === '/hu/adatvedelem') {
-      const target = await page.locator('main button.footer-email').boundingBox();
+    if (privacyContact[path]) {
+      // Data-rights requests go through the contact form link, never a mail button.
+      const [href, label] = privacyContact[path];
+      const contact = page.locator('main a.footer-email');
+      await expect(contact).toHaveCount(1);
+      await expect(contact).toHaveAttribute('href', href);
+      await expect(contact).toHaveText(label);
+      await expect(page.locator('button.footer-email')).toHaveCount(0);
+      const target = await contact.boundingBox();
       expect(target.height).toBeGreaterThanOrEqual(44);
       expect(target.width).toBeGreaterThanOrEqual(44);
     }

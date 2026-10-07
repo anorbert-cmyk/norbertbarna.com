@@ -6,14 +6,15 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES } from "./service-pages.mjs";
+import { UTILITY_PAGES, baseOf, HU_PAGES } from "./service-pages.mjs";
+import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const CONTENT_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES];
+const CONTENT_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES, ...HU_PAGES];
 const ALL_PAGES = [...CONTENT_PAGES, "404.html"];
 const CARD_SIZES = {
   "index.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(40vw - 25.6px), (max-width: 1439px) 37.6vw, (max-width: 1829px) 30.08vw, (max-width: 1919px) 550.4px, 516px",
@@ -81,10 +82,10 @@ for (const page of ALL_PAGES) {
       const candidates = srcset.split(",").map((candidate) => candidate.trim().split(/\s+/)[0]).filter(Boolean);
       if (candidates.length < 3) fail(`${page}: project cover srcset is incomplete`);
       for (const candidate of candidates) {
-        const local = join(ROOT, dirname(page), candidate);
+        const local = candidate.startsWith("/") ? join(ROOT, candidate) : join(ROOT, dirname(page), candidate);
         if (!existsSync(local)) fail(`${page}: project cover candidate is missing: ${candidate}`);
       }
-      if (page === "works.html") {
+      if (baseOf(page) === "works.html") {
         if (!/assets\/images\/responsive\//.test(src) || /banking-experience|student-comp-set|data-insights/i.test(src)) {
           fail(`${page}: E′ Weighted stills must be existing complete UI, not a CoverPoster or Figma leftover`);
         }
@@ -93,7 +94,7 @@ for (const page of ALL_PAGES) {
           fail(`${page}: project cover srcset is incomplete`);
         }
       } else {
-        const expectedSizes = page.startsWith("work/") ? CARD_SIZES.related : CARD_SIZES[page];
+        const expectedSizes = baseOf(page).startsWith("work/") ? CARD_SIZES.related : CARD_SIZES[page];
         if (width * 5 !== height * 4) fail(`${page}: project cover is not an intrinsic 4:5 crop`);
         if (!/assets\/images\/responsive\/card-[a-z]+\.\d+\.webp$/i.test(src)) {
           fail(`${page}: project cover does not use a dedicated WebP crop`);
@@ -152,7 +153,7 @@ for (const page of ALL_PAGES) {
     if (html.indexOf('<button type="button" class="menu-button') > html.indexOf('<nav id="primary-navigation"')) {
       fail(`${page}: mobile menu links do not follow the trigger in keyboard order`);
     }
-    const noScriptNavigation = page === "about.html"
+    const noScriptNavigation = baseOf(page) === "about.html"
       ? /<noscript>[\s\S]*?\.story-page\s+\.nav-menu(?:\.w-nav-menu)?\s*\{\s*display:\s*block!important/i
       : /<noscript>[\s\S]*?\.nav-menu\.w-nav-menu\{display:block!important/i;
     if (!noScriptNavigation.test(html)) {
@@ -174,21 +175,23 @@ for (const page of ALL_PAGES) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
     const footerHtml = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
-    const emailCta = [...footerHtml.matchAll(/<button\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
+    // NN/g audit (2026-10-06): the project action is a link to the contact
+    // form in the page language; no page assembles or opens a mail address.
+    const contactPath = page.startsWith("hu/") ? "/hu/kapcsolat" : "/contact";
+    const emailCta = [...footerHtml.matchAll(/<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
       /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(footerHtml);
-    if (page === "about.html") {
+    if (baseOf(page) === "about.html") {
       // The chosen story board closes with a quiet navy footer; its native
       // Email actions live in the header and final reading section.
       const closing = html.match(/<section\b[^>]*\bid="next"[^>]*>[\s\S]*?<\/section>/i)?.[0] || "";
-      const closingEmail = [...closing.matchAll(/<button\b[^>]*>/gi)]
+      const closingEmail = [...closing.matchAll(/<a\b[^>]*>/gi)]
         .map(match => match[0]).filter(tag => hasClass(tag, "footer-email"));
       const storyLinkedIn = [...footerHtml.matchAll(/<a\b[^>]*>/gi)]
         .map(match => match[0]).filter(tag => attribute(tag, "href") === "https://www.linkedin.com/in/barna-norbert/");
       if (!/<footer\b[^>]*class="[^"]*\bstory-footer\b/i.test(footerHtml) ||
-          closingEmail.length !== 1 || attribute(closingEmail[0], "type") !== "button" ||
-          attribute(closingEmail[0], "href")) {
-        fail(`${page}: the story closing needs a native Email button followed by its own footer`);
+          closingEmail.length !== 1 || attribute(closingEmail[0], "href") !== contactPath) {
+        fail(`${page}: the story closing needs one contact-page link followed by its own footer`);
       }
       if (storyLinkedIn.length !== 1 || attribute(storyLinkedIn[0], "target") !== "_blank" ||
           !/\bnoopener\b/.test(attribute(storyLinkedIn[0], "rel")) ||
@@ -198,24 +201,22 @@ for (const page of ALL_PAGES) {
     } else if (count(footerHtml, /<div\b[^>]*class="[^"]*\bfooter-cta\b[^"]*"/gi) !== 1 ||
         count(footerHtml, /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"/gi) !== 1 ||
         emailCta.length !== 1 ||
-        !/\btype="button"/.test(emailCta[0] || "") ||
-        /href=/.test(emailCta[0] || "") ||
-        /mailto:/i.test(emailCta[0] || "") ||
-        /<a[^>]*footer-email/.test(footerHtml) ||
+        attribute(emailCta[0], "href") !== contactPath ||
+        /<button[^>]*footer-email/.test(footerHtml) ||
         !linkedinIcon) {
-      fail(`${page}: footer must expose a LinkedIn icon and a native Email button with no mailto href`);
+      fail(`${page}: footer must expose a LinkedIn icon and one project link to ${contactPath}`);
     }
-    if (/mailto:/i.test(html) || /anorbert@pm\.me/i.test(html)) {
+    if (/mailto:/i.test(html) || exposesInbox(html)) {
       fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
     }
-    if (/footer-col-title">Contact/.test(html) || /href="\/contact"/.test(html)) {
-      fail(`${page}: Contact column and /contact links must not ship`);
+    if (/footer-col-title">(?:Contact|Kapcsolat)/.test(html)) {
+      fail(`${page}: a Contact column must not ship; the project action covers it`);
     }
 
     const cards = countTagsByClass(html, "div", "work-card") + countTagsByClass(html, "div", "related-work-card");
     const rows = countTagsByClass(html, "div", "work-row");
     const cardTitleLinks = countTagsByClass(html, "a", "work-title") + countTagsByClass(html, "a", "related-work-title");
-    if (page === "index.html" || page === "works.html") {
+    if (baseOf(page) === "index.html" || baseOf(page) === "works.html") {
       if (rows !== cardTitleLinks) fail(`${page}: each selected-work row must have exactly one title link`);
     } else if (cards !== cardTitleLinks) {
       fail(`${page}: each project card must have exactly one title link`);
@@ -225,7 +226,7 @@ for (const page of ALL_PAGES) {
     }
   }
 
-  if (page === "about.html") {
+  if (baseOf(page) === "about.html") {
     const rail = html.match(/<nav\b[^>]*class="[^"]*\bstory-rail\b[^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
     const links = [...rail.matchAll(/<a\b[^>]*>/gi)].map(match => match[0]);
     const targets = links.map(tag => attribute(tag, "href"));
@@ -249,7 +250,7 @@ for (const page of ALL_PAGES) {
     }
   }
 
-  if (page.startsWith("work/")) {
+  if (baseOf(page).startsWith("work/")) {
     if (count(html, /<article\b/gi) !== 1 || count(html, /<\/article>/gi) !== 1) {
       fail(`${page}: case-study content is not one article`);
     }
@@ -329,7 +330,7 @@ if (!/<p\b[^>]*class="sr-only"[^>]*>Domains include/i.test(homeHtml) ||
 }
 for (const page of ["index.html", "works.html"]) {
   const html = readFileSync(join(ROOT, page), "utf8");
-  if (page === "index.html") {
+  if (baseOf(page) === "index.html") {
     const rows = countTagsByClass(html, "div", "work-row");
     const summaries = countTagsByClass(html, "p", "work-card-summary");
     if (rows !== summaries || rows !== 6) fail(`${page}: every selected-work row needs a visible scope summary`);
@@ -373,7 +374,7 @@ const cssContracts = [
 ];
 for (const [pattern, message] of cssContracts) if (!pattern.test(responsiveCss)) fail(message);
 const editorialCss = readFileSync(join(ROOT, "assets/css/editorial-sections.css"), "utf8");
-for (const selector of ["button\\.footer-email", "a\\.footer-contact-link"]) {
+for (const selector of ["\\.footer-email", "a\\.footer-contact-link"]) {
   const rule = new RegExp(`\\.footer-section\\.editorial-footer ${selector}\\s*\\{([^}]+)\\}`).exec(editorialCss)?.[1] || "";
   if (!/min-height:\s*48px/.test(rule) || !/height:\s*auto/.test(rule)) fail(`Editorial ${selector}: needs a 48px minimum with text reflow`);
 }
@@ -400,13 +401,13 @@ if (!navigationJs.includes('primaryNavigation.setAttribute("data-nav-menu-open",
     !animationJs.includes('window.addEventListener("portfolio:motionchange"')) {
   fail("independent menu and shared motion preference bridge are incomplete");
 }
-if (/anorbert@pm\.me/.test(navigationJs) || /mailto:anorbert/.test(navigationJs)) {
+if (exposesInbox(navigationJs) || /mailto:/.test(navigationJs)) {
   fail("MailtoInHtml: do not store the complete address as one string in JS");
 }
-if (!navigationJs.includes('["mai", "lto"]') || !navigationJs.includes("button.footer-email") ||
-    !navigationJs.includes("location.assign") || /setAttribute\(\s*["']href["']/.test(navigationJs) ||
-    /a\.footer-email/.test(navigationJs)) {
-  fail("Email click must location.assign from split parts on a native button, without writing href");
+// NN/g audit (2026-10-06): contact goes through the form; no script assembles
+// or opens a mail address any more.
+if (/mailto|\["mai", "lto"\]|footerMailHref/.test(navigationJs)) {
+  fail("No script may assemble or open a mail address; contact goes through the form");
 }
 const takeoverIndex = animationJs.indexOf("var webflowMotionReady = scheduleWebflowMotionTakeover()");
 const startIndex = animationJs.indexOf("function startResponsiveMotion()");

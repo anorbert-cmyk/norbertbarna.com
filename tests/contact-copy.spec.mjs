@@ -1,16 +1,21 @@
 import { expect, test } from "@playwright/test";
+import { exposesInbox } from "../scripts/private-inbox.mjs";
 
-const projectCopy = {
-  en: { label: "Discuss your project", title: "Opens your email app to discuss your project" },
-  hu: { label: "Beszéljünk a projektedről", title: "Megnyitja a leveleződet, hogy a projektedről írhass." },
+// Every contact action is a native link to the contact form in the page
+// language (owner, 2026-10-06). No page or script carries or assembles the
+// inbox address; it lives only in the server's CONTACT_TO variable.
+const contactCopy = {
+  en: { href: "/contact", project: "Discuss your project", privacy: "Contact form", menu: "Contact" },
+  hu: { href: "/hu/kapcsolat", project: "Beszéljünk a projektedről", privacy: "Kapcsolatfelvételi űrlap", menu: "Kapcsolat" },
 };
-const contactHref = ["mai", "lto", ":"].join("") + ["anorbert", "@", "pm", ".", "me"].join("");
-const routes = ["/", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem"];
+const routes = ["/", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem", "/hu", "/hu/munkak", "/hu/munka/instructure"];
 const viewports = [
   { width: 320, height: 720, activation: "pointer" },
   { width: 390, height: 844, activation: "Enter" },
+  // Space must not activate a link (it is not a disguised button); Enter does.
   { width: 1280, height: 900, activation: "Space" },
 ];
+const languageOf = (route) => route === "/hu" || route.startsWith("/hu/") ? "hu" : "en";
 
 // reducedMotion is a BrowserContext option, not a standalone TestOptions fixture.
 test.use({ contextOptions: { reducedMotion: "reduce" } });
@@ -175,9 +180,14 @@ for (const adjustment of ["text 200%", "WCAG text spacing"]) {
     }
     await assertMenuIconFits(page);
     await page.locator(".menu-button").click();
-    await expect(page.locator(".navbar button.footer-email")).toBeVisible();
-    await assertControlTextFits(page.locator(".navbar button.footer-email"), "header contact", viewport);
-    await assertNoControlOverlap(page, [".navbar button.footer-email", ".navbar .footer-contact-link"], "header contact does not overlap LinkedIn");
+    const contact = page.locator('.navbar a.nav-link[href="/contact"]');
+    await expect(contact).toBeVisible();
+    await expect(contact).toHaveText("Contact");
+    await expect(page.locator(".navbar button.footer-email, .navbar .footer-email")).toHaveCount(0);
+    await assertControlTextFits(contact, "header contact", viewport);
+    await assertControlTextFits(page.locator(".navbar a.lang-switch"), "header language link", viewport);
+    await assertNoControlOverlap(page, ['.navbar a.nav-link[href="/contact"]', ".navbar .footer-contact-link"], "header contact does not overlap LinkedIn");
+    await assertNoControlOverlap(page, [".navbar .footer-contact-link", ".navbar a.lang-switch"], "LinkedIn does not overlap the language link");
     await page.locator(".menu-button").click();
     const primaryAction = ".home-mast[data-morph-active] .hero-work-link, .home-mast:not([data-morph-active]) .home-intro-work";
     await assertControlTextFits(page.locator(primaryAction), "hero CTA", viewport);
@@ -305,7 +315,9 @@ test("header AA: a later footer pointer interaction must not resurrect stale nav
 test("header AA: Escape returns focus and Tab can leave the non-modal disclosure unobscured", async ({ page }) => {
   await openHeaderFixture(page, { width: 390, height: 844 });
   const toggle = page.locator(".menu-button");
-  const lastControl = page.locator(".navbar button.footer-email");
+  // The language link is the last control of every menu.
+  const lastControl = page.locator(".navbar a.lang-switch");
+  await expect(page.locator("#primary-navigation a[href]").last()).toHaveClass(/\blang-switch\b/);
   await toggle.focus();
   await page.keyboard.press("Enter");
   await lastControl.focus();
@@ -327,8 +339,8 @@ test("header AA: 568x200 landscape menu keeps every control reachable with enlar
   await testInfo.attach("landscape-text-resize-snapshot", { body: JSON.stringify(snapshot, null, 2), contentType: "application/json" });
   await page.locator(".menu-button").click();
   const controls = page.locator("#primary-navigation a[href], #primary-navigation button");
-  await expect(page.locator("#primary-navigation a.nav-link")).toHaveText(["Works", "About", "AI integration"]);
-  await expect(controls).toHaveCount(5);
+  await expect(page.locator("#primary-navigation a.nav-link")).toHaveText(["Works", "About", "AI integration", "Contact", "Magyar"]);
+  await expect(controls).toHaveCount(6);
   for (let index = 0; index < await controls.count(); index += 1) {
     const control = controls.nth(index);
     await control.focus();
@@ -348,98 +360,126 @@ test("header AA: 568x200 landscape menu keeps every control reachable with enlar
 
 for (const viewport of viewports) {
   for (const route of routes) {
-    test(`${viewport.width} ${route}: contact copy, fit and native ${viewport.activation}`, async ({ page }) => {
+    test(`${viewport.width} ${route}: contact links, fit and native ${viewport.activation}`, async ({ page, request }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      const vendorRequests = [];
-      await page.route(/posthog\.com/, async (request) => {
-        vendorRequests.push(request.request().url());
-        await request.abort();
+      const language = languageOf(route);
+      const copy = contactCopy[language];
+      const vendorRequests = [], mailHandoffs = [], scripts = [];
+      await page.route(/posthog\.com/, async (intercepted) => {
+        vendorRequests.push(intercepted.request().url());
+        await intercepted.abort();
       });
-      await page.addInitScript(() => { window.contactHandoffs = []; });
-      await page.route("**/assets/js/navigation.js", async (request) => {
-        const response = await request.fetch();
-        const source = await response.text();
-        const assign = "window.location.assign(footerMailHref());";
-        expect(source.split(assign)).toHaveLength(2);
-        // Run the real native click handler; stub only the external app handoff.
-        // No email app is opened and no email is sent by this test.
-        await request.fulfill({ response, body: source.replace(assign, "window.contactHandoffs.push(footerMailHref());") });
+      page.on("request", (sent) => { if (/^mailto:/i.test(sent.url())) mailHandoffs.push(sent.url()); });
+      page.on("response", async (response) => {
+        if (response.request().resourceType() === "script" && new URL(response.url()).hostname === "127.0.0.1") {
+          scripts.push({ url: response.url(), body: await response.text().catch(() => "") });
+        }
       });
       const response = await page.goto(route);
       expect(response.status()).toBe(200);
       await assertReducedContactPage(page);
       await page.waitForFunction(() => document.fonts.status === "loaded");
-      const expectedCount = 2;
-      const buttons = page.locator("button.footer-email");
-      await expect(buttons).toHaveCount(expectedCount);
 
-      for (let index = 0; index < expectedCount; index += 1) {
-        const button = buttons.nth(index);
-        const scope = await button.evaluate((element) => ({
+      // The contact form the links lead to is published in this language.
+      const form = await request.get(copy.href);
+      expect(form.status()).toBe(200);
+      expect(await form.text()).toMatch(/<form\b/);
+
+      await expect(page.locator("button.footer-email")).toHaveCount(0);
+      const menuContact = page.locator(`#primary-navigation a.nav-link[href="${copy.href}"]`);
+      await expect(page.locator("#primary-navigation a[href$='/contact'], #primary-navigation a[href$='/kapcsolat']")).toHaveCount(1);
+      await expect(menuContact).toHaveText(copy.menu);
+      expect(await menuContact.getAttribute("aria-label")).toBeNull();
+      const links = page.locator("a.footer-email");
+      const expectedCount = ["/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem"].includes(route) ? 2 : 1;
+      await expect(links).toHaveCount(expectedCount);
+
+      const targets = [{ locator: menuContact, kind: "menu" }];
+      for (let index = 0; index < expectedCount; index += 1) targets.push({ locator: links.nth(index), kind: "action" });
+      for (const { locator: link, kind } of targets) {
+        const scope = await link.evaluate((element) => ({
           main: Boolean(element.closest("main")),
           nav: Boolean(element.closest(".navbar")),
           footer: Boolean(element.closest("footer")),
           lang: element.closest("[lang]")?.lang,
+          tag: element.tagName,
         }));
-        const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
-        const language = route.startsWith("/hu/") ? "hu" : "en";
-        const homeNav = scope.nav && route === "/";
-        const label = privacyContact || homeNav ? "Email" : projectCopy[language].label;
-        const accessibleName = homeNav ? "Email to discuss a project" : label;
+        expect(scope.tag).toBe("A");
+        await expect(link).toHaveAttribute("href", copy.href);
+        expect(await link.getAttribute("type"), "a link is not a button").toBeNull();
+        expect(await link.getAttribute("title"), "no tooltip promises an email app").toBeNull();
+        expect(scope.lang).toBe(language);
         if (scope.nav && viewport.width < 992) await page.locator(".menu-button").click();
-        await expect(button).toBeVisible();
-        if (["/ai-integration", "/hu/ai-integracio"].includes(route)) {
-          await expect(button.locator('span[aria-hidden="true"]')).toHaveText("→");
-          expect(await button.evaluate((element) => [...element.childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join("").trim())).toBe(label);
-        } else await expect(button).toHaveText(label);
-        await expect(button).toHaveAccessibleName(accessibleName);
-        await expect(button).toHaveAttribute("type", "button");
-        await expect(button).not.toHaveAttribute("href");
-        if (privacyContact) {
-          expect(await button.getAttribute("title")).toBeNull();
+        await expect(link).toBeVisible();
+        if (kind === "action") {
+          const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
+          const label = privacyContact ? copy.privacy : copy.project;
+          if (["/ai-integration", "/hu/ai-integracio"].includes(route)) {
+            await expect(link.locator('span[aria-hidden="true"]')).toHaveText("→");
+            expect(await link.evaluate((element) => [...element.childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join("").trim())).toBe(label);
+          } else await expect(link).toHaveText(label);
+          await expect(link).toHaveAccessibleName(label);
+          await link.scrollIntoViewIfNeeded();
+          const size = await link.evaluate((element) => {
+            const box = element.getBoundingClientRect();
+            const style = getComputedStyle(element);
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            return {
+              width: box.width, height: box.height, left: box.left, right: box.right,
+              expected: Math.max(44, range.getBoundingClientRect().width +
+                parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) +
+                parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth)),
+              overflow: element.scrollWidth - element.clientWidth,
+            };
+          });
+          if (scope.footer) expect(size.height, "footer contact target").toBeGreaterThanOrEqual(48);
+          else expect(size.height, "contact target").toBeGreaterThanOrEqual(44);
+          expect(size.width).toBeGreaterThanOrEqual(44);
+          expect(Math.abs(size.width - size.expected), "link width must fit its actual label").toBeLessThanOrEqual(2);
+          expect(size.overflow).toBeLessThanOrEqual(1);
+          expect(size.left).toBeGreaterThanOrEqual(-1);
+          expect(size.right).toBeLessThanOrEqual(viewport.width + 1);
         } else {
-          await expect(button).toHaveAttribute("title", projectCopy[language].title);
-          expect(scope.lang).toBe(language);
+          // Compact disclosure rows are 48px; the desktop bar keeps its siblings' target
+          // height (44px, or the AI bar's existing 36px), never below WCAG 2.5.8.
+          const box = await link.boundingBox();
+          const sibling = await page.locator("#primary-navigation a.nav-link:visible").first().boundingBox();
+          if (viewport.width < 992) expect(box.height, "menu contact row").toBeGreaterThanOrEqual(48);
+          else {
+            expect(Math.abs(box.height - sibling.height), "menu contact matches its sibling targets").toBeLessThanOrEqual(1);
+            expect(box.height, "menu contact target").toBeGreaterThanOrEqual(["/ai-integration", "/hu/ai-integracio"].includes(route) ? 24 : 44);
+          }
         }
-        await button.scrollIntoViewIfNeeded();
-        const size = await button.evaluate((element) => {
-          const box = element.getBoundingClientRect();
-          const style = getComputedStyle(element);
-          const range = document.createRange();
-          range.selectNodeContents(element);
-          return {
-            width: box.width, height: box.height, left: box.left, right: box.right,
-            expected: Math.max(44, range.getBoundingClientRect().width +
-              parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) +
-              parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth)),
-            overflow: element.scrollWidth - element.clientWidth,
-          };
-        });
-        if (scope.footer) expect(size.height, "footer contact target").toBeGreaterThanOrEqual(48);
-        else if (["/ai-integration", "/hu/ai-integracio"].includes(route)) expect(size.height, "AI project contact target").toBeGreaterThanOrEqual(44);
-        else expect(size.height).toBe(homeNav && viewport.width < 992 ? 48 : 44);
-        expect(size.width).toBeGreaterThanOrEqual(44);
-        if (homeNav && viewport.width < 992) {
-          expect(size.width, "compact menu action may fill its available row").toBeGreaterThanOrEqual(size.expected);
-        } else {
-          expect(Math.abs(size.width - size.expected), "button width must fit its actual label").toBeLessThanOrEqual(2);
-        }
-        expect(size.overflow).toBeLessThanOrEqual(1);
-        expect(size.left).toBeGreaterThanOrEqual(-1);
-        expect(size.right).toBeLessThanOrEqual(viewport.width + 1);
-        if (viewport.activation === "pointer") await button.click();
+        const before = page.url();
+        if (viewport.activation === "pointer") await link.click();
         else {
-          await button.focus();
-          await page.keyboard.press(viewport.activation);
+          await link.focus();
+          if (viewport.activation === "Space") {
+            await page.keyboard.press("Space");
+            await page.waitForTimeout(150);
+            expect(page.url(), "Space does not activate a native link").toBe(before);
+            await link.focus();
+          }
+          await page.keyboard.press("Enter");
         }
-        await expect.poll(() => page.evaluate(() => window.contactHandoffs.length)).toBe(index + 1);
+        await page.waitForURL((url) => url.pathname === copy.href);
+        await page.goBack();
+        await page.waitForURL((url) => url.pathname === new URL(before).pathname);
         if (scope.nav && viewport.width < 992) {
           await expect(page.locator(".menu-button")).toHaveAttribute("aria-expanded", "false");
         }
       }
 
-      expect(await page.evaluate(() => window.contactHandoffs)).toEqual(Array(expectedCount).fill(contactHref));
-      expect(await page.content()).not.toMatch(/mailto:|anorbert@pm\.me/i);
+      expect(mailHandoffs, "no contact action hands off to an email app").toEqual([]);
+      const html = await page.content();
+      expect(html).not.toMatch(/mailto:/i);
+      expect(exposesInbox(html)).toBe(false);
+      expect(scripts.length).toBeGreaterThan(0);
+      for (const script of scripts) {
+        expect(script.body, `${script.url} carries no mail scheme`).not.toMatch(/mailto/i);
+        expect(exposesInbox(script.body), `${script.url} does not expose the inbox`).toBe(false);
+      }
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
       expect(await page.evaluate(() => ({
         enabled: window.PortfolioAnalyticsConfig.enabled,
