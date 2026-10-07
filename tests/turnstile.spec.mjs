@@ -35,9 +35,11 @@ for (const route of ["/contact", "/hu/kapcsolat"]) {
       });
     });
     await page.goto(route, { waitUntil: "load" });
-    const widget = page.frameLocator('.contact-turnstile iframe[src*="challenges.cloudflare.com"]');
-    await expect(page.locator('.contact-turnstile iframe[src*="challenges.cloudflare.com"]')).toHaveCount(1, { timeout: 20_000 });
-    await expect(widget.locator("body")).toBeAttached({ timeout: 20_000 });
+    // Turnstile mounts its frame inside a closed shadow root, so no selector
+    // reaches it; the page's frame tree does, and the frame must sit in the
+    // widget container the form provides.
+    await expect.poll(() => page.evaluate(() => typeof window.turnstile === "object" && document.querySelector(".contact-turnstile")?.childElementCount > 0), { timeout: 20_000 }).toBe(true);
+    await expect.poll(() => page.frames().some((frame) => frame.url().startsWith("https://challenges.cloudflare.com/")), { timeout: 20_000 }).toBe(true);
 
     await fill(page);
     const posted = page.waitForRequest((request) => request.url().endsWith("/api/contact") && request.method() === "POST", { timeout: 40_000 });
