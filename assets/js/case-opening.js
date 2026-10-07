@@ -112,6 +112,7 @@
     if (entrance) { entrance.destroy(); entrance = null; }
     ENTRANCE.forEach(function (key) { media.style.removeProperty(key); });
     restoreHeading();
+    markFlat();
     setState("settled");
   }
   function finish() { if (!destroyed) { started = true; clearEntrance(); } }
@@ -178,6 +179,7 @@
     try {
       letters = splitHeading();
       entrance = buildEntrance(Physics);
+      markFlat();
       entrance.rested().then(function () { if (entrance) clearEntrance(); });
       // render(0) paints the first pose in this task, before the gate lifts.
       entrance.start();
@@ -206,6 +208,12 @@
     if (text === paintedSettle) return;
     paintedSettle = text;
     media.style.setProperty("--case-settle", text);
+    markFlat();
+  }
+  // At rest in the reading plane the panel carries no transform at all, so it
+  // rasterises exactly as the reduced-motion page does.
+  function markFlat() {
+    media.toggleAttribute("data-case-flat", !entrance && (paintedSettle === null || paintedSettle === "0"));
   }
   function onScroll() {
     if (!settleOn) return;
@@ -225,6 +233,7 @@
     if (settle) { settle.world.destroy(); settle = null; }
     paintedSettle = null;
     media.style.removeProperty("--case-settle");
+    markFlat();
   }
   function installSettle() {
     removeSettle();
@@ -254,6 +263,7 @@
     listeners.abort();
     clearTimeout(resizeTimer);
     media.classList.remove("case-opening-media");
+    media.removeAttribute("data-case-flat");
     setState("static");
     api.state = "destroyed";
   }

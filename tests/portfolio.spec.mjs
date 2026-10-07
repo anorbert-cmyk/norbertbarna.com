@@ -1959,7 +1959,13 @@ test("selected-work repeated hover and interrupted reversals preserve smooth int
   await page.clock.runFor(64);
   const entering = await expectIntermediate("interrupted enter");
   await reverseContinuously(leave);
+  // The row's spring keeps its velocity through a reversal (2026-10-07 lock):
+  // the frame decelerates for a moment, never jumps backwards, then returns.
   await page.clock.runFor(32);
+  const turning = await workMotionState(page, 0);
+  expect(turning.scale, "a reversal carries the current velocity instead of flipping it").toBeGreaterThanOrEqual(entering.scale - 0.0005);
+  expect(turning.scale, "the carried momentum is small and bounded").toBeLessThan(entering.scale + 0.006);
+  await page.clock.runFor(96);
   const leaving = await workMotionState(page, 0);
   expect(leaving.scale).toBeGreaterThan(1.001);
   expect(leaving.scale).toBeLessThan(entering.scale);
@@ -1980,13 +1986,12 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
   await openStable(page, "/");
   const list = page.locator(".work-list");
   await expect(list).toHaveAttribute("data-work-motion", "pointer");
+  // Pointer hover runs on one first-party physics world: one clamped spring per row.
   const allocated = await page.evaluate(() => {
-    window.__workMotionAnimations = new Set(gsap.globalTimeline.getChildren(true, true, true)
-      .filter((animation) => animation.vars.data === "work-list-motion"));
-    return window.__workMotionAnimations.size;
+    window.__workMotionWorld = window.PortfolioHover.rows;
+    return window.__workMotionWorld && !window.__workMotionWorld.destroyed ? window.__workMotionWorld.bodies.length : 0;
   });
-  expect(allocated, "the six rows use a bounded preallocated animation set").toBeGreaterThan(0);
-  expect(allocated).toBeLessThanOrEqual(6 * 6);
+  expect(allocated, "the six rows use one preallocated spring each").toBe(6);
   await list.evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 100));
   const rows = await page.locator(".work-row").all();
   for (let step = 0; step < 18; step += 1) {
@@ -1997,9 +2002,8 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
     expect(await row.evaluate((element, target) => element.contains(document.elementFromPoint(target.x, target.y)), point),
       "the pointer samples a visible point inside the intended row").toBe(true);
     await page.mouse.move(point.x, point.y);
-    expect(await page.evaluate(() => gsap.globalTimeline.getChildren(true, true, true)
-      .filter((animation) => animation.vars.data === "work-list-motion")
-      .every((animation) => window.__workMotionAnimations.has(animation))), "rapid pointer input must reuse its original controllers").toBe(true);
+    expect(await page.evaluate(() => window.PortfolioHover.rows === window.__workMotionWorld &&
+      window.__workMotionWorld.bodies.length === 6), "rapid pointer input must reuse its original controllers").toBe(true);
     await expectWorkMotionBounds(page, false);
   }
   await expectWorkMotionAt(page, 5, { scale: 1.06, y: -2, x: 4 });
@@ -2011,27 +2015,38 @@ test("selected-work motion reuses its controllers and cleans up repeated reduced
       window.__workPreviousAnimations = gsap.globalTimeline.getChildren(true, true, true)
         .filter((animation) => animation.vars.data === "work-list-motion");
       window.__workPreviousTriggers = ScrollTrigger.getAll().filter((trigger) => trigger.trigger?.matches(".work-row"));
+      window.__workPreviousWorld = window.PortfolioHover.rows;
     });
     if (next.width) await page.setViewportSize({ width: next.width, height: 1000 });
     else await page.emulateMedia({ reducedMotion: next.reduced });
     if (next.mode) await expect(list).toHaveAttribute("data-work-motion", next.mode);
     else await expect(list).not.toHaveAttribute("data-work-motion");
+    // A deliberate preference or breakpoint change re-lays out the home opening
+    // (pinned track against the unpinned composition); like the text-adjustment
+    // tests above, that expected reflow is not counted as a layout shift.
+    await page.waitForTimeout(100);
+    await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
     await expect.poll(() => page.evaluate(() => {
       const live = gsap.globalTimeline.getChildren(true, true, true);
       return window.__workPreviousAnimations.every((animation) => !live.includes(animation)) &&
-        window.__workPreviousTriggers.every((trigger) => !ScrollTrigger.getAll().includes(trigger));
+        window.__workPreviousTriggers.every((trigger) => !ScrollTrigger.getAll().includes(trigger)) &&
+        (!window.__workPreviousWorld || window.__workPreviousWorld.destroyed);
     })).toBe(true);
     const resources = await page.evaluate(() => ({
       animations: gsap.globalTimeline.getChildren(true, true, true).filter((animation) => animation.vars.data === "work-list-motion").length,
       triggers: ScrollTrigger.getAll().filter((trigger) => trigger.trigger?.matches(".work-row")).length,
+      springs: window.PortfolioHover.rows && !window.PortfolioHover.rows.destroyed ? window.PortfolioHover.rows.bodies.length : 0,
     }));
     expect(resources.triggers).toBe(next.mode === "scroll" ? 6 : 0);
     expect(resources.animations).toBeLessThanOrEqual(6 * 6);
+    expect(resources.springs, "pointer mode owns exactly one spring per row, other modes none").toBe(next.mode === "pointer" ? 6 : 0);
     if (!next.mode) {
       expect(resources.animations).toBe(0);
       for (let index = 0; index < 6; index += 1) await expectWorkMotionAt(page, index);
     } else {
-      expect(resources.animations).toBeGreaterThan(0);
+      // Compact rows scrub on GSAP ScrollTrigger; pointer rows use no GSAP tween.
+      if (next.mode === "scroll") expect(resources.animations).toBeGreaterThan(0);
+      else expect(resources.animations).toBe(0);
       await expectWorkMotionBounds(page, next.mode === "scroll");
     }
   }

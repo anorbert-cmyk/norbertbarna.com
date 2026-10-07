@@ -140,6 +140,29 @@ const storyCssFile = versionedAsset("assets/css/story.css", "story", "css");
 const storyMotionFile = versionedAsset("assets/js/story-motion.js", "story-motion", "js");
 const aiCssFile = versionedAsset("assets/css/ai-integration.css", "ai-integration", "css");
 const aiMotionFile = versionedAsset("assets/js/ai-motion.js", "ai-motion", "js");
+const physicsFile = versionedAsset("assets/js/physics.js", "physics", "js");
+
+// Parse-time gates (2026-10-07). Each is an inline head script that runs before
+// any stylesheet can block it: the arrival pre-curtain gate on the pages that
+// run the arrival, and the case-opening pending gate on the cases. Their
+// stylesheets fail them open (4 s and 2.9 s), so they may never hide content
+// without a bounded release.
+const ARRIVAL_GATE = '<script>(function(r){try{var n=performance.getEntriesByType("navigation")[0],f=document.referrer;if(location.hash||n&&n.type==="back_forward"||document.hidden||matchMedia("(prefers-reduced-motion: reduce)").matches||sessionStorage.getItem("nb-arrival-seen-v2")||f&&new URL(f).origin===location.origin)return;r.setAttribute("data-arrival-gate","")}catch(e){}})(document.documentElement)</script>';
+const CASE_GATE = '<script>(function(r){try{var n=performance.getEntriesByType("navigation")[0];if(location.hash||n&&n.type==="back_forward"||document.hidden||matchMedia("(prefers-reduced-motion: reduce)").matches)return;r.setAttribute("data-case-opening","pending")}catch(e){}})(document.documentElement)</script>';
+{
+  const arrivalCss = readFileSync(join(ROOT, "assets/css/arrival.css"), "utf8");
+  const openingCss = readFileSync(join(ROOT, "assets/css/case-opening.css"), "utf8");
+  if (!/html\[data-arrival-gate\] body::after\s*\{[^}]*animation:\s*arrival-gate-release 0s linear 4s forwards/.test(arrivalCss)) {
+    fail("the arrival pre-curtain gate must fail open by itself after four seconds");
+  }
+  if (!/html\[data-case-opening="pending"\][^{]*\{[^}]*opacity:\s*0;[^}]*animation:\s*case-opening-release 0s linear 2\.9s forwards/.test(openingCss)) {
+    fail("the case-opening pending gate must fail open by itself after 2.9 s");
+  }
+  const caseJs = readFileSync(join(ROOT, "assets/js/case-opening.js"), "utf8");
+  if (/window\.gsap|ScrollTrigger/.test(caseJs) || !caseJs.includes("PortfolioPhysics")) {
+    fail("the case opening runs on PortfolioPhysics, not GSAP");
+  }
+}
 
 for (const page of ALL_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
@@ -263,8 +286,26 @@ for (const page of ANIMATED_PAGES) {
     if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
       fail(`${page}: arrival must never leave the native page inert`);
     }
+    // The gates run before the first stylesheet, so no paint precedes them.
+    const head = html.slice(0, html.indexOf("</head>"));
+    const firstStyle = head.search(/<link\b[^>]*rel="stylesheet"|<link\b[^>]*stylesheet/);
+    const gates = [ARRIVAL_GATE, ...(baseOf(page).startsWith("work/") ? [CASE_GATE] : [])];
+    for (const gate of gates) {
+      const at = head.indexOf(gate);
+      if (at < 0 || head.indexOf(gate, at + 1) >= 0 || (firstStyle >= 0 && at > firstStyle)) {
+        fail(`${page}: expected one parse-time ${gate === CASE_GATE ? "case-opening" : "arrival"} gate before the first stylesheet`);
+      }
+    }
+    // physics.js: one current, deferred head copy, read by the owners after DOMContentLoaded.
+    const physicsTags = [...html.matchAll(/<script\b[^>]*\bsrc="([^"]*\/physics(?:\.[a-f0-9]+)?\.js)"[^>]*>/g)];
+    if (physicsTags.length !== 1 || physicsTags[0][1] !== `${assetPrefix(page)}assets/js/${physicsFile}` ||
+        !/\bdefer\b/.test(physicsTags[0][0]) || html.indexOf(physicsTags[0][0]) > html.indexOf("</head>")) {
+      fail(`${page}: expected one current deferred physics.js in the head`);
+    }
   } else if (arrivalRefs.length !== 0) {
     fail(`${page}: arrival is scoped to the home and project openings`);
+  } else if (html.includes('data-arrival-gate') || html.includes('data-case-opening","pending')) {
+    fail(`${page}: the parse-time gates belong to the pages that run the arrival and the case opening`);
   }
 
   checkBackToTop(page, html);
@@ -291,8 +332,9 @@ for (const page of ANIMATED_PAGES) {
     }
 
     checkRichTextImages(page, html);
-    if (!/class="case-opening-fold"[^>]*aria-hidden="true"/.test(html)) {
-      fail(`${page}: case opening fold must be decorative and hidden from assistive technology`);
+    // The folded corner retired with its GSAP path (2026-10-07); only case-opening.js animates the opening.
+    if (/case-opening-fold/.test(html)) {
+      fail(`${page}: the retired case-opening fold markup must not return`);
     }
   }
 }

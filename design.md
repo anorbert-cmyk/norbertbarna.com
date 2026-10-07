@@ -17,7 +17,7 @@ This file follows the loop in
    mechanics live in CSS. Never read a hashed copy into context. The full
    ownership map is in **System reference** below.
 3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
-   scripts and seventeen Playwright specs. Mechanical failures that have
+   scripts and twenty-seven Playwright specs. Mechanical failures that have
    already been named must fail CI. **System reference → Checks** says which
    file owns which rule, so a new rule lands in one place.
 
@@ -453,7 +453,13 @@ links, heading hierarchy and visible keyboard focus.
   at full width on the page's own field (lilac everywhere, navy on About),
   with left-aligned 17px rows of 48px, no card, radius or shadow, and the
   current page underlined in olive. `compact-navigation.css` owns it;
-  `story.css` only recolours it for About.
+  `story.css` only recolours it for About. Opening shows that it drops from
+  the bar (owner-approved, 2026-10-07): a CSS clip opens downward on a
+  critically damped spring (ω 28 rad/s, ζ 1, sampled into `linear()`, about
+  .23 s) while every row is in place and interactive from the first frame,
+  and the close glyph turns a quarter into place (ω 26, ζ .7). Closing is
+  instant. `navigation.js` stays animation-free; reduced motion and
+  `html.no-motion` get no movement.
 - At widths up to 991px every page uses a stable top bar in its page palette. No travel,
   reading-slot fade, footer relocation or expanded terminal wordmark. Preserve
   native scrolling, menu/focus behavior and browser-height changes.
@@ -550,8 +556,12 @@ No lead paragraph and no per-row descriptions: the owner asked for the rows only
 2. Opening grid: category, oversized responsive Funnel H1, centered complete
    `.case-hero-media`, then the original regular dek. Images keep
    `object-fit: contain`. Four alternating vertical masks reveal the actual
-   media over 2.3 seconds; title letters restore the original semantic nodes.
+   media within 2.3 seconds; title letters restore the original semantic nodes.
    A separate 150–220px native-scroll interval settles the panel perspective.
+   The entrance runs on first-party physics (2026-10-07, see **Motion → Case
+   opening**): the panel is a plate hinged on its lower edge that stands up
+   against the reading plane, and a parse-time gate keeps the finished title
+   and panel from painting before the entrance.
 3. Fact band with four keys directly under the hero
 4. No visible byline. “Written by / Published / Updated” never appears on
    the page; authorship and dates live in meta tags and JSON-LD only.
@@ -748,7 +758,7 @@ markup that is being retired: check the page before reusing it.
 `.about-section-title`
 
 **Case:** `article.case-study-article` `.case-study-header`
-`.case-opening-fold` `h1#case-title` `.banner-section` `.banner-content-area`
+`h1#case-title` `.banner-section` `.banner-content-area`
 `.banner-content-wrap` `.banner-title` `.banner-text` `.case-hero-media`
 `.case-hero-shot` `.case-facts-section` `.case-facts` `.case-toc`
 `.case-toc__inner` `.case-toc__label` `.case-evidence-note` `.summary`
@@ -791,7 +801,10 @@ renaming one silently disables a feature. `data-hero-critical`
 slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow`
 `data-composition-nav` `data-autoplay-video` `data-motion-video`
 `data-video-urls` `data-poster-url` `data-video-label` `data-object-fit`
-`data-consent-settings` `data-story` `data-story-*` (`-art` `-line` `-mode`
+`data-consent-settings` `data-arrival-gate` (root, parse time: the
+pre-curtain veil) `data-case-opening` (root: `pending` from the parse-time
+gate, then `assembling`, `settled`) `data-case-flat` (the case panel rests
+untransformed) `data-work-motion` `data-story` `data-story-*` (`-art` `-line` `-mode`
 `-motion` `-motion-toggle` `-reflow` `-scene` `-stage` `-step`). Five more
 `data-story-*` attributes in `about.html` — `-backdrop` `-sculpture`
 `-shade` `-wing` — are markup state that no script queries; the animation binds
@@ -915,12 +928,12 @@ only to the sitemap.
 | `fonts.css` | Self-hosted Inter and Funnel Display; Latin and Latin-ext faces | every page, including 404 |
 | `norbertbarna.webflow.*.css` | Inherited Webflow base | every page |
 | `responsive.css` | Site tokens, chrome lock, type scale, reflow, footer base | every page |
-| `arrival.css` | First-session name assembly and curtain | `/`, cases |
+| `arrival.css` | First-session name assembly, curtain and the pre-curtain gate | `/`, cases |
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
 | `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
 | `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
-| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure | 14 content pages |
-| `case-opening.css` | Lilac case stage and the four-slice media reveal | cases |
+| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure and its drop | 14 content pages |
+| `case-opening.css` | Lilac case stage, the composed entrance/settle transform, the four-slice media reveal and the pending gate | cases |
 | `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
 | `consent.css` | Consent banner and `.footer-privacy` only | 14 content pages, unhashed |
@@ -962,21 +975,31 @@ JavaScript dependency is part of this contract.
 | `consent.js` | Consent record, settings reveal, focus return | no |
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
-| `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory and stops, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; loaded by the contact pages | yes |
+| `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory and stops, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; a deferred head script on the contact pages, the fourteen cases and both homes | yes |
 | `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; no mail handler; deliberately has no animation dependency | no |
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
 | `immersive-navigation.js` | Compact state, real Works/case progress and Home consent clearance; no navigation travel | yes |
-| `case-opening.js` | Case title and media assembly, perspective settle | yes |
+| `case-opening.js` | Case title and media entrance on `PortfolioPhysics` (hinged panel, rise, mask springs, letter springs) and the native-scroll perspective settle; no GSAP | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
 | `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: the motion and mode verdicts, the bar tone, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) | yes |
-| `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field | yes |
+| `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field; the home selected-work and related-card pointer hover on `PortfolioPhysics` springs | yes |
 | `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
 
 Load order is a contract, not a preference:
 
 - `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
+- `physics.js` follows the analytics trio as a deferred head script on the
+  contact pages, the cases, `/` and `/hu`. Deferred scripts run after the
+  end-of-body owners and before `DOMContentLoaded`, so an owner reads
+  `window.PortfolioPhysics` only once that event has fired (`case-opening.js`
+  starts on it; `animations.js` starts after `load`) and settles to its end
+  state if the module is missing.
+- The parse-time gates are inline head scripts placed before the first
+  stylesheet, each with its CSP hash in `server.js`: the arrival pre-curtain
+  gate on `/`, `/hu` and the cases, then the case-opening pending gate on the
+  cases. `check-motion.mjs` holds their bodies, order and fail-open timings.
 - `media.js` before any GSAP owner, so video never depends on animation.
 - On the AI service pages: `animations.js` → `hero-scene.js` → `ai-motion.js`, the last script.
 - On `/`: `hero-scene.js` → `home-composition.js` → `arrival.js` →
@@ -1081,6 +1104,9 @@ Playwright specs, grouped by what they defend:
 - **Arrival and hero:** `arrival-fidelity`, `arrival-pointer`, `hero-motion`,
   `hero-reference`, `home-composition`, `home-first-paint`.
 - **Chrome:** `compact-navigation`, `home-sticky-navigation`, `work-sticky-navigation`, `contact-copy`, `case-first-paint`.
+- **Motion physics:** `motion-physics` (case opening, parse-time gates, hover
+  springs and the compact menu drop, read from the module's world samples and
+  a frame tracer).
 - **Content and access:** `portfolio` (the large accessibility and AA suite),
   `editorial-media`, `story-motion`.
 - **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,
@@ -1097,10 +1123,11 @@ one-year immutable policy **only** to files whose name carries the first
 twelve characters of their own SHA-256 digest, in these families:
 
 - JS: `animations`, `media`, `arrival`, `hero-scene`, `home-composition`,
-  `immersive-navigation`, `case-opening`, `story-motion`
+  `immersive-navigation`, `case-opening`, `story-motion`, `ai-motion`,
+  `contact`, `physics`
 - CSS: `case-motion`, `responsive`, `arrival`, `home-composition`,
   `case-opening`, `editorial-sections`, `compact-navigation`, `project-index`,
-  `story`
+  `story`, `ai-integration`, `fonts`, `contact`
 
 After editing one of those sources: recompute the digest, write the hashed
 copy beside the source, update every page reference, and delete nothing. Stale
@@ -1157,7 +1184,8 @@ and the unpinned reading composition never flashes before it; the script
 removes the attribute after four seconds if no morph owner arrives. The owner
 reported the drawing-then-glass change on load as a defect; do not reintroduce
 a visible static state that the glass then replaces.
-Keep `.case-motion-rail` hidden.
+The PROJECT FLOW rail is retired with the case fold (2026-10-07): no script
+creates either, and `responsive.css` keeps `.case-motion-rail` hidden as a guard.
 
 The central glass form assembles once, then responds to pointer tilt,
 fragment hover and drag. Its raw WebGL renderer sleeps when idle/offscreen.
@@ -1199,12 +1227,59 @@ event is stored; unavailable session storage leaves the introduction skipped.
 Reduced motion, unavailable prerequisites, no JavaScript,
 restored scroll/hash navigation and user interaction must have prompt readable
 content. Bounded fail-open cleanup prevents an overlay trapping the page.
+
+**Pre-curtain gate (owner-approved, 2026-10-07).** On a slow network the page
+used to paint before `arrival.js` could add the curtain (first paint 1.0 s,
+curtain 1.9 s on slow 4G). An inline head script now marks the root
+`data-arrival-gate` at parse time when the first-arrival conditions hold (no
+session marker, no same-origin referrer, no hash, not back/forward, visible
+tab, no reduced motion), and `arrival.css` paints the curtain's own navy field
+as a `body::after` veil. It is visual only: the document stays readable,
+focusable and in the accessibility tree. `arrival.js` lifts it in the same
+task that adds the curtain, and on every path where the arrival does not run;
+without `arrival.js` the veil hides itself after four seconds.
 Do not make the document inert or hide its only semantic copy as an animation
 prerequisite. The skip link and native navigation retain keyboard behavior.
 
 Case reveals decorate existing title/media and settle into complete readable
 geometry; users can immediately scroll or follow the TOC. Kineticare's video
 remains solely owned by `media.js`, with its existing 4.5-second cap.
+
+**Case opening (first-party physics, owner-approved 2026-10-07).** The former
+GSAP scroll scrub wrote inline `translate/rotate/scale: none` over the
+entrance, so the rise and tilt never rendered, and on a slow network the
+finished opening painted first and was then hidden and assembled again.
+`case-opening.js` now owns the opening alone on `PortfolioPhysics` (no GSAP).
+Frequencies are ω in rad/s (f = ω/2π), ζ the damping ratio:
+
+- The panel is a plate hinged on its lower edge (`transform-origin: 50% 100%`).
+  It starts 13° back (7° compact) and a crease spring (ω 3.6, ζ .55) stands it
+  up against a stop at 0° with restitution .25: first contact .71 s after its
+  release, one bounce under .5°, under .05° by 1.65 s. It rises 60px (28px
+  compact) and grows from .92 on one critically damped progress (ω 5.5,
+  within 2% by 1.08 s). Both are released with the first mask at .2 s.
+- The four alternating masks open on critically damped springs (ω 3.3) aimed
+  3% past a stop at 100%, so each lands exactly; they start .14 s apart from
+  .2 s and the last lands at 2.27 s.
+- Each title letter rises 95% and turns from -35° on its own spring (ω 9,
+  ζ .75: 2.5% overshoot, settled .62 s), 35 ms apart from .12 s, and inks in
+  linearly over 160 ms; the title is opaque by about .6 s. When the opening
+  rests the original text nodes return.
+- The entrance and the native-scroll settle write separate custom properties
+  that `case-opening.css` composes into one transform, so neither overwrites
+  the other. The settle keeps its 150–220px range and pose; a critically
+  damped follower (ω 20) replaces the .3 s scrub. In the reading plane, with
+  no entrance running, the panel carries no transform at all
+  (`data-case-flat`), so it rasterises exactly as the reduced-motion page.
+- Parse-time gate: an inline head script marks the root
+  `data-case-opening="pending"` when an entrance may run (no hash, not
+  back/forward, visible tab, no reduced motion). Until the owner starts, the
+  title and panel are unpainted; dek, category and stage paint normally. The
+  stylesheet releases them by itself 2.9 s after they first resolve, and the
+  owner then leaves them finished rather than hiding them again.
+- Reduced motion, `html.no-motion`, history and deep-link visits, a hidden
+  tab, user input during the entrance and a missing physics module all give
+  the finished opening at once, with no physics frame.
 
 Footer content and geometry stay still. The earlier gradient/mesh motion is
 retired; no decorative footer loop or pointer-triggered layout movement.
@@ -1213,19 +1288,27 @@ retired; no decorative footer loop or pointer-triggered layout movement.
 
 The home reference rows stay on paper, with no hover background field. On
 desktop fine pointers, animate the existing thumbnail frame to 1.06 scale and
--2px y while its arrow moves 4px right (0.36s power3.out in, 0.28s power2.out
-out). Keyboard focus has priority over pointer exit and preserves the instant
-visible outline. Keep text, row geometry, separators and native link targets
-still. Scale the complete frame without introducing another image crop.
+-2px y while its arrow moves 4px right. Since 2026-10-07 (owner-approved) each
+row has one spring clamped to [0, 1] on `PortfolioPhysics`, critically damped,
+ω 17 rad/s in (about .37 s) and ω 21 out (about .30 s); a reversal keeps the
+current velocity, so the frame decelerates and turns back instead of jumping
+(the former eases moved 13% in their first frame and flipped direction within
+one frame). Related project cards on the cases use the same model: image
+scale to 1.025 at ω 13 and the title line at ω 18. Keyboard focus has
+priority over pointer exit and preserves the instant visible outline. Keep
+text, row geometry, separators and native link targets still. Scale the
+complete frame without introducing another image crop. `/works` rows have no
+hover motion (owner decision, 2026-10-07).
 
 On compact layouts or coarse pointers, use native scroll through each row:
 thumbnail 1 → 1.04 → 1 scale, 0 → -1 → 0px y, arrow 0 → 3 → 0px x. The range
 runs from top 82% to bottom 28% with 0.2s scrub. A first tap follows the native
 link immediately. No pinning, snap, scroll hijacking, loops or new plugins.
 Create reusable controllers inside the existing responsive motion context;
-remove only their own listeners, transforms and ScrollTriggers on breakpoint
-or motion-preference changes. Reduced motion, no JavaScript and unavailable
-GSAP leave static readable rows and native links.
+remove only their own listeners, transforms, ScrollTriggers and physics
+worlds on breakpoint or motion-preference changes. Reduced motion, no
+JavaScript and unavailable GSAP or physics leave static readable rows and
+native links.
 
 Professional experience keeps the five original role/company/date tuples.
 Its new `.editorial-experience` layout uses a large section title with the

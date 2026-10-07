@@ -151,6 +151,8 @@
     rotateY(calc(var(--case-settle, 0) * var(--case-settle-yaw) * 1deg))
     scale(calc((1 - var(--case-enter-rise, 0) * .08) * (1 - var(--case-settle, 0) * var(--case-settle-shrink))));
 }
+/* In the reading plane with no entrance running, the panel is untransformed. */
+.case-study-header .case-opening-media[data-case-flat] { transform: none; }
 @media (max-width: 991px) {
   .case-study-header .case-opening-media {
     --case-rise-distance: 28px;
