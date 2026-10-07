@@ -974,8 +974,8 @@
     item.node.style.setProperty(name, value, "important");
   }
   function flag(item, name, value) {
-    if (item.last["@" + name] === value) return;
-    item.last["@" + name] = value;
+    if (item.last["attr:" + name] === value) return;
+    item.last["attr:" + name] = value;
     item.node.setAttribute(name, value);
   }
   function buildParts(sheetNode) {
