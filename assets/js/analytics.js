@@ -19,6 +19,9 @@
   var ROUTES = ['/', '/works', '/about', '/ai-integration', '/contact', '/privacy', '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/hu/kapcsolat', '/hu/adatvedelem']
     .concat(CASES.map(function (slug) { return '/work/' + slug; }), CASES.map(function (slug) { return '/hu/munka/' + slug; }));
   var CTA_IDS = ['consultation', 'contact', 'service'];
+  // The writing section is generated from content/, so its slugs are matched
+  // by shape: lowercase words joined by hyphens, never a query or file name.
+  var WRITING = /^\/(?:writing|hu\/irasok)(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?$/;
   var SOURCES = ['direct', 'google', 'bing', 'linkedin', 'chatgpt', 'perplexity', 'claude', 'gemini', 'copilot', 'other'];
   var CHANNELS = ['direct_or_unknown', 'organic_search', 'social_referral', 'ai_referral', 'paid', 'other_referral'];
   var pending = new Set();
@@ -33,7 +36,7 @@
 
   function allowed() {
     try {
-      return supportedHost && ROUTES.indexOf(path) !== -1 && !withdrawn && !hidden &&
+      return supportedHost && (ROUTES.indexOf(path) !== -1 || WRITING.test(path)) && !withdrawn && !hidden &&
         navigator.globalPrivacyControl !== true && navigator.doNotTrack !== '1' &&
         !/bot|crawler|spider|headless|lighthouse|pagespeed/i.test(navigator.userAgent) &&
         !!window.PortfolioConsent && window.PortfolioConsent.hasConsent() === true;
@@ -115,6 +118,7 @@
     if (path === '/about' || path === '/hu/rolam') return 'about';
     if (path === '/contact' || path === '/hu/kapcsolat') return 'contact';
     if (path === '/privacy' || path === '/hu/adatvedelem') return 'privacy';
+    if (WRITING.test(path)) return path === '/writing' || path === '/hu/irasok' ? 'writing_index' : 'article';
     return 'service';
   }
   function capture(event, placement) {
