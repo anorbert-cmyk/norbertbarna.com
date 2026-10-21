@@ -13,7 +13,7 @@ cover: /assets/images/og/writing/ai-ugyfelszolgalat-emberi-ellenorzessel.jpg
 cover_alt: Két egymás felé forduló hajtogatott papírforma, köztük egy kis papírüzenet
 pair: null
 ---
-Az AI ügyfélszolgálat akkor éri meg, ha sok, hasonló kérdés érkezik, a jó válasz megtalálható a saját dokumentumaidban, és egy hibás válasz kijavítható, mielőtt kárt okoz. Emberi ellenőrzéssel ez úgy működik, hogy az AI megírja a válasz vázlatát vagy kiválasztja a forrást, egy munkatárs pedig jóváhagyja, átírja vagy elveti. Ahol pénz, egészség vagy jogi helyzet a tét, az utolsó szó emberé.
+Az AI ügyfélszolgálat akkor éri meg, ha sok, hasonló kérdés érkezik, a jó válasz megtalálható a saját dokumentumaidban, és egy hibás válasz kijavítható, mielőtt kárt okoz. Emberi ellenőrzéssel ez úgy működik, hogy az AI megírja a válasz vázlatát vagy kiválasztja a forrást, egy munkatárs pedig jóváhagyja, átírja vagy elveti. Ahol pénz, egészség vagy jogi helyzet a tét, az utolsó szó az emberé.
 
 Ebben a cikkben három szintet írok le, amin az AI egy ügyfélszolgálaton dolgozhat, egy listát arról, mikor éri meg és mikor nem, hét lépést a felépítéshez, és azt, mit ír elő az EU AI-rendelete 2026 augusztusa óta.
 
@@ -31,9 +31,9 @@ Ezek tervezési szintek, nem jogi kategóriák. A legtöbb cégnek az első kett
 
 **Nem éri meg (még), ha:** a válasz minden esetben egyedi mérlegelés; nincs leírt tudásanyag, amiből az AI dolgozhatna; egy hibás válasz azonnal kárt okoz; vagy senki nem felel a hibákért.
 
-## Amit a bankból hoztam: nem minden jegy egyforma
+## Tanulság a bankból: nem minden megkeresés egyforma
 
-A Raiffeisen mobilbankjánál, ahol Product Leadként a feltárást és a terméktervezést vezettem (ez nem AI-projekt volt), az ügyfélszolgálat jelezte, mely hibák vezettek valóban telefonhívásokhoz. Az üres állapotokba tett útmutatás célja a "hogyan kezdjem?" típusú jegyek csökkentése volt; az esettanulmány szerint ez irányt jelző, nem auditált eredmény.
+A Raiffeisen mobilbankjánál, ahol Product Leadként a feltárást és a terméktervezést vezettem (ez nem AI-projekt volt), az ügyfélszolgálat jelezte, mely hibák vezettek valóban telefonhívásokhoz. Az üres képernyőkre tett útmutatás célja a „hogyan kezdjem?” típusú megkeresések csökkentése volt; az esettanulmány szerint ez irányt jelző, nem auditált eredmény.
 
 A tanulság az ügyfélszolgálati AI-ra: mielőtt AI-t teszel a válaszadásra, nézd meg, melyik kérdést a termék vagy az oldal okozza. Egy érthetőbb felület sok kérdést meg sem enged születni, és ezt érdemes a chatbot előtt megvizsgálni. Részletek: [Raiffeisen esettanulmány](/hu/munka/raiffeisen).
 
@@ -68,7 +68,7 @@ Minden ilyen projekt egyedi munka, ezért az ár a feltárás után derül ki, n
 
 ### Kiválthatja az AI az ügyfélszolgálatot?
 
-Szűk témákban válaszolhat önállóan, de a felelősség és a kivételek emberé maradnak. A cél nem a kevesebb ember, hanem a kevesebb ismétlődő munka és a gyorsabb válasz.
+Szűk témákban válaszolhat önállóan, de a felelősség és a kivételek az emberé maradnak. A cél nem a kevesebb ember, hanem a kevesebb ismétlődő munka és a gyorsabb válasz.
 
 ### Mi a különbség a chatbot és az AI ügyfélszolgálat között?
 
@@ -88,8 +88,8 @@ A saját anyagaidon kell tesztelni a prototípus- és a pilot-szakaszban. Által
 
 ### Milyen nyelven dolgozol?
 
-Magyarul és angolul. Magyar, EU-s és német cégekkel is dolgozom; a német piacra angolul.
+Magyarul és angolul. Magyar, német és más EU-s cégekkel is dolgozom; a német ügyfelekkel angolul.
 
-## Zárás
+## Összegzés
 
 Az AI ügyfélszolgálat nem azzal kezdődik, hogy melyik modellt választod, hanem azzal, hogy mely kérdésekre van jó válaszod, és ki nézi át, mielőtt kimegy. Küldd el a három leggyakoribb ügyfélkérdést anonimizálva, és megnézzük, melyikkel érdemes kezdeni: [kapcsolat](/hu/kapcsolat).

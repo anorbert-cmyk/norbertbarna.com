@@ -13,7 +13,7 @@ cover: /assets/images/og/writing/ai-bevezetese-kkv-elso-90-nap.jpg
 cover_alt: Három egyre magasabb, hajtogatott papírlépcső lila háttér előtt
 pair: null
 ---
-Egy kis- vagy középvállalkozásnál az AI bevezetése egyetlen munkafolyamattal kezdődik, nem egy eszközzel. Az első 90 napban kiválasztasz egy ismétlődő feladatot, rögzíted, mit csinálhat az AI és mit ellenőriz ember, kipróbálod valódi példákon, majd egy szűk pilotban mérsz. A végén nem "AI-stratégiád" lesz, hanem egy döntés: folytatod, átalakítod vagy leállítod.
+Egy kis- vagy középvállalkozásnál az AI bevezetése egyetlen munkafolyamattal kezdődik, nem egy eszközzel. Az első 90 napban kiválasztasz egy ismétlődő feladatot, rögzíted, mit csinálhat az AI és mit ellenőriz ember, kipróbálod valódi példákon, majd egy szűk pilotban mérsz. A végén nem „AI-stratégiád” lesz, hanem egy döntés: folytatod, átalakítod vagy leállítod.
 
 A 90 nap az én javasolt menetrendem, nem garantált időtartam. Lejjebb leírom, mitől függ, hogy elég-e. Ez a cikk azt mutatja meg, mi történik a három szakaszban, mit kapsz a végükön, és milyen hibákat látok a leggyakrabban az első hónapokban.
 
@@ -25,7 +25,7 @@ A 90 nap az én javasolt menetrendem, nem garantált időtartam. Lejjebb leírom
 
 ## Az első 90 nap, három szakaszban
 
-### 1–30. nap: ismerd meg a munkát, és rögzítsd a kereteket
+### Az első 30 nap: ismerd meg a munkát, és rögzítsd a kereteket
 
 1. Leülünk azokkal, akik ma a feladatot végzik. Végigvesszük a bemeneteket, az átadásokat, az ismétlődő döntéseket és a hibák következményeit.
 2. Meghatározzuk a viszonyítási alapot: mennyi idő, hány hiba, mennyi várakozás ma. Csak a saját méréseid számítanak; iparági átlagot nem használok.
@@ -34,17 +34,17 @@ A 90 nap az én javasolt menetrendem, nem garantált időtartam. Lejjebb leírom
 
 Amit a szakasz végén kapsz: körülhatárolt problémát, adathozzáférési kereteket és a csapatoddal egyeztetett elfogadási feltételeket.
 
-### 31–60. nap: próbáld ki fejlesztés előtt
+### A 31. naptól a 60. napig: próbáld ki fejlesztés előtt
 
 5. Prototípust készítünk jellemző, felhasználásra jóváhagyott példákkal, és bevonjuk a leendő felhasználókat.
 6. Teszteljük a kényelmetlen eseteket: bizonytalan kimenet, hiányzó adat, szerkesztés, hibajavítás. Nem a demóra tervezünk, hanem arra, amikor az AI téved.
 7. Együtt döntjük el, indokolt-e a fejlesztés, vagy változtatni kell az elképzelésen.
 
-Első kézből: az Instructure-nél, ahol a Canvas Catalog ökoszisztémáján belül a funkciófejlesztést vezettem, a Uizard, a Galileo és a Lovable eszközeivel készült prototípusok lerövidítették az utat a koncepciótól a tesztig. A fejlesztés előtt összehasonlítottuk a promptmintákat, az ellenőrzési állapotokat és a tájékoztatási modelleket. Részletek: [Instructure esettanulmány](/hu/munka/instructure).
+Saját tapasztalatból: az Instructure-nél, ahol a Canvas Catalog ökoszisztémáján belül a funkciófejlesztést vezettem, a Uizard, a Galileo és a Lovable eszközeivel készült prototípusok lerövidítették az utat a koncepciótól a tesztig. A fejlesztés előtt összehasonlítottuk a promptmintákat, az ellenőrzési állapotokat és a tájékoztatási modelleket. Részletek: [Instructure esettanulmány](/hu/munka/instructure).
 
 Amit kapsz: tesztelhető prototípust, értékelési példákat és egyértelmű döntést a fejlesztésről.
 
-### 61–90. nap: szűk pilot, kijelölt felelőssel
+### A 61. naptól a 90. napig: szűk pilot, kijelölt felelőssel
 
 8. A pilotot a meglévő rendszereidhez kötjük, kis felhasználói körrel. A felület, a rendszerkapcsolatok, a jogosultságok, az ellenőrzési lépések és a hibaágak is a feladat részei.
 9. Egy ember felel a pilotért: kezeli a problémákat, és szükség esetén leállíthatja vagy visszaállíthatja az előző verziót.
@@ -62,7 +62,7 @@ Amit kapsz: pilotértékelést, működtetési útmutatót és döntést a köve
 
 ## Gyakori hibák az első hónapokban
 
-- **Eszközzel kezdeni feladat helyett.** Az "AI-t akarunk" nem feladat. A "hetente húsz ajánlatkérést dolgozunk fel kézzel" az.
+- **Eszközzel kezdeni feladat helyett.** Az „AI-t akarunk” nem feladat. A „hetente húsz ajánlatkérést dolgozunk fel kézzel” az.
 - **Látványos demó, amely a hibás esetekre nincs felkészítve.** Az Instructure-nél mindent feltehettünk volna az automatizálásra, és látványos demóink lettek volna. Az oktatási, közszférabeli és egészségügyi ügyfelek viszont bizalmat vásárolnak, és a demó őket nem győzi meg. Ezért azzal kezdtük, minek kell emberi kézben maradnia.
 - **Viszonyítási alap nélkül mérni.** Ha nem tudod, mennyi idő volt a feladat a pilot előtt, nem tudod, segített-e.
 - **Nincs, aki leállíthatja.** Egy pilotnak akkor is kell felelős, ha minden jól megy.
@@ -95,8 +95,8 @@ Csak engedélyezett adat, rögzített hozzáférés, és leírt szabály arról,
 
 ### Milyen nyelven dolgozol?
 
-Magyarul és angolul. Magyar, EU-s és német cégekkel is dolgozom; a német piacra angolul.
+Magyarul és angolul. Magyar, német és más EU-s cégekkel is dolgozom; a német ügyfelekkel angolul.
 
-## Zárás
+## Összegzés
 
-Az AI bevezetése egy KKV-nál nem technológiai projekt, hanem egy munkafolyamat átalakítása, amelyben az ember marad a döntéshozó. Hozd a munkafolyamatot, azt, hogy kik használják, és mi számítana sikernek. Az első beszélgetéshez [ennyi elég](/hu/kapcsolat).
+Az AI bevezetése egy KKV-nál nem technológiai projekt, hanem egy munkafolyamat átalakítása, amelyben az ember marad a döntéshozó. Hozd a munkafolyamatot, azt, hogy kik használják, és azt, hogy mi számítana sikernek. Az első beszélgetéshez [ennyi elég](/hu/kapcsolat).
