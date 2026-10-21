@@ -56,7 +56,8 @@ const instructure = readFileSync(join(ROOT, "work/instructure.html"), "utf8");
 // iOS paints the northeast glyph as a blue emoji tile. Check the complete
 // served page inventory plus editable CSS/JS, not retired content-hash copies.
 {
-  const pages = ["", "work", "hu"].flatMap((directory) =>
+  // hu/irasok and writing exist only while an article is published.
+  const pages = ["", "work", "hu", "hu/munka", "hu/irasok", "writing"].filter((directory) => existsSync(join(ROOT, directory))).flatMap((directory) =>
     readdirSync(join(ROOT, directory))
       .filter((name) => name.endsWith(".html"))
       .map((name) => join(directory, name))
