@@ -17,7 +17,7 @@ Human-in-the-loop AI means a person reviews, edits or approves what the system p
 
 This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure's learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
 
-## What "human in the loop" means, and what it does not
+## What “human in the loop” means, and what it does not
 
 Three terms are commonly used, and they describe different amounts of human control:
 
@@ -31,7 +31,7 @@ Three things have to be true for a person to be genuinely in the loop. They can 
 
 ## What the EU AI Act asks of human oversight
 
-Article 14 of the EU AI Act requires that high-risk AI systems be designed so the people overseeing them can understand the system's capacities and limitations, remain aware of automation bias, interpret the output correctly, decide not to use it or override it, and stop it through a "stop" button or a similar procedure (source: [AI Act Service Desk, Article 14](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), accessed 2026-10-21).
+Article 14 of the EU AI Act requires that high-risk AI systems be designed so the people overseeing them can understand the system's capacities and limitations, remain aware of automation bias, interpret the output correctly, decide not to use it or override it, and stop it through a “stop” button or a similar procedure (source: [AI Act Service Desk, Article 14](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), accessed 2026-10-21).
 
 On timing: the Digital Omnibus on AI (Regulation (EU) 2026/1744, in force since 27 July 2026) moved the Annex III high-risk obligations to 2 December 2027 and the Annex I obligations to 2 August 2028. The Article 50 transparency duties, such as telling people they are interacting with an AI system, still apply from 2 August 2026 (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21).
 
@@ -47,13 +47,13 @@ Decide before building: the wording of the label, where it sits, and whether it 
 
 ### 2. Explain first, then suggest
 
-The Instructure design principle was "explanation before suggestion": show the signals and sources behind a suggestion before the suggestion itself. A reviewer who sees why can judge; a reviewer who only sees what can only trust.
+The Instructure design principle was “explanation before suggestion”: show the signals and sources behind a suggestion before the suggestion itself. A reviewer who sees why can judge; a reviewer who only sees what can only trust.
 
 Decide: which source cue the reviewer can actually verify in the time they have. A citation nobody opens is decoration.
 
 ### 3. Make outputs editable and reversible
 
-Outputs at Instructure were editable and undoable, with explicit review states: draft, reviewed, published. This is the interface form of Article 14's "decide not to use, override or reverse". An AI output that can only be accepted or rejected pushes people toward accepting.
+Outputs at Instructure were editable and undoable, with explicit review states: draft, reviewed, published. This is the interface form of Article 14’s “decide not to use, override or reverse”. An AI output that can only be accepted or rejected pushes people toward accepting.
 
 ### 4. Design the states nobody demos
 
@@ -92,7 +92,7 @@ If these questions do not have answers yet, that is where the work starts. In my
 
 ## What made it hard
 
-Most AI projects start with what can be automated. At Instructure we started with what must stay human. The hard part was ethical, not technical: designing for the AI being wrong, biased or misused, instead of pretending those cases would not occur. That does not make an impressive slide deck. It makes AI that real institutions can roll out to millions of people and sleep afterwards. Details: [Instructure case study](/work/instructure).
+Most AI projects start with what can be automated. At Instructure we started with what must stay human. The hard part was ethical, not technical: designing for the AI being wrong, biased or misused, instead of pretending those cases would not occur. That does not make for an impressive slide deck. It makes for AI that real institutions can roll out to millions of people and still sleep at night. Details: [Instructure case study](/work/instructure).
 
 ## Frequently asked questions
 
@@ -124,6 +124,6 @@ The tendency to over-trust a system's output. The design response is visible con
 
 Yes. Communication is in English or Hungarian; German-speaking teams work with me in English.
 
-## Close
+## Where to start
 
 Oversight is easier to design than to retrofit. The product that passes review is the one where every AI output already had a label, an edit state and a way back. Bring the workflow and the decision you are worried about, and [we start there](/contact).

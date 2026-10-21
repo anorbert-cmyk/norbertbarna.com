@@ -56,7 +56,7 @@ Languages, regulated data, accessibility requirements, procurement rules, and yo
 3. What happens in the interface when the output is wrong, empty or late?
 4. Who on your side builds, and who on ours owns it after hand-over?
 5. How do we stop or roll back the pilot?
-6. What will you not do? Ask for a clear "not in scope" list.
+6. What will you not do? Ask for a clear “not in scope” list.
 7. Which of your past projects is closest to ours, and what exactly was your role in it?
 8. How do you handle our data during the prototype?
 
@@ -64,7 +64,13 @@ Question seven is the one most portfolios answer vaguely. Mine states role and b
 
 ## Red flags
 
-These are opinions from experience, not rules. A demo before any question about your workflow. No answer on failure states. Success promised before a baseline exists. No named owner after hand-over. A proposal that names a model before it names your task.
+These are opinions from experience, not rules.
+
+- A demo before any question about your workflow.
+- No answer on failure states.
+- Success promised before a baseline exists.
+- No named owner after hand-over.
+- A proposal that names a model before it names your task.
 
 ## What I look for in a project
 
@@ -100,6 +106,6 @@ Yes. Communication is in English or Hungarian; German-speaking teams work with m
 
 Every engagement is scoped to the workflow, the data and the integrations, so the price follows from that scope. There are no fixed packages, and I give a proposal after the first conversation, not before.
 
-## Close
+## Where to start
 
 Bring the workflow, who uses it, the systems and data involved, and what success would look like. That is enough for a [first conversation](/contact), and it is the difference between a proposal and a demo.
