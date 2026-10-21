@@ -13,7 +13,7 @@ const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : route ==
 const slugs = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
 // English pages in hiring order, then the utility pairs, then the Hungarian mirror.
 const expectedCanonicalPaths = ["/", "/works", ...slugs.map((slug) => `/work/${slug}`), "/about",
-  "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
+  "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
   "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam"];
 const cssSource = readFileSync(resolve(root, "assets/css/fonts.css"), "utf8");
 const cssDigest = createHash("sha256").update(cssSource).digest("hex").slice(0, 12);

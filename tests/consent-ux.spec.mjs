@@ -50,7 +50,8 @@ for (const [language, path] of [["en", "/ai-integration"], ["hu", "/hu/ai-tanacs
       await expect(page.locator(".skip-to-content")).toBeFocused();
       let reachedSettings = false;
       let pageActions = 0;
-      for (let index = 0; index < 30; index += 1) {
+      // The Hungarian page answers eight questions, so its footer sits further down the tab order.
+      for (let index = 0; index < 45; index += 1) {
         await page.keyboard.press("Tab");
         const focused = await focusPosition(page);
         if (focused.inside) break;
