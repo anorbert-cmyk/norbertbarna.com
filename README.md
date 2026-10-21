@@ -1,10 +1,14 @@
 # Norbert Barna - Portfolio Website
 
-Self-hosted portfolio site (static HTML + a small Express server), deployed on Railway.
+Self-hosted portfolio site (static HTML + a small Express server on Node 22), deployed on Railway.
+English pages live at the root, Hungarian pages under `hu/`. Seven case studies:
+Sportsgambit, Raiffeisen, Instructure, Bitpanda, OnRobot, Kineticare and Benker.
 
 ## 🚀 Deploy
 
 ### Railway (production)
+Railway builds with Nixpacks on Node 22 (`nixpacks.toml`, `engines.node: 22.x`).
+
 ```bash
 # Install Railway CLI
 npm i -g @railway/cli
@@ -22,6 +26,7 @@ docker run -p 3000:3000 portfolio
 ```
 
 ### Local Development
+Requires Node 22.
 ```bash
 npm install
 npm start
@@ -38,6 +43,7 @@ npm run test:e2e  # Chromium scroll, layout, navigation, CLS and accessibility c
 ```
 ├── index.html          # Homepage
 ├── works.html          # Works page
+├── about.html, contact.html, ai-integration.html, privacy.html, 404.html
 ├── work/               # Individual case studies
 │   ├── sportsgambit.html
 │   ├── raiffeisen.html
@@ -46,17 +52,23 @@ npm run test:e2e  # Chromium scroll, layout, navigation, CLS and accessibility c
 │   ├── onrobot.html
 │   ├── kineticare.html
 │   └── benker.html
+├── hu/                 # Hungarian pages; hu/munka/ mirrors the 7 case studies
 ├── assets/             # All static assets
 │   ├── css/
-│   ├── js/             # animations.js + self-hosted GSAP vendor libraries
+│   ├── js/             # First-party JS (content-hashed copies are what pages load)
+│   │   └── vendor/     # GSAP 3.12.5 + ScrollTrigger, bundled locally (no CDN)
+│   ├── fonts/          # Self-hosted Funnel Display + Inter
 │   ├── images/
 │   ├── videos/
 │   └── icons/
 ├── docs/seo-keywords.md  # Keyword & long-tail strategy per page
-├── scripts/check-site.mjs # Site invariant checks (npm test)
+├── scripts/check-*.mjs  # Site invariant checks (npm test)
+├── tests/              # Playwright e2e (npm run test:e2e)
+├── design.md           # Design authority
 ├── server.js           # Express server (clean URLs, redirects, security headers)
 ├── package.json        # Node.js config
-├── Dockerfile          # Docker config
+├── Dockerfile          # Docker config (node:22-alpine)
+├── nixpacks.toml       # Railway build (nodejs_22)
 └── railway.json        # Railway config
 ```
 
