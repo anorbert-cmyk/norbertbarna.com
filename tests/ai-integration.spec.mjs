@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 // The approved merge keeps one service narrative. Motion decorates the artwork;
 // reading steps and case links are always available, including before the camera
 // reaches them. The Passage closing is the actual footer, after the FAQ.
-const ROUTES = [["en", "/ai-integration"], ["hu", "/hu/ai-integracio"]];
+const ROUTES = [["en", "/ai-integration"], ["hu", "/hu/ai-tanacsadas-fejlesztes"]];
 const SECTIONS = ["#top", "#shaped", "#pieces", "#workflow", "#selected-work", "#start", "#questions"];
 // Hungarian pages link only Hungarian pages (whole-site language switch, 2026-10-06).
 const caseHref = (language, slug) => language === "hu" ? `/hu/munka/${slug}` : `/work/${slug}`;
@@ -139,7 +139,7 @@ for (const [language, path] of ROUTES) {
       await expect(page.locator(`main a[href="${caseHref(language, slug)}"]`)).toHaveCount(1);
       await expect(page.locator(`#selected-work a[href="${caseHref(language, slug)}"] img`)).toHaveAttribute("src", `/assets/images/geometry/${slug}.960.webp`);
     }
-    const pair = language === "en" ? "/hu/ai-integracio" : "/ai-integration";
+    const pair = language === "en" ? "/hu/ai-tanacsadas-fejlesztes" : "/ai-integration";
     await expect(page.locator(`main a[href="${pair}"]`)).toHaveCount(1);
     // The menu's single language link names the other language in that language.
     const languageLink = page.locator(".navbar a.nav-link.lang-switch");
@@ -389,7 +389,8 @@ for (const [language, path] of ROUTES) {
     await page.setViewportSize({ width: 320, height: 720 });
     await open(page, path);
     const details = page.locator("#questions details");
-    await expect(details).toHaveCount(5);
+    // The Hungarian page answers eight questions (2026-10-21 SEO plan).
+    await expect(details).toHaveCount(language === "hu" ? 8 : 5);
     await expect(details.first()).toHaveAttribute("open", "");
     const second = details.nth(1);
     await expect(second).not.toHaveAttribute("open");
@@ -498,7 +499,7 @@ test("1440x900: the opening holds under the bar while the glass turns over the p
 
 test("390x844: the glass turns in its own slot without a pin", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await open(page, "/hu/ai-integracio");
+  await open(page, "/hu/ai-tanacsadas-fejlesztes");
   await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
   await settle(page);
   const state = await glassState(page);
@@ -669,4 +670,49 @@ test.describe("without JavaScript", () => {
       await expect(page).toHaveURL(new RegExp(`${caseHref(language, "instructure")}$`));
     });
   }
+});
+
+// Hungarian SEO pages (2026-10-21): the AI page moved to the searched phrases,
+// the web development page is new, and both answer eight marked-up questions.
+test("the old Hungarian AI address moves permanently to the new one", async ({ request }) => {
+  for (const legacy of ["/hu/ai-integracio", "/hu/ai-integracio/", "/hu/ai-integracio.html"]) {
+    const response = await request.get(legacy, { maxRedirects: 0 });
+    expect(response.status(), legacy).toBe(301);
+    expect(response.headers().location).toBe("/hu/ai-tanacsadas-fejlesztes");
+  }
+});
+
+for (const [path, subject] of [["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/]]) {
+  test(`${path}: use cases, scope, price factors and FAQ data match the visible page`, async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await open(page, path);
+    await expect(page.locator("main h1")).toHaveText(subject);
+    const order = await page.evaluate(() => ["#shaped", "#pieces", "#uses", "#workflow", "#scope", "#pricing", "#selected-work", "#start", "#questions"]
+      .map((id) => document.querySelector(id)?.getBoundingClientRect().top + scrollY));
+    for (let index = 1; index < order.length; index += 1) expect(order[index], "chapters follow the service reading order").toBeGreaterThan(order[index - 1]);
+    for (const id of ["#uses", "#scope", "#pricing"]) {
+      await expect(page.locator(`${id} h2`)).toHaveCount(1);
+      expect(await page.locator(`${id} li h3`).count()).toBeGreaterThanOrEqual(3);
+    }
+    await expect(page.locator("#pricing")).not.toContainText(/\d\s?(?:Ft|forint|EUR|€)/);
+    const faq = await page.evaluate(() => {
+      const graph = [...document.querySelectorAll('script[type="application/ld+json"]')].flatMap((node) => JSON.parse(node.textContent)["@graph"] || []);
+      const data = graph.find((node) => node["@type"] === "FAQPage");
+      const visible = [...document.querySelectorAll("#questions details")].map((item) => ({
+        name: item.querySelector("h3").textContent.trim(), text: item.querySelector("p").textContent.replace(/\s+/g, " ").trim() }));
+      return { data: data?.mainEntity.map((q) => ({ name: q.name, text: q.acceptedAnswer.text })), visible };
+    });
+    expect(faq.visible).toHaveLength(8);
+    expect(faq.data, "FAQPage repeats the visible questions and answers").toEqual(faq.visible);
+    await expect(page.locator(`#top a.footer-email`)).toHaveAttribute("href", "/hu/kapcsolat");
+  });
+}
+
+test("/hu/webfejlesztes: Hungarian only until the English page exists, with the Kineticare build as evidence", async ({ page }) => {
+  await open(page, "/hu/webfejlesztes");
+  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.barnanorbert.com/hu/webfejlesztes");
+  await expect(page.locator(".navbar a.lang-switch")).toHaveAttribute("href", "/");
+  await expect(page.locator('#selected-work a[href="/hu/munka/kineticare"]')).toHaveCount(1);
+  await expect(page.locator('main a[href="/hu/ai-tanacsadas-fejlesztes"]').first()).toBeVisible();
 });

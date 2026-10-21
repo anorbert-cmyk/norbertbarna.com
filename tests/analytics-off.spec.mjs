@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const slugs = ['raiffeisen', 'instructure', 'bitpanda', 'benker', 'sportsgambit', 'kineticare', 'onrobot'];
 // Every content page in both languages, including the contact form pair (owner, 2026-10-06).
 const paths = ['/', '/works', '/about', '/ai-integration', '/privacy', '/contact', ...slugs.map(slug => `/work/${slug}`),
-  '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-integracio', '/hu/adatvedelem', '/hu/kapcsolat', ...slugs.map(slug => `/hu/munka/${slug}`)];
+  '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/adatvedelem', '/hu/kapcsolat', ...slugs.map(slug => `/hu/munka/${slug}`)];
 const privacyContact = { '/privacy': ['/contact', 'Contact form'], '/hu/adatvedelem': ['/hu/kapcsolat', 'Kapcsolatfelvételi űrlap'] };
 
 async function interceptVendor(page) {
@@ -108,7 +108,7 @@ for (const [name, body] of [
   test(`configuration ${name} fails closed`, async ({ page }) => {
     const vendor = await observeBrokenConfig(page);
     await page.route('**/assets/js/analytics-config.js', route => route.fulfill({ contentType: 'application/javascript', body }));
-    await page.goto('/hu/ai-integracio');
+    await page.goto('/hu/ai-tanacsadas-fejlesztes');
     await assertOff(page, vendor);
   });
 }
