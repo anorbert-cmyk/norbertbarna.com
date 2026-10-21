@@ -573,9 +573,18 @@
     resolveReady({ status: "fallback" });
     window.dispatchEvent(new CustomEvent("portfolio:heroready", { detail: { status: "fallback" } }));
   }
+  // A resize or a restored page changes how scroll maps to the turn: the values
+  // reported in the next two frames snap. Later ones are real scrolling and
+  // follow, so a flag left unspent never turns a scroll into a jump.
+  var snapExpiry = 0;
+  function snapSoon() {
+    snapTurn = true;
+    if (snapExpiry) cancelAnimationFrame(snapExpiry);
+    snapExpiry = requestAnimationFrame(function () { snapExpiry = requestAnimationFrame(function () { snapExpiry = 0; snapTurn = false; }); });
+  }
   function resize() {
     if (destroyed || lost) return;
-    snapTurn = true;
+    snapSoon();
     updateLayout();
     requestRender();
   }
@@ -845,7 +854,7 @@
   on(reducedQuery, "change", function () { if (reduced()) finish(); else requestRender(); });
   on(document, "visibilitychange", function () { if (document.hidden) stop(); else requestRender(); });
   on(window, "pagehide", function () { suspended = true; stop(); });
-  on(window, "pageshow", function (event) { suspended = false; if (event.persisted) snapTurn = true; if (world) world.last = 0; requestRender(); });
+  on(window, "pageshow", function (event) { suspended = false; if (event.persisted) snapSoon(); if (world) world.last = 0; requestRender(); });
   // A reload restores its scroll position while the page loads: the turn
   // follower starts only after that.
   function loaded() { requestAnimationFrame(function () { requestAnimationFrame(function () { pageLoaded = true; }); }); }

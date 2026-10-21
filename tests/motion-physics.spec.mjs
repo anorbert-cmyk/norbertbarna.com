@@ -656,11 +656,16 @@ test("1440: twelve notched wheel ticks move the home morph through the omega 36 
   expect(Math.min(...follower.map((sample) => sample.v)), "critically damped: forward ticks never pull it back").toBeGreaterThanOrEqual(-1e-6);
   // Settled after the last tick that still moved the pose (later ticks are past the track's end).
   const last = targets.at(-1);
-  const step = Math.abs(last.target - last.from);
-  const settled = follower.find((sample) => sample.t > last.t && Math.abs(sample.x - last.target) <= .01 * step);
-  expect(settled.t - last.t, "within 1% of the last tick by 200 ms").toBeLessThanOrEqual(.2 + 1e-9);
+  // The plan's settle measure: within 2% of the distance still to go when the
+  // last tick lands (the follower may still be catching up the tick before).
+  const atTick = follower.find((sample) => sample.t >= last.t - 1e-9);
+  const gap = Math.abs(atTick.x - last.target);
+  expect(gap).toBeGreaterThan(0);
+  const settled = follower.find((sample) => sample.t > last.t && Math.abs(sample.x - last.target) <= .02 * gap);
+  expect(settled.t - last.t, "within 2% of the last tick by 200 ms").toBeLessThanOrEqual(.2 + 1e-9);
   expect(follower.at(-1).x, "it rests exactly on the scroll position").toBe(last.target);
-  expect(follower.at(-1).t - last.t, "and stops by itself").toBeLessThanOrEqual(.3 + 1e-9);
+  // The plan: the loop stops within 300 ms of settling.
+  expect(follower.at(-1).t - settled.t, "and stops by itself").toBeLessThanOrEqual(.3 + 1e-9);
   // The glass painted the copy's value in the copy's frame, every frame.
   expect(morph.length).toBeGreaterThan(20);
   for (const frame of morph) expect(Math.abs(frame.p - frame.glass), "glass and copy share the frame").toBeLessThanOrEqual(2e-5);
@@ -671,12 +676,16 @@ test("1440: twelve notched wheel ticks move the home morph through the omega 36 
   // frame the scroll reaches the reading pose, its action is already a target.
   await page.evaluate(() => scrollTo(0, 0));
   await expect.poll(() => page.evaluate(() => window.PortfolioHomeMorph.progress), { timeout: 2000 }).toBe(0);
+  // The follower is held 30 ms into its run, so a slow frame on a loaded
+  // machine cannot finish the catch-up before the gate is read.
   const gate = await page.evaluate(() => new Promise((resolve) => {
     const track = document.querySelector(".home-mast-track");
+    window.PortfolioPhysicsDebug.hold = .03;
     scrollTo(0, track.offsetHeight);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const intro = document.querySelector(".home-mast-intro");
       resolve({ opacity: Number(intro.style.opacity), tabindex: intro.querySelector("a").getAttribute("tabindex"), pointer: intro.style.pointerEvents, target: window.PortfolioHomeMorph.target });
+      window.PortfolioPhysicsDebug.hold = null;
     }));
   }));
   expect(gate.target).toBe(1);
