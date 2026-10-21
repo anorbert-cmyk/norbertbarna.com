@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Writing by Norbert Barna</title>
+    <link>https://www.barnanorbert.com/writing</link>
+    <atom:link href="https://www.barnanorbert.com/writing/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Articles by Norbert Barna on AI integration, human-in-the-loop product design and web development, drawn from shipped work.</description>
+    <language>en</language>
+    <lastBuildDate>Wed, 21 Oct 2026 18:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Human-in-the-loop AI: what it means in a regulated product</title>
+      <link>https://www.barnanorbert.com/writing/human-in-the-loop-ai</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/human-in-the-loop-ai</guid>
+      <pubDate>Wed, 21 Oct 2026 18:00:00 +0000</pubDate>
+      <description>What human-in-the-loop AI means in practice for a regulated product, from review states to recovery paths, drawn from shipped work.</description>
+      <category>human in the loop ai</category>
+      <category>ai integration</category>
+      <category>ai product design</category>
+      <category>regulated industries</category>
+    </item>
+  </channel>
+</rss>

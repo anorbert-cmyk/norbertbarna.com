@@ -306,7 +306,7 @@ try {
 
 // No page may carry an address or a mailto link; the destination is server-side only.
 const pages = [];
-for (const dir of [".", "work", "hu", "hu/munka"]) {
+for (const dir of [".", "work", "hu", "hu/munka", "hu/irasok", "writing"]) {
   const full = join(ROOT, dir);
   if (!existsSync(full)) continue;
   for (const name of readdirSync(full)) if (name.endsWith(".html")) pages.push(join(dir, name));

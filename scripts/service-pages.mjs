@@ -1,3 +1,5 @@
+import { writingLanguageLinks, writingPages } from "./writing-content.mjs";
+
 // Keep client landing pages in every site-wide verification inventory.
 // These are service pages, not portfolio Articles.
 export const SERVICE_PAGES = ["ai-integration.html", "hu/ai-integracio.html"];
@@ -25,4 +27,13 @@ export const isHungarian = (page) => page.startsWith("hu/");
 // URL path of a page file: index.html -> /, hu/index.html -> /hu, x.html -> /x.
 export const urlOf = (page) => page === "index.html" ? "/" : `/${page.replace(/(?:\/index)?\.html$/, "")}`;
 export const assetPrefix = (page) =>
-  page === "404.html" || UTILITY_PAGES.includes(page) || HU_MIRRORS[page] ? "/" : page.startsWith("work/") ? "../" : "";
+  page === "404.html" || UTILITY_PAGES.includes(page) || HU_MIRRORS[page] || WRITING_PAGES.includes(page) ? "/" : page.startsWith("work/") ? "../" : "";
+
+// Writing (Írások): pages generated from content/*.md by build-writing.mjs.
+// List pages (writing/index.html, hu/irasok/index.html) are CollectionPages,
+// the rest are Articles. WRITING_LANGUAGE_LINKS gives each page's language
+// link: a translation (alternate) or the other language's list or home page.
+export const WRITING_PAGES = writingPages();
+export const WRITING_LANGUAGE_LINKS = writingLanguageLinks();
+export const isWritingPage = (page) => WRITING_PAGES.includes(page);
+export const isWritingList = (page) => isWritingPage(page) && page.endsWith("/index.html");

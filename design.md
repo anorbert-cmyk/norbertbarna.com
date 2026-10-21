@@ -843,6 +843,8 @@ same change that caused the drift.
 | `/hu/munkak` | `hu/munkak.html` | Hungarian works index | default |
 | `/hu/rolam` | `hu/rolam.html` | Hungarian About | default |
 | `/hu/munka/{slug}` | `hu/munka/*.html` (7) | Hungarian case studies | default |
+| `/writing`, `/hu/irasok` | `writing/index.html`, `hu/irasok/index.html` | Writing list pages, generated from `content/*.md`; served by explicit routes like `/hu` | default |
+| `/writing/{slug}`, `/hu/irasok/{slug}` | `writing/*.html`, `hu/irasok/*.html` | Articles, generated; RSS at `<section>/feed.xml` | default |
 | (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
 
 **Whole-site language switch (owner request, 2026-10-06).** Every content page
@@ -925,9 +927,27 @@ counter yields below 1440px and the repeated wordmark below 1200px, so the
 destinations stay on one row; the wordmark is out of the tab order because
 the logo already links home. Privacy pages use the lilac bar.
 
+**Writing (Írások, SEO task T4, 2026-10-21).** Articles are Markdown in
+`content/*.md`; `scripts/build-writing.mjs` renders them and is the only
+writer of `writing/`, `hu/irasok/`, the writing entries of `sitemap.xml` and
+the Writing section of `llms.txt`. Pages reuse the privacy pages' utility
+template (`body.utility-page`, `.work-single-section`, `.summary`), copied from
+`privacy.html` and `hu/adatvedelem.html` on every build, so a menu or re-hash
+there reaches the articles after `npm run build:writing`. An article is a
+schema `Article` (author `#person`, `datePublished`/`dateModified` as full
+date-times) plus a `BreadcrumbList` back to its list. Under the H1 one line
+gives the list link, the date and the reading time; there is still no
+“Written by / Published / Updated” label (**BlogHero**): the date of an
+article is content, a byline is not. Each article ends with the CTA: an
+optional related-service link from frontmatter and the
+`footer-email hero-work-link` contact action. A translated article names its
+pair in frontmatter and gets reciprocal hreflang and a `rel="alternate"`
+language link; an untranslated one has no hreflang and its language link
+leads to the other language's list page without `rel="alternate"`.
+
 Content pages carry chrome, consent and the editorial footer.
 `sitemap.xml` lists every canonical URL: the English pages in hiring order,
-then the utility pairs, then the Hungarian mirror. `server.js` owns canonicalisation: apex to
+then the utility pairs, then the Hungarian mirror, then the writing pages. `server.js` owns canonicalisation: apex to
 `www`, and `/index`, `/{slug}`, trailing slashes and `.html` all 301 to one
 URL. Adding a page means adding it to the checks that enumerate pages, not
 only to the sitemap.
@@ -1094,7 +1114,8 @@ scene is ready and motion is allowed.
 
 ### Checks
 
-`npm test` runs ten scripts in order; `npm run test:e2e` runs twenty-seven
+`npm test` first checks that the generated writing pages match
+`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs twenty-seven
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 

@@ -149,7 +149,8 @@ try {
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
   for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem",
-    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure"]) {
+    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure", "/writing", "/hu/irasok",
+    "/writing/human-in-the-loop-ai", "/hu/irasok/ceges-weboldal-ara"]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -262,7 +263,10 @@ try {
   assert(sitemapPaths.length >= 25, "sitemap lists every canonical page");
   for (const pathname of sitemapPaths) {
     // /hu is served from hu/index.html, so its file spellings are the index ones.
-    const variants = pathname === "/hu" ? ["/hu/", "/hu/index.html", "/hu/index"] : [`${pathname}.html`, `${pathname}/`];
+    // /hu and the writing list pages are served from <dir>/index.html, so their index spellings redirect too.
+    const variants = pathname === "/hu" ? ["/hu/", "/hu/index.html", "/hu/index"] :
+      ["/writing", "/hu/irasok"].includes(pathname) ? [`${pathname}.html`, `${pathname}/`, `${pathname}/index.html`, `${pathname}/index`] :
+      [`${pathname}.html`, `${pathname}/`];
     for (const variant of variants) {
       const redirect = await fetch(`${baseUrl}${variant}?ref=check`, { redirect: "manual" });
       assert(redirect.status === 301, `${variant} must 301 to ${pathname}, got ${redirect.status}`);
@@ -270,6 +274,19 @@ try {
     }
     const canonical = await fetch(`${baseUrl}${pathname}`, { redirect: "manual" });
     assert(canonical.status === 200, `${pathname} must serve 200`);
+  }
+
+  // Writing feeds are RSS that revalidates; the Markdown sources are not served.
+  for (const feedPath of ["/writing/feed.xml", "/hu/irasok/feed.xml"]) {
+    const feed = await fetch(`${baseUrl}${feedPath}`);
+    assert(feed.ok, `${feedPath} returned ${feed.status}`);
+    assert(/^application\/rss\+xml/.test(feed.headers.get("content-type") || ""), `${feedPath} must be served as RSS`);
+    assert(cacheDirectives(feed.headers.get("cache-control") || "").has("must-revalidate"), `${feedPath} must revalidate`);
+    assert((await feed.text()).includes("<rss version=\"2.0\""), `${feedPath} is not an RSS 2.0 document`);
+  }
+  for (const sourcePath of ["/content/human-in-the-loop-ai.md", "/content/", "/Content/ceges-weboldal-ara.md"]) {
+    const source = await fetch(`${baseUrl}${sourcePath}`, { redirect: "manual" });
+    assert(source.status === 404, `${sourcePath} must not expose the writing sources (${source.status})`);
   }
 
   const apexRobots = await rawGet(address.port, "/robots.txt", {
