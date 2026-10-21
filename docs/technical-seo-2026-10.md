@@ -49,18 +49,18 @@ A /hu/rolam mobil futása megszakadt (a desktop 100). A többi /hu/munka oldal u
 
 Ellenőrizve a kódban és élőben (WebFetch: kezdőlap, apex, sitemap). Ami változott:
 
-- **http → https 301 a www-hoszton.** A Railway a TLS-t a peremen bontja, és `X-Forwarded-Proto` fejlécben adja át a sémát. Eddig egy `http://www.barnanorbert.com/...` kérés, ha a Railway nem irányít át magától, duplikált 200-as oldal lett volna. Most egy lépésben 301 a https URL-re, a .html/perjeles alakot is kanonizálva. Teszt: `scripts/check-server.mjs`. Deploy után érdemes egyszer kipróbálni: `curl -I http://www.barnanorbert.com/about.html` → 301, Location `https://www.barnanorbert.com/about`.
+- **http → https 301 a www-hoszton.** A Railway a TLS-t a peremen bontja, és `X-Forwarded-Proto` fejlécben adja át a sémát. Eddig egy `http://www.barnanorbert.com/...` kérés, ha a Railway nem irányít át magától, duplikált 200-as oldal lett volna. Most egy lépésben 301 a https URL-re, a .html/perjeles alakot is kanonizálva. Teszt: `scripts/check-server.mjs`. Deploy után a Post-deploy workflow élesben ellenőrzi.
 - **norbertbarna.com:** Norbi szerint nem az ő domainje, ezért semmi nem irányít rá, és a repóban sem szerepel oldal-URL-ként (csak a GitHub-repó neve az).
 - **404:** ismeretlen útvonal, a `/404` és a privát útvonalak valódi 404-et adnak `noindex, follow` hibaoldallal (check-server).
 - **Sitemap:** 26 URL, mind kanonikus. A `lastmod` csak ott lett 2026-10-21, ahol valódi tartalmi változás történt (új title, frissített adatvédelmi szöveg). A Google csak akkor veszi figyelembe a lastmod-ot, ha következetesen pontos, ezért nem állítottam át mindent.
 - **robots.txt:** mindent enged, kivéve `/api/`, és hirdeti a sitemapet. Rendben.
-- **Bing:** a `msvalidate.01` a kezdőlapon van. **Google:** a `GOOGLE_SITE_VERIFICATION` környezeti változó üres, mert Norbi Search Console-hozzáférése már él (Domain-tulajdon vagy DNS-ellenőrzés).
+- **Bing:** az `msvalidate.01` a kezdőlapon van. **Google:** a `GOOGLE_SITE_VERIFICATION` környezeti változó üres, mert Norbi Search Console-hozzáférése már él (Domain-tulajdon vagy DNS-ellenőrzés).
 
 ### IndexNow
 
 Új fájlok: `4cf59849855778fd47f78e60a9143478.txt` (a kulcs a gyökérben, ahogy a protokoll kéri; a kulcs nyilvános, nem titok) és `scripts/indexnow.mjs`.
 
-Deploy után, a saját gépedről vagy CI-ból:
+Automatikus: a `.github/workflows/post-deploy.yml` minden `main`-pushnál lefut. Vár 4 percet a Railway-deployra, megvárja, hogy a kulcsfájl élesben elérhető legyen, majd beküldi a sitemap URL-jeit. Utána élesben ellenőrzi a http→https, apex és .html átirányításokat, a 404-et és a sitemapet; ha bármelyik eltér, a workflow piros. Kézzel is futtatható (Actions → Post-deploy → Run workflow, vagy helyben):
 
 ```
 npm run indexnow                   # a sitemap összes URL-je
@@ -113,12 +113,11 @@ Feltöltés lépései:
 - **Konzultáció-CTA:** a meglévő `contact_intent` esemény mostantól `cta_id` tulajdonságot is visz, ha a link vagy gomb `data-analytics-cta="consultation"` (vagy `contact`, `service`) attribútumot kap. A T1/T2 szálak szolgáltatásoldalain a „Kérj konzultációt” CTA kapja meg ezt az attribútumot.
 - **Adatvédelem:** a /privacy és a /hu/adatvedelem szövege kimondja, hogy az űrlap elküldésének ténye mérésre kerül, a tartalma nem.
 
-**PostHog-beállítás Norbinak (egyszer, a PostHog felületén, az EU 265707 projektben):**
+**PostHog-beállítás (elkészült 2026-10-21, az EU 265707 projektben):**
 
-1. Data management → Actions → New action „Lead: kapcsolatűrlap elküldve” → Match event `contact_form_submitted`.
-2. New action „CTA: konzultáció” → Match event `contact_intent`, szűrő `cta_id = consultation`.
-3. Product analytics → New insight → Funnel: `$pageview` (page_type = service) → `contact_intent` → `contact_form_submitted`, bontás `acquisition_channel` szerint. Így látszik, hogy a Google-ből (organic_search) jövők közül hányan írnak.
-4. Tesztforgalom szűrése: `is_test = false`.
+- Akció „Lead: kapcsolatűrlap elküldve” (`contact_form_submitted`, `is_test = false`): https://eu.posthog.com/project/265707/data-management/actions/171518
+- Akció „CTA: kapcsolat- vagy konzultációs kattintás” (`contact_intent`, `is_test = false`; a `cta_id` szerint bontható): https://eu.posthog.com/project/265707/data-management/actions/171519
+- Tölcsér „Látogatóból megkeresés (csatornánként)”: oldalmegtekintés → CTA → elküldött űrlap, `acquisition_channel` szerint bontva, 90 nap: https://eu.posthog.com/project/265707/insights/n421baUQ
 
 ## 6. Szigorúbb `scripts/check-seo.mjs`
 
@@ -136,8 +135,8 @@ Ehhez 16 túl hosszú title rövidült (esettanulmányok, about/rólam, kapcsola
 | Pont | Kié | Állapot |
 |---|---|---|
 | A disavow feltöltése | Norbi | Most nem kell, lásd a 4. pontot |
-| PostHog-akciók és funnel létrehozása | Norbi | Lépések az 5. pontban |
-| `npm run indexnow` az első deploy után | Norbi | Egyszer, utána tartalomváltozáskor |
-| http → https ellenőrzése élesben | Norbi vagy következő szál | `curl -I http://www.barnanorbert.com/about.html` |
+| PostHog-akciók és tölcsér | kész | Linkek az 5. pontban |
+| IndexNow-beküldés | kész, automatikus | GitHub Actions minden HTML-változás után |
+| Élő átirányítások ellenőrzése | kész, automatikus | Post-deploy workflow minden deploy után |
 | Hero-jelenet és CSS-csomagolás (TBT, LCP) | Fizika-animáció szála (#92) | Javaslat az 1. pontban |
 | `data-analytics-cta="consultation"` a szolgáltatásoldalak CTA-ján | T1, T2, T3 | Az esemény kész, csak az attribútum kell |

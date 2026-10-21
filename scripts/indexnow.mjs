@@ -9,6 +9,9 @@
  *   npm run indexnow                    every URL in sitemap.xml
  *   npm run indexnow -- /hu /about      only these paths
  *   npm run indexnow -- --dry-run       print the payload, send nothing
+ *   npm run indexnow -- --wait          first wait (up to 15 min) until the
+ *                                       deployed site serves the key file
+ * The Post-deploy workflow runs it with --wait after every push to main.
  */
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -21,6 +24,7 @@ const ENDPOINT = "https://api.indexnow.org/indexnow";
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
+const wait = args.includes("--wait");
 const paths = args.filter(arg => !arg.startsWith("--"));
 const sitemap = readFileSync(join(root, "sitemap.xml"), "utf8");
 const known = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(([, loc]) => loc);
@@ -38,6 +42,20 @@ const payload = { host: HOST, key: KEY, keyLocation: `https://${HOST}/${KEY}.txt
 if (dryRun) {
   console.log(JSON.stringify(payload, null, 2));
   process.exit(0);
+}
+// Railway deploys a push a few minutes after it lands; the engines reject the
+// submission until the key file is live, so wait for it rather than fail.
+if (wait) {
+  const deadline = Date.now() + 15 * 60 * 1000;
+  for (;;) {
+    const live = await fetch(payload.keyLocation, { cache: "no-store" }).then(r => r.ok ? r.text() : "").catch(() => "");
+    if (live.trim() === KEY) break;
+    if (Date.now() > deadline) {
+      console.error(`${payload.keyLocation} is not live after 15 minutes`);
+      process.exit(1);
+    }
+    await new Promise(resolve => setTimeout(resolve, 30_000));
+  }
 }
 const response = await fetch(ENDPOINT, {
   method: "POST",
