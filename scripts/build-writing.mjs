@@ -17,7 +17,8 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
-  ORIGIN, ROOT, SECTIONS, articleFile, escapeHtml, faqOf, loadArticles, markdownToHtml, readingMinutes, writingLanguageLinks,
+  ORIGIN, ROOT, SECTIONS, articleFile, citations, escapeHtml, faqOf, leadParagraph, loadArticles, markdownToHtml, readingMinutes, wordCount,
+  writingLanguageLinks,
 } from "./writing-content.mjs";
 import { urlOf } from "./service-pages.mjs";
 
@@ -26,11 +27,13 @@ const DEFAULT_IMAGE = {
   url: `${ORIGIN}/assets/images/og/forest-olive-folds.jpg`,
   alt: { en: "Forest-green and olive folded geometric sculpture", hu: "Erdőzöld és olívasárga hajtogatott geometriai alakzat" },
 };
+const LINKEDIN = "https://www.linkedin.com/in/barna-norbert/";
 const COPY = {
   hu: {
     locale: "hu_HU",
     templateFile: "hu/adatvedelem.html",
     contact: "/hu/kapcsolat",
+    author: "Barna Norbert",
     minutes: (n) => `${n} perc olvasás`,
     date: (iso) => {
       const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
@@ -53,6 +56,7 @@ const COPY = {
     locale: "en_US",
     templateFile: "privacy.html",
     contact: "/contact",
+    author: "Norbert Barna",
     minutes: (n) => `${n} min read`,
     date: (iso) => {
       const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
@@ -134,7 +138,7 @@ function head({ lang, title, description, keywords, canonical, type, image, alte
     `<meta content="${escapeHtml(image.alt)}" name="twitter:image:alt"/>`,
     `<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>`,
     `<meta content="#000000" name="theme-color"/>`,
-    `<meta content="index, follow, max-image-preview:large" name="robots"/>`,
+    `<meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/>`,
     `<meta content="Norbert Barna" name="author"/>`,
     `<link rel="canonical" href="${canonical}"/>`,
     ...(alternates ? [
@@ -154,12 +158,15 @@ const page = ({ head: headHtml, lang, switchHref, alternate, main }) => {
   return `${headHtml}\n${header(template.header, lang, switchHref, alternate)}<main id="main-content" tabindex="-1">${main}</main>\n${template.footer}`;
 };
 
-const person = { "@type": "Person", "@id": `${ORIGIN}/#person`, name: "Norbert Barna", url: `${ORIGIN}/` };
+const person = {
+  "@type": "Person", "@id": `${ORIGIN}/#person`, name: "Norbert Barna", alternateName: "Barna Norbert", url: `${ORIGIN}/`, sameAs: [LINKEDIN],
+};
 const imageOf = (article) => article.cover
   ? { url: `${ORIGIN}${article.cover.startsWith("/") ? "" : "/"}${article.cover}`, alt: article.cover_alt }
   : { url: DEFAULT_IMAGE.url, alt: DEFAULT_IMAGE.alt[article.lang] };
 // Date and reading time; on article pages the line starts with the visible
-// breadcrumb back to the list (the BreadcrumbList names it).
+// breadcrumb back to the list (the BreadcrumbList names it). No byline: the
+// author is schema and meta data, per design.md (BlogHero).
 const meta = (lang, article, crumb = false) =>
   `<p class="writing-meta">${crumb ? `<a href="${SECTIONS[lang].path}">${SECTIONS[lang].name}</a> · ` : ""}<time datetime="${article.date.slice(0, 10)}">${COPY[lang].date(article.date)}</time> · ${COPY[lang].minutes(readingMinutes(article.markdown))}</p>`;
 
@@ -175,6 +182,8 @@ function renderArticle(article, articles, links) {
   const image = imageOf(article);
   const body = markdownToHtml(article.markdown, article.source);
   const faq = faqOf(body);
+  const sources = citations(article.markdown);
+  const words = wordCount(article.markdown);
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -190,8 +199,15 @@ function renderArticle(article, articles, links) {
         dateModified: article.updated,
         author: person,
         publisher: { "@id": `${ORIGIN}/#person` },
-        image: image.url,
+        image: { "@type": "ImageObject", url: image.url, width: 1200, height: 630, caption: image.alt },
+        // The opening paragraph is the direct answer; answer engines get it twice.
+        abstract: leadParagraph(article.markdown),
+        wordCount: words,
+        timeRequired: `PT${readingMinutes(article.markdown)}M`,
         ...(article.tags.length ? { keywords: article.tags.join(", ") } : {}),
+        ...(article.service_label ? { articleSection: article.service_label } : {}),
+        ...(sources.length ? { citation: sources } : {}),
+        isAccessibleForFree: true,
         isPartOf: { "@id": `${ORIGIN}/#website` },
       },
       {
@@ -230,6 +246,8 @@ function renderArticle(article, articles, links) {
   const extraMeta = [
     `<meta content="${article.date}" property="article:published_time"/>`,
     `<meta content="${article.updated}" property="article:modified_time"/>`,
+    `<meta content="${copy.author}" property="article:author"/>`,
+    ...(article.service_label ? [`<meta content="${escapeHtml(article.service_label)}" property="article:section"/>`] : []),
     ...article.tags.map((tag) => `<meta content="${escapeHtml(tag)}" property="article:tag"/>`),
   ];
   const link = links[articleFile(article)];
@@ -350,9 +368,10 @@ function renderLlms(articles) {
   const source = readFileSync(join(ROOT, "llms.txt"), "utf8");
   const withoutSection = source.replace(/## Writing\n[\s\S]*?(?=\n## )\n/, "");
   if (!articles.length) return withoutSection;
-  const lines = ["## Writing", "", "Articles by Norbert Barna, written from his own project work. Hungarian articles are listed at https://www.barnanorbert.com/hu/irasok and English articles at https://www.barnanorbert.com/writing.", ""];
+  const lines = ["## Writing", "", "Articles by Norbert Barna, written from his own project work; each opens with its direct answer and ends with a visible FAQ (FAQPage schema). Hungarian articles are listed at https://www.barnanorbert.com/hu/irasok and English articles at https://www.barnanorbert.com/writing; RSS at /hu/irasok/feed.xml and /writing/feed.xml.", ""];
   for (const article of articles) {
-    lines.push(`- [${article.title}](${ORIGIN}${SECTIONS[article.lang].path}/${article.slug}) (${article.lang === "hu" ? "Hungarian" : "English"}, ${article.date.slice(0, 10)}): ${article.description}`);
+    const updated = article.updated.slice(0, 10) !== article.date.slice(0, 10) ? `, updated ${article.updated.slice(0, 10)}` : "";
+    lines.push(`- [${article.title}](${ORIGIN}${SECTIONS[article.lang].path}/${article.slug}) (${article.lang === "hu" ? "Hungarian" : "English"}, ${article.date.slice(0, 10)}${updated}): ${article.description}`);
   }
   const section = `${lines.join("\n")}\n`;
   const anchor = withoutSection.indexOf("## Services");
