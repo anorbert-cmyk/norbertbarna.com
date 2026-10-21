@@ -113,7 +113,7 @@ test("contextual case and Works links form a crawlable route back to the service
   for (const [path, selector, expectedHref] of [
     ["/work/instructure", '.summary a[href="/ai-integration#workflow"]', "/ai-integration#workflow"],
     ["/work/sportsgambit", '.summary a[href="/ai-integration#workflow"]', "/ai-integration#workflow"],
-    ["/work/kineticare", '.summary a[href="/ai-integration#workflow"]', "/ai-integration#workflow"],
+    ["/work/kineticare", '.summary a[href="/web-development#workflow"]', "/web-development#workflow"],
     ["/works", '.project-index-intro p a[href="/ai-integration"]', "/ai-integration"],
     // The Hungarian mirror routes back to the Hungarian service page, never to the English one.
     ["/hu/munka/instructure", '.summary a[href="/hu/ai-tanacsadas-fejlesztes#workflow"]', "/hu/ai-tanacsadas-fejlesztes#workflow"],
