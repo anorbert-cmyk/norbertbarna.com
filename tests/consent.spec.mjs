@@ -454,13 +454,14 @@ test("consent changes cause no network requests or cookies", async ({ page, cont
 for (const [language, title, privacy, reject, accept] of [
   ["en", "Optional analytics", "/privacy", "Decline analytics", "Allow analytics"],
   ["hu-HU", "Választható látogatottságmérés", "/hu/adatvedelem", "Mérés elutasítása", "Mérés engedélyezése"],
+  ["de", "Optionale Besucheranalyse", "/de/datenschutz", "Analyse ablehnen", "Analyse erlauben"],
 ]) {
   test(`${language} has equivalent accessible choices and compact reflow`, async ({ page }, testInfo) => {
     await openFixture(page, language);
     const banner = page.getByRole("region", { name: title });
     await expect(banner).toBeVisible();
     await expect(banner.locator("a")).toHaveAttribute("href", privacy);
-    await expect(banner.locator(".consent-retention")).toContainText(language === "en" ? "valid in this browser for 180 days" : "180 napig érvényes");
+    await expect(banner.locator(".consent-retention")).toContainText({ en: "valid in this browser for 180 days", "hu-HU": "180 napig érvényes", de: "in diesem Browser 180 Tage" }[language]);
     for (const width of [1366, 390, 320]) {
       await page.setViewportSize({ width, height: 800 });
       const choices = [];

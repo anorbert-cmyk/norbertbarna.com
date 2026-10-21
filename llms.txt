@@ -32,6 +32,9 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 - [Contact](https://www.barnanorbert.com/contact): contact form for project, AI integration and role enquiries
 - [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice and contact form data use (English)
 - [Analitika és adatvédelem](https://www.barnanorbert.com/hu/adatvedelem): Hungarian analytics and privacy notice
+- [Webentwicklung: individuelle Webanwendungen](https://www.barnanorbert.com/de/webentwicklung): German version of the web development offer for companies in Germany, Austria and Switzerland; the work itself runs in English or Hungarian
+- [KI-Beratung, Automatisierung und Entwicklung](https://www.barnanorbert.com/de/ki-beratung-entwicklung): German version of the AI consulting, automation and development offer, with use cases, scope, price factors and questions
+- [Analyse und Datenschutz](https://www.barnanorbert.com/de/datenschutz): German analytics and privacy notice
 
 ## Hungarian pages
 
@@ -43,6 +46,15 @@ Every page has a Hungarian version with the same content. The menu's EN | HU swi
 - Esettanulmányok: https://www.barnanorbert.com/hu/munka/raiffeisen, /hu/munka/instructure, /hu/munka/bitpanda, /hu/munka/benker, /hu/munka/sportsgambit, /hu/munka/kineticare, /hu/munka/onrobot
 - [Kapcsolat](https://www.barnanorbert.com/hu/kapcsolat): Hungarian contact form
 - Szolgáltatások: https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes (AI tanácsadás, automatizálás és fejlesztés), https://www.barnanorbert.com/hu/webfejlesztes (weboldal készítés és webfejlesztés)
+
+## German pages
+
+The German pages present the two offers to companies in Germany, Austria and Switzerland. There are no German case studies: the German pages link the English case studies and biography. Enquiries in German are answered in English; the work runs in English or Hungarian.
+
+- [Startseite](https://www.barnanorbert.com/de): German entry page with both offers and questions about working with a company from Germany
+- Leistungen: https://www.barnanorbert.com/de/webentwicklung (Webentwicklung und individuelle Webanwendungen), https://www.barnanorbert.com/de/ki-beratung-entwicklung (KI-Beratung, Automatisierung und Entwicklung)
+- [Kontakt](https://www.barnanorbert.com/de/kontakt): German contact form
+- [Wissen](https://www.barnanorbert.com/de/wissen): German articles on AI in companies and web development
 
 ## Case studies
 
@@ -58,8 +70,20 @@ Instructure and SportsGambit are AI product work. Raiffeisen, Bitpanda, Benker, 
 
 ## Writing
 
-Articles by Norbert Barna, written from his own project work; each opens with its direct answer and ends with a visible FAQ (FAQPage schema). Hungarian articles are listed at https://www.barnanorbert.com/hu/irasok and English articles at https://www.barnanorbert.com/writing; RSS at /hu/irasok/feed.xml and /writing/feed.xml.
+Articles by Norbert Barna, written from his own project work; each opens with its direct answer and ends with a visible FAQ (FAQPage schema). English articles are listed at https://www.barnanorbert.com/writing, Hungarian articles at https://www.barnanorbert.com/hu/irasok and German articles at https://www.barnanorbert.com/de/wissen; RSS at /writing/feed.xml, /hu/irasok/feed.xml and /de/wissen/feed.xml. Work with German-speaking clients runs in English or Hungarian.
 
+- [Was kostet eine Website? Wovon der Preis wirklich abhängt](https://www.barnanorbert.com/de/wissen/was-kostet-eine-website) (German, 2026-10-21): Was kostet eine Website für ein Unternehmen? Die neun Faktoren hinter dem Preis, ein Praxisbeispiel und die Fragen vor jedem Angebot.
+- [KI im Mittelstand einführen: Die ersten drei Monate](https://www.barnanorbert.com/de/wissen/ki-im-mittelstand-einfuehren) (German, 2026-10-21): KI im Mittelstand einführen: welcher Prozess zuerst, was in 90 Tagen passiert, was ein Mensch prüft und wann Sie abbrechen.
+- [KI im Kundenservice: Wann sich menschliche Kontrolle lohnt](https://www.barnanorbert.com/de/wissen/ki-im-kundenservice) (German, 2026-10-21): KI im Kundenservice: wann sie sich lohnt, was die KI allein beantworten darf, was ein Mensch prüft, und was die KI-Verordnung verlangt.
+- [Individuelle Website oder Baukasten: Sechs Kriterien](https://www.barnanorbert.com/de/wissen/individuelle-website-oder-baukasten) (German, 2026-10-21): Individuelle Website oder Baukasten? Sechs Kriterien, eine Entscheidungstabelle und die Frage, wann Sie eine Website erstellen lassen.
+- [Human in the Loop: Was es im regulierten Produkt bedeutet](https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki) (German, 2026-10-21): Human in the Loop bei KI: sieben Muster, die eine Prüfung bestehen. Kennzeichnung, editierbare Ausgaben, Quellen, Stopp. Art. 14 KI-VO.
+- [KI-Kennzeichnungspflicht: Was Produktteams jetzt umsetzen](https://www.barnanorbert.com/de/wissen/ki-kennzeichnungspflicht) (German, 2026-10-21): KI-Kennzeichnungspflicht nach Art. 50 KI-Verordnung: was seit August 2026 gilt, was der Digital Omnibus änderte, wie man es gestaltet.
+- [KI-Automatisierung: Mit welchem Prozess Sie anfangen](https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess) (German, 2026-10-21): KI-Automatisierung: fünf Kriterien für den ersten Prozess, wann klassische Automatisierung reicht, und der Weg zum Pilot.
+- [Website-Relaunch oder Überarbeitung: Woran Sie es erkennen](https://www.barnanorbert.com/de/wissen/website-relaunch-oder-ueberarbeitung) (German, 2026-10-21): Website-Relaunch oder Überarbeitung? Sechs Anzeichen für den Neubau, wann Nachbessern reicht, und die SEO-Checkliste zum Relaunch.
+- [KI-Halluzinationen im Unternehmen: Was ein Produkt tun muss](https://www.barnanorbert.com/de/wissen/ki-halluzinationen-im-unternehmen) (German, 2026-10-21): KI-Halluzinationen lassen sich nicht abschalten, aber auffangen: Quellen, Entwürfe, Enthaltung, menschliche Prüfung. Sieben Muster.
+- [Barrierefreie Website: Was das BFSG für Firmen bedeutet](https://www.barnanorbert.com/de/wissen/barrierefreie-website-bfsg) (German, 2026-10-21): Barrierefreie Website nach BFSG: wer betroffen ist, was WCAG 2.1 AA verlangt, welche Ausnahmen gelten und wie Sie die Seite umbauen.
+- [MVP-Entwicklung für regulierte Produkte: Was echt sein muss](https://www.barnanorbert.com/de/wissen/mvp-entwicklung-regulierte-produkte) (German, 2026-10-21): MVP-Entwicklung in Fintech, Gesundheit und regulierten Märkten: was Sie weglassen dürfen, was am ersten Tag echt sein muss, und wie.
+- [KI und Datenschutz: DSGVO-konforme KI durch Gestaltung](https://www.barnanorbert.com/de/wissen/ki-datenschutz-dsgvo) (German, 2026-10-21): KI und Datenschutz: welche DSGVO-Fragen ein KI-Projekt stellt und wie Produktteams sie durch Gestaltung statt durch Papier beantworten.
 - [AI bevezetése KKV-nál: az első 90 nap lépésről lépésre](https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap) (Hungarian, 2026-10-21): AI bevezetése KKV-nál lépésről lépésre: melyik folyamattal kezdj, mit tesztelj pilotban, mit ellenőrizzen ember, és mikor állj meg.
 - [AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg](https://www.barnanorbert.com/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel) (Hungarian, 2026-10-21): AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg, mit válaszolhat az AI magától, mit néz át ember, és mit ír elő az AI-rendelet.
 - [What to prepare before hiring an AI integration partner](https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner) (English, 2026-10-21): What to prepare before hiring an AI integration partner: one workflow, a baseline, data access, what stays human, and a pilot owner.
@@ -92,7 +116,7 @@ Articles by Norbert Barna, written from his own project work; each opens with it
 ## Contact
 
 - [LinkedIn](https://www.linkedin.com/in/barna-norbert/)
-- [Contact form](https://www.barnanorbert.com/contact) (Hungarian: https://www.barnanorbert.com/hu/kapcsolat): name, email, topic (website or app development, AI integration, a product leadership role, something else) and message
+- [Contact form](https://www.barnanorbert.com/contact) (Hungarian: https://www.barnanorbert.com/hu/kapcsolat; German: https://www.barnanorbert.com/de/kontakt): name, email, topic (website or app development, AI integration, a product leadership role, something else) and message
 - Project enquiries can also use the email button on the site; no address is published in this file.
 
 ## Canonical and reuse guidance

@@ -4,7 +4,15 @@ Reviewed 2026-10-06; Hungarian service pages updated 2026-10-21 from the
 Monid keyword research (Google Ads volumes for Hungary, 2026-10-21): the
 Hungarian AI page moved from `/hu/ai-integracio` (301) to
 `/hu/ai-tanacsadas-fejlesztes`, and `/hu/webfejlesztes` was added for the
-"weboldal készítés" cluster. The 2026-10-06 text below still describes the
+"weboldal készítés" cluster. German pages added 2026-10-21 (task T8, from the
+German keyword research of 2026-10-21, Google Ads volumes for Germany): `/de`
+entry page, `/de/webentwicklung` (webentwicklung 1600/mo, website erstellen
+lassen 2900, individuelle softwareentwicklung 210), `/de/ki-beratung-entwicklung`
+(ki beratung 1900, ki automatisierung 1300, ki entwicklung 1000, ki integration
+110), `/de/kontakt`, `/de/datenschutz` and the `/de/wissen` articles. Every
+German page states that the work runs in English and Hungarian and that German
+enquiries are answered in English; no prices, no Google Business Profile, no
+ProfessionalService schema. The 2026-10-06 text below still describes the
 rest of the site. This replaces the 2026-09-16 map. The 14 canonical pages are
 the home, Selected work, About, seven case studies, the English and Hungarian AI
 service pair and the two privacy notices.
@@ -53,6 +61,11 @@ competition.
 | `/work/onrobot` | Evidence: collaborative-robot HMI | robotics HMI case study; collaborative robot tablet interface; no-code robot tool setup UX; first-time operator guidance design; industrial UX design; HMI pattern library | kollaboratív robot kezelőfelület tervezés; ipari HMI UX esettanulmány | Field research, setup interface, HMI patterns, pilot scope. No autonomous AI robotics or certified safety engineering implied. |
 | `/privacy` | Utility: this site's analytics and privacy | Norbert Barna analytics and privacy; optional PostHog consent; Global Privacy Control respected | (served by `/hu/adatvedelem`) | Explain current measurement and visitor controls only. No acquisition copy. |
 | `/hu/adatvedelem` | Utility, Hungarian: az oldal adatvédelme | (served by `/privacy`) | Barna Norbert analitika és adatvédelem; választható PostHog-mérés; Global Privacy Control | Localized utility. Parity with the English notice; no sales pitch. |
+| `/de` | Entry, German: Webentwicklung und KI-Beratung für Unternehmen (added 2026-10-21) | (German: webentwicklung; ki beratung; website erstellen lassen) | (served by `/`) | Short entry page on the service board: the two offers, the articles, the English cases. States English or Hungarian collaboration. Hreflang group with `/` and `/hu`. |
+| `/de/webentwicklung` | Commercial, Germany: individuelle Websites und Webanwendungen (added 2026-10-21) | (German: webentwicklung 1600/mo; website erstellen lassen 2900; homepage erstellen lassen 590; individuelle softwareentwicklung 210; webentwicklung agentur 320) | (served by `/hu/webfejlesztes`) | Kineticare build is the evidence; Raiffeisen and Instructure as English cases. Price factors only, no numbers. German enquiries answered in English. Hreflang group with `/web-development` and `/hu/webfejlesztes`. |
+| `/de/ki-beratung-entwicklung` | Commercial, Germany: KI-Beratung, Automatisierung und Entwicklung (added 2026-10-21) | (German: ki beratung 1900; ki automatisierung 1300; ki entwicklung 1000; ki integration 110; ki implementierung 110; ki lösungen für unternehmen 170) | (served by `/hu/ai-tanacsadas-fejlesztes`) | Instructure, SportsGambit and Raiffeisen as English cases. Human-in-the-loop framing, no compliance promise, no legal advice. Hreflang group with `/ai-integration` and `/hu/ai-tanacsadas-fejlesztes`. |
+| `/de/kontakt` | Utility, German: Kontaktformular (added 2026-10-21) | (served by `/contact`) | (served by `/hu/kapcsolat`) | Same form and Turnstile route; says German is welcome and the answer comes in English. Hreflang group with `/contact` and `/hu/kapcsolat`. |
+| `/de/datenschutz` | Utility, German: Analyse und Datenschutz (added 2026-10-21) | (served by `/privacy`) | (served by `/hu/adatvedelem`) | Parity with the English notice, "Sie" form, no sales pitch. Hreflang group with `/privacy` and `/hu/adatvedelem`. |
 
 ## Title and description inventory (2026-10-06)
 
@@ -80,6 +93,11 @@ title; og:description and twitter:description equal the description.
 | `/work/onrobot` | OnRobot: no-code robotics HMI case study \| Norbert Barna | Robotics HMI case study: a no-code tablet interface so operators set up collaborative robot tools without pendants or scripting. |
 | `/privacy` | Analytics and privacy \| Norbert Barna | Optional, consent-gated PostHog analytics for page visits and Email clicks, with search reporting and site hosting explained. |
 | `/hu/adatvedelem` | Analitika és adatvédelem \| Barna Norbert | Opcionális, hozzájáruláshoz kötött PostHog-mérés oldallátogatásokról és Email-kattintásokról. Keresési jelentések és kiszolgálás. |
+| `/de` | Norbert Barna \| Webentwicklung und KI-Beratung | Individuelle Websites, Webanwendungen und KI-Funktionen für Unternehmen, von Norbert Barna. Zusammenarbeit auf Englisch oder Ungarisch. |
+| `/de/webentwicklung` | Webentwicklung: individuelle Webanwendungen \| Norbert Barna | Webentwicklung für Unternehmen: individuelle Websites und Webanwendungen, von der Konzeption bis zur Übergabe aus einer Hand. |
+| `/de/ki-beratung-entwicklung` | KI-Beratung, Automatisierung und Entwicklung \| Norbert Barna | KI-Beratung für Unternehmen: Analyse, KI-Automatisierung und individuelle Entwicklung mit menschlicher Kontrolle, bis zum Pilot. |
+| `/de/kontakt` | Kontakt \| Webentwicklung und KI-Beratung \| Norbert Barna | Schreiben Sie Norbert Barna zu Website- oder App-Entwicklung, KI-Integration oder einer Produktführungsrolle. Antwort auf Englisch. |
+| `/de/datenschutz` | Analyse und Datenschutz \| Norbert Barna | Optionale, einwilligungspflichtige PostHog-Analyse von Seitenaufrufen und Kontaktklicks. Suchberichte, Hosting und Kontaktformular. |
 
 ## Meta keywords policy
 

@@ -10,7 +10,7 @@ service: /ai-integration
 service_label: AI integration for regulated industries
 cover: /assets/images/og/writing/human-in-the-loop-ai.jpg
 cover_alt: A folded paper ribbon passing through a paper gate with a small olive checkpoint fold
-pair: null
+pair: de/human-in-the-loop-ki
 ---
 Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.
 

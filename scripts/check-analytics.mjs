@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { UTILITY_PAGES, baseOf, HU_PAGES, WRITING_PAGES } from './service-pages.mjs';
+import { UTILITY_PAGES, baseOf, HU_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from './service-pages.mjs';
 const root = new URL('../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
 const pages = ['index.html', 'works.html', 'about.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p), ...HU_PAGES, ...WRITING_PAGES];
@@ -17,7 +17,7 @@ for (const page of pages) {
   assert.equal((html.match(/href="\/assets\/css\/consent.css"/g) || []).length, 1, `${page}: consent stylesheet`);
   const footer = html.match(/<footer[\s\S]*?<\/footer>/)?.[0] || '';
   // One privacy link in the page language; the header language link reaches the pair.
-  assert(footer.includes('data-consent-settings') && footer.includes(page.startsWith('hu/') ? 'href="/hu/adatvedelem"' : 'href="/privacy"'), `${page}: withdrawal and privacy always reachable`);
+  assert(footer.includes('data-consent-settings') && footer.includes(`href="${SITE_COPY[languageOf(page)].privacy}"`), `${page}: withdrawal and privacy always reachable`);
   assert(!/posthog-js|eu-assets\.i\.posthog|googletagmanager|oaipixel/i.test(html), `${page}: no duplicate vendor tracker`);
 }
 const consent = read('assets/js/consent.js');
@@ -44,13 +44,14 @@ assert(!/phx_|phs_|lead_received|lead_qualified|meeting_booked/.test(analytics),
 for (const extra of ['.posthog', 'posthog.json', 'posthog-dashboards.json', 'insights.json']) {
   assert(!existsSync(new URL(extra, root)), `do not build PostHog dashboards in-repo (${extra})`);
 }
-for (const [page, lang, route] of [['privacy.html', 'en', '/privacy'], ['hu/adatvedelem.html', 'hu', '/hu/adatvedelem']]) {
+const CONSENT_META = { en: 'Optional, consent-gated PostHog analytics', hu: 'Opcionális, hozzájáruláshoz kötött PostHog-mérés', de: 'Optionale, einwilligungspflichtige PostHog-Analyse' };
+for (const [page, lang, route] of [['privacy.html', 'en', '/privacy'], ['hu/adatvedelem.html', 'hu', '/hu/adatvedelem'], ['de/datenschutz.html', 'de', '/de/datenschutz']]) {
   const html = read(page);
   assert(html.includes(`<html lang="${lang}">`), `${page}: language`);
   assert(html.includes(`rel="canonical" href="https://www.barnanorbert.com${route}"`), `${page}: self canonical`);
   for (const value of ['en', 'hu', 'x-default']) assert(html.includes(`hreflang="${value}"`), `${page}: translation links`);
   assert(!html.includes('"@type": "Service"'), `${page}: not an offer page`);
-  assert(html.includes(lang === 'en' ? 'Optional, consent-gated PostHog analytics' : 'Opcionális, hozzájáruláshoz kötött PostHog-mérés'), `${page}: truthful consent-gated metadata`);
+  assert(html.includes(CONSENT_META[lang]), `${page}: truthful consent-gated metadata`);
   assert(!html.includes(lang === 'en' ? 'Visitor analytics is currently off' : 'A látogatottságmérés jelenleg kikapcsolva'), `${page}: inactive copy must not remain`);
 }
 console.log(`OK: consent/analytics ownership and privacy invariants on ${pages.length} pages`);

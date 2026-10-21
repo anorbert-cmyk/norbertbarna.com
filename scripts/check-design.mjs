@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CONTACT_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, UTILITY_PAGES } from "./service-pages.mjs";
+import { CONTACT_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, SITE_COPY, UTILITY_PAGES, languageOf } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -22,10 +22,21 @@ const fail = (message) => {
 };
 // NN/g audit (owner request, 2026-10-06): every project action is a link to
 // the contact form in the page language. No page or script opens a mail app.
-const PROJECT_CONTACT = {
-  en: { label: "Discuss your project", href: "/contact" },
-  hu: { label: "Beszéljünk a projektedről", href: "/hu/kapcsolat" },
+const PROJECT_CONTACT = Object.fromEntries(Object.entries(SITE_COPY).map(([lang, copy]) => [lang, { label: copy.project, href: copy.contact }]));
+// Footer copy per language (design.md: the Product VP line, the copyright, the
+// chosen dark-close headline and the consent button of the AI footer).
+const FOOTER_LEDE = {
+  en: "Product VP. I lead AI products in regulated finance and high-trust systems.",
+  hu: "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben.",
+  de: "Product VP. Ich leite KI-Produkte im regulierten Finanzwesen und in Systemen mit hohen Anforderungen an Vertrauen.",
 };
+const COPYRIGHT = { en: "© 2026 Norbert Barna", hu: "© 2026 Barna Norbert", de: "© 2026 Norbert Barna" };
+const AI_FOOTER_TITLE = {
+  en: /<h2\b[^>]*id="footer-title"[^>]*>Let’s build<br>what’s next\.<\/h2>/,
+  hu: /<h2\b[^>]*id="footer-title"[^>]*>Építsük meg,<br>ami következik\.<\/h2>/,
+  de: /<h2\b[^>]*id="footer-title"[^>]*>Bauen wir,<br>was als Nächstes kommt\.<\/h2>/,
+};
+const CONSENT_BUTTON = { en: "Analytics settings", hu: "Analitikai beállítások", de: "Analyse-Einstellungen" };
 const contactButtons = (html) => [...html.matchAll(/(<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/a>/g)];
 function checkProjectContact(html, scope, language = "en", allowAiArrow = false) {
   const links = contactButtons(html);
@@ -56,8 +67,8 @@ const instructure = readFileSync(join(ROOT, "work/instructure.html"), "utf8");
 // iOS paints the northeast glyph as a blue emoji tile. Check the complete
 // served page inventory plus editable CSS/JS, not retired content-hash copies.
 {
-  // hu/irasok and writing exist only while an article is published.
-  const pages = ["", "work", "hu", "hu/munka", "hu/irasok", "writing"].filter((directory) => existsSync(join(ROOT, directory))).flatMap((directory) =>
+  // The writing directories exist only while an article is published.
+  const pages = ["", "work", "hu", "hu/munka", "hu/irasok", "writing", "de", "de/wissen"].filter((directory) => existsSync(join(ROOT, directory))).flatMap((directory) =>
     readdirSync(join(ROOT, directory))
       .filter((name) => name.endsWith(".html"))
       .map((name) => join(directory, name))
@@ -203,6 +214,7 @@ if (worksLd) {
   const others = [
     "works.html", "privacy.html", "ai-integration.html", "web-development.html",
     "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html", "hu/adatvedelem.html",
+    "de/index.html", "de/ki-beratung-entwicklung.html", "de/webentwicklung.html", "de/datenschutz.html",
     ...WORK.map((slug) => `work/${slug}.html`),
   ];
   for (const page of others) {
@@ -440,18 +452,18 @@ const footerCanon = footerPages.map((page) => {
   // (build-nav checks them); compare the rest of the footer here.
   const sameAssets = footer.replaceAll(/(?:\.\.\/|\/)assets\//g, "assets/").replace(/ aria-current="page"/g, "")
     .replace(/<div class="footer-col footer-col-(?:services|articles)">[\s\S]*?<\/ul><\/div>/g, "");
-  // A Hungarian page carries the same footer in Hungarian (owner, 2026-10-06:
-  // switching language changes everything). Compare its structure, not its words.
-  return page.startsWith("hu/") ? footerStructure(sameAssets) : sameAssets;
+  // A Hungarian or German page carries the same footer in its language (owner,
+  // 2026-10-06: switching language changes everything). Compare its structure, not its words.
+  return languageOf(page) === "en" ? sameAssets : footerStructure(sameAssets);
 });
 function footerStructure(footer) {
   return footer.replace(/\s(?:lang|hreflang|aria-label|title)="[^"]*"/g, "").replace(/>[^<]*</g, "><")
-    .replace(/href="\/hu\/munka\//g, 'href="/work/').replace(/href="\/hu"/g, 'href="/"')
-    .replace(/href="\/hu\/munkak"/g, 'href="/works"').replace(/href="\/hu\/kapcsolat"/g, 'href="/contact"')
-    .replace(/href="\/hu\/adatvedelem"/g, 'href="/privacy"').replace(/\saria-current="page"/g, "");
+    .replace(/href="\/hu\/munka\//g, 'href="/work/').replace(/href="\/(?:hu|de)"/g, 'href="/"')
+    .replace(/href="\/hu\/munkak"/g, 'href="/works"').replace(/href="\/(?:hu\/kapcsolat|de\/kontakt)"/g, 'href="/contact"')
+    .replace(/href="\/(?:hu\/adatvedelem|de\/datenschutz)"/g, 'href="/privacy"').replace(/\saria-current="page"/g, "");
 }
-if (new Set(footerCanon.filter((_, index) => !footerPages[index].startsWith("hu/"))).size !== 1 ||
-    footerCanon.some((footer, index) => footerPages[index].startsWith("hu/") && footer !== footerStructure(footerCanon[0]))) {
+if (new Set(footerCanon.filter((_, index) => languageOf(footerPages[index]) === "en")).size !== 1 ||
+    footerCanon.some((footer, index) => languageOf(footerPages[index]) !== "en" && footer !== footerStructure(footerCanon[0]))) {
   fail("editorial footer markup must match across its existing routes (asset prefix aside)");
 }
 
@@ -561,14 +573,12 @@ for (const page of footerPages) {
   if (/AI Product Design Lead|AI Governance|BlackRock|All rights reserved/.test(footer)) {
     fail(`${page}: footer copy is off the lock`);
   }
-  const footerLanguage = page.startsWith("hu/") ? "hu" : "en";
-  const footerLede = footerLanguage === "hu"
-    ? "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben."
-    : "Product VP. I lead AI products in regulated finance and high-trust systems.";
+  const footerLanguage = languageOf(page);
+  const footerLede = FOOTER_LEDE[footerLanguage];
   if (!footer.includes(footerLede)) {
     fail(`${page}: footer must use the Product VP line`);
   }
-  const copyright = footerLanguage === "hu" ? "© 2026 Barna Norbert" : "© 2026 Norbert Barna";
+  const copyright = COPYRIGHT[footerLanguage];
   if (!footer.includes(copyright) || /All rights reserved/.test(footer)) {
     fail(`${page}: copyright must be ${copyright}`);
   }
@@ -608,7 +618,7 @@ for (const page of footerPages) {
 for (const page of SERVICE_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
-  checkProjectContact(main, `${page}: main`, page.startsWith("hu/") ? "hu" : "en", true);
+  checkProjectContact(main, `${page}: main`, languageOf(page), true);
 }
 // The approved AI refinement merges the two boards into one service story.
 // Cases stand outside the camera, FAQ is its own reading section and the
@@ -633,7 +643,7 @@ for (const page of SERVICE_PAGES) {
     if ((html.match(/\bdata-ai-step="[123]"/g) || []).length !== 3) fail(`${page}: the ribbon journey has three steps`);
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
     const footer = html.match(/<footer\b[^>]*>[\s\S]*?<\/footer>/)?.[0] || "";
-    const language = page.startsWith("hu/") ? "hu" : "en";
+    const language = languageOf(page);
     const shapeArt = main.match(/<div\b[^>]*class="ai-shape-art"[^>]*>([\s\S]*?)<\/div>/)?.[1] || "";
     const shapeImages = [...shapeArt.matchAll(/<img\b[^>]*>/g)].map(([tag]) => tag);
     if (shapeImages.length !== 1 || !shapeImages[0].includes('src="/assets/images/ai/bars.webp"') || /bars-(?:forest|glass|olive)|\bai-bar-/.test(shapeArt)) fail(`${page}: preserve the original approved bars picture rather than the rejected flat reconstruction`);
@@ -644,7 +654,7 @@ for (const page of SERVICE_PAGES) {
     const pieces = main.match(/<section\b[^>]*\bid="pieces"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
     if (/<a\b|<button\b|data-ai-work/.test(pieces)) fail(`${page}: the pinned camera must not contain hidden or clipped focus targets`);
     for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
-      const caseHref = page.startsWith("hu/") ? `/hu/munka/${slug}` : `/work/${slug}`;
+      const caseHref = `${SITE_COPY[language].workRoot}${slug}`;
       if ((main.match(new RegExp(`href="${caseHref}"`, "g")) || []).length !== 1) fail(`${page}: ${slug} must appear in one semantic reference row`);
       if (!main.includes(`/assets/images/geometry/${slug}.960.webp`)) fail(`${page}: ${slug} needs the existing landscape geometric artwork`);
     }
@@ -652,13 +662,13 @@ for (const page of SERVICE_PAGES) {
     const questions = isExtended ? 8 : 5;
     if ((faq.match(/<details\b/g) || []).length !== questions || (faq.match(/<summary><h3>/g) || []).length !== questions || (faq.match(/<details open>/g) || []).length !== 1) fail(`${page}: ${questions} native FAQ disclosures must retain semantic question headings and one initially open answer`);
     if (!/<footer\b[^>]*\bid="work-better"[^>]*class="footer-section ai-footer"/.test(footer) || /id="work-better"/.test(main)) fail(`${page}: the chosen Passage close must be the actual footer after main`);
-    if (!(language === "hu" ? /<h2\b[^>]*id="footer-title"[^>]*>Építsük meg,<br>ami következik\.<\/h2>/ : /<h2\b[^>]*id="footer-title"[^>]*>Let’s build<br>what’s next\.<\/h2>/).test(footer) || !/class="ai-footer-art" aria-hidden="true"/.test(footer) || !footer.includes('/assets/images/ai/closing-passage.webp')) fail(`${page}: the dark close needs its chosen headline and separate architectural artwork`);
+    if (!AI_FOOTER_TITLE[language].test(footer) || !/class="ai-footer-art" aria-hidden="true"/.test(footer) || !footer.includes('/assets/images/ai/closing-passage.webp')) fail(`${page}: the dark close needs its chosen headline and separate architectural artwork`);
     checkProjectContact(footer, `${page}: AI footer`, language, true);
-    if (!footer.includes('68f9e9de8ed08e31e52c4188_NB.svg') || !footer.includes('Product VP') || !footer.includes(language === "hu" ? '© 2026 Barna Norbert' : '© 2026 Norbert Barna')) fail(`${page}: the AI close must retain the existing identity, role and copyright`);
+    if (!footer.includes('68f9e9de8ed08e31e52c4188_NB.svg') || !footer.includes('Product VP') || !footer.includes(COPYRIGHT[language])) fail(`${page}: the AI close must retain the existing identity, role and copyright`);
     const linkedin = [...footer.matchAll(/<a\b[^>]*class="[^\"]*\bfooter-contact-link\b[^\"]*"[^>]*>/g)];
     if (linkedin.length !== 1 || !linkedin[0][0].includes('href="https://www.linkedin.com/in/barna-norbert/"') || !linkedin[0][0].includes('rel="noopener noreferrer"')) fail(`${page}: the AI footer must retain the real, protected LinkedIn contact`);
-    if (!footer.includes(page.startsWith("hu/") ? 'href="/hu/adatvedelem"' : 'href="/privacy"') || (footer.match(/data-consent-settings/g) || []).length !== 1 || !/<button\b[^>]*data-consent-settings[^>]*\shidden(?:\s|>)/.test(footer)) fail(`${page}: the AI footer must preserve privacy links and the initially hidden consent-settings hook`);
-    if (language === "hu" && (!/<h2\b[^>]*id="footer-title"[^>]*lang="hu"/.test(footer) || !footer.includes('Analitikai beállítások'))) fail(`${page}: the Hungarian headline must declare its language and the footer controls must be Hungarian`);
+    if (!footer.includes(`href="${SITE_COPY[language].privacy}"`) || (footer.match(/data-consent-settings/g) || []).length !== 1 || !/<button\b[^>]*data-consent-settings[^>]*\shidden(?:\s|>)/.test(footer)) fail(`${page}: the AI footer must preserve privacy links and the initially hidden consent-settings hook`);
+    if (language !== "en" && (!new RegExp(`<h2\\b[^>]*id="footer-title"[^>]*lang="${language}"`).test(footer) || !footer.includes(CONSENT_BUTTON[language]))) fail(`${page}: the ${language} headline must declare its language and the footer controls must be in the page language`);
     if (/footer-col|editorial-footer|footer-mesh|footer-dunes|<form\b|href="\/work\//.test(footer) || (/mailto:|data-motion-toggle/.test(html) || exposesInbox(html))) fail(`${page}: the scoped AI footer must not restore duplicated work columns, forms, raw email or motion controls`);
     // Board artwork is decorative: sized, empty alt, inside an aria-hidden node.
     for (const [tag] of html.matchAll(/<img\b[^>]*assets\/images\/ai\/[^>]*>/g)) {
@@ -682,9 +692,9 @@ for (const page of PRIVACY_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
   const buttons = contactButtons(main);
-  const hungarianPage = page.startsWith("hu/");
-  if (buttons.length !== 1 || buttons[0][2].trim() !== (hungarianPage ? "Kapcsolatfelvételi űrlap" : "Contact form") ||
-      !buttons[0][1].includes(`href="${hungarianPage ? "/hu/kapcsolat" : "/contact"}"`)) {
+  const copy = SITE_COPY[languageOf(page)];
+  if (buttons.length !== 1 || buttons[0][2].trim() !== copy.privacyAction ||
+      !buttons[0][1].includes(`href="${copy.contact}"`)) {
     fail(`${page}: privacy requests go through one link to the contact form`);
   }
 }

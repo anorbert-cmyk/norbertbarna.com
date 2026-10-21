@@ -142,10 +142,10 @@
     answerTimeout: 30000
   };
 
-  var isHungarian = /^hu(?:-|$)/i.test(document.documentElement.lang);
-  var lang = isHungarian ? "hu" : "en";
+  var pageLang = String(document.documentElement.lang || "").toLowerCase();
+  var lang = /^hu(?:-|$)/.test(pageLang) ? "hu" : /^de(?:-|$)/.test(pageLang) ? "de" : "en";
   var linkedIn = "https://www.linkedin.com/in/barna-norbert/";
-  var newTab = isHungarian ? " (új lapon nyílik meg)" : " (opens in a new tab)";
+  var newTab = { en: " (opens in a new tab)", hu: " (új lapon nyílik meg)", de: " (öffnet in neuem Tab)" }[lang];
   var linkedInLink = function (label) {
     return "<a href=\"" + linkedIn + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + label +
       "<span class=\"contact-sr\">" + newTab + "</span></a>";
@@ -194,6 +194,28 @@
       errorPrefix: "Hiba: ",
       remaining: function (n) { return "Még " + n + " karaktert írhatsz."; },
       overLimit: function (n) { return "Az üzeneted " + n + " karakterrel hosszabb a megengedettnél."; }
+    },
+    de: {
+      name: { empty: "Geben Sie Ihren Namen ein.", short: "Ihr Name muss mindestens 2 Zeichen lang sein.", long: "Ihr Name darf höchstens 100 Zeichen lang sein.", format: "Ihr Name muss in einer Zeile stehen.", links: "Entfernen Sie die Webadresse aus Ihrem Namen." },
+      email: { empty: "Geben Sie Ihre E-Mail-Adresse ein, damit ich antworten kann.", format: "Geben Sie eine E-Mail-Adresse im richtigen Format ein, zum Beispiel name@beispiel.de.", long: "Ihre E-Mail-Adresse darf höchstens 254 Zeichen lang sein." },
+      topic: { empty: "Wählen Sie aus, worüber Sie sprechen möchten." },
+      message: { empty: "Schreiben Sie Ihre Nachricht.", short: "Schreiben Sie mindestens 20 Zeichen, damit ich weiß, wie ich helfen kann.", long: "Ihre Nachricht darf höchstens 5000 Zeichen lang sein.", links: "Ihre Nachricht darf bis zu 3 Links enthalten. Entfernen Sie die übrigen." },
+      checking: "Der Spamschutz läuft in Ihrem Browser…",
+      still: "Der Spamschutz läuft noch…",
+      sending: "Wird gesendet…",
+      sentStatus: "Danke, Ihre Nachricht ist unterwegs.",
+      rate: "Aus Ihrem Netzwerk kamen in letzter Zeit zu viele Nachrichten. Ihr Text ist noch da. Versuchen Sie es später erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
+      failed: "Ihre Nachricht wurde nicht gesendet. Ihr Text ist noch da. Versuchen Sie es erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
+      unavailable: "Das Formular ist vorübergehend pausiert. Ihr Text ist noch da. Schreiben Sie mir stattdessen auf " + linkedInLink("LinkedIn") + ".",
+      unsupported: "Dieser Browser kann den Spamschutz nicht ausführen, deshalb kann das Formular nicht senden. Schreiben Sie mir stattdessen auf " + linkedInLink("LinkedIn") + ".",
+      captchaWaiting: "Ihre Nachricht geht ab, sobald die Prüfung oben abgeschlossen ist. Wenn sie ein Kontrollkästchen zeigt, haken Sie es an.",
+      captchaStuck: "Die Prüfung ist nicht abgeschlossen, deshalb wurde Ihre Nachricht nicht gesendet. Ihr Text ist noch da. Haken Sie das Kästchen in der Prüfung an, falls sie eines zeigt, und senden Sie erneut.",
+      captchaError: "Die Prüfung konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung und senden Sie erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
+      captchaFailed: "Die Prüfung ist fehlgeschlagen, deshalb wurde Ihre Nachricht nicht gesendet. Ihr Text ist noch da. Senden Sie sie erneut.",
+      captchaUnavailable: "Die Prüfung ist derzeit nicht verfügbar. Ihr Text ist noch da. Versuchen Sie es später erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
+      errorPrefix: "Fehler: ",
+      remaining: function (n) { return n === 1 ? "Sie haben noch 1 Zeichen übrig." : "Sie haben noch " + n + " Zeichen übrig."; },
+      overLimit: function (n) { return "Sie liegen " + n + " Zeichen über dem Limit."; }
     }
   };
   var t = STRINGS[lang];

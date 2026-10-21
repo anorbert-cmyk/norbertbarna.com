@@ -5,7 +5,8 @@
 // writes these into the static pages and scripts/build-writing.mjs into the
 // generated ones, so a label or an order changes in one place.
 import { SECTIONS, loadArticles, writingLanguageLinks } from "./writing-content.mjs";
-import { HU_MIRRORS, urlOf } from "./service-pages.mjs";
+import { HOME_OF } from "./writing-content.mjs";
+import { LANGS, TRANSLATIONS, WORK_SLUGS, languageOf, urlOf } from "./service-pages.mjs";
 
 export const LINKEDIN = "https://www.linkedin.com/in/barna-norbert/";
 
@@ -31,14 +32,19 @@ export const LANGUAGES = {
 export const MENU = {
   en: {
     works: { label: "Works", href: "/works" },
-    services: null, // one English service page so far: a direct link
-    ai: { label: "AI integration", href: "/ai-integration" },
+    services: { label: "Services", toggle: "Services" },
+    ai: null,
     articles: { label: "Articles", href: SECTIONS.en.path, toggle: "Articles: latest", more: "All articles" },
     about: { label: "About", href: "/about" },
     contact: { label: "Contact", href: "/contact" },
     linkedin: { label: "LinkedIn", aria: "Find me on LinkedIn (opens in a new tab)" },
     footer: { work: "Work", services: "Services", articles: "Articles", allWork: "All work", allArticles: "All articles" },
-    serviceLinks: [{ label: "AI integration", href: "/ai-integration" }],
+    serviceLinks: [
+      { label: "Web development", href: "/web-development" },
+      { label: "AI integration", href: "/ai-integration" },
+    ],
+    navLabel: "Main navigation",
+    footerLabel: "Footer",
   },
   hu: {
     works: { label: "Munkák", href: "/hu/munkak" },
@@ -53,6 +59,26 @@ export const MENU = {
       { label: "Webfejlesztés", href: "/hu/webfejlesztes" },
       { label: "AI tanácsadás és fejlesztés", href: "/hu/ai-tanacsadas-fejlesztes" },
     ],
+    navLabel: "Fő navigáció",
+    footerLabel: "Lábléc",
+  },
+  // German (task T8, 2026-10-21): the case studies stay English, so Arbeiten
+  // leads to the English works index and the footer lists the English cases.
+  de: {
+    works: { label: "Arbeiten", href: "/works" },
+    services: { label: "Leistungen", toggle: "Leistungen" },
+    ai: null,
+    articles: { label: "Wissen", href: SECTIONS.de.path, toggle: "Wissen: neueste Artikel", more: "Alle Artikel" },
+    about: { label: "Über mich", href: "/about" },
+    contact: { label: "Kontakt", href: "/de/kontakt" },
+    linkedin: { label: "LinkedIn", aria: "Mein LinkedIn-Profil (öffnet in neuem Tab)" },
+    footer: { work: "Arbeiten", services: "Leistungen", articles: "Wissen", allWork: "Alle Arbeiten", allArticles: "Alle Artikel" },
+    serviceLinks: [
+      { label: "Webentwicklung", href: "/de/webentwicklung" },
+      { label: "KI-Beratung und Entwicklung", href: "/de/ki-beratung-entwicklung" },
+    ],
+    navLabel: "Hauptnavigation",
+    footerLabel: "Fußzeile",
   },
 };
 
@@ -64,15 +90,15 @@ const WORK_NAMES = { raiffeisen: "Raiffeisen", instructure: "Instructure", bitpa
 const esc = (value) => String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 
 // ---- page inventory ---------------------------------------------------------
-// Every static page, with its kind (which chrome variant it carries), the menu
-// item it is, and its pair in the other language. Writing pages are added by
-// the writing build from content/.
-const WORK_SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
+// Every static page, with its kind (which chrome variant it carries) and the
+// menu item it is. Translations come from PAGE_GROUPS in service-pages.mjs;
+// writing pages are added by the writing build from content/.
 export const STATIC_PAGES = {
   "index.html": { kind: "home", current: null },
   "works.html": { kind: "work", current: "works" },
   "about.html": { kind: "about", current: "about" },
-  "ai-integration.html": { kind: "ai", current: "ai" },
+  "ai-integration.html": { kind: "ai", current: "/ai-integration" },
+  "web-development.html": { kind: "ai", current: "/web-development" },
   "privacy.html": { kind: "utility", current: null },
   "contact.html": { kind: "work", current: "contact" },
   "hu/index.html": { kind: "home", current: null },
@@ -82,31 +108,30 @@ export const STATIC_PAGES = {
   "hu/webfejlesztes.html": { kind: "ai", current: "/hu/webfejlesztes" },
   "hu/adatvedelem.html": { kind: "utility", current: null },
   "hu/kapcsolat.html": { kind: "work", current: "contact" },
+  "de/index.html": { kind: "ai", current: null },
+  "de/ki-beratung-entwicklung.html": { kind: "ai", current: "/de/ki-beratung-entwicklung" },
+  "de/webentwicklung.html": { kind: "ai", current: "/de/webentwicklung" },
+  "de/datenschutz.html": { kind: "utility", current: null },
+  "de/kontakt.html": { kind: "work", current: "contact" },
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`work/${slug}.html`, { kind: "case", current: null }])),
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`hu/munka/${slug}.html`, { kind: "case", current: null }])),
 };
 
-// English page -> Hungarian page for the true translation pairs.
-export const PAGE_PAIRS = {
-  "ai-integration.html": "hu/ai-tanacsadas-fejlesztes.html",
-  "privacy.html": "hu/adatvedelem.html",
-  "contact.html": "hu/kapcsolat.html",
-  ...Object.fromEntries(Object.entries(HU_MIRRORS).map(([hu, en]) => [en, hu])),
-};
-// A page whose translation does not exist yet links the other language's
-// home without rel="alternate" (the EN web-development page is task T3).
-const UNPAIRED = { "hu/webfejlesztes.html": "index.html" };
+export { languageOf };
 
-export const languageOf = (page) => page.startsWith("hu/") ? "hu" : page.startsWith("de/") ? "de" : "en";
-
-// The other-language destination of a page: { file, alternate }.
-export function pairOf(page, writingLinks = writingLanguageLinks()) {
-  if (writingLinks[page]) return writingLinks[page];
-  if (PAGE_PAIRS[page]) return { file: PAGE_PAIRS[page], alternate: true };
-  const english = Object.entries(PAGE_PAIRS).find(([, hu]) => hu === page)?.[0];
-  if (english) return { file: english, alternate: true };
-  if (UNPAIRED[page]) return { file: UNPAIRED[page], alternate: false };
-  throw new Error(`${page}: no language pair`);
+// The destinations of a page in every other language: { hu: {file, alternate}, ... }.
+// A translation is an alternate; otherwise the switch leads to that
+// language's home (static pages) or list page (writing pages) without rel="alternate".
+export function pairsOf(page, writingLinks = writingLanguageLinks()) {
+  const lang = languageOf(page);
+  const entries = LANGS.filter((other) => other !== lang).map((other) => {
+    const link = writingLinks[page]?.[other]
+      || (TRANSLATIONS[page]?.[other] ? { file: TRANSLATIONS[page][other], alternate: true } : null)
+      || (STATIC_PAGES[page] ? { file: HOME_OF[other], alternate: false } : null);
+    if (!link) throw new Error(`${page}: no language destination for ${other}`);
+    return [other, { href: urlOf(link.file), alternate: link.alternate }];
+  });
+  return Object.fromEntries(entries);
 }
 
 // ---- rendering --------------------------------------------------------------
@@ -133,9 +158,10 @@ function group({ kind, id, label, toggleLabel, href, items, currentHref, lang })
 
 export function languageMenu({ lang, pairs }) {
   const own = LANGUAGES[lang];
-  const items = Object.entries(LANGUAGES).filter(([code]) => code === lang || pairs[code]).map(([code, language]) => {
+  const items = Object.entries(LANGUAGES).map(([code, language]) => {
     if (code === lang) return `<li><span class="nav-lang-current" aria-current="true" lang="${code}">${FLAGS[code]}<span>${language.name}</span></span></li>`;
     const pair = pairs[code];
+    if (!pair) throw new Error(`language menu: no ${code} destination`);
     return `<li><a class="nav-group-link lang-switch" href="${pair.href}" hreflang="${code}" lang="${code}"${pair.alternate ? ' rel="alternate"' : ""}>${FLAGS[code]}<span>${language.name}</span></a></li>`;
   }).join("");
   return `<div class="nav-group nav-lang" data-nav-group><button type="button" class="nav-lang-trigger" data-nav-toggle aria-expanded="false" aria-controls="nav-languages" aria-label="${esc(`${own.menu}: ${own.code}, ${own.name}`)}">${FLAGS[lang]}<span class="nav-lang-code" aria-hidden="true">${own.code}</span><span class="nav-lang-name" aria-hidden="true">${own.name}</span>${CHEVRON}</button><div class="nav-group-panel nav-lang-panel" id="nav-languages" hidden><ul class="nav-group-list">${items}</ul></div></div>`;
@@ -180,7 +206,7 @@ export function renderPrimaryNav({ page, kind, current, pairs, articles }) {
     parts.push(`<a aria-label="${esc(menu.linkedin.aria)}" class="${linkClass(kind)}" href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">${menu.linkedin.label}</a>`);
   }
   parts.push(languageMenu({ lang, pairs }));
-  const label = lang === "hu" ? "Fő navigáció" : "Main navigation";
+  const label = menu.navLabel;
   const navClass = kind === "about" ? 'class="nav-menu w-nav-menu"' : 'class="nav-menu grey w-nav-menu" role="navigation"';
   return `<nav id="primary-navigation" ${navClass} aria-label="${label}"><div class="nav-menu-area">${parts.join("")}</div></nav>`;
 }
@@ -190,13 +216,14 @@ export function renderFooterNav({ page, articles }) {
   const lang = languageOf(page);
   const menu = MENU[lang];
   const workBase = lang === "hu" ? "/hu/munka" : "/work";
+  const worksHref = lang === "de" ? "/works" : menu.works.href;
   const work = WORK_FOOTER.map((slug) => `<li><a href="${workBase}/${slug}">${WORK_NAMES[slug]}</a></li>`).join("");
   const services = menu.serviceLinks.map((item) => `<li><a href="${item.href}">${esc(item.label)}</a></li>`).join("");
   const own = articles.filter((article) => article.lang === lang).slice(0, FOOTER_ARTICLE_LIMIT);
   const articleColumn = own.length
     ? `<div class="footer-col footer-col-articles"><p class="footer-col-title">${menu.footer.articles}</p><ul class="footer-col-list">${own.map((article) => `<li><a href="${SECTIONS[lang].path}/${article.slug}">${esc(article.title)}</a></li>`).join("")}<li><a href="${menu.articles.href}">${menu.footer.allArticles}</a></li></ul></div>`
     : "";
-  return `<nav class="footer-nav" aria-label="${lang === "hu" ? "Lábléc" : "Footer"}"><div class="footer-col"><p class="footer-col-title">${menu.footer.work}</p><ul class="footer-col-list">${work}<li><a href="${menu.works.href}">${menu.footer.allWork}</a></li></ul></div><div class="footer-col footer-col-services"><p class="footer-col-title">${menu.footer.services}</p><ul class="footer-col-list">${services}</ul></div>${articleColumn}</nav>`;
+  return `<nav class="footer-nav" aria-label="${menu.footerLabel}"><div class="footer-col"><p class="footer-col-title">${menu.footer.work}</p><ul class="footer-col-list">${work}<li><a href="${worksHref}">${menu.footer.allWork}</a></li></ul></div><div class="footer-col footer-col-services"><p class="footer-col-title">${menu.footer.services}</p><ul class="footer-col-list">${services}</ul></div>${articleColumn}</nav>`;
 }
 
 // Replace the primary navigation (and the footer columns when the page has
@@ -206,12 +233,6 @@ export function applyChrome(html, { page, kind, current, pairs, articles }) {
   const pattern = /<nav\b[^>]*\bid="primary-navigation"[^>]*>[\s\S]*?<\/nav>/;
   if (!pattern.test(html)) throw new Error(`${page}: primary navigation not found`);
   return html.replace(pattern, () => nav).replace(/<nav class="footer-nav"[^>]*>[\s\S]*?<\/nav>/, () => renderFooterNav({ page, articles }));
-}
-
-// pairs for renderPrimaryNav from pairOf(): { en: {href, alternate} } etc.
-export function pairsOf(page, writingLinks) {
-  const pair = pairOf(page, writingLinks);
-  return { [languageOf(pair.file)]: { href: urlOf(pair.file), alternate: pair.alternate } };
 }
 
 export { loadArticles };

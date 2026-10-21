@@ -10,7 +10,7 @@ service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
 cover: /assets/images/og/writing/egyedi-weboldal-vagy-sablon.jpg
 cover_alt: Balra egy köteg egyforma hajtogatott papírlap, jobbra egyetlen egyedi papírszobor
-pair: null
+pair: de/individuelle-website-oder-baukasten
 ---
 Sablon akkor elég, ha a weboldalad egy névjegy: bemutatod, mit csinálsz, és hogyan érnek el. Egyedi weboldal akkor kell, ha a látogatónak bizalomra van szüksége a döntéshez, ha fizetés, foglalás vagy belépés van az oldalon, vagy ha az oldalnak a meglévő rendszereidhez kell kapcsolódnia. A kérdés nem a design, hanem hogy mit kell az oldalnak elvégeznie.
 

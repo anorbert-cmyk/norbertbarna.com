@@ -16,9 +16,15 @@ test.beforeEach(async ({ page }) => {
   await page.route(/posthog\.com/, (route) => route.abort());
 });
 
+// Three languages (German structure, task T8, 2026-10-21): every menu lists the
+// two other languages in site order, each named in its own language.
 const LANGUAGES = {
-  en: { route: "/", listHref: "/writing", articles: "Articles", latest: "Articles: latest", more: "All articles", trigger: "Language: EN, English", code: "EN", current: "English", other: "Magyar", pair: "/hu" },
-  hu: { route: "/hu", listHref: "/hu/irasok", articles: "Tudástár", latest: "Tudástár: legújabb cikkek", more: "Összes cikk", trigger: "Nyelv: HU, Magyar", code: "HU", current: "Magyar", other: "English", pair: "/" },
+  en: { route: "/", listHref: "/writing", articles: "Articles", latest: "Articles: latest", more: "All articles", trigger: "Language: EN, English", code: "EN", current: "English",
+    others: [["hu", "Magyar", "/hu"], ["de", "Deutsch", "/de"]] },
+  hu: { route: "/hu", listHref: "/hu/irasok", articles: "Tudástár", latest: "Tudástár: legújabb cikkek", more: "Összes cikk", trigger: "Nyelv: HU, Magyar", code: "HU", current: "Magyar",
+    others: [["en", "English", "/"], ["de", "Deutsch", "/de"]] },
+  de: { route: "/de", listHref: "/de/wissen", articles: "Wissen", latest: "Wissen: neueste Artikel", more: "Alle Artikel", trigger: "Sprache: DE, Deutsch", code: "DE", current: "Deutsch",
+    others: [["en", "English", "/"], ["hu", "Magyar", "/hu"]] },
 };
 
 async function open(page, route, width = 1280) {
@@ -50,7 +56,7 @@ for (const [language, copy] of Object.entries(LANGUAGES)) {
     expect(count).toBeLessThanOrEqual(6);
     await expect(links.last()).toHaveText(copy.more);
     await expect(links.last()).toHaveAttribute("href", copy.listHref);
-    const prefix = language === "hu" ? "/hu/irasok/" : "/writing/";
+    const prefix = `${copy.listHref}/`;
     for (const href of await links.evaluateAll((items) => items.slice(0, -1).map((item) => item.getAttribute("href")))) {
       expect(href, "every article in the panel belongs to the page language").toMatch(new RegExp(`^${prefix.replace(/\//g, "\\/")}[a-z0-9-]+$`));
       expect((await page.request.get(href, { maxRedirects: 0 })).status(), href).toBe(200);
@@ -104,21 +110,26 @@ for (const [language, copy] of Object.entries(LANGUAGES)) {
     await expect(current).toHaveAttribute("aria-current", "true");
     await expect(current).toHaveAttribute("lang", language);
     await expect(current.locator("svg.nav-flag")).toHaveCount(1);
-    const pair = panel.locator("a.lang-switch");
-    await expect(pair).toHaveCount(1);
-    await expect(pair).toHaveText(copy.other);
-    await expect(pair).toHaveAccessibleName(copy.other);
-    await expect(pair).toHaveAttribute("href", copy.pair);
-    await expect(pair).toHaveAttribute("rel", "alternate");
-    await expect(pair).toHaveAttribute("hreflang", language === "en" ? "hu" : "en");
-    await expect(pair.locator("svg.nav-flag")).toHaveCount(1);
+    const switches = panel.locator("a.lang-switch");
+    await expect(switches, "the two other languages, in site order").toHaveCount(copy.others.length);
+    for (const [index, [code, name, href]] of copy.others.entries()) {
+      const pair = switches.nth(index);
+      await expect(pair).toHaveText(name);
+      await expect(pair).toHaveAccessibleName(name);
+      await expect(pair).toHaveAttribute("href", href);
+      await expect(pair).toHaveAttribute("rel", "alternate");
+      await expect(pair).toHaveAttribute("hreflang", code);
+      await expect(pair).toHaveAttribute("lang", code);
+      await expect(pair.locator("svg.nav-flag")).toHaveCount(1);
+    }
     // Both the panel text and the bar button keep navy on lilac (AA).
     const axe = await new AxeBuilder({ page }).include("#primary-navigation").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]).analyze();
     expect(axe.violations.map((violation) => `${violation.id}: ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`)).toEqual([]);
-    // Choosing the pair leaves the page in the other language.
-    await pair.click();
-    await expect(page).toHaveURL(new RegExp(`${copy.pair.replace(/\//g, "\\/")}$`));
-    await expect(page.locator("html")).toHaveAttribute("lang", language === "en" ? "hu" : "en");
+    // Choosing a pair leaves the page in that language.
+    const [[otherCode, , otherHref]] = copy.others;
+    await switches.first().click();
+    await expect(page).toHaveURL(new RegExp(`${otherHref.replace(/\//g, "\\/")}$`));
+    await expect(page.locator("html")).toHaveAttribute("lang", otherCode);
   });
 
   test(`${copy.route} at 390: the compact disclosure shows the groups as accordion rows and keeps one open at a time`, async ({ page }) => {
@@ -126,7 +137,8 @@ for (const [language, copy] of Object.entries(LANGUAGES)) {
     await page.locator(".menu-button").click();
     await expect(page.locator("#primary-navigation")).toHaveAttribute("data-nav-menu-open", "");
     const toggles = page.locator("#primary-navigation [data-nav-toggle]");
-    const expectedToggles = language === "hu" ? 3 : 2;
+    // Services, Articles and the language menu in every language.
+    const expectedToggles = 3;
     await expect(toggles).toHaveCount(expectedToggles);
     const trigger = page.locator("#primary-navigation .nav-lang-trigger");
     await expect(trigger.locator(".nav-lang-name"), "compact shows the language name").toBeVisible();
@@ -194,8 +206,8 @@ test("without JavaScript the bar keeps its height and each group opens on focus,
   await expect(page.locator("#nav-services")).toBeHidden();
   await expect(page.locator("#nav-languages")).toBeVisible();
   await page.keyboard.press("Tab");
-  await expect(page.locator("#primary-navigation a.lang-switch")).toBeFocused();
-  await expect(page.locator("#primary-navigation a.lang-switch")).toHaveAttribute("href", "/");
+  await expect(page.locator("#primary-navigation a.lang-switch").first()).toBeFocused();
+  await expect(page.locator("#primary-navigation a.lang-switch").first()).toHaveAttribute("href", "/");
   expect(await page.locator(".navbar").evaluate((nav) => nav.getBoundingClientRect().height), "the open panel is a drop, not a taller bar").toBe(barHeight);
   await context.close();
 });
@@ -204,7 +216,8 @@ test("article pages and the list carry the same chrome as the static pages and m
   await open(page, "/hu/irasok");
   await expect(page.locator('#primary-navigation a.nav-link[aria-current="page"]')).toHaveAttribute("href", "/hu/irasok");
   await expect(page.locator("#primary-navigation .nav-lang-trigger")).toHaveAccessibleName("Nyelv: HU, Magyar");
-  await expect(page.locator("#primary-navigation a.lang-switch")).toHaveAttribute("href", "/writing");
+  await expect(page.locator("#primary-navigation a.lang-switch").first()).toHaveAttribute("href", "/writing");
+  await expect(page.locator("#primary-navigation a.lang-switch").last()).toHaveAttribute("href", "/de/wissen");
   const article = await page.locator("#nav-articles a").first().getAttribute("href");
   await page.goto(article, { waitUntil: "load" });
   // On an article the group button carries the mark and the article's own row is current.

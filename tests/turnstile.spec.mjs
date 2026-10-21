@@ -23,7 +23,7 @@ async function fill(page) {
   await page.locator("#contact-message").fill("I would like to talk about adding a reviewed assistant to our onboarding.");
 }
 
-for (const route of ["/contact", "/hu/kapcsolat"]) {
+for (const route of ["/contact", "/hu/kapcsolat", "/de/kontakt"]) {
   test(`${route}: the Turnstile widget renders under the real CSP and its token reaches the server`, async ({ page }) => {
     const violations = [];
     page.on("console", (message) => {

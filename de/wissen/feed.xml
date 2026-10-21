@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Artikel von Norbert Barna</title>
+    <link>https://www.barnanorbert.com/de/wissen</link>
+    <atom:link href="https://www.barnanorbert.com/de/wissen/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Artikel von Norbert Barna zu KI-Beratung, Human in the Loop, KI-Verordnung und Webentwicklung, geschrieben aus eigenen Projekten.</description>
+    <language>de</language>
+    <lastBuildDate>Wed, 21 Oct 2026 09:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Was kostet eine Website? Wovon der Preis wirklich abhängt</title>
+      <link>https://www.barnanorbert.com/de/wissen/was-kostet-eine-website</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/was-kostet-eine-website</guid>
+      <pubDate>Wed, 21 Oct 2026 09:00:00 +0000</pubDate>
+      <description>Was kostet eine Website für ein Unternehmen? Die neun Faktoren hinter dem Preis, ein Praxisbeispiel und die Fragen vor jedem Angebot.</description>
+      <category>was kostet eine website</category>
+      <category>website kosten</category>
+      <category>webseite erstellen lassen kosten</category>
+      <category>website erstellen lassen</category>
+      <category>webentwicklung</category>
+    </item>
+    <item>
+      <title>KI im Mittelstand einführen: Die ersten drei Monate</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-im-mittelstand-einfuehren</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-im-mittelstand-einfuehren</guid>
+      <pubDate>Wed, 21 Oct 2026 08:55:00 +0000</pubDate>
+      <description>KI im Mittelstand einführen: welcher Prozess zuerst, was in 90 Tagen passiert, was ein Mensch prüft und wann Sie abbrechen.</description>
+      <category>ki im mittelstand</category>
+      <category>ki im unternehmen</category>
+      <category>ki readiness</category>
+      <category>ki einführung</category>
+      <category>ki beratung mittelstand</category>
+      <category>ki für kmu</category>
+    </item>
+    <item>
+      <title>KI im Kundenservice: Wann sich menschliche Kontrolle lohnt</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-im-kundenservice</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-im-kundenservice</guid>
+      <pubDate>Wed, 21 Oct 2026 08:50:00 +0000</pubDate>
+      <description>KI im Kundenservice: wann sie sich lohnt, was die KI allein beantworten darf, was ein Mensch prüft, und was die KI-Verordnung verlangt.</description>
+      <category>kundenservice ki</category>
+      <category>ki kundenservice</category>
+      <category>ki im kundenservice</category>
+      <category>chatbot für unternehmen</category>
+      <category>ki automatisierung</category>
+      <category>human in the loop</category>
+    </item>
+    <item>
+      <title>Individuelle Website oder Baukasten: Sechs Kriterien</title>
+      <link>https://www.barnanorbert.com/de/wissen/individuelle-website-oder-baukasten</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/individuelle-website-oder-baukasten</guid>
+      <pubDate>Wed, 21 Oct 2026 08:45:00 +0000</pubDate>
+      <description>Individuelle Website oder Baukasten? Sechs Kriterien, eine Entscheidungstabelle und die Frage, wann Sie eine Website erstellen lassen.</description>
+      <category>individuelle website</category>
+      <category>website erstellen lassen</category>
+      <category>maßgeschneiderte website</category>
+      <category>website baukasten</category>
+      <category>wordpress oder baukasten</category>
+      <category>webentwicklung</category>
+    </item>
+    <item>
+      <title>Human in the Loop: Was es im regulierten Produkt bedeutet</title>
+      <link>https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki</guid>
+      <pubDate>Wed, 21 Oct 2026 08:40:00 +0000</pubDate>
+      <description>Human in the Loop bei KI: sieben Muster, die eine Prüfung bestehen. Kennzeichnung, editierbare Ausgaben, Quellen, Stopp. Art. 14 KI-VO.</description>
+      <category>human in the loop</category>
+      <category>human in the loop ki</category>
+      <category>menschliche aufsicht ki</category>
+      <category>ki verordnung</category>
+      <category>ki integration</category>
+      <category>ki entwicklung</category>
+    </item>
+    <item>
+      <title>KI-Kennzeichnungspflicht: Was Produktteams jetzt umsetzen</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-kennzeichnungspflicht</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-kennzeichnungspflicht</guid>
+      <pubDate>Wed, 21 Oct 2026 08:35:00 +0000</pubDate>
+      <description>KI-Kennzeichnungspflicht nach Art. 50 KI-Verordnung: was seit August 2026 gilt, was der Digital Omnibus änderte, wie man es gestaltet.</description>
+      <category>ki kennzeichnungspflicht</category>
+      <category>ki verordnung</category>
+      <category>eu ai act</category>
+      <category>ki transparenzpflicht</category>
+      <category>ki kennzeichnung</category>
+      <category>human in the loop</category>
+    </item>
+    <item>
+      <title>KI-Automatisierung: Mit welchem Prozess Sie anfangen</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess</guid>
+      <pubDate>Wed, 21 Oct 2026 08:30:00 +0000</pubDate>
+      <description>KI-Automatisierung: fünf Kriterien für den ersten Prozess, wann klassische Automatisierung reicht, und der Weg zum Pilot.</description>
+      <category>ki automatisierung</category>
+      <category>ki prozessautomatisierung</category>
+      <category>ki prozessoptimierung</category>
+      <category>ki audit</category>
+      <category>ki potenzialanalyse</category>
+      <category>automatisierung mit ki</category>
+    </item>
+    <item>
+      <title>Website-Relaunch oder Überarbeitung: Woran Sie es erkennen</title>
+      <link>https://www.barnanorbert.com/de/wissen/website-relaunch-oder-ueberarbeitung</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/website-relaunch-oder-ueberarbeitung</guid>
+      <pubDate>Wed, 21 Oct 2026 08:25:00 +0000</pubDate>
+      <description>Website-Relaunch oder Überarbeitung? Sechs Anzeichen für den Neubau, wann Nachbessern reicht, und die SEO-Checkliste zum Relaunch.</description>
+      <category>website relaunch</category>
+      <category>website überarbeiten</category>
+      <category>website relaunch checkliste</category>
+      <category>website relaunch seo</category>
+      <category>website relaunch kosten</category>
+      <category>webentwicklung</category>
+    </item>
+    <item>
+      <title>KI-Halluzinationen im Unternehmen: Was ein Produkt tun muss</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-halluzinationen-im-unternehmen</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-halluzinationen-im-unternehmen</guid>
+      <pubDate>Wed, 21 Oct 2026 08:20:00 +0000</pubDate>
+      <description>KI-Halluzinationen lassen sich nicht abschalten, aber auffangen: Quellen, Entwürfe, Enthaltung, menschliche Prüfung. Sieben Muster.</description>
+      <category>ki halluzination</category>
+      <category>ki halluzinationen</category>
+      <category>ki halluzinationen vermeiden</category>
+      <category>ki falsche antworten</category>
+      <category>rag retrieval augmented generation</category>
+      <category>human in the loop</category>
+    </item>
+    <item>
+      <title>Barrierefreie Website: Was das BFSG für Firmen bedeutet</title>
+      <link>https://www.barnanorbert.com/de/wissen/barrierefreie-website-bfsg</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/barrierefreie-website-bfsg</guid>
+      <pubDate>Wed, 21 Oct 2026 08:15:00 +0000</pubDate>
+      <description>Barrierefreie Website nach BFSG: wer betroffen ist, was WCAG 2.1 AA verlangt, welche Ausnahmen gelten und wie Sie die Seite umbauen.</description>
+      <category>barrierefreie website</category>
+      <category>barrierefreiheitsstärkungsgesetz</category>
+      <category>bfsg</category>
+      <category>wcag 2.1</category>
+      <category>barrierefreiheit website</category>
+      <category>website barrierefrei machen</category>
+    </item>
+    <item>
+      <title>MVP-Entwicklung für regulierte Produkte: Was echt sein muss</title>
+      <link>https://www.barnanorbert.com/de/wissen/mvp-entwicklung-regulierte-produkte</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/mvp-entwicklung-regulierte-produkte</guid>
+      <pubDate>Wed, 21 Oct 2026 08:10:00 +0000</pubDate>
+      <description>MVP-Entwicklung in Fintech, Gesundheit und regulierten Märkten: was Sie weglassen dürfen, was am ersten Tag echt sein muss, und wie.</description>
+      <category>mvp entwicklung</category>
+      <category>mvp software</category>
+      <category>mvp entwickeln lassen</category>
+      <category>minimum viable product</category>
+      <category>ki entwicklung</category>
+      <category>webentwicklung</category>
+    </item>
+    <item>
+      <title>KI und Datenschutz: DSGVO-konforme KI durch Gestaltung</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-datenschutz-dsgvo</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-datenschutz-dsgvo</guid>
+      <pubDate>Wed, 21 Oct 2026 08:05:00 +0000</pubDate>
+      <description>KI und Datenschutz: welche DSGVO-Fragen ein KI-Projekt stellt und wie Produktteams sie durch Gestaltung statt durch Papier beantworten.</description>
+      <category>ki datenschutz</category>
+      <category>dsgvo ki</category>
+      <category>dsgvo konforme ki</category>
+      <category>ki dsgvo konform</category>
+      <category>chatgpt dsgvo</category>
+      <category>datenschutz-folgenabschätzung</category>
+    </item>
+  </channel>
+</rss>

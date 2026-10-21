@@ -55,7 +55,7 @@ async function readingPositions(page) {
 
 // One Contact entry, LinkedIn as the one external utility, the language link last (NN/g audit, 2026-10-06).
 const HOME_BARS = {
-  "/": { labels: ["NB", "Works", "AI integration", "Articles", "Articles: latest", "About", "Contact", "LinkedIn", "Language: EN, English"], ai: "/ai-integration", pair: "/hu" },
+  "/": { labels: ["NB", "Works", "Services", "Articles", "Articles: latest", "About", "Contact", "LinkedIn", "Language: EN, English"], ai: "/ai-integration", pair: "/hu" },
   "/hu": { labels: ["NB", "Munkák", "Szolgáltatások", "Tudástár", "Tudástár: legújabb cikkek", "Rólam", "Kapcsolat", "LinkedIn", "Nyelv: HU, Magyar"], ai: "/hu/webfejlesztes", pair: "/" },
 };
 
@@ -71,8 +71,10 @@ for (const [route, width] of [["/", 992], ["/", 1280], ["/", 1920], ["/hu", 992]
     await page.evaluate(() => scrollTo(0, 0));
     const opening = await expectHomeBar(page, "opening");
     expect(opening.controls.map((control) => control.label)).toEqual(bar.labels);
-    const languageLink = page.locator(".navbar a.lang-switch");
+    // The first language link leads to the first other language in site order; the German home follows it.
+    const languageLink = page.locator(".navbar a.lang-switch").first();
     await expect(languageLink).toHaveAttribute("href", bar.pair);
+    await expect(page.locator(".navbar a.lang-switch").last()).toHaveAttribute("href", "/de");
     expect(await languageLink.getAttribute("aria-label"), "the visible language name is the accessible name").toBeNull();
     const centers = opening.controls.map((control) => control.y + control.height / 2);
     expect(Math.max(...centers) - Math.min(...centers), "normal text keeps every destination on one row").toBeLessThanOrEqual(2);
@@ -84,7 +86,7 @@ for (const [route, width] of [["/", 992], ["/", 1280], ["/", 1920], ["/hu", 992]
       expect(state.controls, "the menu never redistributes or fades after Selected work or at the footer").toEqual(opening.controls);
     }
     await expect(page.locator(".immersive-nav-landing")).toHaveCount(0);
-    if (route === "/hu") await page.locator('.navbar [aria-controls="nav-services"]').click();
+    await page.locator('.navbar [aria-controls="nav-services"]').click();
     await page.locator(`.navbar a[href="${bar.ai}"]`).click();
     await expect(page).toHaveURL(new RegExp(`${bar.ai}$`));
   });
