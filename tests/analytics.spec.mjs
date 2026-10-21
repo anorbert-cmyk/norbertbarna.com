@@ -204,3 +204,31 @@ test('real consent generation prevents reuse after same-time regrant, failed del
   expect(sent[1].distinct_id).not.toBe(oldId);
   expect(JSON.stringify(sent)).not.toContain(current.generation);
 });
+
+test('Hungarian routes are measured with their own language and page type', async ({ page }) => {
+  const sent = await setup(page, { accepted: true, path: '/hu/munka/kineticare' });
+  await expect.poll(() => sent.length).toBe(1);
+  expect(sent[0].properties.page_language).toBe('hu');
+  expect(sent[0].properties.page_type).toBe('case_study');
+});
+
+test('a sent contact form is one detail-free conversion; named CTAs keep their id', async ({ page }) => {
+  const sent = await setup(page, { accepted: true, path: '/hu/kapcsolat' });
+  await expect.poll(() => sent.length).toBe(1);
+  expect(sent[0].properties.page_type).toBe('contact');
+  await page.evaluate(() => {
+    const link = document.createElement('button');
+    link.setAttribute('data-analytics-cta', 'consultation');
+    link.textContent = 'Konzultáció';
+    document.querySelector('main').append(link);
+    document.dispatchEvent(new CustomEvent('portfolio:contact-sent', { detail: { email: 'private@example.test' } }));
+  });
+  await expect.poll(() => sent.length).toBe(2);
+  expect(sent[1].event).toBe('contact_form_submitted');
+  expect(JSON.stringify(sent[1])).not.toMatch(/private/);
+  await page.locator('[data-analytics-cta]').click();
+  await expect.poll(() => sent.length).toBe(3);
+  expect(sent[2].event).toBe('contact_intent');
+  expect(sent[2].properties.cta_id).toBe('consultation');
+  expect(sent[2].properties.cta_location).toBe('content');
+});

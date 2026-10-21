@@ -1,11 +1,10 @@
 ---
 title: "What to prepare before hiring an AI integration partner"
 description: "What to prepare before hiring an AI integration partner: one workflow, a baseline, data access, what stays human, and a pilot owner."
-draft: true
 lang: en
 slug: before-hiring-an-ai-integration-partner
-date: 2027-01-27T09:00:00+01:00
-updated: 2027-01-27T09:00:00+01:00
+date: 2026-10-21T09:00:00+02:00
+updated: 2026-10-21T09:00:00+02:00
 tags: [ai integration, ai integration consultant, ai implementation, ai consulting, ai integration services]
 service: /ai-integration
 service_label: AI integration for regulated industries

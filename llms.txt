@@ -55,6 +55,17 @@ Every page has a Hungarian version with the same content. The menu's EN | HU swi
 
 Instructure and SportsGambit are AI product work. Raiffeisen, Bitpanda, Benker, Kineticare and OnRobot are product design, leadership and build work, not AI integration projects.
 
+## Writing
+
+Articles by Norbert Barna, written from his own project work; each opens with its direct answer and ends with a visible FAQ (FAQPage schema). Hungarian articles are listed at https://www.barnanorbert.com/hu/irasok and English articles at https://www.barnanorbert.com/writing; RSS at /hu/irasok/feed.xml and /writing/feed.xml.
+
+- [AI bevezetése KKV-nál: az első 90 nap lépésről lépésre](https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap) (Hungarian, 2026-10-21): AI bevezetése KKV-nál lépésről lépésre: melyik folyamattal kezdj, mit tesztelj pilotban, mit ellenőrizzen ember, és mikor állj meg.
+- [AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg](https://www.barnanorbert.com/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel) (Hungarian, 2026-10-21): AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg, mit válaszolhat az AI magától, mit néz át ember, és mit ír elő az AI-rendelet.
+- [What to prepare before hiring an AI integration partner](https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner) (English, 2026-10-21): What to prepare before hiring an AI integration partner: one workflow, a baseline, data access, what stays human, and a pilot owner.
+- [Weboldal készítés árak 2026: mitől függ egy céges oldal ára](https://www.barnanorbert.com/hu/irasok/ceges-weboldal-ara) (Hungarian, 2026-10-21): Weboldal készítés árak 2026-ban: mitől függ egy egyedi céges weboldal ára, és mit kérdezz meg ajánlatkérés előtt. Tényezők és példa.
+- [Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek](https://www.barnanorbert.com/hu/irasok/egyedi-weboldal-vagy-sablon) (Hungarian, 2026-10-21): Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek: bizalom, funkciók, integrációk, tartalomkezelés, bővítés, kereshetőség.
+- [Human-in-the-loop AI for regulated products: 7 patterns](https://www.barnanorbert.com/writing/human-in-the-loop-ai) (English, 2026-10-21): Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work.
+
 ## Services
 
 - AI integration for businesses (English: https://www.barnanorbert.com/ai-integration; Hungarian: https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes)

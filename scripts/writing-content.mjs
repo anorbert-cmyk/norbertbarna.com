@@ -191,6 +191,9 @@ export function citations(markdown) {
   return urls;
 }
 
+// The H2 outline of rendered HTML, for the on-page table of contents.
+export const outlineOf = (html) => [...html.matchAll(/<h2\b[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
+  .map(([, id, inner]) => ({ id, text: htmlText(inner) }));
 
 export function articleFile(article) {
   return `${SECTIONS[article.lang].dir}/${article.slug}.html`;

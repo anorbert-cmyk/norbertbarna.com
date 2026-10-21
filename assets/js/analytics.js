@@ -13,8 +13,12 @@
   var PROJECT_KEY = 'phc_A6NZzdAmwhiRd9yXKevru3nqDWX5eqmNvzhxMHCn4T3Q';
   var SESSION_KEY = 'bn-analytics-session-v1';
   var RELEASE = 'consent-v1-20260905';
-  var ROUTES = ['/', '/works', '/ai-integration', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/privacy', '/hu/adatvedelem', '/work/raiffeisen', '/work/instructure', '/work/bitpanda', '/work/benker', '/work/sportsgambit', '/work/kineticare', '/work/onrobot'];
-  var SERVICE_ROUTES = ['/ai-integration', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes'];
+  // Every canonical route in both languages (sitemap.xml). A route missing
+  // here is silently unmeasured, which hid the Hungarian site until 2026-10-21.
+  var CASES = ['raiffeisen', 'instructure', 'bitpanda', 'benker', 'sportsgambit', 'kineticare', 'onrobot'];
+  var ROUTES = ['/', '/works', '/about', '/ai-integration', '/contact', '/privacy', '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/hu/kapcsolat', '/hu/adatvedelem']
+    .concat(CASES.map(function (slug) { return '/work/' + slug; }), CASES.map(function (slug) { return '/hu/munka/' + slug; }));
+  var CTA_IDS = ['consultation', 'contact', 'service'];
   var SOURCES = ['direct', 'google', 'bing', 'linkedin', 'chatgpt', 'perplexity', 'claude', 'gemini', 'copilot', 'other'];
   var CHANNELS = ['direct_or_unknown', 'organic_search', 'social_referral', 'ai_referral', 'paid', 'other_referral'];
   var pending = new Set();
@@ -104,6 +108,15 @@
     stop();
     try { sessionStorage.removeItem(SESSION_KEY); } catch (_) { /* remains fail closed */ }
   }
+  function pageType() {
+    if (path === '/' || path === '/hu') return 'home';
+    if (path === '/works' || path === '/hu/munkak') return 'work_index';
+    if (path.startsWith('/work/') || path.startsWith('/hu/munka/')) return 'case_study';
+    if (path === '/about' || path === '/hu/rolam') return 'about';
+    if (path === '/contact' || path === '/hu/kapcsolat') return 'contact';
+    if (path === '/privacy' || path === '/hu/adatvedelem') return 'privacy';
+    return 'service';
+  }
   function capture(event, placement) {
     if (!allowed()) return;
     var now = Date.now();
@@ -119,13 +132,16 @@
       $device_type: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
       acquisition_source: s.source,
       acquisition_channel: s.channel,
-      page_language: path.startsWith('/hu/') ? 'hu' : 'en',
-      page_type: SERVICE_ROUTES.indexOf(path) !== -1 ? 'service' : path.startsWith('/work/') ? 'case_study' : path === '/' ? 'home' : path === '/works' ? 'work_index' : 'privacy',
+      page_language: path === '/hu' || path.startsWith('/hu/') ? 'hu' : 'en',
+      page_type: pageType(),
       is_test: isTest,
       consent_version: 1,
       site_release: RELEASE
     };
-    if (event === 'contact_intent') properties.cta_location = placement;
+    if (event === 'contact_intent') {
+      properties.cta_location = placement.location;
+      if (placement.id) properties.cta_id = placement.id;
+    }
     var controller = new AbortController();
     pending.add(controller);
     var timer = setTimeout(function () { controller.abort(); }, 5000);
@@ -158,11 +174,19 @@
   // Capture phase never cancels, replaces or delays the native navigation to
   // the contact page. Language links are not contact intent.
   document.addEventListener('click', function (event) {
-    var button = event.target instanceof Element ? event.target.closest('.footer-email, a[href="/contact"], a[href="/hu/kapcsolat"]') : null;
+    var button = event.target instanceof Element ? event.target.closest('.footer-email, a[href="/contact"], a[href="/hu/kapcsolat"], [data-analytics-cta]') : null;
     if (!button) return;
-    var placement = button.closest('footer') ? 'footer' : button.closest('.navbar, header') ? 'navigation' : 'content';
-    capture('contact_intent', placement);
+    // data-analytics-cta names a call to action (e.g. "consultation" on a
+    // service page) so the conversion goals can tell the offers apart.
+    var id = button.getAttribute('data-analytics-cta');
+    capture('contact_intent', {
+      location: button.closest('footer') ? 'footer' : button.closest('.navbar, header') ? 'navigation' : 'content',
+      id: CTA_IDS.indexOf(id) !== -1 ? id : ''
+    });
   }, true);
+  // The contact form announces a message the server accepted. Only the fact
+  // and the page language travel, never what was written or who wrote it.
+  document.addEventListener('portfolio:contact-sent', function () { capture('contact_form_submitted'); });
   window.addEventListener('pagehide', function () { hidden = true; stop(); });
   window.addEventListener('pageshow', function () { hidden = false; if (!allowed()) revoke(); });
   if (!window.PortfolioConsent || !window.PortfolioConsent.hasConsent()) revoke();

@@ -27,7 +27,7 @@ const RELEASE_SOURCES = [
   "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
   "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css",
-  "css/contact.css", "js/contact.js", "js/physics.js",
+  "css/contact.css", "js/contact.js", "js/physics.js", "css/writing.css",
 ];
 // Font binaries are distributed once, under their digest-bearing names. Their
 // manifest replaces the unhashed source/release pair used by authored CSS/JS.
@@ -331,6 +331,16 @@ try {
     apexAbout.headers.location === "https://www.barnanorbert.com/about?ref=story",
     "apex About alias must preserve the query and canonicalize host and path in one hop"
   );
+
+  // Plain http on the canonical host lands on the https URL in a single hop.
+  const plainHttp = await rawGet(address.port, "/about.html?ref=http", {
+    host: "www.barnanorbert.com",
+    "x-forwarded-proto": "http",
+  });
+  assert(plainHttp.statusCode === 301, "http on the canonical host must redirect to https");
+  assert(plainHttp.headers.location === "https://www.barnanorbert.com/about?ref=http", "http redirect keeps path canonicalization and query");
+  const secure = await rawGet(address.port, "/about", { host: "www.barnanorbert.com", "x-forwarded-proto": "https" });
+  assert(secure.statusCode === 200, "https on the canonical host serves the page");
 
   const previousCanonicalRedirect = process.env.CANONICAL_REDIRECT;
   process.env.CANONICAL_REDIRECT = "1";

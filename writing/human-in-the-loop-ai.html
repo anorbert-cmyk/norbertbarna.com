@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><link rel="preload" href="/assets/fonts/inter-latin.c940764593d0.woff2" as="font" type="font/woff2" crossorigin="anonymous"/><link rel="preload" href="/assets/fonts/funnel-display-latin.96468ae77275.woff2" as="font" type="font/woff2" crossorigin="anonymous"/><link href="/assets/css/fonts.dc4bfc92004f.css" rel="stylesheet" type="text/css"/>
+<title>Human-in-the-loop AI for regulated products: 7 patterns</title>
+<meta content="Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work." name="description"/><meta content="human in the loop ai, ai integration, ai product design, regulated industries, eu ai act, human oversight" name="keywords"/>
+<meta content="Human-in-the-loop AI for regulated products: 7 patterns" property="og:title"/>
+<meta content="Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work." property="og:description"/>
+<meta content="https://www.barnanorbert.com/assets/images/og/writing/human-in-the-loop-ai.jpg" property="og:image"/>
+<meta content="A folded paper ribbon passing through a paper gate with a small olive checkpoint fold" property="og:image:alt"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="article" property="og:type"/>
+<meta content="Norbert Barna" property="og:site_name"/>
+<meta content="en_US" property="og:locale"/>
+<meta content="https://www.barnanorbert.com/writing/human-in-the-loop-ai" property="og:url"/>
+<meta content="2026-10-21T09:00:00+02:00" property="article:published_time"/>
+<meta content="2026-10-21T09:00:00+02:00" property="article:modified_time"/>
+<meta content="Norbert Barna" property="article:author"/>
+<meta content="AI integration for regulated industries" property="article:section"/>
+<meta content="human in the loop ai" property="article:tag"/>
+<meta content="ai integration" property="article:tag"/>
+<meta content="ai product design" property="article:tag"/>
+<meta content="regulated industries" property="article:tag"/>
+<meta content="eu ai act" property="article:tag"/>
+<meta content="human oversight" property="article:tag"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="Human-in-the-loop AI for regulated products: 7 patterns" name="twitter:title"/>
+<meta content="Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work." name="twitter:description"/>
+<meta content="https://www.barnanorbert.com/assets/images/og/writing/human-in-the-loop-ai.jpg" name="twitter:image"/>
+<meta content="A folded paper ribbon passing through a paper gate with a small olive checkpoint fold" name="twitter:image:alt"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#000000" name="theme-color"/>
+<meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/>
+<meta content="Norbert Barna" name="author"/>
+<link rel="canonical" href="https://www.barnanorbert.com/writing/human-in-the-loop-ai"/>
+<link rel="alternate" type="application/rss+xml" title="Writing by Norbert Barna" href="/writing/feed.xml"/>
+<link href="/assets/css/norbertbarna.webflow.shared.8948b5576.css" rel="stylesheet" type="text/css"/><link href="/assets/css/norbertbarna.webflow.68f648c185978b91769e27a5-acb15adb8.css" rel="stylesheet" type="text/css"/><link href="/assets/css/responsive.c459b80935c5.css" rel="stylesheet" type="text/css"/><script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script><link href="/assets/icons/68f923d010d274634c966a6e_favicon.png" rel="icon" type="image/png"/><link href="/assets/icons/68f9237058b27cb0adfe0e4b_webclip.svg" rel="apple-touch-icon"/>
+<link rel="stylesheet" href="/assets/css/writing.8a7dbcc41a71.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://www.barnanorbert.com/writing/human-in-the-loop-ai#article",
+      "mainEntityOfPage": "https://www.barnanorbert.com/writing/human-in-the-loop-ai",
+      "url": "https://www.barnanorbert.com/writing/human-in-the-loop-ai",
+      "headline": "Human-in-the-loop AI for regulated products: 7 patterns",
+      "description": "Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work.",
+      "inLanguage": "en",
+      "datePublished": "2026-10-21T09:00:00+02:00",
+      "dateModified": "2026-10-21T09:00:00+02:00",
+      "author": {
+        "@type": "Person",
+        "@id": "https://www.barnanorbert.com/#person",
+        "name": "Norbert Barna",
+        "alternateName": "Barna Norbert",
+        "url": "https://www.barnanorbert.com/",
+        "sameAs": [
+          "https://www.linkedin.com/in/barna-norbert/"
+        ]
+      },
+      "publisher": {
+        "@id": "https://www.barnanorbert.com/#person"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://www.barnanorbert.com/assets/images/og/writing/human-in-the-loop-ai.jpg",
+        "width": 1200,
+        "height": 630,
+        "caption": "A folded paper ribbon passing through a paper gate with a small olive checkpoint fold"
+      },
+      "abstract": "Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.",
+      "wordCount": 1601,
+      "timeRequired": "PT9M",
+      "keywords": "human in the loop ai, ai integration, ai product design, regulated industries, eu ai act, human oversight",
+      "articleSection": "AI integration for regulated industries",
+      "citation": [
+        "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14",
+        "https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/",
+        "https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force"
+      ],
+      "isAccessibleForFree": true,
+      "isPartOf": {
+        "@id": "https://www.barnanorbert.com/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.barnanorbert.com/writing/human-in-the-loop-ai#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.barnanorbert.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Writing",
+          "item": "https://www.barnanorbert.com/writing"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Human-in-the-loop AI for regulated products: 7 patterns"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.barnanorbert.com/writing/human-in-the-loop-ai#faq",
+      "url": "https://www.barnanorbert.com/writing/human-in-the-loop-ai",
+      "inLanguage": "en",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is human-in-the-loop AI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A workflow in which the system proposes and a person decides at defined points, with enough information to decide well. The person can see the AI was involved, can change or reject the output, and the decision is recorded."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the EU AI Act require human in the loop?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 14 requires effective human oversight for high-risk systems, including the ability to override and to stop the system. It does not prescribe one interface pattern. Whether a system is high-risk is a legal question; this article is not legal advice."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When do the high-risk obligations apply?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After the 2026 Digital Omnibus: Annex III systems from 2 December 2027, Annex I systems from 2 August 2028. Article 50 transparency duties apply from 2 August 2026."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does human review slow everything down?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It moves effort to where a mistake costs most. Measure review effort in the pilot: if reviewers approve everything in two seconds, the loop is not working; if review takes longer than the original task, the feature is not working either."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a small team do this?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The patterns are interface decisions, not infrastructure. Start with one workflow, one label, one edit state and one named owner."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is automation bias?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The tendency to over-trust a system's output. The design response is visible confidence, verifiable sources and a deliberate review step before any action."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you work with teams in Germany and the rest of the EU?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Communication is in English or Hungarian; German-speaking teams work with me in English."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<noscript><style>@media (max-width:991px){.nav-wrap{flex-wrap:wrap!important}.nav-menu.w-nav-menu{display:block!important;position:static!important;width:100%!important;margin:8px 0 0!important}.menu-button{display:none!important}}</style></noscript>
+<link rel="stylesheet" href="/assets/css/consent.css"/>
+<script defer src="/assets/js/analytics-config.js"></script>
+<script defer src="/assets/js/consent.js"></script>
+<script defer src="/assets/js/analytics.js"></script>
+<link rel="stylesheet" href="/assets/css/editorial-sections.52f669aba59c.css"/><link rel="stylesheet" href="/assets/css/compact-navigation.e6435786dae0.css"/></head>
+<body class="utility-page writing-page writing-article-page">
+<a class="skip-to-content" href="#main-content">Skip to content</a>
+<div class="navbar w-nav" data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner"><div class="container w-container"><div class="nav-wrap dark"><a aria-label="Norbert Barna, home" class="nav-logo-wrap logo w-nav-brand" href="/"><img alt="Norbert Barna" decoding="async" src="/assets/images/68f9e9de8ed08e31e52c4188_NB.svg" width="62" height="34"/></a><button type="button" class="menu-button w-nav-button" aria-label="Open navigation" aria-controls="primary-navigation" aria-expanded="false"><span class="black w-icon-nav-menu"></span></button><nav id="primary-navigation" class="nav-menu grey w-nav-menu" role="navigation" aria-label="Main navigation"><div class="nav-menu-area"><a class="nav-link white w-nav-link" href="/works">Works</a><a class="nav-link white w-nav-link" href="/ai-integration">AI integration</a><div class="nav-group" data-nav-group lang="en"><a class="nav-link white w-nav-link" href="/writing">Articles</a><button type="button" class="nav-group-toggle" data-nav-toggle aria-expanded="false" aria-controls="nav-articles" aria-label="Articles: latest" data-current><svg class="nav-chevron" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4"/></svg></button><div class="nav-group-panel" id="nav-articles" hidden><ul class="nav-group-list"><li><a class="nav-group-link" href="/writing/before-hiring-an-ai-integration-partner">What to prepare before hiring an AI integration partner</a></li><li><a aria-current="page" class="nav-group-link" href="/writing/human-in-the-loop-ai">Human-in-the-loop AI for regulated products: 7 patterns</a></li><li><a class="nav-group-link nav-group-more" href="/writing">All articles</a></li></ul></div></div><a class="nav-link white w-nav-link" href="/about">About</a><a class="nav-link white w-nav-link" href="/contact">Contact</a><a aria-label="Find me on LinkedIn (opens in a new tab)" class="nav-link white w-nav-link" href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer">LinkedIn</a><div class="nav-group nav-lang" data-nav-group><button type="button" class="nav-lang-trigger" data-nav-toggle aria-expanded="false" aria-controls="nav-languages" aria-label="Language: EN, English"><svg class="nav-flag" viewBox="0 0 60 30" width="21" height="14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" stroke="#C8102E" stroke-width="2"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span class="nav-lang-code" aria-hidden="true">EN</span><span class="nav-lang-name" aria-hidden="true">English</span><svg class="nav-chevron" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4"/></svg></button><div class="nav-group-panel nav-lang-panel" id="nav-languages" hidden><ul class="nav-group-list"><li><span class="nav-lang-current" aria-current="true" lang="en"><svg class="nav-flag" viewBox="0 0 60 30" width="21" height="14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" stroke="#C8102E" stroke-width="2"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span>English</span></span></li><li><a class="nav-group-link lang-switch" href="/hu/irasok" hreflang="hu" lang="hu"><svg class="nav-flag" viewBox="0 0 60 40" width="21" height="14" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#fff"/><rect width="60" height="13.4" fill="#CE2939"/><rect y="26.6" width="60" height="13.4" fill="#477050"/></svg><span>Magyar</span></a></li></ul></div></div></div></nav></div></div></div>
+<main id="main-content" tabindex="-1"><article class="writing-article" aria-labelledby="article-title">
+<header class="writing-opening writing-opening-article"><div class="writing-frame">
+<nav class="writing-breadcrumb" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li><a href="/writing">Writing</a></li><li aria-current="page">Human-in-the-loop AI for regulated products: 7 patterns</li></ol></nav>
+<p class="writing-kicker">AI integration for regulated industries</p>
+<h1 class="writing-title" id="article-title">Human-in-the-loop AI for regulated products: 7 patterns</h1>
+<p class="writing-dek">Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work.</p>
+<p class="writing-meta"><span><a href="/about" rel="author">Norbert Barna</a></span><span><time datetime="2026-10-21">21 October 2026</time></span><span>9 min read</span></p>
+<figure class="writing-cover"><img src="/assets/images/og/writing/human-in-the-loop-ai.jpg" alt="A folded paper ribbon passing through a paper gate with a small olive checkpoint fold" width="1200" height="630" decoding="async" fetchpriority="high"/></figure>
+</div></header>
+<div class="writing-body"><div class="writing-frame">
+<aside class="writing-rail"><nav class="writing-toc" aria-labelledby="writing-toc-label"><p class="writing-toc-label" id="writing-toc-label">Contents</p><ol><li><a href="#what-human-in-the-loop-means-and-what-it-does-not">What “human in the loop” means, and what it does not</a></li><li><a href="#what-the-eu-ai-act-asks-of-human-oversight">What the EU AI Act asks of human oversight</a></li><li><a href="#seven-human-in-the-loop-patterns-that-hold-up-in-review">Seven human-in-the-loop patterns that hold up in review</a></li><li><a href="#what-to-decide-before-you-build-eight-questions">What to decide before you build: eight questions</a></li><li><a href="#what-made-it-hard">What made it hard</a></li><li><a href="#frequently-asked-questions">Frequently asked questions</a></li><li><a href="#where-to-start">Where to start</a></li></ol></nav></aside>
+<div class="writing-prose">
+<p>Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.</p>
+<p>This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure's learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.</p>
+<h2 id="what-human-in-the-loop-means-and-what-it-does-not">What “human in the loop” means, and what it does not</h2>
+<p>Three terms are commonly used, and they describe different amounts of human control:</p>
+<ul><li><strong>Human in the loop:</strong> a person approves each consequential output before it takes effect.</li><li><strong>Human on the loop:</strong> the system acts on its own; a person monitors and can intervene.</li><li><strong>Human out of the loop:</strong> fully automated, with review only after the fact, if at all.</li></ul>
+<p>These are design terms, not legal categories. The right level depends on the consequence of a wrong output, not on how good the model is. A draft that a person edits anyway can tolerate a weaker model; an action that reaches a customer or moves money cannot.</p>
+<p>Three things have to be true for a person to be genuinely in the loop. They can see that the AI was involved. They can change or reject the output. And the decision is recorded, so that who accepted what, and on what basis, can be reconstructed later. If any one of these is missing, the person is not in the loop. They are watching it.</p>
+<h2 id="what-the-eu-ai-act-asks-of-human-oversight">What the EU AI Act asks of human oversight</h2>
+<p>Article 14 of the EU AI Act requires that high-risk AI systems be designed so the people overseeing them can understand the system's capacities and limitations, remain aware of automation bias, interpret the output correctly, decide not to use it or override it, and stop it through a “stop” button or a similar procedure (source: <a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14" target="_blank" rel="noopener noreferrer">AI Act Service Desk, Article 14</a>, accessed 2026-10-21).</p>
+<p>On timing: the Digital Omnibus on AI (Regulation (EU) 2026/1744, in force since 27 July 2026) moved the Annex III high-risk obligations to 2 December 2027 and the Annex I obligations to 2 August 2028. The Article 50 transparency duties, such as telling people they are interacting with an AI system, still apply from 2 August 2026 (sources: <a href="https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/" target="_blank" rel="noopener noreferrer">Cooley</a>, <a href="https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force" target="_blank" rel="noopener noreferrer">National Law Review</a>, accessed 2026-10-21).</p>
+<p>This is a design reading of the text, not legal advice. Whether your system is high-risk is a question for your counsel. What I can say from shipped work is that each of the five oversight abilities in Article 14 maps to an interface decision, and the rest of this article is those decisions.</p>
+<h2 id="seven-human-in-the-loop-patterns-that-hold-up-in-review">Seven human-in-the-loop patterns that hold up in review</h2>
+<h3 id="1-label-every-ai-output">1. Label every AI output</h3>
+<p>At Instructure, where I led end-to-end feature design within the Canvas Catalog ecosystem, part of a product that several million people used every day, clear AI labelling and disclosure was a guardrail fixed on day one. Every AI suggestion had a label, an edit state and a way back, and nothing the model decided could remain invisible.</p>
+<p>Decide before building: the wording of the label, where it sits, and whether it persists after a person has edited the output.</p>
+<h3 id="2-explain-first-then-suggest">2. Explain first, then suggest</h3>
+<p>The Instructure design principle was “explanation before suggestion”: show the signals and sources behind a suggestion before the suggestion itself. A reviewer who sees why can judge; a reviewer who only sees what can only trust.</p>
+<p>Decide: which source cue the reviewer can actually verify in the time they have. A citation nobody opens is decoration.</p>
+<h3 id="3-make-outputs-editable-and-reversible">3. Make outputs editable and reversible</h3>
+<p>Outputs at Instructure were editable and undoable, with explicit review states: draft, reviewed, published. This is the interface form of Article 14’s “decide not to use, override or reverse”. An AI output that can only be accepted or rejected pushes people toward accepting.</p>
+<h3 id="4-design-the-states-nobody-demos">4. Design the states nobody demos</h3>
+<p>We shipped accessible component states for empty, loading, error and latency across every product variant. In a review, the failure state is where the questions start: what does the instructor see when the model returns nothing, returns late, or returns something it should not? If the interface hides those states, a person cannot review what they cannot see.</p>
+<h3 id="5-show-confidence-and-keep-a-deliberate-review-step">5. Show confidence, and keep a deliberate review step</h3>
+<p>At SportsGambit, a prediction-market MVP with AI agents recommending picks, every tip carried a confidence score, leaderboards let users check an agent's history before acting on its advice, and a deliberate review step stood before any action. Early product data showed heavy use of AI-originated recommendations; we treated that as a risk to watch, not as a success metric, because automation reliance is exactly the failure mode human oversight is meant to catch. This maps to Article 14's automation-bias requirement.</p>
+<p>The case study also states its boundary: the MVP did not validate production wagering safeguards. Details: <a href="/work/sportsgambit">SportsGambit case study</a>.</p>
+<h3 id="6-put-legal-compliance-and-data-science-in-the-room-early">6. Put legal, compliance and data science in the room early</h3>
+<p>At Instructure the flows were reviewed jointly with Legal, Compliance and Data Science, and then codified into reusable patterns: prompts, review states, confirmations, feedback loops. They did not stand in our way at the end; they co-wrote the guardrails from the start. A guardrail added after the design is usually a warning dialog nobody reads.</p>
+<p>The same held in non-AI regulated work. At Raiffeisen, where I was Product Lead for the mobile banking redesign, PSD2, strong customer authentication, KYC and audit trail arrived as non-negotiables. We kept almost every step and changed how it felt to go through them. That is the regulated-delivery parallel, not an AI example. Details: <a href="/work/raiffeisen">Raiffeisen case study</a>.</p>
+<h3 id="7-ship-behind-flags-measure-and-name-who-can-stop-it">7. Ship behind flags, measure, and name who can stop it</h3>
+<p>Features at Instructure went out behind feature flags, and we measured adoption and task completion so that every iteration built on what the data showed. In my <a href="/ai-integration">AI integration work</a> the same idea becomes step four of the method: a bounded pilot with a named owner who can pause it or roll back to the previous version.</p>
+<p>Decide: who owns the stop, how fast it can happen, and what is logged for later review.</p>
+<h2 id="what-to-decide-before-you-build-eight-questions">What to decide before you build: eight questions</h2>
+<ol><li>What is the consequence of a wrong output, and for whom?</li><li>What may the AI suggest, and what must a person approve?</li><li>What does the reviewer see to judge the output?</li><li>How does the reviewer edit, reject or reverse it?</li><li>What happens on empty, missing or late output?</li><li>Who can stop the feature, and how fast?</li><li>What is logged for later review?</li><li>Which measures decide whether the pilot continues?</li></ol>
+<p>If these questions do not have answers yet, that is where the work starts. In my method the second step, before anything is built, is defining access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. If you are comparing partners, <a href="/writing/before-hiring-an-ai-integration-partner">what to prepare before hiring an AI integration partner</a> lists the inputs that make that conversation useful.</p>
+<h2 id="what-made-it-hard">What made it hard</h2>
+<p>Most AI projects start with what can be automated. At Instructure we started with what must stay human. The hard part was ethical, not technical: designing for the AI being wrong, biased or misused, instead of pretending those cases would not occur. That does not make for an impressive slide deck. It makes for AI that real institutions can roll out to millions of people and still sleep at night. Details: <a href="/work/instructure">Instructure case study</a>.</p>
+<h2 id="frequently-asked-questions">Frequently asked questions</h2>
+<h3 id="what-is-human-in-the-loop-ai">What is human-in-the-loop AI?</h3>
+<p>A workflow in which the system proposes and a person decides at defined points, with enough information to decide well. The person can see the AI was involved, can change or reject the output, and the decision is recorded.</p>
+<h3 id="does-the-eu-ai-act-require-human-in-the-loop">Does the EU AI Act require human in the loop?</h3>
+<p>Article 14 requires effective human oversight for high-risk systems, including the ability to override and to stop the system. It does not prescribe one interface pattern. Whether a system is high-risk is a legal question; this article is not legal advice.</p>
+<h3 id="when-do-the-high-risk-obligations-apply">When do the high-risk obligations apply?</h3>
+<p>After the 2026 Digital Omnibus: Annex III systems from 2 December 2027, Annex I systems from 2 August 2028. Article 50 transparency duties apply from 2 August 2026.</p>
+<h3 id="does-human-review-slow-everything-down">Does human review slow everything down?</h3>
+<p>It moves effort to where a mistake costs most. Measure review effort in the pilot: if reviewers approve everything in two seconds, the loop is not working; if review takes longer than the original task, the feature is not working either.</p>
+<h3 id="can-a-small-team-do-this">Can a small team do this?</h3>
+<p>Yes. The patterns are interface decisions, not infrastructure. Start with one workflow, one label, one edit state and one named owner.</p>
+<h3 id="what-is-automation-bias">What is automation bias?</h3>
+<p>The tendency to over-trust a system's output. The design response is visible confidence, verifiable sources and a deliberate review step before any action.</p>
+<h3 id="do-you-work-with-teams-in-germany-and-the-rest-of-the-eu">Do you work with teams in Germany and the rest of the EU?</h3>
+<p>Yes. Communication is in English or Hungarian; German-speaking teams work with me in English.</p>
+<h2 id="where-to-start">Where to start</h2>
+<p>Oversight is easier to design than to retrofit. The product that passes review is the one where every AI output already had a label, an edit state and a way back. Bring the workflow and the decision you are worried about, and <a href="/contact">we start there</a>.</p>
+<section class="writing-cta" aria-labelledby="related-service">
+<h2 id="related-service">If this is your project</h2>
+<p>The service behind this article: <a href="/ai-integration">AI integration for regulated industries</a>. If you already know what you want to build, send a few lines about your goals.</p>
+<p><a class="footer-email hero-work-link" href="/contact">Discuss your project</a></p>
+</section>
+</div></div></div>
+<aside class="writing-related" aria-labelledby="writing-related-title"><div class="writing-frame"><h2 id="writing-related-title">More articles</h2><ol class="writing-rows"><li class="writing-row"><a class="writing-row-link" href="/writing/before-hiring-an-ai-integration-partner"><span class="writing-row-number" aria-hidden="true">01</span><figure class="writing-row-media"><img src="/assets/images/og/writing/before-hiring-an-ai-integration-partner.jpg" alt="" width="1200" height="630" decoding="async" loading="lazy"/></figure><div class="writing-row-copy"><p class="writing-kicker">AI integration for regulated industries</p><h2 id="before-hiring-an-ai-integration-partner">What to prepare before hiring an AI integration partner</h2><p>What to prepare before hiring an AI integration partner: one workflow, a baseline, data access, what stays human, and a pilot owner.</p><p class="writing-meta"><span><time datetime="2026-10-21">21 October 2026</time></span><span>6 min read</span></p></div></a></li></ol></div></aside>
+</article></main>
+<footer class="footer-section editorial-footer"><div class="container footer-inner"><div class="footer-chrome"><div class="footer-ident"><a class="footer-brand" href="/" aria-label="Norbert Barna, home"><img alt="" class="footer-wordmark" decoding="async" src="/assets/images/68f9e9de8ed08e31e52c4188_NB.svg" width="110" height="60"/></a><h2 class="editorial-footer-title">Let’s talk<br>product.</h2><p class="footer-lede">Product VP. I lead AI products in regulated finance and high-trust systems.</p><div class="footer-cta"><a class="footer-email" href="/contact">Discuss your project</a><a class="footer-contact-link" href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer" aria-label="Find me on LinkedIn (opens in a new tab)"><svg class="footer-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 9.1H4.1V20h2.5V9.1ZM5.35 4.2a1.55 1.55 0 1 0 0 3.1 1.55 1.55 0 0 0 0-3.1ZM19.9 13.25c0-3.18-1.7-4.66-3.98-4.66-1.84 0-2.66 1.02-3.12 1.74V9.1h-2.48c.04.72 0 10.9 0 10.9h2.48v-6.08c0-.33.02-.66.12-.9.27-.66.87-1.35 1.89-1.35 1.33 0 1.87 1.02 1.87 2.5V20h2.22v-6.75Z"/></svg><span class="editorial-linkedin-label">LinkedIn</span></a></div></div><nav class="footer-nav" aria-label="Footer"><div class="footer-col"><p class="footer-col-title">Work</p><ul class="footer-col-list"><li><a href="/work/raiffeisen">Raiffeisen</a></li><li><a href="/work/instructure">Instructure</a></li><li><a href="/work/bitpanda">Bitpanda</a></li><li><a href="/work/kineticare">Kineticare</a></li><li><a href="/works">All work</a></li></ul></div><div class="footer-col footer-col-services"><p class="footer-col-title">Services</p><ul class="footer-col-list"><li><a href="/ai-integration">AI integration</a></li></ul></div><div class="footer-col footer-col-articles"><p class="footer-col-title">Articles</p><ul class="footer-col-list"><li><a href="/writing/before-hiring-an-ai-integration-partner">What to prepare before hiring an AI integration partner</a></li><li><a href="/writing/human-in-the-loop-ai">Human-in-the-loop AI for regulated products: 7 patterns</a></li><li><a href="/writing">All articles</a></li></ul></div></nav></div><div class="footer-bar"><p class="footer-copyright">© 2026 Norbert Barna</p><div class="footer-privacy"><a href="/privacy">Privacy</a><button type="button" data-consent-settings hidden>Analytics settings</button></div></div></div></footer>
+<script src="/assets/js/media.5551c5da65f7.js"></script>
+<script src="/assets/js/navigation.js"></script><script src="/assets/js/vendor/gsap.min.js"></script><script src="/assets/js/vendor/ScrollTrigger.min.js"></script><script src="/assets/js/immersive-navigation.431c65efbb7b.js"></script><script src="/assets/js/animations.7d6dfc8169d7.js"></script>
+</body>
+</html>

@@ -142,7 +142,7 @@ for (const [language, path] of ROUTES) {
     const pair = language === "en" ? "/hu/ai-tanacsadas-fejlesztes" : "/ai-integration";
     await expect(page.locator(`main a[href="${pair}"]`)).toHaveCount(1);
     // The menu's single language link names the other language in that language.
-    const languageLink = page.locator(".navbar a.nav-link.lang-switch");
+    const languageLink = page.locator(".navbar a.lang-switch");
     await expect(languageLink).toHaveCount(1);
     await expect(languageLink).toHaveAttribute("href", pair);
     await expect(languageLink).toHaveText(language === "en" ? "Magyar" : "English");

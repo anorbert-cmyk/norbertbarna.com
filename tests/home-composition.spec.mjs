@@ -34,7 +34,7 @@ async function readingState(page) {
     return {
       title: rect(".home-mast-display"), copy: rect(".home-banner-subtitle"), action: rect(".home-intro-work"),
       intro: rect(".home-mast-intro"), stage: rect(".home-mast-scene"),
-      track: rect(".home-mast-track"), work: rect("#works"),
+      track: rect(".home-mast-track"), offer: rect(".home-offer"), work: rect("#works"),
       titleAlpha: alpha, titleVisibility: getComputedStyle(title).visibility,
       overflow: document.documentElement.scrollWidth - innerWidth,
     };
@@ -68,8 +68,11 @@ test("desktop native scroll resolves the split Product VP composition and releas
   expect(split.action.top).toBeGreaterThanOrEqual(split.copy.bottom);
   expect(split.track.height).toBe(initial.track.height);
   expect(split.overflow).toBeLessThanOrEqual(1);
-  expect(split.work.top, "no About or spacer chapter separates the hero from its work").toBeLessThanOrEqual(split.track.bottom + 2);
-  expect(split.work.top).toBeGreaterThanOrEqual(split.track.bottom - 2);
+  // The offer band (task T2) is the only chapter between the hero and its work: no About or spacer chapter.
+  expect(split.offer.top, "the offer band directly follows the hero track").toBeLessThanOrEqual(split.track.bottom + 2);
+  expect(split.offer.top).toBeGreaterThanOrEqual(split.track.bottom - 2);
+  expect(split.work.top, "Selected work directly follows the offer band").toBeLessThanOrEqual(split.offer.bottom + 2);
+  expect(split.work.top).toBeGreaterThanOrEqual(split.offer.bottom - 2);
   await page.mouse.wheel(0, 600);
   await expect(page.locator("#works .work-row").first()).toBeInViewport();
   await expect(page.locator("#works .about-section-title")).toHaveText("Selected work");
