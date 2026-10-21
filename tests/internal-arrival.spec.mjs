@@ -27,7 +27,7 @@ const entries = [
   { path: '/works', selector: '.work-title[href="/work/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen' },
   { path: '/ai-integration', selector: '.ai-related-list a[href="/work/instructure"]', slug: 'instructure', title: 'Instructure' },
   // Hungarian pages link their Hungarian cases (whole-site language switch, 2026-10-06).
-  { path: '/hu/ai-integracio', selector: '.ai-related-list a[href="/hu/munka/instructure"]', slug: 'instructure', title: 'Instructure', caseRoot: '/hu/munka/' },
+  { path: '/hu/ai-tanacsadas-fejlesztes', selector: '.ai-related-list a[href="/hu/munka/instructure"]', slug: 'instructure', title: 'Instructure', caseRoot: '/hu/munka/' },
   { path: '/about', viaWorks: true, selector: '.work-title[href="/work/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen' },
   { path: '/hu/munkak', selector: '.work-title[href="/hu/munka/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen', caseRoot: '/hu/munka/' },
   { path: '/hu/rolam', viaWorks: '/hu/munkak', selector: '.work-title[href="/hu/munka/raiffeisen"]', slug: 'raiffeisen', title: 'Raiffeisen', caseRoot: '/hu/munka/' },

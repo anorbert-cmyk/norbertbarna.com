@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const routes = ["/", "/works", "/work/raiffeisen", "/work/instructure", "/work/bitpanda", "/work/benker",
-  "/work/onrobot", "/work/sportsgambit", "/work/kineticare", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem",
+  "/work/onrobot", "/work/sportsgambit", "/work/kineticare", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem",
   "/hu", "/hu/munkak", "/hu/munka/raiffeisen", "/hu/munka/kineticare"];
 
 test.beforeEach(async ({ page }) => {
@@ -35,7 +35,7 @@ async function expectStableBar(page, label) {
     }
     // Work routes keep the navy reference bar. AI alone changes its bar to
     // lilac when the hero leaves it, including safe-area clearance.
-    const aiRoute = ["/ai-integration", "/hu/ai-integracio"].includes(location.pathname);
+    const aiRoute = ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"].includes(location.pathname);
     const workRoute = /^\/(works$|work\/|hu\/munkak$|hu\/munka\/)/.test(location.pathname);
     const opening = aiRoute && document.querySelector("[data-ai-hero]")?.getBoundingClientRect().bottom > nav.getBoundingClientRect().height;
     return { y: nav.getBoundingClientRect().top, opacity: Number(style.opacity), animations: nav.getAnimations().length,
@@ -151,7 +151,7 @@ test("crossing the compact breakpoint preserves the same stationary work bar", a
 // bar at every width, and an open compact menu shows a close glyph.
 const OLIVE = "rgb(189, 180, 20)";
 const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/ai-integration", "/ai-integration"],
-  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/ai-integracio", "/hu/ai-integracio"]];
+  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes"]];
 async function currentMark(page, href) {
   return page.locator(`#primary-navigation a.nav-link[href="${href}"]`).evaluate((link) => {
     const style = getComputedStyle(link);

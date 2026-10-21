@@ -11,7 +11,10 @@ import { UTILITY_PAGES, HU_PAGES, assetPrefix, baseOf, isHungarian, urlOf } from
 
 // Every Hungarian page and its English pair.
 const HU_PAIRS = { ...Object.fromEntries(HU_PAGES.map((page) => [page, baseOf(page)])),
-  "hu/ai-integracio.html": "ai-integration.html", "hu/adatvedelem.html": "privacy.html", "hu/kapcsolat.html": "contact.html" };
+  "hu/ai-tanacsadas-fejlesztes.html": "ai-integration.html", "hu/adatvedelem.html": "privacy.html", "hu/kapcsolat.html": "contact.html",
+  // No English web-development page yet (the EN thread adds /web-development);
+  // until then the language link leads to the English home.
+  "hu/webfejlesztes.html": "index.html" };
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [
@@ -395,7 +398,7 @@ if (!existsSync(llmsPath)) {
       !llms.includes("https://www.barnanorbert.com/hu/adatvedelem") ||
       !llms.includes("Product VP") ||
       !llms.includes("https://www.barnanorbert.com/ai-integration") ||
-      !llms.includes("https://www.barnanorbert.com/hu/ai-integracio") ||
+      !llms.includes("https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes") ||
       !llms.includes("https://www.barnanorbert.com/work/kineticare")) {
     fail("llms.txt is missing canonical portfolio, attribution, privacy or contact guidance");
   }

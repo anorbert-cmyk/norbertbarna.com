@@ -13,7 +13,7 @@ const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : route ==
 const slugs = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
 // English pages in hiring order, then the utility pairs, then the Hungarian mirror.
 const expectedCanonicalPaths = ["/", "/works", ...slugs.map((slug) => `/work/${slug}`), "/about",
-  "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
+  "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
   "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam"];
 const cssSource = readFileSync(resolve(root, "assets/css/fonts.css"), "utf8");
 const cssDigest = createHash("sha256").update(cssSource).digest("hex").slice(0, 12);
@@ -66,7 +66,7 @@ test("every canonical page and 404 load licensed, content-hashed fonts directly 
   expect(cssSource.match(/font-display: swap/g)).toHaveLength(28);
 });
 
-for (const route of ["/", "/work/instructure", "/hu/ai-integracio", "/hu/adatvedelem", "/does-not-exist"]) {
+for (const route of ["/", "/work/instructure", "/hu/ai-tanacsadas-fejlesztes", "/hu/adatvedelem", "/does-not-exist"]) {
   test(`native fonts preserve English/Hungarian metrics without JavaScript or Google access on ${route}`, async ({ browser, baseURL }) => {
     const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
     const page = await context.newPage();
@@ -140,7 +140,7 @@ test("slow local fonts leave AI copy readable, then settle without a large layou
   const hold = new Promise((resolve) => { release = resolve; });
   await page.route(/\/assets\/fonts\/.*\.woff2$/, async (route) => { await hold; await route.continue(); });
   try {
-    await page.goto("/hu/ai-integracio", { waitUntil: "domcontentloaded" });
+    await page.goto("/hu/ai-tanacsadas-fejlesztes", { waitUntil: "domcontentloaded" });
     await expect(page.locator("h1")).toBeVisible();
     expect(await page.locator("h1").evaluate((element) => getComputedStyle(element).opacity)).toBe("1");
     expect(await page.evaluate(() => document.fonts.status)).toBe("loading");

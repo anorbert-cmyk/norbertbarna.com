@@ -83,6 +83,6 @@ Passing local checks does not prove indexing, rankings or completed analytics se
 
 ## URL conventions
 
-- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/hu/ai-integracio`.
+- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/hu/ai-tanacsadas-fejlesztes`.
 - `.html` variants and the old `/work/raiffesen` misspelling 301-redirect
   to the canonical URL (see `server.js`).

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const ROUTES = [["en", "/ai-integration"], ["hu", "/hu/ai-integracio"]];
+const ROUTES = [["en", "/ai-integration"], ["hu", "/hu/ai-tanacsadas-fejlesztes"]];
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -116,10 +116,10 @@ test("contextual case and Works links form a crawlable route back to the service
     ["/work/kineticare", '.summary a[href="/ai-integration#workflow"]', "/ai-integration#workflow"],
     ["/works", '.project-index-intro p a[href="/ai-integration"]', "/ai-integration"],
     // The Hungarian mirror routes back to the Hungarian service page, never to the English one.
-    ["/hu/munka/instructure", '.summary a[href="/hu/ai-integracio#workflow"]', "/hu/ai-integracio#workflow"],
-    ["/hu/munka/sportsgambit", '.summary a[href="/hu/ai-integracio#workflow"]', "/hu/ai-integracio#workflow"],
-    ["/hu/munka/kineticare", '.summary a[href="/hu/ai-integracio#workflow"]', "/hu/ai-integracio#workflow"],
-    ["/hu/munkak", '.project-index-intro p a[href="/hu/ai-integracio"]', "/hu/ai-integracio"],
+    ["/hu/munka/instructure", '.summary a[href="/hu/ai-tanacsadas-fejlesztes#workflow"]', "/hu/ai-tanacsadas-fejlesztes#workflow"],
+    ["/hu/munka/sportsgambit", '.summary a[href="/hu/ai-tanacsadas-fejlesztes#workflow"]', "/hu/ai-tanacsadas-fejlesztes#workflow"],
+    ["/hu/munka/kineticare", '.summary a[href="/hu/webfejlesztes#workflow"]', "/hu/webfejlesztes#workflow"],
+    ["/hu/munkak", '.project-index-intro p a[href="/hu/ai-tanacsadas-fejlesztes"]', "/hu/ai-tanacsadas-fejlesztes"],
   ]) {
     const response = await request.get(path);
     expect(response.status()).toBe(200);

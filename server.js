@@ -98,8 +98,12 @@ const REDIRECTS = {
   "/about/": "/about",
   "/ai-integration.html": "/ai-integration",
   "/ai-integration/": "/ai-integration",
-  "/hu/ai-integracio.html": "/hu/ai-integracio",
-  "/hu/ai-integracio/": "/hu/ai-integracio",
+  "/hu/ai-tanacsadas-fejlesztes.html": "/hu/ai-tanacsadas-fejlesztes",
+  "/hu/ai-tanacsadas-fejlesztes/": "/hu/ai-tanacsadas-fejlesztes",
+  // The Hungarian AI offer moved to the phrases people search for (2026-10-21).
+  "/hu/ai-integracio": "/hu/ai-tanacsadas-fejlesztes",
+  "/hu/ai-integracio.html": "/hu/ai-tanacsadas-fejlesztes",
+  "/hu/ai-integracio/": "/hu/ai-tanacsadas-fejlesztes",
   "/privacy.html": "/privacy",
   "/privacy/": "/privacy",
   "/hu/adatvedelem.html": "/hu/adatvedelem",
@@ -110,7 +114,7 @@ const REDIRECTS = {
 };
 // Pages added with the Hungarian mirror and the contact form (2026-10-06)
 // need the same .html and trailing-slash variants as every other page.
-for (const page of ["/contact", "/hu/kapcsolat", "/hu/munkak", "/hu/rolam", ...WORK_SLUGS.map((slug) => `/hu/munka/${slug}`)]) {
+for (const page of ["/contact", "/hu/kapcsolat", "/hu/webfejlesztes", "/hu/munkak", "/hu/rolam", ...WORK_SLUGS.map((slug) => `/hu/munka/${slug}`)]) {
   REDIRECTS[`${page}.html`] = page;
   REDIRECTS[`${page}/`] = page;
 }

@@ -56,7 +56,7 @@ async function readingPositions(page) {
 // One Contact entry, LinkedIn as the one external utility, the language link last (NN/g audit, 2026-10-06).
 const HOME_BARS = {
   "/": { labels: ["NB", "Works", "About", "AI integration", "Contact", "LinkedIn", "Magyar"], ai: "/ai-integration", pair: "/hu" },
-  "/hu": { labels: ["NB", "Munkák", "Rólam", "AI-integráció", "Kapcsolat", "LinkedIn", "English"], ai: "/hu/ai-integracio", pair: "/" },
+  "/hu": { labels: ["NB", "Munkák", "Rólam", "AI-integráció", "Kapcsolat", "LinkedIn", "English"], ai: "/hu/ai-tanacsadas-fejlesztes", pair: "/" },
 };
 
 for (const [route, width] of [["/", 992], ["/", 1280], ["/", 1920], ["/hu", 992], ["/hu", 1280]]) {
