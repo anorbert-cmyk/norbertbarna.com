@@ -26,7 +26,8 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 - [Selected work](https://www.barnanorbert.com/works): complete portfolio index
 - [About: A story in motion](https://www.barnanorbert.com/about): the career story, from enterprise security software to banking, AI in enterprise learning and an AI platform in capital markets
 - [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and linked evidence
-- [AI-integráció vállalkozásoknak](https://www.barnanorbert.com/hu/ai-integracio): Hungarian version of the same offer
+- [AI tanácsadás, automatizálás és fejlesztés cégeknek](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes): Hungarian version of the same offer, with use cases, scope, price factors and questions (formerly /hu/ai-integracio)
+- [Weboldal készítés és egyedi webfejlesztés cégeknek](https://www.barnanorbert.com/hu/webfejlesztes): Hungarian web development offer: company websites, web applications and custom software, designed and built by Norbert (no English version yet)
 - [Contact](https://www.barnanorbert.com/contact): contact form for project, AI integration and role enquiries
 - [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice and contact form data use (English)
 - [Analitika és adatvédelem](https://www.barnanorbert.com/hu/adatvedelem): Hungarian analytics and privacy notice
@@ -40,6 +41,7 @@ Every page has a Hungarian version with the same content. The menu's EN | HU swi
 - [Rólam](https://www.barnanorbert.com/hu/rolam): Hungarian career story
 - Esettanulmányok: https://www.barnanorbert.com/hu/munka/raiffeisen, /hu/munka/instructure, /hu/munka/bitpanda, /hu/munka/benker, /hu/munka/sportsgambit, /hu/munka/kineticare, /hu/munka/onrobot
 - [Kapcsolat](https://www.barnanorbert.com/hu/kapcsolat): Hungarian contact form
+- Szolgáltatások: https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes (AI tanácsadás, automatizálás és fejlesztés), https://www.barnanorbert.com/hu/webfejlesztes (weboldal készítés és webfejlesztés)
 
 ## Case studies
 
@@ -55,12 +57,15 @@ Instructure and SportsGambit are AI product work. Raiffeisen, Bitpanda, Benker, 
 
 ## Services
 
-- AI integration for businesses (English: https://www.barnanorbert.com/ai-integration; Hungarian: https://www.barnanorbert.com/hu/ai-integracio)
+- AI integration for businesses (English: https://www.barnanorbert.com/ai-integration; Hungarian: https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes)
 - Three parts of one offer: discovery, AI collaboration and custom development
 - Five working steps: map the work before the solution; define access and human control; test the experience before the build; build a pilot that fits your systems; measure, improve and hand over
 - People review what matters; evaluation and error handling are designed in from the start
 - Custom development covers the interface, connections to existing systems, permissions, review states and failure paths, and can include the web platform the feature needs
-- No prices, service levels, partnerships or certifications are published
+- Website and web application development (Hungarian: https://www.barnanorbert.com/hu/webfejlesztes): company websites, custom web applications, content management, online payment and member areas, with design and build by the same person; evidence is the Kineticare build
+- No prices, service levels, partnerships or certifications are published. Every project is custom work; price depends on scope, integrations, content, languages and the level of review
+- Working languages: Hungarian and English; meetings, documentation and handover are in these two languages, including for German and other European clients
+- Way of working: quality over quantity, with clients who invest their own energy and want work that represents their brand and products rather than a template
 
 ## Expertise
 

@@ -2,7 +2,12 @@ import { writingLanguageLinks, writingPages } from "./writing-content.mjs";
 
 // Keep client landing pages in every site-wide verification inventory.
 // These are service pages, not portfolio Articles.
-export const SERVICE_PAGES = ["ai-integration.html", "hu/ai-integracio.html"];
+export const SERVICE_PAGES = ["ai-integration.html", "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html"];
+// Hungarian service pages built on the extended template (2026-10-21 SEO plan):
+// use cases, scope, price factors and eight questions with matching FAQPage data.
+export const EXTENDED_SERVICE_PAGES = ["hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html"];
+// Service pages and their English pair; null until the English page exists.
+export const SERVICE_PAIRS = { "ai-integration.html": "hu/ai-tanacsadas-fejlesztes.html", "hu/ai-tanacsadas-fejlesztes.html": "ai-integration.html", "hu/webfejlesztes.html": null };
 export const PRIVACY_PAGES = ["privacy.html", "hu/adatvedelem.html"];
 // The contact form pages (owner request, 2026-10-06).
 export const CONTACT_PAGES = ["contact.html", "hu/kapcsolat.html"];

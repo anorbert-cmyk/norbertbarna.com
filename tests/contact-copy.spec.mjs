@@ -8,7 +8,7 @@ const contactCopy = {
   en: { href: "/contact", project: "Discuss your project", privacy: "Contact form", menu: "Contact" },
   hu: { href: "/hu/kapcsolat", project: "Beszéljünk a projektedről", privacy: "Kapcsolatfelvételi űrlap", menu: "Kapcsolat" },
 };
-const routes = ["/", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem", "/hu", "/hu/munkak", "/hu/munka/instructure"];
+const routes = ["/", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem", "/hu", "/hu/munkak", "/hu/munka/instructure"];
 const viewports = [
   { width: 320, height: 720, activation: "pointer" },
   { width: 390, height: 844, activation: "Enter" },
@@ -391,7 +391,7 @@ for (const viewport of viewports) {
       await expect(menuContact).toHaveText(copy.menu);
       expect(await menuContact.getAttribute("aria-label")).toBeNull();
       const links = page.locator("a.footer-email");
-      const expectedCount = ["/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem"].includes(route) ? 2 : 1;
+      const expectedCount = ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem"].includes(route) ? 2 : 1;
       await expect(links).toHaveCount(expectedCount);
 
       const targets = [{ locator: menuContact, kind: "menu" }];
@@ -414,7 +414,7 @@ for (const viewport of viewports) {
         if (kind === "action") {
           const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
           const label = privacyContact ? copy.privacy : copy.project;
-          if (["/ai-integration", "/hu/ai-integracio"].includes(route)) {
+          if (["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"].includes(route)) {
             await expect(link.locator('span[aria-hidden="true"]')).toHaveText("→");
             expect(await link.evaluate((element) => [...element.childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join("").trim())).toBe(label);
           } else await expect(link).toHaveText(label);
@@ -448,7 +448,7 @@ for (const viewport of viewports) {
           if (viewport.width < 992) expect(box.height, "menu contact row").toBeGreaterThanOrEqual(48);
           else {
             expect(Math.abs(box.height - sibling.height), "menu contact matches its sibling targets").toBeLessThanOrEqual(1);
-            expect(box.height, "menu contact target").toBeGreaterThanOrEqual(["/ai-integration", "/hu/ai-integracio"].includes(route) ? 24 : 44);
+            expect(box.height, "menu contact target").toBeGreaterThanOrEqual(["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"].includes(route) ? 24 : 44);
           }
         }
         const before = page.url();

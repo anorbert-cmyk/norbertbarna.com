@@ -149,7 +149,7 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem",
+  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem",
     "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure", ...WRITING_PAGES.map(urlOf)]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
@@ -231,8 +231,14 @@ try {
     ["/ai-integration/", "/ai-integration"],
     ["/privacy.html", "/privacy"],
     ["/hu/adatvedelem/", "/hu/adatvedelem"],
-    ["/hu/ai-integracio.html", "/hu/ai-integracio"],
-    ["/hu/ai-integracio/?utm_campaign=ai", "/hu/ai-integracio?utm_campaign=ai"],
+    ["/hu/ai-tanacsadas-fejlesztes.html", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/ai-tanacsadas-fejlesztes/?utm_campaign=ai", "/hu/ai-tanacsadas-fejlesztes?utm_campaign=ai"],
+    ["/hu/ai-integracio", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/ai-integracio?utm_campaign=ai", "/hu/ai-tanacsadas-fejlesztes?utm_campaign=ai"],
+    ["/hu/ai-integracio.html", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/ai-integracio/", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/webfejlesztes.html", "/hu/webfejlesztes"],
+    ["/hu/webfejlesztes/", "/hu/webfejlesztes"],
     ["/favicon.ico", "/assets/icons/68f923d010d274634c966a6e_favicon.png"],
     ["/index", "/"],
     ["/index?utm_source=home", "/?utm_source=home"],
