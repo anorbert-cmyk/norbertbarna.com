@@ -28,7 +28,7 @@ async function focusPosition(page) {
   }))));
 }
 
-for (const [language, path] of [["en", "/ai-integration"], ["hu", "/hu/ai-integracio"]]) {
+for (const [language, path] of [["en", "/ai-integration"], ["hu", "/hu/ai-tanacsadas-fejlesztes"]]) {
   for (const [width, height] of [[320, 640], [390, 844], [768, 1024], [1440, 900], [720, 450]]) {
     // 720x450 is a 1440x900 desktop 200%-zoom CSS viewport equivalent,
     // not a claim of a native desktop zoom/assistive-technology test.
@@ -50,7 +50,8 @@ for (const [language, path] of [["en", "/ai-integration"], ["hu", "/hu/ai-integr
       await expect(page.locator(".skip-to-content")).toBeFocused();
       let reachedSettings = false;
       let pageActions = 0;
-      for (let index = 0; index < 30; index += 1) {
+      // The Hungarian page answers eight questions, so its footer sits further down the tab order.
+      for (let index = 0; index < 45; index += 1) {
         await page.keyboard.press("Tab");
         const focused = await focusPosition(page);
         if (focused.inside) break;
@@ -69,7 +70,7 @@ for (const [language, path] of [["en", "/ai-integration"], ["hu", "/hu/ai-integr
 
 test("expanded details preserve full disclosures, direct privacy access and an unobscured page action", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
-  await page.goto("/hu/ai-integracio");
+  await page.goto("/hu/ai-tanacsadas-fejlesztes");
   await page.waitForFunction(() => document.fonts.status === "loaded");
   const banner = page.locator("[data-consent-banner]");
   await expect(banner.locator(".consent-privacy")).toBeVisible();

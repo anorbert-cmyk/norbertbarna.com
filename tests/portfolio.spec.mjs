@@ -18,7 +18,7 @@ const COPY = {
 const languageOf = (route) => route === "/hu" || route.startsWith("/hu/") ? "hu" : "en";
 const SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
 // Every published content page with its language pair (whole-site language switch, 2026-10-06).
-const PAGE_PAIRS = [["/", "/hu"], ["/works", "/hu/munkak"], ["/about", "/hu/rolam"], ["/ai-integration", "/hu/ai-integracio"],
+const PAGE_PAIRS = [["/", "/hu"], ["/works", "/hu/munkak"], ["/about", "/hu/rolam"], ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"],
   ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"], ...SLUGS.map((slug) => [`/work/${slug}`, `/hu/munka/${slug}`])];
 
 const viewports = [
@@ -33,7 +33,7 @@ const contentRoutes = [
   "/",
   "/works",
   "/ai-integration",
-  "/hu/ai-integracio",
+  "/hu/ai-tanacsadas-fejlesztes",
   "/privacy",
   "/hu/adatvedelem",
   "/work/benker",
@@ -1635,7 +1635,7 @@ test("every page's single language link leads to its pair, reciprocally, with a 
   const absolute = (route) => `https://www.barnanorbert.com${route}`;
   const destinations = {
     en: ["/works", "/about", "/ai-integration", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
-    hu: ["/hu/munkak", "/hu/rolam", "/hu/ai-integracio", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
+    hu: ["/hu/munkak", "/hu/rolam", "/hu/ai-tanacsadas-fejlesztes", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
   };
   for (const [english, hungarian] of PAGE_PAIRS) {
     for (const [route, pair, language] of [[english, hungarian, "en"], [hungarian, english, "hu"]]) {

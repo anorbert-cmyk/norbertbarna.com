@@ -1,6 +1,11 @@
 # SEO keyword and topic map: barnanorbert.com
 
-Reviewed 2026-10-06. This replaces the 2026-09-16 map. The 14 canonical pages are
+Reviewed 2026-10-06; Hungarian service pages updated 2026-10-21 from the
+Monid keyword research (Google Ads volumes for Hungary, 2026-10-21): the
+Hungarian AI page moved from `/hu/ai-integracio` (301) to
+`/hu/ai-tanacsadas-fejlesztes`, and `/hu/webfejlesztes` was added for the
+"weboldal készítés" cluster. The 2026-10-06 text below still describes the
+rest of the site. This replaces the 2026-09-16 map. The 14 canonical pages are
 the home, Selected work, About, seven case studies, the English and Hungarian AI
 service pair and the two privacy notices.
 
@@ -35,8 +40,9 @@ competition.
 | `/` | Brand and navigation: Norbert Barna, Barna Norbert, Product VP | Norbert Barna Product VP; Product VP for AI products in regulated finance; AI product leader regulated finance; fintech product VP portfolio; VP of product AI platform capital markets | Barna Norbert Product VP; Barna Norbert termékvezető; AI termékvezető pénzügyi szektor | Existing role, visible experience rows, selected cases. Keep the short Product VP H1 and the brand-led title. The home is not a second service landing page. |
 | `/works` | Portfolio discovery: product case studies | AI product case studies; fintech UX case studies; mobile banking redesign case study; digital health platform case study; robotics HMI case study; enterprise AI product portfolio | termékdesign esettanulmányok; fintech UX esettanulmány; AI termék esettanulmány | Seven named cases with real evidence. "Selected work" stays the H1 and leads the title. |
 | `/about` | Background: who Norbert Barna is and where he worked | about Norbert Barna; Product VP career from security software to AI; product leader banking EdTech capital markets; Balabit One Identity design; Raiffeisen banking app product lead; BlackRock AI platform product | Barna Norbert életút; termékvezető Raiffeisen Instructure BlackRock | Owner-authored story. No employer implementation details, no certifications, no new dates. |
-| `/ai-integration` | Commercial: AI integration for businesses | AI integration for businesses; AI integration consulting; custom AI development for existing workflows; human-in-the-loop AI product development; AI pilot to production and handover; AI in existing workflows with human review; custom web platform development; who builds AI features into existing software | (served by `/hu/ai-integracio`) | Five-step method, Instructure and SportsGambit patterns, Kineticare build. One offer, not four pages. No price, SLA, stack list, partner or client names beyond the cases. |
-| `/hu/ai-integracio` | Commercial, Hungary: AI-integráció vállalkozásoknak | (served by `/ai-integration`) | AI-integráció vállalkozásoknak; AI-integráció cégeknek; egyedi AI-fejlesztés; AI bevezetése meglévő munkafolyamatba; AI-tanácsadás kkv-knak; AI-funkció emberi ellenőrzéssel; mesterséges intelligencia bevezetése vállalkozásoknál; egyedi webalkalmazás-fejlesztés AI-val | Localized equivalent of the EN offer, same commitments. Case destinations are English. No physical service area or office is implied. Keep tegező form. |
+| `/ai-integration` | Commercial: AI integration for businesses | AI integration for businesses; AI integration consulting; custom AI development for existing workflows; human-in-the-loop AI product development; AI pilot to production and handover; AI in existing workflows with human review; custom web platform development; who builds AI features into existing software | (served by `/hu/ai-tanacsadas-fejlesztes`) | Five-step method, Instructure and SportsGambit patterns, Kineticare build. One offer, not four pages. No price, SLA, stack list, partner or client names beyond the cases. |
+| `/hu/ai-tanacsadas-fejlesztes` | Commercial, Hungary: AI tanácsadás, automatizálás és fejlesztés cégeknek (was `/hu/ai-integracio`, 301) | (served by `/ai-integration`) | ai tanácsadás (110/hó); ai automatizálás (140); ai fejlesztés (70); ai bevezetés; folyamatautomatizálás (30); ai ügyfélszolgálat (30); ai audit (30) | Same five-step method and commitments as the EN offer, plus use cases, scope, price factors and eight questions. Tegező form. No price, no physical office. |
+| `/hu/webfejlesztes` | Commercial, Hungary: weboldal készítés és egyedi webfejlesztés cégeknek | (EN `/web-development` planned) | weboldal készítés (4400/hó); honlapkészítés (1000); weboldal készítés árak (1000); webfejlesztés (320); ai weboldal készítés (140); egyedi szoftverfejlesztés (110); egyedi weboldal készítés (70); webalkalmazás fejlesztés (20) | Kineticare build is the evidence. The price section names factors only: every site is custom work. No hreflang until the English pair exists; its language link leads to the English home. |
 | `/work/raiffeisen` | Evidence: mobile banking product leadership | mobile banking redesign case study; multi-country banking design system; banking app from 1.8 to 4.8 stars case study; banking transfer recovery UX; regulated banking product rollout; design governance in a bank | banki mobilalkalmazás újratervezés esettanulmány; Raiffeisen app design rendszer | Research, product and design leadership, governance, cross-market rollout. Not an AI integration. Figures stay portfolio-reported. |
 | `/work/instructure` | Evidence: explainable AI in enterprise learning | explainable AI UX case study; human-in-the-loop AI design; editable AI suggestions for instructors; AI features in an LMS; accessible AI review workflows; Canvas Catalog AI | magyarázható AI felhasználói élmény; emberi ellenőrzésű AI funkció tervezés | Source cues, review and recovery patterns, accessible states. Team-side AI-assisted design is distinct from user-facing AI features. No blanket "WCAG-compliant AI" claim. |
 | `/work/bitpanda` | Evidence: crypto trading UX | crypto trading UX case study; crypto deposit and KYC UX; trade confirmation design; portfolio clarity in a trading app; bank-partner white-label crypto product | kriptotőzsde UX esettanulmány; kripto befizetés és KYC folyamat | 2021–2022 flows and institutional-channel constraints. No investment-performance promise. |
@@ -61,7 +67,8 @@ title; og:description and twitter:description equal the description.
 | `/works` | Selected work \| AI, fintech and digital health case studies | Seven shipped products: regulated banking, enterprise AI, crypto trading, digital health and robotics. Case studies by Norbert Barna. |
 | `/about` | About Norbert Barna \| Product VP, from security software to AI | How Norbert Barna went from enterprise security software to banking at Raiffeisen, AI at Instructure and an AI platform at BlackRock. |
 | `/ai-integration` | AI integration for businesses \| Norbert Barna, Product VP | AI integration consulting and custom AI development for businesses: discovery, AI collaboration and build, shaped around your workflow. |
-| `/hu/ai-integracio` | AI-integráció vállalkozásoknak \| Barna Norbert, Product VP | AI-integráció és egyedi AI-fejlesztés vállalkozásoknak: feltárás, AI-együttműködés és fejlesztés, a munkafolyamatodra szabva. |
+| `/hu/ai-tanacsadas-fejlesztes` | AI tanácsadás, automatizálás és fejlesztés \| Barna Norbert | AI tanácsadás, AI automatizálás és egyedi AI-fejlesztés cégeknek: feltárás, pilot és bevezetés a meglévő munkafolyamatodba. |
+| `/hu/webfejlesztes` | Weboldal készítés és egyedi webfejlesztés \| Barna Norbert | Egyedi weboldal készítés és webfejlesztés cégeknek: tervezés, fejlesztés és átadás egy kézből, a márkádra és a felhasználóidra szabva. |
 | `/work/raiffeisen` | Raiffeisen: mobile banking redesign case study \| Norbert Barna | Mobile banking redesign case study for Raiffeisen: research, a cross-market design system and safer money journeys in 16 countries. |
 | `/work/instructure` | Instructure: enterprise AI EdTech case study \| Norbert Barna | AI EdTech case study: explainable, human-reviewed AI workflows for Instructure's enterprise learning platform, shipped at scale. |
 | `/work/bitpanda` | Bitpanda: crypto trading UX case study \| Norbert Barna | Crypto trading UX redesign across deposits, KYC, execution and portfolio views during Bitpanda's 2021–22 European expansion. |
@@ -89,13 +96,15 @@ so the two never drift. `scripts/check-editorial-media.mjs` should enforce the c
   `ProfilePage` name stays `Norbert Barna — Product VP` because the guards lock it.
 - Case pages are `Article` with `BreadcrumbList`; service pages are `WebPage` plus
   `Service` with `provider` the home Person and `availableLanguage` en and hu; no
-  `Offer`, `Review`, `AggregateRating` or `FAQPage` on service pages. Kineticare
+  `Offer`, `Review`, `AggregateRating` on service pages. The two Hungarian
+  service pages (2026-10-21) also carry a `FAQPage` that mirrors their eight
+  visible questions word for word; the English service page has none yet. Kineticare
   keeps its visible FAQ and matching `FAQPage`; Google retired FAQ rich results
   in May 2026, so this is parity, not a rich-result expectation.
 - `dateModified` is set only when a page changes meaningfully; Article and
   ProfilePage values are full DateTimes with a timezone, `article:modified_time`
   and the sitemap `lastmod` follow them.
-- Bilingual pairs (`/ai-integration` with `/hu/ai-integracio`, `/privacy` with
+- Bilingual pairs (`/ai-integration` with `/hu/ai-tanacsadas-fejlesztes`, `/privacy` with
   `/hu/adatvedelem`) carry self-inclusive en, hu and x-default hreflang, self
   canonicals and `og:locale:alternate`. English-only pages need no hreflang.
 - `llms.txt` is a factual summary (17 years, roles with exact date tuples, cases,

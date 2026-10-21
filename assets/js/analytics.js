@@ -13,7 +13,8 @@
   var PROJECT_KEY = 'phc_A6NZzdAmwhiRd9yXKevru3nqDWX5eqmNvzhxMHCn4T3Q';
   var SESSION_KEY = 'bn-analytics-session-v1';
   var RELEASE = 'consent-v1-20260905';
-  var ROUTES = ['/', '/works', '/ai-integration', '/hu/ai-integracio', '/privacy', '/hu/adatvedelem', '/work/raiffeisen', '/work/instructure', '/work/bitpanda', '/work/benker', '/work/sportsgambit', '/work/kineticare', '/work/onrobot'];
+  var ROUTES = ['/', '/works', '/ai-integration', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/privacy', '/hu/adatvedelem', '/work/raiffeisen', '/work/instructure', '/work/bitpanda', '/work/benker', '/work/sportsgambit', '/work/kineticare', '/work/onrobot'];
+  var SERVICE_ROUTES = ['/ai-integration', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes'];
   var SOURCES = ['direct', 'google', 'bing', 'linkedin', 'chatgpt', 'perplexity', 'claude', 'gemini', 'copilot', 'other'];
   var CHANNELS = ['direct_or_unknown', 'organic_search', 'social_referral', 'ai_referral', 'paid', 'other_referral'];
   var pending = new Set();
@@ -119,7 +120,7 @@
       acquisition_source: s.source,
       acquisition_channel: s.channel,
       page_language: path.startsWith('/hu/') ? 'hu' : 'en',
-      page_type: path.includes('ai-integ') ? 'service' : path.startsWith('/work/') ? 'case_study' : path === '/' ? 'home' : path === '/works' ? 'work_index' : 'privacy',
+      page_type: SERVICE_ROUTES.indexOf(path) !== -1 ? 'service' : path.startsWith('/work/') ? 'case_study' : path === '/' ? 'home' : path === '/works' ? 'work_index' : 'privacy',
       is_test: isTest,
       consent_version: 1,
       site_release: RELEASE
