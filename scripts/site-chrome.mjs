@@ -31,14 +31,17 @@ export const LANGUAGES = {
 export const MENU = {
   en: {
     works: { label: "Works", href: "/works" },
-    services: null, // one English service page so far: a direct link
-    ai: { label: "AI integration", href: "/ai-integration" },
+    services: { label: "Services", toggle: "Services" },
+    ai: null,
     articles: { label: "Articles", href: SECTIONS.en.path, toggle: "Articles: latest", more: "All articles" },
     about: { label: "About", href: "/about" },
     contact: { label: "Contact", href: "/contact" },
     linkedin: { label: "LinkedIn", aria: "Find me on LinkedIn (opens in a new tab)" },
     footer: { work: "Work", services: "Services", articles: "Articles", allWork: "All work", allArticles: "All articles" },
-    serviceLinks: [{ label: "AI integration", href: "/ai-integration" }],
+    serviceLinks: [
+      { label: "Web development", href: "/web-development" },
+      { label: "AI integration", href: "/ai-integration" },
+    ],
   },
   hu: {
     works: { label: "Munkák", href: "/hu/munkak" },
@@ -72,7 +75,8 @@ export const STATIC_PAGES = {
   "index.html": { kind: "home", current: null },
   "works.html": { kind: "work", current: "works" },
   "about.html": { kind: "about", current: "about" },
-  "ai-integration.html": { kind: "ai", current: "ai" },
+  "ai-integration.html": { kind: "ai", current: "/ai-integration" },
+  "web-development.html": { kind: "ai", current: "/web-development" },
   "privacy.html": { kind: "utility", current: null },
   "contact.html": { kind: "work", current: "contact" },
   "hu/index.html": { kind: "home", current: null },
@@ -89,13 +93,14 @@ export const STATIC_PAGES = {
 // English page -> Hungarian page for the true translation pairs.
 export const PAGE_PAIRS = {
   "ai-integration.html": "hu/ai-tanacsadas-fejlesztes.html",
+  "web-development.html": "hu/webfejlesztes.html",
   "privacy.html": "hu/adatvedelem.html",
   "contact.html": "hu/kapcsolat.html",
   ...Object.fromEntries(Object.entries(HU_MIRRORS).map(([hu, en]) => [en, hu])),
 };
 // A page whose translation does not exist yet links the other language's
-// home without rel="alternate" (the EN web-development page is task T3).
-const UNPAIRED = { "hu/webfejlesztes.html": "index.html" };
+// home without rel="alternate" (none at the moment; German pages are task T8).
+const UNPAIRED = {};
 
 export const languageOf = (page) => page.startsWith("hu/") ? "hu" : page.startsWith("de/") ? "de" : "en";
 

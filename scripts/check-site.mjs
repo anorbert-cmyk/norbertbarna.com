@@ -12,9 +12,7 @@ import { UTILITY_PAGES, HU_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, assetPr
 // Every Hungarian page and its English pair.
 const HU_PAIRS = { ...Object.fromEntries(HU_PAGES.map((page) => [page, baseOf(page)])),
   "hu/ai-tanacsadas-fejlesztes.html": "ai-integration.html", "hu/adatvedelem.html": "privacy.html", "hu/kapcsolat.html": "contact.html",
-  // No English web-development page yet (the EN thread adds /web-development);
-  // until then the language link leads to the English home.
-  "hu/webfejlesztes.html": "index.html" };
+  "hu/webfejlesztes.html": "web-development.html" };
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [
@@ -227,7 +225,7 @@ for (const page of PAGES) {
     const writingLink = isWritingPage(page) ? WRITING_LANGUAGE_LINKS[page] : null;
     const pairPath = writingLink ? urlOf(writingLink.file) :
       hungarian ? urlOf(HU_PAIRS[page] || baseOf(page)) : urlOf(Object.entries(HU_PAIRS).find(([, en]) => en === page)?.[0] || "");
-    // hu/webfejlesztes has no English translation yet, so its link to the English home is not an alternate.
+    // A Hungarian page without a translation links the English home, which is not an alternate.
     const wantsAlternate = writingLink ? writingLink.alternate : HU_PAIRS[page] !== "index.html" || page === "hu/index.html";
     const languageMenu = navigation.match(/<div class="nav-group nav-lang"[\s\S]*?<\/ul><\/div><\/div>/)?.[0] || "";
     const trigger = languageMenu.match(/<button\b[^>]*class="nav-lang-trigger"[^>]*>/)?.[0] || "";

@@ -126,7 +126,7 @@ for (const [language, copy] of Object.entries(LANGUAGES)) {
     await page.locator(".menu-button").click();
     await expect(page.locator("#primary-navigation")).toHaveAttribute("data-nav-menu-open", "");
     const toggles = page.locator("#primary-navigation [data-nav-toggle]");
-    const expectedToggles = language === "hu" ? 3 : 2;
+    const expectedToggles = 3;
     await expect(toggles).toHaveCount(expectedToggles);
     const trigger = page.locator("#primary-navigation .nav-lang-trigger");
     await expect(trigger.locator(".nav-lang-name"), "compact shows the language name").toBeVisible();
