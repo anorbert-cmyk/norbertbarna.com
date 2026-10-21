@@ -988,7 +988,7 @@ JavaScript dependency is part of this contract.
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
 | `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory, stops and an air cushion before them, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; a deferred head script on the contact pages, the fourteen cases and both homes | yes |
 | `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; no mail handler; deliberately has no animation dependency | no |
-| `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
+| `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; startup waits for the first paint and runs in separate tasks (program, reflection drawing, reflection upload, artwork, first frame) so none blocks the main thread for long (2026-10-21); runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
 | `immersive-navigation.js` | Compact state, real Works/case progress and Home consent clearance; no navigation travel | yes |

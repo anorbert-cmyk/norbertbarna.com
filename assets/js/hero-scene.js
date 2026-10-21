@@ -351,8 +351,10 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   }
-  function paintEnvironment() {
-    var image = document.createElement("canvas"); image.width = 2048; image.height = 1024;
+  var environmentImage = null;
+  function paintEnvironment() { drawEnvironment(); uploadEnvironment(); }
+  function drawEnvironment() {
+    var image = environmentImage = document.createElement("canvas"); image.width = 2048; image.height = 1024;
     var context = image.getContext("2d");
     if (!context) throw new Error("Reflection texture unavailable");
     var wash = context.createLinearGradient(0, 0, 0, 1024);
@@ -369,6 +371,10 @@
     // Broad studio softboxes give the bevel a clear reflected light-dark edge.
     context.fillStyle = "#D6D4ED"; context.fillRect(82, 230, 80, 540); context.fillRect(1792, 180, 115, 580);
     context.fillStyle = "#0A1628"; context.fillRect(1755, 160, 24, 630);
+  }
+  function uploadEnvironment() {
+    var image = environmentImage;
+    environmentImage = null;
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
@@ -435,7 +441,36 @@
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   }
+  // Startup runs as separate tasks (program, reflection drawing, reflection
+  // upload, artwork texture, first frame), so no single task holds the main thread for the
+  // whole scene. Nothing is drawn until the last step, so the picture is the
+  // same as a one-task start. A lost context restores in one task.
+  function nextTask() {
+    if (window.scheduler && typeof window.scheduler.yield === "function") return window.scheduler.yield();
+    return new Promise(function (resolve) { setTimeout(resolve, 0); });
+  }
+  function afterPaint() {
+    // A hidden tab paints no frames; the timer keeps its start from waiting.
+    return new Promise(function (resolve) {
+      var timer = setTimeout(resolve, 250);
+      requestAnimationFrame(function () { clearTimeout(timer); setTimeout(resolve, 0); });
+    });
+  }
+  function initializeInSteps() {
+    var steps = [setupProgram, drawEnvironment, uploadEnvironment, paintFinalArtwork, present];
+    var index = 0;
+    function next() {
+      if (destroyed || lost) return Promise.reject(new Error("Hero scene stopped"));
+      steps[index]();
+      index += 1;
+      return index < steps.length ? nextTask().then(next) : Promise.resolve();
+    }
+    return next();
+  }
   function initialize() {
+    setupProgram(); paintEnvironment(); paintFinalArtwork(); present();
+  }
+  function setupProgram() {
     // Premultiplied output is the one alpha model every compositor agrees on;
     // the shader writes colour already multiplied by its alpha.
     gl = canvas.getContext("webgl", { alpha: true, antialias: true, premultipliedAlpha: true, powerPreference: "low-power" });
@@ -455,7 +490,13 @@
       fragment.buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, fragment.buffer);
       gl.bufferData(gl.ARRAY_BUFFER, fragment.data, gl.STATIC_DRAW);
     });
-    texture = gl.createTexture(); backdropTexture = gl.createTexture(); finalTexture = gl.createTexture(); paintEnvironment(); paintFinalArtwork();
+    texture = gl.createTexture(); backdropTexture = gl.createTexture(); finalTexture = gl.createTexture();
+    // Lettering that has already decoded goes into the first reflection, so
+    // the reflection texture is painted once instead of twice.
+    var lettering = document.querySelector("[data-glass-backdrop]");
+    if (lettering && lettering.complete && lettering.naturalWidth) reflectionArtwork = lettering;
+  }
+  function present() {
     gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
     gl.clearColor(0, 0, 0, 0); initialized = true; lost = false;
     resize();
@@ -471,7 +512,7 @@
     function complete() {
       if (settled || destroyed || lost) return;
       settled = true; clearTimeout(reflectionTimer);
-      if (artwork && artwork.complete && artwork.naturalWidth) {
+      if (artwork && artwork.complete && artwork.naturalWidth && reflectionArtwork !== artwork) {
         reflectionArtwork = artwork;
         try { paintEnvironment(); paintBackdrop(); requestRender(); } catch (error) { reflectionArtwork = null; fallback(); return; }
       }
@@ -714,10 +755,14 @@
   }
   loadFinalArtwork().then(function () {
     if (destroyed) return;
-    try { initialize(); automaticStart(); } catch (error) { fallback(); }
+    // Start after the next paint, so the page's own first frame (and its
+    // largest picture) never waits behind the scene's setup.
+    return afterPaint().then(initializeInSteps).then(automaticStart, function () { if (!destroyed && !lost) fallback(); });
   }, function () { if (!destroyed) fallback(); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
-    if (!destroyed && initialized && !lost && api.status === "ready") { paintEnvironment(); paintBackdrop(); requestRender(); }
+    // The type-set reflection is only drawn while the lettering artwork is
+    // missing; the backdrop follows the lettering's laid-out box either way.
+    if (!destroyed && initialized && !lost && api.status === "ready") { if (!reflectionArtwork) paintEnvironment(); paintBackdrop(); requestRender(); }
   }).catch(function () {});
   function automaticStart() {
     requestAnimationFrame(function () {
