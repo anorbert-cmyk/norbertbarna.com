@@ -166,7 +166,7 @@ for (const [language, path] of ROUTES) {
     if (language === "hu") {
       // Hungarian reading content and menu stay in Hungarian; only explicit language links lead to English.
       const english = await page.locator("main a[href^='/'], .navbar a[href^='/']").evaluateAll((links) => links
-        .filter((link) => !link.matches(".lang-switch, [hreflang='en']") && !/^\/hu(?:\/|$|#)/.test(link.getAttribute("href")))
+        .filter((link) => !link.matches(".lang-switch, [hreflang]") && !/^\/hu(?:\/|$|#)/.test(link.getAttribute("href")))
         .map((link) => link.getAttribute("href")));
       expect(english, "Hungarian content links only Hungarian pages").toEqual([]);
     }

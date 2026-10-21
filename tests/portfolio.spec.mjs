@@ -659,7 +659,8 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     }
     const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link");
     await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY.en.menu);
-    await expect(controls).toHaveCount(8);
+    // Hero action, logo, four menu rows (Services is a button) and LinkedIn.
+    await expect(controls).toHaveCount(7);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
       const toggle = page.locator(".menu-button");
@@ -1297,8 +1298,8 @@ for (const width of [320, 390, 768, 991, 1440]) {
     await page.mouse.move(width * .92, Math.min(1090, footerBox.y + footerBox.height * .86));
     await page.waitForTimeout(450);
     const text = page.locator(".editorial-footer-title, .footer-lede, .footer-col-title, .footer-col a, footer .footer-email, footer .footer-contact-link, .footer-copyright, .footer-privacy a, .footer-privacy button");
-    // Work column (title + 5), Services (title + 1 on English pages), Articles (title + latest 3 + all) and the rest.
-    await expect(text).toHaveCount(19);
+    // Work column (title + 5), Services (title + 2), Articles (title + latest 3 + all) and the rest.
+    await expect(text).toHaveCount(20);
     for (const element of await text.all()) {
       await expectHeaderTextAA(page, element, "footer rendered text", { raster: true });
       if (await element.evaluate((node) => node.matches("a, button"))) {
