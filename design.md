@@ -351,6 +351,11 @@ The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
   invented address or social account.
 - Preserve Raiffeisen, Instructure, Bitpanda and Kineticare links and copyright.
 - The Work list ends with “All work” / “Összes munka”.
+- Footer columns (2026-10-21): Work keeps the left half with its two short
+  columns and one hairline on its right; Services and Articles (the latest
+  three of the page language plus All articles, generated from
+  `site-chrome.mjs`) stack in the right half. Up to 1199px the three stack
+  in one column. No other column (**SaaSFooter** still holds).
 - Integrate the page-language privacy link and Analytics settings into the same lilac
   footer field with a fine top rule. This is an in-flow utility row, without
   a separate dark slab. Preserve all consent hooks, language attributes and

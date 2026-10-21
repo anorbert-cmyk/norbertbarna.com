@@ -9,10 +9,10 @@ import { exposesInbox } from "../scripts/private-inbox.mjs";
 const PROJECT_LABEL = "Discuss your project";
 const COPY = {
   en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "AI integration", "Articles", "About", "Contact"], other: "Magyar", language: "Language: EN, English",
-    caseRoot: "/work/", works: "/works", privacy: "/privacy", privacyLabel: "Privacy", allWork: "All work", workTitle: "Work",
+    caseRoot: "/work/", works: "/works", writing: "/writing", privacy: "/privacy", privacyLabel: "Privacy", allWork: "All work", workTitle: "Work", servicesTitle: "Services", articlesTitle: "Articles",
     footerTitle: /Let’s talk\s*product\./, lede: "Product VP. I lead AI products in regulated finance and high-trust systems.", copyright: "© 2026 Norbert Barna" },
   hu: { home: "/hu", contact: "/hu/kapcsolat", project: "Beszéljünk a projektedről", menu: ["Munkák", "Tudástár", "Rólam", "Kapcsolat"], other: "English", language: "Nyelv: HU, Magyar",
-    caseRoot: "/hu/munka/", works: "/hu/munkak", privacy: "/hu/adatvedelem", privacyLabel: "Adatvédelem", allWork: "Összes munka", workTitle: "Munkák",
+    caseRoot: "/hu/munka/", works: "/hu/munkak", writing: "/hu/irasok", privacy: "/hu/adatvedelem", privacyLabel: "Adatvédelem", allWork: "Összes munka", workTitle: "Munkák", servicesTitle: "Szolgáltatások", articlesTitle: "Tudástár",
     footerTitle: /Beszéljünk\s*termékről\./, lede: "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben.", copyright: "© 2026 Barna Norbert" },
 };
 const languageOf = (route) => route === "/hu" || route.startsWith("/hu/") ? "hu" : "en";
@@ -280,12 +280,16 @@ async function sampleBehindGlyphs(page, locator, { includePixels = false } = {})
       return saved;
     });
   });
+  // Sample whole device pixels inside the box. A fractional box edge would
+  // otherwise pull in a sliver of the neighbouring element (a white video
+  // frame under a heading, for example) and score it as the text's background.
+  const edge = { left: Math.max(0, Math.ceil(box.x)), top: Math.max(0, Math.ceil(box.y)), right: Math.floor(box.x + box.width), bottom: Math.floor(box.y + box.height) };
   const png = readPng(await page.screenshot({
     clip: {
-      x: Math.max(0, box.x),
-      y: Math.max(0, box.y),
-      width: Math.max(4, Math.ceil(box.width)),
-      height: Math.max(4, Math.ceil(box.height)),
+      x: edge.left,
+      y: edge.top,
+      width: Math.max(4, edge.right - edge.left),
+      height: Math.max(4, edge.bottom - edge.top),
     },
     type: "png",
   }));
@@ -305,7 +309,7 @@ async function sampleBehindGlyphs(page, locator, { includePixels = false } = {})
     });
   }, savedStyles);
   const stats = pixelStats(png);
-  return includePixels ? { ...stats, png, x: Math.max(0, box.x), y: Math.max(0, box.y) } : stats;
+  return includePixels ? { ...stats, png, x: edge.left, y: edge.top } : stats;
 }
 
 async function readableHomeTarget(page, locator) {
@@ -396,10 +400,10 @@ async function expectHeaderTextAA(page, locator, label, { raster = false } = {})
     };
     if (sample) {
       for (const rect of run.rects) {
-        const left = Math.max(0, Math.floor(rect.left - sample.x));
-        const right = Math.min(sample.png.width, Math.ceil(rect.right - sample.x));
-        const top = Math.max(0, Math.floor(rect.top - sample.y));
-        const bottom = Math.min(sample.png.height, Math.ceil(rect.bottom - sample.y));
+        const left = Math.max(0, Math.ceil(rect.left - sample.x));
+        const right = Math.min(sample.png.width, Math.floor(rect.right - sample.x));
+        const top = Math.max(0, Math.ceil(rect.top - sample.y));
+        const bottom = Math.min(sample.png.height, Math.floor(rect.bottom - sample.y));
         for (let y = top; y < bottom; y += 1) {
           for (let x = left; x < right; x += 1) {
             const index = (y * sample.png.width + x) * 4;
@@ -464,11 +468,12 @@ for (const [route, width] of [...[320, 390, 768, 991, 992, 1280, 1440].map((widt
       await expect(target).toBeVisible();
       await expectHeaderTextAA(page, target, `${width} home text ${index + 1}`, { raster: true });
     }
-    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link");
+    const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar button.nav-link, .navbar a.footer-contact-link, .navbar .nav-lang-trigger");
     await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY[languageOf(route)].menu);
-    await expect(page.locator(".navbar button")).toHaveCount(1);
-    // Hero action, logo, five menu links (Contact and the language link included) and LinkedIn.
-    await expect(controls).toHaveCount(8);
+    // The menu button plus the group buttons (Articles chevron, language menu; Services on Hungarian pages).
+    await expect(page.locator(".navbar button:not([data-nav-toggle])")).toHaveCount(1);
+    // Hero action, logo, the menu rows (Contact included), LinkedIn and the language menu button.
+    await expect(controls).toHaveCount(9);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = await readableHomeTarget(page, controls.nth(index));
       if (!await control.isVisible()) await page.locator(".menu-button").click();
@@ -1283,7 +1288,8 @@ for (const width of [320, 390, 768, 991, 1440]) {
     await page.mouse.move(width * .92, Math.min(1090, footerBox.y + footerBox.height * .86));
     await page.waitForTimeout(450);
     const text = page.locator(".editorial-footer-title, .footer-lede, .footer-col-title, .footer-col a, footer .footer-email, footer .footer-contact-link, .footer-copyright, .footer-privacy a, .footer-privacy button");
-    await expect(text).toHaveCount(13);
+    // Work column (title + 5), Services (title + 1 on English pages), Articles (title + latest 3 + all) and the rest.
+    await expect(text).toHaveCount(19);
     for (const element of await text.all()) {
       await expectHeaderTextAA(page, element, "footer rendered text", { raster: true });
       if (await element.evaluate((node) => node.matches("a, button"))) {
@@ -1308,10 +1314,16 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare", "/h
     await expect(footer.locator(".editorial-footer-title")).toHaveText(copy.footerTitle);
     await expect(footer.locator(".footer-lede")).toHaveText(copy.lede);
     await expect(footer.locator(".footer-copyright")).toHaveText(copy.copyright);
-    await expect(footer.locator(".footer-col-title")).toHaveText([copy.workTitle]);
-    await expect(footer.locator(".footer-col a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare", copy.allWork]);
-    expect(await footer.locator(".footer-col a").evaluateAll((links) => links.map((link) => link.getAttribute("href"))))
+    // Work stays the first column; Services and Articles (generated from site-chrome.mjs) follow it.
+    await expect(footer.locator(".footer-col-title")).toHaveText([copy.workTitle, copy.servicesTitle, copy.articlesTitle]);
+    const work = footer.locator(".footer-col:not(.footer-col-services):not(.footer-col-articles)");
+    await expect(work.locator("a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare", copy.allWork]);
+    expect(await work.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href"))))
       .toEqual([...["raiffeisen", "instructure", "bitpanda", "kineticare"].map((slug) => `${copy.caseRoot}${slug}`), copy.works]);
+    await expect(footer.locator(".footer-col-services a")).toHaveCount(languageOf(route) === "hu" ? 2 : 1);
+    // Latest three articles of the page language plus the All articles row (two English articles so far).
+    await expect(footer.locator(".footer-col-articles a")).toHaveCount(languageOf(route) === "hu" ? 4 : 3);
+    await expect(footer.locator(".footer-col-articles a").last()).toHaveAttribute("href", copy.writing);
     // One privacy link, in the page language.
     await expect(footer.locator(".footer-privacy a")).toHaveCount(1);
     await expect(footer.locator(".footer-privacy a")).toHaveAttribute("href", copy.privacy);
@@ -1587,8 +1599,10 @@ test.describe("editorial footer without JavaScript", () => {
     await openStable(page, "/works");
     const footer = page.locator("footer");
     await expect(footer.locator(".editorial-footer-title")).toBeVisible();
-    await expect(footer.locator(".footer-col a")).toHaveCount(5);
-    await expect(footer.locator(".footer-col a").last()).toHaveAttribute("href", "/works");
+    const workColumn = footer.locator(".footer-col:not(.footer-col-services):not(.footer-col-articles)");
+    await expect(workColumn.locator("a")).toHaveCount(5);
+    await expect(workColumn.locator("a").last()).toHaveAttribute("href", "/works");
+    await expect(footer.locator(".footer-col-articles a").last()).toHaveAttribute("href", "/writing");
     await expect(footer.locator(".editorial-footer-art")).toHaveCount(0);
     // The project contact is a plain link: it works without any script.
     const contact = footer.locator('a.footer-email[href="/contact"]');
@@ -1670,7 +1684,7 @@ test("every page's single language link leads to its pair, reciprocally, with a 
       expect(languageLink.attributes, `${route}: the visible name is the accessible name`).not.toMatch(/aria-label|aria-current/);
       expect(html, `${route}: no retired EN | HU pair`).not.toMatch(/class="[^"]*\bai-lang\b[^"]*"[^>]*>\s*EN\s*</);
       const current = links.filter((link) => /aria-current="page"/.test(link.attributes)).map((link) => link.href);
-      expect(current, `${route}: the current destination is marked`).toEqual(destinations[language].includes(route) ? [route] : []);
+      expect(current, `${route}: the current destination is marked`).toEqual(links.some((link) => link.href === route && !/nav-group-more/.test(link.attributes)) ? [route] : []);
       if (language === "hu") {
         // Outside explicit English-language links, a Hungarian page links only Hungarian pages.
         const english = [...html.matchAll(/<a\b([^>]*)>/g)].map(([, attributes]) => attributes)
