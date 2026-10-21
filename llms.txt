@@ -25,8 +25,8 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 - [Home](https://www.barnanorbert.com/): profile, expertise, selected work and professional experience
 - [Selected work](https://www.barnanorbert.com/works): complete portfolio index
 - [About: A story in motion](https://www.barnanorbert.com/about): the career story, from enterprise security software to banking, AI in enterprise learning and an AI platform in capital markets
-- [Human in the loop AI integration for regulated industries](https://www.barnanorbert.com/ai-integration): English service offer for fintech, banking, health and SaaS teams in the EU: who it is for, what human in the loop means in practice, EU AI Act readiness as a design consideration, price factors and questions
-- [Web development and product design for SaaS and fintech](https://www.barnanorbert.com/web-development): English web development offer: custom web applications, MVPs, product design and company websites, with the Kineticare build as evidence
+- [Human in the loop AI integration](https://www.barnanorbert.com/ai-integration): English service offer for fintech, banking, health and SaaS teams in the EU: who it is for, what human in the loop means in practice, EU AI Act readiness as a design consideration, price factors and questions
+- [Web development and product design](https://www.barnanorbert.com/web-development): English web development offer: custom web applications, MVPs, product design and company websites, with the Kineticare build as evidence
 - [AI tanácsadás, automatizálás és fejlesztés cégeknek](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes): Hungarian version of the same offer, with use cases, scope, price factors and questions (formerly /hu/ai-integracio)
 - [Weboldal készítés és egyedi webfejlesztés cégeknek](https://www.barnanorbert.com/hu/webfejlesztes): Hungarian version of the web development offer: company websites, web applications and custom software, designed and built by Norbert
 - [Contact](https://www.barnanorbert.com/contact): contact form for project, AI integration and role enquiries
