@@ -7,11 +7,14 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { createHash } from "node:crypto";
-import { UTILITY_PAGES, HU_PAGES, assetPrefix, baseOf, isHungarian, urlOf } from "./service-pages.mjs";
+import { UTILITY_PAGES, HU_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, assetPrefix, baseOf, isHungarian, isWritingPage, urlOf } from "./service-pages.mjs";
 
 // Every Hungarian page and its English pair.
 const HU_PAIRS = { ...Object.fromEntries(HU_PAGES.map((page) => [page, baseOf(page)])),
-  "hu/ai-integracio.html": "ai-integration.html", "hu/adatvedelem.html": "privacy.html", "hu/kapcsolat.html": "contact.html" };
+  "hu/ai-tanacsadas-fejlesztes.html": "ai-integration.html", "hu/adatvedelem.html": "privacy.html", "hu/kapcsolat.html": "contact.html",
+  // No English web-development page yet (the EN thread adds /web-development);
+  // until then the language link leads to the English home.
+  "hu/webfejlesztes.html": "index.html" };
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [
@@ -22,11 +25,12 @@ const PAGES = [
   "404.html",
   ...readdirSync(join(ROOT, "work")).filter((f) => f.endsWith(".html")).map((f) => `work/${f}`),
   ...HU_PAGES,
+  ...WRITING_PAGES,
 ];
 
 const CLEAN_URLS = { "/": "index.html", "/works": "works.html", "/about": "about.html" };
 for (const page of UTILITY_PAGES) CLEAN_URLS[`/${page.replace(/\.html$/, "")}`] = page;
-for (const page of HU_PAGES) CLEAN_URLS[urlOf(page)] = page;
+for (const page of [...HU_PAGES, ...WRITING_PAGES]) CLEAN_URLS[urlOf(page)] = page;
 for (const f of readdirSync(join(ROOT, "work"))) {
   if (f.endsWith(".html")) CLEAN_URLS[`/work/${f.replace(".html", "")}`] = `work/${f}`;
 }
@@ -217,14 +221,19 @@ for (const page of PAGES) {
     // names the other language in that language and leads to this page's pair.
     const switchLinks = [...navigation.matchAll(/<a\b[^>]*class="[^"]*\blang-switch\b[^"]*"[^>]*>([^<]*)<\/a>/g)];
     const other = hungarian ? "en" : "hu";
-    const pairPath = hungarian ? urlOf(HU_PAIRS[page] || baseOf(page)) : urlOf(Object.entries(HU_PAIRS).find(([, en]) => en === page)?.[0] || "");
+    // A writing page without a translation links the other language's list
+    // (or home) page, and then must not claim rel="alternate".
+    const writingLink = isWritingPage(page) ? WRITING_LANGUAGE_LINKS[page] : null;
+    const pairPath = writingLink ? urlOf(writingLink.file) :
+      hungarian ? urlOf(HU_PAIRS[page] || baseOf(page)) : urlOf(Object.entries(HU_PAIRS).find(([, en]) => en === page)?.[0] || "");
+    const wantsAlternate = writingLink ? writingLink.alternate : true;
     if (switchLinks.length !== 1) {
       fail(`${page}: primary navigation needs exactly one language link`);
     } else {
       const [tag, label] = switchLinks[0];
       if (label !== (hungarian ? "English" : "Magyar") || !tag.includes(`hreflang="${other}"`) || !tag.includes(`lang="${other}"`) ||
-          !tag.includes('rel="alternate"') || /aria-label=|aria-current=/.test(tag) || !tag.includes(`href="${pairPath}"`)) {
-        fail(`${page}: the language link must read ${hungarian ? "English" : "Magyar"}, carry rel/hreflang/lang ${other} and lead to ${pairPath}`);
+          tag.includes('rel="alternate"') !== wantsAlternate || /aria-label=|aria-current=/.test(tag) || !tag.includes(`href="${pairPath}"`)) {
+        fail(`${page}: the language link must read ${hungarian ? "English" : "Magyar"}, carry ${wantsAlternate ? "rel/" : "no rel, only "}hreflang/lang ${other} and lead to ${pairPath}`);
       }
     }
     const contactHref = hungarian ? "/hu/kapcsolat" : "/contact";
@@ -395,7 +404,7 @@ if (!existsSync(llmsPath)) {
       !llms.includes("https://www.barnanorbert.com/hu/adatvedelem") ||
       !llms.includes("Product VP") ||
       !llms.includes("https://www.barnanorbert.com/ai-integration") ||
-      !llms.includes("https://www.barnanorbert.com/hu/ai-integracio") ||
+      !llms.includes("https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes") ||
       !llms.includes("https://www.barnanorbert.com/work/kineticare")) {
     fail("llms.txt is missing canonical portfolio, attribution, privacy or contact guidance");
   }
@@ -437,6 +446,8 @@ const hiringSitemap = [
   "/hu/munkak",
   ...["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"].map(slug => `/hu/munka/${slug}`),
   "/hu/rolam",
+  // Writing goes last, in build-writing.mjs order (list page, then newest article first).
+  ...WRITING_PAGES.map(urlOf),
 ];
 if (JSON.stringify(sitemapPaths) !== JSON.stringify(hiringSitemap)) {
   fail(`sitemap.xml order is ${sitemapPaths.join(", ")} (must be hiring-first)`);

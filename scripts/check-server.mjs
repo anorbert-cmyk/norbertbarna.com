@@ -9,6 +9,7 @@ import { once } from "node:events";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { request as httpRequest } from "node:http";
 import { createRequire } from "node:module";
+import { urlOf, WRITING_PAGES } from "./service-pages.mjs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
@@ -148,8 +149,8 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem",
-    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure"]) {
+  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem",
+    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure", ...WRITING_PAGES.map(urlOf)]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -230,8 +231,14 @@ try {
     ["/ai-integration/", "/ai-integration"],
     ["/privacy.html", "/privacy"],
     ["/hu/adatvedelem/", "/hu/adatvedelem"],
-    ["/hu/ai-integracio.html", "/hu/ai-integracio"],
-    ["/hu/ai-integracio/?utm_campaign=ai", "/hu/ai-integracio?utm_campaign=ai"],
+    ["/hu/ai-tanacsadas-fejlesztes.html", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/ai-tanacsadas-fejlesztes/?utm_campaign=ai", "/hu/ai-tanacsadas-fejlesztes?utm_campaign=ai"],
+    ["/hu/ai-integracio", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/ai-integracio?utm_campaign=ai", "/hu/ai-tanacsadas-fejlesztes?utm_campaign=ai"],
+    ["/hu/ai-integracio.html", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/ai-integracio/", "/hu/ai-tanacsadas-fejlesztes"],
+    ["/hu/webfejlesztes.html", "/hu/webfejlesztes"],
+    ["/hu/webfejlesztes/", "/hu/webfejlesztes"],
     ["/favicon.ico", "/assets/icons/68f923d010d274634c966a6e_favicon.png"],
     ["/index", "/"],
     ["/index?utm_source=home", "/?utm_source=home"],
@@ -262,7 +269,10 @@ try {
   assert(sitemapPaths.length >= 25, "sitemap lists every canonical page");
   for (const pathname of sitemapPaths) {
     // /hu is served from hu/index.html, so its file spellings are the index ones.
-    const variants = pathname === "/hu" ? ["/hu/", "/hu/index.html", "/hu/index"] : [`${pathname}.html`, `${pathname}/`];
+    // /hu and the writing list pages are served from <dir>/index.html, so their index spellings redirect too.
+    const variants = pathname === "/hu" ? ["/hu/", "/hu/index.html", "/hu/index"] :
+      ["/writing", "/hu/irasok"].includes(pathname) ? [`${pathname}.html`, `${pathname}/`, `${pathname}/index.html`, `${pathname}/index`] :
+      [`${pathname}.html`, `${pathname}/`];
     for (const variant of variants) {
       const redirect = await fetch(`${baseUrl}${variant}?ref=check`, { redirect: "manual" });
       assert(redirect.status === 301, `${variant} must 301 to ${pathname}, got ${redirect.status}`);
@@ -270,6 +280,19 @@ try {
     }
     const canonical = await fetch(`${baseUrl}${pathname}`, { redirect: "manual" });
     assert(canonical.status === 200, `${pathname} must serve 200`);
+  }
+
+  // Writing feeds are RSS that revalidates; the Markdown sources are not served.
+  for (const feedPath of WRITING_PAGES.filter((page) => page.endsWith("/index.html")).map((page) => `${urlOf(page)}/feed.xml`)) {
+    const feed = await fetch(`${baseUrl}${feedPath}`);
+    assert(feed.ok, `${feedPath} returned ${feed.status}`);
+    assert(/^application\/rss\+xml/.test(feed.headers.get("content-type") || ""), `${feedPath} must be served as RSS`);
+    assert(cacheDirectives(feed.headers.get("cache-control") || "").has("must-revalidate"), `${feedPath} must revalidate`);
+    assert((await feed.text()).includes("<rss version=\"2.0\""), `${feedPath} is not an RSS 2.0 document`);
+  }
+  for (const sourcePath of ["/content/human-in-the-loop-ai.md", "/content/", "/Content/ceges-weboldal-ara.md"]) {
+    const source = await fetch(`${baseUrl}${sourcePath}`, { redirect: "manual" });
+    assert(source.status === 404, `${sourcePath} must not expose the writing sources (${source.status})`);
   }
 
   const apexRobots = await rawGet(address.port, "/robots.txt", {

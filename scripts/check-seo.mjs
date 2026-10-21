@@ -14,12 +14,12 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, SERVICE_PAGES, baseOf, HU_PAGES, urlOf } from "./service-pages.mjs";
+import { UTILITY_PAGES, SERVICE_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, baseOf, HU_PAGES, isWritingList, isWritingPage, urlOf } from "./service-pages.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const origin = "https://www.barnanorbert.com";
 const files = ["index.html", "works.html", "about.html", ...UTILITY_PAGES,
-  ...readdirSync(join(root, "work")).filter(f => f.endsWith(".html")).map(f => `work/${f}`), ...HU_PAGES];
+  ...readdirSync(join(root, "work")).filter(f => f.endsWith(".html")).map(f => `work/${f}`), ...HU_PAGES, ...WRITING_PAGES];
 const errors = [];
 const check = (condition, message) => { if (!condition) errors.push(message); };
 const decode = value => String(value).replace(/&#x([0-9a-f]+);|&#(\d+);|&(amp|quot|apos|nbsp|lt|gt);/gi,
@@ -62,7 +62,7 @@ const byUrl = new Map(pages.map(page => [page.canonical, page]));
 const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
 const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage"]);
-check(pages.length === files.length && byUrl.size === files.length && files.length === 26, "expected twenty-six distinct indexable content routes (13 English, 13 Hungarian)");
+check(pages.length === files.length && byUrl.size === files.length && files.length === 27 + WRITING_PAGES.length, "expected twenty-seven distinct indexable content routes (13 English, 14 Hungarian) plus the generated writing pages");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
     const previous = definitions.get(node["@id"]);
@@ -88,7 +88,7 @@ for (const page of pages) {
   const bingVerification = page.metas("msvalidate.01");
   check(baseOf(file) === "index.html" ? bingVerification.length === 1 && /^[A-F0-9]{32}$/i.test(bingVerification[0]) : bingVerification.length === 0,
     `${file}: one provider-issued Bing verification value belongs on the homepage only`);
-  const expectedType = baseOf(file) === "index.html" ? "ProfilePage" : baseOf(file) === "works.html" ? "CollectionPage" : baseOf(file) === "about.html" ? "AboutPage" : baseOf(file).startsWith("work/") ? "Article" : /^(?:contact|hu\/kapcsolat)\.html$/.test(file) ? "ContactPage" : "WebPage";
+  const expectedType = isWritingList(file) ? "CollectionPage" : isWritingPage(file) ? "Article" : baseOf(file) === "index.html" ? "ProfilePage" : baseOf(file) === "works.html" ? "CollectionPage" : baseOf(file) === "about.html" ? "AboutPage" : baseOf(file).startsWith("work/") ? "Article" : /^(?:contact|hu\/kapcsolat)\.html$/.test(file) ? "ContactPage" : "WebPage";
   const primary = roots.filter(node => types(node).includes(expectedType));
   check(primary.length === 1, `${file}: exactly one ${expectedType}`);
   if (primary[0]) {
@@ -148,7 +148,7 @@ for (const page of pages) {
     if (target.origin !== origin) continue;
     const destination = byUrl.get(target.origin + target.pathname);
     if (!destination) {
-      check(target.pathname.startsWith("/assets/") && existsSync(join(root, decodeURIComponent(target.pathname))), `${file}: noncanonical or missing internal destination ${anchor.href}`);
+      check((target.pathname.startsWith("/assets/") || /^\/(?:hu\/irasok|writing)\/feed\.xml$/.test(target.pathname)) && existsSync(join(root, decodeURIComponent(target.pathname))), `${file}: noncanonical or missing internal destination ${anchor.href}`);
       continue;
     }
     if (target.hash) check(destination.ids.has(decodeURIComponent(target.hash.slice(1))), `${file}: missing native fragment ${anchor.href}`);
@@ -156,8 +156,9 @@ for (const page of pages) {
 }
 
 // Every page has a reciprocal language pair (owner request, 2026-10-06).
-const LANGUAGE_PAIRS = [["/ai-integration", "/hu/ai-integracio"], ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"],
-  ...HU_PAGES.map(page => [urlOf(baseOf(page)), urlOf(page)])];
+const LANGUAGE_PAIRS = [["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"], ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"],
+  ...HU_PAGES.map(page => [urlOf(baseOf(page)), urlOf(page)]),
+  ...Object.entries(WRITING_LANGUAGE_LINKS).filter(([page, link]) => link.alternate && page.startsWith("writing/")).map(([page, link]) => [urlOf(page), urlOf(link.file)])];
 for (const [english, hungarian] of LANGUAGE_PAIRS) {
   const expected = { en: origin + english, hu: origin + hungarian, "x-default": origin + english };
   for (const route of [english, hungarian]) {
@@ -165,6 +166,14 @@ for (const [english, hungarian] of LANGUAGE_PAIRS) {
     const alternates = page.links.filter(link => link.rel === "alternate" && link.hreflang);
     check(alternates.length === 3 && alternates.every(link => expected[link.hreflang] === link.href) && new Set(alternates.map(link => link.hreflang)).size === 3, `${page.file}: reciprocal/self-inclusive en/hu/x-default`);
   }
+}
+
+// A writing page without a translation declares no hreflang at all, so no
+// one-sided alternate can point at a page that does not point back.
+for (const [file, link] of Object.entries(WRITING_LANGUAGE_LINKS)) {
+  if (link.alternate) continue;
+  const page = byUrl.get(origin + urlOf(file));
+  check(!page.links.some(tag => tag.rel === "alternate" && tag.hreflang), `${file}: no translation, so no hreflang alternates`);
 }
 
 const sitemap = readFileSync(join(root, "sitemap.xml"), "utf8");

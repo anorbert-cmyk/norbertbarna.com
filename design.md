@@ -44,11 +44,14 @@ remains supported, but is not the primary acquisition KPI. Preserve the
 Product VP role, work order and shipped evidence. The 2026-09-13
 KODE recreation brief below replaces the earlier semicircle composition.
 
-`/ai-integration` and `/hu/ai-integracio` present one coherent service story,
+`/ai-integration` and `/hu/ai-tanacsadas-fejlesztes` present one coherent service story,
 combining the approved **The Passage (01)** and **Systems in Motion (02)**
 concepts. Preserve the assembled page's copy and section sequence during
 visual refinements; reorganizing content requires an explicit request.
-Only the two AI routes receive this treatment; other footers stay unchanged.
+Only the service routes receive this treatment; other footers stay unchanged.
+The 2026-10-21 SEO plan adds `/hu/webfejlesztes` on the same board and gives
+the two Hungarian service pages use-case, scope and price-factor chapters in
+the workflow reading layout, plus eight questions with matching FAQPage data.
 The 2026-09-15 content expansion explicitly adds a bilingual, natural-flow
 workflow chapter and grounded AI/development examples. Preserve the artwork,
 existing ribbon scene, owner biography and FAQ while enriching the service
@@ -771,7 +774,7 @@ markup that is being retired: check the page before reusing it.
 `.case-toc__inner` `.case-toc__label` `.case-evidence-note` `.summary`
 `.case-related-projects` `.related-work-card` `.case-nav-works`
 
-**AI service pages (`/ai-integration`, `/hu/ai-integracio`):** `.ai-page`
+**AI service pages (`/ai-integration`, `/hu/ai-tanacsadas-fejlesztes`):** `.ai-page`
 `.ai-lang` `.ai-eyebrow` `.ai-eyebrow-rule` `.ai-hero` `.ai-hero-copy`
 `.ai-hero-dek` `.ai-hero-services` `.ai-cta-underline` `.ai-hero-foot`
 `.ai-hero-art` `.ai-hero-bg` `.ai-hero-track` `.ai-hero-passage` `.ai-hero-canvas` `.ai-hero-kicker` `.ai-hero-explore` `.ai-shape` `.ai-shape-copy`
@@ -834,7 +837,8 @@ same change that caused the drift.
 | `/work/{slug}` | `work/*.html` (7) | Case studies | `index, follow, max-image-preview:large` |
 | `/about` | `about.html` | Story in Motion, the written biography | `index, follow, max-image-preview:large` |
 | `/ai-integration` | `ai-integration.html` | English service offer, the two approved boards | default |
-| `/hu/ai-integracio` | `hu/ai-integracio.html` | Hungarian pair of the same board, `lang="hu"` | default |
+| `/hu/ai-tanacsadas-fejlesztes` | `hu/ai-tanacsadas-fejlesztes.html` | Hungarian pair of the same board, `lang="hu"` | default |
+| `/hu/webfejlesztes` | `hu/webfejlesztes.html` | Hungarian web development offer on the same board, no English pair yet | default |
 | `/privacy` | `privacy.html` | Consent and analytics notice | default |
 | `/hu/adatvedelem` | `hu/adatvedelem.html` | Hungarian pair, `lang="hu"` | default |
 | `/contact` | `contact.html` | “Paper”: the About fold-detail still full-bleed and sticky, the home glass chevron as a third hero-scene stage, the form on one frosted lilac glass letter that folds into thirds on send | default |
@@ -843,6 +847,8 @@ same change that caused the drift.
 | `/hu/munkak` | `hu/munkak.html` | Hungarian works index | default |
 | `/hu/rolam` | `hu/rolam.html` | Hungarian About | default |
 | `/hu/munka/{slug}` | `hu/munka/*.html` (7) | Hungarian case studies | default |
+| `/writing`, `/hu/irasok` | `writing/index.html`, `hu/irasok/index.html` | Writing list pages, generated from `content/*.md`; served by explicit routes like `/hu` | default |
+| `/writing/{slug}`, `/hu/irasok/{slug}` | `writing/*.html`, `hu/irasok/*.html` | Articles, generated; RSS at `<section>/feed.xml` | default |
 | (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
 
 **Whole-site language switch (owner request, 2026-10-06).** Every content page
@@ -925,9 +931,31 @@ counter yields below 1440px and the repeated wordmark below 1200px, so the
 destinations stay on one row; the wordmark is out of the tab order because
 the logo already links home. Privacy pages use the lilac bar.
 
+**Writing (Írások, SEO task T4, 2026-10-21).** Articles are Markdown in
+`content/*.md`; `scripts/build-writing.mjs` renders them and is the only
+writer of `writing/`, `hu/irasok/`, the writing entries of `sitemap.xml` and
+the Writing section of `llms.txt`. Pages reuse the privacy pages' utility
+template (`body.utility-page`, `.work-single-section`, `.summary`), copied from
+`privacy.html` and `hu/adatvedelem.html` on every build, so a menu or re-hash
+there reaches the articles after `npm run build:writing`. An article is a
+schema `Article` (author `#person`, `datePublished`/`dateModified` as full
+date-times) plus a `BreadcrumbList` back to its list. Under the H1 one line
+gives the list link, the date and the reading time; there is still no
+“Written by / Published / Updated” label (**BlogHero**): the date of an
+article is content, a byline is not. A visible FAQ section (`## Gyakori kérdések` / `## Frequently asked
+questions` with `###` questions) is mirrored word for word as FAQPage schema.
+Covers are 1200×630 JPEGs under `assets/images/og/writing/` and serve only as
+the social preview; they are not shown on the page. `draft: true` keeps an
+article unpublished. Each article ends with the CTA: an
+optional related-service link from frontmatter and the
+`footer-email hero-work-link` contact action. A translated article names its
+pair in frontmatter and gets reciprocal hreflang and a `rel="alternate"`
+language link; an untranslated one has no hreflang and its language link
+leads to the other language's list page without `rel="alternate"`.
+
 Content pages carry chrome, consent and the editorial footer.
 `sitemap.xml` lists every canonical URL: the English pages in hiring order,
-then the utility pairs, then the Hungarian mirror. `server.js` owns canonicalisation: apex to
+then the utility pairs, then the Hungarian mirror, then the writing pages. `server.js` owns canonicalisation: apex to
 `www`, and `/index`, `/{slug}`, trailing slashes and `.html` all 301 to one
 URL. Adding a page means adding it to the checks that enumerate pages, not
 only to the sitemap.
@@ -994,7 +1022,7 @@ JavaScript dependency is part of this contract.
 | `immersive-navigation.js` | Compact state, real Works/case progress and Home consent clearance; no navigation travel | yes |
 | `case-opening.js` | Case title and media entrance on `PortfolioPhysics` (hinged panel, rise, mask springs, letter springs) and the native-scroll perspective settle; no GSAP | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
-| `ai-motion.js` | `/ai-integration` and `/hu/ai-integracio`: the motion and mode verdicts, the bar tone, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) | yes |
+| `ai-motion.js` | `/ai-integration` and `/hu/ai-tanacsadas-fejlesztes`: the motion and mode verdicts, the bar tone, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) | yes |
 | `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field; the home selected-work and related-card pointer hover on `PortfolioPhysics` springs | yes |
 | `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
 
@@ -1002,7 +1030,7 @@ Load order is a contract, not a preference:
 
 - `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
 - `physics.js` follows the analytics trio as a deferred head script on the
-  contact pages, the cases, `/`, `/hu` and both AI pages. Deferred scripts run after the
+  contact pages, the cases, `/`, `/hu` and the service pages with the glass opening (both AI pages, `/hu/webfejlesztes`). Deferred scripts run after the
   end-of-body owners and before `DOMContentLoaded`, so an owner reads
   `window.PortfolioPhysics` only once that event has fired (`case-opening.js`
   starts on it; `animations.js` starts after `load`) and settles to its end
@@ -1094,7 +1122,8 @@ scene is ready and motion is allowed.
 
 ### Checks
 
-`npm test` runs ten scripts in order; `npm run test:e2e` runs twenty-seven
+`npm test` first checks that the generated writing pages match
+`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs twenty-seven
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 

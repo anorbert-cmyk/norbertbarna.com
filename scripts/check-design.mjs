@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CONTACT_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, UTILITY_PAGES } from "./service-pages.mjs";
+import { CONTACT_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, UTILITY_PAGES } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -56,7 +56,8 @@ const instructure = readFileSync(join(ROOT, "work/instructure.html"), "utf8");
 // iOS paints the northeast glyph as a blue emoji tile. Check the complete
 // served page inventory plus editable CSS/JS, not retired content-hash copies.
 {
-  const pages = ["", "work", "hu"].flatMap((directory) =>
+  // hu/irasok and writing exist only while an article is published.
+  const pages = ["", "work", "hu", "hu/munka", "hu/irasok", "writing"].filter((directory) => existsSync(join(ROOT, directory))).flatMap((directory) =>
     readdirSync(join(ROOT, directory))
       .filter((name) => name.endsWith(".html"))
       .map((name) => join(directory, name))
@@ -201,7 +202,7 @@ if (worksLd) {
   }
   const others = [
     "works.html", "privacy.html", "ai-integration.html",
-    "hu/ai-integracio.html", "hu/adatvedelem.html",
+    "hu/ai-tanacsadas-fejlesztes.html", "hu/adatvedelem.html",
     ...WORK.map((slug) => `work/${slug}.html`),
   ];
   for (const page of others) {
@@ -615,10 +616,14 @@ for (const page of SERVICE_PAGES) {
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
     return [...main.matchAll(/<(header|section)\b[^>]*\bid="([^"]+)"/g)].map(([, tag, id]) => `${tag}#${id}`).join(" ");
   };
+  // The Hungarian SEO pages (2026-10-21) add use cases, scope and price
+  // factors in the same reading layout, and answer eight questions.
   const expected = "header#top section#shaped section#pieces section#workflow section#selected-work section#start section#questions";
+  const extended = "header#top section#shaped section#pieces section#uses section#workflow section#scope section#pricing section#selected-work section#start section#questions";
   const pages = SERVICE_PAGES.map((page) => [page, readFileSync(join(ROOT, page), "utf8")]);
   for (const [page, html] of pages) {
-    if (skeleton(html) !== expected) fail(`${page}: the seven service chapters must stand in order (${skeleton(html)})`);
+    const isExtended = EXTENDED_SERVICE_PAGES.includes(page);
+    if (skeleton(html) !== (isExtended ? extended : expected)) fail(`${page}: the service chapters must stand in order (${skeleton(html)})`);
     for (const hook of ["data-ai-hero", "data-ai-shape", "data-ai-pieces", "data-ai-stage", "data-ai-journey", "data-ai-ribbon", "data-ai-work"]) {
       if ((html.match(new RegExp(`\\b${hook}(?=[\\s>=])`, "g")) || []).length !== 1) fail(`${page}: exactly one ${hook} hook`);
     }
@@ -641,7 +646,8 @@ for (const page of SERVICE_PAGES) {
       if (!main.includes(`/assets/images/geometry/${slug}.960.webp`)) fail(`${page}: ${slug} needs the existing landscape geometric artwork`);
     }
     const faq = main.match(/<section\b[^>]*\bid="questions"[^>]*>[\s\S]*?<\/section>/)?.[0] || "";
-    if ((faq.match(/<details\b/g) || []).length !== 5 || (faq.match(/<summary><h3>/g) || []).length !== 5 || (faq.match(/<details open>/g) || []).length !== 1) fail(`${page}: five native FAQ disclosures must retain semantic question headings and one initially open answer`);
+    const questions = isExtended ? 8 : 5;
+    if ((faq.match(/<details\b/g) || []).length !== questions || (faq.match(/<summary><h3>/g) || []).length !== questions || (faq.match(/<details open>/g) || []).length !== 1) fail(`${page}: ${questions} native FAQ disclosures must retain semantic question headings and one initially open answer`);
     if (!/<footer\b[^>]*\bid="work-better"[^>]*class="footer-section ai-footer"/.test(footer) || /id="work-better"/.test(main)) fail(`${page}: the chosen Passage close must be the actual footer after main`);
     if (!(language === "hu" ? /<h2\b[^>]*id="footer-title"[^>]*>Építsük meg,<br>ami következik\.<\/h2>/ : /<h2\b[^>]*id="footer-title"[^>]*>Let’s build<br>what’s next\.<\/h2>/).test(footer) || !/class="ai-footer-art" aria-hidden="true"/.test(footer) || !footer.includes('/assets/images/ai/closing-passage.webp')) fail(`${page}: the dark close needs its chosen headline and separate architectural artwork`);
     checkProjectContact(footer, `${page}: AI footer`, language, true);

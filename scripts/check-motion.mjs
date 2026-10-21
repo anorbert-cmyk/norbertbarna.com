@@ -11,14 +11,14 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, assetPrefix, baseOf, HU_PAGES } from "./service-pages.mjs";
+import { SERVICE_PAGES, UTILITY_PAGES, assetPrefix, baseOf, HU_PAGES, WRITING_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .filter((name) => name.endsWith(".html"))
   .sort()
   .map((name) => `work/${name}`);
-const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES, ...HU_PAGES];
+const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES, ...HU_PAGES, ...WRITING_PAGES];
 const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
 
 let failures = 0;
@@ -249,7 +249,7 @@ for (const page of ALL_PAGES) {
     .map(match => attribute(match[0], "href")).filter(href => /\/ai-integration(?:\.[a-f0-9]+)?\.css$/i.test(href));
   const aiScripts = [...html.matchAll(/<script\b[^>]*>/gi)]
     .map(match => attribute(match[0], "src")).filter(src => /\/ai-motion(?:\.[a-f0-9]+)?\.js$/i.test(src));
-  if (UTILITY_PAGES.includes(page) && /\bai-integra/.test(page)) {
+  if (SERVICE_PAGES.includes(page)) {
     if (aiStyles.length !== 1 || aiStyles[0] !== `/assets/css/${aiCssFile}` ||
         aiScripts.length !== 1 || aiScripts[0] !== `/assets/js/${aiMotionFile}`) {
       fail(`${page}: the AI service stylesheet and owner must each load one current byte-matched asset`);
@@ -268,7 +268,7 @@ for (const page of ALL_PAGES) {
       fail(`${page}: decorative service motion must not make the reading page inert`);
     }
   } else if (aiStyles.length || aiScripts.length || /assets\/images\/ai\//.test(html) || /\bai-page\b/.test(html)) {
-    fail(`${page}: the AI service boards belong to the two service pages alone`);
+    fail(`${page}: the AI service boards belong to the service pages alone`);
   }
   const compositionStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
     .map((match) => attribute(match[0], "href")).filter((href) => /\/home-composition(?:\.|\/)/.test(href));

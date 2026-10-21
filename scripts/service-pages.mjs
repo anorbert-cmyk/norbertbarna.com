@@ -1,6 +1,13 @@
+import { writingLanguageLinks, writingPages } from "./writing-content.mjs";
+
 // Keep client landing pages in every site-wide verification inventory.
 // These are service pages, not portfolio Articles.
-export const SERVICE_PAGES = ["ai-integration.html", "hu/ai-integracio.html"];
+export const SERVICE_PAGES = ["ai-integration.html", "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html"];
+// Hungarian service pages built on the extended template (2026-10-21 SEO plan):
+// use cases, scope, price factors and eight questions with matching FAQPage data.
+export const EXTENDED_SERVICE_PAGES = ["hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html"];
+// Service pages and their English pair; null until the English page exists.
+export const SERVICE_PAIRS = { "ai-integration.html": "hu/ai-tanacsadas-fejlesztes.html", "hu/ai-tanacsadas-fejlesztes.html": "ai-integration.html", "hu/webfejlesztes.html": null };
 export const PRIVACY_PAGES = ["privacy.html", "hu/adatvedelem.html"];
 // The contact form pages (owner request, 2026-10-06).
 export const CONTACT_PAGES = ["contact.html", "hu/kapcsolat.html"];
@@ -25,4 +32,13 @@ export const isHungarian = (page) => page.startsWith("hu/");
 // URL path of a page file: index.html -> /, hu/index.html -> /hu, x.html -> /x.
 export const urlOf = (page) => page === "index.html" ? "/" : `/${page.replace(/(?:\/index)?\.html$/, "")}`;
 export const assetPrefix = (page) =>
-  page === "404.html" || UTILITY_PAGES.includes(page) || HU_MIRRORS[page] ? "/" : page.startsWith("work/") ? "../" : "";
+  page === "404.html" || UTILITY_PAGES.includes(page) || HU_MIRRORS[page] || WRITING_PAGES.includes(page) ? "/" : page.startsWith("work/") ? "../" : "";
+
+// Writing (Írások): pages generated from content/*.md by build-writing.mjs.
+// List pages (writing/index.html, hu/irasok/index.html) are CollectionPages,
+// the rest are Articles. WRITING_LANGUAGE_LINKS gives each page's language
+// link: a translation (alternate) or the other language's list or home page.
+export const WRITING_PAGES = writingPages();
+export const WRITING_LANGUAGE_LINKS = writingLanguageLinks();
+export const isWritingPage = (page) => WRITING_PAGES.includes(page);
+export const isWritingList = (page) => isWritingPage(page) && page.endsWith("/index.html");

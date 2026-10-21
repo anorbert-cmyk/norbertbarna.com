@@ -3,18 +3,20 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { writingPages } from "../scripts/writing-content.mjs";
+import { urlOf } from "../scripts/service-pages.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = JSON.parse(readFileSync(resolve(root, "assets/fonts/manifest.json"), "utf8"));
 const canonicalPaths = [...readFileSync(resolve(root, "sitemap.xml"), "utf8").matchAll(/<loc>(.*?)<\/loc>/g)]
   .map((match) => new URL(match[1]).pathname);
-// `/hu` is a directory served by an explicit route (design.md, Pages and routes).
-const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : route === "/hu" ? "hu/index.html" : `${route.slice(1)}.html`);
+// `/hu` and the writing list pages are directories served by explicit routes (design.md, Pages and routes).
+const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : ["/hu", "/writing", "/hu/irasok"].includes(route) ? `${route.slice(1)}/index.html` : `${route.slice(1)}.html`);
 const slugs = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
-// English pages in hiring order, then the utility pairs, then the Hungarian mirror.
+// English pages in hiring order, then the utility pairs, then the Hungarian mirror, then the generated writing pages.
 const expectedCanonicalPaths = ["/", "/works", ...slugs.map((slug) => `/work/${slug}`), "/about",
-  "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
-  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam"];
+  "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
+  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam", ...writingPages().map(urlOf)];
 const cssSource = readFileSync(resolve(root, "assets/css/fonts.css"), "utf8");
 const cssDigest = createHash("sha256").update(cssSource).digest("hex").slice(0, 12);
 const sample = "Norbert Barna ÁÉÍÓÖŐÚÜŰ árvíztűrő tükörfúrógép";
@@ -66,7 +68,7 @@ test("every canonical page and 404 load licensed, content-hashed fonts directly 
   expect(cssSource.match(/font-display: swap/g)).toHaveLength(28);
 });
 
-for (const route of ["/", "/work/instructure", "/hu/ai-integracio", "/hu/adatvedelem", "/does-not-exist"]) {
+for (const route of ["/", "/work/instructure", "/hu/ai-tanacsadas-fejlesztes", "/hu/adatvedelem", "/does-not-exist"]) {
   test(`native fonts preserve English/Hungarian metrics without JavaScript or Google access on ${route}`, async ({ browser, baseURL }) => {
     const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
     const page = await context.newPage();
@@ -140,7 +142,7 @@ test("slow local fonts leave AI copy readable, then settle without a large layou
   const hold = new Promise((resolve) => { release = resolve; });
   await page.route(/\/assets\/fonts\/.*\.woff2$/, async (route) => { await hold; await route.continue(); });
   try {
-    await page.goto("/hu/ai-integracio", { waitUntil: "domcontentloaded" });
+    await page.goto("/hu/ai-tanacsadas-fejlesztes", { waitUntil: "domcontentloaded" });
     await expect(page.locator("h1")).toBeVisible();
     expect(await page.locator("h1").evaluate((element) => getComputedStyle(element).opacity)).toBe("1");
     expect(await page.evaluate(() => document.fonts.status)).toBe("loading");
