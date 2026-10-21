@@ -25,6 +25,7 @@ for (const file of SERVICE_PAGES) {
   const body = html.match(/<main\b[^>]*>[\s\S]*?<\/main>/i)?.[0] || "";
   const h1 = text(body.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || "");
   assert.equal(attr(html.match(/<html\b[^>]*>/i)?.[0] || "", "lang"), language, `${file}: document language`);
+  assert(/<head>\s*<meta charset="utf-8"\/>/.test(html) && /href="\/assets\/css\/fonts\.[a-f0-9]{12}\.css"/.test(html), `${file}: charset first and the self-hosted fonts stylesheet`);
   assert(h1 && (file.includes("webfejlesztes") ? /weboldal készítés/i.test(h1) : /AI/i.test(h1)), `${file}: visible service subject`);
   const links = [...html.matchAll(/<link\b[^>]*>/gi)].map(([tag]) => tag);
   const translations = links.filter(tag => attr(tag, "rel") === "alternate" && attr(tag, "hreflang"));
