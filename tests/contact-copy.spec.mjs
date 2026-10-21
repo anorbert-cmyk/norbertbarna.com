@@ -185,9 +185,9 @@ for (const adjustment of ["text 200%", "WCAG text spacing"]) {
     await expect(contact).toHaveText("Contact");
     await expect(page.locator(".navbar button.footer-email, .navbar .footer-email")).toHaveCount(0);
     await assertControlTextFits(contact, "header contact", viewport);
-    await assertControlTextFits(page.locator(".navbar a.lang-switch"), "header language link", viewport);
+    await assertControlTextFits(page.locator(".navbar .nav-lang-trigger"), "header language menu", viewport);
     await assertNoControlOverlap(page, ['.navbar a.nav-link[href="/contact"]', ".navbar .footer-contact-link"], "header contact does not overlap LinkedIn");
-    await assertNoControlOverlap(page, [".navbar .footer-contact-link", ".navbar a.lang-switch"], "LinkedIn does not overlap the language link");
+    await assertNoControlOverlap(page, [".navbar .footer-contact-link", ".navbar .nav-lang-trigger"], "LinkedIn does not overlap the language menu");
     await page.locator(".menu-button").click();
     const primaryAction = ".home-mast[data-morph-active] .hero-work-link, .home-mast:not([data-morph-active]) .home-intro-work";
     await assertControlTextFits(page.locator(primaryAction), "hero CTA", viewport);
@@ -315,8 +315,8 @@ test("header AA: a later footer pointer interaction must not resurrect stale nav
 test("header AA: Escape returns focus and Tab can leave the non-modal disclosure unobscured", async ({ page }) => {
   await openHeaderFixture(page, { width: 390, height: 844 });
   const toggle = page.locator(".menu-button");
-  // The language link is the last control of every menu.
-  const lastControl = page.locator(".navbar a.lang-switch");
+  // The language menu is the last control of every menu; its pair link is the last link.
+  const lastControl = page.locator(".navbar .nav-lang-trigger");
   await expect(page.locator("#primary-navigation a[href]").last()).toHaveClass(/\blang-switch\b/);
   await toggle.focus();
   await page.keyboard.press("Enter");
@@ -338,9 +338,9 @@ test("header AA: 568x200 landscape menu keeps every control reachable with enlar
   const snapshot = await doubleHeaderText(page);
   await testInfo.attach("landscape-text-resize-snapshot", { body: JSON.stringify(snapshot, null, 2), contentType: "application/json" });
   await page.locator(".menu-button").click();
-  const controls = page.locator("#primary-navigation a[href], #primary-navigation button");
-  await expect(page.locator("#primary-navigation a.nav-link")).toHaveText(["Works", "About", "AI integration", "Contact", "Magyar"]);
-  await expect(controls).toHaveCount(6);
+  const controls = page.locator("#primary-navigation a.nav-link, #primary-navigation .footer-contact-link, #primary-navigation button");
+  await expect(page.locator("#primary-navigation a.nav-link")).toHaveText(["Works", "AI integration", "Articles", "About", "Contact"]);
+  await expect(controls).toHaveCount(8);
   for (let index = 0; index < await controls.count(); index += 1) {
     const control = controls.nth(index);
     await control.focus();

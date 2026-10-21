@@ -63,18 +63,18 @@ title; og:description and twitter:description equal the description.
 
 | Page | Title | Description |
 | --- | --- | --- |
-| `/` | Norbert Barna \| Product VP for AI products in regulated finance | Norbert Barna is a Product VP with 17 years of experience, leading AI products in regulated finance and high-trust systems. |
+| `/` | Norbert Barna \| Product VP for AI in regulated finance | Norbert Barna is a Product VP with 17 years of experience, leading AI products in regulated finance and high-trust systems. |
 | `/works` | Selected work \| AI, fintech and digital health case studies | Seven shipped products: regulated banking, enterprise AI, crypto trading, digital health and robotics. Case studies by Norbert Barna. |
-| `/about` | About Norbert Barna \| Product VP, from security software to AI | How Norbert Barna went from enterprise security software to banking at Raiffeisen, AI at Instructure and an AI platform at BlackRock. |
+| `/about` | About Norbert Barna \| Product VP, from security to AI | How Norbert Barna went from enterprise security software to banking at Raiffeisen, AI at Instructure and an AI platform at BlackRock. |
 | `/ai-integration` | AI integration for businesses \| Norbert Barna, Product VP | AI integration consulting and custom AI development for businesses: discovery, AI collaboration and build, shaped around your workflow. |
 | `/hu/ai-tanacsadas-fejlesztes` | AI tanácsadás, automatizálás és fejlesztés \| Barna Norbert | AI tanácsadás, AI automatizálás és egyedi AI-fejlesztés cégeknek: feltárás, pilot és bevezetés a meglévő munkafolyamatodba. |
 | `/hu/webfejlesztes` | Weboldal készítés és egyedi webfejlesztés \| Barna Norbert | Egyedi weboldal készítés és webfejlesztés cégeknek: tervezés, fejlesztés és átadás egy kézből, a márkádra és a felhasználóidra szabva. |
 | `/work/raiffeisen` | Raiffeisen: mobile banking redesign case study \| Norbert Barna | Mobile banking redesign case study for Raiffeisen: research, a cross-market design system and safer money journeys in 16 countries. |
 | `/work/instructure` | Instructure: enterprise AI EdTech case study \| Norbert Barna | AI EdTech case study: explainable, human-reviewed AI workflows for Instructure's enterprise learning platform, shipped at scale. |
 | `/work/bitpanda` | Bitpanda: crypto trading UX case study \| Norbert Barna | Crypto trading UX redesign across deposits, KYC, execution and portfolio views during Bitpanda's 2021–22 European expansion. |
-| `/work/benker` | Benker: digital banking KYC and onboarding UX \| Norbert Barna | Blockchain banking UX case study covering KYC, deposits, transaction flows and reusable patterns for regulated, multi-market delivery. |
-| `/work/sportsgambit` | SportsGambit: AI prediction market UX case study \| Norbert Barna | AI prediction market UX case study: explainable recommendations, guided agent setup and deliberate review for the SportsGambit MVP. |
-| `/work/kineticare` | Kineticare: digital health platform case study \| Norbert Barna | Digital health UX case study: brand, content, interface and Next.js platform for physiotherapist-led hand rehabilitation at home. |
+| `/work/benker` | Benker: banking KYC and onboarding UX \| Norbert Barna | Blockchain banking UX case study covering KYC, deposits, transaction flows and reusable patterns for regulated, multi-market delivery. |
+| `/work/sportsgambit` | SportsGambit: AI prediction market UX \| Norbert Barna | AI prediction market UX case study: explainable recommendations, guided agent setup and deliberate review for the SportsGambit MVP. |
+| `/work/kineticare` | Kineticare: digital health platform UX \| Norbert Barna | Digital health UX case study: brand, content, interface and Next.js platform for physiotherapist-led hand rehabilitation at home. |
 | `/work/onrobot` | OnRobot: no-code robotics HMI case study \| Norbert Barna | Robotics HMI case study: a no-code tablet interface so operators set up collaborative robot tools without pendants or scripting. |
 | `/privacy` | Analytics and privacy \| Norbert Barna | Optional, consent-gated PostHog analytics for page visits and Email clicks, with search reporting and site hosting explained. |
 | `/hu/adatvedelem` | Analitika és adatvédelem \| Barna Norbert | Opcionális, hozzájáruláshoz kötött PostHog-mérés oldallátogatásokról és Email-kattintásokról. Keresési jelentések és kiszolgálás. |

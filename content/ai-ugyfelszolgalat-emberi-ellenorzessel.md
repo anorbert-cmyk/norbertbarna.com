@@ -1,11 +1,10 @@
 ---
 title: "AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg"
 description: "AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg, mit válaszolhat az AI magától, mit néz át ember, és mit ír elő az AI-rendelet."
-draft: true
 lang: hu
 slug: ai-ugyfelszolgalat-emberi-ellenorzessel
-date: 2027-01-13T09:00:00+01:00
-updated: 2027-01-13T09:00:00+01:00
+date: 2026-10-21T09:00:00+02:00
+updated: 2026-10-21T09:00:00+02:00
 tags: [ai ügyfélszolgálat, chatbot fejlesztés, ai automatizálás, human in the loop, ai tanácsadás]
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek

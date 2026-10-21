@@ -1,0 +1,416 @@
+/* Tudástár / Articles (owner request, 2026-10-21): the dedicated layout of the
+   writing list page and the article template. Loaded on the generated
+   writing pages only (content-hashed). The list and every opening stand on the
+   footer lilac with navy ink and hairline rules, like Selected work; the
+   reading column stands on paper with ink, like a case body. Titles are
+   Funnel Display 700, everything else Inter. No motion owner: the pages are
+   still. Primitives: .writing-page .writing-opening .writing-frame
+   .writing-eyebrow .writing-title .writing-dek .writing-count .writing-list
+   .writing-feature .writing-rows .writing-row .writing-row-number
+   .writing-row-media .writing-row-copy .writing-kicker .writing-meta
+   .writing-breadcrumb .writing-cover .writing-body .writing-rail .writing-toc
+   .writing-prose .writing-cta .writing-related */
+
+.writing-page {
+  --writing-lilac: #D6D4ED;
+  --writing-navy: #0A1628;
+  --writing-forest: #1B3A32;
+  --writing-olive: #BDB414;
+  --writing-muted: rgb(10 22 40 / 70%);
+  --writing-rule: rgb(10 22 40 / 26%);
+  --writing-gutter: clamp(24px, 4.8vw, 80px);
+  --writing-content: 1200px;
+  --writing-readable: 720px;
+  background: #f7f8f8;
+  color: #111;
+}
+.writing-page main { display: block; }
+.writing-frame {
+  width: 100%;
+  max-width: var(--writing-content);
+  margin: 0 auto;
+  padding: 0 var(--writing-gutter);
+}
+.writing-page .work-single-section { display: none; }
+
+/* ---- opening (list page and article) ------------------------------------ */
+.writing-opening {
+  color: var(--writing-navy);
+  background: var(--writing-lilac);
+  font-family: Inter, sans-serif;
+}
+.writing-opening .writing-frame {
+  padding-top: clamp(40px, 6vw, 88px);
+  padding-bottom: clamp(40px, 6vw, 80px);
+}
+.writing-eyebrow,
+.writing-kicker {
+  margin: 0 0 14px;
+  color: var(--writing-muted);
+  font: 600 13px/1.3 Inter, sans-serif;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.writing-title {
+  margin: 0;
+  max-width: 18ch;
+  color: var(--writing-navy);
+  font-family: "Funnel Display", Inter, sans-serif;
+  font-size: clamp(38px, 6.2vw, 92px);
+  font-weight: 700;
+  letter-spacing: -.03em;
+  line-height: .98;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.writing-dek {
+  max-width: 62ch;
+  margin: clamp(20px, 2.4vw, 32px) 0 0;
+  color: var(--writing-navy);
+  font: 400 clamp(18px, 1.5vw, 22px)/1.45 Inter, sans-serif;
+  letter-spacing: -.012em;
+  text-wrap: pretty;
+}
+.writing-count {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 28px 0 0;
+  color: var(--writing-muted);
+  font: 400 15px/1.4 Inter, sans-serif;
+}
+.writing-count a { color: var(--writing-navy); text-decoration: underline; text-underline-offset: 4px; }
+.writing-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0;
+  color: var(--writing-muted);
+  font: 400 15px/1.4 Inter, sans-serif;
+  letter-spacing: -.01em;
+}
+.writing-meta a { color: var(--writing-navy); text-decoration: underline; text-underline-offset: 4px; }
+.writing-meta > * + *::before { content: "·"; margin-right: 10px; color: var(--writing-rule); }
+.writing-opening .writing-meta { margin-top: 22px; }
+
+/* ---- list page ----------------------------------------------------------- */
+.writing-list {
+  color: var(--writing-navy);
+  background: var(--writing-lilac);
+}
+.writing-list .writing-frame { padding-bottom: clamp(64px, 8vw, 120px); }
+.writing-list a { color: inherit; text-decoration: none; }
+.writing-feature {
+  border-top: 1px solid var(--writing-rule);
+}
+.writing-feature-link {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  padding: clamp(28px, 4vw, 56px) 0;
+}
+.writing-feature-media,
+.writing-row-media {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--site-radius-md, 24px);
+  background: var(--writing-navy);
+}
+.writing-feature-media img,
+.writing-row-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+}
+.writing-feature-copy h2,
+.writing-row-copy h2 {
+  margin: 0;
+  color: var(--writing-navy);
+  font-family: "Funnel Display", Inter, sans-serif;
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.08;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.writing-feature-copy h2 { font-size: clamp(30px, 3.4vw, 48px); }
+.writing-row-copy h2 { font-size: clamp(24px, 2.2vw, 32px); }
+.writing-feature-copy p:not(.writing-kicker):not(.writing-meta),
+.writing-row-copy p:not(.writing-kicker):not(.writing-meta) {
+  margin: 16px 0 0;
+  max-width: 56ch;
+  color: var(--writing-navy);
+  font: 400 17px/1.5 Inter, sans-serif;
+  letter-spacing: -.012em;
+  text-wrap: pretty;
+}
+.writing-feature-copy .writing-meta,
+.writing-row-copy .writing-meta { margin-top: 18px; }
+.writing-feature-link:is(:hover, :focus-visible) h2,
+.writing-row-link:is(:hover, :focus-visible) h2 {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+.writing-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.writing-row {
+  border-top: 1px solid var(--writing-rule);
+}
+.writing-row:last-child { border-bottom: 1px solid var(--writing-rule); }
+.writing-row-link {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 4fr) minmax(0, 7fr);
+  gap: clamp(16px, 3vw, 40px);
+  align-items: start;
+  padding: clamp(22px, 3vw, 36px) 0;
+}
+.writing-row-number {
+  padding-top: 6px;
+  color: var(--writing-muted);
+  font: 500 13px/1.2 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.writing-row-media { border-radius: var(--site-radius-sm, 14px); }
+
+/* ---- article ------------------------------------------------------------- */
+.writing-breadcrumb { margin: 0 0 clamp(24px, 3vw, 40px); }
+.writing-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--writing-muted);
+  font: 400 14px/1.4 Inter, sans-serif;
+}
+.writing-breadcrumb li + li::before { content: "›"; margin-right: 10px; color: var(--writing-rule); }
+.writing-breadcrumb a { color: var(--writing-navy); text-decoration: underline; text-underline-offset: 4px; }
+.writing-breadcrumb [aria-current="page"] { color: var(--writing-muted); }
+.writing-opening-article .writing-frame { padding-bottom: 0; }
+.writing-cover {
+  position: relative;
+  z-index: 1;
+  margin: clamp(32px, 4vw, 56px) 0 calc(-1 * var(--writing-cover-pull, 120px));
+  overflow: hidden;
+  border-radius: var(--site-radius-md, 24px);
+  background: var(--writing-navy);
+  box-shadow: 0 24px 60px rgb(10 22 40 / 18%);
+}
+.writing-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 630;
+  object-fit: cover;
+}
+.writing-body { padding-top: calc(var(--writing-cover-pull, 120px) + clamp(32px, 4vw, 56px)); }
+.writing-opening-article:not(:has(.writing-cover)) + .writing-body { padding-top: clamp(32px, 4vw, 56px); }
+.writing-body .writing-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px clamp(32px, 5vw, 80px);
+  padding-bottom: clamp(48px, 6vw, 96px);
+}
+.writing-rail { min-width: 0; }
+.writing-toc {
+  padding: 0 0 20px;
+  border-bottom: 1px solid rgb(17 17 17 / 14%);
+}
+.writing-toc-label {
+  margin: 0 0 10px;
+  color: var(--muted, rgb(17 17 17 / 62%));
+  font: 600 13px/1.3 Inter, sans-serif;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.writing-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: writing-toc;
+}
+.writing-toc li { counter-increment: writing-toc; }
+.writing-toc a {
+  display: flex;
+  gap: 10px;
+  min-height: 36px;
+  padding: 7px 0;
+  color: #111;
+  font: 400 15px/1.4 Inter, sans-serif;
+  letter-spacing: -.01em;
+  text-decoration: none;
+}
+.writing-toc a::before {
+  content: counter(writing-toc, decimal-leading-zero);
+  flex: 0 0 auto;
+  color: var(--muted, rgb(17 17 17 / 62%));
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  line-height: 1.75;
+}
+.writing-toc a:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 2px; }
+
+.writing-prose {
+  min-width: 0;
+  max-width: var(--writing-readable);
+  color: #111;
+  font: 400 18px/1.6 Inter, sans-serif;
+  letter-spacing: -.012em;
+  text-wrap: pretty;
+}
+.writing-prose > :first-child { margin-top: 0; }
+.writing-prose p { margin: 0 0 1.2em; }
+.writing-prose > p:first-of-type { font-size: 20px; line-height: 1.55; }
+.writing-prose h2,
+.writing-prose h3 {
+  margin: 2em 0 .6em;
+  color: #111;
+  font-family: "Funnel Display", Inter, sans-serif;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+  scroll-margin-top: calc(var(--work-nav-height, 64px) + 24px);
+  text-wrap: balance;
+}
+.writing-prose h2 { font-size: clamp(28px, 2.4vw, 32px); }
+.writing-prose h3 { font-size: 22px; margin-top: 1.6em; }
+.writing-prose h2 + h3 { margin-top: 1em; }
+.writing-prose a { color: #111; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+.writing-prose a:is(:hover, :focus-visible) { text-decoration-thickness: 2px; }
+.writing-prose ul,
+.writing-prose ol { margin: 0 0 1.2em; padding-left: 1.4em; }
+.writing-prose li { margin: 0 0 .45em; }
+.writing-prose li::marker { color: var(--muted, rgb(17 17 17 / 62%)); }
+.writing-prose blockquote {
+  margin: 1.6em 0;
+  padding: 4px 0 4px 22px;
+  border-left: 3px solid var(--writing-olive);
+  color: #111;
+  font-size: 19px;
+  font-style: normal;
+}
+.writing-prose blockquote p:last-child { margin-bottom: 0; }
+.writing-prose code {
+  padding: .1em .35em;
+  border-radius: 6px;
+  background: rgb(17 17 17 / 7%);
+  font: 400 .92em/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.writing-prose hr { height: 1px; margin: 2.4em 0; border: 0; background: rgb(17 17 17 / 14%); }
+.writing-prose figure { margin: 2em 0; }
+.writing-prose figure img { display: block; width: 100%; height: auto; border-radius: var(--site-radius-sm, 14px); }
+.writing-prose figcaption { margin-top: 10px; color: var(--muted, rgb(17 17 17 / 62%)); font-size: 15px; }
+.writing-prose table {
+  width: 100%;
+  margin: 1.6em 0;
+  border-collapse: collapse;
+  font-size: 16px;
+  line-height: 1.45;
+}
+.writing-prose th,
+.writing-prose td {
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid rgb(17 17 17 / 14%);
+  text-align: left;
+  vertical-align: top;
+}
+.writing-prose th { font-weight: 600; }
+.writing-prose .writing-table { overflow-x: auto; margin: 1.6em 0; }
+.writing-prose .writing-table table { margin: 0; min-width: 480px; }
+
+/* The closing offer: one lilac card with the contact action. */
+.writing-cta {
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  padding: clamp(24px, 3vw, 40px);
+  border-radius: var(--site-radius-md, 24px);
+  color: var(--writing-navy);
+  background: var(--writing-lilac);
+}
+.writing-cta h2 {
+  margin: 0 0 12px;
+  color: var(--writing-navy);
+  font-family: "Funnel Display", Inter, sans-serif;
+  font-size: clamp(26px, 2.4vw, 32px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+}
+.writing-cta p { margin: 0 0 1em; color: var(--writing-navy); font-size: 17px; line-height: 1.5; }
+.writing-cta p:last-child { margin: 20px 0 0; }
+.writing-cta a:not(.footer-email) { color: var(--writing-navy); }
+.writing-page .writing-cta .footer-email.hero-work-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  height: auto;
+  margin: 0;
+  padding: 13px 24px;
+  border: 1px solid var(--writing-navy);
+  border-radius: 999px;
+  color: var(--writing-lilac);
+  background: var(--writing-navy);
+  font: 400 14px/1.4 Inter, sans-serif;
+  text-decoration: none;
+  white-space: normal;
+  text-align: center;
+  transition: none;
+}
+.writing-page .writing-cta .footer-email.hero-work-link:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 4px; }
+
+/* More articles, the same rows as the list. */
+.writing-related {
+  color: var(--writing-navy);
+  background: var(--writing-lilac);
+}
+.writing-related .writing-frame {
+  padding-top: clamp(40px, 5vw, 72px);
+  padding-bottom: clamp(56px, 7vw, 104px);
+}
+.writing-related h2 {
+  margin: 0 0 clamp(20px, 3vw, 32px);
+  color: var(--writing-navy);
+  font-family: "Funnel Display", Inter, sans-serif;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.1;
+}
+.writing-related a { color: inherit; text-decoration: none; }
+.writing-related .writing-row-copy h2 { margin: 0; font-size: clamp(22px, 2vw, 28px); }
+
+/* ---- layout tiers --------------------------------------------------------- */
+@media (min-width: 992px) {
+  .writing-body .writing-frame { grid-template-columns: minmax(200px, 260px) minmax(0, var(--writing-readable)); }
+  .writing-rail { position: sticky; top: calc(var(--work-nav-height, 64px) + 24px); align-self: start; }
+  .writing-toc { border-bottom: 0; border-left: 1px solid rgb(17 17 17 / 14%); padding: 4px 0 4px 18px; }
+  .writing-page { --writing-cover-pull: 160px; }
+}
+@media (min-width: 1200px) {
+  .writing-body .writing-frame { grid-template-columns: minmax(220px, 280px) minmax(0, var(--writing-readable)); }
+}
+@media (max-width: 991px) {
+  .writing-row-link { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .writing-row-number { display: none; }
+  .writing-page { --writing-cover-pull: 96px; }
+}
+@media (max-width: 767px) {
+  .writing-feature-link,
+  .writing-row-link { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .writing-row-media { max-width: 100%; }
+  .writing-page { --writing-cover-pull: 64px; }
+  .writing-prose { font-size: 17px; }
+  .writing-prose > p:first-of-type { font-size: 19px; }
+}
+@media (max-width: 479px) {
+  .writing-cover { border-radius: var(--site-radius-sm, 14px); }
+  .writing-cta { padding: 22px 18px; border-radius: var(--site-radius-sm, 14px); }
+}

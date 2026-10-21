@@ -217,23 +217,38 @@ for (const page of PAGES) {
     if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== (hungarian ? "Rólam" : "About")) {
       fail(`${page}: primary navigation must have one native About link to ${aboutHref}`);
     }
-    // Language link (owner request and NN/g audit, 2026-10-06): one link that
-    // names the other language in that language and leads to this page's pair.
-    const switchLinks = [...navigation.matchAll(/<a\b[^>]*class="[^"]*\blang-switch\b[^"]*"[^>]*>([^<]*)<\/a>/g)];
+    // Language menu (owner request, 2026-10-21; NN/g audit 2026-10-06): one
+    // disclosure whose button shows the current language's flag and code, and
+    // whose list names the other language in that language and leads to this
+    // page's pair with hreflang/lang (rel="alternate" only for a translation).
     const other = hungarian ? "en" : "hu";
     // A writing page without a translation links the other language's list
     // (or home) page, and then must not claim rel="alternate".
     const writingLink = isWritingPage(page) ? WRITING_LANGUAGE_LINKS[page] : null;
     const pairPath = writingLink ? urlOf(writingLink.file) :
       hungarian ? urlOf(HU_PAIRS[page] || baseOf(page)) : urlOf(Object.entries(HU_PAIRS).find(([, en]) => en === page)?.[0] || "");
-    const wantsAlternate = writingLink ? writingLink.alternate : true;
-    if (switchLinks.length !== 1) {
-      fail(`${page}: primary navigation needs exactly one language link`);
+    // hu/webfejlesztes has no English translation yet, so its link to the English home is not an alternate.
+    const wantsAlternate = writingLink ? writingLink.alternate : HU_PAIRS[page] !== "index.html" || page === "hu/index.html";
+    const languageMenu = navigation.match(/<div class="nav-group nav-lang"[\s\S]*?<\/ul><\/div><\/div>/)?.[0] || "";
+    const trigger = languageMenu.match(/<button\b[^>]*class="nav-lang-trigger"[^>]*>/)?.[0] || "";
+    const ownCode = hungarian ? "HU" : "EN";
+    if (!trigger || !trigger.includes(`aria-label="${hungarian ? "Nyelv" : "Language"}: ${ownCode}, ${hungarian ? "Magyar" : "English"}"`) ||
+        !trigger.includes('aria-expanded="false"') || !trigger.includes('aria-controls="nav-languages"') ||
+        !new RegExp(`<span class="nav-lang-code" aria-hidden="true">${ownCode}</span>`).test(languageMenu) ||
+        !/<svg class="nav-flag"/.test(languageMenu.slice(0, languageMenu.indexOf("</button>")))) {
+      fail(`${page}: the language menu button must show the ${ownCode} flag and code with an accessible name`);
+    }
+    if (!new RegExp(`<span class="nav-lang-current" aria-current="true" lang="${hungarian ? "hu" : "en"}">`).test(languageMenu)) {
+      fail(`${page}: the language list must mark ${hungarian ? "Magyar" : "English"} as the current language`);
+    }
+    const switchLinks = [...languageMenu.matchAll(/<a\b[^>]*class="[^"]*\blang-switch\b[^"]*"[^>]*>[\s\S]*?<span>([^<]*)<\/span><\/a>/g)];
+    if (switchLinks.length !== 1 || languageMenu !== navigation.slice(navigation.lastIndexOf('<div class="nav-group nav-lang"'), navigation.lastIndexOf("</div></nav>"))) {
+      fail(`${page}: the language menu must close the primary navigation with exactly one other-language link`);
     } else {
       const [tag, label] = switchLinks[0];
       if (label !== (hungarian ? "English" : "Magyar") || !tag.includes(`hreflang="${other}"`) || !tag.includes(`lang="${other}"`) ||
-          tag.includes('rel="alternate"') !== wantsAlternate || /aria-label=|aria-current=/.test(tag) || !tag.includes(`href="${pairPath}"`)) {
-        fail(`${page}: the language link must read ${hungarian ? "English" : "Magyar"}, carry ${wantsAlternate ? "rel/" : "no rel, only "}hreflang/lang ${other} and lead to ${pairPath}`);
+          tag.includes('rel="alternate"') !== wantsAlternate || /aria-label=|aria-current=/.test(tag) || !tag.includes(`href="${pairPath}"`) || !/<svg class="nav-flag"/.test(tag)) {
+        fail(`${page}: the language link must read ${hungarian ? "English" : "Magyar"} with its flag, carry ${wantsAlternate ? "rel/" : "no rel, only "}hreflang/lang ${other} and lead to ${pairPath}`);
       }
     }
     const contactHref = hungarian ? "/hu/kapcsolat" : "/contact";

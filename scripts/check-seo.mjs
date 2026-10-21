@@ -79,6 +79,14 @@ for (const page of pages) {
   check(titleTags.length === 1 && title && !titles.has(title.toLowerCase()), `${file}: one unique nonempty title`);
   check(description.length === 1 && description[0]?.trim() && !descriptions.has(description[0].toLowerCase()), `${file}: one unique nonempty description`);
   titles.add(title.toLowerCase()); descriptions.add(description[0]?.toLowerCase());
+  // Snippet budgets (SEO plan 2026-10-21): Google cuts titles near 600 px and
+  // descriptions near 920 px on desktop; 60 and 105-135 characters keep both
+  // whole in Hungarian and English. Social cards repeat the same pair.
+  const length = value => [...String(value || "")].length;
+  check(length(title) <= 60, `${file}: title is ${length(title)} characters, keep it at 60 or fewer`);
+  check(length(description[0]) >= 105 && length(description[0]) <= 135, `${file}: description is ${length(description[0])} characters, keep it within 105-135`);
+  for (const key of ["og:title", "twitter:title"]) check(page.metas(key).length === 1 && page.metas(key)[0] === title, `${file}: ${key} repeats the title`);
+  for (const key of ["og:description", "twitter:description"]) check(page.metas(key).length === 1 && page.metas(key)[0] === description[0], `${file}: ${key} repeats the description`);
   const canonicals = page.links.filter(link => link.rel === "canonical");
   check(canonicals.length === 1 && canonicals[0].href === canonical, `${file}: one exact self-canonical`);
   const robots = page.metas("robots");
@@ -135,6 +143,13 @@ for (const page of pages) {
     }
     if (types(node).includes("FAQPage")) {
       check(Array.isArray(node.mainEntity) && node.mainEntity.length > 0, `${file}: FAQ needs its existing questions`);
+      // Markup only for a FAQ the reader can see: each question is its own
+      // heading, summary, term or button inside <main>, outside hidden blocks.
+      const mainHtml = (html.match(/<main\b[^>]*>[\s\S]*?<\/main>/i)?.[0] || "").replace(/<template\b[\s\S]*?<\/template>|<(\w+)\b[^>]*\shidden\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
+      const visibleQuestions = new Set([...mainHtml.matchAll(/<(h[2-4]|summary|dt|button)\b[^>]*>([\s\S]*?)<\/\1>/gi)].map(([, , inner]) => text(inner)));
+      for (const question of Array.isArray(node.mainEntity) ? node.mainEntity : []) {
+        check(visibleQuestions.has(text(question.name || "")), `${file}: FAQ question is not a visible question element: ${question.name}`);
+      }
       for (const question of Array.isArray(node.mainEntity) ? node.mainEntity : []) {
         check(types(question).includes("Question") && types(question.acceptedAnswer).includes("Answer"), `${file}: FAQ question/answer types`);
         check(question.name && question.acceptedAnswer?.text && page.main.includes(text(question.name)) && page.main.includes(text(question.acceptedAnswer.text)), `${file}: FAQ markup must match visible questions and answers`);
@@ -159,6 +174,15 @@ for (const page of pages) {
 const LANGUAGE_PAIRS = [["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"], ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"],
   ...HU_PAGES.map(page => [urlOf(baseOf(page)), urlOf(page)]),
   ...Object.entries(WRITING_LANGUAGE_LINKS).filter(([page, link]) => link.alternate && page.startsWith("writing/")).map(([page, link]) => [urlOf(page), urlOf(link.file)])];
+// A page outside every pair (a new page whose translation is not live yet)
+// carries no hreflang at all: a half pair is ignored by Google and confuses
+// Bing. Every alternate a page names must be a canonical page of this site.
+const paired = new Set(LANGUAGE_PAIRS.flat());
+for (const page of pages) {
+  const alternates = page.links.filter(link => link.rel === "alternate" && link.hreflang);
+  if (!paired.has(page.route)) check(alternates.length === 0, `${page.file}: hreflang without a registered language pair`);
+  for (const link of alternates) check(byUrl.has(link.href), `${page.file}: hreflang ${link.hreflang} points outside the canonical pages: ${link.href}`);
+}
 for (const [english, hungarian] of LANGUAGE_PAIRS) {
   const expected = { en: origin + english, hu: origin + hungarian, "x-default": origin + english };
   for (const route of [english, hungarian]) {
@@ -182,6 +206,16 @@ const entries = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(([, entry])
 }));
 check(/<urlset\b[^>]*xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9"/.test(sitemap) && /<\/urlset>\s*$/.test(sitemap), "sitemap protocol/root");
 check(entries.length === pages.length && new Set(entries.map(entry => entry.loc)).size === pages.length, "sitemap has exactly every canonical once");
+// Every public HTML file in the repository is a checked page: a new page that
+// is missing from the inventory above would also be missing from the sitemap.
+const NON_PAGES = new Set(["404.html"]);
+const PRIVATE_DIRS = /^(?:node_modules|docs|scripts|tests|tools|lib|indicators|assets|test-results|playwright-report|blob-report|\.)/;
+const htmlFiles = (dir = "") => readdirSync(join(root, dir), { withFileTypes: true }).flatMap(entry => {
+  const relative = dir ? `${dir}/${entry.name}` : entry.name;
+  if (entry.isDirectory()) return PRIVATE_DIRS.test(relative) ? [] : htmlFiles(relative);
+  return entry.name.endsWith(".html") && !NON_PAGES.has(relative) ? [relative] : [];
+});
+for (const file of htmlFiles()) check(files.includes(file), `${file}: public HTML page is missing from the SEO inventory and the sitemap`);
 for (const entry of entries) {
   const page = byUrl.get(entry.loc);
   check(Boolean(page), `sitemap includes a noncanonical/noncontent URL: ${entry.loc}`);

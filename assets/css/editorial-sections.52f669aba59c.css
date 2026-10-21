@@ -232,16 +232,31 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   color: var(--editorial-navy);
   background: transparent;
 }
+/* Footer columns (2026-10-21): Work keeps the left half with its two short
+   columns and one hairline on its right; Services and Articles (generated
+   from site-chrome.mjs) stack in the right half with their longer labels. */
 .editorial-footer .footer-nav {
   grid-column: 2;
   grid-row: 1 / 3;
   align-self: end;
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-auto-rows: auto;
+  align-items: start;
+  gap: 28px 0;
   width: 100%;
   max-width: none;
   color: var(--editorial-navy);
 }
-.editorial-footer .footer-col { padding: 0; }
+.editorial-footer .footer-col { padding: 0; min-width: 0; }
+.editorial-footer .footer-col + .footer-col { margin: 0; padding: 0; border-left: 0; }
+.editorial-footer .footer-col:first-child { grid-column: 1; grid-row: 1 / 3; padding-right: clamp(20px, 2.5vw, 40px); border-right: 1px solid rgb(10 22 40 / 18%); }
+.editorial-footer .footer-col-services { grid-column: 2; grid-row: 1; padding-left: clamp(20px, 2.5vw, 40px); }
+.editorial-footer .footer-col-articles { grid-column: 2; grid-row: 2; padding-left: clamp(20px, 2.5vw, 40px); }
+.editorial-footer .footer-col:first-child:last-child { grid-row: auto; padding-right: 0; border-right: 0; }
+.editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col-list { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col a { display: flex; min-height: 0; padding: 7px 0; line-height: 1.35; }
+.editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col-list li { min-height: 44px; display: flex; align-items: center; }
 .editorial-footer .footer-col-title {
   margin: 0 0 10px;
   color: var(--editorial-muted);
@@ -333,6 +348,13 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   .editorial-footer-title { font-size: clamp(56px, 8vw, 86px); }
   .editorial-footer .footer-chrome { gap: 28px; }
 }
+/* Up to 1199px the footer nav is one stack beside (or under) the identity:
+   Work with its two short columns, then Services, then Articles. */
+@media (max-width: 1199px) {
+  .editorial-footer .footer-nav { grid-template-columns: minmax(0, 1fr); gap: 32px 0; }
+  .editorial-footer .footer-col:first-child { grid-column: 1; grid-row: auto; padding-right: 0; border-right: 0; }
+  .editorial-footer :is(.footer-col-services, .footer-col-articles) { grid-column: 1; grid-row: auto; padding-left: 0; }
+}
 @media (max-width: 599px) {
   .editorial-experience,
   .footer-section.editorial-footer { --editorial-gutter: 20px; }
@@ -354,4 +376,108 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   .editorial-footer .footer-bar { margin-top: 36px; gap: 8px; }
   .editorial-footer .footer-copyright { width: 100%; }
   .editorial-footer .footer-bar .footer-privacy { gap: 0 20px; }
+}
+
+/* Offer band (SEO task T2, 2026-10-21): two whole-card links to the service
+   pages between the hero and Selected work, on the same lilac field with the
+   same hairline rules, so a company visitor sees what is built for companies
+   within the first scroll. The Product VP identity stays the proof above. */
+.home-offer {
+  --editorial-lilac: #D6D4ED;
+  --editorial-navy: #0A1628;
+  --editorial-muted: rgb(10 22 40 / 70%);
+  --editorial-rule: rgb(10 22 40 / 26%);
+  --editorial-gutter: clamp(24px, 4.8vw, 80px);
+  padding: clamp(40px, 5vw, 72px) var(--editorial-gutter) 0;
+  color: var(--editorial-navy);
+  background: var(--editorial-lilac);
+  font-family: Inter, sans-serif;
+}
+.home-offer > .container-large { width: 100%; max-width: none; margin: 0; padding: 0 !important; }
+.home-offer-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  align-items: end;
+  gap: 16px clamp(32px, 5vw, 80px);
+  padding-bottom: 28px;
+}
+.home-offer .about-section-title {
+  margin: 0;
+  color: var(--editorial-navy);
+  font-family: Inter, sans-serif;
+  font-size: clamp(30px, 3.6vw, 56px);
+  font-weight: 700;
+  letter-spacing: -.06em;
+  line-height: 1.04;
+  text-transform: none;
+}
+.home-offer-lede {
+  max-width: 58ch;
+  margin: 0;
+  color: var(--editorial-navy);
+  font: 400 17px/1.5 Inter, sans-serif;
+  letter-spacing: -.015em;
+}
+.home-offer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(24px, 4vw, 64px);
+  border-top: 1px solid var(--editorial-rule);
+}
+.home-offer-card {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: 8px 16px;
+  padding: 28px 0 32px;
+  color: var(--editorial-navy);
+  text-decoration: none;
+}
+.home-offer-card + .home-offer-card { border-top: 0; }
+.home-offer-number {
+  grid-row: 1 / 4;
+  padding-top: 8px;
+  color: var(--editorial-muted);
+  font: 500 13px/1.2 Inter, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.home-offer-title {
+  display: block;
+  color: var(--editorial-navy);
+  font-family: "Funnel Display", Inter, sans-serif;
+  font-size: clamp(26px, 2.6vw, 38px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.home-offer-text {
+  display: block;
+  max-width: 48ch;
+  color: var(--editorial-navy);
+  font: 400 17px/1.5 Inter, sans-serif;
+  letter-spacing: -.012em;
+}
+.home-offer-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 4px;
+  color: var(--editorial-navy);
+  font: 500 14px/1.4 Inter, sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1.5px;
+}
+.home-offer-card:is(:hover, :focus-visible) .home-offer-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.home-offer-card:is(:hover, :focus-visible) .home-offer-action { text-decoration-thickness: 2px; }
+.home-offer-card:focus-visible { outline: 3px solid #111; outline-offset: 6px; }
+@media (max-width: 991px) {
+  .home-offer-head { grid-template-columns: minmax(0, 1fr); align-items: start; }
+  .home-offer-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .home-offer-card + .home-offer-card { border-top: 1px solid var(--editorial-rule); }
+}
+@media (max-width: 479px) {
+  .home-offer-card { grid-template-columns: minmax(0, 1fr); }
+  .home-offer-number { grid-row: auto; padding: 0; }
 }

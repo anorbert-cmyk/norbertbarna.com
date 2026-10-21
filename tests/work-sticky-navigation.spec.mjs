@@ -59,16 +59,34 @@ async function expectBar(page, label, { scripted = true, centered = false } = {}
 
 for (const route of routes) {
   test(`${route}: dark desktop header keeps its reference layout throughout reading and footer`, async ({ page }) => {
+    // Below 1800px the longer menu (Services, Articles, language menu) takes the
+    // wordmark's room: the bar stays one row and the wordmark yields (2026-10-21).
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(route, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
-    const opening = await expectBar(page, "opening", { centered: true });
+    const opening = await expectBar(page, "opening");
+    expect(opening.markCenter, "the wordmark yields to the menu below 1800px").toBeNull();
+    const rows = new Set(opening.controls.map((control) => Math.round(control.y)));
+    expect(rows.size, "every destination stays on one row").toBe(1);
     for (const ratio of [.18, .51, .84, 1, 0]) {
       await page.evaluate((p) => scrollTo(0, p * (document.documentElement.scrollHeight - innerHeight)), ratio);
-      const state = await expectBar(page, `position ${ratio}`, { centered: true });
+      const state = await expectBar(page, `position ${ratio}`);
       expect(state.controls, "destinations never relocate, fade or grow at the footer").toEqual(opening.controls);
     }
     await expect(page.locator(".immersive-nav-landing")).toHaveCount(0);
+  });
+}
+
+for (const route of ["/works", "/work/instructure", "/hu/munka/instructure"]) {
+  test(`${route} at 1800: the reference wordmark returns centered between the start and the menu`, async ({ page }) => {
+    await page.setViewportSize({ width: 1800, height: 900 });
+    await page.goto(route, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    const opening = await expectBar(page, "opening", { centered: true });
+    expect(new Set(opening.controls.map((control) => Math.round(control.y))).size, "one row").toBe(1);
+    await page.evaluate(() => scrollTo(0, .5 * (document.documentElement.scrollHeight - innerHeight)));
+    const state = await expectBar(page, "midway", { centered: true });
+    expect(state.controls).toEqual(opening.controls);
   });
 }
 
@@ -93,7 +111,7 @@ for (const route of ["/works", "/work/sportsgambit"]) {
 }
 
 test.describe("without JavaScript", () => {
-  test.use({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } });
+  test.use({ javaScriptEnabled: false, viewport: { width: 1800, height: 900 } });
   for (const route of ["/works", "/work/benker"]) {
     test(`${route}: reference bar and native destinations do not rely on enhancement`, async ({ page }) => {
       await page.goto(route, { waitUntil: "load" });
@@ -121,9 +139,10 @@ test("an enlarged sticky header clears native case-section links", async ({ page
   await expectBar(page, "native section destination");
 });
 
-// NN/g audit (2026-10-06): on the work and case bars the decorative counter
-// yields below 1440px and the repeated wordmark below 1200px, so destinations
-// stay on one row. The wordmark repeats the home link and stays out of the tab order.
+// NN/g audit (2026-10-06), widened 2026-10-21 for the Services, Articles and
+// language groups: on the work and case bars the decorative counter and the
+// repeated wordmark yield below 1800px, so destinations stay on one row. The
+// wordmark repeats the home link and stays out of the tab order.
 for (const route of ["/works", "/work/instructure", "/hu/munkak", "/hu/munka/instructure"]) {
   test(`${route}: decorative counter and wordmark yield before destinations wrap`, async ({ page }) => {
     await page.goto(route, { waitUntil: "load" });
@@ -131,9 +150,8 @@ for (const route of ["/works", "/work/instructure", "/hu/munkak", "/hu/munka/ins
     const mark = page.locator(".navbar .home-nav-wordmark");
     await expect(mark).toHaveAttribute("tabindex", "-1");
     await expect(mark).toHaveAttribute("aria-hidden", "true");
-    // Hungarian Works labels are longer: there the counter yields up to 1600px (compact-navigation.css).
-    const counterFrom = route === "/hu/munkak" ? 1600 : 1440;
-    for (const width of [992, 1199, 1200, 1280, 1439, 1440, 1599, 1600, 1920]) {
+    const counterFrom = 1800;
+    for (const width of [992, 1199, 1200, 1280, 1439, 1440, 1599, 1600, 1799, 1800, 1920]) {
       await page.setViewportSize({ width, height: 900 });
       const state = await expectBar(page, `${width}`);
       const visible = await page.locator(".navbar").evaluate((nav) => {
@@ -141,7 +159,7 @@ for (const route of ["/works", "/work/instructure", "/hu/munkak", "/hu/munka/ins
         return { counter: shown(nav.querySelector(".home-nav-progress")), wordmark: shown(nav.querySelector(".home-nav-wordmark")) };
       });
       expect(visible.counter, `${width}: counter`).toBe(width >= counterFrom);
-      expect(visible.wordmark, `${width}: wordmark`).toBe(width >= 1200);
+      expect(visible.wordmark, `${width}: wordmark`).toBe(width >= 1800);
       const destinations = state.controls.filter((control) => control.label !== "NORBERT.BARNA");
       const centers = destinations.map((control) => control.y + control.height / 2);
       expect(Math.max(...centers) - Math.min(...centers), `${width}: destinations share one row`).toBeLessThanOrEqual(2);
