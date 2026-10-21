@@ -10,14 +10,14 @@ This file follows the loop in
 
 1. **Guidance** (this file) — reader job, composition, named failures.
 2. **Stylesheets** — `assets/css/responsive.css` holds the site tokens, the
-   chrome lock and the reflow rules; nine scoped companions own one surface
-   each. Pages load byte-identical `name.<sha256-12>.css` copies of the nine
+   chrome lock and the reflow rules; ten scoped companions own one surface
+   each. Pages load byte-identical `name.<sha256-12>.css` copies of the ten
    content-hashed families; `consent.css` is served unhashed and revalidates,
    so a change to it ships without a new copy. Repeatable
    mechanics live in CSS. Never read a hashed copy into context. The full
    ownership map is in **System reference** below.
 3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
-   scripts and twenty-seven Playwright specs. Mechanical failures that have
+   scripts and twenty-eight Playwright specs. Mechanical failures that have
    already been named must fail CI. **System reference → Checks** says which
    file owns which rule, so a new rule lands in one place.
 
@@ -438,17 +438,48 @@ links, heading hierarchy and visible keyboard focus.
 
 **Header:**
 
-- Home: NB home link on the left; Works, About, AI integration, LinkedIn and
-  Email on the right, in a stable opaque lilac top bar for the full homepage.
-  Desktop links use normal layout flow and never share absolute slots.
-  Every primary navigation carries the
-  AI integration item (2026-09-15, owner request); the Hungarian pages link
-  its Hungarian pair as `AI-integráció`. Native links and 44px minimum targets; compact keeps the
-  accessible disclosure. Contact is a plain link to the form.
+- Home: NB home link on the left; on the right, in reading order, Works,
+  the service item, Articles, About, Contact, LinkedIn and the language menu,
+  in a stable opaque lilac top bar for the full homepage. Desktop links use
+  normal layout flow and never share absolute slots. Native links and 44px
+  minimum targets; compact keeps the accessible disclosure. Contact is a
+  plain link to the form.
+- **One source for the chrome (2026-10-21).** `scripts/site-chrome.mjs`
+  holds the menu per language (`MENU`), the languages (`LANGUAGES`) and the
+  footer columns; `scripts/build-nav.mjs` writes `#primary-navigation` and
+  `.footer-nav` into every static page and `build-writing.mjs` into the
+  generated ones. Edit the labels there, never in a page: `npm test` fails
+  on a stale page (`build-nav.mjs --check`). A new language (German, task
+  T8) is one more entry in `LANGUAGES`, `MENU` and `PAGE_PAIRS`.
+- **Service and Articles groups.** The English menu links `AI integration`
+  directly until the English web page exists; the Hungarian menu groups
+  `Webfejlesztés` and `AI tanácsadás és fejlesztés` under a `Szolgáltatások`
+  disclosure. `Articles` / `Tudástár` is a split control: the label is a
+  native link to the list page, the chevron button beside it
+  (`aria-controls="nav-articles"`) opens the latest five articles of the
+  page language and an `All articles` row. Groups are APG disclosure
+  navigation, not ARIA menus: `aria-expanded` on the button, a `hidden`
+  panel, one group open at a time, Escape returns focus to its button, a
+  click or focus outside closes it. Up to 991px the panels are in-flow
+  accordion rows inside the compact disclosure; without JavaScript a group
+  opens while hovered or focused (`html:not(.nav-enhanced)`), so the bar
+  keeps its first-paint height and every panel link stays reachable. The current item carries
+  `aria-current="page"` and its group's button `data-current`.
+- **Language menu.** The menu ends with `.nav-lang`: a button showing the
+  current language's flag (inline SVG, `aria-hidden`), its code (`HU`,
+  `EN`; the name on compact) and a chevron, with the accessible name
+  `Nyelv: HU, Magyar` / `Language: EN, English`. Its panel lists every
+  language with its flag and native name: the current one as text with
+  `aria-current="true"`, the others as `a.lang-switch` with `hreflang`,
+  `lang` and `rel="alternate"` to this page's pair (a page without a pair
+  links the other language's home or list page without `rel="alternate"`).
+  A flag marks the menu, never a language on its own: the native name is
+  always beside it.
 - `/works` and all seven cases use one stable navy (`#0A1628`) top bar with
   lilac (`#D6D4ED`) controls (owner screenshot correction, 2026-09-16).
   Keep NB left, `Works / {Project}` on desktop cases, the centered
-  `NORBERT.BARNA` wordmark, real reading progress and native destinations.
+  `NORBERT.BARNA` wordmark (shown from 1600px; between 992 and 1599px the
+  longer menu takes its space), real reading progress and native destinations.
   Use equal outer grid tracks and in-flow groups, never colliding absolute
   slots. Enlarged text may wrap; decorative progress/branding yields space
   before essential links. No vertical travel, reading-slot fades, footer
@@ -547,7 +578,9 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
    All five service headings use ink on paper, never the inherited white
    `--font-color--dark` from the old template. Test their revealed-state contrast.
 
-**Home selected work (03/04 storyboard, 2026-09-14):** wide landscape rows directly follow the hero. Preserve the six project names, order and summaries. Show each project’s own geometric artwork in a 2.4:1 frame, a small sequence number, large title and native whole-row action. Mobile stacks frame over copy. The same lilac field and fine rules connect hero and work; About and services follow the list. No invented metrics, dates or descriptions.
+**Home offer band (SEO task T2, 2026-10-21):** `.home-offer` sits between the hero and Selected work on the same lilac field: an `Amit cégeknek építek` / `What I build for companies` heading, one lede, then two whole-card links (`.home-offer-card`: number, Funnel title, one sentence, underlined action) to the service pages, split by the hairline. No prices, no icons, no third card. It is the only chapter allowed between the hero and the work rows.
+
+**Home selected work (03/04 storyboard, 2026-09-14):** wide landscape rows follow the hero, after the offer band. Preserve the six project names, order and summaries. Show each project’s own geometric artwork in a 2.4:1 frame, a small sequence number, large title and native whole-row action. Mobile stacks frame over copy. The same lilac field and fine rules connect hero and work; About and services follow the list. No invented metrics, dates or descriptions.
 
 **Works fold:** H1 `Selected work` (same subject as `<title>`), concise
 factual introduction and first landscape row (Raiffeisen) visible in a
@@ -737,6 +770,10 @@ markup that is being retired: check the page before reusing it.
 **Chrome (all thirteen content pages):** `.skip-to-content` `.navbar`
 `.nav-wrap` `.nav-menu` `.nav-menu-area` `.nav-link` `.nav-logo-wrap`
 `.nav-cta` `.nav-breadcrumb` `.menu-button` `#primary-navigation`
+`.nav-group` `.nav-group-trigger` `.nav-group-toggle` `.nav-group-panel`
+`.nav-group-list` `.nav-group-link` `.nav-group-more` `.nav-lang`
+`.nav-lang-trigger` `.nav-lang-panel` `.nav-lang-current` `.nav-lang-code`
+`.nav-lang-name` `.nav-flag` `.nav-chevron` `.lang-switch`
 `.home-nav-monogram` `.home-nav-label` `.home-nav-wordmark`
 `.home-nav-progress` `.work-nav-start` `.work-nav-end`
 
@@ -745,7 +782,24 @@ markup that is being retired: check the page before reusing it.
 `.footer-chrome` `.footer-inner` `.footer-ident` `.footer-brand`
 `.footer-wordmark` `.footer-lede` `.footer-cta` `.footer-contact-link`
 `.footer-email` `.footer-icon` `.footer-nav` `.footer-col` `.footer-col-title`
-`.footer-col-list` `.footer-copyright` `.footer-bar` `.footer-privacy`
+`.footer-col-list` `.footer-col-services` `.footer-col-articles`
+`.footer-copyright` `.footer-bar` `.footer-privacy`
+
+**Home offer band:** `.home-offer` `.home-offer-head` `.home-offer-lede`
+`.home-offer-grid` `.home-offer-card` `.home-offer-number`
+`.home-offer-title` `.home-offer-text` `.home-offer-action`
+
+**Writing (list and article):** `body.writing-page` `.writing-index`
+`.writing-article-page` `.writing-frame` `.writing-opening`
+`.writing-eyebrow` `.writing-title` `.writing-dek` `.writing-count`
+`.writing-meta` `.writing-list` `.writing-feature` `.writing-rows`
+`.writing-row` `.writing-row-link` `.writing-breadcrumb` `.writing-cover`
+`.writing-body` `.writing-rail` `.writing-toc` `.writing-toc-label`
+`.writing-prose` `.writing-table` `.writing-cta` `.writing-related`
+
+**Case related service:** `.case-related-service` `.case-related-service-card`
+`.case-related-service-label` `.case-related-service-title`
+`.case-related-service-text` `.case-related-service-link`
 
 **Home opening:** `.home-mast` `.home-mast-scene` `.home-mast-canvas`
 `.home-mast-fallback` `.home-mast-sculpture` `.home-mast-gate-fallback`
@@ -853,11 +907,12 @@ same change that caused the drift.
 
 **Whole-site language switch (owner request, 2026-10-06).** Every content page
 has an English and a Hungarian version with the same structure, classes and
-ids. The menu ends with one language link, `a.nav-link.lang-switch`, that
-names the other language in that language (“Magyar” on English pages,
-“English” on Hungarian pages) and leads to this page's pair, with
-`rel="alternate"`, `hreflang` and `lang` (USWDS two-language pattern, GOV.UK
-language navigation; its visible text is its accessible name, WCAG 2.5.3).
+ids. The menu ends with the language menu (`.nav-lang`, 2026-10-21, owner
+request; it replaced the single `a.nav-link.lang-switch` link): a flag and
+code button whose panel names every language in that language (“Magyar”,
+“English”) and leads to this page's pair as `a.lang-switch` with
+`rel="alternate"`, `hreflang` and `lang` (GOV.UK language navigation; the
+visible native name is the accessible name, WCAG 2.5.3).
 Hungarian pages link only Hungarian pages. Footers carry one privacy link in
 the page language. `<head>` carries reciprocal `en`, `hu` and `x-default` (English)
 alternates. Checks treat `hu/…` pages as their English counterpart through
@@ -934,19 +989,31 @@ the logo already links home. Privacy pages use the lilac bar.
 **Writing (Írások, SEO task T4, 2026-10-21).** Articles are Markdown in
 `content/*.md`; `scripts/build-writing.mjs` renders them and is the only
 writer of `writing/`, `hu/irasok/`, the writing entries of `sitemap.xml` and
-the Writing section of `llms.txt`. Pages reuse the privacy pages' utility
-template (`body.utility-page`, `.work-single-section`, `.summary`), copied from
-`privacy.html` and `hu/adatvedelem.html` on every build, so a menu or re-hash
-there reaches the articles after `npm run build:writing`. An article is a
+the Writing section of `llms.txt`. Pages take the privacy pages' head and
+chrome (`privacy.html`, `hu/adatvedelem.html`) on every build and their own
+layout from `assets/css/writing.css` (hashed like the other families):
+`body.utility-page.writing-page`. The list (`.writing-index`) opens on
+lilac with the eyebrow `Tudástár` / `Articles`, a Funnel title, the count,
+then the newest article as a wide feature (cover, kicker, title, dek) and
+the rest as numbered hairline rows with a thumbnail. The article
+(`.writing-article-page`) opens on lilac with a breadcrumb, kicker, title,
+dek and one unlabelled name, date and reading-time line, pulls its 1200×630 cover down into the paper body,
+then runs a sticky table of contents rail (decimal-leading-zero counters,
+from 992px) beside a 720px reading column (`.writing-prose`, Inter 18px,
+Funnel headings, olive blockquote rule, scrollable tables), ends in the
+lilac CTA card and two related articles (`.writing-related`). An article is a
 schema `Article` (author `#person`, `datePublished`/`dateModified` as full
 date-times) plus a `BreadcrumbList` back to its list. Under the H1 one line
 gives the list link, the date and the reading time; there is still no
 “Written by / Published / Updated” label (**BlogHero**): the date of an
 article is content, a byline is not. A visible FAQ section (`## Gyakori kérdések` / `## Frequently asked
 questions` with `###` questions) is mirrored word for word as FAQPage schema.
-Covers are 1200×630 JPEGs under `assets/images/og/writing/` and serve only as
-the social preview; they are not shown on the page. `draft: true` keeps an
-article unpublished. Each article ends with the CTA: an
+Covers are 1200×630 JPEGs under `assets/images/og/writing/`, used as the
+social preview and shown on the list and under the article opening.
+`draft: true` keeps an article unpublished; the six first articles were
+published on 2026-10-21. Published articles also feed the Articles menu
+group (latest five) and the footer Articles column (latest three) through
+`site-chrome.mjs`. Each article ends with the CTA: an
 optional related-service link from frontmatter and the
 `footer-email hero-work-link` contact action. A translated article names its
 pair in frontmatter and gets reciprocal hreflang and a `rel="alternate"`
@@ -970,10 +1037,11 @@ only to the sitemap.
 | `arrival.css` | First-session name assembly, curtain and the pre-curtain gate | `/`, cases |
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
 | `project-index.css` | Landscape `.work-row` list | `/`, `/works` |
-| `editorial-sections.css` | Editorial experience, editorial footer, consent palette alignment | 13 content pages (not `/about`) |
-| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure and its drop | 14 content pages |
+| `editorial-sections.css` | Editorial experience, editorial footer and its Services/Articles columns, the home offer band, consent palette alignment | 13 content pages (not `/about`) |
+| `compact-navigation.css` | Stable lilac Home bar, navy Works/case bar, shared compact disclosure and its drop, the Services/Articles groups and the language menu | 14 content pages |
 | `case-opening.css` | Lilac case stage, the composed entrance/settle transform, the four-slice media reveal and the pending gate | cases |
-| `case-motion.css` | Case TOC, fact band, evidence-note chrome | cases |
+| `case-motion.css` | Case TOC, fact band, evidence-note chrome, related-service card | cases |
+| `writing.css` | Writing list and article layout (opening, feature, rows, TOC rail, prose, CTA, related) | `/writing`, `/hu/irasok` and articles |
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
 | `consent.css` | Consent banner and `.footer-privacy` only | 14 content pages, unhashed |
 
@@ -1122,14 +1190,15 @@ scene is ready and motion is allowed.
 
 ### Checks
 
-`npm test` first checks that the generated writing pages match
-`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs twenty-seven
+`npm test` first checks that every page carries the generated chrome
+(`build-nav.mjs --check`) and that the generated writing pages match
+`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs twenty-eight
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 
 | Script | Owns |
 |---|---|
-| `check-site.mjs` | One H1, unique title and description, canonical, valid JSON-LD, every local reference resolves |
+| `check-site.mjs` | One H1, unique title and description, canonical, valid JSON-LD, every local reference resolves, the language menu contract on every page |
 | `check-responsive.mjs` | Compact composition, image stability, landmarks, social previews, the reduced-motion and native-scroll contract |
 | `check-motion.mjs` | Pages reference byte-identical hashed release files; motion ownership and initialisation order |
 | `check-server.mjs` | Express behaviour: redirects, private paths, and that only content-versioned files get an immutable cache |
@@ -1143,7 +1212,7 @@ Playwright specs, grouped by what they defend:
 
 - **Arrival and hero:** `arrival-fidelity`, `arrival-pointer`, `hero-motion`,
   `hero-reference`, `home-composition`, `home-first-paint`.
-- **Chrome:** `compact-navigation`, `home-sticky-navigation`, `work-sticky-navigation`, `contact-copy`, `case-first-paint`.
+- **Chrome:** `compact-navigation`, `navigation-groups` (Services, Articles and language menu: disclosure behaviour, compact accordion, no-JS flow, axe), `home-sticky-navigation`, `work-sticky-navigation`, `contact-copy`, `case-first-paint`.
 - **Motion physics:** `motion-physics` (case opening, parse-time gates, hover
   springs and the compact menu drop, read from the module's world samples and
   a frame tracer).

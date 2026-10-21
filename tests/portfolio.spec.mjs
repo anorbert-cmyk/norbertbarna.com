@@ -8,10 +8,10 @@ import { exposesInbox } from "../scripts/private-inbox.mjs";
 // digest (scripts/private-inbox.mjs) and never spell it.
 const PROJECT_LABEL = "Discuss your project";
 const COPY = {
-  en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "About", "AI integration", "Contact", "Magyar"],
+  en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "AI integration", "Articles", "About", "Contact"], other: "Magyar", language: "Language: EN, English",
     caseRoot: "/work/", works: "/works", privacy: "/privacy", privacyLabel: "Privacy", allWork: "All work", workTitle: "Work",
     footerTitle: /Let’s talk\s*product\./, lede: "Product VP. I lead AI products in regulated finance and high-trust systems.", copyright: "© 2026 Norbert Barna" },
-  hu: { home: "/hu", contact: "/hu/kapcsolat", project: "Beszéljünk a projektedről", menu: ["Munkák", "Rólam", "AI-integráció", "Kapcsolat", "English"],
+  hu: { home: "/hu", contact: "/hu/kapcsolat", project: "Beszéljünk a projektedről", menu: ["Munkák", "Tudástár", "Rólam", "Kapcsolat"], other: "English", language: "Nyelv: HU, Magyar",
     caseRoot: "/hu/munka/", works: "/hu/munkak", privacy: "/hu/adatvedelem", privacyLabel: "Adatvédelem", allWork: "Összes munka", workTitle: "Munkák",
     footerTitle: /Beszéljünk\s*termékről\./, lede: "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben.", copyright: "© 2026 Barna Norbert" },
 };
@@ -932,13 +932,13 @@ for (const width of [360, 768, 991]) {
     await button.focus();
     await page.keyboard.press("Space");
     await expect(button).toHaveAttribute("aria-expanded", "true");
-    // The open disclosure holds every destination in order, ending with the language link.
+    // The open disclosure holds every destination in order, ending with the language menu.
     await expect(navigation.locator("a.nav-link")).toHaveText(COPY.en.menu);
-    await expect(navigation.locator("button")).toHaveCount(0);
-    const order = [...COPY.en.menu.slice(0, 4), "LinkedIn", "Magyar"];
+    await expect(navigation.locator("button:not([data-nav-toggle])")).toHaveCount(0);
+    const order = ["Works", "AI integration", "Articles", "Articles: latest", "About", "Contact", "LinkedIn", COPY.en.language];
     await page.keyboard.press("Tab");
     for (const label of order) {
-      expect(await page.evaluate(() => document.activeElement.textContent.trim()), "keyboard order through the disclosure").toBe(label);
+      expect(await page.evaluate(() => { const active = document.activeElement; return active.matches("button") ? active.getAttribute("aria-label") || active.textContent.trim() : active.textContent.trim(); }), "keyboard order through the disclosure").toBe(label);
       expect(await page.evaluate(() => Boolean(document.activeElement.closest("#primary-navigation")))).toBe(true);
       await page.keyboard.press("Tab");
     }
@@ -1634,8 +1634,8 @@ test("the immersive home remains readable when GSAP is unavailable", async ({ pa
 test("every page's single language link leads to its pair, reciprocally, with a 200", async ({ request }) => {
   const absolute = (route) => `https://www.barnanorbert.com${route}`;
   const destinations = {
-    en: ["/works", "/about", "/ai-integration", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
-    hu: ["/hu/munkak", "/hu/rolam", "/hu/ai-tanacsadas-fejlesztes", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
+    en: ["/works", "/ai-integration", "/writing", "/about", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
+    hu: ["/hu/munkak", "/hu/irasok", "/hu/rolam", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
   };
   for (const [english, hungarian] of PAGE_PAIRS) {
     for (const [route, pair, language] of [[english, hungarian, "en"], [hungarian, english, "hu"]]) {
@@ -1652,12 +1652,20 @@ test("every page's single language link leads to its pair, reciprocally, with a 
       const links = [...menu.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map(([, attributes, body]) => ({
         attributes, href: attributes.match(/\bhref="([^"]+)"/)?.[1], text: body.replace(/<[^>]+>/g, "").trim(),
       }));
-      expect(links.map((link) => link.text), `${route}: menu labels`).toEqual([...COPY[language].menu.slice(0, 4), "LinkedIn", COPY[language].menu[4]]);
-      expect(links.map((link) => link.href), `${route}: menu destinations`).toEqual([...destinations[language], pair]);
+      // Primary destinations are the `nav-link` rows plus LinkedIn; the group panels hold the service and article links.
+      const primary = links.filter((link) => /\b(?:nav-link|footer-contact-link)\b/.test(link.attributes));
+      expect(primary.map((link) => link.text), `${route}: menu labels`).toEqual([...COPY[language].menu, "LinkedIn"]);
+      expect(primary.map((link) => link.href), `${route}: menu destinations`).toEqual(destinations[language]);
       const switches = [...html.matchAll(/<a\b[^>]*\blang-switch\b[^>]*>/g)];
       expect(switches, `${route}: exactly one language link`).toHaveLength(1);
+      // The language menu closes the navigation: a flag button named for the current language, then the panel with the pair.
+      expect(menu, `${route}: the language menu ends the navigation`).toMatch(/<div class="nav-group nav-lang" data-nav-group>[\s\S]*<\/div><\/div><\/div>$/);
+      expect(menu, `${route}: the language button names the current language`).toContain(`aria-label="${COPY[language].language}"`);
+      expect(menu, `${route}: the current language is marked, not linked`).toContain(`<span class="nav-lang-current" aria-current="true" lang="${language}">`);
       const languageLink = links.at(-1);
-      expect(languageLink.attributes).toMatch(/class="[^"]*\bnav-link\b[^"]*\blang-switch\b/);
+      expect(languageLink.href, `${route}: the language link is the last link`).toBe(pair);
+      expect(languageLink.text, `${route}: the language link names the other language in that language`).toBe(COPY[language].other);
+      expect(languageLink.attributes).toMatch(/class="[^"]*\bnav-group-link\b[^"]*\blang-switch\b/);
       for (const attribute of ['rel="alternate"', `hreflang="${other}"`, `lang="${other}"`]) expect(languageLink.attributes, `${route}: ${attribute}`).toContain(attribute);
       expect(languageLink.attributes, `${route}: the visible name is the accessible name`).not.toMatch(/aria-label|aria-current/);
       expect(html, `${route}: no retired EN | HU pair`).not.toMatch(/class="[^"]*\bai-lang\b[^"]*"[^>]*>\s*EN\s*</);
@@ -1685,7 +1693,7 @@ for (const width of [390, 1280]) {
     await page.route(/posthog\.com/, (route) => route.abort());
     for (const route of ["/hu/munkak", "/hu/munka/instructure", "/hu/rolam"]) {
       await openStable(page, route);
-      await expect(page.locator("#primary-navigation a[href]")).toHaveText([...COPY.hu.menu.slice(0, 4), "LinkedIn", COPY.hu.menu[4]]);
+      await expect(page.locator("#primary-navigation a.nav-link")).toHaveText([...COPY.hu.menu, "LinkedIn"]);
       const toggle = page.locator(".menu-button");
       // Keyboard modality, so focus shows the real :focus-visible ring.
       await toggle.focus();
@@ -2175,9 +2183,9 @@ test("1440 home opening: original centered artwork and semantic role lead into t
   await expect(contact).toHaveText("Contact");
   await expect(contact).toHaveAccessibleName("Contact");
   expect(await contact.getAttribute("title")).toBeNull();
-  const language = page.locator(".navbar a.nav-link.lang-switch");
-  await expect(language).toHaveText("Magyar");
-  await expect(language).toHaveAccessibleName("Magyar");
+  const language = page.locator(".navbar .nav-lang-trigger");
+  await expect(language).toHaveAccessibleName(COPY.en.language);
+  await expect(page.locator(".navbar a.lang-switch")).toHaveText("Magyar");
   await expect(page.locator(".navbar .home-nav-wordmark")).toHaveText("NORBERT.BARNA");
   await expect(page.locator(".navbar .home-nav-progress")).toHaveAttribute("aria-hidden", "true");
 });
@@ -2229,7 +2237,7 @@ test("1440 home mast and text navigation meet WCAG AA on their live backgrounds"
   const firstBullet = page.locator(".home-mast .home-banner-outcomes li").first();
   const lastBullet = page.locator(".home-mast .home-banner-outcomes li").last();
   const contact = page.locator('.navbar a.nav-link[href="/contact"]').first();
-  const language = page.locator(".navbar a.nav-link.lang-switch").first();
+  const language = page.locator(".navbar .nav-lang-trigger").first();
   const linkedin = page.locator(".navbar a.footer-contact-link").first();
 
   const schema = await page.evaluate(() => {

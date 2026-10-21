@@ -119,7 +119,12 @@ turns them into static pages; there is no CMS and no runtime rendering.
    - Tables: a `| a | b |` header row, a `|---|---|` row, then body rows.
 
 2. `npm run build:writing` writes the article, the list page, the RSS feed,
-   the sitemap entries and the `llms.txt` Writing section.
+   the sitemap entries and the `llms.txt` Writing section. It first runs
+   `scripts/build-nav.mjs`, which writes the shared navigation and footer
+   columns (Services, Articles with the latest articles, the language menu)
+   into every static page from `scripts/site-chrome.mjs`. Menu labels, the
+   language list and the footer columns live only there: change them in
+   `site-chrome.mjs` and run `npm run build:nav`.
 3. `npm test` fails if a generated file is out of date or a page breaks a
    site invariant. Commit the Markdown and the generated files together.
 

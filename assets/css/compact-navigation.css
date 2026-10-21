@@ -163,7 +163,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 }
 /* Narrow desktops: the centred wordmark repeats the logo's home link and yields
    before any destination does (design.md header rule). */
-@media (min-width: 992px) and (max-width: 1199px) {
+@media (min-width: 992px) and (max-width: 1599px) {
   body:is(.works-index, .immersive-case) .navbar .home-nav-wordmark { display: none; }
   body:is(.works-index, .immersive-case) .navbar .nav-wrap { grid-template-columns: auto minmax(0, 1fr); }
 }
@@ -231,9 +231,10 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 .navbar .nav-group:has(> .nav-group-toggle[data-current]) > .nav-link {
   text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px;
 }
-/* Without JavaScript every list stands in flow under its label. */
-html:not(.nav-enhanced) .navbar .nav-group-panel[hidden] { display: block; }
-html:not(.nav-enhanced) .navbar .nav-group-toggle { display: none; }
+/* Without JavaScript a group opens while it is hovered or holds focus (the
+   buttons are focusable without scripts), so the bar keeps its first-paint
+   height and every panel link stays reachable from the keyboard. */
+html:not(.nav-enhanced) .navbar .nav-group:is(:hover, :focus-within) > .nav-group-panel[hidden] { display: block; }
 
 @media (min-width: 992px) {
   .navbar .nav-group-panel {
@@ -248,14 +249,14 @@ html:not(.nav-enhanced) .navbar .nav-group-toggle { display: none; }
     animation: compact-menu-drop 200ms cubic-bezier(.22, .8, .3, 1);
     animation: compact-menu-drop 200ms linear(0, 0.057, 0.172, 0.305, 0.434, 0.549, 0.65, 0.73, 0.794, 0.844, 0.884, 0.915, 0.938, 0.955, 0.968, 0.978, 0.985, 0.991, 0.995, 0.998, 1);
   }
-  html:not(.nav-enhanced) .navbar .nav-group-panel { position: static; min-width: 0; padding: 0; border: 0; box-shadow: none; background: transparent; color: inherit; }
-  html:not(.nav-enhanced) .navbar .nav-group-list { flex-direction: row; flex-wrap: wrap; gap: 0 12px; }
-  html:not(.nav-enhanced) .navbar :is(.nav-group-link, .nav-lang-current) { color: inherit; padding: 10px 0; min-height: 44px; }
-  html:not(.nav-enhanced) .navbar .nav-group-more { margin: 0; border: 0; padding-top: 10px; }
 }
 
 /* Compact: groups are accordion rows of the dropped disclosure. */
 @media (max-width: 991px) {
+  html body .navbar .nav-menu .nav-group-trigger[data-current],
+  html body .navbar .nav-menu .nav-group:has(> .nav-group-toggle[data-current]) > .nav-link {
+    text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px;
+  }
   html body .navbar .nav-menu .nav-group { display: flex; flex-wrap: wrap; align-items: center; width: 100%; }
   html body .navbar .nav-menu .nav-group > .nav-link { flex: 1 1 auto; width: auto; }
   html body .navbar .nav-menu .nav-group-trigger { width: 100%; justify-content: space-between; }
@@ -271,7 +272,7 @@ html:not(.nav-enhanced) .navbar .nav-group-toggle { display: none; }
     position: static; width: 100%; min-width: 0; max-width: none; margin: 0 0 6px; padding: 2px 0 6px 16px;
     border: 0; border-left: 2px solid rgb(10 22 40 / 22%); background: transparent; box-shadow: none;
   }
-  html body .navbar .nav-menu .nav-group-link, html body .navbar .nav-menu .nav-lang-current { min-height: 44px; padding: 10px 0; font-size: 16px; }
+  html body .navbar .nav-menu .nav-group-link, html body .navbar .nav-menu .nav-lang-current { justify-content: flex-start; min-height: 44px; padding: 10px 0; font-size: 16px; text-align: left; }
   html body .navbar .nav-menu .nav-group-more { margin-top: 4px; padding-top: 12px; }
   /* About keeps its navy disclosure: rows stay lilac on it. */
   .story-page .navbar .nav-menu :is(.nav-group-link, .nav-lang-current, .nav-group-toggle, .nav-lang-trigger) { color: #D6D4ED; }

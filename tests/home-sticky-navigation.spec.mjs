@@ -20,7 +20,7 @@ async function expectHomeBar(page, label, scripted = true) {
       return box.width && box.height && getComputedStyle(control).visibility !== "hidden";
     }).map((control) => {
       const box = control.getBoundingClientRect();
-      return { label: control.textContent.trim() || control.getAttribute("aria-label"),
+      return { label: control.matches("button") ? control.getAttribute("aria-label") || control.textContent.trim() : control.textContent.trim() || control.getAttribute("aria-label"),
         x: box.x, y: box.y, width: box.width, height: box.height,
         ink: getComputedStyle(control.querySelector(".home-nav-label, .home-nav-monogram") || control).color,
         hit: control.contains(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)) };
@@ -55,8 +55,8 @@ async function readingPositions(page) {
 
 // One Contact entry, LinkedIn as the one external utility, the language link last (NN/g audit, 2026-10-06).
 const HOME_BARS = {
-  "/": { labels: ["NB", "Works", "About", "AI integration", "Contact", "LinkedIn", "Magyar"], ai: "/ai-integration", pair: "/hu" },
-  "/hu": { labels: ["NB", "Munkák", "Rólam", "AI-integráció", "Kapcsolat", "LinkedIn", "English"], ai: "/hu/ai-tanacsadas-fejlesztes", pair: "/" },
+  "/": { labels: ["NB", "Works", "AI integration", "Articles", "Articles: latest", "About", "Contact", "LinkedIn", "Language: EN, English"], ai: "/ai-integration", pair: "/hu" },
+  "/hu": { labels: ["NB", "Munkák", "Szolgáltatások", "Tudástár", "Tudástár: legújabb cikkek", "Rólam", "Kapcsolat", "LinkedIn", "Nyelv: HU, Magyar"], ai: "/hu/webfejlesztes", pair: "/" },
 };
 
 for (const [route, width] of [["/", 992], ["/", 1280], ["/", 1920], ["/hu", 992], ["/hu", 1280]]) {
@@ -84,6 +84,7 @@ for (const [route, width] of [["/", 992], ["/", 1280], ["/", 1920], ["/hu", 992]
       expect(state.controls, "the menu never redistributes or fades after Selected work or at the footer").toEqual(opening.controls);
     }
     await expect(page.locator(".immersive-nav-landing")).toHaveCount(0);
+    if (route === "/hu") await page.locator('.navbar [aria-controls="nav-services"]').click();
     await page.locator(`.navbar a[href="${bar.ai}"]`).click();
     await expect(page).toHaveURL(new RegExp(`${bar.ai}$`));
   });
