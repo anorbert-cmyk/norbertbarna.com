@@ -784,7 +784,12 @@
     setBusy(true);
     send(true).then(function (result) {
       setBusy(false);
-      if (result.ok) { showSent(); return; }
+      if (result.ok) {
+        // Consent-gated analytics counts the sent form; the event carries no detail.
+        try { document.dispatchEvent(new CustomEvent("portfolio:contact-sent")); } catch (_) { /* measurement is optional */ }
+        showSent();
+        return;
+      }
       if (result.kind === "invalid") {
         say("");
         if (result.fields && result.fields.length) showSummary(result.fields); else say(t.failed, true);
