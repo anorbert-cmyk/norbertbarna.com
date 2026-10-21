@@ -332,6 +332,16 @@ try {
     "apex About alias must preserve the query and canonicalize host and path in one hop"
   );
 
+  // Plain http on the canonical host lands on the https URL in a single hop.
+  const plainHttp = await rawGet(address.port, "/about.html?ref=http", {
+    host: "www.barnanorbert.com",
+    "x-forwarded-proto": "http",
+  });
+  assert(plainHttp.statusCode === 301, "http on the canonical host must redirect to https");
+  assert(plainHttp.headers.location === "https://www.barnanorbert.com/about?ref=http", "http redirect keeps path canonicalization and query");
+  const secure = await rawGet(address.port, "/about", { host: "www.barnanorbert.com", "x-forwarded-proto": "https" });
+  assert(secure.statusCode === 200, "https on the canonical host serves the page");
+
   const previousCanonicalRedirect = process.env.CANONICAL_REDIRECT;
   process.env.CANONICAL_REDIRECT = "1";
   delete require.cache[require.resolve(serverModulePath)];

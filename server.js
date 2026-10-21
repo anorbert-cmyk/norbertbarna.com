@@ -153,8 +153,11 @@ function redirectToCanonical(req, res) {
 
 app.use((req, res, next) => {
   const host = req.hostname;
-  if (host === CANONICAL_HOST || host === "localhost" || host === "127.0.0.1") {
-    return next();
+  if (host === "localhost" || host === "127.0.0.1") return next();
+  // Railway terminates TLS and reports the scheme the visitor used. A plain
+  // http request on the canonical host must not become a duplicate 200 page.
+  if (host === CANONICAL_HOST) {
+    return req.get("x-forwarded-proto") === "http" ? redirectToCanonical(req, res) : next();
   }
   if (host === "barnanorbert.com") {
     return redirectToCanonical(req, res);
