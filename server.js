@@ -153,8 +153,11 @@ function redirectToCanonical(req, res) {
 
 app.use((req, res, next) => {
   const host = req.hostname;
-  if (host === CANONICAL_HOST || host === "localhost" || host === "127.0.0.1") {
-    return next();
+  if (host === "localhost" || host === "127.0.0.1") return next();
+  // Railway terminates TLS and reports the scheme the visitor used. A plain
+  // http request on the canonical host must not become a duplicate 200 page.
+  if (host === CANONICAL_HOST) {
+    return req.get("x-forwarded-proto") === "http" ? redirectToCanonical(req, res) : next();
   }
   if (host === "barnanorbert.com") {
     return redirectToCanonical(req, res);
@@ -215,7 +218,7 @@ app.post(["/contact", "/hu/kapcsolat"], (req, res) => {
 // so those assets must revalidate after a deployment.
 const ASSET_ROOT = path.join(__dirname, "assets");
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
+  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact|writing)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");

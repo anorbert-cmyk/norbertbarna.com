@@ -1,11 +1,10 @@
 ---
 title: "Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek"
 description: "Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek: bizalom, funkciók, integrációk, tartalomkezelés, bővítés, kereshetőség."
-draft: true
 lang: hu
 slug: egyedi-weboldal-vagy-sablon
-date: 2027-02-10T09:00:00+01:00
-updated: 2027-02-10T09:00:00+01:00
+date: 2026-10-21T09:00:00+02:00
+updated: 2026-10-21T09:00:00+02:00
 tags: [egyedi weboldal készítés, honlapkészítés, weboldal készítés, egyedi webfejlesztés, sablon weboldal]
 service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek

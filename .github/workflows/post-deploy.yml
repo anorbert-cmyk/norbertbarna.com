@@ -1,0 +1,45 @@
+name: Post-deploy
+
+# After Railway deploys main: check the live redirects and status codes the
+# SEO setup depends on, then tell Bing and the other IndexNow engines about
+# the pages. The IndexNow script waits until the release serves its key file.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: post-deploy
+  cancel-in-progress: true
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Give Railway time to roll out the release this push started.
+      - run: sleep 240
+      - run: node scripts/indexnow.mjs --wait
+      - name: Live redirects and status codes
+        run: |
+          set -eu
+          expect() { # url expected-status [expected-location]
+            read -r status location <<<"$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$1")"
+            echo "$1 -> $status $location"
+            [ "$status" = "$2" ] || { echo "::error::$1 returned $status, expected $2"; exit 1; }
+            [ -z "${3:-}" ] || [ "$location" = "$3" ] || { echo "::error::$1 redirected to $location, expected $3"; exit 1; }
+          }
+          expect https://www.barnanorbert.com/ 200
+          expect https://www.barnanorbert.com/hu 200
+          expect http://www.barnanorbert.com/about.html 301 https://www.barnanorbert.com/about
+          expect https://barnanorbert.com/works 301 https://www.barnanorbert.com/works
+          expect https://www.barnanorbert.com/works.html 301 https://www.barnanorbert.com/works
+          expect https://www.barnanorbert.com/does-not-exist 404
+          expect https://www.barnanorbert.com/sitemap.xml 200

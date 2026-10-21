@@ -150,24 +150,28 @@ test("crossing the compact breakpoint preserves the same stationary work bar", a
 // NN/g audit (2026-10-06): the current page carries an olive underline on every
 // bar at every width, and an open compact menu shows a close glyph.
 const OLIVE = "rgb(189, 180, 20)";
-const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/ai-integration", "/ai-integration"],
-  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes"]];
-async function currentMark(page, href) {
-  return page.locator(`#primary-navigation a.nav-link[href="${href}"]`).evaluate((link) => {
+const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/ai-integration", "/ai-integration"], ["/writing", "/writing"],
+  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/irasok", "/hu/irasok"],
+  // The Hungarian service pages live in the Services group: the panel link is current and the group button carries the mark.
+  ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes", "nav-services"], ["/hu/webfejlesztes", "/hu/webfejlesztes", "nav-services"]];
+async function currentMark(page, href, group) {
+  const selector = group ? `#primary-navigation [aria-controls="${group}"]` : `#primary-navigation a.nav-link[href="${href}"]`;
+  return page.locator(selector).evaluate((link) => {
     const style = getComputedStyle(link);
-    return { current: link.getAttribute("aria-current"), line: style.textDecorationLine, color: style.textDecorationColor,
+    return { current: link.hasAttribute("data-current") ? "" : link.getAttribute("aria-current"), line: style.textDecorationLine, color: style.textDecorationColor,
       thickness: style.textDecorationThickness, visible: link.getBoundingClientRect().width > 0 };
   });
 }
 for (const width of [390, 1280]) {
   test(`${width}: every bar underlines the current page in olive`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
-    for (const [route, href] of currentRoutes) {
+    for (const [route, href, group] of currentRoutes) {
       await page.goto(route, { waitUntil: "load" });
-      await expect(page.locator('#primary-navigation a.nav-link[aria-current="page"]'), route).toHaveCount(1);
+      await expect(page.locator('#primary-navigation a[aria-current="page"]'), route).toHaveCount(1);
+      await expect(page.locator(`#primary-navigation a[aria-current="page"][href="${href}"]`), route).toHaveCount(1);
       if (width < 992) await page.locator(".menu-button").click();
-      const mark = await currentMark(page, href);
-      expect(mark, `${route} at ${width}`).toMatchObject({ current: "page", line: "underline", color: OLIVE, visible: true });
+      const mark = await currentMark(page, href, group);
+      expect(mark, `${route} at ${width}`).toMatchObject({ current: group ? "" : "page", line: "underline", color: OLIVE, visible: true });
       // Other destinations are not marked as current.
       const others = await page.locator('#primary-navigation a.nav-link:not([aria-current])').evaluateAll((links) =>
         links.filter((link) => link.getBoundingClientRect().width).map((link) => getComputedStyle(link).textDecorationColor));
