@@ -17,7 +17,13 @@
  *                        - c theta'                       hinge friction
  *                        - c_air theta' |theta'|          air drag
  *                        + tau_hand                       a push, until released
+ *                        - c_air s(gap) theta' |theta'|  air cushion near a stop
  *            c_air = rho Cd w L^4 / 8 (quadratic drag integrated along the plate).
+ *            The air cushion: a plate closing onto a surface has to squeeze the
+ *            air out of the wedge between them, so in the last `range` radians
+ *            before the stop it is heading for, its drag grows by up to
+ *            `strength` times, s(gap) = strength (1 - gap / range)^2. Paper
+ *            lands softly on paper instead of rebounding off it at full speed.
  *            The crease is elasto-plastic: once the fold passes the elastic
  *            range delta, its rest angle follows, theta_r = max(theta_r,
  *            theta - delta), so a pressed crease springs back by delta at most.
@@ -147,6 +153,7 @@
     options = options || {};
     var limits = options.limits || [0, Math.PI];
     var crease = options.crease || {};
+    var cushion = options.cushion || {};
     this.name = options.name || "hinge";
     this.mass = pick(options.mass, 0.0025);
     this.length = pick(options.length, 0.1);
@@ -159,6 +166,8 @@
     this.elastic = pick(crease.elastic, Infinity);                 // delta
     this.friction = pick(options.friction, 0);                     // c, N m s
     this.air = pick(options.air, AIR_DENSITY * PLATE_DRAG * this.width * Math.pow(this.length, 4) / 8);
+    this.cushionRange = pick(cushion.range, 0);                    // rad before a stop
+    this.cushionStrength = pick(cushion.strength, 0);              // times the air drag at contact
     this.min = limits[0];
     this.max = limits[1];
     this.restitution = pick(options.restitution, 0.3);
@@ -183,9 +192,17 @@
     var torque = -this.weight * Math.cos(angle) -
       this.creaseStiffness * (angle - this.creaseRest) -
       this.friction * velocity -
-      this.air * velocity * Math.abs(velocity);
+      this.air * (1 + this.squeeze(angle, velocity)) * velocity * Math.abs(velocity);
     if (withHand && this.drive) torque += this.drive.torque;
     return torque;
+  };
+  /* The air cushion's extra drag factor, only while closing on a stop. */
+  Hinge.prototype.squeeze = function (angle, velocity) {
+    if (!this.cushionStrength || !this.cushionRange || !velocity) return 0;
+    var gap = velocity > 0 ? this.max - angle : angle - this.min;
+    if (!(gap < this.cushionRange)) return 0;
+    var share = 1 - Math.max(0, gap) / this.cushionRange;
+    return this.cushionStrength * share * share;
   };
   /* A hand pushes with a steady torque until the plate passes `until`. */
   Hinge.prototype.push = function (torque, until) {
@@ -247,6 +264,7 @@
       crease: { stiffness: pick(crease.strength, 0) * weight, rest: pick(crease.rest, 0), elastic: pick(crease.elastic, Infinity) },
       friction: pick(options.friction, 0) * mass * options.length * options.length / 3,
       restitution: pick(options.restitution, 0.3),
+      cushion: options.cushion,
       precision: options.precision,
       restAcceleration: options.restAcceleration,
       restSpeed: options.restSpeed,

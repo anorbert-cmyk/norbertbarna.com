@@ -19,7 +19,10 @@
  *  data-case-opening="pending" when an entrance may run; the stylesheet keeps
  *  the title and panel unpainted until this owner starts, and shows them on its
  *  own after 2.9 s. Reduced motion, html.no-motion, history and deep links get
- *  the finished opening with no physics frame. */
+ *  the finished opening with no physics frame. Wheel, touch, key or pointer
+ *  input while it assembles hurries it: every body carries on from where it
+ *  is and closes on a critically damped spring (omega 18) instead of jumping
+ *  to the end. A hidden tab, a resize or a page hide still finish at once. */
 (function () {
   "use strict";
   var root = document.documentElement;
@@ -37,6 +40,11 @@
   var SLICE = { omega: 3.3, zeta: 1, at: .2, stagger: .14, stop: 1.03 };
   var LETTER = { omega: 9, zeta: .75, at: .12, stagger: .035, ink: .16 };
   var SETTLE = { omega: 20, zeta: 1 };
+  // Input during the entrance hurries it instead of cutting to the end: every
+  // body keeps its position and velocity and is retargeted on a critically
+  // damped spring (omega 18, within 1% in about .37 s), so a scroll or a click
+  // never sees a jump.
+  var HURRY = { omega: 18, ink: .08, limit: .6 };
   var SLICES = ["--case-slice-a", "--case-slice-b", "--case-slice-c", "--case-slice-d"];
   var ENTRANCE = ["--case-enter-angle", "--case-enter-rise"].concat(SLICES);
 
@@ -45,7 +53,7 @@
   var listeners = new AbortController();
   var navigation = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
   var historical = Boolean(location.hash || (navigation && navigation.type === "back_forward"));
-  var entrance = null, letters = [], watchdog = 0, resizeTimer = 0;
+  var entrance = null, letters = [], bodies = [], watchdog = 0, resizeTimer = 0, hurried = false;
   var started = false, destroyed = false, originalNodes = null, originalLabel = null;
   var settle = null, geometry = null, settleOn = false;
 
@@ -110,6 +118,7 @@
   function clearEntrance() {
     clearTimeout(watchdog);
     if (entrance) { entrance.destroy(); entrance = null; }
+    bodies = [];
     ENTRANCE.forEach(function (key) { media.style.removeProperty(key); });
     restoreHeading();
     markFlat();
@@ -139,11 +148,11 @@
     });
     world.at(PLATE.at, function () { plate.set(0); });
     world.at(RISE.at, function () { rise.set(0); });
-    var bodies = letters.map(function (element, index) {
+    bodies = letters.map(function (element, index) {
       var start = LETTER.at + index * LETTER.stagger;
       var spring = world.spring({ name: "letter-" + index, from: 1, to: 1, frequency: hz(LETTER.omega), damping: LETTER.zeta, precision: .001 });
       world.at(start, function () { spring.set(0); });
-      return { write: writer(element), spring: spring, start: start };
+      return { write: writer(element), spring: spring, start: start, ink: LETTER.ink };
     });
     var write = writer(media);
     world.paint(function (current, alpha) {
@@ -154,10 +163,40 @@
       for (var letter = 0; letter < bodies.length; letter += 1) {
         var body = bodies[letter];
         body.write("--case-letter-rise", fixed(body.spring.at(alpha), 4));
-        body.write("--case-letter-ink", fixed(Math.min(1, Math.max(0, (time - body.start) / LETTER.ink)), 3));
+        body.write("--case-letter-ink", fixed(Math.min(1, Math.max(0, (time - body.start) / body.ink)), 3));
       }
     });
     return world;
+  }
+
+  /* Retarget every body from where it is, at its current velocity. Pending
+     staggered starts begin now; letters not yet inked ink in faster, from the
+     opacity they have. */
+  function hurry() {
+    if (hurried || !entrance || !entrance.running) { if (!entrance || !entrance.running) finish(); return; }
+    hurried = true;
+    var world = entrance;
+    var now = world.time;
+    world.tasks = [];
+    world.bodies.forEach(function (spring) {
+      var omega = Math.max(HURRY.omega, Math.sqrt(spring.stiffness / spring.mass));
+      spring.stiffness = spring.mass * omega * omega;
+      spring.damping = 2 * spring.mass * omega;
+      spring.restitution = 0;
+    });
+    world.bodies.forEach(function (spring) {
+      var name = spring.name;
+      if (name === "plate" || name === "rise" || name.indexOf("letter-") === 0) spring.set(0);
+      else if (name.indexOf("slice-") === 0) spring.set(SLICE.stop);
+    });
+    bodies.forEach(function (body) {
+      if (body.start > now) { body.start = now; body.ink = HURRY.ink; return; }
+      var inked = Math.min(1, (now - body.start) / body.ink);
+      if (inked < 1) { body.ink = HURRY.ink; body.start = now - inked * HURRY.ink; }
+    });
+    clearTimeout(watchdog);
+    watchdog = setTimeout(finish, HURRY.limit * 1000 + 300);
+    world.start();
   }
 
   function start(event) {
@@ -273,7 +312,7 @@
   on(window, "portfolio:motionchange", motionChange);
   on(reducedQuery, "change", motionChange);
   ["wheel", "touchmove", "keydown", "pointerdown"].forEach(function (name) {
-    on(window, name, function () { if (api.state === "assembling") finish(); }, { capture: true, passive: true });
+    on(window, name, function () { if (api.state === "assembling") hurry(); }, { capture: true, passive: true });
   });
   on(window, "scroll", onScroll, { passive: true });
   on(document, "visibilitychange", function () { if (document.hidden) finish(); });

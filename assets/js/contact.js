@@ -836,7 +836,10 @@
     // 105 mm across 99 mm. A laid fold is pushed just past upright and falls
     // by its own weight onto the stack; the last fold is pressed nearly shut
     // and keeps its crease (through three layers on a desktop).
-    third: { length: 0.099, width: 0.21, grammage: 0.12, restitution: 0.34, crease: { strength: 0.3, elastic: 40 * DEG } },
+    // A laid third closes on an air cushion over the last 23 degrees and lands
+    // on the stack at about a third of its falling speed, with no visible
+    // rebound (it used to hit at 15 rad/s and bounce twice).
+    third: { length: 0.099, width: 0.21, grammage: 0.12, restitution: 0.2, cushion: { range: 0.4, strength: 20 }, crease: { strength: 0.3, elastic: 40 * DEG } },
     last: { length: 0.105, width: 0.099, grammage: 0.12, layers: 3, restitution: 0.3, friction: 13, crease: { strength: 1.9, elastic: 55 * DEG } },
     lastCompact: { length: 0.099, width: 0.21, grammage: 0.12, restitution: 0.3, friction: 13, crease: { strength: 1.9, elastic: 55 * DEG } },
     // Hand torques, in multiples of the panel's own weight torque m g L / 2.
