@@ -150,9 +150,10 @@ test("crossing the compact breakpoint preserves the same stationary work bar", a
 // NN/g audit (2026-10-06): the current page carries an olive underline on every
 // bar at every width, and an open compact menu shows a close glyph.
 const OLIVE = "rgb(189, 180, 20)";
-const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/ai-integration", "/ai-integration"], ["/writing", "/writing"],
+const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/writing", "/writing"],
   ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/irasok", "/hu/irasok"],
-  // The Hungarian service pages live in the Services group: the panel link is current and the group button carries the mark.
+  // The service pages live in the Services group: the panel link is current and the group button carries the mark.
+  ["/ai-integration", "/ai-integration", "nav-services"], ["/web-development", "/web-development", "nav-services"],
   ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes", "nav-services"], ["/hu/webfejlesztes", "/hu/webfejlesztes", "nav-services"]];
 async function currentMark(page, href, group) {
   const selector = group ? `#primary-navigation [aria-controls="${group}"]` : `#primary-navigation a.nav-link[href="${href}"]`;

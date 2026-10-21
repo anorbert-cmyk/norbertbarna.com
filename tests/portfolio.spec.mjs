@@ -8,7 +8,7 @@ import { exposesInbox } from "../scripts/private-inbox.mjs";
 // digest (scripts/private-inbox.mjs) and never spell it.
 const PROJECT_LABEL = "Discuss your project";
 const COPY = {
-  en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "AI integration", "Articles", "About", "Contact"], other: "Magyar", language: "Language: EN, English",
+  en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "Articles", "About", "Contact"], other: "Magyar", language: "Language: EN, English",
     caseRoot: "/work/", works: "/works", writing: "/writing", privacy: "/privacy", privacyLabel: "Privacy", allWork: "All work", workTitle: "Work", servicesTitle: "Services", articlesTitle: "Articles",
     footerTitle: /Let’s talk\s*product\./, lede: "Product VP. I lead AI products in regulated finance and high-trust systems.", copyright: "© 2026 Norbert Barna" },
   hu: { home: "/hu", contact: "/hu/kapcsolat", project: "Beszéljünk a projektedről", menu: ["Munkák", "Tudástár", "Rólam", "Kapcsolat"], other: "English", language: "Nyelv: HU, Magyar",
@@ -472,9 +472,9 @@ for (const [route, width] of [...[320, 390, 768, 991, 992, 1280, 1440].map((widt
     }
     const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar button.nav-link, .navbar a.footer-contact-link, .navbar .nav-lang-trigger");
     await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY[languageOf(route)].menu);
-    // The menu button plus the group buttons (Articles chevron, language menu; Services on Hungarian pages).
+    // The menu button plus the group buttons (Services, Articles chevron, language menu).
     await expect(page.locator(".navbar button:not([data-nav-toggle])")).toHaveCount(1);
-    // Hero action, logo, the menu rows (Contact included), LinkedIn and the language menu button.
+    // Hero action, logo, the menu rows (Contact included), LinkedIn and the language menu button; the Services trigger is a data-nav-toggle button.
     await expect(controls).toHaveCount(9);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = await readableHomeTarget(page, controls.nth(index));
@@ -652,7 +652,7 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     }
     const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link");
     await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY.en.menu);
-    await expect(controls).toHaveCount(8);
+    await expect(controls).toHaveCount(7);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
       const toggle = page.locator(".menu-button");
@@ -942,7 +942,7 @@ for (const width of [360, 768, 991]) {
     // The open disclosure holds every destination in order, ending with the language menu.
     await expect(navigation.locator("a.nav-link")).toHaveText(COPY.en.menu);
     await expect(navigation.locator("button:not([data-nav-toggle])")).toHaveCount(0);
-    const order = ["Works", "AI integration", "Articles", "Articles: latest", "About", "Contact", "LinkedIn", COPY.en.language];
+    const order = ["Works", "Services", "Articles", "Articles: latest", "About", "Contact", "LinkedIn", COPY.en.language];
     await page.keyboard.press("Tab");
     for (const label of order) {
       expect(await page.evaluate(() => { const active = document.activeElement; return active.matches("button") ? active.getAttribute("aria-label") || active.textContent.trim() : active.textContent.trim(); }), "keyboard order through the disclosure").toBe(label);
@@ -1290,8 +1290,8 @@ for (const width of [320, 390, 768, 991, 1440]) {
     await page.mouse.move(width * .92, Math.min(1090, footerBox.y + footerBox.height * .86));
     await page.waitForTimeout(450);
     const text = page.locator(".editorial-footer-title, .footer-lede, .footer-col-title, .footer-col a, footer .footer-email, footer .footer-contact-link, .footer-copyright, .footer-privacy a, .footer-privacy button");
-    // Work column (title + 5), Services (title + 1 on English pages), Articles (title + latest 3 + all) and the rest.
-    await expect(text).toHaveCount(19);
+    // Work column (title + 5), Services (title + 2), Articles (title + latest 3 + all) and the rest.
+    await expect(text).toHaveCount(20);
     for (const element of await text.all()) {
       await expectHeaderTextAA(page, element, "footer rendered text", { raster: true });
       if (await element.evaluate((node) => node.matches("a, button"))) {
@@ -1322,7 +1322,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare", "/h
     await expect(work.locator("a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare", copy.allWork]);
     expect(await work.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href"))))
       .toEqual([...["raiffeisen", "instructure", "bitpanda", "kineticare"].map((slug) => `${copy.caseRoot}${slug}`), copy.works]);
-    await expect(footer.locator(".footer-col-services a")).toHaveCount(languageOf(route) === "hu" ? 2 : 1);
+    await expect(footer.locator(".footer-col-services a")).toHaveCount(2);
     // Latest three articles of the page language plus the All articles row (two English articles so far).
     await expect(footer.locator(".footer-col-articles a")).toHaveCount(languageOf(route) === "hu" ? 4 : 3);
     await expect(footer.locator(".footer-col-articles a").last()).toHaveAttribute("href", copy.writing);
@@ -1650,7 +1650,7 @@ test("the immersive home remains readable when GSAP is unavailable", async ({ pa
 test("every page's single language link leads to its pair, reciprocally, with a 200", async ({ request }) => {
   const absolute = (route) => `https://www.barnanorbert.com${route}`;
   const destinations = {
-    en: ["/works", "/ai-integration", "/writing", "/about", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
+    en: ["/works", "/writing", "/about", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
     hu: ["/hu/munkak", "/hu/irasok", "/hu/rolam", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
   };
   for (const [english, hungarian] of PAGE_PAIRS) {
