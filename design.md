@@ -478,8 +478,8 @@ links, heading hierarchy and visible keyboard focus.
 - `/works` and all seven cases use one stable navy (`#0A1628`) top bar with
   lilac (`#D6D4ED`) controls (owner screenshot correction, 2026-09-16).
   Keep NB left, `Works / {Project}` on desktop cases, the centered
-  `NORBERT.BARNA` wordmark (shown from 1600px; between 992 and 1599px the
-  longer menu takes its space), real reading progress and native destinations.
+  `NORBERT.BARNA` wordmark and the reading counter (shown from 1800px; between
+  992 and 1799px the longer menu takes their space), real reading progress and native destinations.
   Use equal outer grid tracks and in-flow groups, never colliding absolute
   slots. Enlarged text may wrap; decorative progress/branding yields space
   before essential links. No vertical travel, reading-slot fades, footer

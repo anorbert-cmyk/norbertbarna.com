@@ -161,19 +161,14 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
   body:is(.works-index, .immersive-case) .navbar .nav-menu-area { gap: 4px clamp(12px, 1.1vw, 18px); }
   body:is(.works-index, .immersive-case) .navbar .nav-menu-area > .nav-link { white-space: nowrap; overflow-wrap: normal; }
 }
-/* Narrow desktops: the centred wordmark repeats the logo's home link and yields
-   before any destination does (design.md header rule). */
-@media (min-width: 992px) and (max-width: 1599px) {
+/* Up to 1799px the centred wordmark (which repeats the logo's home link) and
+   the decorative reading counter yield their room to the menu, which carries
+   the Services, Articles and language groups since 2026-10-21, so every
+   destination stays on one row (design.md header rule). */
+@media (min-width: 992px) and (max-width: 1799px) {
   body:is(.works-index, .immersive-case) .navbar .home-nav-wordmark { display: none; }
   body:is(.works-index, .immersive-case) .navbar .nav-wrap { grid-template-columns: auto minmax(0, 1fr); }
-}
-/* Below 1440px the decorative reading counter yields its room to the menu. */
-@media (min-width: 992px) and (max-width: 1439px) {
   body:is(.works-index, .immersive-case) .navbar .home-nav-progress { display: none; }
-}
-/* Hungarian labels are longer; the counter yields up to 1600px there. */
-@media (min-width: 1440px) and (max-width: 1599px) {
-  html[lang="hu"] body.works-index .navbar .home-nav-progress { display: none; }
 }
 
 /* Privacy pages join the site's quiet lilac bar instead of the inherited white
