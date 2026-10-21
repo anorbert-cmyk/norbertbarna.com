@@ -280,13 +280,15 @@ test("the scroll settle follows native scroll without changing it, then its loop
   }
   // The settle owner only reads scroll: each notch lands where native scroll put it.
   expect(trace).toEqual([100, 200, 300, 400]);
-  await expect.poll(() => media.evaluate((element) => element.style.getPropertyValue("--case-settle")), { timeout: 1000 }).toBe("0");
+  // The native smooth scroll plus the follower's ~.6 s run can outlast one
+  // second on a loaded runner; what is checked is the exact end value.
+  await expect.poll(() => media.evaluate((element) => element.style.getPropertyValue("--case-settle")), { timeout: 3000 }).toBe("0");
   await expect(media).toHaveAttribute("data-case-flat", "");
   await expect(media).toHaveCSS("transform", "none");
   await page.waitForTimeout(300);
   expect(await page.evaluate(() => window.PortfolioCaseOpening.settle.running), "the follower's loop has stopped").toBe(false);
   await page.mouse.wheel(0, -400);
-  await expect.poll(() => media.evaluate((element) => element.style.getPropertyValue("--case-settle")), { timeout: 1000 }).toBe("1");
+  await expect.poll(() => media.evaluate((element) => element.style.getPropertyValue("--case-settle")), { timeout: 3000 }).toBe("1");
 });
 
 test("the physics owners add no non-passive wheel, touch or key listener", async ({ page }) => {
