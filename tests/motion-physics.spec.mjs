@@ -338,19 +338,17 @@ test("input during the case entrance hurries it from where it is instead of cutt
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state)).toBe("assembling");
   // Mid-entrance: the plate is still leaning back and the last mask is closed.
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.entrance?.time ?? 0)).toBeGreaterThan(.35);
-  // The entrance's own clock when the key lands, read in the page: on a loaded
-  // machine the simulation runs on between a separate read and the keypress.
-  await page.evaluate(() => {
-    window.__pressedAt = null;
-    addEventListener("keydown", () => { window.__pressedAt = window.PortfolioCaseOpening.entrance.time; }, { capture: true, passive: true, once: true });
-  });
-  await page.keyboard.press("Shift");
-  const pressed = await page.evaluate(() => window.__pressedAt);
+  const pressed = await page.evaluate(() => window.PortfolioCaseOpening.entrance.time);
   expect(pressed, "the key arrives before the entrance would end").toBeLessThan(1.6);
+  // The entrance keeps running between that read and the key, so the bound
+  // below starts from the entrance time the key actually arrived at.
+  await page.evaluate(() => addEventListener("keydown", () => { window.__hurriedAt = window.PortfolioCaseOpening.entrance.time; }, { capture: true, once: true }));
+  await page.keyboard.press("Shift");
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state), { timeout: 1500 }).toBe("settled");
+  const hurriedAt = await page.evaluate(() => window.__hurriedAt);
   const world = await entranceWorld(page);
   // Settled well before the plan's 2.3 s, and by about .6 s after the input.
-  expect(world.time, "the hurried entrance ends early").toBeLessThan(Math.max(pressed, .4) + .65);
+  expect(world.time, "the hurried entrance ends early").toBeLessThan(Math.max(hurriedAt, .4) + .65);
   // No body jumps: between two fixed 1/240 s steps nothing moves more than a
   // 60 Hz frame's worth of a fast spring (the end is reached by motion, not a cut).
   for (const name of world.names) {
