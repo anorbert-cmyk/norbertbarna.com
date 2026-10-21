@@ -17,8 +17,8 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
-  ORIGIN, ROOT, SECTIONS, articleFile, citations, escapeHtml, faqOf, leadParagraph, loadArticles, markdownToHtml, outlineOf, readingMinutes,
-  wordCount, writingLanguageLinks,
+  ORIGIN, ROOT, SECTIONS, articleFile, citations, escapeHtml, faqOf, leadParagraph, loadArticles, markdownToHtml, readingMinutes, wordCount,
+  writingLanguageLinks,
 } from "./writing-content.mjs";
 import { urlOf } from "./service-pages.mjs";
 
@@ -33,11 +33,7 @@ const COPY = {
     locale: "hu_HU",
     templateFile: "hu/adatvedelem.html",
     contact: "/hu/kapcsolat",
-    home: { name: "Főoldal", path: "/hu" },
-    author: { name: "Barna Norbert", path: "/hu/rolam" },
-    breadcrumbLabel: "Útvonal",
-    tocLabel: "Tartalom",
-    updated: "Frissítve",
+    author: "Barna Norbert",
     minutes: (n) => `${n} perc olvasás`,
     date: (iso) => {
       const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
@@ -60,11 +56,7 @@ const COPY = {
     locale: "en_US",
     templateFile: "privacy.html",
     contact: "/contact",
-    home: { name: "Home", path: "/" },
-    author: { name: "Norbert Barna", path: "/about" },
-    breadcrumbLabel: "Breadcrumb",
-    tocLabel: "Contents",
-    updated: "Updated",
+    author: "Norbert Barna",
     minutes: (n) => `${n} min read`,
     date: (iso) => {
       const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
@@ -112,19 +104,6 @@ function header(template, lang, switchHref, alternate) {
   return replaced;
 }
 
-// Styles for the parts that only writing pages have (the chrome's stylesheets
-// cover the rest). Inline, so no asset hash changes when the generator does.
-const WRITING_CSS = [
-  ".writing-breadcrumb ol{list-style:none;margin:0 0 .75rem;padding:0;display:flex;flex-wrap:wrap;gap:.25rem .5rem;font-size:.9rem}",
-  ".writing-breadcrumb li+li::before{content:'›';margin-right:.5rem;opacity:.6}",
-  ".writing-breadcrumb [aria-current=page]{opacity:.75}",
-  ".writing-meta{font-size:.95rem;opacity:.85}",
-  ".writing-cover{margin:1.5rem 0}.writing-cover img{display:block;width:100%;height:auto;border-radius:12px}",
-  ".writing-toc{margin:1.5rem 0 2rem;padding:1rem 1.25rem;border:1px solid currentColor;border-radius:12px}",
-  ".writing-toc ol{margin:.5rem 0 0;padding-left:1.25rem}.writing-toc li{margin:.25rem 0}",
-  ".writing-toc::before{content:attr(aria-label);font-weight:600}",
-].join("");
-
 // ---- page parts ------------------------------------------------------------
 const json = (value) => JSON.stringify(value, null, 2).replace(/</g, "\\u003c");
 
@@ -170,7 +149,6 @@ function head({ lang, title, description, keywords, canonical, type, image, alte
     `<link rel="alternate" type="application/rss+xml" title="${escapeHtml(copy.feedTitle)}" href="${feedHref}"/>`,
     template.assets,
     `<script type="application/ld+json">\n${json(schema)}\n</script>`,
-    `<style>${WRITING_CSS}</style>`,
     `${template.headTail}</head>`,
   ].join("\n");
 }
@@ -186,37 +164,11 @@ const person = {
 const imageOf = (article) => article.cover
   ? { url: `${ORIGIN}${article.cover.startsWith("/") ? "" : "/"}${article.cover}`, alt: article.cover_alt }
   : { url: DEFAULT_IMAGE.url, alt: DEFAULT_IMAGE.alt[article.lang] };
-// Date, reading time and, on article pages, the author and the update date
-// when it differs from publication (so readers and crawlers see freshness).
-const meta = (lang, article, byline = false) => {
-  const copy = COPY[lang];
-  const parts = [];
-  if (byline) parts.push(`<a href="${copy.author.path}" rel="author">${copy.author.name}</a>`);
-  parts.push(`<time datetime="${article.date.slice(0, 10)}">${copy.date(article.date)}</time>`);
-  if (byline && article.updated.slice(0, 10) !== article.date.slice(0, 10)) {
-    parts.push(`${copy.updated}: <time datetime="${article.updated.slice(0, 10)}">${copy.date(article.updated)}</time>`);
-  }
-  parts.push(copy.minutes(readingMinutes(article.markdown)));
-  return `<p class="writing-meta">${parts.join(" · ")}</p>`;
-};
-
-// Home › Írások › article: visible and in the BreadcrumbList.
-const breadcrumb = (lang, article) => {
-  const copy = COPY[lang];
-  const section = SECTIONS[lang];
-  return `<nav class="writing-breadcrumb" aria-label="${copy.breadcrumbLabel}"><ol><li><a href="${copy.home.path}">${copy.home.name}</a></li><li><a href="${section.path}">${section.name}</a></li><li aria-current="page">${escapeHtml(article.title)}</li></ol></nav>`;
-};
-
-// H2 outline, so a long article can be scanned (and its sections deep-linked).
-const tableOfContents = (lang, body) => {
-  const outline = outlineOf(body);
-  if (outline.length < 3) return "";
-  return `<nav class="writing-toc" aria-label="${COPY[lang].tocLabel}"><ol>${outline.map(({ id, text }) => `<li><a href="#${id}">${escapeHtml(text)}</a></li>`).join("")}</ol></nav>`;
-};
-
-const coverFigure = (article, image) => article.cover
-  ? `<figure class="writing-cover"><img src="${escapeHtml(article.cover)}" alt="${escapeHtml(image.alt)}" width="1200" height="630" decoding="async" fetchpriority="high"/></figure>`
-  : "";
+// Date and reading time; on article pages the line starts with the visible
+// breadcrumb back to the list (the BreadcrumbList names it). No byline: the
+// author is schema and meta data, per design.md (BlogHero).
+const meta = (lang, article, crumb = false) =>
+  `<p class="writing-meta">${crumb ? `<a href="${SECTIONS[lang].path}">${SECTIONS[lang].name}</a> · ` : ""}<time datetime="${article.date.slice(0, 10)}">${COPY[lang].date(article.date)}</time> · ${COPY[lang].minutes(readingMinutes(article.markdown))}</p>`;
 
 function renderArticle(article, articles, links) {
   const { lang } = article;
@@ -262,9 +214,8 @@ function renderArticle(article, articles, links) {
         "@type": "BreadcrumbList",
         "@id": `${canonical}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: copy.home.name, item: `${ORIGIN}${copy.home.path === "/" ? "/" : copy.home.path}` },
-          { "@type": "ListItem", position: 2, name: section.name, item: `${ORIGIN}${section.path}` },
-          { "@type": "ListItem", position: 3, name: article.title },
+          { "@type": "ListItem", position: 1, name: section.name, item: `${ORIGIN}${section.path}` },
+          { "@type": "ListItem", position: 2, name: article.title },
         ],
       },
       // The visible "Gyakori kérdések / Frequently asked questions" block, word for word.
@@ -284,13 +235,8 @@ function renderArticle(article, articles, links) {
     : "";
   const main = [
     `<article class="work-single-section" aria-labelledby="article-title"><div class="w-layout-blockcontainer container-large w-container"><div class="summary w-richtext home-banner-content-wrap">`,
-    `<header>`,
-    breadcrumb(lang, article),
     `<h1 class="home-banner-title" id="article-title">${escapeHtml(article.title)}</h1>`,
     meta(lang, article, true),
-    coverFigure(article, image),
-    `</header>`,
-    tableOfContents(lang, body),
     body,
     `<h2 id="${lang === "hu" ? "kapcsolodo-szolgaltatas" : "related-service"}">${copy.ctaHeading}</h2>`,
     `<p>${copy.ctaText(service)}</p>`,
@@ -300,7 +246,7 @@ function renderArticle(article, articles, links) {
   const extraMeta = [
     `<meta content="${article.date}" property="article:published_time"/>`,
     `<meta content="${article.updated}" property="article:modified_time"/>`,
-    `<meta content="${copy.author.name}" property="article:author"/>`,
+    `<meta content="${copy.author}" property="article:author"/>`,
     ...(article.service_label ? [`<meta content="${escapeHtml(article.service_label)}" property="article:section"/>`] : []),
     ...article.tags.map((tag) => `<meta content="${escapeHtml(tag)}" property="article:tag"/>`),
   ];
