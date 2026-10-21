@@ -68,6 +68,15 @@ test('strict payload strips queries, fragments, arbitrary campaigns, referrer pa
   expect(Object.keys(payload.properties).sort()).toEqual(['$current_url', '$device_type', '$geoip_disable', '$host', '$pathname', '$process_person_profile', '$session_id', 'acquisition_channel', 'acquisition_source', 'consent_version', 'is_test', 'page_language', 'page_type', 'site_release'].sort());
 });
 
+test('every service route is reported as a service page', async ({ page }) => {
+  for (const path of ['/ai-integration', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes']) {
+    const sent = await setup(page, { accepted: true, path });
+    await expect.poll(() => sent.length, path).toBe(1);
+    expect(sent[0].properties.page_type, path).toBe('service');
+    await page.unrouteAll({ behavior: 'ignoreErrors' });
+  }
+});
+
 test('unknown routes and broken storage fail closed without disabling native buttons', async ({ page }) => {
   const sent = await setup(page, { accepted: true, storageFailure: true });
   await page.evaluate(() => document.querySelector('main button').addEventListener('click', () => { window.nativeActivated = true; }));
