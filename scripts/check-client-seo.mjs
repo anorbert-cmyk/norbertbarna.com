@@ -26,7 +26,10 @@ for (const file of SERVICE_PAGES) {
   const h1 = text(body.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || "");
   assert.equal(attr(html.match(/<html\b[^>]*>/i)?.[0] || "", "lang"), language, `${file}: document language`);
   assert(/<head>\s*<meta charset="utf-8"\/>/.test(html) && /href="\/assets\/css\/fonts\.[a-f0-9]{12}\.css"/.test(html), `${file}: charset first and the self-hosted fonts stylesheet`);
-  assert(h1 && (file.includes("webfejlesztes") ? /weboldal készítés/i.test(h1) : /AI/i.test(h1)), `${file}: visible service subject`);
+  assert(h1 && (file.includes("webfejlesztes") ? /weboldal készítés/i.test(h1) : file.includes("web-development") ? /web development/i.test(h1) : /AI/i.test(h1)), `${file}: visible service subject`);
+  // Every service page states the working languages (owner decision, 2026-10-21):
+  // German and other European clients must read that the work runs in Hungarian and English.
+  assert((language === "hu" ? /Magyarul és angolul dolgozom/ : /English and Hungarian/).test(text(body)), `${file}: states that the work runs in Hungarian and English`);
   const links = [...html.matchAll(/<link\b[^>]*>/gi)].map(([tag]) => tag);
   const translations = links.filter(tag => attr(tag, "rel") === "alternate" && attr(tag, "hreflang"));
   if (pair) {
@@ -35,7 +38,7 @@ for (const file of SERVICE_PAGES) {
     assert.deepEqual(Object.fromEntries(translations.map(tag => [attr(tag, "hreflang"), attr(tag, "href")])), alternates, `${file}: reciprocal, self-inclusive hreflang`);
   } else {
     // A page without a translation carries no hreflang until its pair exists.
-    assert.equal(translations.length, 0, `${file}: no hreflang before the English pair exists`);
+    assert.equal(translations.length, 0, `${file}: no hreflang before the language pair exists`);
   }
   const canonical = links.filter(tag => attr(tag, "rel") === "canonical");
   assert.equal(canonical.length, 1, `${file}: one canonical`);
@@ -79,6 +82,8 @@ for (const file of SERVICE_PAGES) {
     assert.equal(faqs.length, 0, `${file}: no FAQPage on this service page`);
   }
   assert(!/\d[\d\s.]*(?:Ft|HUF|forint|EUR|€)/i.test(text(body)), `${file}: no invented price in the copy`);
+  // Regulated-industry copy stays a design claim, never legal advice or a certification promise.
+  assert(!/\b(?:I|we) (?:guarantee|certify|will certify) (?:your )?(?:compliance|EU AI Act)|legal advice (?:is )?included|WCAG-compliant AI|guaranteed (?:compliance|ranking)/i.test(text(body)), `${file}: no legal-advice, compliance-certification or ranking promise`);
 }
 
 console.log(`OK: ${SERVICE_PAGES.length} client landing pages have reciprocal languages, visible service data, proof links and native contact actions with separate consent-gated analytics`);
