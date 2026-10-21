@@ -171,8 +171,29 @@ export function plainText(markdown) {
     .replace(/^#{1,6}\s+|^>\s?|^(?:[-*]|\d+\.)\s+/gm, "").replace(/\*+/g, "").replace(/\s+/g, " ").trim();
 }
 
+export const wordCount = (markdown) => plainText(markdown).split(" ").filter(Boolean).length;
 // About 200 words a minute; never "0 minutes".
-export const readingMinutes = (markdown) => Math.max(1, Math.ceil(plainText(markdown).split(" ").filter(Boolean).length / 200));
+export const readingMinutes = (markdown) => Math.max(1, Math.ceil(wordCount(markdown) / 200));
+
+// The opening paragraph, as plain text: the article's direct answer, which
+// the page repeats as the schema abstract for answer engines.
+export function leadParagraph(markdown) {
+  const first = markdown.replace(/\r\n/g, "\n").split(/\n\s*\n/).map((block) => block.trim()).find((block) => block && !/^(?:#|>|\||[-*]\s|\d+\.\s)/.test(block));
+  return first ? plainText(first) : "";
+}
+
+// Every external source the article links, once, in order: Article.citation.
+export function citations(markdown) {
+  const urls = [];
+  for (const [, href] of markdown.matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)) {
+    if (!href.startsWith(ORIGIN) && !urls.includes(href)) urls.push(href);
+  }
+  return urls;
+}
+
+// The H2 outline of rendered HTML, for the on-page table of contents.
+export const outlineOf = (html) => [...html.matchAll(/<h2\b[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
+  .map(([, id, inner]) => ({ id, text: htmlText(inner) }));
 
 export function articleFile(article) {
   return `${SECTIONS[article.lang].dir}/${article.slug}.html`;
