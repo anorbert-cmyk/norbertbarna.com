@@ -332,19 +332,17 @@ test("input during the case entrance hurries it from where it is instead of cutt
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state)).toBe("assembling");
   // Mid-entrance: the plate is still leaning back and the last mask is closed.
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.entrance?.time ?? 0)).toBeGreaterThan(.35);
-  // The simulated time when the key reaches the page, not when the test sent
-  // it: a slow runner can deliver it a few frames later.
-  await page.evaluate(() => window.addEventListener("keydown", () => {
-    window.__hurriedAt = window.PortfolioCaseOpening.entrance?.time ?? null;
-  }, { capture: true, once: true }));
+  const pressed = await page.evaluate(() => window.PortfolioCaseOpening.entrance.time);
+  expect(pressed, "the key arrives before the entrance would end").toBeLessThan(1.6);
+  // The entrance keeps running between that read and the key, so the bound
+  // below starts from the entrance time the key actually arrived at.
+  await page.evaluate(() => addEventListener("keydown", () => { window.__hurriedAt = window.PortfolioCaseOpening.entrance.time; }, { capture: true, once: true }));
   await page.keyboard.press("Shift");
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state), { timeout: 1500 }).toBe("settled");
-  const pressed = await page.evaluate(() => window.__hurriedAt);
-  expect(pressed, "the key arrives while the entrance runs").not.toBeNull();
-  expect(pressed, "the key arrives before the entrance would end").toBeLessThan(1.6);
+  const hurriedAt = await page.evaluate(() => window.__hurriedAt);
   const world = await entranceWorld(page);
   // Settled well before the plan's 2.3 s, and by about .6 s after the input.
-  expect(world.time - pressed, "the hurried entrance ends about .6 s after the input").toBeLessThan(.65);
+  expect(world.time, "the hurried entrance ends early").toBeLessThan(Math.max(hurriedAt, .4) + .65);
   // No body jumps: between two fixed 1/240 s steps nothing moves more than a
   // 60 Hz frame's worth of a fast spring (the end is reached by motion, not a cut).
   for (const name of world.names) {

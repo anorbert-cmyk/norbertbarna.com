@@ -212,6 +212,13 @@ test('Hungarian routes are measured with their own language and page type', asyn
   expect(sent[0].properties.page_type).toBe('case_study');
 });
 
+test('generated writing routes are measured as articles; other shapes are not', async ({ page }) => {
+  const sent = await setup(page, { accepted: true, path: '/hu/irasok/ai-bevezetes-lepesei' });
+  await expect.poll(() => sent.length).toBe(1);
+  expect(sent[0].properties.page_type).toBe('article');
+  expect(sent[0].properties.page_language).toBe('hu');
+});
+
 test('a sent contact form is one detail-free conversion; named CTAs keep their id', async ({ page }) => {
   const sent = await setup(page, { accepted: true, path: '/hu/kapcsolat' });
   await expect.poll(() => sent.length).toBe(1);
