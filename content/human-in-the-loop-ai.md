@@ -1,78 +1,129 @@
 ---
-title: "Human-in-the-loop AI: what it means in a regulated product"
-description: What human-in-the-loop AI means in practice for a regulated product, from review states to recovery paths, drawn from shipped work.
+title: "Human-in-the-loop AI for regulated products: 7 patterns"
+description: "Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work."
+draft: true
 lang: en
 slug: human-in-the-loop-ai
-date: 2026-10-21T20:00:00+02:00
-updated: 2026-10-21T20:00:00+02:00
-tags: [human in the loop ai, ai integration, ai product design, regulated industries]
+date: 2026-11-18T09:00:00+01:00
+updated: 2026-11-18T09:00:00+01:00
+tags: [human in the loop ai, ai integration, ai product design, regulated industries, eu ai act, human oversight]
 service: /ai-integration
-service_label: AI integration for businesses
+service_label: AI integration for regulated industries
+cover: /assets/images/og/writing/human-in-the-loop-ai.jpg
+cover_alt: A folded paper ribbon passing through a paper gate with a small olive checkpoint fold
+pair: null
 ---
-"Human in the loop" is easy to put on a slide and hard to put in a product. In a regulated setting it is not a person who glances at the output now and then. It is a set of interface states, permissions and fallbacks that decide what the AI may do on its own, what a person must confirm, and what happens when the model is wrong.
+Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.
 
-This article describes what that looked like in two products I worked on: AI features in Instructure's learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
+This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure's learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
 
-## A working definition
+## What "human in the loop" means, and what it does not
 
-Human-in-the-loop AI is a workflow in which the system proposes and a person decides, at defined points, with enough information to decide well. Three things have to be true:
+Three terms are commonly used, and they describe different amounts of human control:
 
-- **The person can see that the AI was involved.** Output is labelled, not blended into human-written content.
-- **The person can change or reject the output.** An edit state and a way back exist for every suggestion.
-- **The decision is recorded.** Who accepted what, and on what basis, can be reconstructed later.
+- **Human in the loop:** a person approves each consequential output before it takes effect.
+- **Human on the loop:** the system acts on its own; a person monitors and can intervene.
+- **Human out of the loop:** fully automated, with review only after the fact, if at all.
 
-If any one of these is missing, the human is not really in the loop. They are watching it.
+These are design terms, not legal categories. The right level depends on the consequence of a wrong output, not on how good the model is. A draft that a person edits anyway can tolerate a weaker model; an action that reaches a customer or moves money cannot.
 
-## Why regulated products need it
+Three things have to be true for a person to be genuinely in the loop. They can see that the AI was involved. They can change or reject the output. And the decision is recorded, so that who accepted what, and on what basis, can be reconstructed later. If any one of these is missing, the person is not in the loop. They are watching it.
 
-In regulated environments, the cost of a wrong answer is not only a bad experience. It can be a compliance breach, an unfair decision about a person, or a loss that someone has to explain to an auditor. Customers in education, public sector, healthcare and finance do not buy impressive demos. They buy something they can roll out to many people and defend afterwards.
+## What the EU AI Act asks of human oversight
 
-Regulation is moving in the same direction. The EU AI Act requires human oversight for high-risk AI systems (Article 14), and its list of high-risk uses includes areas such as education and access to essential services. Whether a given feature falls under that list is a legal question, but the product patterns that satisfy human oversight are the same ones that make an AI feature trustworthy in the first place.
+Article 14 of the EU AI Act requires that high-risk AI systems be designed so the people overseeing them can understand the system's capacities and limitations, remain aware of automation bias, interpret the output correctly, decide not to use it or override it, and stop it through a "stop" button or a similar procedure (source: [AI Act Service Desk, Article 14](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), accessed 2026-10-21).
 
-## What it looked like at Instructure
+On timing: the Digital Omnibus on AI (Regulation (EU) 2026/1744, in force since 27 July 2026) moved the Annex III high-risk obligations to 2 December 2027 and the Annex I obligations to 2 August 2028. The Article 50 transparency duties, such as telling people they are interacting with an AI system, still apply from 2 August 2026 (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21).
 
-At Instructure I led end-to-end feature design within the Canvas Catalog ecosystem, part of a product that several million people used every day. Every AI suggestion needed to be explainable, editable and auditable. We set the guardrails on day one, before any feature was designed:
+This is a design reading of the text, not legal advice. Whether your system is high-risk is a question for your counsel. What I can say from shipped work is that each of the five oversight abilities in Article 14 maps to an interface decision, and the rest of this article is those decisions.
 
-- **Clear AI labelling and disclosure.** Users always knew which content the AI had produced.
-- **Editable outputs.** Generated pages and assignments came with human-review safeguards and could be changed before anyone relied on them.
-- **Source cues.** Suggestions showed the signals and sources behind them: explain first, then suggest.
-- **Recovery paths.** Every suggestion had a way to back out.
-- **Audit-ready controls** for AI applied to regulated content, such as legal material, with explicit human override.
+## Seven human-in-the-loop patterns that hold up in review
 
-Two decisions mattered more than any single screen.
+### 1. Label every AI output
 
-First, Legal, Compliance and Data Science co-reviewed the flows from the start. They were not a gate at the end; they wrote the guardrails with us. That is the only way I have seen it work, because a guardrail added after the design is usually a warning dialog nobody reads.
+At Instructure, where I led end-to-end feature design within the Canvas Catalog ecosystem, part of a product that several million people used every day, clear AI labelling and disclosure was a guardrail fixed on day one. Every AI suggestion had a label, an edit state and a way back, and nothing the model decided could remain invisible.
 
-Second, we designed for failure modes instead of hoping they would not happen. We mapped how the AI could be wrong, biased or misused, and built flows for those cases. Empty, loading, error and latency states were explicit, because a person cannot review what the interface hides.
+Decide before building: the wording of the label, where it sits, and whether it persists after a person has edited the output.
 
-These patterns were then codified into a reusable library: prompting, sources, review and confirm states, and feedback loops. One AI pattern across many contexts meant users met the same review behaviour everywhere, and teams did not reinvent it for each feature.
+### 2. Explain first, then suggest
 
-## What it looked like at SportsGambit
+The Instructure design principle was "explanation before suggestion": show the signals and sources behind a suggestion before the suggestion itself. A reviewer who sees why can judge; a reviewer who only sees what can only trust.
 
-SportsGambit was a prediction-market MVP with AI agents recommending picks. The risk here was different: speed. The product had to let users review time-sensitive picks quickly, and the temptation was to remove friction until the AI was effectively deciding.
+Decide: which source cue the reviewer can actually verify in the time they have. A citation nobody opens is decoration.
 
-We kept a deliberate review step before any action. Each recommendation carried a confidence signal and return context, and performance leaderboards let users check an agent's track record before acting on its advice. The design question was whether a new user could understand a card in a few seconds and still feel in control of the choice.
+### 3. Make outputs editable and reversible
 
-Early telemetry showed heavy use of AI-originated recommendations. We treated that as a risk to monitor, not a success metric, because automation reliance is exactly the failure mode human oversight is meant to catch. The case study also states what was not shipped: production-grade safeguards such as eligibility checks, deposit and loss limits and self-exclusion would have been launch requirements before any real-money release.
+Outputs at Instructure were editable and undoable, with explicit review states: draft, reviewed, published. This is the interface form of Article 14's "decide not to use, override or reverse". An AI output that can only be accepted or rejected pushes people toward accepting.
 
-## Patterns that carry over to other products
+### 4. Design the states nobody demos
 
-Across both projects, the same handful of decisions did most of the work:
+We shipped accessible component states for empty, loading, error and latency across every product variant. In a review, the failure state is where the questions start: what does the instructor see when the model returns nothing, returns late, or returns something it should not? If the interface hides those states, a person cannot review what they cannot see.
 
-1. **Decide what must stay human before deciding what to automate.** Start from the decision a person is accountable for, then let the AI prepare it.
-2. **Make AI output a draft by default.** Review states, not publish buttons.
-3. **Show why.** Sources, signals or confidence next to the suggestion, with optional depth for people who want it.
-4. **Design the failure paths.** Wrong answer, missing data, slow response, unavailable model. Each needs a state and a way forward.
-5. **Record decisions.** Who accepted, edited or rejected a suggestion, so the workflow can be audited and improved.
-6. **Measure review effort, not only adoption.** If reviewers approve everything in two seconds, the loop is not working. If review takes longer than the original task, the feature is not working either.
+### 5. Show confidence, and keep a deliberate review step
 
-## Questions to ask before you add AI to a regulated workflow
+At SportsGambit, a prediction-market MVP with AI agents recommending picks, every tip carried a confidence score, leaderboards let users check an agent's history before acting on its advice, and a deliberate review step stood before any action. Early product data showed heavy use of AI-originated recommendations; we treated that as a risk to watch, not as a success metric, because automation reliance is exactly the failure mode human oversight is meant to catch. This maps to Article 14's automation-bias requirement.
 
-- Which decisions in this workflow is a person accountable for?
-- What happens to the user, or to a third party, if the AI is wrong?
-- Can the user see, edit and reject every AI output?
-- What does the interface show when the model is slow, unsure or unavailable?
-- Who reviews the guardrails, and when: at the start or before launch?
-- How will you know whether people are reviewing or just approving?
+The case study also states its boundary: the MVP did not validate production wagering safeguards. Details: [SportsGambit case study](/work/sportsgambit).
 
-If these questions do not have answers yet, that is where the work starts. In my [AI integration work](/ai-integration) the second step, before anything is built, is defining access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. The [Instructure](/work/instructure) and [SportsGambit](/work/sportsgambit) case studies show the patterns in their original context.
+### 6. Put legal, compliance and data science in the room early
+
+At Instructure the flows were reviewed jointly with Legal, Compliance and Data Science, and then codified into reusable patterns: prompts, review states, confirmations, feedback loops. They did not stand in our way at the end; they co-wrote the guardrails from the start. A guardrail added after the design is usually a warning dialog nobody reads.
+
+The same held in non-AI regulated work. At Raiffeisen, where I was Product Lead for the mobile banking redesign, PSD2, strong customer authentication, KYC and audit trail arrived as non-negotiables. We kept almost every step and changed how it felt to go through them. That is the regulated-delivery parallel, not an AI example. Details: [Raiffeisen case study](/work/raiffeisen).
+
+### 7. Ship behind flags, measure, and name who can stop it
+
+Features at Instructure went out behind feature flags, and we measured adoption and task completion so that every iteration built on what the data showed. In my [AI integration work](/ai-integration) the same idea becomes step four of the method: a bounded pilot with a named owner who can pause it or roll back to the previous version.
+
+Decide: who owns the stop, how fast it can happen, and what is logged for later review.
+
+## What to decide before you build: eight questions
+
+1. What is the consequence of a wrong output, and for whom?
+2. What may the AI suggest, and what must a person approve?
+3. What does the reviewer see to judge the output?
+4. How does the reviewer edit, reject or reverse it?
+5. What happens on empty, missing or late output?
+6. Who can stop the feature, and how fast?
+7. What is logged for later review?
+8. Which measures decide whether the pilot continues?
+
+If these questions do not have answers yet, that is where the work starts. In my method the second step, before anything is built, is defining access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. If you are comparing partners, [what to prepare before hiring an AI integration partner](/writing/before-hiring-an-ai-integration-partner) lists the inputs that make that conversation useful.
+
+## What made it hard
+
+Most AI projects start with what can be automated. At Instructure we started with what must stay human. The hard part was ethical, not technical: designing for the AI being wrong, biased or misused, instead of pretending those cases would not occur. That does not make an impressive slide deck. It makes AI that real institutions can roll out to millions of people and sleep afterwards. Details: [Instructure case study](/work/instructure).
+
+## Frequently asked questions
+
+### What is human-in-the-loop AI?
+
+A workflow in which the system proposes and a person decides at defined points, with enough information to decide well. The person can see the AI was involved, can change or reject the output, and the decision is recorded.
+
+### Does the EU AI Act require human in the loop?
+
+Article 14 requires effective human oversight for high-risk systems, including the ability to override and to stop the system. It does not prescribe one interface pattern. Whether a system is high-risk is a legal question; this article is not legal advice.
+
+### When do the high-risk obligations apply?
+
+After the 2026 Digital Omnibus: Annex III systems from 2 December 2027, Annex I systems from 2 August 2028. Article 50 transparency duties apply from 2 August 2026.
+
+### Does human review slow everything down?
+
+It moves effort to where a mistake costs most. Measure review effort in the pilot: if reviewers approve everything in two seconds, the loop is not working; if review takes longer than the original task, the feature is not working either.
+
+### Can a small team do this?
+
+Yes. The patterns are interface decisions, not infrastructure. Start with one workflow, one label, one edit state and one named owner.
+
+### What is automation bias?
+
+The tendency to over-trust a system's output. The design response is visible confidence, verifiable sources and a deliberate review step before any action.
+
+### Do you work with teams in Germany and the rest of the EU?
+
+Yes. Communication is in English or Hungarian; German-speaking teams work with me in English.
+
+## Close
+
+Oversight is easier to design than to retrofit. The product that passes review is the one where every AI output already had a label, an edit state and a way back. Bring the workflow and the decision you are worried about, and [we start there](/contact).

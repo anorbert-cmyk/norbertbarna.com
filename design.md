@@ -938,7 +938,11 @@ schema `Article` (author `#person`, `datePublished`/`dateModified` as full
 date-times) plus a `BreadcrumbList` back to its list. Under the H1 one line
 gives the list link, the date and the reading time; there is still no
 “Written by / Published / Updated” label (**BlogHero**): the date of an
-article is content, a byline is not. Each article ends with the CTA: an
+article is content, a byline is not. A visible FAQ section (`## Gyakori kérdések` / `## Frequently asked
+questions` with `###` questions) is mirrored word for word as FAQPage schema.
+Covers are 1200×630 JPEGs under `assets/images/og/writing/` and serve only as
+the social preview; they are not shown on the page. `draft: true` keeps an
+article unpublished. Each article ends with the CTA: an
 optional related-service link from frontmatter and the
 `footer-email hero-work-link` contact action. A translated article names its
 pair in frontmatter and gets reciprocal hreflang and a `rel="alternate"`

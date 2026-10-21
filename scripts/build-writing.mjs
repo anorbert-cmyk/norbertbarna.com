@@ -17,7 +17,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
-  ORIGIN, ROOT, SECTIONS, articleFile, escapeHtml, loadArticles, markdownToHtml, readingMinutes, writingLanguageLinks,
+  ORIGIN, ROOT, SECTIONS, articleFile, escapeHtml, faqOf, loadArticles, markdownToHtml, readingMinutes, writingLanguageLinks,
 } from "./writing-content.mjs";
 import { urlOf } from "./service-pages.mjs";
 
@@ -173,6 +173,8 @@ function renderArticle(article, articles, links) {
     ? { en: canonical, hu: `${ORIGIN}${SECTIONS.hu.path}/${pair.slug}` }
     : { en: `${ORIGIN}${SECTIONS.en.path}/${pair.slug}`, hu: canonical });
   const image = imageOf(article);
+  const body = markdownToHtml(article.markdown, article.source);
+  const faq = faqOf(body);
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -200,6 +202,16 @@ function renderArticle(article, articles, links) {
           { "@type": "ListItem", position: 2, name: article.title },
         ],
       },
+      // The visible "Gyakori kérdések / Frequently asked questions" block, word for word.
+      ...(faq.length ? [{
+        "@type": "FAQPage",
+        "@id": `${canonical}#faq`,
+        url: canonical,
+        inLanguage: lang,
+        mainEntity: faq.map(({ question, answer }) => ({
+          "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      }] : []),
     ],
   };
   const service = article.service
@@ -209,7 +221,7 @@ function renderArticle(article, articles, links) {
     `<article class="work-single-section" aria-labelledby="article-title"><div class="w-layout-blockcontainer container-large w-container"><div class="summary w-richtext home-banner-content-wrap">`,
     `<h1 class="home-banner-title" id="article-title">${escapeHtml(article.title)}</h1>`,
     meta(lang, article, true),
-    markdownToHtml(article.markdown, article.source),
+    body,
     `<h2 id="${lang === "hu" ? "kapcsolodo-szolgaltatas" : "related-service"}">${copy.ctaHeading}</h2>`,
     `<p>${copy.ctaText(service)}</p>`,
     `<p><a class="footer-email hero-work-link" href="${copy.contact}">${copy.ctaButton}</a></p>`,
@@ -349,6 +361,7 @@ function renderLlms(articles) {
 }
 
 // ---- write or check --------------------------------------------------------
+loadArticles({ includeDrafts: true }); // validates the drafts' frontmatter too
 const articles = loadArticles();
 const links = writingLanguageLinks(articles);
 const outputs = new Map();

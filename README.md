@@ -95,9 +95,16 @@ turns them into static pages; there is no CMS and no runtime rendering.
    - `lang`: `hu` publishes at `/hu/irasok/<slug>`, `en` at `/writing/<slug>`.
    - `date` / `updated`: first publication and last meaningful change, full date-time with timezone.
    - `tags`: 3-8 terms; they become meta keywords and RSS categories.
+   - `draft: true` keeps the file in `content/` without publishing it (the
+     frontmatter is still validated). Publishing = delete that line, set `date`
+     and `updated` to the publication time, rebuild.
    - Optional: `pair` (slug of the translation in the other language),
      `service` + `service_label` (related service page for the closing CTA),
-     `cover` + `cover_alt` (a 1200x630 JPEG social image).
+     `cover` + `cover_alt` (a 1200x630 JPEG under `/assets/images/og/writing/`,
+     used as the social preview).
+   - A `## Gyakori kérdések` / `## Frequently asked questions` section with
+     `###` questions becomes FAQPage schema, word for word.
+   - Tables: a `| a | b |` header row, a `|---|---|` row, then body rows.
 
 2. `npm run build:writing` writes the article, the list page, the RSS feed,
    the sitemap entries and the `llms.txt` Writing section.

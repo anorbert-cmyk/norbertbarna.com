@@ -9,6 +9,7 @@ import { once } from "node:events";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { request as httpRequest } from "node:http";
 import { createRequire } from "node:module";
+import { urlOf, WRITING_PAGES } from "./service-pages.mjs";
 import { dirname, join, relative, resolve, sep } from "node:path";
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
@@ -149,8 +150,7 @@ try {
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
   for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem",
-    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure", "/writing", "/hu/irasok",
-    "/writing/human-in-the-loop-ai", "/hu/irasok/ceges-weboldal-ara"]) {
+    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure", ...WRITING_PAGES.map(urlOf)]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -277,7 +277,7 @@ try {
   }
 
   // Writing feeds are RSS that revalidates; the Markdown sources are not served.
-  for (const feedPath of ["/writing/feed.xml", "/hu/irasok/feed.xml"]) {
+  for (const feedPath of WRITING_PAGES.filter((page) => page.endsWith("/index.html")).map((page) => `${urlOf(page)}/feed.xml`)) {
     const feed = await fetch(`${baseUrl}${feedPath}`);
     assert(feed.ok, `${feedPath} returned ${feed.status}`);
     assert(/^application\/rss\+xml/.test(feed.headers.get("content-type") || ""), `${feedPath} must be served as RSS`);

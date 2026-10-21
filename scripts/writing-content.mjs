@@ -16,7 +16,7 @@ export const SECTIONS = {
   en: { dir: "writing", path: "/writing", name: "Writing" },
 };
 
-const FIELDS = ["title", "description", "lang", "slug", "date", "updated", "pair", "tags", "cover", "cover_alt", "service", "service_label"];
+const FIELDS = ["draft", "title", "description", "lang", "slug", "date", "updated", "pair", "tags", "cover", "cover_alt", "service", "service_label"];
 const REQUIRED = ["title", "description", "lang", "slug", "date", "updated"];
 const DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$/;
 
@@ -41,6 +41,10 @@ export function parseFrontmatter(source, file) {
     if (raw.trim().startsWith("[")) {
       const inner = raw.trim().replace(/^\[|\]$/g, "");
       data[key] = inner.trim() ? inner.split(",").map(unquote).filter(Boolean) : [];
+    } else if (raw.trim() === "null" || raw.trim() === "") {
+      continue;
+    } else if (raw.trim() === "true" || raw.trim() === "false") {
+      data[key] = raw.trim() === "true";
     } else {
       data[key] = unquote(raw);
     }
@@ -92,6 +96,15 @@ export function markdownToHtml(markdown, file) {
       index++;
       continue;
     }
+    if (line.startsWith("|") && /^\|(?:\s*:?-+:?\s*\|)+\s*$/.test(lines[index + 1] || "")) {
+      const cells = (row) => row.trim().replace(/^\||\|$/g, "").split("|").map((cell) => inline(cell.trim()));
+      const head = cells(line);
+      index += 2;
+      const rows = [];
+      while (index < lines.length && lines[index].startsWith("|")) rows.push(cells(lines[index++]));
+      blocks.push(`<table><thead><tr>${head.map((cell) => `<th scope="col">${cell}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`);
+      continue;
+    }
     const list = line.match(/^(\s*)(?:([-*])|(\d+)\.)\s+/);
     if (list) {
       const ordered = Boolean(list[3]);
@@ -112,7 +125,7 @@ export function markdownToHtml(markdown, file) {
       continue;
     }
     const paragraph = [];
-    while (index < lines.length && lines[index].trim() && !/^(?:#{1,6}\s|>|(?:[-*]|\d+\.)\s)/.test(lines[index])) {
+    while (index < lines.length && lines[index].trim() && !/^(?:#{1,6}\s|>|\||(?:[-*]|\d+\.)\s)/.test(lines[index])) {
       paragraph.push(lines[index++].trim());
     }
     blocks.push(`<p>${inline(paragraph.join(" "))}</p>`);
@@ -135,6 +148,24 @@ function jpegSize(bytes) {
   return null;
 }
 
+// Visible text of an HTML fragment, as check-seo reads <main>.
+export const htmlText = (html) => html.replace(/<[^>]+>/g, " ")
+  .replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+  .replace(/\s+/g, " ").trim();
+
+// The article's visible FAQ: an H2 named like FAQ_HEADING, then ### questions,
+// each answered by the blocks up to the next heading. Feeds FAQPage schema.
+const FAQ_HEADING = /^(?:Gyakori kérdések|Frequently asked questions|Häufige Fragen)\b/i;
+export function faqOf(html) {
+  const sections = html.split(/(?=<h2\b)/);
+  const section = sections.find((part) => FAQ_HEADING.test(htmlText(part.match(/^<h2\b[^>]*>([\s\S]*?)<\/h2>/)?.[1] || "")));
+  if (!section) return [];
+  return section.split(/(?=<h3\b)/).slice(1).map((part) => {
+    const [, question, answer] = part.match(/^<h3\b[^>]*>([\s\S]*?)<\/h3>([\s\S]*)$/);
+    return { question: htmlText(question), answer: htmlText(answer) };
+  }).filter((item) => item.question && item.answer);
+}
+
 export function plainText(markdown) {
   return markdown.replace(/`([^`]+)`/g, "$1").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
     .replace(/^#{1,6}\s+|^>\s?|^(?:[-*]|\d+\.)\s+/gm, "").replace(/\*+/g, "").replace(/\s+/g, " ").trim();
@@ -147,7 +178,9 @@ export function articleFile(article) {
   return `${SECTIONS[article.lang].dir}/${article.slug}.html`;
 }
 
-export function loadArticles({ root = ROOT } = {}) {
+// Published articles only; `draft: true` keeps a file in content/ without
+// output (its frontmatter is still validated). includeDrafts lists both.
+export function loadArticles({ root = ROOT, includeDrafts = false } = {}) {
   const dir = join(root, "content");
   if (!existsSync(dir)) return [];
   const articles = [];
@@ -180,6 +213,9 @@ export function loadArticles({ root = ROOT } = {}) {
     if (Boolean(data.service) !== Boolean(data.service_label)) throw new Error(`${file}: service and service_label go together`);
     if (/^#\s/m.test(body)) throw new Error(`${file}: remove the # heading; the title is the H1`);
     articles.push({ ...data, tags: data.tags || [], source: file, markdown: body.trim() });
+  }
+  if (!includeDrafts) {
+    for (let i = articles.length - 1; i >= 0; i--) if (articles[i].draft) articles.splice(i, 1);
   }
   const bySlug = new Map();
   for (const article of articles) {

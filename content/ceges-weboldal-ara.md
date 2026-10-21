@@ -1,92 +1,103 @@
 ---
-title: Mitől függ egy céges weboldal ára 2026-ban?
-description: A céges weboldal árát a cél, a tartalom, a funkciók, a nyelvek és az üzemeltetés határozza meg. Tényezőlista árajánlatkérés előtt.
+title: "Weboldal készítés árak 2026: mitől függ egy céges oldal ára"
+description: "Weboldal készítés árak 2026-ban: mitől függ egy egyedi céges weboldal ára, és mit kérdezz meg ajánlatkérés előtt. Tényezők és példa."
+draft: true
 lang: hu
 slug: ceges-weboldal-ara
-date: 2026-10-21T20:00:00+02:00
-updated: 2026-10-21T20:00:00+02:00
-tags: [weboldal készítés, weboldal készítés árak, webfejlesztés, árajánlat]
+date: 2026-11-04T09:00:00+01:00
+updated: 2026-11-04T09:00:00+01:00
+tags: [weboldal készítés árak, honlapkészítés, egyedi weboldal készítés, weboldal készítés, webfejlesztés]
+service: /hu/webfejlesztes
+service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
+cover: /assets/images/og/writing/ceges-weboldal-ara.jpg
+cover_alt: Öt egyre nagyobb, hajtogatott papírkapu sorban, lila háttér előtt
+pair: null
 ---
-Két árajánlat ugyanarra a céges weboldalra sokszorosan eltérhet egymástól, és gyakran mindkettő korrekt. Az ár nem az oldalak számából jön, hanem azokból a döntésekből, amelyeket az ajánlat mögött valaki már meghozott helyetted, vagy még meg sem beszéltetek.
+A weboldal készítés ára attól függ, mire kell a weboldalnak: kiknek szól, mit kell a látogatónak megtennie rajta, és milyen rendszerekhez kapcsolódik. Két ajánlat ugyanarra a kérésre sokszorosan eltérhet, és gyakran mindkettő korrekt, mert nem ugyanazt a munkát árazza. Én minden weboldalt egyedi munkaként kezelek: a technológiát, a szerkezetet, a designt és a tartalmat a felhasználóid igényeihez szabom, ezért az ár is ebből következik, nem egy előre gyártott csomagból.
 
-Ebben a cikkben nem írok számokat. Azokat a tényezőket sorolom fel, amelyek egy weboldal árát a legjobban mozgatják, hogy két ajánlatot össze tudj hasonlítani, és tudd, mit kérdezz, mielőtt aláírsz.
+Ebben a cikkben nem írok számokat. Sorra veszem azt a kilenc tényezőt, amely egy egyedi céges weboldal árát a legjobban mozgatja, mutatok egy példát egy saját projektből, és leírom, hogyan kérj úgy ajánlatot, hogy két ajánlatot valóban össze tudj hasonlítani.
 
 ## Röviden: mitől függ a weboldal ára
 
 - **A cél:** bemutatkozó oldal, ügyfélszerző oldal, webáruház vagy webalkalmazás.
 - **A tartalom:** ki írja a szövegeket, honnan jönnek a fotók, hány oldal és hány nyelv.
 - **A design:** sablonra épül, vagy egyedi tervezés készül.
-- **A tartalomkezelés:** ki és hogyan módosítja az oldalt az indulás után.
 - **A funkciók és integrációk:** űrlap, foglalás, fizetés, tagi felület, CRM vagy számlázó.
-- **A jogi és adatvédelmi elvárások:** hozzájáruláskezelés, adatkezelési tájékoztató, akadálymentesség.
-- **A kereshetőség és a sebesség:** benne van-e a technikai keresőoptimalizálás.
-- **Az üzemeltetés:** tárhely, frissítések, biztonsági mentés és karbantartás.
-- **A határidő:** egy szoros indulási dátum átrendezi a munkát.
+- **A technológia:** statikus oldal, tartalomkezelővel épített oldal vagy webalkalmazás.
+- **A tartalomkezelés:** ki és hogyan módosítja az oldalt az indulás után.
+- **Az adatvédelem és a biztonság:** hozzájáruláskezelés, tájékoztató, tartalombiztonság.
+- **Az akadálymentesség és a kereshetőség:** billentyűzetes használat, kontraszt, technikai SEO, sebesség.
+- **Az üzemeltetés és a határidő:** tárhely, frissítések, mentés, és hogy mikorra kell készen lennie.
 
-## 1. Mit kell elérnie az oldalnak
+## Miért nem írok fix árat egy weboldalra
 
-Az első kérdés nem az, hány aloldal lesz, hanem az, mit kell elérnie az oldalnak. Egy bemutatkozó oldal azt bizonyítja, hogy a cég létezik és megbízható. Egy ügyfélszerző oldalnak meg kell találnia a keresőben azokat, akik a szolgáltatásodat keresik, és el kell vezetnie őket a kapcsolatfelvételig. Egy webáruház termékeket, készletet és fizetést kezel. Egy webalkalmazásba a felhasználók belépnek és dolgoznak benne.
+Nem a mennyiségben hiszek, hanem a minőségben. Egy weboldal nálam nem sablon kitöltése, hanem olyan munka, amely hűen mutatja a márkádat, a termékeidet és azt a szakmai tudást is, amit beleteszek. Ezért a weboldal ára a munka tartalmából következik: abból, hogy mit kell megépíteni, és nem abból, hány aloldal lesz.
 
-A négy közül mindegyik más munkát jelent, ezért egy ajánlatban először azt nézd meg, melyikre szól. Ha a cél nincs leírva, a két ajánlat valószínűleg két különböző oldalra vonatkozik.
+Olyan projekteken dolgozom, ahol a megrendelő is beleteszi az energiát: ad tartalmat, dönt, visszajelez. Egy egyedi weboldal közös munka. Ha neked egy gyorsan kitöltött sablon kell, az is lehet jó döntés, de akkor nem én vagyok hozzá a legjobb partner, és ezt az első beszélgetésen el is mondom.
 
-## 2. A tartalom: szöveg, kép, oldalszám
+## Miért kapsz nagyon eltérő ajánlatokat ugyanarra a kérésre
 
-A tartalom a legtöbbször alábecsült tétel. Ha a szövegeket te adod, a fejlesztő elhelyezi őket. Ha a fejlesztőnek kell megírnia vagy átírnia, az szakmai munka: interjú veled, a kínálat megértése, szerkesztés és jóváhagyási körök.
+Két ajánlat ritkán ugyanazt árazza. Az egyik egy sablont állít be a te szövegeddel. A másik feltárással kezd, megtervezi a látogató útját, és megépíti a hozzá tartozó rendszert. Mindkettőt "honlapkészítésnek" hívják. A kérdés nem az, melyik olcsóbb, hanem hogy mi van benne. Ha az ajánlat nem írja le, mit kell elérnie az oldalnak, a két ajánlat valószínűleg két különböző oldalra vonatkozik.
 
-A Kineticare digitális egészségplatformon, amelyet terveztem és fejlesztettem, a szövegek a páciens szavaival íródtak, nem klinikai zsargonnal, és stockfotók helyett saját felvételek kerültek az oldalra a terapeutákról és a kezekről. Ez a döntés látszik az eredményen, és látszik a ráfordításon is. A részleteket a [Kineticare esettanulmányban](/hu/munka/kineticare) írom le.
+## Mitől függ egy céges weboldal ára: 9 tényező
 
-Kérdezd meg az ajánlattevőt, hogy a szövegírás, a fotó és a fordítás benne van-e az árban, vagy neked kell hoznod.
+### 1. Mit kell elérnie az oldalnak
 
-## 3. Sablon vagy egyedi design
+Egy bemutatkozó oldal azt bizonyítja, hogy a cég létezik és megbízható. Egy ügyfélszerző oldalnak meg kell találnia a keresőben azokat, akik a szolgáltatásodat keresik, és el kell vezetnie őket a kapcsolatfelvételig. Egy webáruház termékeket, készletet és fizetést kezel. Egy webalkalmazásba a felhasználók belépnek és dolgoznak benne. A négy közül mindegyik más munka.
 
-Egy kész sablon gyorsan elindul, és sok cégnek elég. Az egyedi tervezés akkor éri meg, ha az oldalnak meg kell különböztetnie téged a versenytársaktól, vagy ha a tartalom nem fér bele egy sablon szerkezetébe. Az egyedi design nem csak a kinézet: benne van a navigáció, a mobilnézet, az űrlapok és a hibaállapotok megtervezése is.
+Kérdezd meg magadtól: mit kell a látogatónak megtennie az oldalon? Hívjon, fizessen, jelentkezzen, vagy csak értse meg, mit csinálsz?
 
-Ha két ajánlat között nagy a különbség, nézd meg, hány tervezési kör és hány képernyő megtervezése szerepel bennük.
+### 2. Tartalom: ki írja, és mennyi van belőle
 
-## 4. Tartalomkezelés az indulás után
+A szöveg és a fotó sokszor több munka, mint a kód. Ha kész szöveggel érkezel, a fejlesztő elhelyezi. Ha a szöveget meg kell írni vagy át kell írni, az szakmai munka: interjú veled, a kínálat megértése, szerkesztés, jóváhagyási körök. Egy második nyelv sem fordítási gomb: minden oldal kétszer létezik, saját címmel, leírással és keresőoptimalizálással.
 
-Ki módosítja majd az oldalt? Ha ritkán változik, a módosításokat elvégezheti a fejlesztő. Ha rendszeresen jelennek meg új cikkek, ajánlatok vagy kurzusok, tartalomkezelő rendszer (CMS) kell, amelyben a munkatársaid fejlesztő nélkül dolgoznak.
+Kérdezd meg az ajánlattevőt: a szövegírás, a fotó és a fordítás benne van az árban, vagy neked kell hoznod?
 
-A Kineticare-nél a Payload tartalomkezelőt választottam, így a két gyógytornász maga publikálja a cikkeket és a kurzusanyagokat. A tartalomkezelő bekötése, a szerkesztői felület beállítása és a jogosultságok kiosztása külön munka, de az indulás után sok kis megrendelést spórol meg.
+### 3. Egyedi design vagy sablon
 
-## 5. Funkciók és integrációk
+Egy kész sablon gyorsan elindul, és sok cégnek elég. Az egyedi tervezés akkor éri meg, ha a látogatónak bizalomra van szüksége a döntéshez, vagy ha a tartalom nem fér bele egy sablon szerkezetébe. Az egyedi design nem csak a kinézet: benne van a navigáció, a mobilnézet, az űrlapok és a hibaállapotok megtervezése is. A döntési szempontokat külön cikkben írtam le: [Egyedi weboldal vagy sablon](/hu/irasok/egyedi-weboldal-vagy-sablon).
 
-Minden funkció, amely egy másik rendszerrel beszél, saját munkát és saját hibaeseteket hoz. Egy kapcsolatfelvételi űrlapnál el kell dönteni, hová megy az üzenet, és hogyan szűröd ki a spamet. Egy online fizetésnél a sikeres, a sikertelen és a megszakított fizetést is kezelni kell. Egy tagi felületnél a belépést, a jogosultságokat és azt, hogy a fizetős tartalom valóban védett maradjon.
+### 4. Funkciók és integrációk
 
-Tipikus tételek, amelyeket érdemes külön sorban látni az ajánlatban:
+Minden funkció, amely egy másik rendszerrel beszél, saját munkát és saját hibaeseteket hoz. Egy kapcsolatfelvételi űrlapnál el kell dönteni, hová megy az üzenet, és hogyan szűröd ki a spamet. Egy online fizetésnél a sikeres, a sikertelen és a megszakított fizetést is kezelni kell. Egy tagi felületnél a belépést, a jogosultságokat és azt, hogy a fizetős tartalom valóban védett maradjon. CRM, számlázó, hírlevél, foglalási naptár: ami adatot mozgat, annál a hibakezelést is meg kell tervezni.
 
-- kapcsolatfelvételi űrlap és spamvédelem,
-- időpontfoglalás,
-- online fizetés (a Kineticare-ben például Barion),
-- tagi felület vagy ügyfélportál,
-- kapcsolat CRM-mel, hírlevél-küldővel vagy számlázóval,
-- videó vagy nagy méretű média kiszolgálása.
+Tipikus tételek, amelyeket érdemes külön sorban látni az ajánlatban: űrlap és spamvédelem, időpontfoglalás, online fizetés, tagi felület vagy ügyfélportál, kapcsolat CRM-mel vagy számlázóval, videó és nagy méretű média kiszolgálása.
 
-## 6. Nyelvek
+### 5. Technológia a felhasználóidhoz szabva
 
-Egy második nyelv nem egy fordítási gomb. Minden oldal kétszer létezik, mindkettőnek saját címe, leírása és keresőoptimalizálása van, és a két változatnak hivatkoznia kell egymásra, hogy a Google a megfelelő nyelvű oldalt mutassa. Ez az oldal is így működik magyarul és angolul.
+Statikus oldal, tartalomkezelővel épített oldal vagy webalkalmazás: a választás a látogatóid és a csapatod igényeiből jön, nem a megszokásból. Nálam a technológia is a felhasználói igényekhez van szabva. Egy ritkán változó bemutatkozó oldalnak nem kell az a rendszer, ami egy fizetős tagi platformnak igen, és fordítva: egy webalkalmazást nem érdemes egy oldalépítőbe erőltetni.
 
-Kérdezd meg, hogy a fordítást ki készíti, és hogy a második nyelvre is elkészül-e a keresőoptimalizálás.
+### 6. Tartalomkezelés az indulás után
 
-## 7. Jogi és adatvédelmi elvárások
+Ki módosítja az oldalt az indulás után? Ha ritkán változik, a módosításokat elvégezheti a fejlesztő. Ha rendszeresen jelennek meg új cikkek, ajánlatok vagy kurzusok, olyan tartalomkezelő rendszer kell, amelyben a munkatársaid fejlesztő nélkül dolgoznak, és amelyet tényleg használni fogtok. Kérd, hogy az átadás előtt mutassák meg.
 
-Ha az oldalon látogatottságmérés fut, a GDPR szerint a látogató hozzájárulása kell hozzá, és a mérésnek kikapcsolva kell maradnia, amíg a látogató nem dönt. Kell adatkezelési tájékoztató, és ha űrlap van az oldalon, le kell írni, hová kerülnek az adatok. Egészségügyi vagy pénzügyi témánál ennél szigorúbb a mérce.
+### 7. Adatvédelem és biztonság
 
-Az akadálymentesség sem opcionális minden cégnek: az Európai Akadálymentesítési Irányelv 2025 júniusa óta bizonyos szolgáltatásokra, például az online kereskedelemre is vonatkozik. Hogy rád érvényes-e, azt érdemes jogásszal tisztázni, de a billentyűzettel használható navigáció és a megfelelő kontraszt eleve egy jó oldal része.
+Ha az oldalon látogatottságmérés fut, a GDPR szerint a látogató hozzájárulása kell hozzá, és a mérésnek kikapcsolva kell maradnia, amíg a látogató nem dönt. Kell adatkezelési tájékoztató, és ha űrlap van az oldalon, le kell írni, hová kerülnek az adatok. Egészségügyi vagy pénzügyi témánál ennél szigorúbb a mérce: ott a biztonságnak a kódban kell megjelennie, például szigorú tartalombiztonsági szabályzattal, nem egy szabályzatoldalon.
 
-## 8. Kereshetőség és sebesség
+### 8. Akadálymentesség, kereshetőség, sebesség
 
-Egy oldal attól még nem jelenik meg a Google-ben, hogy elkészült. A technikai alapok, vagyis a gyors betöltés, az oldalanként egyedi cím és leírás, a strukturált adatok, az oldaltérkép és a nyelvi változatok jelölése, az építéskor olcsók, utólag drágák.
+Az európai akadálymentességi irányelv (az Európai Parlament és a Tanács (EU) 2019/882 irányelve) 2025. június 28. óta alkalmazandó bizonyos szolgáltatásokra, például az elektronikus kereskedelemre; a szolgáltatást nyújtó mikrovállalkozások mentesülnek. Hogy rád vonatkozik-e, azt jogásszal érdemes tisztázni; ez a cikk tervezési szempontként beszél róla, nem jogi tanácsadás. A billentyűzettel használható navigáció és a megfelelő kontraszt viszont eleve egy jó oldal része.
 
-Kérdezd meg, mit tartalmaz az ajánlatban a keresőoptimalizálás: csak technikai alapokat, vagy kulcsszókutatást és tartalomtervet is. A kettő más munka.
+Egy oldal attól még nem jelenik meg a Google-ben, hogy elkészült. A gyors betöltés, a szerveroldali renderelés, az oldalanként egyedi cím és leírás, a strukturált adatok, az oldaltérkép és a nyelvi változatok jelölése építéskor olcsó, utólag drága. Kérdezd meg, mit tartalmaz az ajánlat keresőoptimalizálásként: technikai alapokat, vagy kulcsszókutatást és tartalomtervet is. A kettő más munka.
 
-## 9. Üzemeltetés és karbantartás
+### 9. Üzemeltetés, karbantartás, határidő
 
-Az ár nem ér véget az indulásnál. Van domain- és tárhelydíj, a tartalomkezelőt és a függőségeket frissíteni kell, kell biztonsági mentés, és valakinek figyelnie kell, ha valami leáll. Egy ajánlat összehasonlításakor nézd meg, mi a havi vagy éves költség, és ki a felelős, ha hiba van.
+Az ár nem ér véget az indulásnál. Van domain- és tárhelydíj, a tartalomkezelőt és a függőségeket frissíteni kell, kell biztonsági mentés, és valakinek figyelnie kell, ha valami leáll. Egy szoros indulási dátum pedig átrendezi a munkát: rövidebb visszajelzési köröket igényel, és gyakran azt, hogy egyes funkciók egy második körbe kerülnek.
 
-## 10. A határidő
+## Egy példa: mi került bele a Kineticare platformjába
 
-Egy szoros indulási dátum nem csak sürgetést jelent. Több embert vagy rövidebb visszajelzési köröket igényel, és gyakran azt, hogy egyes funkciók egy második körbe kerülnek. Ha a dátum fix, beszéljétek meg előre, mi kerül az első változatba és mi utána.
+Két gyógytornász, akik kéz- és karrehabilitációval foglalkoznak, ugyanazt a módszert akarták eljuttatni azokhoz a páciensekhez, akik soha nem ülnek be a kezelőbe. A platformot én terveztem és fejlesztettem: arculat, tartalom, felület, Next.js platform, Payload tartalomkezelő (a gyógytornászok fejlesztő nélkül publikálnak), CDN-ről streamelt kurzusvideók, Barion fizetés, tagi felület a fizetős tartalomhoz, GDPR-hozzájáruláskezelés és szigorú tartalombiztonsági szabályzat.
+
+Az ár szempontjából a tanulság az, hogy a "weboldal" itt valójában termék volt. A munka a betegútban, a fizetésben és a tagi hozzáférésben volt, nem az oldalak számában. A részleteket a [Kineticare esettanulmányban](/hu/munka/kineticare) írom le.
+
+## Hogyan kérj ajánlatot egyedi weboldal készítésre
+
+1. Írd le egy bekezdésben, kinek szól az oldal, és mit kell megtennie a látogatónak: hívjon, fizessen, jelentkezzen.
+2. Sorold fel a funkciókat a fenti lista alapján, és jelöld, mi kell az induláshoz, és mi ráér.
+3. Írd le, milyen rendszereid vannak már: számlázó, CRM, foglalási naptár, hírlevélküldő.
+4. Döntsd el, ki írja a szöveget, és ki kezeli az oldalt az indulás után.
+5. Kérd, hogy az ajánlat tételesen írja le, mit tartalmaz, mi nem tartozik bele, és hogyan működik a karbantartás.
 
 ## Mit kérdezz meg egy árajánlat előtt
 
@@ -99,6 +110,36 @@ Egy szoros indulási dátum nem csak sürgetést jelent. Több embert vagy rövi
 - Mi a havi vagy éves üzemeltetési költség, és ki a felelős hiba esetén?
 - Kié lesz a forráskód, a domain és a tartalom?
 
-## Hogyan dolgozom én
+## Mi nem tartozik általában a weboldal készítés árába
 
-Nálam az árajánlat egy rövid beszélgetéssel kezdődik a célról: kinek szól az oldal, mit kell elérnie, és milyen rendszerekkel kell együttműködnie. Ebből lesz egy leírt terjedelem, amelyben a fenti tényezők mind szerepelnek, és ebből lesz az ár. Így két ajánlatot már ugyanarra a munkára tudsz összevetni.
+A tapasztalatom szerint a folyamatos tartalomgyártás, a fizetett hirdetés, a fotózás (ha nincs külön kikötve) és a harmadik felek díjai (tárhely, domain, a fizetési szolgáltató jutaléka, levelezőrendszer) általában nem részei a weboldal árának. Ez megfigyelés, nem piaci adat: az ajánlatban mindig kérdezz rá.
+
+## Gyakori kérdések
+
+### Mennyibe kerül egy céges weboldal?
+
+Nálam minden weboldal egyedi munka, ezért az ár a feladatból következik: a tartalomból, a funkciókból, az integrációkból és a karbantartásból. Ha a fenti öt lépést leírod, pontos ajánlatot tudok adni, és két ajánlatot ugyanarra a munkára tudsz összevetni.
+
+### Olcsóbb, ha sablonból készül a weboldal?
+
+Induláskor általában igen. A testreszabás és a későbbi bővítés viszont drágíthatja, ha a sablon szerkezete nem a látogatódhoz igazodik. A döntési szempontokat az [Egyedi weboldal vagy sablon](/hu/irasok/egyedi-weboldal-vagy-sablon) cikkben írtam le.
+
+### Mennyi idő alatt készül el egy weboldal?
+
+Leginkább a tartalom elkészülte és a funkciók száma határozza meg, nem a kód. Egy tételes terjedelem után tudok határidőt mondani; általános hetek számát nem ígérek.
+
+### Mi a különbség a weboldal és a webalkalmazás között?
+
+Ha bejelentkezés, fizetés vagy adatfeldolgozás van benne, az már alkalmazás: más tervezést, tesztelést és üzemeltetést igényel. Erről az [egyedi webfejlesztés](/hu/webfejlesztes) oldalon írok bővebben.
+
+### Kell-e akadálymentesnek lennie a céges weboldalamnak?
+
+Az európai akadálymentességi irányelv 2025 júniusa óta bizonyos szolgáltatásokra vonatkozik, a szolgáltatást nyújtó mikrovállalkozások mentesülnek. Hogy rád érvényes-e, kérdezd meg a jogászodat. A billentyűzetes használat és a jó kontraszt attól függetlenül egy jó oldal része.
+
+### Milyen nyelven dolgozol, és vállalsz külföldi megbízást?
+
+Magyarul és angolul kommunikálok. Magyar, EU-s és német megrendelőkkel is dolgozom; a német piacra angolul.
+
+## Zárás
+
+A weboldal ára annak a következménye, amit a weboldaltól vársz. Ha azt kéred, hogy hozzon ügyfelet és hűen mutassa a márkádat, akkor a tartalom, a bizalom és a mérés is a munka része. Ezt érdemes az első beszélgetésen kimondani. Ha az öt lépést leírtad, [küldd el](/hu/kapcsolat), és megmondom, mi kell belőle az induláshoz.

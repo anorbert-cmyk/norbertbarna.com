@@ -53,13 +53,6 @@ Every page has a Hungarian version with the same content. The menu's EN | HU swi
 
 Instructure and SportsGambit are AI product work. Raiffeisen, Bitpanda, Benker, Kineticare and OnRobot are product design, leadership and build work, not AI integration projects.
 
-## Writing
-
-Articles by Norbert Barna, written from his own project work. Hungarian articles are listed at https://www.barnanorbert.com/hu/irasok and English articles at https://www.barnanorbert.com/writing.
-
-- [Mitől függ egy céges weboldal ára 2026-ban?](https://www.barnanorbert.com/hu/irasok/ceges-weboldal-ara) (Hungarian, 2026-10-21): A céges weboldal árát a cél, a tartalom, a funkciók, a nyelvek és az üzemeltetés határozza meg. Tényezőlista árajánlatkérés előtt.
-- [Human-in-the-loop AI: what it means in a regulated product](https://www.barnanorbert.com/writing/human-in-the-loop-ai) (English, 2026-10-21): What human-in-the-loop AI means in practice for a regulated product, from review states to recovery paths, drawn from shipped work.
-
 ## Services
 
 - AI integration for businesses (English: https://www.barnanorbert.com/ai-integration; Hungarian: https://www.barnanorbert.com/hu/ai-integracio)
