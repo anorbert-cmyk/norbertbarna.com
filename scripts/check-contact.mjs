@@ -235,6 +235,31 @@ try {
   sendError = null;
   result = await post({ ...message, ...proof }, { headers: { "X-Forwarded-For": "192.0.2.81" } });
   expect(result.status === 200, "a failed delivery leaves the proof usable for a retry");
+
+  // A key pasted with whitespace, quotes or a Bearer prefix still sends,
+  // and a rejected key is logged by reason and shape, never by value.
+  process.env.RESEND_API_KEY = ' "Bearer re_test_key"\n';
+  sent.length = 0;
+  proof = await solved("192.0.2.82");
+  result = await post({ ...message, ...proof }, { headers: { "X-Forwarded-For": "192.0.2.82" } });
+  expect(result.status === 200 && sent[0] && sent[0].apiKey === "re_test_key", "a pasted key is normalized before it is sent");
+  process.env.RESEND_API_KEY = "sk_wrong_secret_value";
+  sendError = Object.assign(new Error("upstream"), { status: 401, code: "missing_api_key" });
+  const logged = [];
+  const consoleError = console.error;
+  console.error = (...args) => logged.push(args.join(" "));
+  try {
+    proof = await solved("192.0.2.83");
+    result = await post({ ...message, ...proof }, { headers: { "X-Forwarded-For": "192.0.2.83" } });
+  } finally {
+    console.error = consoleError;
+  }
+  const line = logged.join("\n");
+  expect(result.status === 503, "a rejected key answers 503");
+  expect(/401 missing_api_key/.test(line) && /no re_ prefix/.test(line), `a rejected key is logged with its reason and shape (got ${line})`);
+  expect(!line.includes("sk_wrong_secret_value"), "the key value never reaches the log");
+  sendError = null;
+  process.env.RESEND_API_KEY = "re_test_key";
 } finally {
   server.close();
 }
