@@ -401,6 +401,10 @@ if (CHECK) {
   console.log(`OK: ${articles.length} articles; writing pages, feeds, sitemap and llms.txt match content/`);
 } else {
   for (const file of stale) rmSync(join(ROOT, file));
+  // Git keeps no empty directory; drop it here too, so local runs match CI.
+  for (const { dir } of Object.values(SECTIONS)) {
+    if (existsSync(join(ROOT, dir)) && !readdirSync(join(ROOT, dir)).length) rmSync(join(ROOT, dir), { recursive: true });
+  }
   for (const [file, content] of outputs) {
     mkdirSync(dirname(join(ROOT, file)), { recursive: true });
     writeFileSync(join(ROOT, file), content);
