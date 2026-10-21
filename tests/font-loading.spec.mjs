@@ -3,18 +3,20 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { writingPages } from "../scripts/writing-content.mjs";
+import { urlOf } from "../scripts/service-pages.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = JSON.parse(readFileSync(resolve(root, "assets/fonts/manifest.json"), "utf8"));
 const canonicalPaths = [...readFileSync(resolve(root, "sitemap.xml"), "utf8").matchAll(/<loc>(.*?)<\/loc>/g)]
   .map((match) => new URL(match[1]).pathname);
-// `/hu` is a directory served by an explicit route (design.md, Pages and routes).
-const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : route === "/hu" ? "hu/index.html" : `${route.slice(1)}.html`);
+// `/hu` and the writing list pages are directories served by explicit routes (design.md, Pages and routes).
+const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : ["/hu", "/writing", "/hu/irasok"].includes(route) ? `${route.slice(1)}/index.html` : `${route.slice(1)}.html`);
 const slugs = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
-// English pages in hiring order, then the utility pairs, then the Hungarian mirror.
+// English pages in hiring order, then the utility pairs, then the Hungarian mirror, then the generated writing pages.
 const expectedCanonicalPaths = ["/", "/works", ...slugs.map((slug) => `/work/${slug}`), "/about",
   "/ai-integration", "/hu/ai-integracio", "/privacy", "/hu/adatvedelem", "/contact", "/hu/kapcsolat",
-  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam"];
+  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam", ...writingPages().map(urlOf)];
 const cssSource = readFileSync(resolve(root, "assets/css/fonts.css"), "utf8");
 const cssDigest = createHash("sha256").update(cssSource).digest("hex").slice(0, 12);
 const sample = "Norbert Barna ÁÉÍÓÖŐÚÜŰ árvíztűrő tükörfúrógép";

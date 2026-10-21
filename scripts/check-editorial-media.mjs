@@ -5,9 +5,9 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { UTILITY_PAGES, PRIVACY_PAGES, isServicePage, isContactPage, baseOf, HU_PAGES, urlOf } from './service-pages.mjs';
+import { UTILITY_PAGES, PRIVACY_PAGES, WRITING_PAGES, isServicePage, isContactPage, isWritingList, baseOf, HU_PAGES, urlOf } from './service-pages.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const pages = ['index.html', 'works.html', 'about.html', ...readdirSync(join(root,'work')).filter(f=>f.endsWith('.html')).sort().map(f=>`work/${f}`), ...UTILITY_PAGES, ...HU_PAGES];
+const pages = ['index.html', 'works.html', 'about.html', ...readdirSync(join(root,'work')).filter(f=>f.endsWith('.html')).sort().map(f=>`work/${f}`), ...UTILITY_PAGES, ...HU_PAGES, ...WRITING_PAGES];
 const origin = 'https://www.barnanorbert.com';
 
 function attrs(tag) {
@@ -99,7 +99,7 @@ for (const page of pages) {
     assert(blocks.length,'JSON-LD is missing');
     const graph=blocks.flatMap(([,json])=>nodes(JSON.parse(json)));
     const types=graph.flatMap(n=>[].concat(n['@type']));
-    assert(types.includes(baseOf(page)==='index.html'?'ProfilePage':baseOf(page)==='works.html'?'CollectionPage':baseOf(page)==='about.html'?'AboutPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':isContactPage(page)?'ContactPage':'Article'),'page schema');
+    assert(types.includes(isWritingList(page)?'CollectionPage':baseOf(page)==='index.html'?'ProfilePage':baseOf(page)==='works.html'?'CollectionPage':baseOf(page)==='about.html'?'AboutPage':(isServicePage(page)||PRIVACY_PAGES.includes(page))?'WebPage':isContactPage(page)?'ContactPage':'Article'),'page schema');
     if(isServicePage(page)) assert(types.includes('Service'),'service schema');
     if(baseOf(page).startsWith('work/')) {
       assert(types.includes('BreadcrumbList'),'breadcrumb schema');
