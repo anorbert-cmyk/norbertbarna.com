@@ -380,17 +380,24 @@ Values shipped across the site:
 
 | Motion | ω (rad/s) | ζ | Feels like | Owner |
 |---|---|---|---|---|
+| Home morph and compact glass scroll follower | 36 | 1 | Catches each wheel notch in about .18 s, never overshoots | `home-composition.js`, `hero-scene.js` |
 | Compact menu drop (clip) | 28 | 1 | A blind dropping, about .23 s, no bounce | `compact-navigation.css` (`linear()`) |
 | Menu close glyph quarter turn | 26 | .7 | A small click into place | `compact-navigation.css` |
 | Home row hover out | 21 | 1 | Quick release, about .30 s | `animations.js` |
 | Case scroll-settle follower | 20 | 1 | Smooth catch-up to scroll, replaces a .3 s scrub | `case-opening.js` |
 | Related card title line | 18 | 1 | Crisp underline draw | `animations.js` |
 | Home row hover in | 17 | 1 | Deliberate lift, about .37 s | `animations.js` |
+| Glass fragment hover | 13.8 | .6 | Slices lean toward a fine pointer and settle | `hero-scene.js` |
 | Related card image scale | 13 | 1 | Slow breathe to 1.025 | `animations.js` |
+| Home stage refit after consent | 12 | 1 | The stage relaxes into the freed space, about .5 s | `immersive-navigation.js` |
 | Case title letters | 9 | .75 | Each letter lands with 2.5% overshoot, settled .62 s | `case-opening.js` |
+| Glass pointer tilt | 7.5 | .7 | Follows the pointer with about 4.6% overshoot | `hero-scene.js` |
+| Glass torsion return after a throw | 6 | .5 | Swings back to its −27° rest; hard stops at ±60°, restitution .3 | `hero-scene.js` |
 | Case panel rise and scale | 5.5 | 1 | A heavy object rising, within 2% by 1.08 s | `case-opening.js` |
 | Case panel hinge to the stop | 3.6 | .55 | A plate standing up and tapping the reading plane, restitution .25, first contact .71 s | `case-opening.js` |
 | Case mask slices | 3.3 | 1 | Curtains opening; aimed 3% past a stop at 100% so each lands exactly | `case-opening.js` |
+| Glass assembly rotation | 2.9 | .92 | Each slice squares up, settled about 2.15 s | `hero-scene.js` |
+| Glass assembly translation | 2.6 | .8 | Each slice drifts in, 1.4% overshoot | `hero-scene.js` |
 | Preset `paper` (fold lift) | 19.5 (3.1 Hz) | .66 | Light, about 6% overshoot | `physics.js` |
 | Preset `glass` (fold scale and travel) | 13.2 (2.1 Hz) | .82 | Heavier, about 1% overshoot | `physics.js` |
 | Preset `settle` | 16.3 (2.6 Hz) | 1 | Neutral default | `physics.js` |

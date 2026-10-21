@@ -239,9 +239,12 @@ main {
   scroll-snap-align: start;
 }
 
+/* Colour, fill and border change together: the inherited Webflow
+   a { transition: color .2s } once left dark text on the dark chip. */
 .case-toc a {
   display: inline-flex;
   min-height: 44px;
+  transition: none;
   align-items: center;
   border: 1px solid rgb(17 17 17 / 14%);
   border-radius: 999px;
@@ -2895,9 +2898,11 @@ html.no-motion .navbar { --nav-travel: 0px !important; --nav-brand-scale: 1 !imp
 html.no-motion .immersive-nav-landing { display: none; }
 @media (prefers-reduced-motion: reduce) { .immersive-nav-landing { display: none; } }
 
-/* Consent changes visual safe space without shifting document layout. */
-.home-mast-statement, .home-mast-sculpture { translate: 0 calc(var(--consent-cover, 0px) * -.5); scale: var(--stage-safe-scale, 1); transform-origin: 50% 50%; }
-.home-mast-baseline { translate: 0 calc(var(--consent-cover, 0px) * -1); }
+/* Consent changes visual safe space without shifting document layout.
+   immersive-navigation.js springs --consent-lift and --consent-scale when the
+   banner leaves (omega 12, zeta 1); --consent-cover is layout and instant. */
+.home-mast-statement, .home-mast-sculpture { translate: 0 calc(var(--consent-lift, 0px) * -.5); scale: var(--consent-scale, 1); transform-origin: 50% 50%; }
+.home-mast-baseline { translate: 0 calc(var(--consent-lift, 0px) * -1); }
 /* Enlarged reading text gets its own row below the decorative artwork. */
 .home-mast[data-text-reflow] :is(.home-mast-statement, .home-mast-sculpture, .home-mast-baseline) { translate: none; scale: none; }
 body.home:has(.home-mast[data-text-reflow]) .navbar :is(.home-nav-wordmark, .home-nav-progress) { display: none; }

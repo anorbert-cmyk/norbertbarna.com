@@ -164,6 +164,62 @@ const CASE_GATE = '<script>(function(r){try{var n=performance.getEntriesByType("
   }
 }
 
+// Physics part B (2026-10-07): the home scroll follower, the glass, its
+// assembly and the consent refit run on PortfolioPhysics with the plan's
+// numbers; native scroll and input stay untouched; the TOC chip changes at once.
+{
+  const source = (path) => readFileSync(join(ROOT, path), "utf8");
+  const compositionJs = source("assets/js/home-composition.js");
+  const sceneJs = source("assets/js/hero-scene.js");
+  const navigationJs = source("assets/js/immersive-navigation.js");
+  const responsiveCss = source("assets/css/responsive.css");
+  if (!/FOLLOW = 36;/.test(compositionJs) || !/clock: 'external'/.test(compositionJs) ||
+      !/dampingCoefficient: 2 \* FOLLOW, precision: 1e-4/.test(compositionJs)) {
+    fail("the home morph follows native scroll on a critically damped omega 36 spring on its own frame");
+  }
+  // Pointer and focus gating read the scroll position itself, never the follower.
+  if (!/pointerEvents = revealAt < \.95/.test(compositionJs) || !/if \(revealAt < \.95\) link\.setAttribute\('tabindex', '-1'\)/.test(compositionJs) ||
+      !/if \(leavingAt < \.95\) a\.setAttribute\('tabindex', '-1'\)/.test(compositionJs)) {
+    fail("home morph tabindex and pointer gating must use the raw scroll value");
+  }
+  if (!/setMorphProgress\(p, stamp\)/.test(compositionJs) || !/function paintNow\(stamp, pose\)/.test(sceneJs)) {
+    fail("the glass and the home copy must paint from the same followed value in the same frame");
+  }
+  const springs = [
+    ['"tilt-x", 7.5, .7', "pointer tilt omega 7.5 zeta .7"],
+    ['"yaw", 6, .5', "drag release torsion omega 6 zeta .5"],
+    ['"turn", 36, 1', "compact turn follower omega 36 zeta 1"],
+    ['"place-" + index, 2.6, .8', "assembly translation omega 2.6 zeta .8"],
+    ['"spin-" + index, 2.9, .92', "assembly rotation omega 2.9 zeta .92"],
+    ['"hover-" + axis + "-" + index, 13.8, .6', "fragment hover omega 13.8 zeta .6"],
+  ];
+  for (const [needle, label] of springs) if (!sceneJs.includes(needle)) fail(`hero-scene.js: missing the ${label} spring`);
+  if (!/YAW_STOP = 60 \* Math\.PI \/ 180, YAW_BAND = 45 \* Math\.PI \/ 180/.test(sceneJs) || !/restitution: \.3/.test(sceneJs) ||
+      !/FLING_WINDOW = 64, FLING_LIMIT = 600 \* Math\.PI \/ 180/.test(sceneJs) || !/event\.timeStamp/.test(sceneJs) ||
+      !/clock: "external"/.test(sceneJs)) {
+    fail("the glass drag must band toward hard stops at 60 degrees and fling from event timestamps over 64 ms, clamped to 600 deg/s");
+  }
+  if (/\b(?:drag\.velocity|Math\.pow\(\.91|assemblyStart - fragment\.delay)/.test(sceneJs)) {
+    fail("the per-event drag coast and the eased assembly must not return");
+  }
+  if (!/var REFIT = 12;/.test(navigationJs) || !/--consent-lift/.test(navigationJs) || !/data-consent-fit/.test(navigationJs) ||
+      !/attributeFilter: \["data-consent-fit"\]/.test(sceneJs)) {
+    fail("the consent refit springs only the stage's lift and scale, and the glass repaints once from the resting pose");
+  }
+  if (!/\.home-mast-statement, \.home-mast-sculpture \{ translate: 0 calc\(var\(--consent-lift, 0px\) \* -\.5\); scale: var\(--consent-scale, 1\);/.test(responsiveCss) ||
+      !/\.home-mast-baseline \{ translate: 0 calc\(var\(--consent-lift, 0px\) \* -1\); \}/.test(responsiveCss)) {
+    fail("the consent stage transform must read the sprung --consent-lift and --consent-scale; --consent-cover stays layout");
+  }
+  for (const [name, js] of [["home-composition.js", compositionJs], ["hero-scene.js", sceneJs], ["immersive-navigation.js", navigationJs]]) {
+    if (/addEventListener\(\s*["'](?:wheel|mousewheel|touchstart|touchmove|keydown)["']|on\([^,]+,\s*["'](?:wheel|mousewheel|touchstart|touchmove|keydown)["']|preventDefault\(\)\s*;?\s*\}\s*,\s*\{\s*passive:\s*false/.test(js)) {
+      fail(`${name}: physics owners never listen to wheel, touch or key input; native scroll stays in charge`);
+    }
+  }
+  if (!/\.case-toc a \{[^}]*transition: none;/.test(responsiveCss)) {
+    fail("case TOC chips change colour, fill and border together (transition: none over the Webflow a { transition: color .2s })");
+  }
+}
+
 for (const page of ALL_PAGES) {
   const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
   const storyStyles = [...html.matchAll(/<link\b[^>]*>/gi)]
@@ -201,6 +257,12 @@ for (const page of ALL_PAGES) {
     const scripts = [...html.matchAll(/<script\b[^>]*>/gi)].map(match => attribute(match[0], "src"));
     if (scripts.indexOf(`/assets/js/${aiMotionFile}`) <= scripts.indexOf(`/assets/js/${animationsFile}`)) {
       fail(`${page}: the AI service owner must initialize after the shared motion layer`);
+    }
+    // The opening's glass (hero-scene.js) runs on physics.js here too.
+    const physicsTags = [...html.matchAll(/<script\b[^>]*\bsrc="([^"]*\/physics(?:\.[a-f0-9]+)?\.js)"[^>]*>/g)];
+    if (physicsTags.length !== 1 || physicsTags[0][1] !== `/assets/js/${physicsFile}` ||
+        !/\bdefer\b/.test(physicsTags[0][0]) || html.indexOf(physicsTags[0][0]) > html.indexOf("</head>")) {
+      fail(`${page}: expected one current deferred physics.js in the head`);
     }
     if (/<(?:main|body|html)\b[^>]*\binert(?:\s|=|>)/i.test(html)) {
       fail(`${page}: decorative service motion must not make the reading page inert`);

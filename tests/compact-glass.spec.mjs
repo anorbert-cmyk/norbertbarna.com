@@ -44,10 +44,19 @@ async function paint(page) {
   return { clip, hash: createHash("sha256").update(await page.screenshot({ clip })).digest("hex") };
 }
 
-// The object assembles for 2.3 seconds after the scene reports ready. Anything
-// that compares two paints has to wait that out, or it measures the arrival.
+// The object assembles on springs after the scene reports ready: every slice
+// is within 2% of its seat by about 2.15 s, and the last 1.4% of the
+// translation spring's overshoot returns by about 3.7 s. Anything that compares
+// two paints waits until the scene's physics world rests, or it measures the
+// arrival.
+async function rested(page) {
+  await expect.poll(() => page.evaluate(() => {
+    const world = window.PortfolioHeroScene?.world;
+    return Boolean(world) && !world.running && world.time > 2;
+  }), { message: "the assembly came to rest", timeout: 6000 }).toBe(true);
+}
 async function settle(page) {
-  await page.waitForTimeout(2800);
+  await rested(page);
   const first = await paint(page);
   await page.waitForTimeout(500);
   const second = await paint(page);
@@ -205,9 +214,11 @@ test("the compact slot completes the arrival assembly instead of jumping to the 
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect.poll(() => page.evaluate(() => window.PortfolioHeroScene?.status)).toBe("ready");
   const early = await paint(page);
+  const ready = Date.now();
   await page.waitForTimeout(900);
   expect((await paint(page)).hash, "the assembly was not running").not.toBe(early.hash);
-  await page.waitForTimeout(2400);
+  await rested(page);
+  expect(Date.now() - ready, "the springs rest by themselves").toBeLessThan(4600);
   const settled = await paint(page);
   await page.waitForTimeout(700);
   expect((await paint(page)).hash, "the assembly never settled").toBe(settled.hash);

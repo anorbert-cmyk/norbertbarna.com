@@ -82,6 +82,9 @@ test("dismissing consent refreshes the glass backdrop without needing a window r
   await expect.poll(() => page.evaluate(() => PortfolioHeroScene.status)).toBe("ready");
   await expect.poll(() => page.evaluate(() => PortfolioHomeMorph.progress)).toBe(0);
   await expect(page.locator(".home-mast")).toHaveAttribute("data-morph-active", "");
+  // The stage relaxes into the freed space on a spring; the glass repaints its
+  // backdrop once, when that names its resting pose.
+  await expect(page.locator(".home-mast-scene")).toHaveAttribute("data-consent-fit", "0/1");
   await page.waitForTimeout(400);
   const canvas = page.locator(".home-mast-canvas");
   const before = createHash("sha256").update(await canvas.screenshot()).digest("hex");
