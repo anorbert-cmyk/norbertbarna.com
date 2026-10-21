@@ -207,7 +207,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 .navbar .nav-group-trigger, .navbar .nav-lang-trigger { display: inline-flex; align-items: center; gap: 6px; }
 .navbar .nav-group-toggle {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; min-width: 30px; min-height: 44px; margin-left: -2px; padding: 0; color: inherit;
+  width: 30px; min-width: 30px; min-height: 44px; margin-left: 0; padding: 0; color: inherit;
 }
 .navbar .nav-chevron { flex: 0 0 auto; }
 .navbar [data-nav-toggle][aria-expanded="true"] .nav-chevron { transform: rotate(180deg); }
