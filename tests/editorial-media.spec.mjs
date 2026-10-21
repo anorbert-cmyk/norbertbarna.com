@@ -205,6 +205,15 @@ for (const viewport of [
             expect(geometry.overlapRatio, 'HiddenMontage: playing video must sit inside the 16:9 frame').toBeGreaterThan(0.9);
             expect(Number(geometry.z)).toBeGreaterThanOrEqual(0);
           }
+          if (example.name === 'Kineticare walkthrough') {
+            // Webflow caps .w-richtext figure at 60%; the walkthrough spans the text column.
+            const span = await video.evaluate(v => {
+              const frame = v.closest('.kineticare-browser-frame').getBoundingClientRect();
+              const column = v.closest('.w-richtext').getBoundingClientRect();
+              return frame.width / column.width;
+            });
+            expect(span).toBeGreaterThan(.98);
+          }
         }
         await screenshot(page, info, viewport.name + '-' + example.name.replaceAll(' ', '-'));
         await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));

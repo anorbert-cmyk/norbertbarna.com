@@ -109,12 +109,20 @@
     expiryTimer = window.setTimeout(function () { refresh(true); }, Math.min(Math.max(remaining, 1), 2147483647));
   }
 
+  function matchesFocusVisible(element) {
+    try { return element.matches(":focus-visible"); } catch (error) { return true; }
+  }
+
   function keepFocusClear() {
     window.cancelAnimationFrame(focusFrame);
     focusFrame = window.requestAnimationFrame(function () {
       if (!banner || banner.hidden) return;
       var focused = document.activeElement;
       if (!focused || focused === document.body || banner.contains(focused)) return;
+      // Only keyboard focus needs revealing. A pointer press focuses the link
+      // it lands on too, and scrolling then would move the page as it is left
+      // (so Back returned a few pixels off).
+      if (!matchesFocusVisible(focused)) return;
       var rect = focused.getBoundingClientRect();
       var bottom = banner.getBoundingClientRect().top - 8;
       var top = parseFloat(window.getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
