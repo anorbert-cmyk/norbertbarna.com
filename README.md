@@ -135,6 +135,6 @@ or a missing related-service page.
 
 ## URL conventions
 
-- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/hu/ai-tanacsadas-fejlesztes`, `/writing/<slug>`, `/hu/irasok/<slug>`.
+- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/hu/ai-tanacsadas-fejlesztes`, `/hu/webfejlesztes`, `/writing/<slug>`, `/hu/irasok/<slug>`.
 - `.html` variants and the old `/work/raiffesen` misspelling 301-redirect
   to the canonical URL (see `server.js`).
