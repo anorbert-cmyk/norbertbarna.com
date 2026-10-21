@@ -1,11 +1,10 @@
 ---
 title: "AI bevezetése KKV-nál: az első 90 nap lépésről lépésre"
 description: "AI bevezetése KKV-nál lépésről lépésre: melyik folyamattal kezdj, mit tesztelj pilotban, mit ellenőrizzen ember, és mikor állj meg."
-draft: true
 lang: hu
 slug: ai-bevezetese-kkv-elso-90-nap
-date: 2026-12-02T09:00:00+01:00
-updated: 2026-12-02T09:00:00+01:00
+date: 2026-10-21T09:00:00+02:00
+updated: 2026-10-21T09:00:00+02:00
 tags: [ai bevezetés, ai tanácsadás, mesterséges intelligencia cégeknek, ai automatizálás, kkv]
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek

@@ -188,3 +188,104 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
   }
   body.utility-page .navbar .nav-link:is(:hover, :focus-visible) { color: #0A1628; background: transparent; text-decoration: underline; text-underline-offset: 6px; }
 }
+
+/* Disclosure groups (owner request, 2026-10-21): Services, Articles and the
+   language menu are APG disclosure navigation, not ARIA menus. Each trigger is
+   a native button with aria-expanded; the Articles label stays a link to the
+   section and a separate chevron button opens its list (split control). One
+   group is open at a time, Escape returns focus to the button, leaving the
+   group with the keyboard closes it, and without JavaScript every list shows
+   in flow. The language trigger shows the current language's flag and code
+   (flags are inline SVG, never platform emoji); its list names each language
+   in that language, the current one marked, the others leading to this page's
+   pair with hreflang (USWDS, GOV.UK). navigation.js owns the state. */
+.navbar .nav-group { position: relative; display: inline-flex; align-items: center; }
+.navbar button.nav-link, .navbar .nav-group-toggle, .navbar .nav-lang-trigger {
+  appearance: none; -webkit-appearance: none; border: 0; border-radius: 0; background: transparent;
+  font: inherit; color: inherit; cursor: pointer; text-align: left;
+}
+.navbar .nav-group-trigger, .navbar .nav-lang-trigger { display: inline-flex; align-items: center; gap: 6px; }
+.navbar .nav-group-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; min-width: 30px; min-height: 44px; margin-left: -2px; padding: 0; color: inherit;
+}
+.navbar .nav-chevron { flex: 0 0 auto; }
+.navbar [data-nav-toggle][aria-expanded="true"] .nav-chevron { transform: rotate(180deg); }
+.navbar .nav-flag { flex: 0 0 auto; width: 21px; height: 14px; border-radius: 2px; box-shadow: 0 0 0 1px rgb(10 22 40 / 24%); }
+.navbar .nav-lang-name { display: none; }
+.navbar .nav-lang-code { font-variant-numeric: tabular-nums; }
+.navbar .nav-group-panel[hidden] { display: none; }
+.navbar .nav-group-list { list-style: none; display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; }
+.navbar .nav-group-link, .navbar .nav-lang-current {
+  display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 0; padding: 10px 12px;
+  color: #0A1628; background: transparent; font: 400 15px/1.35 Inter, sans-serif;
+  letter-spacing: 0; text-transform: none; text-decoration: none; overflow-wrap: anywhere;
+}
+.navbar .nav-group-link:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+.navbar .nav-group-link[aria-current="page"], .navbar .nav-lang-current {
+  text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 6px; text-decoration-thickness: 2px;
+}
+.navbar .nav-group-more { margin-top: 6px; border-top: 1px solid rgb(10 22 40 / 20%); padding-top: 14px; font-weight: 600; }
+/* The group that holds the current page keeps its olive mark on the bar. */
+.navbar .nav-group-trigger[data-current],
+.navbar .nav-group:has(> .nav-group-toggle[data-current]) > .nav-link {
+  text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px;
+}
+/* Without JavaScript every list stands in flow under its label. */
+html:not(.nav-enhanced) .navbar .nav-group-panel[hidden] { display: block; }
+html:not(.nav-enhanced) .navbar .nav-group-toggle { display: none; }
+
+@media (min-width: 992px) {
+  .navbar .nav-group-panel {
+    position: absolute; top: calc(100% + 4px); left: -12px; z-index: 120;
+    min-width: 248px; max-width: min(380px, calc(100vw - 32px)); padding: 8px;
+    color: #0A1628; background: #D6D4ED; border: 1px solid rgb(10 22 40 / 26%);
+    box-shadow: 0 18px 40px rgb(10 22 40 / 18%);
+  }
+  .navbar .nav-lang .nav-group-panel { left: auto; right: -12px; min-width: 176px; }
+  .navbar .nav-group-link, .navbar .nav-lang-current { width: 100%; }
+  .navbar [data-nav-group-open] .nav-group-panel {
+    animation: compact-menu-drop 200ms cubic-bezier(.22, .8, .3, 1);
+    animation: compact-menu-drop 200ms linear(0, 0.057, 0.172, 0.305, 0.434, 0.549, 0.65, 0.73, 0.794, 0.844, 0.884, 0.915, 0.938, 0.955, 0.968, 0.978, 0.985, 0.991, 0.995, 0.998, 1);
+  }
+  html:not(.nav-enhanced) .navbar .nav-group-panel { position: static; min-width: 0; padding: 0; border: 0; box-shadow: none; background: transparent; color: inherit; }
+  html:not(.nav-enhanced) .navbar .nav-group-list { flex-direction: row; flex-wrap: wrap; gap: 0 12px; }
+  html:not(.nav-enhanced) .navbar :is(.nav-group-link, .nav-lang-current) { color: inherit; padding: 10px 0; min-height: 44px; }
+  html:not(.nav-enhanced) .navbar .nav-group-more { margin: 0; border: 0; padding-top: 10px; }
+}
+
+/* Compact: groups are accordion rows of the dropped disclosure. */
+@media (max-width: 991px) {
+  html body .navbar .nav-menu .nav-group { display: flex; flex-wrap: wrap; align-items: center; width: 100%; }
+  html body .navbar .nav-menu .nav-group > .nav-link { flex: 1 1 auto; width: auto; }
+  html body .navbar .nav-menu .nav-group-trigger { width: 100%; justify-content: space-between; }
+  html body .navbar .nav-menu .nav-lang-trigger {
+    display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 12px 0;
+    color: #0A1628; font: 400 17px/1.4 Inter, sans-serif;
+  }
+  html body .navbar .nav-menu .nav-lang-trigger .nav-chevron { margin-left: auto; }
+  html body .navbar .nav-menu .nav-lang-code { display: none; }
+  html body .navbar .nav-menu .nav-lang-name { display: inline; }
+  html body .navbar .nav-menu .nav-group-toggle { width: 48px; min-width: 48px; min-height: 48px; margin: 0; justify-content: center; color: #0A1628; }
+  html body .navbar .nav-menu .nav-group-panel {
+    position: static; width: 100%; min-width: 0; max-width: none; margin: 0 0 6px; padding: 2px 0 6px 16px;
+    border: 0; border-left: 2px solid rgb(10 22 40 / 22%); background: transparent; box-shadow: none;
+  }
+  html body .navbar .nav-menu .nav-group-link, html body .navbar .nav-menu .nav-lang-current { min-height: 44px; padding: 10px 0; font-size: 16px; }
+  html body .navbar .nav-menu .nav-group-more { margin-top: 4px; padding-top: 12px; }
+  /* About keeps its navy disclosure: rows stay lilac on it. */
+  .story-page .navbar .nav-menu :is(.nav-group-link, .nav-lang-current, .nav-group-toggle, .nav-lang-trigger) { color: #D6D4ED; }
+  .story-page .navbar .nav-menu .nav-group-panel { border-left-color: rgb(214 212 237 / 30%); }
+  .story-page .navbar .nav-menu .nav-group-more { border-top-color: rgb(214 212 237 / 30%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .navbar [data-nav-group-open] .nav-group-panel { animation: none; }
+}
+html.no-motion .navbar [data-nav-group-open] .nav-group-panel { animation: none; }
+/* Desktop bars colour their own controls; the language trigger follows the bar ink. */
+.navbar .nav-lang-trigger { color: var(--immersive-link-ink, #0A1628); }
+.story-page .navbar .nav-lang-trigger { color: #D6D4ED; }
+@media (min-width: 992px) {
+  .navbar .nav-lang-trigger { min-height: 44px; padding: 10px 0; font: 400 14px/1.4 Inter, sans-serif; letter-spacing: 0; }
+  body:is(.works-index, .immersive-case) .navbar .nav-lang-trigger { font-size: clamp(12px, 1.05vw, 14px); }
+}

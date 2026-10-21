@@ -49,6 +49,7 @@
       if (isOpen) primaryNavigation.setAttribute("data-nav-menu-open", "");
       else primaryNavigation.removeAttribute("data-nav-menu-open");
       menuButton.setAttribute("aria-label", isOpen ? navLabels.close : navLabels.open);
+      if (!isOpen && typeof closeGroups === "function") closeGroups();
       // External links and mail leave this document in place. Never leave
       // keyboard focus on a control that has just become display:none.
       if (restoreFocus) menuButton.focus({ preventScroll: true });
@@ -57,14 +58,54 @@
     menuButton.addEventListener("click", function () {
       setMenuOpen(menuButton.getAttribute("aria-expanded") !== "true");
     });
+    // Disclosure groups (Services, Articles, the language menu): one open at
+    // a time, Escape returns focus to its button, leaving the group closes it.
+    var groups = Array.prototype.slice.call(primaryNavigation.querySelectorAll("[data-nav-group]"));
+    function setGroupOpen(group, isOpen) {
+      var toggle = group.querySelector("[data-nav-toggle]");
+      var panel = toggle && document.getElementById(toggle.getAttribute("aria-controls"));
+      if (!toggle || !panel) return;
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      panel.hidden = !isOpen;
+      group.toggleAttribute("data-nav-group-open", isOpen);
+    }
+    function closeGroups(except) {
+      groups.forEach(function (group) {
+        if (group !== except) setGroupOpen(group, false);
+      });
+    }
+    groups.forEach(function (group) {
+      var toggle = group.querySelector("[data-nav-toggle]");
+      if (!toggle) return;
+      setGroupOpen(group, false);
+      toggle.addEventListener("click", function () {
+        var open = toggle.getAttribute("aria-expanded") !== "true";
+        closeGroups(group);
+        setGroupOpen(group, open);
+      });
+      group.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || toggle.getAttribute("aria-expanded") !== "true") return;
+        event.stopPropagation();
+        setGroupOpen(group, false);
+        toggle.focus();
+      });
+      group.addEventListener("focusout", function (event) {
+        if (compactNavigation.matches || !event.relatedTarget || group.contains(event.relatedTarget)) return;
+        setGroupOpen(group, false);
+      });
+    });
     primaryNavigation.querySelectorAll("a, button").forEach(function (control) {
       control.addEventListener("click", function () {
+        if (control.hasAttribute("data-nav-toggle")) return;
+        closeGroups();
         setMenuOpen(false);
       });
     });
     document.addEventListener("click", function (event) {
+      var inside = event.target.closest(".navbar");
+      if (!event.target.closest("[data-nav-group]")) closeGroups();
       if (menuButton.getAttribute("aria-expanded") !== "true") return;
-      if (!event.target.closest(".navbar")) setMenuOpen(false);
+      if (!inside) setMenuOpen(false);
     });
     document.addEventListener("keydown", function (event) {
       if (event.key !== "Escape" || menuButton.getAttribute("aria-expanded") !== "true") return;
@@ -77,6 +118,7 @@
       // A browser can drop focus to body as the media query hides a control,
       // before dispatching its change event. Remember only the last real focus.
       var previous = active === document.body ? lastFocusedControl : active;
+      closeGroups();
       setMenuOpen(false);
       if (event.matches && primaryNavigation.contains(previous)) {
         menuButton.focus({ preventScroll: true });

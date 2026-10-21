@@ -1,11 +1,10 @@
 ---
 title: "Weboldal készítés árak 2026: mitől függ egy céges oldal ára"
 description: "Weboldal készítés árak 2026-ban: mitől függ egy egyedi céges weboldal ára, és mit kérdezz meg ajánlatkérés előtt. Tényezők és példa."
-draft: true
 lang: hu
 slug: ceges-weboldal-ara
-date: 2026-11-04T09:00:00+01:00
-updated: 2026-11-04T09:00:00+01:00
+date: 2026-10-21T09:00:00+02:00
+updated: 2026-10-21T09:00:00+02:00
 tags: [weboldal készítés árak, honlapkészítés, egyedi weboldal készítés, weboldal készítés, webfejlesztés]
 service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek

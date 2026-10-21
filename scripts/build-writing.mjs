@@ -14,6 +14,7 @@
  *   npm run build:writing          write the files
  *   node scripts/build-writing.mjs --check   fail if any output is stale (npm test)
  */
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
@@ -21,6 +22,7 @@ import {
   wordCount, writingLanguageLinks,
 } from "./writing-content.mjs";
 import { urlOf } from "./service-pages.mjs";
+import { applyChrome } from "./site-chrome.mjs";
 
 const CHECK = process.argv.includes("--check");
 const DEFAULT_IMAGE = {
@@ -44,6 +46,11 @@ const COPY = {
       const months = ["január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"];
       return `${y}. ${months[m - 1]} ${d}.`;
     },
+    eyebrow: "Tudástár",
+    listHeading: "Írások webfejlesztésről és AI-ról",
+    listLabel: "Cikkek",
+    count: (n) => `${n} cikk`,
+    moreHeading: "További cikkek",
     listTitle: "Írások webfejlesztésről és AI-ról | Barna Norbert",
     listDescription: "Barna Norbert cikkei céges weboldalakról, webfejlesztésről és AI-integrációról, saját projektek tapasztalataiból írva.",
     listKeywords: ["Barna Norbert írásai", "weboldal készítés", "webfejlesztés", "AI-integráció"],
@@ -71,6 +78,11 @@ const COPY = {
       const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
       return `${d} ${months[m - 1]} ${y}`;
     },
+    eyebrow: "Articles",
+    listHeading: "Writing on AI products and web development",
+    listLabel: "Articles",
+    count: (n) => `${n} article${n === 1 ? "" : "s"}`,
+    moreHeading: "More articles",
     listTitle: "Writing on AI products and web development | Norbert Barna",
     listDescription: "Articles by Norbert Barna on AI integration, human-in-the-loop product design and web development, drawn from shipped work.",
     listKeywords: ["Norbert Barna writing", "AI integration", "human in the loop AI", "web development"],
@@ -103,27 +115,14 @@ function chrome(lang) {
   };
 }
 
-function header(template, lang, switchHref, alternate) {
-  const other = lang === "hu" ? "en" : "hu";
-  const label = other === "hu" ? "Magyar" : "English";
-  const link = `<a class="nav-link white w-nav-link lang-switch" href="${switchHref}" hreflang="${other}" lang="${other}"${alternate ? ' rel="alternate"' : ""}>${label}</a>`;
-  const replaced = template.replace(/<a class="nav-link white w-nav-link lang-switch"[^>]*>[^<]*<\/a>/, link);
-  if (replaced === template) throw new Error(`${COPY[lang].templateFile}: language link not found`);
-  return replaced;
-}
-
-// Styles for the parts that only writing pages have (the chrome's stylesheets
-// cover the rest). Inline, so no asset hash changes when the generator does.
-const WRITING_CSS = [
-  ".writing-breadcrumb ol{list-style:none;margin:0 0 .75rem;padding:0;display:flex;flex-wrap:wrap;gap:.25rem .5rem;font-size:.9rem}",
-  ".writing-breadcrumb li+li::before{content:'›';margin-right:.5rem;opacity:.6}",
-  ".writing-breadcrumb [aria-current=page]{opacity:.75}",
-  ".writing-meta{font-size:.95rem;opacity:.85}",
-  ".writing-cover{margin:1.5rem 0}.writing-cover img{display:block;width:100%;height:auto;border-radius:12px}",
-  ".writing-toc{margin:1.5rem 0 2rem;padding:1rem 1.25rem;border:1px solid currentColor;border-radius:12px}",
-  ".writing-toc ol{margin:.5rem 0 0;padding-left:1.25rem}.writing-toc li{margin:.25rem 0}",
-  ".writing-toc::before{content:attr(aria-label);font-weight:600}",
-].join("");
+// The dedicated stylesheet ships as a content-hashed release copy like the
+// other first-party families; the build writes the copy, --check expects it.
+const WRITING_CSS_SOURCE = join(ROOT, "assets/css/writing.css");
+const writingCssRelease = (() => {
+  const source = readFileSync(WRITING_CSS_SOURCE, "utf8");
+  const digest = createHash("sha256").update(source).digest("hex").slice(0, 12);
+  return { file: `assets/css/writing.${digest}.css`, source };
+})();
 
 // ---- page parts ------------------------------------------------------------
 const json = (value) => JSON.stringify(value, null, 2).replace(/</g, "\\u003c");
@@ -169,15 +168,22 @@ function head({ lang, title, description, keywords, canonical, type, image, alte
     ] : []),
     `<link rel="alternate" type="application/rss+xml" title="${escapeHtml(copy.feedTitle)}" href="${feedHref}"/>`,
     template.assets,
+    `<link rel="stylesheet" href="/${writingCssRelease.file}"/>`,
     `<script type="application/ld+json">\n${json(schema)}\n</script>`,
-    `<style>${WRITING_CSS}</style>`,
     `${template.headTail}</head>`,
   ].join("\n");
 }
 
-const page = ({ head: headHtml, lang, switchHref, alternate, main }) => {
+// Chrome from the privacy template, then the shared navigation and footer
+// columns from site-chrome.mjs for this page (its language pair, the current
+// item, the article lists).
+const page = ({ head: headHtml, lang, file, current, link, main, bodyClass, articles }) => {
   const template = chrome(lang);
-  return `${headHtml}\n${header(template.header, lang, switchHref, alternate)}<main id="main-content" tabindex="-1">${main}</main>\n${template.footer}`;
+  const header = template.header.replace(/<body class="utility-page">/, `<body class="utility-page writing-page ${bodyClass}">`);
+  if (header === template.header) throw new Error(`${COPY[lang].templateFile}: body class not found`);
+  const html = `${headHtml}\n${header}<main id="main-content" tabindex="-1">${main}</main>\n${template.footer}`;
+  const pairs = { [lang === "hu" ? "en" : "hu"]: { href: urlOf(link.file), alternate: link.alternate } };
+  return applyChrome(html, { page: file, kind: "utility", current, pairs, articles });
 };
 
 const person = {
@@ -197,7 +203,7 @@ const meta = (lang, article, byline = false) => {
     parts.push(`${copy.updated}: <time datetime="${article.updated.slice(0, 10)}">${copy.date(article.updated)}</time>`);
   }
   parts.push(copy.minutes(readingMinutes(article.markdown)));
-  return `<p class="writing-meta">${parts.join(" · ")}</p>`;
+  return `<p class="writing-meta">${parts.map((part) => `<span>${part}</span>`).join("")}</p>`;
 };
 
 // Home › Írások › article: visible and in the BreadcrumbList.
@@ -207,16 +213,30 @@ const breadcrumb = (lang, article) => {
   return `<nav class="writing-breadcrumb" aria-label="${copy.breadcrumbLabel}"><ol><li><a href="${copy.home.path}">${copy.home.name}</a></li><li><a href="${section.path}">${section.name}</a></li><li aria-current="page">${escapeHtml(article.title)}</li></ol></nav>`;
 };
 
-// H2 outline, so a long article can be scanned (and its sections deep-linked).
+// H2 outline in a sticky rail, so a long article can be scanned (and its sections deep-linked).
 const tableOfContents = (lang, body) => {
   const outline = outlineOf(body);
   if (outline.length < 3) return "";
-  return `<nav class="writing-toc" aria-label="${COPY[lang].tocLabel}"><ol>${outline.map(({ id, text }) => `<li><a href="#${id}">${escapeHtml(text)}</a></li>`).join("")}</ol></nav>`;
+  return `<nav class="writing-toc" aria-labelledby="writing-toc-label"><p class="writing-toc-label" id="writing-toc-label">${COPY[lang].tocLabel}</p><ol>${outline.map(({ id, text }) => `<li><a href="#${id}">${escapeHtml(text)}</a></li>`).join("")}</ol></nav>`;
 };
 
-const coverFigure = (article, image) => article.cover
-  ? `<figure class="writing-cover"><img src="${escapeHtml(article.cover)}" alt="${escapeHtml(image.alt)}" width="1200" height="630" decoding="async" fetchpriority="high"/></figure>`
+const coverFigure = (article, image, { priority = true } = {}) => article.cover
+  ? `<figure class="writing-cover"><img src="${escapeHtml(article.cover)}" alt="${escapeHtml(image.alt)}" width="1200" height="630" decoding="async"${priority ? ' fetchpriority="high"' : ' loading="lazy"'}/></figure>`
   : "";
+
+// One article as a list row (list page and "more articles").
+const kicker = (lang, article) => article.service_label
+  ? `<p class="writing-kicker">${escapeHtml(article.service_label)}</p>`
+  : `<p class="writing-kicker">${SECTIONS[lang].name}</p>`;
+const thumb = (article, image, eager = false) => `<figure class="writing-row-media"><img src="${escapeHtml(image.url.slice(ORIGIN.length))}" alt="" width="1200" height="630" decoding="async"${eager ? "" : ' loading="lazy"'}/></figure>`;
+function row(lang, article, index) {
+  const section = SECTIONS[lang];
+  const image = imageOf(article);
+  return `<li class="writing-row"><a class="writing-row-link" href="${section.path}/${article.slug}"><span class="writing-row-number" aria-hidden="true">${String(index).padStart(2, "0")}</span>${thumb(article, image)}<div class="writing-row-copy">${kicker(lang, article)}<h2 id="${article.slug}">${escapeHtml(article.title)}</h2><p>${escapeHtml(article.description)}</p>${meta(lang, article)}</div></a></li>`;
+}
+
+// Tables scroll inside their own box on narrow screens.
+const wrapTables = (html) => html.replaceAll("<table>", '<div class="writing-table"><table>').replaceAll("</table>", "</table></div>");
 
 function renderArticle(article, articles, links) {
   const { lang } = article;
@@ -282,20 +302,29 @@ function renderArticle(article, articles, links) {
   const service = article.service
     ? `<a href="${escapeHtml(article.service)}">${escapeHtml(article.service_label)}</a>`
     : "";
+  const others = articles.filter((other) => other.lang === lang && other.slug !== article.slug).slice(0, 2);
   const main = [
-    `<article class="work-single-section" aria-labelledby="article-title"><div class="w-layout-blockcontainer container-large w-container"><div class="summary w-richtext home-banner-content-wrap">`,
-    `<header>`,
+    `<article class="writing-article" aria-labelledby="article-title">`,
+    `<header class="writing-opening writing-opening-article"><div class="writing-frame">`,
     breadcrumb(lang, article),
-    `<h1 class="home-banner-title" id="article-title">${escapeHtml(article.title)}</h1>`,
+    kicker(lang, article),
+    `<h1 class="writing-title" id="article-title">${escapeHtml(article.title)}</h1>`,
+    `<p class="writing-dek">${escapeHtml(article.description)}</p>`,
     meta(lang, article, true),
     coverFigure(article, image),
-    `</header>`,
-    tableOfContents(lang, body),
-    body,
+    `</div></header>`,
+    `<div class="writing-body"><div class="writing-frame">`,
+    `<aside class="writing-rail">${tableOfContents(lang, body)}</aside>`,
+    `<div class="writing-prose">`,
+    wrapTables(body),
+    `<section class="writing-cta" aria-labelledby="${lang === "hu" ? "kapcsolodo-szolgaltatas" : "related-service"}">`,
     `<h2 id="${lang === "hu" ? "kapcsolodo-szolgaltatas" : "related-service"}">${copy.ctaHeading}</h2>`,
     `<p>${copy.ctaText(service)}</p>`,
     `<p><a class="footer-email hero-work-link" href="${copy.contact}">${copy.ctaButton}</a></p>`,
-    `</div></div></article>`,
+    `</section>`,
+    `</div></div></div>`,
+    others.length ? `<aside class="writing-related" aria-labelledby="writing-related-title"><div class="writing-frame"><h2 id="writing-related-title">${copy.moreHeading}</h2><ol class="writing-rows">${others.map((other, index) => row(lang, other, index + 1)).join("")}</ol></div></aside>` : "",
+    `</article>`,
   ].join("\n");
   const extraMeta = [
     `<meta content="${article.date}" property="article:published_time"/>`,
@@ -304,18 +333,19 @@ function renderArticle(article, articles, links) {
     ...(article.service_label ? [`<meta content="${escapeHtml(article.service_label)}" property="article:section"/>`] : []),
     ...article.tags.map((tag) => `<meta content="${escapeHtml(tag)}" property="article:tag"/>`),
   ];
-  const link = links[articleFile(article)];
+  const file = articleFile(article);
   return page({
     head: head({ lang, title: article.title, description: article.description, keywords: article.tags, canonical, type: "article", image, alternates, extraMeta, schema, feedHref: `${section.path}/feed.xml` }),
-    lang, switchHref: urlOf(link.file), alternate: link.alternate, main,
+    lang, file, current: `${section.path}/${article.slug}`, link: links[file], main, bodyClass: "writing-article-page", articles,
   });
 }
 
-function renderList(lang, own, links) {
+function renderList(lang, own, links, articles) {
   const copy = COPY[lang];
   const section = SECTIONS[lang];
   const canonical = `${ORIGIN}${section.path}`;
-  const link = links[`${section.dir}/index.html`];
+  const file = `${section.dir}/index.html`;
+  const link = links[file];
   const alternates = link.alternate ? { en: `${ORIGIN}${SECTIONS.en.path}`, hu: `${ORIGIN}${SECTIONS.hu.path}` } : null;
   const updated = own.map((article) => article.updated).sort().at(-1);
   const page_ = {
@@ -337,22 +367,24 @@ function renderList(lang, own, links) {
     } } : {}),
   };
   const schema = { "@context": "https://schema.org", "@graph": [page_] };
-  const items = own.map((article) => [
-    `<h2 id="${article.slug}"><a href="${section.path}/${article.slug}">${escapeHtml(article.title)}</a></h2>`,
-    `<p>${escapeHtml(article.description)}</p>`,
-    meta(lang, article),
-  ].join("\n"));
+  const [latest, ...rest] = own;
+  const latestImage = imageOf(latest);
+  const feature = `<article class="writing-feature"><a class="writing-feature-link" href="${section.path}/${latest.slug}"><figure class="writing-feature-media"><img src="${escapeHtml(latestImage.url.slice(ORIGIN.length))}" alt="" width="1200" height="630" decoding="async" fetchpriority="high"/></figure><div class="writing-feature-copy">${kicker(lang, latest)}<h2 id="${latest.slug}">${escapeHtml(latest.title)}</h2><p>${escapeHtml(latest.description)}</p>${meta(lang, latest)}</div></a></article>`;
   const main = [
-    `<section class="work-single-section"><div class="w-layout-blockcontainer container-large w-container"><div class="summary w-richtext home-banner-content-wrap">`,
-    `<h1 class="home-banner-title">${section.name}</h1>`,
-    `<p>${copy.listIntro}</p>`,
-    ...items,
-    `<p><a href="${section.path}/feed.xml">${copy.feedLabel}</a></p>`,
-    `</div></div></section>`,
+    `<section class="writing-opening" aria-labelledby="writing-title"><div class="writing-frame">`,
+    `<p class="writing-eyebrow">${copy.eyebrow}</p>`,
+    `<h1 class="writing-title" id="writing-title">${copy.listHeading}</h1>`,
+    `<p class="writing-dek">${copy.listIntro}</p>`,
+    `<p class="writing-count"><span>${copy.count(own.length)}</span><a href="${section.path}/feed.xml">${copy.feedLabel}</a></p>`,
+    `</div></section>`,
+    `<section class="writing-list" aria-label="${copy.listLabel}"><div class="writing-frame">`,
+    feature,
+    rest.length ? `<ol class="writing-rows">${rest.map((article, index) => row(lang, article, index + 2)).join("")}</ol>` : "",
+    `</div></section>`,
   ].join("\n");
   return page({
     head: head({ lang, title: copy.listTitle, description: copy.listDescription, keywords: copy.listKeywords, canonical, type: "website", image: { url: DEFAULT_IMAGE.url, alt: DEFAULT_IMAGE.alt[lang] }, alternates, schema, feedHref: `${section.path}/feed.xml` }),
-    lang, switchHref: urlOf(link.file), alternate: link.alternate, main,
+    lang, file, current: "articles", link, main, bodyClass: "writing-index", articles,
   });
 }
 
@@ -442,7 +474,7 @@ for (const lang of ["en", "hu"]) {
   const own = articles.filter((article) => article.lang === lang);
   if (!own.length) continue;
   const { dir } = SECTIONS[lang];
-  outputs.set(`${dir}/index.html`, renderList(lang, own, links));
+  outputs.set(`${dir}/index.html`, renderList(lang, own, links, articles));
   outputs.set(`${dir}/feed.xml`, renderFeed(lang, own));
   for (const article of own) outputs.set(articleFile(article), renderArticle(article, articles, links));
 }
@@ -452,6 +484,7 @@ for (const service of articles.map((article) => article.service).filter(Boolean)
     throw new Error(`service ${service} is not a page in this repository`);
   }
 }
+if (articles.length) outputs.set(writingCssRelease.file, writingCssRelease.source);
 outputs.set("sitemap.xml", renderSitemap(articles));
 outputs.set("llms.txt", renderLlms(articles));
 

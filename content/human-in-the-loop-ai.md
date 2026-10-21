@@ -1,11 +1,10 @@
 ---
 title: "Human-in-the-loop AI for regulated products: 7 patterns"
 description: "Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work."
-draft: true
 lang: en
 slug: human-in-the-loop-ai
-date: 2026-11-18T09:00:00+01:00
-updated: 2026-11-18T09:00:00+01:00
+date: 2026-10-21T09:00:00+02:00
+updated: 2026-10-21T09:00:00+02:00
 tags: [human in the loop ai, ai integration, ai product design, regulated industries, eu ai act, human oversight]
 service: /ai-integration
 service_label: AI integration for regulated industries

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Barna Norbert írásai</title>
+    <link>https://www.barnanorbert.com/hu/irasok</link>
+    <atom:link href="https://www.barnanorbert.com/hu/irasok/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Barna Norbert cikkei céges weboldalakról, webfejlesztésről és AI-integrációról, saját projektek tapasztalataiból írva.</description>
+    <language>hu</language>
+    <lastBuildDate>Wed, 21 Oct 2026 07:00:00 +0000</lastBuildDate>
+    <item>
+      <title>AI bevezetése KKV-nál: az első 90 nap lépésről lépésre</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap</guid>
+      <pubDate>Wed, 21 Oct 2026 07:00:00 +0000</pubDate>
+      <description>AI bevezetése KKV-nál lépésről lépésre: melyik folyamattal kezdj, mit tesztelj pilotban, mit ellenőrizzen ember, és mikor állj meg.</description>
+      <category>ai bevezetés</category>
+      <category>ai tanácsadás</category>
+      <category>mesterséges intelligencia cégeknek</category>
+      <category>ai automatizálás</category>
+      <category>kkv</category>
+    </item>
+    <item>
+      <title>AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel</guid>
+      <pubDate>Wed, 21 Oct 2026 07:00:00 +0000</pubDate>
+      <description>AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg, mit válaszolhat az AI magától, mit néz át ember, és mit ír elő az AI-rendelet.</description>
+      <category>ai ügyfélszolgálat</category>
+      <category>chatbot fejlesztés</category>
+      <category>ai automatizálás</category>
+      <category>human in the loop</category>
+      <category>ai tanácsadás</category>
+    </item>
+    <item>
+      <title>Weboldal készítés árak 2026: mitől függ egy céges oldal ára</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ceges-weboldal-ara</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ceges-weboldal-ara</guid>
+      <pubDate>Wed, 21 Oct 2026 07:00:00 +0000</pubDate>
+      <description>Weboldal készítés árak 2026-ban: mitől függ egy egyedi céges weboldal ára, és mit kérdezz meg ajánlatkérés előtt. Tényezők és példa.</description>
+      <category>weboldal készítés árak</category>
+      <category>honlapkészítés</category>
+      <category>egyedi weboldal készítés</category>
+      <category>weboldal készítés</category>
+      <category>webfejlesztés</category>
+    </item>
+    <item>
+      <title>Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek</title>
+      <link>https://www.barnanorbert.com/hu/irasok/egyedi-weboldal-vagy-sablon</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/egyedi-weboldal-vagy-sablon</guid>
+      <pubDate>Wed, 21 Oct 2026 07:00:00 +0000</pubDate>
+      <description>Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek: bizalom, funkciók, integrációk, tartalomkezelés, bővítés, kereshetőség.</description>
+      <category>egyedi weboldal készítés</category>
+      <category>honlapkészítés</category>
+      <category>weboldal készítés</category>
+      <category>egyedi webfejlesztés</category>
+      <category>sablon weboldal</category>
+    </item>
+  </channel>
+</rss>
