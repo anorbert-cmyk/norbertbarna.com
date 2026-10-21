@@ -12,9 +12,7 @@ import { UTILITY_PAGES, HU_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, assetPr
 // Every Hungarian page and its English pair.
 const HU_PAIRS = { ...Object.fromEntries(HU_PAGES.map((page) => [page, baseOf(page)])),
   "hu/ai-tanacsadas-fejlesztes.html": "ai-integration.html", "hu/adatvedelem.html": "privacy.html", "hu/kapcsolat.html": "contact.html",
-  // No English web-development page yet (the EN thread adds /web-development);
-  // until then the language link leads to the English home.
-  "hu/webfejlesztes.html": "index.html" };
+  "hu/webfejlesztes.html": "web-development.html" };
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [

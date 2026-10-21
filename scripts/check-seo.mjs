@@ -62,7 +62,7 @@ const byUrl = new Map(pages.map(page => [page.canonical, page]));
 const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
 const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage"]);
-check(pages.length === files.length && byUrl.size === files.length && files.length === 27 + WRITING_PAGES.length, "expected twenty-seven distinct indexable content routes (13 English, 14 Hungarian) plus the generated writing pages");
+check(pages.length === files.length && byUrl.size === files.length && files.length === 28 + WRITING_PAGES.length, "expected twenty-eight distinct indexable content routes (14 English, 14 Hungarian) plus the generated writing pages");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
     const previous = definitions.get(node["@id"]);
@@ -156,7 +156,7 @@ for (const page of pages) {
 }
 
 // Every page has a reciprocal language pair (owner request, 2026-10-06).
-const LANGUAGE_PAIRS = [["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"], ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"],
+const LANGUAGE_PAIRS = [["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"], ["/web-development", "/hu/webfejlesztes"], ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"],
   ...HU_PAGES.map(page => [urlOf(baseOf(page)), urlOf(page)]),
   ...Object.entries(WRITING_LANGUAGE_LINKS).filter(([page, link]) => link.alternate && page.startsWith("writing/")).map(([page, link]) => [urlOf(page), urlOf(link.file)])];
 for (const [english, hungarian] of LANGUAGE_PAIRS) {

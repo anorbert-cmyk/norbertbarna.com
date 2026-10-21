@@ -389,8 +389,8 @@ for (const [language, path] of ROUTES) {
     await page.setViewportSize({ width: 320, height: 720 });
     await open(page, path);
     const details = page.locator("#questions details");
-    // The Hungarian page answers eight questions (2026-10-21 SEO plan).
-    await expect(details).toHaveCount(language === "hu" ? 8 : 5);
+    // Both service pages answer eight questions (2026-10-21 SEO plan).
+    await expect(details).toHaveCount(8);
     await expect(details.first()).toHaveAttribute("open", "");
     const second = details.nth(1);
     await expect(second).not.toHaveAttribute("open");
@@ -682,7 +682,7 @@ test("the old Hungarian AI address moves permanently to the new one", async ({ r
   }
 });
 
-for (const [path, subject] of [["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/]]) {
+for (const [path, subject] of [["/ai-integration", /Human in the loop AI integration/], ["/web-development", /Web development/], ["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/]]) {
   test(`${path}: use cases, scope, price factors and FAQ data match the visible page`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await open(page, path);
@@ -704,15 +704,19 @@ for (const [path, subject] of [["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás
     });
     expect(faq.visible).toHaveLength(8);
     expect(faq.data, "FAQPage repeats the visible questions and answers").toEqual(faq.visible);
-    await expect(page.locator(`#top a.footer-email`)).toHaveAttribute("href", "/hu/kapcsolat");
+    await expect(page.locator(`#top a.footer-email`)).toHaveAttribute("href", path.startsWith("/hu/") ? "/hu/kapcsolat" : "/contact");
   });
 }
 
-test("/hu/webfejlesztes: Hungarian only until the English page exists, with the Kineticare build as evidence", async ({ page }) => {
-  await open(page, "/hu/webfejlesztes");
-  await expect(page.locator('link[rel="alternate"][hreflang]')).toHaveCount(0);
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://www.barnanorbert.com/hu/webfejlesztes");
-  await expect(page.locator(".navbar a.lang-switch")).toHaveAttribute("href", "/");
-  await expect(page.locator('#selected-work a[href="/hu/munka/kineticare"]')).toHaveCount(1);
-  await expect(page.locator('main a[href="/hu/ai-tanacsadas-fejlesztes"]').first()).toBeVisible();
+test("/web-development and /hu/webfejlesztes are a reciprocal language pair with the Kineticare build as evidence", async ({ page }) => {
+  for (const [path, pair] of [["/web-development", "/hu/webfejlesztes"], ["/hu/webfejlesztes", "/web-development"]]) {
+    await open(page, path);
+    const alternates = await page.locator('link[rel="alternate"][hreflang]').evaluateAll((links) => Object.fromEntries(links.map((link) => [link.hreflang, link.href])));
+    expect(alternates).toEqual({ en: "https://www.barnanorbert.com/web-development", hu: "https://www.barnanorbert.com/hu/webfejlesztes", "x-default": "https://www.barnanorbert.com/web-development" });
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://www.barnanorbert.com${path}`);
+    await expect(page.locator(".navbar a.lang-switch")).toHaveAttribute("href", pair);
+    const caseHref = path.startsWith("/hu/") ? "/hu/munka/kineticare" : "/work/kineticare";
+    await expect(page.locator(`#selected-work a[href="${caseHref}"]`)).toHaveCount(1);
+    await expect(page.locator(`main a[href="${path.startsWith("/hu/") ? "/hu/ai-tanacsadas-fejlesztes" : "/ai-integration"}"]`).first()).toBeVisible();
+  }
 });

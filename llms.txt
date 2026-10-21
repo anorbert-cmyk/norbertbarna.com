@@ -25,9 +25,10 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 - [Home](https://www.barnanorbert.com/): profile, expertise, selected work and professional experience
 - [Selected work](https://www.barnanorbert.com/works): complete portfolio index
 - [About: A story in motion](https://www.barnanorbert.com/about): the career story, from enterprise security software to banking, AI in enterprise learning and an AI platform in capital markets
-- [AI integration for businesses](https://www.barnanorbert.com/ai-integration): English service offer, approach and linked evidence
+- [Human in the loop AI integration for regulated industries](https://www.barnanorbert.com/ai-integration): English service offer for fintech, banking, health and SaaS teams in the EU: who it is for, what human in the loop means in practice, EU AI Act readiness as a design consideration, price factors and questions
+- [Web development and product design for SaaS and fintech](https://www.barnanorbert.com/web-development): English web development offer: custom web applications, MVPs, product design and company websites, with the Kineticare build as evidence
 - [AI tanácsadás, automatizálás és fejlesztés cégeknek](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes): Hungarian version of the same offer, with use cases, scope, price factors and questions (formerly /hu/ai-integracio)
-- [Weboldal készítés és egyedi webfejlesztés cégeknek](https://www.barnanorbert.com/hu/webfejlesztes): Hungarian web development offer: company websites, web applications and custom software, designed and built by Norbert (no English version yet)
+- [Weboldal készítés és egyedi webfejlesztés cégeknek](https://www.barnanorbert.com/hu/webfejlesztes): Hungarian version of the web development offer: company websites, web applications and custom software, designed and built by Norbert
 - [Contact](https://www.barnanorbert.com/contact): contact form for project, AI integration and role enquiries
 - [Analytics and privacy](https://www.barnanorbert.com/privacy): optional, consent-gated visitor analytics notice and contact form data use (English)
 - [Analitika és adatvédelem](https://www.barnanorbert.com/hu/adatvedelem): Hungarian analytics and privacy notice
@@ -57,12 +58,13 @@ Instructure and SportsGambit are AI product work. Raiffeisen, Bitpanda, Benker, 
 
 ## Services
 
-- AI integration for businesses (English: https://www.barnanorbert.com/ai-integration; Hungarian: https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes)
+- Human in the loop AI integration for regulated industries (English: https://www.barnanorbert.com/ai-integration; Hungarian: https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes): fintech, banking, insurance, digital health and SaaS product teams in Hungary and the EU
+- Human in the loop means a person reviews, edits or approves AI output where it matters, with the interface showing sources, confidence and recovery paths. EU AI Act readiness (human oversight, transparency, logging, documented evaluation) is treated as a product design requirement, not as legal advice or a compliance certification
 - Three parts of one offer: discovery, AI collaboration and custom development
 - Five working steps: map the work before the solution; define access and human control; test the experience before the build; build a pilot that fits your systems; measure, improve and hand over
 - People review what matters; evaluation and error handling are designed in from the start
 - Custom development covers the interface, connections to existing systems, permissions, review states and failure paths, and can include the web platform the feature needs
-- Website and web application development (Hungarian: https://www.barnanorbert.com/hu/webfejlesztes): company websites, custom web applications, content management, online payment and member areas, with design and build by the same person; evidence is the Kineticare build
+- Web development and product design (English: https://www.barnanorbert.com/web-development; Hungarian: https://www.barnanorbert.com/hu/webfejlesztes): custom web application development, MVP development, product design for SaaS and fintech, company websites, content management, online payment and member areas, with design and build by the same person; typical stack is Next.js with server-side rendering and a Payload content system; evidence is the Kineticare build
 - No prices, service levels, partnerships or certifications are published. Every project is custom work; price depends on scope, integrations, content, languages and the level of review
 - Working languages: Hungarian and English; meetings, documentation and handover are in these two languages, including for German and other European clients
 - Way of working: quality over quantity, with clients who invest their own energy and want work that represents their brand and products rather than a template

@@ -18,7 +18,7 @@ const COPY = {
 const languageOf = (route) => route === "/hu" || route.startsWith("/hu/") ? "hu" : "en";
 const SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
 // Every published content page with its language pair (whole-site language switch, 2026-10-06).
-const PAGE_PAIRS = [["/", "/hu"], ["/works", "/hu/munkak"], ["/about", "/hu/rolam"], ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"],
+const PAGE_PAIRS = [["/", "/hu"], ["/works", "/hu/munkak"], ["/about", "/hu/rolam"], ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"], ["/web-development", "/hu/webfejlesztes"],
   ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"], ...SLUGS.map((slug) => [`/work/${slug}`, `/hu/munka/${slug}`])];
 
 const viewports = [

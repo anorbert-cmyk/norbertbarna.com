@@ -43,7 +43,7 @@ npm run test:e2e  # Chromium scroll, layout, navigation, CLS and accessibility c
 ```
 ├── index.html          # Homepage
 ├── works.html          # Works page
-├── about.html, contact.html, ai-integration.html, privacy.html, 404.html
+├── about.html, contact.html, ai-integration.html, web-development.html, privacy.html, 404.html
 ├── work/               # Individual case studies
 │   ├── sportsgambit.html
 │   ├── raiffeisen.html
@@ -130,6 +130,6 @@ or a missing related-service page.
 
 ## URL conventions
 
-- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/hu/ai-tanacsadas-fejlesztes`, `/hu/webfejlesztes`, `/writing/<slug>`, `/hu/irasok/<slug>`.
+- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/web-development`, `/hu/ai-tanacsadas-fejlesztes`, `/hu/webfejlesztes`, `/writing/<slug>`, `/hu/irasok/<slug>`.
 - `.html` variants and the old `/work/raiffesen` misspelling 301-redirect
   to the canonical URL (see `server.js`).

@@ -201,8 +201,8 @@ if (worksLd) {
     fail("hero-scene.js must not reach for one stage's class names");
   }
   const others = [
-    "works.html", "privacy.html", "ai-integration.html",
-    "hu/ai-tanacsadas-fejlesztes.html", "hu/adatvedelem.html",
+    "works.html", "privacy.html", "ai-integration.html", "web-development.html",
+    "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html", "hu/adatvedelem.html",
     ...WORK.map((slug) => `work/${slug}.html`),
   ];
   for (const page of others) {
@@ -616,7 +616,7 @@ for (const page of SERVICE_PAGES) {
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
     return [...main.matchAll(/<(header|section)\b[^>]*\bid="([^"]+)"/g)].map(([, tag, id]) => `${tag}#${id}`).join(" ");
   };
-  // The Hungarian SEO pages (2026-10-21) add use cases, scope and price
+  // The SEO service pages (2026-10-21) add use cases, scope and price
   // factors in the same reading layout, and answer eight questions.
   const expected = "header#top section#shaped section#pieces section#workflow section#selected-work section#start section#questions";
   const extended = "header#top section#shaped section#pieces section#uses section#workflow section#scope section#pricing section#selected-work section#start section#questions";

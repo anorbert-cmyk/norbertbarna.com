@@ -114,7 +114,7 @@ const REDIRECTS = {
 };
 // Pages added with the Hungarian mirror and the contact form (2026-10-06)
 // need the same .html and trailing-slash variants as every other page.
-for (const page of ["/contact", "/hu/kapcsolat", "/hu/webfejlesztes", "/hu/munkak", "/hu/rolam", ...WORK_SLUGS.map((slug) => `/hu/munka/${slug}`)]) {
+for (const page of ["/contact", "/hu/kapcsolat", "/web-development", "/hu/webfejlesztes", "/hu/munkak", "/hu/rolam", ...WORK_SLUGS.map((slug) => `/hu/munka/${slug}`)]) {
   REDIRECTS[`${page}.html`] = page;
   REDIRECTS[`${page}/`] = page;
 }
