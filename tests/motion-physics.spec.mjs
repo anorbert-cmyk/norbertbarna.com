@@ -324,6 +324,40 @@ async function rowTrace(page) {
   });
 }
 
+test("input during the case entrance hurries it from where it is instead of cutting to the end", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await returning(page);
+  await recordPhysics(page);
+  await page.goto("/work/raiffeisen", { waitUntil: "load" });
+  await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state)).toBe("assembling");
+  // Mid-entrance: the plate is still leaning back and the last mask is closed.
+  await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.entrance?.time ?? 0)).toBeGreaterThan(.35);
+  const pressed = await page.evaluate(() => window.PortfolioCaseOpening.entrance.time);
+  expect(pressed, "the key arrives before the entrance would end").toBeLessThan(1.6);
+  await page.keyboard.press("Shift");
+  await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state), { timeout: 1500 }).toBe("settled");
+  const world = await entranceWorld(page);
+  // Settled well before the plan's 2.3 s, and by about .6 s after the input.
+  expect(world.time, "the hurried entrance ends early").toBeLessThan(Math.max(pressed, .4) + .65);
+  // No body jumps: between two fixed 1/240 s steps nothing moves more than a
+  // 60 Hz frame's worth of a fast spring (the end is reached by motion, not a cut).
+  for (const name of world.names) {
+    const run = series(world, name);
+    const span = Math.max(...run.map((sample) => sample.x)) - Math.min(...run.map((sample) => sample.x)) || 1;
+    for (let index = 1; index < run.length; index += 1) {
+      expect(Math.abs(run[index].x - run[index - 1].x) / span, `${name} step at ${run[index].t.toFixed(3)} s`).toBeLessThan(.03);
+    }
+  }
+  expect(Math.min(...series(world, "plate").map((sample) => sample.x)), "never past the stop").toBeGreaterThanOrEqual(0);
+  // The simulation itself reached the end pose (a cut would stop it mid-way).
+  for (const name of world.names) {
+    const end = series(world, name).at(-1).x;
+    expect(Math.abs(end - (name.startsWith("slice-") ? 1 : 0)), `${name} ends in place`).toBeLessThan(.002);
+  }
+  await expect(page.locator("#case-title")).toHaveText("Raiffeisen");
+  expect(await page.locator("#case-title .case-opening-letter").count()).toBe(0);
+});
+
 test("home rows: clamped springs in and out, velocity carried through a reversal, loop stopped at rest", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await returning(page);

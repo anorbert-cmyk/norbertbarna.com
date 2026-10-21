@@ -869,7 +869,9 @@ sheet, the pane's own glass carrying the form's drawn lines, lifts and folds
 in thirds and then in half under real physics (`assets/js/physics.js`): each
 panel is a thin plate on a hinge (I = mL²/3) pushed past 100° and laid down by
 gravity torque and air drag, with elasto-plastic crease memory, a stop with
-restitution, normal-based light (key light from the upper left, faces darken
+restitution, an air cushion on the laid thirds (the drag grows up to 20× over
+the last 23° before the stack, so a third lands at about 5 rad/s instead of
+15 and does not visibly rebound; 2026-10-21), normal-based light (key light from the upper left, faces darken
 as they turn) and contact shadows; the letter parks about 28° open with a drop
 shadow and an olive inner fold, at about 1.5 s on desktop and 1.2 s on phones,
 fully on screen. Reduced motion and `no-motion` run the same simulation to
@@ -984,7 +986,7 @@ JavaScript dependency is part of this contract.
 | `consent.js` | Consent record, settings reveal, focus return | no |
 | `analytics.js` | Consent-gated PostHog EU capture | no |
 | `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
-| `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory and stops, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; a deferred head script on the contact pages, the fourteen cases and both homes | yes |
+| `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory, stops and an air cushion before them, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; a deferred head script on the contact pages, the fourteen cases and both homes | yes |
 | `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; no mail handler; deliberately has no animation dependency | no |
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
@@ -1291,8 +1293,14 @@ Frequencies are ω in rad/s (f = ω/2π), ζ the damping ratio:
   stylesheet releases them by itself 2.9 s after they first resolve, and the
   owner then leaves them finished rather than hiding them again.
 - Reduced motion, `html.no-motion`, history and deep-link visits, a hidden
-  tab, user input during the entrance and a missing physics module all give
-  the finished opening at once, with no physics frame.
+  tab, a resize and a missing physics module all give the finished opening at
+  once, with no physics frame.
+- User input during the entrance (wheel, touch, key, pointer) hurries it
+  rather than cutting to the end (2026-10-21): pending staggers start at
+  once, every spring keeps its position and velocity and is retargeted
+  critically damped at ω 18 (within 1% in about .37 s, no stop rebound), and
+  letters still uninked ink in over 80 ms from the opacity they have. A
+  watchdog finishes it .9 s later if frames stop.
 
 Footer content and geometry stay still. The earlier gradient/mesh motion is
 retired; no decorative footer loop or pointer-triggered layout movement.
