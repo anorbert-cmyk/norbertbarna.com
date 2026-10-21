@@ -336,9 +336,15 @@ test("input during the case entrance hurries it from where it is instead of cutt
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state)).toBe("assembling");
   // Mid-entrance: the plate is still leaning back and the last mask is closed.
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.entrance?.time ?? 0)).toBeGreaterThan(.35);
-  const pressed = await page.evaluate(() => window.PortfolioCaseOpening.entrance.time);
-  expect(pressed, "the key arrives before the entrance would end").toBeLessThan(1.6);
+  // The entrance's own clock when the key lands, read in the page: on a loaded
+  // machine the simulation runs on between a separate read and the keypress.
+  await page.evaluate(() => {
+    window.__pressedAt = null;
+    addEventListener("keydown", () => { window.__pressedAt = window.PortfolioCaseOpening.entrance.time; }, { capture: true, passive: true, once: true });
+  });
   await page.keyboard.press("Shift");
+  const pressed = await page.evaluate(() => window.__pressedAt);
+  expect(pressed, "the key arrives before the entrance would end").toBeLessThan(1.6);
   await expect.poll(() => page.evaluate(() => window.PortfolioCaseOpening.state), { timeout: 1500 }).toBe("settled");
   const world = await entranceWorld(page);
   // Settled well before the plan's 2.3 s, and by about .6 s after the input.
