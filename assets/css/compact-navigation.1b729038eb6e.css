@@ -306,6 +306,6 @@ html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; h
 @media (max-width: 991px) {
   html body .navbar .nav-wrap, html body .navbar .nav-wrap.dark { min-height: 56px; }
   html body .navbar .menu-button, html body .navbar .menu-button.w-nav-button {
-    display: grid; place-items: center; width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0; margin: 0 0 0 auto;
+    display: grid; place-items: center; width: auto; min-width: 44px; height: auto; min-height: 44px; padding: 0; margin: 0 0 0 auto;
   }
 }
