@@ -61,7 +61,7 @@ for (const [language, path] of ROUTES) {
     const caseRoot = language === "hu" ? "/hu/munka/" : "/work/";
     const about = language === "hu" ? "/hu/rolam" : "/about";
     await expect(page.locator(`#selected-work a[href="${caseRoot}sportsgambit"]`)).toHaveAccessibleName(/SportsGambit.*MVP/);
-    await expect(page.locator(`#selected-work a[href="${about}#perspective"]`)).toHaveAccessibleName(/BlackRock/);
+    await expect(page.locator(`#selected-work a[href="${about}#perspective"]`)).toHaveAccessibleName(/global asset manager|globális vagyonkezelő/);
     const evidence = await page.locator("#selected-work a[href]").evaluateAll((links) => links.map((link) => ({
       href: link.getAttribute("href"), hreflang: link.getAttribute("hreflang") })));
     expect(evidence.length).toBeGreaterThanOrEqual(5);

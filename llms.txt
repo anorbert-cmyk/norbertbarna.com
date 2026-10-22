@@ -7,14 +7,14 @@ This file is a concise, citable guide to the canonical portfolio at https://www.
 ## Who
 
 - Name: Norbert Barna (also written Barna Norbert)
-- Role: Product VP. He is a Vice President at BlackRock and leads a product that manages 15 trillion dollars across its full portfolio; his team owns its AI development and feature design.
+- Role: Product VP. He is a Vice President at a global asset manager and leads a product that manages 15 trillion dollars across its full portfolio; his team owns its AI development and feature design.
 - Experience: 17 years across enterprise security software, banking, enterprise EdTech and capital markets
 - Languages: English and Hungarian
 - Profile: https://www.linkedin.com/in/barna-norbert/
 
 ## Professional experience
 
-- Vice President, BlackRock, 2026–Present
+- Vice President, a global asset manager, 2026–Present
 - Creative Team Lead, Instructure, 2023–2025
 - Senior Product Designer, Instructure, 2022–2023
 - Product Lead, Raiffeisen Bank International, 2020–2022

@@ -35,8 +35,9 @@ for (const file of SERVICE_PAGES) {
     // German readers are told that a German enquiry is answered in English (owner decision, 2026-10-21),
     // and the German pages never name the current employer.
     assert(/Deutschsprachige Anfragen beantworte ich auf Englisch/.test(text(body)), `${file}: tells German readers that enquiries are answered in English`);
-    assert(!/BlackRock/.test(html), `${file}: the German pages do not name the employer`);
   }
+  // Client-facing pages never name the current employer (owner decision, 2026-10-21); the hiring pages carry the CV.
+  assert(!/BlackRock/.test(html), `${file}: the service pages do not name the employer`);
   const links = [...html.matchAll(/<link\b[^>]*>/gi)].map(([tag]) => tag);
   const translations = links.filter(tag => attr(tag, "rel") === "alternate" && attr(tag, "hreflang"));
   const alternates = { ...Object.fromEntries(LANGS.filter((lang) => group[lang]).map((lang) => [lang, origin + route(group[lang])])), "x-default": origin + route(group.en) };
