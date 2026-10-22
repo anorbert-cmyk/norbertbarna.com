@@ -10,7 +10,7 @@ service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
 cover: /assets/images/og/writing/ai-ugyfelszolgalat-emberi-ellenorzessel.jpg
 cover_alt: Két egymás felé forduló hajtogatott papírforma, köztük egy kis papírüzenet
-pair: null
+pair: de/ki-im-kundenservice
 ---
 Az AI ügyfélszolgálat akkor éri meg, ha sok, hasonló kérdés érkezik, a jó válasz megtalálható a saját dokumentumaidban, és egy hibás válasz kijavítható, mielőtt kárt okoz. Emberi ellenőrzéssel ez úgy működik, hogy az AI megírja a válasz vázlatát vagy kiválasztja a forrást, egy munkatárs pedig jóváhagyja, átírja vagy elveti. Ahol pénz, egészség vagy jogi helyzet a tét, az utolsó szó az emberé.
 

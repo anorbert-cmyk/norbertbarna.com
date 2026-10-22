@@ -62,7 +62,11 @@
   </url>
   <url>
     <loc>https://www.barnanorbert.com/ai-integration</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-21</lastmod>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/web-development</loc>
+    <lastmod>2026-10-21</lastmod>
   </url>
   <url>
     <loc>https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes</loc>
@@ -73,11 +77,23 @@
     <lastmod>2026-10-21</lastmod>
   </url>
   <url>
+    <loc>https://www.barnanorbert.com/de/ki-beratung-entwicklung</loc>
+    <lastmod>2026-10-21</lastmod>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/webentwicklung</loc>
+    <lastmod>2026-10-21</lastmod>
+  </url>
+  <url>
     <loc>https://www.barnanorbert.com/privacy</loc>
     <lastmod>2026-10-21</lastmod>
   </url>
   <url>
     <loc>https://www.barnanorbert.com/hu/adatvedelem</loc>
+    <lastmod>2026-10-21</lastmod>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/datenschutz</loc>
     <lastmod>2026-10-21</lastmod>
   </url>
   <url>
@@ -91,6 +107,18 @@
     <lastmod>2026-10-21</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/kontakt</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.barnanorbert.com/hu</loc>
@@ -196,6 +224,84 @@
   </url>
   <url>
     <loc>https://www.barnanorbert.com/hu/irasok/egyedi-weboldal-vagy-sablon</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/was-kostet-eine-website</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-im-mittelstand-einfuehren</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-im-kundenservice</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/individuelle-website-oder-baukasten</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-kennzeichnungspflicht</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/website-relaunch-oder-ueberarbeitung</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-halluzinationen-im-unternehmen</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/barrierefreie-website-bfsg</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/mvp-entwicklung-regulierte-produkte</loc>
+    <lastmod>2026-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-datenschutz-dsgvo</loc>
     <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

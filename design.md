@@ -1103,7 +1103,7 @@ Load order is a contract, not a preference:
 
 - `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
 - `physics.js` follows the analytics trio as a deferred head script on the
-  contact pages, the cases, `/`, `/hu` and the service pages with the glass opening (both AI pages, `/hu/webfejlesztes`). Deferred scripts run after the
+  contact pages, the cases, `/`, `/hu`, `/de` and every service page with the glass opening (AI and web development, in each language). Deferred scripts run after the
   end-of-body owners and before `DOMContentLoaded`, so an owner reads
   `window.PortfolioPhysics` only once that event has fired (`case-opening.js`
   starts on it; `animations.js` starts after `load`) and settles to its end

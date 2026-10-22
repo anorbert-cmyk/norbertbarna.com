@@ -18,7 +18,7 @@ import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
-  ORIGIN, ROOT, SECTIONS, articleFile, citations, escapeHtml, faqOf, leadParagraph, loadArticles, markdownToHtml, outlineOf, readingMinutes,
+  ORIGIN, ROOT, SECTIONS, WRITING_LANGS, articleFile, citations, escapeHtml, faqOf, leadParagraph, loadArticles, markdownToHtml, outlineOf, readingMinutes,
   wordCount, writingLanguageLinks,
 } from "./writing-content.mjs";
 import { urlOf } from "./service-pages.mjs";
@@ -27,7 +27,7 @@ import { applyChrome } from "./site-chrome.mjs";
 const CHECK = process.argv.includes("--check");
 const DEFAULT_IMAGE = {
   url: `${ORIGIN}/assets/images/og/forest-olive-folds.jpg`,
-  alt: { en: "Forest-green and olive folded geometric sculpture", hu: "Erdőzöld és olívasárga hajtogatott geometriai alakzat" },
+  alt: { en: "Forest-green and olive folded geometric sculpture", hu: "Erdőzöld és olívasárga hajtogatott geometriai alakzat", de: "Waldgrüne und olivfarbene gefaltete geometrische Skulptur" },
 };
 const LINKEDIN = "https://www.linkedin.com/in/barna-norbert/";
 const COPY = {
@@ -95,6 +95,38 @@ const COPY = {
       : "If you have a project this article fits, send a few lines about your goals and we can work out how to approach it.",
     ctaButton: "Discuss your project",
   },
+  de: {
+    locale: "de_DE",
+    templateFile: "de/datenschutz.html",
+    contact: "/de/kontakt",
+    home: { name: "Startseite", path: "/de" },
+    author: { name: "Norbert Barna", path: "/about" },
+    breadcrumbLabel: "Pfad",
+    tocLabel: "Inhalt",
+    updated: "Aktualisiert",
+    minutes: (n) => `${n} Min. Lesezeit`,
+    date: (iso) => {
+      const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
+      const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+      return `${d}. ${months[m - 1]} ${y}`;
+    },
+    eyebrow: "Wissen",
+    listHeading: "Artikel zu KI im Unternehmen und Webentwicklung",
+    listLabel: "Artikel",
+    count: (n) => `${n} Artikel`,
+    moreHeading: "Weitere Artikel",
+    listTitle: "Wissen: KI im Unternehmen und Webentwicklung | Norbert Barna",
+    listDescription: "Artikel von Norbert Barna zu KI-Beratung, Human in the Loop, KI-Verordnung und Webentwicklung, geschrieben aus eigenen Projekten.",
+    listKeywords: ["Norbert Barna Artikel", "ki beratung", "human in the loop", "ki verordnung", "webentwicklung"],
+    listIntro: "Artikel darüber, wie KI in einen echten Arbeitsablauf kommt, was die KI-Verordnung von Produktteams verlangt und wovon eine Website wirklich abhängt. Jeder Text geht von meinen eigenen Projekten und Entscheidungen aus, nicht von allgemeinen Tipps. Die Zusammenarbeit läuft auf Englisch oder Ungarisch.",
+    feedTitle: "Artikel von Norbert Barna",
+    feedLabel: "RSS-Feed",
+    ctaHeading: "Wenn das Ihr Projekt ist",
+    ctaText: (service) => service
+      ? `Die Leistung hinter diesem Artikel: ${service}. Wenn Sie schon wissen, was Sie bauen möchten, schreiben Sie mir ein paar Zeilen zu Ihren Zielen. Wir arbeiten auf Englisch oder Ungarisch.`
+      : "Wenn Sie ein Projekt haben, zu dem dieser Artikel passt, schreiben Sie mir ein paar Zeilen zu Ihren Zielen, und wir klären, wie man es angeht. Wir arbeiten auf Englisch oder Ungarisch.",
+    ctaButton: "Sprechen wir über Ihr Projekt",
+  },
 };
 
 // ---- chrome copied from the privacy pages --------------------------------
@@ -130,7 +162,10 @@ const json = (value) => JSON.stringify(value, null, 2).replace(/</g, "\\u003c");
 function head({ lang, title, description, keywords, canonical, type, image, alternates, extraMeta = [], schema, feedHref }) {
   const template = chrome(lang);
   const copy = COPY[lang];
-  const otherLocale = COPY[lang === "hu" ? "en" : "hu"].locale;
+  // alternates: { en: url, hu: url, de: url } for the languages this page exists in.
+  const others = alternates ? Object.keys(alternates).filter((other) => other !== lang) : [];
+  // x-default is English, or the first language (site order) the page exists in.
+  const xDefault = alternates ? alternates.en || alternates[WRITING_LANGS.find((code) => alternates[code])] : null;
   return [
     "<!DOCTYPE html>",
     `<html lang="${lang}">`,
@@ -148,7 +183,7 @@ function head({ lang, title, description, keywords, canonical, type, image, alte
     `<meta content="image/jpeg" property="og:image:type"/>`,
     `<meta content="${type}" property="og:type"/>`,
     `<meta content="Norbert Barna" property="og:site_name"/>`,
-    `<meta content="${copy.locale}" property="og:locale"/>${alternates ? `<meta content="${otherLocale}" property="og:locale:alternate"/>` : ""}`,
+    `<meta content="${copy.locale}" property="og:locale"/>${others.map((other) => `<meta content="${COPY[other].locale}" property="og:locale:alternate"/>`).join("")}`,
     `<meta content="${canonical}" property="og:url"/>`,
     ...extraMeta,
     `<meta content="summary_large_image" name="twitter:card"/>`,
@@ -162,9 +197,8 @@ function head({ lang, title, description, keywords, canonical, type, image, alte
     `<meta content="Norbert Barna" name="author"/>`,
     `<link rel="canonical" href="${canonical}"/>`,
     ...(alternates ? [
-      `<link rel="alternate" hreflang="en" href="${alternates.en}"/>`,
-      `<link rel="alternate" hreflang="hu" href="${alternates.hu}"/>`,
-      `<link rel="alternate" hreflang="x-default" href="${alternates.en}"/>`,
+      ...WRITING_LANGS.filter((code) => alternates[code]).map((code) => `<link rel="alternate" hreflang="${code}" href="${alternates[code]}"/>`),
+      `<link rel="alternate" hreflang="x-default" href="${xDefault}"/>`,
     ] : []),
     `<link rel="alternate" type="application/rss+xml" title="${escapeHtml(copy.feedTitle)}" href="${feedHref}"/>`,
     template.assets,
@@ -182,7 +216,7 @@ const page = ({ head: headHtml, lang, file, current, link, main, bodyClass, arti
   const header = template.header.replace(/<body class="utility-page">/, `<body class="utility-page writing-page ${bodyClass}">`);
   if (header === template.header) throw new Error(`${COPY[lang].templateFile}: body class not found`);
   const html = `${headHtml}\n${header}<main id="main-content" tabindex="-1">${main}</main>\n${template.footer}`;
-  const pairs = { [lang === "hu" ? "en" : "hu"]: { href: urlOf(link.file), alternate: link.alternate } };
+  const pairs = Object.fromEntries(Object.entries(link).map(([other, target]) => [other, { href: urlOf(target.file), alternate: target.alternate }]));
   return applyChrome(html, { page: file, kind: "utility", current, pairs, articles });
 };
 
@@ -235,6 +269,8 @@ function row(lang, article, index) {
   return `<li class="writing-row"><a class="writing-row-link" href="${section.path}/${article.slug}"><span class="writing-row-number" aria-hidden="true">${String(index).padStart(2, "0")}</span>${thumb(article, image)}<div class="writing-row-copy">${kicker(lang, article)}<h2 id="${article.slug}">${escapeHtml(article.title)}</h2><p>${escapeHtml(article.description)}</p>${meta(lang, article)}</div></a></li>`;
 }
 
+const CTA_ID = { hu: "kapcsolodo-szolgaltatas", en: "related-service", de: "passende-leistung" };
+
 // Tables scroll inside their own box on narrow screens.
 const wrapTables = (html) => html.replaceAll("<table>", '<div class="writing-table"><table>').replaceAll("</table>", "</table></div>");
 
@@ -243,10 +279,9 @@ function renderArticle(article, articles, links) {
   const copy = COPY[lang];
   const section = SECTIONS[lang];
   const canonical = `${ORIGIN}${section.path}/${article.slug}`;
-  const pair = article.pair && articles.find((other) => other.lang !== lang && other.slug === article.pair);
-  const alternates = pair && (lang === "en"
-    ? { en: canonical, hu: `${ORIGIN}${SECTIONS.hu.path}/${pair.slug}` }
-    : { en: `${ORIGIN}${SECTIONS.en.path}/${pair.slug}`, hu: canonical });
+  const alternates = article.pairs.length
+    ? { [lang]: canonical, ...Object.fromEntries(article.pairs.map((pair) => [pair.lang, `${ORIGIN}${SECTIONS[pair.lang].path}/${pair.slug}`])) }
+    : null;
   const image = imageOf(article);
   const body = markdownToHtml(article.markdown, article.source);
   const faq = faqOf(body);
@@ -317,8 +352,8 @@ function renderArticle(article, articles, links) {
     `<aside class="writing-rail">${tableOfContents(lang, body)}</aside>`,
     `<div class="writing-prose">`,
     wrapTables(body),
-    `<section class="writing-cta" aria-labelledby="${lang === "hu" ? "kapcsolodo-szolgaltatas" : "related-service"}">`,
-    `<h2 id="${lang === "hu" ? "kapcsolodo-szolgaltatas" : "related-service"}">${copy.ctaHeading}</h2>`,
+    `<section class="writing-cta" aria-labelledby="${CTA_ID[lang]}">`,
+    `<h2 id="${CTA_ID[lang]}">${copy.ctaHeading}</h2>`,
     `<p>${copy.ctaText(service)}</p>`,
     `<p><a class="footer-email hero-work-link" href="${copy.contact}">${copy.ctaButton}</a></p>`,
     `</section>`,
@@ -346,7 +381,10 @@ function renderList(lang, own, links, articles) {
   const canonical = `${ORIGIN}${section.path}`;
   const file = `${section.dir}/index.html`;
   const link = links[file];
-  const alternates = link.alternate ? { en: `${ORIGIN}${SECTIONS.en.path}`, hu: `${ORIGIN}${SECTIONS.hu.path}` } : null;
+  const translated = Object.entries(link).filter(([, target]) => target.alternate).map(([other]) => other);
+  const alternates = translated.length
+    ? { [lang]: canonical, ...Object.fromEntries(translated.map((other) => [other, `${ORIGIN}${SECTIONS[other].path}`])) }
+    : null;
   const updated = own.map((article) => article.updated).sort().at(-1);
   const page_ = {
     "@type": "CollectionPage",
@@ -440,7 +478,7 @@ function renderSitemap(articles) {
   const entry = (loc, lastmod, changefreq, priority) =>
     `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>\n`;
   const added = [];
-  for (const lang of ["en", "hu"]) {
+  for (const lang of WRITING_LANGS) {
     const own = articles.filter((article) => article.lang === lang);
     if (!own.length) continue;
     const { path } = SECTIONS[lang];
@@ -454,10 +492,11 @@ function renderLlms(articles) {
   const source = readFileSync(join(ROOT, "llms.txt"), "utf8");
   const withoutSection = source.replace(/## Writing\n[\s\S]*?(?=\n## )\n/, "");
   if (!articles.length) return withoutSection;
-  const lines = ["## Writing", "", "Articles by Norbert Barna, written from his own project work; each opens with its direct answer and ends with a visible FAQ (FAQPage schema). Hungarian articles are listed at https://www.barnanorbert.com/hu/irasok and English articles at https://www.barnanorbert.com/writing; RSS at /hu/irasok/feed.xml and /writing/feed.xml.", ""];
+  const names = { en: "English", hu: "Hungarian", de: "German" };
+  const lines = ["## Writing", "", "Articles by Norbert Barna, written from his own project work; each opens with its direct answer and ends with a visible FAQ (FAQPage schema). English articles are listed at https://www.barnanorbert.com/writing, Hungarian articles at https://www.barnanorbert.com/hu/irasok and German articles at https://www.barnanorbert.com/de/wissen; RSS at /writing/feed.xml, /hu/irasok/feed.xml and /de/wissen/feed.xml. Work with German-speaking clients runs in English or Hungarian.", ""];
   for (const article of articles) {
     const updated = article.updated.slice(0, 10) !== article.date.slice(0, 10) ? `, updated ${article.updated.slice(0, 10)}` : "";
-    lines.push(`- [${article.title}](${ORIGIN}${SECTIONS[article.lang].path}/${article.slug}) (${article.lang === "hu" ? "Hungarian" : "English"}, ${article.date.slice(0, 10)}${updated}): ${article.description}`);
+    lines.push(`- [${article.title}](${ORIGIN}${SECTIONS[article.lang].path}/${article.slug}) (${names[article.lang]}, ${article.date.slice(0, 10)}${updated}): ${article.description}`);
   }
   const section = `${lines.join("\n")}\n`;
   const anchor = withoutSection.indexOf("## Services");
@@ -470,7 +509,7 @@ loadArticles({ includeDrafts: true }); // validates the drafts' frontmatter too
 const articles = loadArticles();
 const links = writingLanguageLinks(articles);
 const outputs = new Map();
-for (const lang of ["en", "hu"]) {
+for (const lang of WRITING_LANGS) {
   const own = articles.filter((article) => article.lang === lang);
   if (!own.length) continue;
   const { dir } = SECTIONS[lang];

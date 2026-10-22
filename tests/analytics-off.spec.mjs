@@ -3,8 +3,9 @@ import { test, expect } from '@playwright/test';
 const slugs = ['raiffeisen', 'instructure', 'bitpanda', 'benker', 'sportsgambit', 'kineticare', 'onrobot'];
 // Every content page in both languages, including the contact form pair (owner, 2026-10-06).
 const paths = ['/', '/works', '/about', '/ai-integration', '/privacy', '/contact', ...slugs.map(slug => `/work/${slug}`),
-  '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/adatvedelem', '/hu/kapcsolat', ...slugs.map(slug => `/hu/munka/${slug}`)];
-const privacyContact = { '/privacy': ['/contact', 'Contact form'], '/hu/adatvedelem': ['/hu/kapcsolat', 'Kapcsolatfelvételi űrlap'] };
+  '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/adatvedelem', '/hu/kapcsolat', ...slugs.map(slug => `/hu/munka/${slug}`),
+  '/de', '/de/ki-beratung-entwicklung', '/de/webentwicklung', '/de/datenschutz', '/de/kontakt'];
+const privacyContact = { '/privacy': ['/contact', 'Contact form'], '/hu/adatvedelem': ['/hu/kapcsolat', 'Kapcsolatfelvételi űrlap'], '/de/datenschutz': ['/de/kontakt', 'Kontaktformular'] };
 
 async function interceptVendor(page) {
   const vendor = [];

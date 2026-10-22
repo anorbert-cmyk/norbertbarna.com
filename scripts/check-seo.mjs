@@ -14,7 +14,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, SERVICE_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, baseOf, HU_PAGES, isWritingList, isWritingPage, urlOf } from "./service-pages.mjs";
+import { CONTACT_PAGES, LANGS, PAGE_GROUPS, UTILITY_PAGES, SERVICE_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, baseOf, HU_PAGES, isWritingList, isWritingPage, languageOf, urlOf } from "./service-pages.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const origin = "https://www.barnanorbert.com";
@@ -62,7 +62,7 @@ const byUrl = new Map(pages.map(page => [page.canonical, page]));
 const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
 const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage"]);
-check(pages.length === files.length && byUrl.size === files.length && files.length === 27 + WRITING_PAGES.length, "expected twenty-seven distinct indexable content routes (13 English, 14 Hungarian) plus the generated writing pages");
+check(pages.length === files.length && byUrl.size === files.length && files.length === 33 + WRITING_PAGES.length, "expected thirty-three distinct indexable content routes (14 English, 14 Hungarian, 5 German) plus the generated writing pages");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
     const previous = definitions.get(node["@id"]);
@@ -92,11 +92,11 @@ for (const page of pages) {
   const robots = page.metas("robots");
   check(robots.length === 1 && /\bindex\b/.test(robots[0]) && /\bfollow\b/.test(robots[0]), `${file}: explicit index/follow`);
   check(![...robots, ...page.metas("googlebot")].some(value => /\b(noindex|nofollow|none)\b/i.test(value)), `${file}: conflicting crawl directives`);
-  check(page.language === (/^\/hu(?:\/|$)/.test(page.route) ? "hu" : "en"), `${file}: document language`);
+  check(page.language === languageOf(file), `${file}: document language`);
   const bingVerification = page.metas("msvalidate.01");
   check(baseOf(file) === "index.html" ? bingVerification.length === 1 && /^[A-F0-9]{32}$/i.test(bingVerification[0]) : bingVerification.length === 0,
     `${file}: one provider-issued Bing verification value belongs on the homepage only`);
-  const expectedType = isWritingList(file) ? "CollectionPage" : isWritingPage(file) ? "Article" : baseOf(file) === "index.html" ? "ProfilePage" : baseOf(file) === "works.html" ? "CollectionPage" : baseOf(file) === "about.html" ? "AboutPage" : baseOf(file).startsWith("work/") ? "Article" : /^(?:contact|hu\/kapcsolat)\.html$/.test(file) ? "ContactPage" : "WebPage";
+  const expectedType = isWritingList(file) ? "CollectionPage" : isWritingPage(file) ? "Article" : baseOf(file) === "index.html" ? "ProfilePage" : baseOf(file) === "works.html" ? "CollectionPage" : baseOf(file) === "about.html" ? "AboutPage" : baseOf(file).startsWith("work/") ? "Article" : CONTACT_PAGES.includes(file) ? "ContactPage" : "WebPage";
   const primary = roots.filter(node => types(node).includes(expectedType));
   check(primary.length === 1, `${file}: exactly one ${expectedType}`);
   if (primary[0]) {
@@ -163,41 +163,41 @@ for (const page of pages) {
     if (target.origin !== origin) continue;
     const destination = byUrl.get(target.origin + target.pathname);
     if (!destination) {
-      check((target.pathname.startsWith("/assets/") || /^\/(?:hu\/irasok|writing)\/feed\.xml$/.test(target.pathname)) && existsSync(join(root, decodeURIComponent(target.pathname))), `${file}: noncanonical or missing internal destination ${anchor.href}`);
+      check((target.pathname.startsWith("/assets/") || /^\/(?:hu\/irasok|writing|de\/wissen)\/feed\.xml$/.test(target.pathname)) && existsSync(join(root, decodeURIComponent(target.pathname))), `${file}: noncanonical or missing internal destination ${anchor.href}`);
       continue;
     }
     if (target.hash) check(destination.ids.has(decodeURIComponent(target.hash.slice(1))), `${file}: missing native fragment ${anchor.href}`);
   }
 }
 
-// Every page has a reciprocal language pair (owner request, 2026-10-06).
-const LANGUAGE_PAIRS = [["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"], ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"],
-  ...HU_PAGES.map(page => [urlOf(baseOf(page)), urlOf(page)]),
-  ...Object.entries(WRITING_LANGUAGE_LINKS).filter(([page, link]) => link.alternate && page.startsWith("writing/")).map(([page, link]) => [urlOf(page), urlOf(link.file)])];
-// A page outside every pair (a new page whose translation is not live yet)
+// Every page belongs to a reciprocal translation group of two or three
+// languages (owner request, 2026-10-06; German pages 2026-10-21): the static
+// groups from service-pages.mjs and the writing pages that have translations.
+const TRANSLATION_GROUPS = [
+  ...PAGE_GROUPS.map(group => Object.fromEntries(group.map(file => [languageOf(file), urlOf(file)]))),
+  ...Object.entries(WRITING_LANGUAGE_LINKS).filter(([, links]) => Object.values(links).some(link => link.alternate))
+    .map(([file, links]) => ({ [languageOf(file)]: urlOf(file), ...Object.fromEntries(Object.entries(links).filter(([, link]) => link.alternate).map(([lang, link]) => [lang, urlOf(link.file)])) })),
+];
+const groupOf = new Map();
+for (const unordered of TRANSLATION_GROUPS) for (const route of Object.values(unordered)) {
+  const group = Object.fromEntries(LANGS.filter(lang => unordered[lang]).map(lang => [lang, unordered[lang]]));
+  check(!groupOf.has(route) || JSON.stringify(groupOf.get(route)) === JSON.stringify(group), `${route}: belongs to one translation group`);
+  groupOf.set(route, group);
+}
+// A page outside every group (a new page whose translation is not live yet)
 // carries no hreflang at all: a half pair is ignored by Google and confuses
 // Bing. Every alternate a page names must be a canonical page of this site.
-const paired = new Set(LANGUAGE_PAIRS.flat());
+// x-default is the English member, or the first language (site order) of a
+// group without English.
 for (const page of pages) {
   const alternates = page.links.filter(link => link.rel === "alternate" && link.hreflang);
-  if (!paired.has(page.route)) check(alternates.length === 0, `${page.file}: hreflang without a registered language pair`);
   for (const link of alternates) check(byUrl.has(link.href), `${page.file}: hreflang ${link.hreflang} points outside the canonical pages: ${link.href}`);
-}
-for (const [english, hungarian] of LANGUAGE_PAIRS) {
-  const expected = { en: origin + english, hu: origin + hungarian, "x-default": origin + english };
-  for (const route of [english, hungarian]) {
-    const page = byUrl.get(origin + route);
-    const alternates = page.links.filter(link => link.rel === "alternate" && link.hreflang);
-    check(alternates.length === 3 && alternates.every(link => expected[link.hreflang] === link.href) && new Set(alternates.map(link => link.hreflang)).size === 3, `${page.file}: reciprocal/self-inclusive en/hu/x-default`);
-  }
-}
-
-// A writing page without a translation declares no hreflang at all, so no
-// one-sided alternate can point at a page that does not point back.
-for (const [file, link] of Object.entries(WRITING_LANGUAGE_LINKS)) {
-  if (link.alternate) continue;
-  const page = byUrl.get(origin + urlOf(file));
-  check(!page.links.some(tag => tag.rel === "alternate" && tag.hreflang), `${file}: no translation, so no hreflang alternates`);
+  const group = groupOf.get(page.route);
+  if (!group) { check(alternates.length === 0, `${page.file}: hreflang without a registered translation group`); continue; }
+  const expected = { ...Object.fromEntries(Object.entries(group).map(([lang, route]) => [lang, origin + route])), "x-default": origin + (group.en || group[LANGS.find(lang => group[lang])]) };
+  const count = Object.keys(expected).length;
+  check(alternates.length === count && alternates.every(link => expected[link.hreflang] === link.href) && new Set(alternates.map(link => link.hreflang)).size === count,
+    `${page.file}: reciprocal/self-inclusive hreflang for ${Object.keys(group).join("/")} with x-default`);
 }
 
 const sitemap = readFileSync(join(root, "sitemap.xml"), "utf8");

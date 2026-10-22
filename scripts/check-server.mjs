@@ -149,8 +149,9 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem",
-    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure", ...WRITING_PAGES.map(urlOf)]) {
+  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem",
+    "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure",
+    "/de", "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/datenschutz", "/de/kontakt", ...WRITING_PAGES.map(urlOf)]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -164,7 +165,7 @@ try {
     );
     assert(!contentSecurityPolicy.includes("eu-assets"), `${pagePath}: must not allow the PostHog JS SDK asset host`);
     // Cloudflare Turnstile (script + iframe) is allowed on the contact pages alone.
-    const turnstilePage = pagePath === "/contact" || pagePath === "/hu/kapcsolat";
+    const turnstilePage = ["/contact", "/hu/kapcsolat", "/de/kontakt"].includes(pagePath);
     assert(/script-src[^;]*https:\/\/challenges\.cloudflare\.com/.test(contentSecurityPolicy) === turnstilePage &&
       /frame-src https:\/\/challenges\.cloudflare\.com(?:;|$)/.test(contentSecurityPolicy) === turnstilePage,
       `${pagePath}: Turnstile hosts belong to the contact pages only`);
@@ -239,6 +240,14 @@ try {
     ["/hu/ai-integracio/", "/hu/ai-tanacsadas-fejlesztes"],
     ["/hu/webfejlesztes.html", "/hu/webfejlesztes"],
     ["/hu/webfejlesztes/", "/hu/webfejlesztes"],
+    ["/web-development.html", "/web-development"],
+    ["/de/", "/de"],
+    ["/de/index.html?utm_source=de", "/de?utm_source=de"],
+    ["/de/webentwicklung.html", "/de/webentwicklung"],
+    ["/de/ki-beratung-entwicklung/?utm_campaign=ki", "/de/ki-beratung-entwicklung?utm_campaign=ki"],
+    ["/de/datenschutz/", "/de/datenschutz"],
+    ["/de/kontakt.html", "/de/kontakt"],
+    ["/web-development/?utm_campaign=web", "/web-development?utm_campaign=web"],
     ["/favicon.ico", "/assets/icons/68f923d010d274634c966a6e_favicon.png"],
     ["/index", "/"],
     ["/index?utm_source=home", "/?utm_source=home"],
@@ -270,8 +279,8 @@ try {
   for (const pathname of sitemapPaths) {
     // /hu is served from hu/index.html, so its file spellings are the index ones.
     // /hu and the writing list pages are served from <dir>/index.html, so their index spellings redirect too.
-    const variants = pathname === "/hu" ? ["/hu/", "/hu/index.html", "/hu/index"] :
-      ["/writing", "/hu/irasok"].includes(pathname) ? [`${pathname}.html`, `${pathname}/`, `${pathname}/index.html`, `${pathname}/index`] :
+    const variants = ["/hu", "/de"].includes(pathname) ? [`${pathname}/`, `${pathname}/index.html`, `${pathname}/index`] :
+      ["/writing", "/hu/irasok", "/de/wissen"].includes(pathname) ? [`${pathname}.html`, `${pathname}/`, `${pathname}/index.html`, `${pathname}/index`] :
       [`${pathname}.html`, `${pathname}/`];
     for (const variant of variants) {
       const redirect = await fetch(`${baseUrl}${variant}?ref=check`, { redirect: "manual" });
@@ -473,7 +482,7 @@ try {
   const serverSource = readText(new URL("../server.js", import.meta.url), "utf8");
   const root = new URL("../", import.meta.url);
   const pages = [];
-  for (const dir of ["", "work/", "hu/", "hu/munka/"]) {
+  for (const dir of ["", "work/", "hu/", "hu/munka/", "de/"]) {
     const url = new URL(dir, root);
     if (!exists(url)) continue;
     for (const name of listDir(url)) if (name.endsWith(".html")) pages.push(dir + name);

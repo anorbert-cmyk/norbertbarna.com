@@ -1,7 +1,9 @@
 # Norbert Barna - Portfolio Website
 
 Self-hosted portfolio site (static HTML + a small Express server on Node 22), deployed on Railway.
-English pages live at the root, Hungarian pages under `hu/`. Seven case studies:
+English pages live at the root, Hungarian pages under `hu/`, German pages under `de/`
+(entry page, two service pages, contact, privacy and the `de/wissen` articles; the case
+studies, Works and About stay English and the German pages link them). Seven case studies:
 Sportsgambit, Raiffeisen, Instructure, Bitpanda, OnRobot, Kineticare and Benker.
 
 ## 🚀 Deploy
@@ -43,7 +45,7 @@ npm run test:e2e  # Chromium scroll, layout, navigation, CLS and accessibility c
 ```
 ├── index.html          # Homepage
 ├── works.html          # Works page
-├── about.html, contact.html, ai-integration.html, privacy.html, 404.html
+├── about.html, contact.html, ai-integration.html, web-development.html, privacy.html, 404.html
 ├── work/               # Individual case studies
 │   ├── sportsgambit.html
 │   ├── raiffeisen.html
@@ -53,6 +55,7 @@ npm run test:e2e  # Chromium scroll, layout, navigation, CLS and accessibility c
 │   ├── kineticare.html
 │   └── benker.html
 ├── hu/                 # Hungarian pages; hu/munka/ mirrors the 7 case studies
+├── de/                 # German pages: index (/de), webentwicklung, ki-beratung-entwicklung, kontakt, datenschutz, wissen/
 ├── assets/             # All static assets
 │   ├── css/
 │   ├── js/             # First-party JS (content-hashed copies are what pages load)
@@ -104,13 +107,14 @@ turns them into static pages; there is no CMS and no runtime rendering.
 
    - `title`: at most 60 characters; it is also the H1 and the schema headline.
    - `description`: 105-135 characters.
-   - `lang`: `hu` publishes at `/hu/irasok/<slug>`, `en` at `/writing/<slug>`.
+   - `lang`: `hu` publishes at `/hu/irasok/<slug>`, `en` at `/writing/<slug>`, `de` at `/de/wissen/<slug>`.
    - `date` / `updated`: first publication and last meaningful change, full date-time with timezone.
    - `tags`: 3-8 terms; they become meta keywords and RSS categories.
    - `draft: true` keeps the file in `content/` without publishing it (the
      frontmatter is still validated). Publishing = delete that line, set `date`
      and `updated` to the publication time, rebuild.
-   - Optional: `pair` (slug of the translation in the other language),
+   - Optional: `pair` (the translation as `lang/slug`, for example `pair: de/was-kostet-eine-website`;
+     a list when the article exists in all three languages; every pair must be reciprocal),
      `service` + `service_label` (related service page for the closing CTA),
      `cover` + `cover_alt` (a 1200x630 JPEG under `/assets/images/og/writing/`,
      used as the social preview).
@@ -135,6 +139,9 @@ or a missing related-service page.
 
 ## URL conventions
 
-- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/hu/ai-tanacsadas-fejlesztes`, `/hu/webfejlesztes`, `/writing/<slug>`, `/hu/irasok/<slug>`.
+- Canonical URLs are extension-less: `/works`, `/work/benker`, `/ai-integration`, `/web-development`, `/hu/ai-tanacsadas-fejlesztes`, `/hu/webfejlesztes`, `/de/webentwicklung`, `/de/ki-beratung-entwicklung`, `/writing/<slug>`, `/hu/irasok/<slug>`, `/de/wissen/<slug>`.
+- Language homes are directories served by explicit routes: `/hu` and `/de` (`hu/index.html`, `de/index.html`); `/de/` and `/de/index.html` 301 to `/de`.
+- Every translated page declares its translation group as hreflang alternates (`en`, `hu`, `de` where they exist) with `x-default` on the English member; `scripts/service-pages.mjs` (`PAGE_GROUPS`) is the single source of the static groups, article pairs come from the `pair` frontmatter.
+- German pages state that the work runs in English and Hungarian and that German enquiries are answered in English (checked by `scripts/check-client-seo.mjs`).
 - `.html` variants and the old `/work/raiffesen` misspelling 301-redirect
   to the canonical URL (see `server.js`).

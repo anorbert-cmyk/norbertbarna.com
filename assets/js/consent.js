@@ -25,36 +25,54 @@
   var status;
   var closeButton;
   var focusFrame = null;
-  var isHungarian = /^hu(?:-|$)/i.test(document.documentElement.lang);
-  var copy = isHungarian ? {
-    title: "Választható látogatottságmérés",
-    summary: "PostHog: oldallátogatások és kapcsolatfelvételi kattintások.",
-    details: "Részletek",
-    description: "Az engedélyeddel a PostHog segítségével mérem az oldallátogatásokat és a kapcsolatfelvételi linkek használatát. Nincs munkamenet-felvétel vagy hirdetési követés. Az oldal mérés nélkül is használható.",
-    retention: "A döntésed ebben a böngészőben 180 napig érvényes. Az Analitikai beállítások gombbal bármikor módosíthatod.",
-    privacy: "Adatvédelmi tájékoztató",
-    privacyPath: "/hu/adatvedelem",
-    reject: "Mérés elutasítása",
-    accept: "Mérés engedélyezése",
-    close: "Beállítások bezárása",
-    enabled: "A mérés jelenleg engedélyezve van.",
-    disabled: "A mérés jelenleg ki van kapcsolva.",
-    error: "Ezen az oldalon a mérés kikapcsolva marad. A böngésző nem tudta elmenteni a döntésedet. Másik oldal megnyitásakor lehet, hogy újra választanod kell."
-  } : {
-    title: "Optional analytics",
-    summary: "Optional PostHog analytics for page visits and contact-link clicks.",
-    details: "Details",
-    description: "With your permission, I use PostHog to measure page visits and contact-link clicks. No session recordings or advertising tracking. The site works without analytics.",
-    retention: "Your choice is valid in this browser for 180 days. Change it at any time in Analytics settings.",
-    privacy: "Privacy details",
-    privacyPath: "/privacy",
-    reject: "Decline analytics",
-    accept: "Allow analytics",
-    close: "Close settings",
-    enabled: "You have allowed analytics.",
-    disabled: "You have declined analytics.",
-    error: "Analytics is off on this page. Your browser could not save your choice. You may need to choose again on another page."
-  };
+  var pageLang = /^hu(?:-|$)/i.test(document.documentElement.lang) ? "hu" : /^de(?:-|$)/i.test(document.documentElement.lang) ? "de" : "en";
+  var copy = {
+    hu: {
+      title: "Választható látogatottságmérés",
+      summary: "PostHog: oldallátogatások és kapcsolatfelvételi kattintások.",
+      details: "Részletek",
+      description: "Az engedélyeddel a PostHog segítségével mérem az oldallátogatásokat és a kapcsolatfelvételi linkek használatát. Nincs munkamenet-felvétel vagy hirdetési követés. Az oldal mérés nélkül is használható.",
+      retention: "A döntésed ebben a böngészőben 180 napig érvényes. Az Analitikai beállítások gombbal bármikor módosíthatod.",
+      privacy: "Adatvédelmi tájékoztató",
+      privacyPath: "/hu/adatvedelem",
+      reject: "Mérés elutasítása",
+      accept: "Mérés engedélyezése",
+      close: "Beállítások bezárása",
+      enabled: "A mérés jelenleg engedélyezve van.",
+      disabled: "A mérés jelenleg ki van kapcsolva.",
+      error: "Ezen az oldalon a mérés kikapcsolva marad. A böngésző nem tudta elmenteni a döntésedet. Másik oldal megnyitásakor lehet, hogy újra választanod kell."
+    },
+    de: {
+      title: "Optionale Besucheranalyse",
+      summary: "PostHog: Seitenaufrufe und Klicks auf Kontaktlinks.",
+      details: "Details",
+      description: "Mit Ihrer Einwilligung messe ich mit PostHog Seitenaufrufe und die Nutzung der Kontaktlinks. Keine Sitzungsaufzeichnung, kein Werbetracking. Die Website funktioniert auch ohne Analyse.",
+      retention: "Ihre Entscheidung gilt in diesem Browser 180 Tage. Über die Analyse-Einstellungen können Sie sie jederzeit ändern.",
+      privacy: "Datenschutzhinweise",
+      privacyPath: "/de/datenschutz",
+      reject: "Analyse ablehnen",
+      accept: "Analyse erlauben",
+      close: "Einstellungen schließen",
+      enabled: "Die Analyse ist derzeit erlaubt.",
+      disabled: "Die Analyse ist derzeit ausgeschaltet.",
+      error: "Auf dieser Seite bleibt die Analyse ausgeschaltet. Der Browser konnte Ihre Entscheidung nicht speichern. Auf einer anderen Seite müssen Sie eventuell erneut wählen."
+    },
+    en: {
+      title: "Optional analytics",
+      summary: "Optional PostHog analytics for page visits and contact-link clicks.",
+      details: "Details",
+      description: "With your permission, I use PostHog to measure page visits and contact-link clicks. No session recordings or advertising tracking. The site works without analytics.",
+      retention: "Your choice is valid in this browser for 180 days. Change it at any time in Analytics settings.",
+      privacy: "Privacy details",
+      privacyPath: "/privacy",
+      reject: "Decline analytics",
+      accept: "Allow analytics",
+      close: "Close settings",
+      enabled: "You have allowed analytics.",
+      disabled: "You have declined analytics.",
+      error: "Analytics is off on this page. Your browser could not save your choice. You may need to choose again on another page."
+    }
+  }[pageLang];
 
   function parseRecord(raw) {
     try {
@@ -247,7 +265,7 @@
     banner = element("section", "consent-banner");
     banner.id = "portfolio-consent";
     banner.hidden = true;
-    banner.lang = isHungarian ? "hu" : "en";
+    banner.lang = pageLang;
     banner.setAttribute("data-consent-banner", "");
     banner.setAttribute("role", "region");
     banner.setAttribute("aria-labelledby", "portfolio-consent-title");

@@ -7,14 +7,11 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { createHash } from "node:crypto";
-import { UTILITY_PAGES, HU_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, assetPrefix, baseOf, isHungarian, isWritingPage, urlOf } from "./service-pages.mjs";
+import { UTILITY_PAGES, HU_PAGES, LANGS, SITE_COPY, WRITING_PAGES, assetPrefix, baseOf, isHungarian, languageOf, urlOf } from "./service-pages.mjs";
+import { LANGUAGES, pairsOf } from "./site-chrome.mjs";
 
-// Every Hungarian page and its English pair.
-const HU_PAIRS = { ...Object.fromEntries(HU_PAGES.map((page) => [page, baseOf(page)])),
-  "hu/ai-tanacsadas-fejlesztes.html": "ai-integration.html", "hu/adatvedelem.html": "privacy.html", "hu/kapcsolat.html": "contact.html",
-  // No English web-development page yet (the EN thread adds /web-development);
-  // until then the language link leads to the English home.
-  "hu/webfejlesztes.html": "index.html" };
+// Native labels of the About and Contact links per language.
+const NAV_LABELS = { en: { about: "About", contact: "Contact" }, hu: { about: "Rólam", contact: "Kapcsolat" }, de: { about: "Über mich", contact: "Kontakt" } };
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), "..");
 const PAGES = [
@@ -29,7 +26,7 @@ const PAGES = [
 ];
 
 const CLEAN_URLS = { "/": "index.html", "/works": "works.html", "/about": "about.html" };
-for (const page of UTILITY_PAGES) CLEAN_URLS[`/${page.replace(/\.html$/, "")}`] = page;
+for (const page of UTILITY_PAGES) CLEAN_URLS[urlOf(page)] = page;
 for (const page of [...HU_PAGES, ...WRITING_PAGES]) CLEAN_URLS[urlOf(page)] = page;
 for (const f of readdirSync(join(ROOT, "work"))) {
   if (f.endsWith(".html")) CLEAN_URLS[`/work/${f.replace(".html", "")}`] = `work/${f}`;
@@ -211,48 +208,48 @@ for (const page of PAGES) {
 
   if (!is404) {
     const navigation = html.match(/<nav\b[^>]*\bid=["']primary-navigation["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
+    const lang = languageOf(page);
+    // German pages link the English biography and case studies (no German mirror).
     const aboutHref = hungarian ? "/hu/rolam" : "/about";
     const aboutLinks = [...navigation.matchAll(new RegExp(`<a\\b[^>]*\\bhref=["']${aboutHref}["'][^>]*>([\\s\\S]*?)<\\/a>`, "gi"))]
       .filter(([tag]) => !/\bhreflang=/.test(tag));
-    if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== (hungarian ? "Rólam" : "About")) {
+    if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== NAV_LABELS[lang].about) {
       fail(`${page}: primary navigation must have one native About link to ${aboutHref}`);
     }
     // Language menu (owner request, 2026-10-21; NN/g audit 2026-10-06): one
     // disclosure whose button shows the current language's flag and code, and
-    // whose list names the other language in that language and leads to this
-    // page's pair with hreflang/lang (rel="alternate" only for a translation).
-    const other = hungarian ? "en" : "hu";
-    // A writing page without a translation links the other language's list
-    // (or home) page, and then must not claim rel="alternate".
-    const writingLink = isWritingPage(page) ? WRITING_LANGUAGE_LINKS[page] : null;
-    const pairPath = writingLink ? urlOf(writingLink.file) :
-      hungarian ? urlOf(HU_PAIRS[page] || baseOf(page)) : urlOf(Object.entries(HU_PAIRS).find(([, en]) => en === page)?.[0] || "");
-    // hu/webfejlesztes has no English translation yet, so its link to the English home is not an alternate.
-    const wantsAlternate = writingLink ? writingLink.alternate : HU_PAIRS[page] !== "index.html" || page === "hu/index.html";
+    // whose list names every other language in that language and leads to this
+    // page's translation with hreflang/lang (rel="alternate" only for a
+    // translation; a page without one links that language's list or home page).
+    const pairs = pairsOf(page);
     const languageMenu = navigation.match(/<div class="nav-group nav-lang"[\s\S]*?<\/ul><\/div><\/div>/)?.[0] || "";
     const trigger = languageMenu.match(/<button\b[^>]*class="nav-lang-trigger"[^>]*>/)?.[0] || "";
-    const ownCode = hungarian ? "HU" : "EN";
-    if (!trigger || !trigger.includes(`aria-label="${hungarian ? "Nyelv" : "Language"}: ${ownCode}, ${hungarian ? "Magyar" : "English"}"`) ||
+    const own = LANGUAGES[lang];
+    if (!trigger || !trigger.includes(`aria-label="${own.menu}: ${own.code}, ${own.name}"`) ||
         !trigger.includes('aria-expanded="false"') || !trigger.includes('aria-controls="nav-languages"') ||
-        !new RegExp(`<span class="nav-lang-code" aria-hidden="true">${ownCode}</span>`).test(languageMenu) ||
+        !new RegExp(`<span class="nav-lang-code" aria-hidden="true">${own.code}</span>`).test(languageMenu) ||
         !/<svg class="nav-flag"/.test(languageMenu.slice(0, languageMenu.indexOf("</button>")))) {
-      fail(`${page}: the language menu button must show the ${ownCode} flag and code with an accessible name`);
+      fail(`${page}: the language menu button must show the ${own.code} flag and code with an accessible name`);
     }
-    if (!new RegExp(`<span class="nav-lang-current" aria-current="true" lang="${hungarian ? "hu" : "en"}">`).test(languageMenu)) {
-      fail(`${page}: the language list must mark ${hungarian ? "Magyar" : "English"} as the current language`);
+    if (!new RegExp(`<span class="nav-lang-current" aria-current="true" lang="${lang}">`).test(languageMenu)) {
+      fail(`${page}: the language list must mark ${own.name} as the current language`);
     }
     const switchLinks = [...languageMenu.matchAll(/<a\b[^>]*class="[^"]*\blang-switch\b[^"]*"[^>]*>[\s\S]*?<span>([^<]*)<\/span><\/a>/g)];
-    if (switchLinks.length !== 1 || languageMenu !== navigation.slice(navigation.lastIndexOf('<div class="nav-group nav-lang"'), navigation.lastIndexOf("</div></nav>"))) {
-      fail(`${page}: the language menu must close the primary navigation with exactly one other-language link`);
+    const others = LANGS.filter((code) => code !== lang);
+    if (switchLinks.length !== others.length || languageMenu !== navigation.slice(navigation.lastIndexOf('<div class="nav-group nav-lang"'), navigation.lastIndexOf("</div></nav>"))) {
+      fail(`${page}: the language menu must close the primary navigation with exactly ${others.length} other-language links`);
     } else {
-      const [tag, label] = switchLinks[0];
-      if (label !== (hungarian ? "English" : "Magyar") || !tag.includes(`hreflang="${other}"`) || !tag.includes(`lang="${other}"`) ||
-          tag.includes('rel="alternate"') !== wantsAlternate || /aria-label=|aria-current=/.test(tag) || !tag.includes(`href="${pairPath}"`) || !/<svg class="nav-flag"/.test(tag)) {
-        fail(`${page}: the language link must read ${hungarian ? "English" : "Magyar"} with its flag, carry ${wantsAlternate ? "rel/" : "no rel, only "}hreflang/lang ${other} and lead to ${pairPath}`);
-      }
+      others.forEach((other, index) => {
+        const [tag, label] = switchLinks[index];
+        const pair = pairs[other];
+        if (label !== LANGUAGES[other].name || !tag.includes(`hreflang="${other}"`) || !tag.includes(`lang="${other}"`) ||
+            tag.includes('rel="alternate"') !== pair.alternate || /aria-label=|aria-current=/.test(tag) || !tag.includes(`href="${pair.href}"`) || !/<svg class="nav-flag"/.test(tag)) {
+          fail(`${page}: the language link must read ${LANGUAGES[other].name} with its flag, carry ${pair.alternate ? "rel/" : "no rel, only "}hreflang/lang ${other} and lead to ${pair.href}`);
+        }
+      });
     }
-    const contactHref = hungarian ? "/hu/kapcsolat" : "/contact";
-    if (!new RegExp(`<a\\b[^>]*\\bhref="${contactHref}"[^>]*>${hungarian ? "Kapcsolat" : "Contact"}</a>`).test(navigation)) {
+    const contactHref = SITE_COPY[lang].contact;
+    if (!new RegExp(`<a\\b[^>]*\\bhref="${contactHref}"[^>]*>${NAV_LABELS[lang].contact}</a>`).test(navigation)) {
       fail(`${page}: primary navigation must link the contact page ${contactHref}`);
     }
     if (hungarian) {
@@ -420,11 +417,14 @@ if (!existsSync(llmsPath)) {
       !llms.includes("Product VP") ||
       !llms.includes("https://www.barnanorbert.com/ai-integration") ||
       !llms.includes("https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes") ||
+      !llms.includes("https://www.barnanorbert.com/de/ki-beratung-entwicklung") ||
+      !llms.includes("https://www.barnanorbert.com/de/webentwicklung") ||
+      !llms.includes("https://www.barnanorbert.com/de/datenschutz") ||
       !llms.includes("https://www.barnanorbert.com/work/kineticare")) {
     fail("llms.txt is missing canonical portfolio, attribution, privacy or contact guidance");
   }
   if (!llms.includes("https://www.barnanorbert.com/contact") || !llms.includes("https://www.barnanorbert.com/hu/kapcsolat") ||
-      !llms.includes("https://www.barnanorbert.com/hu/munkak")) {
+      !llms.includes("https://www.barnanorbert.com/de/kontakt") || !llms.includes("https://www.barnanorbert.com/hu/munkak")) {
     fail("llms.txt must list the contact pages and the Hungarian portfolio");
   }
 }
@@ -456,7 +456,7 @@ const hiringSitemap = [
   "/work/kineticare",
   "/work/onrobot",
   "/about",
-  ...UTILITY_PAGES.map(page => `/${page.replace(/\.html$/, "")}`),
+  ...UTILITY_PAGES.map(urlOf),
   "/hu",
   "/hu/munkak",
   ...["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"].map(slug => `/hu/munka/${slug}`),
