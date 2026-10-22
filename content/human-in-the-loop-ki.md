@@ -64,13 +64,13 @@ Wir haben barrierefreie Komponentenzustände für leer, laden, Fehler und Verzö
 
 Bei SportsGambit, einem Prognosemarkt-MVP mit KI-Agenten, die Tipps empfahlen, trug jeder Tipp einen Konfidenzwert, Ranglisten ließen Nutzer die Historie eines Agenten prüfen, bevor sie seinem Rat folgten, und vor jeder Aktion stand ein bewusster Prüfschritt. Frühe Produktdaten zeigten eine starke Nutzung KI-generierter Empfehlungen; wir behandelten das als Risiko, das zu beobachten ist, nicht als Erfolgskennzahl, weil blindes Vertrauen in die Automatisierung genau der Fehlerfall ist, den menschliche Aufsicht auffangen soll.
 
-Die Fallstudie benennt auch ihre Grenze: Der MVP hat keine produktionsreifen Schutzmechanismen für Wetten validiert. Details: [SportsGambit-Fallstudie](/work/sportsgambit) (Englisch).
+Die Fallstudie benennt auch ihre Grenze: Der MVP hat keine produktionsreifen Schutzmechanismen für Wetten validiert. Details: [SportsGambit-Fallstudie](/de/arbeit/sportsgambit).
 
 ### 6. Recht, Compliance und Data Science früh an den Tisch holen
 
 Bei Instructure wurden die Abläufe gemeinsam mit Recht, Compliance und Data Science geprüft und dann in wiederverwendbare Muster überführt: Prompts, Prüfzustände, Bestätigungen, Feedbackschleifen. Diese Teams standen nicht am Ende im Weg; sie haben die Leitplanken von Anfang an mitgeschrieben. Eine Leitplanke, die nach dem Design hinzukommt, ist meist ein Warndialog, den niemand liest.
 
-Dasselbe galt in regulierter Arbeit ohne KI. Bei Raiffeisen, wo ich als Product Lead die Neugestaltung der Mobile-Banking-App verantwortete, kamen PSD2, starke Kundenauthentifizierung, KYC und Audit-Trail als nicht verhandelbare Anforderungen. Wir haben fast jeden Schritt behalten und verändert, wie es sich anfühlt, ihn zu durchlaufen. Das ist die Parallele aus regulierter Lieferung, kein KI-Beispiel. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
+Dasselbe galt in regulierter Arbeit ohne KI. Bei Raiffeisen, wo ich als Product Lead die Neugestaltung der Mobile-Banking-App verantwortete, kamen PSD2, starke Kundenauthentifizierung, KYC und Audit-Trail als nicht verhandelbare Anforderungen. Wir haben fast jeden Schritt behalten und verändert, wie es sich anfühlt, ihn zu durchlaufen. Das ist die Parallele aus regulierter Lieferung, kein KI-Beispiel. Details: [Raiffeisen-Fallstudie](/de/arbeit/raiffeisen).
 
 ### 7. Hinter Feature-Flags ausliefern, messen, und benennen, wer stoppen darf
 
@@ -93,7 +93,7 @@ Wenn diese Fragen noch keine Antworten haben, beginnt dort die Arbeit, und zwar 
 
 ## Was schwierig war
 
-Die meisten KI-Projekte beginnen mit dem, was sich automatisieren lässt. Bei Instructure haben wir mit dem begonnen, was menschlich bleiben muss. Der schwierige Teil war ethisch, nicht technisch: für den Fall zu gestalten, dass die KI irrt, verzerrt ist oder missbraucht wird, statt so zu tun, als käme das nicht vor. Daraus wird keine beeindruckende Präsentation. Daraus wird KI, die echte Institutionen für Millionen Menschen einführen können und danach ruhig schlafen. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+Die meisten KI-Projekte beginnen mit dem, was sich automatisieren lässt. Bei Instructure haben wir mit dem begonnen, was menschlich bleiben muss. Der schwierige Teil war ethisch, nicht technisch: für den Fall zu gestalten, dass die KI irrt, verzerrt ist oder missbraucht wird, statt so zu tun, als käme das nicht vor. Daraus wird keine beeindruckende Präsentation. Daraus wird KI, die echte Institutionen für Millionen Menschen einführen können und danach ruhig schlafen. Details: [Instructure-Fallstudie](/de/arbeit/instructure).
 
 ## Häufige Fragen
 

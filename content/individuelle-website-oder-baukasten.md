@@ -30,7 +30,7 @@ Dazwischen liegt ein dritter Weg, der oft übersehen wird: ein offenes System wi
 
 ### 1. Muss die Seite Vertrauen aufbauen, bevor jemand bezahlt oder anfragt?
 
-Bei einem Friseur reicht eine ansprechende Vorlage; der Kunde sieht den Laden ohnehin. Bei einer Beratung, einer Praxis, einer Kanzlei oder einem Hersteller mit erklärungsbedürftigem Produkt ist die Website der erste Beweis für Qualität. Beim Aufbau der Plattform für Kineticare, einer Praxis für Handrehabilitation, lag die ganze Arbeit darin, Vertrauen für Menschen aufzubauen, die schon viele erfolglose Ratschläge gelesen hatten: echte Fotografien statt Stockbilder, Qualifikationen und Patientenberichte neben den Aussagen, zu denen Zweifel entstehen. Eine Vorlage kann das nicht leisten, weil sie nicht weiß, wo der Zweifel sitzt. Details: [Kineticare-Fallstudie](/work/kineticare) (Englisch).
+Bei einem Friseur reicht eine ansprechende Vorlage; der Kunde sieht den Laden ohnehin. Bei einer Beratung, einer Praxis, einer Kanzlei oder einem Hersteller mit erklärungsbedürftigem Produkt ist die Website der erste Beweis für Qualität. Beim Aufbau der Plattform für Kineticare, einer Praxis für Handrehabilitation, lag die ganze Arbeit darin, Vertrauen für Menschen aufzubauen, die schon viele erfolglose Ratschläge gelesen hatten: echte Fotografien statt Stockbilder, Qualifikationen und Patientenberichte neben den Aussagen, zu denen Zweifel entstehen. Eine Vorlage kann das nicht leisten, weil sie nicht weiß, wo der Zweifel sitzt. Details: [Kineticare-Fallstudie](/de/arbeit/kineticare).
 
 ### 2. Gibt es Zahlung, Buchung oder einen Mitgliederbereich?
 

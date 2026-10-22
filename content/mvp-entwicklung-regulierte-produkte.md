@@ -37,7 +37,7 @@ Daraus folgt die Trennung, die dieser Artikel vorschlägt: **Fassade erlaubt, Fu
 
 ### 1. Identität und Einwilligung
 
-Wer sich anmeldet, muss es wirklich sein, wenn das Produkt es verlangt, und muss wissen, wozu er einwilligt. Bei Benker, einer Banking-Plattform mit Blockchain-Infrastruktur, habe ich den gesamten Einstieg verantwortet: Onboarding, KYC-Prüfung, Kartenanbindung mit 3DS-Bestätigung. Nichts davon war im MVP ein Platzhalter. Die Arbeit lag darin, die Pflichtschritte so zu gestalten, dass Menschen, die nie ein Bankkonto per App eröffnet hatten, sie verstanden und durchkamen: klare Anleitung, Fortschritt sichtbar, Fehler erklärt, Weg zurück vorhanden. Details: [Benker-Fallstudie](/work/benker) (Englisch).
+Wer sich anmeldet, muss es wirklich sein, wenn das Produkt es verlangt, und muss wissen, wozu er einwilligt. Bei Benker, einer Banking-Plattform mit Blockchain-Infrastruktur, habe ich den gesamten Einstieg verantwortet: Onboarding, KYC-Prüfung, Kartenanbindung mit 3DS-Bestätigung. Nichts davon war im MVP ein Platzhalter. Die Arbeit lag darin, die Pflichtschritte so zu gestalten, dass Menschen, die nie ein Bankkonto per App eröffnet hatten, sie verstanden und durchkamen: klare Anleitung, Fortschritt sichtbar, Fehler erklärt, Weg zurück vorhanden. Details: [Benker-Fallstudie](/de/arbeit/benker).
 
 ### 2. Bestätigung folgenreicher Aktionen
 
@@ -45,7 +45,7 @@ Einzahlen, Ausführen, Abheben. Jede dieser Aktionen braucht eine Bestätigung, 
 
 ### 3. Datenschutz im Code, nicht in der Richtlinie
 
-Einwilligung vor dem Tracking, Datensparsamkeit, verschlüsselte Übertragung, eine strenge Content Security Policy. Bei der Gesundheitsplattform Kineticare, die ich entworfen und gebaut habe, bleiben Analysewerkzeuge aus, bis der Besucher zustimmt, und die Anwendung liefert eine strikte Sicherheitsrichtlinie mit aus. Ein Gesundheitsprodukt trägt mehr Datenschutzrisiko als eine Portfolioseite, und das muss im Code stimmen, nicht auf einer Seite mit Rechtstexten. Details: [Kineticare-Fallstudie](/work/kineticare) (Englisch).
+Einwilligung vor dem Tracking, Datensparsamkeit, verschlüsselte Übertragung, eine strenge Content Security Policy. Bei der Gesundheitsplattform Kineticare, die ich entworfen und gebaut habe, bleiben Analysewerkzeuge aus, bis der Besucher zustimmt, und die Anwendung liefert eine strikte Sicherheitsrichtlinie mit aus. Ein Gesundheitsprodukt trägt mehr Datenschutzrisiko als eine Portfolioseite, und das muss im Code stimmen, nicht auf einer Seite mit Rechtstexten. Details: [Kineticare-Fallstudie](/de/arbeit/kineticare).
 
 ### 4. Nachvollziehbarkeit
 
@@ -53,7 +53,7 @@ Wer hat wann was freigegeben, welche Version der Bedingungen hat der Nutzer akze
 
 ### 5. Bei KI: Kennzeichnung, Prüfung, Konfidenz
 
-Bei SportsGambit, einem KI-gestützten Prognosemarkt-MVP, stand bei jeder Empfehlung ein Konfidenzwert und die Erfolgsgeschichte des Agenten, und vor jeder Aktion gab es einen bewussten Prüfschritt. Die frühe Telemetrie zeigte, dass Nutzer sich stark auf die KI-Vorschläge verließen, was wir als Risiko behandelt haben, nicht als Erfolg. Die Fallstudie zieht dazu eine klare Grenze: Sie beschreibt die Informationsarchitektur und die Erklärbarkeit des MVP und behauptet nicht, dass produktionsreife Schutzmaßnahmen für Echtgeld-Wetten ausgeliefert wurden. Vor einem Start mit echtem Geld wären Alters- und Standortprüfung, Einzahlungs- und Verlustlimits, Sperrmöglichkeiten und eine rechtliche Prüfung Startvoraussetzungen. Details: [SportsGambit-Fallstudie](/work/sportsgambit) (Englisch).
+Bei SportsGambit, einem KI-gestützten Prognosemarkt-MVP, stand bei jeder Empfehlung ein Konfidenzwert und die Erfolgsgeschichte des Agenten, und vor jeder Aktion gab es einen bewussten Prüfschritt. Die frühe Telemetrie zeigte, dass Nutzer sich stark auf die KI-Vorschläge verließen, was wir als Risiko behandelt haben, nicht als Erfolg. Die Fallstudie zieht dazu eine klare Grenze: Sie beschreibt die Informationsarchitektur und die Erklärbarkeit des MVP und behauptet nicht, dass produktionsreife Schutzmaßnahmen für Echtgeld-Wetten ausgeliefert wurden. Vor einem Start mit echtem Geld wären Alters- und Standortprüfung, Einzahlungs- und Verlustlimits, Sperrmöglichkeiten und eine rechtliche Prüfung Startvoraussetzungen. Details: [SportsGambit-Fallstudie](/de/arbeit/sportsgambit).
 
 ## Der Ablauf: von der Hypothese zum ersten Nutzer
 

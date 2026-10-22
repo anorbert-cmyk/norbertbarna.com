@@ -62,7 +62,7 @@ const byUrl = new Map(pages.map(page => [page.canonical, page]));
 const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
 const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage"]);
-check(pages.length === files.length && byUrl.size === files.length && files.length === 34 + WRITING_PAGES.length, "expected thirty-four distinct indexable content routes (14 English, 14 Hungarian, 6 German) plus the generated writing pages");
+check(pages.length === files.length && byUrl.size === files.length && files.length === 42 + WRITING_PAGES.length, "expected forty-two distinct indexable content routes (14 English, 14 Hungarian, 14 German) plus the generated writing pages");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
     const previous = definitions.get(node["@id"]);

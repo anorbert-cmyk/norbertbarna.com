@@ -72,7 +72,7 @@ Ein Prozess, der alle fünf Kriterien erfüllt, ist ein guter Anfang. Vier von f
 
 Viele Anbieter verkaufen eine „KI-Potenzialanalyse“, ein „KI-Audit“ oder eine „KI-Prozessoptimierung“ als Workshop mit Folien. Das Nützliche daran ist unspektakulär: eine Liste Ihrer Prozesse mit den fünf Kriterien oben, aus Beobachtung und Gesprächen mit den Leuten, die die Arbeit machen. Am Ende stehen zwei oder drei Kandidaten mit einer Begründung, warum sie zuerst drankommen, und eine Liste von Prozessen, die besser klassisch automatisiert werden oder gar nicht.
 
-Was ich dabei aus der Produktarbeit mitbringe: Bei Instructure haben wir KI-Funktionen nicht nach dem gewählt, was technisch beeindruckend war, sondern nach den Aufgaben der Nutzer, etwa „einen Entwurf schreiben“, „die wichtigsten Punkte herausziehen“, „aus Daten eine Handlung ableiten“. Jede Funktion bekam vom ersten Tag an eine Kennzeichnung, eine editierbare Ausgabe und einen Weg zurück. Dieselbe Auswahl nach Aufgaben und dieselben Leitplanken gelten für eine Prozessautomatisierung im Mittelstand. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+Was ich dabei aus der Produktarbeit mitbringe: Bei Instructure haben wir KI-Funktionen nicht nach dem gewählt, was technisch beeindruckend war, sondern nach den Aufgaben der Nutzer, etwa „einen Entwurf schreiben“, „die wichtigsten Punkte herausziehen“, „aus Daten eine Handlung ableiten“. Jede Funktion bekam vom ersten Tag an eine Kennzeichnung, eine editierbare Ausgabe und einen Weg zurück. Dieselbe Auswahl nach Aufgaben und dieselben Leitplanken gelten für eine Prozessautomatisierung im Mittelstand. Details: [Instructure-Fallstudie](/de/arbeit/instructure).
 
 ## Vom Kandidaten zum Pilot in sechs Schritten
 

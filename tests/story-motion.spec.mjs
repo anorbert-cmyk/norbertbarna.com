@@ -131,7 +131,7 @@ test("Hungarian About runs the same controller with Hungarian Pause labels and n
   await overflow(page);
 });
 
-// The German About (/de/ueber-mich, 2026-10-22) is the third story page; its case links stay English.
+// The German About (/de/ueber-mich, 2026-10-22) is the third story page; its case links stay German.
 test("German About runs the same controller with German Pause labels and native destinations", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await openStory(page, "", "/de/ueber-mich");

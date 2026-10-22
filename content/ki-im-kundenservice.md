@@ -36,14 +36,14 @@ Das sind Gestaltungsstufen, keine Rechtskategorien. Ein Chatbot für Unternehmen
 
 Bei der Mobile-Banking-App von Raiffeisen, wo ich als Product Lead die Analyse und die Produktgestaltung geleitet habe (ein Projekt ohne KI), meldete der Kundenservice, welche Fehler tatsächlich zu Anrufen führten. Die Hinweise in leeren Ansichten zielten darauf, Tickets der Art „Wie fange ich an?“ zu reduzieren; laut Fallstudie ist das ein Richtwert, kein auditiertes Ergebnis.
 
-Die Lehre für KI im Kundenservice: Bevor Sie KI auf die Beantwortung setzen, prüfen Sie, welche Fragen das Produkt oder die Website selbst verursacht. Eine verständlichere Oberfläche lässt viele Fragen gar nicht erst entstehen, und das sollte vor dem Chatbot untersucht werden. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
+Die Lehre für KI im Kundenservice: Bevor Sie KI auf die Beantwortung setzen, prüfen Sie, welche Fragen das Produkt oder die Website selbst verursacht. Eine verständlichere Oberfläche lässt viele Fragen gar nicht erst entstehen, und das sollte vor dem Chatbot untersucht werden. Details: [Raiffeisen-Fallstudie](/de/arbeit/raiffeisen).
 
 ## So entsteht ein KI-Kundenservice mit menschlicher Kontrolle
 
 1. **Wählen Sie die Fragetypen, mit denen Sie beginnen.** Ein enger Kreis, für den es eine gute, dokumentierte Antwort gibt.
 2. **Sammeln Sie die Quellen.** Jene, aus denen die KI antworten darf, und jene, aus denen nicht. Ein veraltetes Dokument ist schlimmer als ein fehlendes.
 3. **Legen Sie die Stufen fest.** In welchen Themen darf die KI selbst senden, in welchen nur einen Entwurf schreiben, in welchen gar nichts.
-4. **Gestalten Sie die Oberfläche der Mitarbeiterin.** Die Quelle ist sichtbar, der Entwurf editierbar, ein Klick verwirft ihn. Bei Instructure haben wir die Leitplanken am ersten Tag festgelegt: eindeutige KI-Kennzeichnung, editierbare Ausgaben, Quellenhinweise und Wege zurück. Dasselbe braucht eine Kundenservice-Oberfläche. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+4. **Gestalten Sie die Oberfläche der Mitarbeiterin.** Die Quelle ist sichtbar, der Entwurf editierbar, ein Klick verwirft ihn. Bei Instructure haben wir die Leitplanken am ersten Tag festgelegt: eindeutige KI-Kennzeichnung, editierbare Ausgaben, Quellenhinweise und Wege zurück. Dasselbe braucht eine Kundenservice-Oberfläche. Details: [Instructure-Fallstudie](/de/arbeit/instructure).
 5. **Planen Sie, was passiert, wenn die KI nicht antworten kann.** Übergabe an einen Menschen, und der Kunde weiß, dass das geschieht.
 6. **Sagen Sie dem Kunden, dass er mit KI spricht.** Siehe nächster Abschnitt.
 7. **Pilot auf einem Kanal, mit Messung.** Antwortzeit, Anteil umgeschriebener Entwürfe, wiedereröffnete Vorgänge, verglichen mit Ihren eigenen Ausgangswerten. Wenn die Mitarbeiter alles in zwei Sekunden freigeben, funktioniert die Prüfung nicht; dauert die Prüfung länger als das Schreiben der Antwort, funktioniert die Funktion nicht.

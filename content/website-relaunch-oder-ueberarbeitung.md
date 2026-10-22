@@ -73,7 +73,7 @@ Die Tabelle ist ein Vorschlag aus meiner Erfahrung, kein Regelwerk. In der Praxi
 
 ## „Neu bauen oder flicken“: Was ich aus der Bank gelernt habe
 
-Beim Mobile-Banking-Neubau von Raiffeisen stand genau diese Frage am Anfang. Die App verlor Vertrauen, die Bewertungen waren schlecht, die Abläufe unterschieden sich zwischen 16 Ländern, und es gab keine Analytik, um Entscheidungen zu steuern. Wir haben zuerst Messungen eingebaut und Interviews geführt, um zu sehen, wo die größten Verluste entstanden. Dann gab es einen Workshop „Rebuild vs. Patch“ mit allen Beteiligten. Das Ergebnis war ein vollständiger Neubau auf einem einheitlichen Design-System, aber nicht, weil die Oberfläche alt aussah, sondern weil die Daten zeigten, dass die Probleme in der Struktur saßen. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
+Beim Mobile-Banking-Neubau von Raiffeisen stand genau diese Frage am Anfang. Die App verlor Vertrauen, die Bewertungen waren schlecht, die Abläufe unterschieden sich zwischen 16 Ländern, und es gab keine Analytik, um Entscheidungen zu steuern. Wir haben zuerst Messungen eingebaut und Interviews geführt, um zu sehen, wo die größten Verluste entstanden. Dann gab es einen Workshop „Rebuild vs. Patch“ mit allen Beteiligten. Das Ergebnis war ein vollständiger Neubau auf einem einheitlichen Design-System, aber nicht, weil die Oberfläche alt aussah, sondern weil die Daten zeigten, dass die Probleme in der Struktur saßen. Details: [Raiffeisen-Fallstudie](/de/arbeit/raiffeisen).
 
 Die Lehre für eine Unternehmenswebsite: Erst messen, dann entscheiden. Google Search Console, ein Blick in die Analytik und drei Gespräche mit Kunden sagen mehr über den Bedarf als jede Meinung zum Design.
 

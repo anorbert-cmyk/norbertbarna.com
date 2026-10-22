@@ -16,16 +16,16 @@ const COPY = {
     footerTitle: /Beszéljünk\s*termékről\./, lede: "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben.", copyright: "© 2026 Barna Norbert" },
   // German (task T8, 2026-10-21): the case studies stay English, so the German chrome links the English works index and cases.
   de: { home: "/de", contact: "/de/kontakt", project: "Sprechen wir über Ihr Projekt", menu: ["Arbeiten", "Wissen", "Über mich", "Kontakt"], others: ["English", "Magyar"], language: "Sprache: DE, Deutsch",
-    caseRoot: "/work/", works: "/works", writing: "/de/wissen", privacy: "/de/datenschutz", privacyLabel: "Datenschutz", allWork: "Alle Arbeiten", workTitle: "Arbeiten", servicesTitle: "Leistungen", articlesTitle: "Wissen",
+    caseRoot: "/de/arbeit/", works: "/de/arbeiten", writing: "/de/wissen", privacy: "/de/datenschutz", privacyLabel: "Datenschutz", allWork: "Alle Arbeiten", workTitle: "Arbeiten", servicesTitle: "Leistungen", articlesTitle: "Wissen",
     footerTitle: /Sprechen wir\s*über Ihr Produkt\./, lede: "Product VP. Ich leite KI-Produkte im regulierten Finanzwesen und in Systemen mit hohen Anforderungen an Vertrauen.", copyright: "© 2026 Norbert Barna" },
 };
 const LANGS = ["en", "hu", "de"];
 const languageOf = (route) => LANGS.find((code) => code !== "en" && (route === `/${code}` || route.startsWith(`/${code}/`))) || "en";
 const SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
 // Every published content page with its translations (whole-site language switch, 2026-10-06; German, 2026-10-21).
-const PAGE_GROUPS = [{ en: "/", hu: "/hu", de: "/de" }, { en: "/works", hu: "/hu/munkak" }, { en: "/about", hu: "/hu/rolam", de: "/de/ueber-mich" },
+const PAGE_GROUPS = [{ en: "/", hu: "/hu", de: "/de" }, { en: "/works", hu: "/hu/munkak", de: "/de/arbeiten" }, { en: "/about", hu: "/hu/rolam", de: "/de/ueber-mich" },
   { en: "/ai-integration", hu: "/hu/ai-tanacsadas-fejlesztes", de: "/de/ki-beratung-entwicklung" }, { en: "/web-development", hu: "/hu/webfejlesztes", de: "/de/webentwicklung" },
-  { en: "/privacy", hu: "/hu/adatvedelem", de: "/de/datenschutz" }, { en: "/contact", hu: "/hu/kapcsolat", de: "/de/kontakt" }, ...SLUGS.map((slug) => ({ en: `/work/${slug}`, hu: `/hu/munka/${slug}` }))];
+  { en: "/privacy", hu: "/hu/adatvedelem", de: "/de/datenschutz" }, { en: "/contact", hu: "/hu/kapcsolat", de: "/de/kontakt" }, ...SLUGS.map((slug) => ({ en: `/work/${slug}`, hu: `/hu/munka/${slug}`, de: `/de/arbeit/${slug}` }))];
 const ALL_ROUTES = PAGE_GROUPS.flatMap((group) => Object.values(group));
 
 const viewports = [
@@ -1666,7 +1666,7 @@ test("every page's language menu leads to its translations, reciprocally, with a
   const destinations = {
     en: ["/works", "/writing", "/about", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
     hu: ["/hu/munkak", "/hu/irasok", "/hu/rolam", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
-    de: ["/works", "/de/wissen", "/de/ueber-mich", "/de/kontakt", "https://www.linkedin.com/in/barna-norbert/"],
+    de: ["/de/arbeiten", "/de/wissen", "/de/ueber-mich", "/de/kontakt", "https://www.linkedin.com/in/barna-norbert/"],
   };
   for (const group of PAGE_GROUPS) {
     for (const [language, route] of Object.entries(group)) {

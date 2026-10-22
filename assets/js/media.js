@@ -165,6 +165,12 @@
     if (!frame) frame = window.requestAnimationFrame(refresh);
   }
 
+  var MOTION_COPY = {
+    en: { device: "Motion is off to respect your device's reduced-motion or data-saving setting.", toggle: "Turn automatic video and page motion on or off.", off: "Off", on: "On" },
+    hu: { device: "A mozgás ki van kapcsolva, mert az eszközöd csökkentett mozgást vagy adatforgalom-kímélést kér.", toggle: "Az automatikus videók és az oldalmozgás be- vagy kikapcsolása.", off: "Ki", on: "Be" },
+    de: { device: "Die Bewegung ist aus, weil Ihr Gerät reduzierte Bewegung oder Datensparen verlangt.", toggle: "Automatische Videos und Seitenbewegung ein- oder ausschalten.", off: "Aus", on: "An" }
+  };
+
   function syncControls() {
     var reduced = isReduced();
     root.classList.toggle("no-motion", reduced);
@@ -173,12 +179,10 @@
       button.hidden = false;
       button.disabled = deviceReduced();
       button.setAttribute("aria-checked", String(!reduced));
-      var hungarian = /^hu(?:-|$)/i.test(root.lang);
-      button.title = deviceReduced()
-        ? (hungarian ? "A mozgás ki van kapcsolva, mert az eszközöd csökkentett mozgást vagy adatforgalom-kímélést kér." : "Motion is off to respect your device's reduced-motion or data-saving setting.")
-        : (hungarian ? "Az automatikus videók és az oldalmozgás be- vagy kikapcsolása." : "Turn automatic video and page motion on or off.");
+      var copy = /^hu(?:-|$)/i.test(root.lang) ? MOTION_COPY.hu : /^de(?:-|$)/i.test(root.lang) ? MOTION_COPY.de : MOTION_COPY.en;
+      button.title = deviceReduced() ? copy.device : copy.toggle;
       var label = button.querySelector("[data-motion-state]");
-      if (label) label.textContent = reduced ? (hungarian ? "Ki" : "Off") : (hungarian ? "Be" : "On");
+      if (label) label.textContent = reduced ? copy.off : copy.on;
     });
   }
 

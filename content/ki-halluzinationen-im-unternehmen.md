@@ -42,7 +42,7 @@ Das technische Verfahren heißt Retrieval Augmented Generation, kurz RAG: Das Sy
 
 ### 2. Die Quelle steht neben der Antwort
 
-Jede Antwort zeigt, aus welchem Dokument und welcher Stelle sie stammt, und der Nutzer kann mit einem Klick dorthin. Bei Instructure war das eine der Leitplanken vom ersten Tag: Quellenhinweise bei jeder KI-Ausgabe, damit Lehrende sehen, worauf ein Vorschlag beruht. Ohne sichtbare Quelle prüfen die Nutzer entweder alles nach, und die Zeitersparnis ist weg, oder sie prüfen nichts, und der Fehler geht durch. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+Jede Antwort zeigt, aus welchem Dokument und welcher Stelle sie stammt, und der Nutzer kann mit einem Klick dorthin. Bei Instructure war das eine der Leitplanken vom ersten Tag: Quellenhinweise bei jeder KI-Ausgabe, damit Lehrende sehen, worauf ein Vorschlag beruht. Ohne sichtbare Quelle prüfen die Nutzer entweder alles nach, und die Zeitersparnis ist weg, oder sie prüfen nichts, und der Fehler geht durch. Details: [Instructure-Fallstudie](/de/arbeit/instructure).
 
 ### 3. Die Ausgabe ist ein Entwurf, kein Ergebnis
 
@@ -54,7 +54,7 @@ Wenn die Suche keine passende Stelle in Ihren Quellen findet, antwortet das Syst
 
 ### 5. Sicherheit wird angezeigt, nicht behauptet
 
-Bei SportsGambit stand bei jeder KI-Empfehlung ein Konfidenzwert und die bisherige Trefferquote des Agenten, damit Nutzer die Empfehlung einordnen konnten, bevor sie handeln. Die frühe Telemetrie zeigte zugleich ein Risiko: Nutzer verließen sich stark auf die KI-Vorschläge, weshalb der sichtbare Konfidenzwert und ein bewusster Prüfschritt vor jeder Aktion wichtiger wurden, nicht weniger wichtig. Ein Konfidenzwert ist kein Beweis für Richtigkeit; er sagt dem Nutzer, wie viel Prüfung die Antwort verdient. Details: [SportsGambit-Fallstudie](/work/sportsgambit) (Englisch).
+Bei SportsGambit stand bei jeder KI-Empfehlung ein Konfidenzwert und die bisherige Trefferquote des Agenten, damit Nutzer die Empfehlung einordnen konnten, bevor sie handeln. Die frühe Telemetrie zeigte zugleich ein Risiko: Nutzer verließen sich stark auf die KI-Vorschläge, weshalb der sichtbare Konfidenzwert und ein bewusster Prüfschritt vor jeder Aktion wichtiger wurden, nicht weniger wichtig. Ein Konfidenzwert ist kein Beweis für Richtigkeit; er sagt dem Nutzer, wie viel Prüfung die Antwort verdient. Details: [SportsGambit-Fallstudie](/de/arbeit/sportsgambit).
 
 ### 6. Die Prüfung ist nach Folgen gestaffelt
 

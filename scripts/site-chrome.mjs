@@ -6,7 +6,7 @@
 // generated ones, so a label or an order changes in one place.
 import { SECTIONS, loadArticles, writingLanguageLinks } from "./writing-content.mjs";
 import { HOME_OF } from "./writing-content.mjs";
-import { LANGS, TRANSLATIONS, WORK_SLUGS, languageOf, urlOf } from "./service-pages.mjs";
+import { LANGS, SITE_COPY, TRANSLATIONS, WORK_SLUGS, languageOf, urlOf } from "./service-pages.mjs";
 
 export const LINKEDIN = "https://www.linkedin.com/in/barna-norbert/";
 
@@ -62,11 +62,9 @@ export const MENU = {
     navLabel: "Fő navigáció",
     footerLabel: "Lábléc",
   },
-  // German (task T8, 2026-10-21): the case studies stay English, so Arbeiten
-  // leads to the English works index and the footer lists the English cases.
-  // The biography has a German page since 2026-10-22.
+  // German (task T8, 2026-10-21; works, cases and biography in German since 2026-10-22).
   de: {
-    works: { label: "Arbeiten", href: "/works" },
+    works: { label: "Arbeiten", href: "/de/arbeiten" },
     services: { label: "Leistungen", toggle: "Leistungen" },
     ai: null,
     articles: { label: "Wissen", href: SECTIONS.de.path, toggle: "Wissen: neueste Artikel", more: "Alle Artikel" },
@@ -115,8 +113,10 @@ export const STATIC_PAGES = {
   "de/datenschutz.html": { kind: "utility", current: null },
   "de/kontakt.html": { kind: "work", current: "contact" },
   "de/ueber-mich.html": { kind: "about", current: "about" },
+  "de/arbeiten.html": { kind: "work", current: "works" },
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`work/${slug}.html`, { kind: "case", current: null }])),
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`hu/munka/${slug}.html`, { kind: "case", current: null }])),
+  ...Object.fromEntries(WORK_SLUGS.map((slug) => [`de/arbeit/${slug}.html`, { kind: "case", current: null }])),
 };
 
 export { languageOf };
@@ -217,8 +217,8 @@ export function renderPrimaryNav({ page, kind, current, pairs, articles }) {
 export function renderFooterNav({ page, articles }) {
   const lang = languageOf(page);
   const menu = MENU[lang];
-  const workBase = lang === "hu" ? "/hu/munka" : "/work";
-  const worksHref = lang === "de" ? "/works" : menu.works.href;
+  const workBase = SITE_COPY[lang].workRoot.replace(/\/$/, "");
+  const worksHref = menu.works.href;
   const work = WORK_FOOTER.map((slug) => `<li><a href="${workBase}/${slug}">${WORK_NAMES[slug]}</a></li>`).join("");
   const services = menu.serviceLinks.map((item) => `<li><a href="${item.href}">${esc(item.label)}</a></li>`).join("");
   const own = articles.filter((article) => article.lang === lang).slice(0, FOOTER_ARTICLE_LIMIT);
