@@ -38,8 +38,18 @@ test.beforeEach(async ({ page }) => {
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.hadRecentInput) continue;
-        const sources = (entry.sources || []).map((s) => s.node).filter(Boolean);
-        if (sources.some((node) => node.closest && node.closest(".navbar"))) window.__shifts.push({ value: entry.value, at: Math.round(entry.startTime) });
+        // entry.value covers every element that moved in the frame (a hero
+        // heading reflowing on font swap included). Score only the header's
+        // own sources with the layout-shift formula: impact × distance.
+        const vw = innerWidth, vh = innerHeight;
+        for (const source of entry.sources || []) {
+          const node = source.node;
+          if (!node || !node.closest || !node.closest(".navbar")) continue;
+          const a = source.previousRect, b = source.currentRect;
+          const union = (Math.max(a.right, b.right) - Math.min(a.left, b.left)) * (Math.max(a.bottom, b.bottom) - Math.min(a.top, b.top));
+          const distance = Math.max(Math.abs(a.left - b.left), Math.abs(a.top - b.top));
+          window.__shifts.push({ value: (union / (vw * vh)) * (distance / Math.max(vw, vh)), at: Math.round(entry.startTime), dx: b.left - a.left, dy: b.top - a.top, node: node.className || node.tagName });
+        }
       }
     }).observe({ type: "layout-shift", buffered: true });
   });
@@ -97,9 +107,10 @@ for (const device of VIEWPORTS) {
         }
         const shifts = await page.evaluate(() => window.__shifts);
         const total = shifts.reduce((sum, s) => sum + s.value, 0);
-        // The residual horizontal drift above scores well under the 0.1 "good"
-        // layout-shift budget; the bar itself contributes nothing.
-        expect(total, `${path}: header layout shift ${JSON.stringify(shifts)}`).toBeLessThan(0.05);
+        // The residual horizontal drift above scores ~0.0002; the bar itself
+        // and the row must contribute nothing.
+        expect(total, `${path}: header layout shift ${JSON.stringify(shifts)}`).toBeLessThan(0.01);
+        for (const shift of shifts) expect(Math.abs(shift.dy), `${path}: header source moved vertically ${JSON.stringify(shift)}`).toBeLessThanOrEqual(1);
       });
     }
 
