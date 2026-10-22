@@ -45,6 +45,14 @@ async function expectRedirect(from, to, status = 301) {
   else pass(`${from} -> ${status} ${to}`);
 }
 
+// 0. Which commit the live release reports (X-Release, set from Railway's
+// RAILWAY_GIT_COMMIT_SHA). A mismatch explains every "differs" below.
+const home = await get(`${BASE}/`);
+const release = home.headers.get("x-release") || "";
+const expected = process.env.EXPECTED_SHA || "";
+note(`live release: ${release || "unknown (no X-Release header)"}${expected ? `, this checkout: ${expected}` : ""}`);
+if (expected && release && release !== expected) fail(`live release ${release.slice(0, 7)} is not this checkout ${expected.slice(0, 7)} (deploy pending or failed)`);
+
 // 1. Every sitemap page is live and identical to this checkout.
 const sitemap = readFileSync(join(ROOT, "sitemap.xml"), "utf8");
 const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(([, loc]) => loc);

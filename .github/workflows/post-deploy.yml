@@ -26,6 +26,8 @@ jobs:
           node-version: 22
       # Give Railway time to roll out the release this push started.
       - run: sleep 240
+      - name: Wait for this commit to be live
+        run: node scripts/wait-live.mjs "$GITHUB_SHA" 20
       - run: node scripts/indexnow.mjs --wait
       - name: Live redirects and status codes
         run: |

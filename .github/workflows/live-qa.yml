@@ -40,7 +40,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Wait for this commit to be live
+        if: github.event_name != 'pull_request'
+        run: node scripts/wait-live.mjs "$GITHUB_SHA" 20
       - name: Pages, redirects, headers, links
+        env:
+          EXPECTED_SHA: ${{ github.event_name != 'pull_request' && github.sha || '' }}
         run: node scripts/live-qa.mjs
       - name: Install Chromium
         if: always()

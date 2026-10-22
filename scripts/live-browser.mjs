@@ -27,7 +27,10 @@ async function openPage(route, { width = 1280, height = 900 } = {}) {
   const page = await context.newPage();
   page.errors = [];
   page.on("pageerror", (error) => page.errors.push(error.message));
-  page.on("console", (message) => { if (message.type() === "error") page.errors.push(message.text()); });
+  page.on("console", (message) => {
+    // Turnstile's own probes (a data: fetch, console tricks) log errors from its script; they are not the page's.
+    if (message.type() === "error" && !/challenges\.cloudflare\.com/.test(message.location()?.url || "")) page.errors.push(message.text());
+  });
   const response = await page.goto(`${BASE}${route}`, { waitUntil: "load" });
   if (!response || response.status() !== 200) fail(`${route} loaded with ${response?.status()}`);
   return page;
@@ -101,12 +104,14 @@ for (const route of ["/contact", "/hu/kapcsolat", "/de/kontakt"]) {
   if (!(await form.count())) fail(`${route}: no form`);
   const mount = page.locator("[data-contact-turnstile]");
   await mount.scrollIntoViewIfNeeded().catch(() => {});
-  let iframe = 0;
-  for (let i = 0; i < 20 && !iframe; i++) {
-    iframe = await page.locator('iframe[src*="challenges.cloudflare.com"]').count();
+  // Turnstile mounts its frame inside a closed shadow root, so no selector
+  // reaches it; the page's frame tree does.
+  let iframe = false;
+  for (let i = 0; i < 40 && !iframe; i++) {
+    iframe = page.frames().some((frame) => frame.url().startsWith("https://challenges.cloudflare.com/"));
     if (!iframe) await page.waitForTimeout(500);
   }
-  if (!iframe) fail(`${route}: Turnstile widget did not render within 10 s`);
+  if (!iframe) fail(`${route}: Turnstile widget did not render within 20 s`);
   else pass(`${route}: form + Turnstile widget rendered`);
   await close(page, route);
 }

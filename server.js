@@ -38,8 +38,14 @@ app.use(compression());
 
 const TURNSTILE_PAGES = new Set(["/contact", "/hu/kapcsolat", "/de/kontakt"]);
 
+// Which commit this release was built from. Railway sets RAILWAY_GIT_COMMIT_SHA
+// on every GitHub-connected deploy; the Post-deploy and Live QA workflows wait
+// for this header to match the commit they ran for before checking the site.
+const RELEASE = process.env.RAILWAY_GIT_COMMIT_SHA || process.env.RELEASE_SHA || "";
+
 // Security headers
 app.use((req, res, next) => {
+  if (RELEASE) res.setHeader("X-Release", RELEASE);
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "SAMEORIGIN");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
