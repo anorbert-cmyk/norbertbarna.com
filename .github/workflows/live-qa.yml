@@ -13,12 +13,18 @@ on:
         required: true
   schedule:
     - cron: "17 6 * * 1"
+  # A change to the checks themselves runs them once from the pull request.
+  pull_request:
+    paths:
+      - .github/workflows/live-qa.yml
+      - scripts/live-qa.mjs
+      - scripts/live-browser.mjs
 
 permissions:
   contents: read
 
 concurrency:
-  group: live-qa
+  group: live-qa-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
