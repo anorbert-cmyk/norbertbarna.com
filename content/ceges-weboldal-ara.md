@@ -10,7 +10,7 @@ service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
 cover: /assets/images/og/writing/ceges-weboldal-ara.jpg
 cover_alt: Öt egyre nagyobb, hajtogatott papírkapu sorban, lila háttér előtt
-pair: null
+pair: de/was-kostet-eine-website
 ---
 A weboldal készítés ára attól függ, mire kell a weboldalnak: kiknek szól, mit kell a látogatónak megtennie rajta, és milyen rendszerekhez kapcsolódik. Két ajánlat ugyanarra a kérésre sokszorosan eltérhet, és gyakran mindkettő korrekt, mert nem ugyanazt a munkát árazza. Én minden weboldalt egyedi munkaként kezelek: a technológiát, a szerkezetet, a designt és a tartalmat a felhasználóid igényeihez szabom, ezért az ár is ebből következik, nem egy előre gyártott csomagból.
 

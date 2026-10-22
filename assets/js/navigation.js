@@ -17,8 +17,12 @@
 
   function initNavigation() {
     var root = document.documentElement;
-    var isHungarian = /^hu(?:-|$)/i.test(root.lang);
-    var navLabels = isHungarian ? { open: "Navigáció megnyitása", close: "Navigáció bezárása" } : { open: "Open navigation", close: "Close navigation" };
+    var pageLang = /^hu(?:-|$)/i.test(root.lang) ? "hu" : /^de(?:-|$)/i.test(root.lang) ? "de" : "en";
+    var navLabels = {
+      hu: { open: "Navigáció megnyitása", close: "Navigáció bezárása" },
+      de: { open: "Navigation öffnen", close: "Navigation schließen" },
+      en: { open: "Open navigation", close: "Close navigation" }
+    }[pageLang];
     var primaryNavigation = document.querySelector(".nav-menu");
     var menuButton = document.querySelector(".menu-button");
     if (!primaryNavigation || !menuButton || menuButton.dataset.navigationReady === "true") return;

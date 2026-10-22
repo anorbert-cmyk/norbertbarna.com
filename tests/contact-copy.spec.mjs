@@ -7,15 +7,16 @@ import { exposesInbox } from "../scripts/private-inbox.mjs";
 const contactCopy = {
   en: { href: "/contact", project: "Discuss your project", privacy: "Contact form", menu: "Contact" },
   hu: { href: "/hu/kapcsolat", project: "Beszéljünk a projektedről", privacy: "Kapcsolatfelvételi űrlap", menu: "Kapcsolat" },
+  de: { href: "/de/kontakt", project: "Sprechen wir über Ihr Projekt", privacy: "Kontaktformular", menu: "Kontakt" },
 };
-const routes = ["/", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem", "/hu", "/hu/munkak", "/hu/munka/instructure"];
+const routes = ["/", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/de/ki-beratung-entwicklung", "/privacy", "/hu/adatvedelem", "/de/datenschutz", "/hu", "/hu/munkak", "/hu/munka/instructure", "/de"];
 const viewports = [
   { width: 320, height: 720, activation: "pointer" },
   { width: 390, height: 844, activation: "Enter" },
   // Space must not activate a link (it is not a disguised button); Enter does.
   { width: 1280, height: 900, activation: "Space" },
 ];
-const languageOf = (route) => route === "/hu" || route.startsWith("/hu/") ? "hu" : "en";
+const languageOf = (route) => ["hu", "de"].find((code) => route === `/${code}` || route.startsWith(`/${code}/`)) || "en";
 
 // reducedMotion is a BrowserContext option, not a standalone TestOptions fixture.
 test.use({ contextOptions: { reducedMotion: "reduce" } });
@@ -387,11 +388,14 @@ for (const viewport of viewports) {
 
       await expect(page.locator("button.footer-email")).toHaveCount(0);
       const menuContact = page.locator(`#primary-navigation a.nav-link[href="${copy.href}"]`);
-      await expect(page.locator("#primary-navigation a[href$='/contact'], #primary-navigation a[href$='/kapcsolat']")).toHaveCount(1);
+      await expect(page.locator("#primary-navigation a[href$='/contact'], #primary-navigation a[href$='/kapcsolat'], #primary-navigation a[href$='/kontakt']")).toHaveCount(1);
       await expect(menuContact).toHaveText(copy.menu);
       expect(await menuContact.getAttribute("aria-label")).toBeNull();
       const links = page.locator("a.footer-email");
-      const expectedCount = ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem"].includes(route) ? 2 : 1;
+      // The AI board pages (the German entry page included) and the privacy pages carry an action in main and one in the footer.
+      const AI_BOARD = ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/de/ki-beratung-entwicklung", "/de"];
+      const PRIVACY = ["/privacy", "/hu/adatvedelem", "/de/datenschutz"];
+      const expectedCount = [...AI_BOARD, ...PRIVACY].includes(route) ? 2 : 1;
       await expect(links).toHaveCount(expectedCount);
 
       const targets = [{ locator: menuContact, kind: "menu" }];
@@ -412,9 +416,9 @@ for (const viewport of viewports) {
         if (scope.nav && viewport.width < 992) await page.locator(".menu-button").click();
         await expect(link).toBeVisible();
         if (kind === "action") {
-          const privacyContact = scope.main && ["/privacy", "/hu/adatvedelem"].includes(route);
+          const privacyContact = scope.main && PRIVACY.includes(route);
           const label = privacyContact ? copy.privacy : copy.project;
-          if (["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"].includes(route)) {
+          if (AI_BOARD.includes(route)) {
             await expect(link.locator('span[aria-hidden="true"]')).toHaveText("→");
             expect(await link.evaluate((element) => [...element.childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join("").trim())).toBe(label);
           } else await expect(link).toHaveText(label);
@@ -448,7 +452,7 @@ for (const viewport of viewports) {
           if (viewport.width < 992) expect(box.height, "menu contact row").toBeGreaterThanOrEqual(48);
           else {
             expect(Math.abs(box.height - sibling.height), "menu contact matches its sibling targets").toBeLessThanOrEqual(1);
-            expect(box.height, "menu contact target").toBeGreaterThanOrEqual(["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"].includes(route) ? 24 : 44);
+            expect(box.height, "menu contact target").toBeGreaterThanOrEqual(AI_BOARD.includes(route) ? 24 : 44);
           }
         }
         const before = page.url();

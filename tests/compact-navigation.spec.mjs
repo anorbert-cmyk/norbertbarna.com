@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const routes = ["/", "/works", "/work/raiffeisen", "/work/instructure", "/work/bitpanda", "/work/benker",
-  "/work/onrobot", "/work/sportsgambit", "/work/kineticare", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/privacy", "/hu/adatvedelem",
-  "/hu", "/hu/munkak", "/hu/munka/raiffeisen", "/hu/munka/kineticare"];
+  "/work/onrobot", "/work/sportsgambit", "/work/kineticare", "/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/de/ki-beratung-entwicklung", "/privacy", "/hu/adatvedelem", "/de/datenschutz",
+  "/hu", "/hu/munkak", "/hu/munka/raiffeisen", "/hu/munka/kineticare", "/de"];
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -35,7 +35,7 @@ async function expectStableBar(page, label) {
     }
     // Work routes keep the navy reference bar. AI alone changes its bar to
     // lilac when the hero leaves it, including safe-area clearance.
-    const aiRoute = ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"].includes(location.pathname);
+    const aiRoute = ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes", "/de/ki-beratung-entwicklung", "/de"].includes(location.pathname);
     const workRoute = /^\/(works$|work\/|hu\/munkak$|hu\/munka\/)/.test(location.pathname);
     const opening = aiRoute && document.querySelector("[data-ai-hero]")?.getBoundingClientRect().bottom > nav.getBoundingClientRect().height;
     return { y: nav.getBoundingClientRect().top, opacity: Number(style.opacity), animations: nav.getAnimations().length,
@@ -151,10 +151,11 @@ test("crossing the compact breakpoint preserves the same stationary work bar", a
 // bar at every width, and an open compact menu shows a close glyph.
 const OLIVE = "rgb(189, 180, 20)";
 const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/writing", "/writing"],
-  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/irasok", "/hu/irasok"],
+  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/irasok", "/hu/irasok"], ["/de/wissen", "/de/wissen"],
   // The service pages live in the Services group: the panel link is current and the group button carries the mark.
   ["/ai-integration", "/ai-integration", "nav-services"], ["/web-development", "/web-development", "nav-services"],
-  ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes", "nav-services"], ["/hu/webfejlesztes", "/hu/webfejlesztes", "nav-services"]];
+  ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes", "nav-services"], ["/hu/webfejlesztes", "/hu/webfejlesztes", "nav-services"],
+  ["/de/ki-beratung-entwicklung", "/de/ki-beratung-entwicklung", "nav-services"], ["/de/webentwicklung", "/de/webentwicklung", "nav-services"]];
 async function currentMark(page, href, group) {
   const selector = group ? `#primary-navigation [aria-controls="${group}"]` : `#primary-navigation a.nav-link[href="${href}"]`;
   return page.locator(selector).evaluate((link) => {
@@ -181,7 +182,10 @@ for (const width of [390, 1280]) {
   });
 }
 
-for (const route of ["/", "/works", "/work/instructure", "/about", "/privacy", "/hu", "/hu/munka/instructure", "/hu/rolam"]) {
+const MENU_LABELS = {
+  en: ["Open navigation", "Close navigation"], hu: ["Navigáció megnyitása", "Navigáció bezárása"], de: ["Navigation öffnen", "Navigation schließen"],
+};
+for (const route of ["/", "/works", "/work/instructure", "/about", "/privacy", "/hu", "/hu/munka/instructure", "/hu/rolam", "/de", "/de/kontakt"]) {
   test(`390 ${route}: the open compact menu shows a close glyph and names its action`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(route, { waitUntil: "load" });
@@ -189,11 +193,11 @@ for (const route of ["/", "/works", "/work/instructure", "/about", "/privacy", "
     await expect(toggle).toHaveAttribute("data-navigation-ready", "true");
     const glyph = () => toggle.locator(".w-icon-nav-menu").evaluate((icon) => getComputedStyle(icon, "::before").content);
     const closed = await glyph();
-    const hungarian = route === "/hu" || route.startsWith("/hu/");
-    await expect(toggle).toHaveAttribute("aria-label", hungarian ? "Navigáció megnyitása" : "Open navigation");
+    const [open, close] = MENU_LABELS[["hu", "de"].find((code) => route === `/${code}` || route.startsWith(`/${code}/`)) || "en"];
+    await expect(toggle).toHaveAttribute("aria-label", open);
     await toggle.click();
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
-    await expect(toggle).toHaveAttribute("aria-label", hungarian ? "Navigáció bezárása" : "Close navigation");
+    await expect(toggle).toHaveAttribute("aria-label", close);
     expect(await glyph()).toBe('"×"');
     expect(closed).not.toBe('"×"');
     await page.keyboard.press("Escape");
@@ -205,7 +209,7 @@ for (const route of ["/", "/works", "/work/instructure", "/about", "/privacy", "
 test("privacy pages use the lilac utility bar", async ({ page }) => {
   for (const width of [390, 1280]) {
     await page.setViewportSize({ width, height: 844 });
-    for (const route of ["/privacy", "/hu/adatvedelem"]) {
+    for (const route of ["/privacy", "/hu/adatvedelem", "/de/datenschutz"]) {
       await page.goto(route, { waitUntil: "load" });
       await expect(page.locator("body")).toHaveClass(/\butility-page\b/);
       await expect(page.locator(".navbar")).toHaveCSS("background-color", "rgb(214, 212, 237)");

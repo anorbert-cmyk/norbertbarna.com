@@ -106,7 +106,7 @@ test("Hungarian About runs the same controller with Hungarian Pause labels and n
   await expect(page.locator("html")).toHaveAttribute("lang", "hu");
   await expect(page.locator("main[data-story]")).toHaveAttribute("data-story-mode", "cinematic");
   await expect(page.locator('.navbar a[aria-current="page"]')).toHaveAttribute("href", "/hu/rolam");
-  await expect(page.locator(".navbar a.lang-switch")).toHaveAttribute("href", "/about");
+  await expect(page.locator(".navbar a.lang-switch").first()).toHaveAttribute("href", "/about");
   await expect(page.locator(".story-next a.footer-email")).toHaveAttribute("href", "/hu/kapcsolat");
   const toggle = page.locator("[data-story-motion-toggle]");
   await alignReading(page, "[data-story-motion-toggle]");

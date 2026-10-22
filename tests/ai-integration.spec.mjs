@@ -3,13 +3,20 @@ import { expect, test } from "@playwright/test";
 // The approved merge keeps one service narrative. Motion decorates the artwork;
 // reading steps and case links are always available, including before the camera
 // reaches them. The Passage closing is the actual footer, after the FAQ.
-const ROUTES = [["en", "/ai-integration"], ["hu", "/hu/ai-tanacsadas-fejlesztes"]];
+// The AI service page in its three languages (German structure, task T8, 2026-10-21).
+const AI_PAGES = { en: "/ai-integration", hu: "/hu/ai-tanacsadas-fejlesztes", de: "/de/ki-beratung-entwicklung" };
+const WEB_PAGES = { en: "/web-development", hu: "/hu/webfejlesztes", de: "/de/webentwicklung" };
+const ROUTES = Object.entries(AI_PAGES);
+const LANGS = Object.keys(AI_PAGES);
+const LANGUAGE_NAMES = { en: "English", hu: "Magyar", de: "Deutsch" };
 const SECTIONS = ["#top", "#shaped", "#pieces", "#workflow", "#selected-work", "#start", "#questions"];
-// Hungarian pages link only Hungarian pages (whole-site language switch, 2026-10-06).
+// Hungarian pages link only Hungarian pages (whole-site language switch, 2026-10-06);
+// the German pages link the English cases and About, as the case studies stay English.
 const caseHref = (language, slug) => language === "hu" ? `/hu/munka/${slug}` : `/work/${slug}`;
 const aboutHref = (language) => language === "hu" ? "/hu/rolam" : "/about";
-const contactHref = (language) => language === "hu" ? "/hu/kapcsolat" : "/contact";
-const contactLabel = (language) => language === "hu" ? "Beszéljünk a projektedről" : "Discuss your project";
+const contactHref = (language) => ({ hu: "/hu/kapcsolat", de: "/de/kontakt" })[language] || "/contact";
+const contactLabel = (language) => ({ hu: "Beszéljünk a projektedről", de: "Sprechen wir über Ihr Projekt" })[language] || "Discuss your project";
+const languageOf = (path) => LANGS.find((code) => code !== "en" && path.startsWith(`/${code}/`)) || "en";
 let errors;
 test.beforeEach(async ({ page }) => {
   errors = [];
@@ -119,7 +126,7 @@ for (const [language, path] of ROUTES) {
     const order = await page.evaluate((ids) => ids.map((id) => document.querySelector(id)?.getBoundingClientRect().top + scrollY), [...SECTIONS, "#work-better"]);
     for (let index = 1; index < order.length; index += 1) expect(order[index], "sections follow the approved reading order").toBeGreaterThan(order[index - 1]);
     await expect(page.locator("main h1")).toHaveCount(1);
-    await expect(page.locator("main h1")).toContainText("AI");
+    await expect(page.locator("main h1")).toContainText(language === "de" ? "KI" : "AI");
     for (const id of SECTIONS.slice(1)) await expect(page.locator(`${id} h2`)).toHaveCount(1);
     await expect(page.locator("#pieces a, #pieces button, .ai-step-inline, .ai-start-steps, .ai-better")).toHaveCount(0);
     await expect(page.locator(".ai-shape-art img")).toHaveCount(1);
@@ -139,15 +146,18 @@ for (const [language, path] of ROUTES) {
       await expect(page.locator(`main a[href="${caseHref(language, slug)}"]`)).toHaveCount(1);
       await expect(page.locator(`#selected-work a[href="${caseHref(language, slug)}"] img`)).toHaveAttribute("src", `/assets/images/geometry/${slug}.960.webp`);
     }
-    const pair = language === "en" ? "/hu/ai-tanacsadas-fejlesztes" : "/ai-integration";
-    await expect(page.locator(`main a[href="${pair}"]`)).toHaveCount(1);
-    // The menu's single language link names the other language in that language.
-    const languageLink = page.locator(".navbar a.lang-switch");
-    await expect(languageLink).toHaveCount(1);
-    await expect(languageLink).toHaveAttribute("href", pair);
-    await expect(languageLink).toHaveText(language === "en" ? "Magyar" : "English");
-    await expect(languageLink).toHaveAttribute("rel", "alternate");
-    await expect(languageLink).toHaveAttribute("hreflang", language === "en" ? "hu" : "en");
+    // The main content and the menu link the two other languages' pages, each named in its own language.
+    const others = LANGS.filter((code) => code !== language);
+    const languageLinks = page.locator(".navbar a.lang-switch");
+    await expect(languageLinks).toHaveCount(others.length);
+    for (const [index, other] of others.entries()) {
+      await expect(page.locator(`main a[href="${AI_PAGES[other]}"]`)).toHaveCount(1);
+      const languageLink = languageLinks.nth(index);
+      await expect(languageLink).toHaveAttribute("href", AI_PAGES[other]);
+      await expect(languageLink).toHaveText(LANGUAGE_NAMES[other]);
+      await expect(languageLink).toHaveAttribute("rel", "alternate");
+      await expect(languageLink).toHaveAttribute("hreflang", other);
+    }
     // The opening and the close both link the contact form; no mail button remains.
     await expect(page.locator("button.footer-email")).toHaveCount(0);
     await expect(page.locator("main a.footer-email")).toHaveCount(1);
@@ -156,14 +166,14 @@ for (const [language, path] of ROUTES) {
     if (language === "hu") {
       // Hungarian reading content and menu stay in Hungarian; only explicit language links lead to English.
       const english = await page.locator("main a[href^='/'], .navbar a[href^='/']").evaluateAll((links) => links
-        .filter((link) => !link.matches(".lang-switch, [hreflang='en']") && !/^\/hu(?:\/|$|#)/.test(link.getAttribute("href")))
+        .filter((link) => !link.matches(".lang-switch, [hreflang]") && !/^\/hu(?:\/|$|#)/.test(link.getAttribute("href")))
         .map((link) => link.getAttribute("href")));
       expect(english, "Hungarian content links only Hungarian pages").toEqual([]);
     }
     const footer = page.locator("footer.ai-footer");
     await expect(footer).toHaveAttribute("id", "work-better");
     await expect(page.locator("main footer, main #work-better")).toHaveCount(0);
-    await expect(footer.locator("h2")).toHaveText(language === "hu" ? /Építsük meg,\s*ami következik\./ : /Let’s build\s*what’s next\./);
+    await expect(footer.locator("h2")).toHaveText({ hu: /Építsük meg,\s*ami következik\./, de: /Bauen wir,\s*was als Nächstes kommt\./ }[language] || /Let’s build\s*what’s next\./);
     await expect(footer).toHaveCSS("background-color", "rgb(10, 22, 40)");
     await expect(footer.locator(".ai-footer-art")).toHaveAttribute("aria-hidden", "true");
     await expect(footer.locator(".footer-brand img")).toHaveAttribute("src", /68f9e9de8ed08e31e52c4188_NB\.svg$/);
@@ -171,9 +181,9 @@ for (const [language, path] of ROUTES) {
     await expect(footer.locator("a.footer-email")).toHaveAttribute("href", contactHref(language));
     await expect(footer.locator("a.footer-email span[aria-hidden='true']")).toHaveText("→");
     await expect(footer.locator("a.footer-contact-link")).toHaveAttribute("href", "https://www.linkedin.com/in/barna-norbert/");
-    await expect(footer.locator('.footer-privacy a[href="/privacy"], .footer-privacy a[href="/hu/adatvedelem"], [data-consent-settings]')).toHaveCount(2);
+    await expect(footer.locator('.footer-privacy a[href="/privacy"], .footer-privacy a[href="/hu/adatvedelem"], .footer-privacy a[href="/de/datenschutz"], [data-consent-settings]')).toHaveCount(2);
     await expect(footer.locator('.footer-col, a[href^="/work/"], a[href^="/hu/munka/"]')).toHaveCount(0);
-    if (language === "hu") await expect(footer.locator("h2")).toHaveAttribute("lang", "hu");
+    if (language !== "en") await expect(footer.locator("h2")).toHaveAttribute("lang", language);
     const artwork = await page.locator("main img, .ai-footer-art img").evaluateAll((images) => images.map((image) => ({
       alt: image.alt, decorative: Boolean(image.closest('[aria-hidden="true"]')) || image.closest("a") !== null,
       sized: Number(image.getAttribute("width")) > 0 && Number(image.getAttribute("height")) > 0,
@@ -682,7 +692,8 @@ test("the old Hungarian AI address moves permanently to the new one", async ({ r
   }
 });
 
-for (const [path, subject] of [["/ai-integration", /Human in the loop AI integration/], ["/web-development", /Web development/], ["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/]]) {
+for (const [path, subject] of [["/ai-integration", /Human in the loop AI integration/], ["/web-development", /Web development/], ["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/],
+  ["/de/ki-beratung-entwicklung", /KI-Beratung/], ["/de/webentwicklung", /Webentwicklung/]]) {
   test(`${path}: use cases, scope, price factors and FAQ data match the visible page`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await open(page, path);
@@ -704,19 +715,22 @@ for (const [path, subject] of [["/ai-integration", /Human in the loop AI integra
     });
     expect(faq.visible).toHaveLength(8);
     expect(faq.data, "FAQPage repeats the visible questions and answers").toEqual(faq.visible);
-    await expect(page.locator(`#top a.footer-email`)).toHaveAttribute("href", path.startsWith("/hu/") ? "/hu/kapcsolat" : "/contact");
+    await expect(page.locator(`#top a.footer-email`)).toHaveAttribute("href", contactHref(languageOf(path)));
   });
 }
 
-test("/web-development and /hu/webfejlesztes are a reciprocal language pair with the Kineticare build as evidence", async ({ page }) => {
-  for (const [path, pair] of [["/web-development", "/hu/webfejlesztes"], ["/hu/webfejlesztes", "/web-development"]]) {
+test("the web development pages are a reciprocal three-language group with the Kineticare build as evidence", async ({ page }) => {
+  const absolute = Object.fromEntries(Object.entries(WEB_PAGES).map(([code, path]) => [code, `https://www.barnanorbert.com${path}`]));
+  for (const [language, path] of Object.entries(WEB_PAGES)) {
     await open(page, path);
     const alternates = await page.locator('link[rel="alternate"][hreflang]').evaluateAll((links) => Object.fromEntries(links.map((link) => [link.hreflang, link.href])));
-    expect(alternates).toEqual({ en: "https://www.barnanorbert.com/web-development", hu: "https://www.barnanorbert.com/hu/webfejlesztes", "x-default": "https://www.barnanorbert.com/web-development" });
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://www.barnanorbert.com${path}`);
-    await expect(page.locator(".navbar a.lang-switch")).toHaveAttribute("href", pair);
-    const caseHref = path.startsWith("/hu/") ? "/hu/munka/kineticare" : "/work/kineticare";
-    await expect(page.locator(`#selected-work a[href="${caseHref}"]`)).toHaveCount(1);
-    await expect(page.locator(`main a[href="${path.startsWith("/hu/") ? "/hu/ai-tanacsadas-fejlesztes" : "/ai-integration"}"]`).first()).toBeVisible();
+    expect(alternates).toEqual({ ...absolute, "x-default": absolute.en });
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", absolute[language]);
+    const others = LANGS.filter((code) => code !== language);
+    const switches = page.locator(".navbar a.lang-switch");
+    await expect(switches).toHaveCount(others.length);
+    for (const [index, other] of others.entries()) await expect(switches.nth(index)).toHaveAttribute("href", WEB_PAGES[other]);
+    await expect(page.locator(`#selected-work a[href="${caseHref(language, "kineticare")}"]`)).toHaveCount(1);
+    await expect(page.locator(`main a[href="${AI_PAGES[language]}"]`).first()).toBeVisible();
   }
 });

@@ -6,7 +6,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, baseOf, HU_PAGES, WRITING_PAGES } from "./service-pages.mjs";
+import { UTILITY_PAGES, baseOf, HU_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -171,13 +171,13 @@ for (const page of ALL_PAGES) {
       fail(`${page}: logo link needs an explicit Home accessible name`);
     }
     // The external link names its new tab in the page language.
-    if (!(page.startsWith("hu/") ? /aria-label="LinkedIn-profilom \(új lapon nyílik meg\)"/ : /aria-label="Find me on LinkedIn \(opens in a new tab\)"/).test(html)) {
+    if (!html.includes(`aria-label="${SITE_COPY[languageOf(page)].linkedin}"`)) {
       fail(`${page}: external LinkedIn navigation label is incomplete`);
     }
     const footerHtml = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
     // NN/g audit (2026-10-06): the project action is a link to the contact
     // form in the page language; no page assembles or opens a mail address.
-    const contactPath = page.startsWith("hu/") ? "/hu/kapcsolat" : "/contact";
+    const contactPath = SITE_COPY[languageOf(page)].contact;
     const emailCta = [...footerHtml.matchAll(/<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>/gi)].map((m) => m[0]);
     const linkedinIcon =
       /<a\b[^>]*class="[^"]*\bfooter-contact-link\b[^"]*"[^>]*href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/i.test(footerHtml);
@@ -209,7 +209,7 @@ for (const page of ALL_PAGES) {
     if (/mailto:/i.test(html) || exposesInbox(html)) {
       fail(`${page}: MailtoInHtml: HTML must not contain mailto: or the contact address`);
     }
-    if (/footer-col-title">(?:Contact|Kapcsolat)/.test(html)) {
+    if (/footer-col-title">(?:Contact|Kapcsolat|Kontakt)/.test(html)) {
       fail(`${page}: a Contact column must not ship; the project action covers it`);
     }
 

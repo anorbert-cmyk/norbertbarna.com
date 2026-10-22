@@ -14,7 +14,13 @@ export const ORIGIN = "https://www.barnanorbert.com";
 export const SECTIONS = {
   hu: { dir: "hu/irasok", path: "/hu/irasok", name: "Írások" },
   en: { dir: "writing", path: "/writing", name: "Writing" },
+  de: { dir: "de/wissen", path: "/de/wissen", name: "Wissen" },
 };
+// The order of list pages, feeds and the sitemap; English is the x-default.
+export const WRITING_LANGS = ["en", "hu", "de"];
+// A page without a translation in a language leads there anyway: the
+// language's list page, or its home while that language has no article.
+export const HOME_OF = { en: "index.html", hu: "hu/index.html", de: "de/index.html" };
 
 const FIELDS = ["draft", "title", "description", "lang", "slug", "date", "updated", "pair", "tags", "cover", "cover_alt", "service", "service_label"];
 const REQUIRED = ["title", "description", "lang", "slug", "date", "updated"];
@@ -209,7 +215,7 @@ export function loadArticles({ root = ROOT, includeDrafts = false } = {}) {
     const file = `content/${name}`;
     const { data, body } = parseFrontmatter(readFileSync(join(dir, name), "utf8"), file);
     for (const key of REQUIRED) if (!data[key]) throw new Error(`${file}: frontmatter needs ${key}`);
-    if (!SECTIONS[data.lang]) throw new Error(`${file}: lang must be hu or en`);
+    if (!SECTIONS[data.lang]) throw new Error(`${file}: lang must be en, hu or de`);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug)) throw new Error(`${file}: slug must be lowercase ASCII words joined by hyphens`);
     if (data.slug === "index" || data.slug === "feed") throw new Error(`${file}: slug ${data.slug} is reserved`);
     for (const key of ["date", "updated"]) {
@@ -233,7 +239,15 @@ export function loadArticles({ root = ROOT, includeDrafts = false } = {}) {
     if (new Set(data.tags.map((tag) => tag.toLowerCase())).size !== data.tags.length) throw new Error(`${file}: tags repeat a term`);
     if (Boolean(data.service) !== Boolean(data.service_label)) throw new Error(`${file}: service and service_label go together`);
     if (/^#\s/m.test(body)) throw new Error(`${file}: remove the # heading; the title is the H1`);
-    articles.push({ ...data, tags: data.tags || [], source: file, markdown: body.trim() });
+    // `pair` names the translations as lang/slug entries (one or a list).
+    // A bare slug is the article's pair in the other of hu and en.
+    const pairs = [data.pair].flat().filter(Boolean).map((entry) => {
+      const [lang, slug] = entry.includes("/") ? entry.split("/") : [data.lang === "hu" ? "en" : "hu", entry];
+      if (!SECTIONS[lang] || lang === data.lang || !slug) throw new Error(`${file}: pair ${entry} must be <other language>/<slug>`);
+      return { lang, slug };
+    });
+    if (new Set(pairs.map((pair) => pair.lang)).size !== pairs.length) throw new Error(`${file}: one pair per language`);
+    articles.push({ ...data, pairs, tags: data.tags || [], source: file, markdown: body.trim() });
   }
   if (!includeDrafts) {
     for (let i = articles.length - 1; i >= 0; i--) if (articles[i].draft) articles.splice(i, 1);
@@ -244,12 +258,21 @@ export function loadArticles({ root = ROOT, includeDrafts = false } = {}) {
     if (bySlug.has(key)) throw new Error(`${article.source}: slug ${article.slug} is also used by ${bySlug.get(key).source}`);
     bySlug.set(key, article);
   }
-  // A pair names the other language's slug, and the other article names this one back.
+  // Every pair names a published article, which names this one back, and
+  // the translations of a translation are listed too (one closed group).
   for (const article of articles) {
-    if (!article.pair) continue;
-    const other = bySlug.get(`${article.lang === "hu" ? "en" : "hu"}/${article.pair}`);
-    if (!other) throw new Error(`${article.source}: pair ${article.pair} has no article in the other language`);
-    if (other.pair !== article.slug) throw new Error(`${article.source}: pair must be reciprocal (${other.source} names ${other.pair || "nothing"})`);
+    for (const pair of article.pairs) {
+      const other = bySlug.get(`${pair.lang}/${pair.slug}`);
+      if (!other) throw new Error(`${article.source}: pair ${pair.lang}/${pair.slug} has no published article`);
+      if (!other.pairs.some((back) => back.lang === article.lang && back.slug === article.slug)) {
+        throw new Error(`${article.source}: pair must be reciprocal (${other.source} does not name ${article.lang}/${article.slug})`);
+      }
+      for (const third of other.pairs) {
+        if (third.lang !== article.lang && !article.pairs.some((pair) => pair.lang === third.lang && pair.slug === third.slug)) {
+          throw new Error(`${article.source}: must also name ${third.lang}/${third.slug}, a translation of ${other.source}`);
+        }
+      }
+    }
   }
   // Newest first: the order of list pages, feeds and the sitemap.
   return articles.sort((a, b) => Date.parse(b.date) - Date.parse(a.date) || a.slug.localeCompare(b.slug));
@@ -258,7 +281,7 @@ export function loadArticles({ root = ROOT, includeDrafts = false } = {}) {
 // Generated page inventory for the checks: list pages first, then articles.
 export function writingPages(articles = loadArticles()) {
   const pages = [];
-  for (const lang of ["en", "hu"]) {
+  for (const lang of WRITING_LANGS) {
     const own = articles.filter((article) => article.lang === lang);
     if (!own.length) continue;
     pages.push(`${SECTIONS[lang].dir}/index.html`, ...own.map(articleFile));
@@ -266,27 +289,23 @@ export function writingPages(articles = loadArticles()) {
   return pages;
 }
 
-// For each generated page: its other-language destination and whether that
-// destination is a true translation (rel="alternate" + hreflang) or only the
-// other language's list page.
+// For each generated page, per other language: its destination there and
+// whether that destination is a true translation (rel="alternate" + hreflang)
+// or only that language's list page (or home, while it has no article).
 export function writingLanguageLinks(articles = loadArticles()) {
   const links = {};
   const hasLang = (lang) => articles.some((article) => article.lang === lang);
-  for (const lang of ["en", "hu"]) {
-    const other = lang === "hu" ? "en" : "hu";
+  const fallback = (lang) => hasLang(lang) ? { file: `${SECTIONS[lang].dir}/index.html`, alternate: false } : { file: HOME_OF[lang], alternate: false };
+  for (const lang of WRITING_LANGS) {
     if (!hasLang(lang)) continue;
-    // Without any article in the other language, the switch leads to that language's home.
-    links[`${SECTIONS[lang].dir}/index.html`] = hasLang(other)
-      ? { file: `${SECTIONS[other].dir}/index.html`, alternate: true }
-      : { file: other === "hu" ? "hu/index.html" : "index.html", alternate: false };
+    links[`${SECTIONS[lang].dir}/index.html`] = Object.fromEntries(WRITING_LANGS.filter((other) => other !== lang)
+      .map((other) => [other, hasLang(other) ? { file: `${SECTIONS[other].dir}/index.html`, alternate: true } : fallback(other)]));
   }
   for (const article of articles) {
-    const other = article.lang === "hu" ? "en" : "hu";
-    if (article.pair) {
-      links[articleFile(article)] = { file: `${SECTIONS[other].dir}/${article.pair}.html`, alternate: true };
-    } else {
-      links[articleFile(article)] = { file: links[`${SECTIONS[article.lang].dir}/index.html`].file, alternate: false };
-    }
+    links[articleFile(article)] = Object.fromEntries(WRITING_LANGS.filter((other) => other !== article.lang).map((other) => {
+      const pair = article.pairs.find((pair) => pair.lang === other);
+      return [other, pair ? { file: `${SECTIONS[other].dir}/${pair.slug}.html`, alternate: true } : fallback(other)];
+    }));
   }
   return links;
 }

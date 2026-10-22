@@ -8,18 +8,25 @@ import { exposesInbox } from "../scripts/private-inbox.mjs";
 // digest (scripts/private-inbox.mjs) and never spell it.
 const PROJECT_LABEL = "Discuss your project";
 const COPY = {
-  en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "Articles", "About", "Contact"], other: "Magyar", language: "Language: EN, English",
+  en: { home: "/", contact: "/contact", project: "Discuss your project", menu: ["Works", "Articles", "About", "Contact"], others: ["Magyar", "Deutsch"], language: "Language: EN, English",
     caseRoot: "/work/", works: "/works", writing: "/writing", privacy: "/privacy", privacyLabel: "Privacy", allWork: "All work", workTitle: "Work", servicesTitle: "Services", articlesTitle: "Articles",
     footerTitle: /Let’s talk\s*product\./, lede: "Product VP. I lead AI products in regulated finance and high-trust systems.", copyright: "© 2026 Norbert Barna" },
-  hu: { home: "/hu", contact: "/hu/kapcsolat", project: "Beszéljünk a projektedről", menu: ["Munkák", "Tudástár", "Rólam", "Kapcsolat"], other: "English", language: "Nyelv: HU, Magyar",
+  hu: { home: "/hu", contact: "/hu/kapcsolat", project: "Beszéljünk a projektedről", menu: ["Munkák", "Tudástár", "Rólam", "Kapcsolat"], others: ["English", "Deutsch"], language: "Nyelv: HU, Magyar",
     caseRoot: "/hu/munka/", works: "/hu/munkak", writing: "/hu/irasok", privacy: "/hu/adatvedelem", privacyLabel: "Adatvédelem", allWork: "Összes munka", workTitle: "Munkák", servicesTitle: "Szolgáltatások", articlesTitle: "Tudástár",
     footerTitle: /Beszéljünk\s*termékről\./, lede: "Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben.", copyright: "© 2026 Barna Norbert" },
+  // German (task T8, 2026-10-21): the case studies stay English, so the German chrome links the English works index and cases.
+  de: { home: "/de", contact: "/de/kontakt", project: "Sprechen wir über Ihr Projekt", menu: ["Arbeiten", "Wissen", "Über mich", "Kontakt"], others: ["English", "Magyar"], language: "Sprache: DE, Deutsch",
+    caseRoot: "/work/", works: "/works", writing: "/de/wissen", privacy: "/de/datenschutz", privacyLabel: "Datenschutz", allWork: "Alle Arbeiten", workTitle: "Arbeiten", servicesTitle: "Leistungen", articlesTitle: "Wissen",
+    footerTitle: /Sprechen wir\s*über Ihr Produkt\./, lede: "Product VP. Ich leite KI-Produkte im regulierten Finanzwesen und in Systemen mit hohen Anforderungen an Vertrauen.", copyright: "© 2026 Norbert Barna" },
 };
-const languageOf = (route) => route === "/hu" || route.startsWith("/hu/") ? "hu" : "en";
+const LANGS = ["en", "hu", "de"];
+const languageOf = (route) => LANGS.find((code) => code !== "en" && (route === `/${code}` || route.startsWith(`/${code}/`))) || "en";
 const SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
-// Every published content page with its language pair (whole-site language switch, 2026-10-06).
-const PAGE_PAIRS = [["/", "/hu"], ["/works", "/hu/munkak"], ["/about", "/hu/rolam"], ["/ai-integration", "/hu/ai-tanacsadas-fejlesztes"], ["/web-development", "/hu/webfejlesztes"],
-  ["/privacy", "/hu/adatvedelem"], ["/contact", "/hu/kapcsolat"], ...SLUGS.map((slug) => [`/work/${slug}`, `/hu/munka/${slug}`])];
+// Every published content page with its translations (whole-site language switch, 2026-10-06; German, 2026-10-21).
+const PAGE_GROUPS = [{ en: "/", hu: "/hu", de: "/de" }, { en: "/works", hu: "/hu/munkak" }, { en: "/about", hu: "/hu/rolam" },
+  { en: "/ai-integration", hu: "/hu/ai-tanacsadas-fejlesztes", de: "/de/ki-beratung-entwicklung" }, { en: "/web-development", hu: "/hu/webfejlesztes", de: "/de/webentwicklung" },
+  { en: "/privacy", hu: "/hu/adatvedelem", de: "/de/datenschutz" }, { en: "/contact", hu: "/hu/kapcsolat", de: "/de/kontakt" }, ...SLUGS.map((slug) => ({ en: `/work/${slug}`, hu: `/hu/munka/${slug}` }))];
+const ALL_ROUTES = PAGE_GROUPS.flatMap((group) => Object.values(group));
 
 const viewports = [
   { name: "mobile-360", width: 360, height: 800 },
@@ -472,9 +479,9 @@ for (const [route, width] of [...[320, 390, 768, 991, 992, 1280, 1440].map((widt
     }
     const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar button.nav-link, .navbar a.footer-contact-link, .navbar .nav-lang-trigger");
     await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY[languageOf(route)].menu);
-    // The menu button plus the group buttons (Services, Articles chevron, language menu).
+    // The menu button plus the group buttons (Articles chevron, language menu; Services on Hungarian pages).
     await expect(page.locator(".navbar button:not([data-nav-toggle])")).toHaveCount(1);
-    // Hero action, logo, the menu rows (Contact included), LinkedIn and the language menu button; the Services trigger is a data-nav-toggle button.
+    // Hero action, logo, the menu rows (Contact included), LinkedIn and the language menu button.
     await expect(controls).toHaveCount(9);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = await readableHomeTarget(page, controls.nth(index));
@@ -652,6 +659,7 @@ for (const { width, adjustment } of [320, 992].flatMap((width) => ["text 200%", 
     }
     const controls = page.locator(".home-mast[data-morph-active] a.hero-work-link, .home-mast:not([data-morph-active]) a.home-intro-work, .navbar .nav-logo-wrap, .navbar a.nav-link, .navbar a.footer-contact-link");
     await expect(page.locator(".navbar a.nav-link")).toHaveText(COPY.en.menu);
+    // Hero action, logo, four menu rows (Services is a button) and LinkedIn.
     await expect(controls).toHaveCount(7);
     for (let index = 0; index < await controls.count(); index += 1) {
       const control = controls.nth(index);
@@ -1324,7 +1332,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare", "/h
       .toEqual([...["raiffeisen", "instructure", "bitpanda", "kineticare"].map((slug) => `${copy.caseRoot}${slug}`), copy.works]);
     await expect(footer.locator(".footer-col-services a")).toHaveCount(2);
     // Latest three articles of the page language plus the All articles row (two English articles so far).
-    await expect(footer.locator(".footer-col-articles a")).toHaveCount(languageOf(route) === "hu" ? 4 : 3);
+    await expect(footer.locator(".footer-col-articles a")).toHaveCount(languageOf(route) === "en" ? 3 : 4);
     await expect(footer.locator(".footer-col-articles a").last()).toHaveAttribute("href", copy.writing);
     // One privacy link, in the page language.
     await expect(footer.locator(".footer-privacy a")).toHaveCount(1);
@@ -1377,7 +1385,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare", "/h
 
 test("no page or script exposes or assembles the inbox address; every contact action links the form", async ({ page, request }) => {
   const scripts = new Set();
-  for (const route of PAGE_PAIRS.flat()) {
+  for (const route of ALL_ROUTES) {
     const copy = COPY[languageOf(route)];
     const response = await request.get(route);
     expect(response.status(), route).toBe(200);
@@ -1393,7 +1401,7 @@ test("no page or script exposes or assembles the inbox address; every contact ac
       expect(tag, `${route}: no email-app tooltip`).not.toMatch(/\btitle=/);
     }
     const menu = html.slice(html.indexOf('id="primary-navigation"'), html.indexOf("</nav>", html.indexOf('id="primary-navigation"')));
-    const menuContacts = [...menu.matchAll(/<a\b[^>]*href="(\/contact|\/hu\/kapcsolat)"[^>]*>/g)].filter((match) => !/\blang-switch\b/.test(match[0]));
+    const menuContacts = [...menu.matchAll(/<a\b[^>]*href="(\/contact|\/hu\/kapcsolat|\/de\/kontakt)"[^>]*>/g)].filter((match) => !/\blang-switch\b/.test(match[0]));
     expect(menuContacts.map((match) => match[1]), `${route}: one menu Contact entry`).toEqual([copy.contact]);
     for (const [, src] of html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)) scripts.add(new URL(src, `http://127.0.0.1:3000${route}`).pathname);
   }
@@ -1644,25 +1652,28 @@ test("the immersive home remains readable when GSAP is unavailable", async ({ pa
   await expect(page.locator(".hero-work-link")).toHaveAttribute("href", "/works");
 });
 
-// Whole-site language switch (owner, 2026-10-06): one language link ends every
-// menu, names the other language in that language, carries rel/hreflang/lang,
-// and leads to this page's pair; Hungarian pages link only Hungarian pages.
-test("every page's single language link leads to its pair, reciprocally, with a 200", async ({ request }) => {
+// Whole-site language switch (owner, 2026-10-06; German, 2026-10-21): the
+// language menu ends every navigation and lists the two other languages in site
+// order, each named in its own language with hreflang and lang. A translated
+// page is linked with rel="alternate" and declared as an hreflang alternate; a
+// page without a translation in that language links that language's home
+// instead. Hungarian pages link only Hungarian pages.
+test("every page's language menu leads to its translations, reciprocally, with a 200", async ({ request }) => {
   const absolute = (route) => `https://www.barnanorbert.com${route}`;
   const destinations = {
     en: ["/works", "/writing", "/about", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
     hu: ["/hu/munkak", "/hu/irasok", "/hu/rolam", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
+    de: ["/works", "/de/wissen", "/about", "/de/kontakt", "https://www.linkedin.com/in/barna-norbert/"],
   };
-  for (const [english, hungarian] of PAGE_PAIRS) {
-    for (const [route, pair, language] of [[english, hungarian, "en"], [hungarian, english, "hu"]]) {
-      const other = language === "en" ? "hu" : "en";
+  for (const group of PAGE_GROUPS) {
+    for (const [language, route] of Object.entries(group)) {
+      const others = LANGS.filter((code) => code !== language);
       const response = await request.get(route, { maxRedirects: 0 });
       expect(response.status(), route).toBe(200);
       const html = await response.text();
       expect(html, `${route} declares its language`).toMatch(new RegExp(`<html\\b[^>]*\\blang="${language}"`));
-      for (const [hreflang, href] of [["en", english], ["hu", hungarian], ["x-default", english]]) {
-        expect(html, `${route}: ${hreflang} alternate`).toContain(`<link rel="alternate" hreflang="${hreflang}" href="${absolute(href)}"/>`);
-      }
+      const alternates = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)].map(([, hreflang, href]) => [hreflang, href]);
+      expect(alternates, `${route}: every translation and x-default, in site order`).toEqual([...LANGS.filter((code) => group[code]).map((code) => [code, absolute(group[code])]), ["x-default", absolute(group.en)]]);
       const start = html.indexOf('id="primary-navigation"');
       const menu = html.slice(start, html.indexOf("</nav>", start));
       const links = [...menu.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map(([, attributes, body]) => ({
@@ -1673,31 +1684,38 @@ test("every page's single language link leads to its pair, reciprocally, with a 
       expect(primary.map((link) => link.text), `${route}: menu labels`).toEqual([...COPY[language].menu, "LinkedIn"]);
       expect(primary.map((link) => link.href), `${route}: menu destinations`).toEqual(destinations[language]);
       const switches = [...html.matchAll(/<a\b[^>]*\blang-switch\b[^>]*>/g)];
-      expect(switches, `${route}: exactly one language link`).toHaveLength(1);
-      // The language menu closes the navigation: a flag button named for the current language, then the panel with the pair.
+      expect(switches, `${route}: one language link per other language`).toHaveLength(others.length);
+      // The language menu closes the navigation: a flag button named for the current language, then the panel with the other languages.
       expect(menu, `${route}: the language menu ends the navigation`).toMatch(/<div class="nav-group nav-lang" data-nav-group>[\s\S]*<\/div><\/div><\/div>$/);
       expect(menu, `${route}: the language button names the current language`).toContain(`aria-label="${COPY[language].language}"`);
       expect(menu, `${route}: the current language is marked, not linked`).toContain(`<span class="nav-lang-current" aria-current="true" lang="${language}">`);
-      const languageLink = links.at(-1);
-      expect(languageLink.href, `${route}: the language link is the last link`).toBe(pair);
-      expect(languageLink.text, `${route}: the language link names the other language in that language`).toBe(COPY[language].other);
-      expect(languageLink.attributes).toMatch(/class="[^"]*\bnav-group-link\b[^"]*\blang-switch\b/);
-      for (const attribute of ['rel="alternate"', `hreflang="${other}"`, `lang="${other}"`]) expect(languageLink.attributes, `${route}: ${attribute}`).toContain(attribute);
-      expect(languageLink.attributes, `${route}: the visible name is the accessible name`).not.toMatch(/aria-label|aria-current/);
+      const languageLinks = links.slice(-others.length);
+      for (const [index, other] of others.entries()) {
+        const languageLink = languageLinks[index];
+        const pair = group[other] || COPY[other].home;
+        expect(languageLink.href, `${route}: the ${other} link leads to the translation or the ${other} home`).toBe(pair);
+        expect(languageLink.text, `${route}: the ${other} link names that language in that language`).toBe(COPY[language].others[index]);
+        expect(languageLink.attributes).toMatch(/class="[^"]*\bnav-group-link\b[^"]*\blang-switch\b/);
+        for (const attribute of [`hreflang="${other}"`, `lang="${other}"`]) expect(languageLink.attributes, `${route}: ${attribute}`).toContain(attribute);
+        expect(languageLink.attributes.includes('rel="alternate"'), `${route}: rel="alternate" only on a real translation (${other})`).toBe(Boolean(group[other]));
+        expect(languageLink.attributes, `${route}: the visible name is the accessible name`).not.toMatch(/aria-label|aria-current/);
+        const target = await request.get(pair, { maxRedirects: 0 });
+        expect(target.status(), `${route} → ${pair}`).toBe(200);
+        if (group[other]) {
+          const back = [...(await target.text()).matchAll(/<a\b[^>]*\blang-switch\b[^>]*>/g)].map(([tag]) => tag);
+          expect(back.some((tag) => tag.includes(`href="${route}"`) && tag.includes(`hreflang="${language}"`)), `${pair} links back to ${route}`).toBe(true);
+        }
+      }
       expect(html, `${route}: no retired EN | HU pair`).not.toMatch(/class="[^"]*\bai-lang\b[^"]*"[^>]*>\s*EN\s*</);
       const current = links.filter((link) => /aria-current="page"/.test(link.attributes)).map((link) => link.href);
       expect(current, `${route}: the current destination is marked`).toEqual(links.some((link) => link.href === route && !/nav-group-more/.test(link.attributes)) ? [route] : []);
       if (language === "hu") {
         // Outside explicit English-language links, a Hungarian page links only Hungarian pages.
         const english = [...html.matchAll(/<a\b([^>]*)>/g)].map(([, attributes]) => attributes)
-          .filter((attributes) => !/lang-switch|hreflang="en"/.test(attributes))
+          .filter((attributes) => !/lang-switch|hreflang="(?:en|de)"/.test(attributes))
           .map((attributes) => attributes.match(/\bhref="(\/[^"]*)"/)?.[1]).filter((href) => href && !/^\/(hu(\/|$|#|\?)|assets\/)/.test(href));
         expect(english, `${route} links English pages`).toEqual([]);
       }
-      const target = await request.get(pair, { maxRedirects: 0 });
-      expect(target.status(), `${route} → ${pair}`).toBe(200);
-      const back = (await target.text()).match(/<a\b[^>]*\blang-switch\b[^>]*>/)?.[0] || "";
-      expect(back, `${pair} links back to ${route}`).toContain(`href="${route}"`);
     }
   }
 });
@@ -1749,8 +1767,9 @@ for (const width of [390, 1280]) {
   });
 }
 
-test("/contact and /hu/kapcsolat are published, carry the form and never expose an address", async ({ request }) => {
-  for (const [route, pair, language] of [["/contact", "/hu/kapcsolat", "en"], ["/hu/kapcsolat", "/contact", "hu"]]) {
+test("/contact, /hu/kapcsolat and /de/kontakt are published, carry the form and never expose an address", async ({ request }) => {
+  const contacts = { en: "/contact", hu: "/hu/kapcsolat", de: "/de/kontakt" };
+  for (const [language, route] of Object.entries(contacts)) {
     const response = await request.get(route);
     expect(response.status(), route).toBe(200);
     const html = await response.text();
@@ -1760,7 +1779,9 @@ test("/contact and /hu/kapcsolat are published, carry the form and never expose 
     expect(html).toMatch(/<input\b[^>]*type="email"/);
     expect(html).not.toMatch(/mailto:/i);
     expect(exposesInbox(html)).toBe(false);
-    expect(html).toMatch(new RegExp(`<a\\b[^>]*class="[^"]*\\blang-switch\\b[^"]*"[^>]*href="${pair}"`));
+    for (const [other, pair] of Object.entries(contacts)) {
+      if (other !== language) expect(html, `${route}: language link to ${pair}`).toMatch(new RegExp(`<a\\b[^>]*class="[^"]*\\blang-switch\\b[^"]*"[^>]*href="${pair}"`));
+    }
     for (const variant of [`${route}/`, `${route}.html`]) {
       const redirect = await request.get(variant, { maxRedirects: 0 });
       expect(redirect.status(), variant).toBe(301);
@@ -2201,7 +2222,7 @@ test("1440 home opening: original centered artwork and semantic role lead into t
   expect(await contact.getAttribute("title")).toBeNull();
   const language = page.locator(".navbar .nav-lang-trigger");
   await expect(language).toHaveAccessibleName(COPY.en.language);
-  await expect(page.locator(".navbar a.lang-switch")).toHaveText("Magyar");
+  await expect(page.locator(".navbar a.lang-switch")).toHaveText(COPY.en.others);
   await expect(page.locator(".navbar .home-nav-wordmark")).toHaveText("NORBERT.BARNA");
   await expect(page.locator(".navbar .home-nav-progress")).toHaveAttribute("aria-hidden", "true");
 });

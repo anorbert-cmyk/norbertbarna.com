@@ -10,7 +10,7 @@ service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
 cover: /assets/images/og/writing/ai-bevezetese-kkv-elso-90-nap.jpg
 cover_alt: Három egyre magasabb, hajtogatott papírlépcső lila háttér előtt
-pair: null
+pair: de/ki-im-mittelstand-einfuehren
 ---
 Egy kis- vagy középvállalkozásnál az AI bevezetése egyetlen munkafolyamattal kezdődik, nem egy eszközzel. Az első 90 napban kiválasztasz egy ismétlődő feladatot, rögzíted, mit csinálhat az AI és mit ellenőriz ember, kipróbálod valódi példákon, majd egy szűk pilotban mérsz. A végén nem „AI-stratégiád” lesz, hanem egy döntés: folytatod, átalakítod vagy leállítod.
 
