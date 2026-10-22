@@ -64,12 +64,13 @@ export const MENU = {
   },
   // German (task T8, 2026-10-21): the case studies stay English, so Arbeiten
   // leads to the English works index and the footer lists the English cases.
+  // The biography has a German page since 2026-10-22.
   de: {
     works: { label: "Arbeiten", href: "/works" },
     services: { label: "Leistungen", toggle: "Leistungen" },
     ai: null,
     articles: { label: "Wissen", href: SECTIONS.de.path, toggle: "Wissen: neueste Artikel", more: "Alle Artikel" },
-    about: { label: "Über mich", href: "/about" },
+    about: { label: "Über mich", href: "/de/ueber-mich" },
     contact: { label: "Kontakt", href: "/de/kontakt" },
     linkedin: { label: "LinkedIn", aria: "Mein LinkedIn-Profil (öffnet in neuem Tab)" },
     footer: { work: "Arbeiten", services: "Leistungen", articles: "Wissen", allWork: "Alle Arbeiten", allArticles: "Alle Artikel" },
@@ -113,6 +114,7 @@ export const STATIC_PAGES = {
   "de/webentwicklung.html": { kind: "ai", current: "/de/webentwicklung" },
   "de/datenschutz.html": { kind: "utility", current: null },
   "de/kontakt.html": { kind: "work", current: "contact" },
+  "de/ueber-mich.html": { kind: "about", current: "about" },
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`work/${slug}.html`, { kind: "case", current: null }])),
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`hu/munka/${slug}.html`, { kind: "case", current: null }])),
 };

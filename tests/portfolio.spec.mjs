@@ -23,7 +23,7 @@ const LANGS = ["en", "hu", "de"];
 const languageOf = (route) => LANGS.find((code) => code !== "en" && (route === `/${code}` || route.startsWith(`/${code}/`))) || "en";
 const SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
 // Every published content page with its translations (whole-site language switch, 2026-10-06; German, 2026-10-21).
-const PAGE_GROUPS = [{ en: "/", hu: "/hu", de: "/de" }, { en: "/works", hu: "/hu/munkak" }, { en: "/about", hu: "/hu/rolam" },
+const PAGE_GROUPS = [{ en: "/", hu: "/hu", de: "/de" }, { en: "/works", hu: "/hu/munkak" }, { en: "/about", hu: "/hu/rolam", de: "/de/ueber-mich" },
   { en: "/ai-integration", hu: "/hu/ai-tanacsadas-fejlesztes", de: "/de/ki-beratung-entwicklung" }, { en: "/web-development", hu: "/hu/webfejlesztes", de: "/de/webentwicklung" },
   { en: "/privacy", hu: "/hu/adatvedelem", de: "/de/datenschutz" }, { en: "/contact", hu: "/hu/kapcsolat", de: "/de/kontakt" }, ...SLUGS.map((slug) => ({ en: `/work/${slug}`, hu: `/hu/munka/${slug}` }))];
 const ALL_ROUTES = PAGE_GROUPS.flatMap((group) => Object.values(group));
@@ -1663,7 +1663,7 @@ test("every page's language menu leads to its translations, reciprocally, with a
   const destinations = {
     en: ["/works", "/writing", "/about", "/contact", "https://www.linkedin.com/in/barna-norbert/"],
     hu: ["/hu/munkak", "/hu/irasok", "/hu/rolam", "/hu/kapcsolat", "https://www.linkedin.com/in/barna-norbert/"],
-    de: ["/works", "/de/wissen", "/about", "/de/kontakt", "https://www.linkedin.com/in/barna-norbert/"],
+    de: ["/works", "/de/wissen", "/de/ueber-mich", "/de/kontakt", "https://www.linkedin.com/in/barna-norbert/"],
   };
   for (const group of PAGE_GROUPS) {
     for (const [language, route] of Object.entries(group)) {

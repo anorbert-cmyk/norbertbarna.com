@@ -100,7 +100,7 @@ const COPY = {
     templateFile: "de/datenschutz.html",
     contact: "/de/kontakt",
     home: { name: "Startseite", path: "/de" },
-    author: { name: "Norbert Barna", path: "/about" },
+    author: { name: "Norbert Barna", path: "/de/ueber-mich" },
     breadcrumbLabel: "Pfad",
     tocLabel: "Inhalt",
     updated: "Aktualisiert",
