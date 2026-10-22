@@ -60,7 +60,7 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
     min-width: 44px; min-height: 44px; max-width: 100%; margin: 0; padding: 10px 0;
     display: inline-flex; align-items: center; justify-content: center;
     color: #D6D4ED; background: transparent; border-radius: 0;
-    font: 400 clamp(12px, 1.05vw, 14px)/1.4 Inter, sans-serif;
+    font: 400 clamp(12px, 1.05vw, 14px)/1.4 Inter, "Inter Fallback Caps", sans-serif;
     text-transform: uppercase; white-space: normal; overflow-wrap: anywhere;
   }
   body:is(.works-index, .immersive-case) .navbar .nav-link:is(:hover, :focus-visible, [aria-current="page"]) { color: #D6D4ED; background: transparent; text-decoration: underline; text-underline-offset: 6px; }
@@ -104,7 +104,7 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
   html body .navbar .nav-menu :is(.nav-link, .nav-link.white, .footer-contact-link, .footer-email) {
     display: flex; justify-content: flex-start; align-items: center; width: 100%; min-height: 48px; margin: 0; padding: 12px 0;
     border: 0; border-radius: 0; background: transparent; color: #0A1628; text-align: left; text-decoration: none;
-    font: 400 17px/1.4 Inter, sans-serif; letter-spacing: 0; text-transform: none;
+    font: 400 17px/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; text-transform: none;
   }
   html body .navbar .nav-menu :is(.home-nav-label, .editorial-linkedin-label) { color: inherit; font: inherit; text-transform: none; letter-spacing: 0; }
   html body .navbar .nav-menu :is(.nav-link, .footer-contact-link, .footer-email):is(:hover, :focus-visible) { background: transparent; text-decoration: underline; text-underline-offset: 9px; text-decoration-thickness: 2px; }
@@ -152,7 +152,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 .navbar .nav-menu .nav-link[aria-current="page"] { text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px; }
 
 /* An open compact menu shows a close glyph, matching its "Close navigation" name. */
-.navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu::before { content: "\00D7"; font-family: Inter, sans-serif; font-size: 30px; font-weight: 300; line-height: 1; }
+.navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu::before { content: "\00D7"; font-family: Inter, "Inter Fallback", sans-serif; font-size: 30px; font-weight: 300; line-height: 1; }
 
 /* The work and case bars give the menu its whole outside column. Words never
    break inside a destination; on narrow desktops the row wraps whole items. */
@@ -179,7 +179,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
   body.utility-page .navbar .nav-link {
     display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0;
     color: #0A1628; background: transparent; border-radius: 0;
-    font: 400 14px/1.4 Inter, sans-serif; letter-spacing: 0; text-transform: uppercase;
+    font: 400 14px/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: 0; text-transform: uppercase;
   }
   body.utility-page .navbar .nav-link:is(:hover, :focus-visible) { color: #0A1628; background: transparent; text-decoration: underline; text-underline-offset: 6px; }
 }
@@ -208,12 +208,12 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 .navbar [data-nav-toggle][aria-expanded="true"] .nav-chevron { transform: rotate(180deg); }
 .navbar .nav-flag { flex: 0 0 auto; width: 21px; height: 14px; border-radius: 2px; box-shadow: 0 0 0 1px rgb(10 22 40 / 24%); }
 .navbar .nav-lang-name { display: none; }
-.navbar .nav-lang-code { font-variant-numeric: tabular-nums; }
+.navbar .nav-lang-code { font-family: Inter, "Inter Fallback Caps", sans-serif; font-variant-numeric: tabular-nums; }
 .navbar .nav-group-panel[hidden] { display: none; }
 .navbar .nav-group-list { list-style: none; display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; }
 .navbar .nav-group-link, .navbar .nav-lang-current {
   display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 0; padding: 10px 12px;
-  color: #0A1628; background: transparent; font: 400 15px/1.35 Inter, sans-serif;
+  color: #0A1628; background: transparent; font: 400 15px/1.35 Inter, "Inter Fallback", sans-serif;
   letter-spacing: 0; text-transform: none; text-decoration: none; overflow-wrap: anywhere;
 }
 .navbar .nav-group-link:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
@@ -257,7 +257,7 @@ html:not(.nav-enhanced) .navbar .nav-group:is(:hover, :focus-within) > .nav-grou
   html body .navbar .nav-menu .nav-group-trigger { width: 100%; justify-content: space-between; }
   html body .navbar .nav-menu .nav-lang-trigger {
     display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 12px 0;
-    color: #0A1628; font: 400 17px/1.4 Inter, sans-serif;
+    color: #0A1628; font: 400 17px/1.4 Inter, "Inter Fallback", sans-serif;
   }
   html body .navbar .nav-menu .nav-lang-trigger .nav-chevron { margin-left: auto; }
   html body .navbar .nav-menu .nav-lang-code { display: none; }
@@ -282,6 +282,6 @@ html.no-motion .navbar [data-nav-group-open] .nav-group-panel { animation: none;
 .navbar .nav-lang-trigger { color: var(--immersive-link-ink, #0A1628); }
 .story-page .navbar .nav-lang-trigger { color: #D6D4ED; }
 @media (min-width: 992px) {
-  .navbar .nav-lang-trigger { min-height: 44px; padding: 10px 0; font: 400 14px/1.4 Inter, sans-serif; letter-spacing: 0; }
+  .navbar .nav-lang-trigger { min-height: 44px; padding: 10px 0; font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; }
   body:is(.works-index, .immersive-case) .navbar .nav-lang-trigger { font-size: clamp(12px, 1.05vw, 14px); }
 }

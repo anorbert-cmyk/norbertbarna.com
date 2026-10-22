@@ -1044,7 +1044,7 @@ only to the sitemap.
 
 | File | Owns | Loaded by |
 |---|---|---|
-| `fonts.css` | Self-hosted Inter and Funnel Display; Latin and Latin-ext faces | every page, including 404 |
+| `fonts.css` | Self-hosted Inter and Funnel Display; Latin and Latin-ext faces, plus metric-matched local Arial fallbacks (`Inter Fallback`, `Inter Fallback Caps` for uppercase bars, `Funnel Display Fallback`) that every Inter/Funnel stack names right after the web face, so the header and copy do not move when the web fonts arrive (check-design enforces the stacks; `header-stability.spec.mjs` measures it) | every page, including 404 |
 | `norbertbarna.webflow.*.css` | Inherited Webflow base | every page |
 | `responsive.css` | Site tokens, chrome lock, type scale, reflow, footer base | every page |
 | `arrival.css` | First-session name assembly, curtain and the pre-curtain gate | `/`, cases |

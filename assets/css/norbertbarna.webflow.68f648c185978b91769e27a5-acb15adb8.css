@@ -1,7 +1,7 @@
 :root {
-  --font-family--content: Inter, sans-serif;
+  --font-family--content: Inter, "Inter Fallback", sans-serif;
   --font-color--dark: #fff;
-  --font-family--title: "Funnel Display", sans-serif;
+  --font-family--title: "Funnel Display", "Funnel Display Fallback", sans-serif;
   --bg-color--transparent: #0000;
   --bg-color--black: #000;
   --bg-color--white-shade: #e3e8eb;

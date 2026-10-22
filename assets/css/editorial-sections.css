@@ -9,7 +9,7 @@
   --editorial-gutter: clamp(24px, 4.8vw, 80px);
   color: var(--editorial-navy);
   background: var(--editorial-lilac);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
 }
 
 .editorial-experience {
@@ -43,7 +43,7 @@
 .editorial-experience .section-title {
   margin: 0;
   color: var(--editorial-navy);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   font-size: clamp(36px, 4.2vw, 68px);
   font-weight: 700;
   letter-spacing: -.065em;
@@ -96,7 +96,7 @@
   order: -1;
   margin: 0;
   color: var(--editorial-navy);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   font-size: clamp(26px, 3.2vw, 46px);
   font-weight: 600;
   letter-spacing: -.05em;
@@ -106,7 +106,7 @@
 .editorial-experience .awards-card .awards-card-title {
   margin: 0;
   color: var(--editorial-muted);
-  font: 400 17px/1.4 Inter, sans-serif;
+  font: 400 17px/1.4 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
 }
 .editorial-experience .awards-year-wrap {
@@ -122,7 +122,7 @@
   padding: 0;
   color: var(--editorial-navy);
   background: transparent;
-  font: 400 14px/1.5 Inter, sans-serif;
+  font: 400 14px/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
   white-space: nowrap;
 }
@@ -173,7 +173,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
 .editorial-footer-title {
   margin: 6px 0 0;
   color: var(--editorial-navy);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   font-size: clamp(60px, 8.5vw, 132px);
   font-weight: 700;
   letter-spacing: -.065em;
@@ -184,7 +184,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   max-width: 34ch;
   margin: 0;
   color: var(--editorial-navy);
-  font: 400 17px/1.45 Inter, sans-serif;
+  font: 400 17px/1.45 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
 }
 .editorial-footer .footer-cta {
@@ -203,7 +203,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   border-radius: 999px;
   color: var(--editorial-lilac);
   background: var(--editorial-navy);
-  font: 400 14px/1.4 Inter, sans-serif;
+  font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif;
   white-space: normal;
   text-align: center;
   text-decoration: none;
@@ -218,7 +218,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   border-radius: 0;
   color: var(--editorial-navy);
   background: transparent;
-  font: 400 14px/1.4 Inter, sans-serif;
+  font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -260,7 +260,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
 .editorial-footer .footer-col-title {
   margin: 0 0 10px;
   color: var(--editorial-muted);
-  font: 400 13px/1.4 Inter, sans-serif;
+  font: 400 13px/1.4 Inter, "Inter Fallback", sans-serif;
 }
 .editorial-footer .footer-col-list {
   display: grid;
@@ -275,7 +275,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   max-width: 100%;
   min-height: 44px;
   color: var(--editorial-navy);
-  font: 400 15px/1.4 Inter, sans-serif;
+  font: 400 15px/1.4 Inter, "Inter Fallback", sans-serif;
   overflow-wrap: anywhere;
   white-space: normal;
 }
@@ -295,7 +295,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   margin: 0;
   padding: 0;
   color: var(--editorial-muted);
-  font: 400 12px/1.5 Inter, sans-serif;
+  font: 400 12px/1.5 Inter, "Inter Fallback", sans-serif;
 }
 .editorial-footer .footer-bar .footer-privacy {
   gap: 4px 22px;
@@ -307,7 +307,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   padding: 8px 0;
   color: var(--editorial-navy);
   background: transparent;
-  font: 400 12px/1.5 Inter, sans-serif;
+  font: 400 12px/1.5 Inter, "Inter Fallback", sans-serif;
   text-decoration: none;
 }
 .editorial-footer .footer-bar .footer-privacy :is(a, button):hover {
@@ -391,7 +391,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   padding: clamp(40px, 5vw, 72px) var(--editorial-gutter) 0;
   color: var(--editorial-navy);
   background: var(--editorial-lilac);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
 }
 .home-offer > .container-large { width: 100%; max-width: none; margin: 0; padding: 0 !important; }
 .home-offer-head {
@@ -404,7 +404,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
 .home-offer .about-section-title {
   margin: 0;
   color: var(--editorial-navy);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   font-size: clamp(30px, 3.6vw, 56px);
   font-weight: 700;
   letter-spacing: -.06em;
@@ -415,7 +415,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   max-width: 58ch;
   margin: 0;
   color: var(--editorial-navy);
-  font: 400 17px/1.5 Inter, sans-serif;
+  font: 400 17px/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
 }
 .home-offer-grid {
@@ -438,13 +438,13 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   grid-row: 1 / 4;
   padding-top: 8px;
   color: var(--editorial-muted);
-  font: 500 13px/1.2 Inter, sans-serif;
+  font: 500 13px/1.2 Inter, "Inter Fallback", sans-serif;
   font-variant-numeric: tabular-nums;
 }
 .home-offer-title {
   display: block;
   color: var(--editorial-navy);
-  font-family: "Funnel Display", Inter, sans-serif;
+  font-family: "Funnel Display", "Funnel Display Fallback", Inter, "Inter Fallback", sans-serif;
   font-size: clamp(26px, 2.6vw, 38px);
   font-weight: 700;
   letter-spacing: -.025em;
@@ -455,7 +455,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   display: block;
   max-width: 48ch;
   color: var(--editorial-navy);
-  font: 400 17px/1.5 Inter, sans-serif;
+  font: 400 17px/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.012em;
 }
 .home-offer-action {
@@ -464,7 +464,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   min-height: 44px;
   margin-top: 4px;
   color: var(--editorial-navy);
-  font: 500 14px/1.4 Inter, sans-serif;
+  font: 500 14px/1.4 Inter, "Inter Fallback", sans-serif;
   text-decoration: underline;
   text-underline-offset: 6px;
   text-decoration-thickness: 1.5px;

@@ -23,7 +23,10 @@ authored 650/750 matching from 700/800 and subtly alter the approved lettering.
 Only Latin and Latin-ext are required by the site's English and Hungarian content.
 The official unicode ranges are preserved, including Hungarian ő/ű (U+0151/U+0171)
 and their capitals. This is not a general Cyrillic/Greek/Vietnamese font package.
-`font-display: swap` keeps text readable during a slow request. Body and animation
+`font-display: swap` keeps text readable during a slow request, and `fonts.css` also
+declares local, metric-matched fallback faces (`Inter Fallback`, `Inter Fallback Caps`,
+`Funnel Display Fallback`: Arial or Liberation Sans with `size-adjust` and ascent/descent
+overrides derived from these binaries) so the swap does not move the navigation. Body and animation
 code still use the native Font Loading API; no timing-based readiness substitute
 was added. Native CSS works when JavaScript is disabled or third-party font hosts
 are unreachable.

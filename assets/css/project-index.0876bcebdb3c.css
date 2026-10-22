@@ -2,7 +2,7 @@
 body.works-index { --composition-gutter: clamp(24px, 4.8vw, 80px); background: #D6D4ED; color: #0A1628; }
 body.works-index .navbar { background: #D6D4ED; border-color: rgb(10 22 40 / 20%); }
 body.works-index .project-index-intro { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 40px; padding: clamp(48px, 8vw, 120px) var(--composition-gutter) 64px; }
-.project-index-intro h1 { margin: 0; color: #0A1628; font-family: 'Funnel Display', sans-serif; font-weight: 700; font-size: clamp(72px, 11vw, 164px); line-height: .88; letter-spacing: -.065em; overflow-wrap: anywhere; }
+.project-index-intro h1 { margin: 0; color: #0A1628; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-weight: 700; font-size: clamp(72px, 11vw, 164px); line-height: .88; letter-spacing: -.065em; overflow-wrap: anywhere; }
 .project-index-intro p { max-width: 30ch; margin: 0 0 4px; font-size: clamp(18px, 2vw, 28px); line-height: 1.3; letter-spacing: -.025em; }
 .project-index-intro p a { color: inherit; text-decoration: underline; text-underline-offset: .15em; text-decoration-thickness: 1px; }
 body.works-index .work-section { margin: 0; padding: 0 var(--composition-gutter) 100px; background: #D6D4ED; }
@@ -16,7 +16,7 @@ body.home #works .about-section-title { width: auto; text-align: left; }
 body.works-index .work-row-number { grid-column: 2; grid-row: 1; align-self: start; padding-top: 6px; font-size: 11px; }
 body.works-index .work-row-copy { grid-column: 3; grid-row: 1; min-width: 0; }
 body.works-index .work-title-heading { margin: 0; }
-body.works-index .work-row .work-title { display: inline; color: #0A1628; font-family: Inter, sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 66px); letter-spacing: -.065em; line-height: 1.06; text-decoration: none; overflow-wrap: anywhere; }
+body.works-index .work-row .work-title { display: inline; color: #0A1628; font-family: Inter, "Inter Fallback", sans-serif; font-weight: 700; font-size: clamp(32px, 4.2vw, 66px); letter-spacing: -.065em; line-height: 1.06; text-decoration: none; overflow-wrap: anywhere; }
 body.works-index .work-row .work-card-summary { max-width: 44ch; margin: 10px 0 0; color: #0A1628; font-size: clamp(14px, 1.15vw, 18px); letter-spacing: -.015em; line-height: 1.3; }
 body.works-index .work-row-action { display: inline-flex; align-items: center; gap: 12px; margin-top: 14px; color: #0A1628; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
 body.works-index .work-row-arrow { color: #0A1628; font-size: 16px; opacity: 1; }

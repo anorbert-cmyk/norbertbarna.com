@@ -58,7 +58,7 @@
   max-width: 100%;
   margin: 0;
   color: var(--case-stage-ink) !important;
-  font: 400 12px/1.5 Inter, sans-serif;
+  font: 400 12px/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .08em;
   text-align: center;
   text-transform: uppercase;
@@ -70,7 +70,7 @@
   margin: 0;
   padding: 0 0 .07em;
   color: var(--case-stage-ink) !important;
-  font-family: "Funnel Display", sans-serif;
+  font-family: "Funnel Display", "Funnel Display Fallback", sans-serif;
   font-size: clamp(64px, 10.5vw, 164px);
   font-weight: 700;
   line-height: .94;
@@ -85,7 +85,7 @@
   max-width: 62ch;
   margin: 0;
   color: var(--case-stage-ink) !important;
-  font: 400 clamp(17px, 1.5vw, 20px)/1.5 Inter, sans-serif;
+  font: 400 clamp(17px, 1.5vw, 20px)/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.012em;
   text-align: center;
 }
