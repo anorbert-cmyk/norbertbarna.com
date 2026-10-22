@@ -80,7 +80,7 @@
     // The SVG shares the same path when WebGL is unavailable; it is never a second visible shape.
     if (active) fallback.style.transform = 'translate(' + (p * (innerWidth < 600 ? 33 : 60)).toFixed(2) + '%, ' + (-p * (innerWidth < 600 ? 35 : 8)).toFixed(2) + '%) rotate(' + (-p * 90).toFixed(2) + 'deg) scale(' + (1 - p * .25).toFixed(3) + ')';
     else fallback.style.removeProperty('transform');
-    var chapter = work && work.getBoundingClientRect().bottom > 52;
+    var chapter = work && work.getBoundingClientRect().bottom > 64;
     nav.toggleAttribute('data-composition-nav', Boolean(chapter));
     if (changingMode && !active) {
       var after = (focused || intro).getBoundingClientRect().top;

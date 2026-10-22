@@ -290,6 +290,8 @@ Keep this review internal. Deliver the implementation, not a scorecard.
 
 ## Locked brand (do not regenerate)
 
+**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 68px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and fails on any deviation.
+
 **Type:** Funnel Display 700 for case and section display; Inter for UI, dek,
 and body. The semantic home H1 uses Inter. Original SVG lettering is limited to the
 requested KODE-style decorative hero title; do not add a third font family.

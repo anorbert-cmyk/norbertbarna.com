@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 
 // The header must not move while a page loads: not when the self-hosted
@@ -128,5 +129,50 @@ for (const device of VIEWPORTS) {
         expect(state.barHeight).toBe(64);
       });
     }
+  });
+}
+
+// One bar geometry on every page type and language: moving between the home,
+// a service page, the writing section, Works, Contact or About (or switching
+// language) must not change the header height or move the logo, the menu
+// button or the language control. Colours stay per page type.
+const SITEMAP_PAGES = [...readFileSync(new URL("../sitemap.xml", import.meta.url), "utf8").matchAll(/<loc>https:\/\/www\.barnanorbert\.com([^<]*)<\/loc>/g)]
+  .map((match) => match[1] || "/");
+
+for (const device of VIEWPORTS) {
+  test.describe(`${device.name} geometry`, () => {
+    test.use({ viewport: device.viewport, isMobile: device.isMobile, hasTouch: device.hasTouch });
+    test("every page shares one header height, logo box, menu button and language control", async ({ page }) => {
+      test.setTimeout(240_000);
+      const seen = new Map();
+      for (const path of SITEMAP_PAGES) {
+        await page.goto(path, { waitUntil: "load" });
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForTimeout(150);
+        const geometry = await page.evaluate(() => {
+          const rect = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return [r.x, r.y, r.width, r.height].map(Math.round).join(","); };
+          const bar = document.querySelector(".navbar");
+          return {
+            bar: rect(bar),
+            logo: rect(document.querySelector(".nav-logo-wrap")),
+            button: rect(document.querySelector(".menu-button")),
+            language: rect(document.querySelector(".nav-lang-trigger")),
+            menuRight: (() => { const nav = document.querySelector("#primary-navigation"); const r = nav && nav.getBoundingClientRect(); return r && r.width ? Math.round(r.right) : null; })(),
+          };
+        });
+        seen.set(path, geometry);
+      }
+      const reference = seen.get("/");
+      const compact = device.name === "mobile";
+      expect(reference.bar, "home bar").toBe(compact ? "0,0,390,56" : "0,0,1440,64");
+      expect(reference.logo, "home logo box").toBe(compact ? "22,6,44,44" : "22,10,44,44");
+      for (const [path, geometry] of seen) {
+        expect(geometry.bar, `${path}: bar box`).toBe(reference.bar);
+        expect(geometry.logo, `${path}: logo box`).toBe(reference.logo);
+        expect(geometry.button, `${path}: menu button`).toBe(reference.button);
+        expect(geometry.language, `${path}: language control`).toBe(reference.language);
+        expect(geometry.menuRight, `${path}: menu right edge`).toBe(reference.menuRight);
+      }
+    });
   });
 }
