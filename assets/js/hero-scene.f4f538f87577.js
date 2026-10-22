@@ -1,0 +1,970 @@
+/**
+ * Portfolio chevron — original beveled geometry and refractive WebGL glass.
+ * No imported model, rendering library, scroll interception or remote asset.
+ */
+(function () {
+  "use strict";
+  // One renderer, two scenes: the home hero and the Story in Motion corridor.
+  // The host names itself with data hooks rather than the home's class names.
+  var host = document.querySelector("[data-glass-scene]");
+  var canvas = host && host.querySelector("canvas");
+  if (!host || !canvas) return;
+  var mast = host.closest("[data-glass-stage]") || host;
+  // The field the glass refracts is the stage it stands on, not always lilac.
+  var field = host.getAttribute("data-glass-field") || "#D6D4ED";
+  var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
+  var fineQuery = matchMedia("(hover: hover) and (pointer: fine)");
+  var listeners = new AbortController();
+  var gl, program, texture, backdropTexture, backdropCanvas, finalTexture;
+  var fragments = [], uniforms = {}, attributes = {};
+  var frame = 0, destroyed = false, suspended = false, intersecting = true;
+  var lost = false, initialized = false, assemblyStart = null, arrivalStarted = false, startRequested = 0;
+  var pointer = { x: 0, y: 0, inside: false, targetX: 0, targetY: 0 };
+  var drag = { active: false, x: 0, from: 0, samples: [] };
+  // Physics (2026-10-07). One fixed-step PortfolioPhysics world on this
+  // renderer's own frame (external clock) carries every moving quantity of the
+  // object; omega in rad/s, zeta the damping ratio, mass 1:
+  //   pointer tilt          omega 7.5, zeta .7   (4.6% overshoot, settled .8 s)
+  //   drag release          omega 6,   zeta .5   torsion back to the rest yaw,
+  //                         hard stops at +-60 deg yaw, restitution .3
+  //   fragment hover        omega 13.8, zeta .6
+  //   assembly translation  omega 2.6, zeta .8   per fragment, and
+  //   assembly rotation     omega 2.9, zeta .92  released 200 ms after Enter
+  //                         plus each fragment's 0-228 ms delay
+  //   compact turn          omega 36,  zeta 1    the scroll follower of the slot
+  // Without the module the object stands assembled and still.
+  var world = null, body = null, snapTurn = true, pageLoaded = false, renderedAt = -1;
+  var TAU = 2 * Math.PI, REST_YAW = -27 * Math.PI / 180;
+  var YAW_STOP = 60 * Math.PI / 180, YAW_BAND = 45 * Math.PI / 180, YAW_GIVE = 15 * Math.PI / 180;
+  var DRAG_RATE = .2 * Math.PI / 180, FLING_WINDOW = 64, FLING_LIMIT = 600 * Math.PI / 180;
+  var width = 1, height = 1, cameraZ = 3.7, aspect = 1, sceneScale = 1;
+  var morphProgress = 0, morphPose = { x: 0, y: 0, scale: 1 }, finalAspect = 1, finalOrientation;
+  var compact = false, compactTurn = .5, compactPose = { x: 0, y: 0, scale: 1 };
+  var compactSlot = { x: .5, y: .5, height: .5 };
+  // A stage may name the slot fractions its object turns in (left right top
+  // bottom of the host); the home page's drawing slot is the default.
+  var slotOverride = (host.getAttribute("data-glass-slot") || "").trim().split(/[\s,]+/).map(Number);
+  if (slotOverride.length !== 4 || slotOverride.some(function (n) { return !Number.isFinite(n); })) slotOverride = null;
+  var finalArtwork = null, finalTimer = 0, readyDeadline = 0, cancelFinalLoad;
+  var observer, resizeObserver, consentObserver, layoutDirty = false, resolveReady, reflectionArtwork = null, reflectionTimer = 0;
+  var DEG = Math.PI / 180, CHEVRON_EXTENT = 3.6;
+  var api = window.PortfolioHeroScene = {
+    status: "loading",
+    ready: new Promise(function (resolve) { resolveReady = resolve; }),
+    start: start,
+    finish: finish,
+    setMorphProgress: setMorphProgress,
+    setCompactProgress: setCompactProgress,
+    clearCompact: clearCompact,
+    destroy: destroy,
+    world: null,
+  };
+
+  function reduced() {
+    return reducedQuery.matches || document.documentElement.classList.contains("no-motion") ||
+      Boolean(window.PortfolioMedia && window.PortfolioMedia.isReduced());
+  }
+  function clamp(value, low, high) { return Math.max(low, Math.min(high, value)); }
+
+  /* ---- Physics ------------------------------------------------------------ */
+  function spring(name, omega, zeta, options) {
+    return world.spring(Object.assign({ name: name, stiffness: omega * omega, dampingCoefficient: 2 * zeta * omega }, options));
+  }
+  // Built with the fragments, and again after a restored context. The module
+  // is deferred, so it may arrive after this renderer: build on first need.
+  function ensureWorld() {
+    if (world || destroyed || !fragments.length || !window.PortfolioPhysics) return world;
+    world = window.PortfolioPhysics.createWorld({ clock: "external", limit: 60 });
+    api.world = world;
+    body = {
+      tiltX: spring("tilt-x", 7.5, .7, { precision: 1e-4 }),
+      tiltY: spring("tilt-y", 7.5, .7, { precision: 1e-4 }),
+      yaw: spring("yaw", 6, .5, { from: REST_YAW, to: REST_YAW, limits: [-YAW_STOP, YAW_STOP], restitution: .3, precision: 1e-4 }),
+      turn: spring("turn", 36, 1, { from: compactTurn, to: compactTurn, precision: 1e-4, restVelocity: 2e-3 }),
+    };
+    // The turn is built standing on the slot's position: any snap asked for
+    // before the module arrived is done.
+    snapTurn = false;
+    fragments.forEach(function (fragment, index) {
+      // Scattered until the assembly releases it: the first painted frame is
+      // the starting pose, never the finished form.
+      var done = assemblyStart === -Infinity ? 0 : 1;
+      fragment.travel = spring("place-" + index, 2.6, .8, { from: done, to: done, precision: .0015 });
+      fragment.twist = spring("spin-" + index, 2.9, .92, { from: done, to: done, precision: .002 });
+      fragment.hover = ["x", "y", "z"].map(function (axis) {
+        return spring("hover-" + axis + "-" + index, 13.8, .6, { precision: 1e-4 });
+      });
+    });
+    if (startRequested) schedule();
+    return world;
+  }
+  function wake() { if (world) world.start(); }
+  function hold(spring, value) { spring.set(value); spring.snap(); }
+  // Every body at rest in its resting pose, with no physics frame.
+  function rest() {
+    if (!world) return;
+    hold(body.tiltX, 0); hold(body.tiltY, 0); hold(body.yaw, REST_YAW); hold(body.turn, compactTurn);
+    fragments.forEach(function (fragment) {
+      hold(fragment.travel, 0); hold(fragment.twist, 0);
+      fragment.hover.forEach(function (axis) { hold(axis, 0); });
+    });
+    // The hero world schedules only the assembly releases; they are moot now.
+    world.tasks = [];
+    if (world.running) world.settle();
+  }
+  // The rubber band: the yaw follows the pointer 1:1 up to 45 degrees from
+  // facing the viewer, then gives exponentially toward the 60 degree stop.
+  function band(angle) {
+    var reach = Math.abs(angle);
+    return reach <= YAW_BAND ? angle : Math.sign(angle) * (YAW_BAND + YAW_GIVE * (1 - Math.exp(-(reach - YAW_BAND) / YAW_GIVE)));
+  }
+  function unband(angle) {
+    var reach = Math.min(Math.abs(angle), YAW_STOP - 1e-4);
+    return reach <= YAW_BAND ? angle : Math.sign(angle) * (YAW_BAND - YAW_GIVE * Math.log(1 - (reach - YAW_BAND) / YAW_GIVE));
+  }
+  function normalize(v) {
+    var length = Math.hypot(v[0], v[1], v[2]) || 1;
+    return [v[0] / length, v[1] / length, v[2] / length];
+  }
+  function identity() { return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]); }
+  function multiply(a, b) {
+    var out = new Float32Array(16);
+    for (var column = 0; column < 4; column++) {
+      for (var row = 0; row < 4; row++) {
+        for (var k = 0; k < 4; k++) out[column * 4 + row] += a[k * 4 + row] * b[column * 4 + k];
+      }
+    }
+    return out;
+  }
+  function compose(x, y, z, rx, ry, rz, scale) {
+    var cx = Math.cos(rx), sx = Math.sin(rx), cy = Math.cos(ry), sy = Math.sin(ry);
+    var cz = Math.cos(rz), sz = Math.sin(rz);
+    var mx = new Float32Array([1, 0, 0, 0, 0, cx, sx, 0, 0, -sx, cx, 0, 0, 0, 0, 1]);
+    var my = new Float32Array([cy, 0, -sy, 0, 0, 1, 0, 0, sy, 0, cy, 0, 0, 0, 0, 1]);
+    var mz = new Float32Array([cz, sz, 0, 0, -sz, cz, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
+    var out = multiply(mz, multiply(my, mx));
+    for (var i = 0; i < 12; i++) out[i] *= scale;
+    out[12] = x; out[13] = y; out[14] = z;
+    return out;
+  }
+  function perspective() {
+    var near = .1, far = 30, f = 1 / Math.tan(75 * DEG / 2), matrix = new Float32Array(16);
+    matrix[0] = f / aspect; matrix[5] = f;
+    matrix[10] = (far + near) / (near - far); matrix[11] = -1;
+    matrix[14] = 2 * far * near / (near - far);
+    return matrix;
+  }
+  function transformPoint(matrix, point) {
+    return [matrix[0] * point[0] + matrix[4] * point[1] + matrix[8] * point[2] + matrix[12],
+      matrix[1] * point[0] + matrix[5] * point[1] + matrix[9] * point[2] + matrix[13],
+      matrix[2] * point[0] + matrix[6] * point[1] + matrix[10] * point[2] + matrix[14]];
+  }
+  function project(point) {
+    var f = 1 / Math.tan(75 * DEG / 2), depth = cameraZ - point[2];
+    return { x: (point[0] * f / aspect / depth * .5 + .5) * width,
+      y: (.5 - point[1] * f / depth * .5) * height };
+  }
+
+  // The original front surface becomes seven adjoining strips of one image
+  // plane. Their shared UVs also define the target positions, so the artwork
+  // cannot fan into unrelated triangles or double its silhouette at the end.
+  function gateVertices(data, center) {
+    var out = new Float32Array(data.length / 6 * 12);
+    var inset = .062, extent = 1.7 - inset;
+    var innerInset = inset * Math.hypot(1, 1.29 / 1.7);
+    var outerInset = inset * Math.hypot(1, 1.32 / 1.7);
+    for (var triangle = 0; triangle < data.length; triangle += 18) {
+      var front = data[triangle + 5] > .999 && data[triangle + 11] > .999 && data[triangle + 17] > .999;
+      for (var vertex = 0; vertex < 3; vertex++) {
+        var source = triangle + vertex * 6, destination = source / 6 * 12;
+        var x = data[source] + center[0], y = data[source + 1] + center[1];
+        var reach = Math.abs(y) / 1.7;
+        var inner = .33 - 1.29 * reach + innerInset;
+        var outer = 1.36 - 1.32 * reach - outerInset;
+        var u = clamp((x - inner) / (outer - inner), 0, 1);
+        var join = -1.7 + Math.round((y + 1.7) / (3.4 / 7)) * (3.4 / 7);
+        if (Math.abs(y - join) < .0015 && Math.abs(join) < 1.69) y = join;
+        var v = clamp((y / extent + 1) / 2, 0, 1);
+        out.set(data.subarray(source, source + 6), destination);
+        out.set([u * 2 - 1, v * 2 - 1, 0, u, v, front ? 1 : 0], destination + 6);
+      }
+    }
+    return out;
+  }
+  function gateRotation() {
+    return multiply(compose(0, 0, 0, 20 * DEG, (innerWidth < 600 ? 12 : -8) * DEG, 0, 1), compose(0, 0, 0, 0, 0, Math.PI / 2, 1));
+  }
+  function fitGate() {
+    var compact = innerWidth < 600;
+    var box = { left: width * (compact ? .42 : .36), right: width * (compact ? 1.02 : .98),
+      top: height * (compact ? .125 : .06), bottom: height * (compact ? .42 : .84) };
+    var fittedWidth = Math.min(box.right - box.left, (box.bottom - box.top) * finalAspect);
+    var fittedHeight = fittedWidth / finalAspect;
+    var viewportHeight = 2 * cameraZ * Math.tan(75 * DEG / 2);
+    morphPose = {
+      x: ((box.left + box.right) / width - 1) * viewportHeight * aspect / 2,
+      y: (1 - (box.top + box.bottom) / height) * viewportHeight / 2,
+      scale: fittedHeight / height * viewportHeight / 2
+    };
+    // Cancel only the endpoint orientation. The existing 3D root rotation
+    // remains live throughout the scroll; p1 is a front-facing exact artwork.
+    var rotation = gateRotation(); finalOrientation = identity();
+    for (var column = 0; column < 3; column++) {
+      for (var row = 0; row < 3; row++) finalOrientation[column * 4 + row] = rotation[row * 4 + column];
+    }
+  }
+  // Unpinned viewports keep the assembled chevron rather than its flat endpoint,
+  // so the same glass reads as glass. It occupies the drawing slot the static
+  // gate held, measured from the scene box the compact stylesheet already sets.
+  function fitCompact() {
+    var narrow = innerWidth < 600;
+    // Slot fractions of the unpinned stage, which is exactly one screen tall.
+    var box = slotOverride ? { left: slotOverride[0], right: slotOverride[1], top: slotOverride[2], bottom: slotOverride[3] }
+      : narrow ? { left: .46, right: 1.02, top: .10, bottom: .38 }
+      : { left: .56, right: .99, top: .12, bottom: .62 };
+    var viewportHeight = 2 * cameraZ * Math.tan(75 * DEG / 2);
+    // The turned chevron reads about .6 as wide as it is tall, and spans
+    // CHEVRON_EXTENT model units, so a slot resolves to one honest scale.
+    var fitted = Math.min(box.bottom - box.top, (box.right - box.left) * aspect / .6);
+    compactSlot = { x: (box.left + box.right) / 2, y: (box.top + box.bottom) / 2, height: fitted };
+    compactPose = {
+      x: (box.left + box.right - 1) * viewportHeight * aspect / 2,
+      y: (1 - box.top - box.bottom) * viewportHeight / 2,
+      scale: fitted * viewportHeight / CHEVRON_EXTENT
+    };
+  }
+
+  // Sutherland–Hodgman clipping makes independent horizontal slices of one >.
+  function clipY(polygon, limit, keepAbove) {
+    var out = [];
+    polygon.forEach(function (p, i) {
+      var q = polygon[(i + 1) % polygon.length];
+      var insideP = keepAbove ? p[1] >= limit : p[1] <= limit;
+      var insideQ = keepAbove ? q[1] >= limit : q[1] <= limit;
+      if (insideP) out.push(p);
+      if (insideP !== insideQ) {
+        var t = (limit - p[1]) / (q[1] - p[1]);
+        out.push([p[0] + (q[0] - p[0]) * t, limit]);
+      }
+    });
+    return out;
+  }
+  function signedArea(polygon) {
+    return polygon.reduce(function (sum, p, i) {
+      var q = polygon[(i + 1) % polygon.length]; return sum + p[0] * q[1] - q[0] * p[1];
+    }, 0) / 2;
+  }
+  function insetPolygon(polygon, distance) {
+    return polygon.map(function (p, i) {
+      var prev = polygon[(i + polygon.length - 1) % polygon.length], next = polygon[(i + 1) % polygon.length];
+      var a = normalize([p[0] - prev[0], p[1] - prev[1], 0]);
+      var b = normalize([next[0] - p[0], next[1] - p[1], 0]);
+      // Internal cut lines meet flush. Only the silhouette carries a bevel.
+      var da = Math.abs(prev[1] - p[1]) < .00001 && Math.abs(p[1]) < 1.69 ? 0 : distance;
+      var db = Math.abs(next[1] - p[1]) < .00001 && Math.abs(p[1]) < 1.69 ? 0 : distance;
+      var n1 = [-a[1], a[0]], n2 = [-b[1], b[0]];
+      var determinant = n1[0] * n2[1] - n1[1] * n2[0];
+      if (Math.abs(determinant) < .00001) return [p[0] + n1[0] * da, p[1] + n1[1] * da];
+      return [p[0] + clamp((da * n2[1] - db * n1[1]) / determinant, -.18, .18),
+        p[1] + clamp((n1[0] * db - n2[0] * da) / determinant, -.18, .18)];
+    });
+  }
+  function cross(a, b, c) { return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]); }
+  function triangulate(polygon) {
+    var indices = polygon.map(function (_, i) { return i; }), triangles = [], budget = 100;
+    while (indices.length > 3 && budget-- > 0) {
+      var found = false;
+      for (var i = 0; i < indices.length; i++) {
+        var a = indices[(i + indices.length - 1) % indices.length], b = indices[i], c = indices[(i + 1) % indices.length];
+        if (cross(polygon[a], polygon[b], polygon[c]) <= .000001) continue;
+        var contains = indices.some(function (j) {
+          return j !== a && j !== b && j !== c && cross(polygon[a], polygon[b], polygon[j]) >= 0 &&
+            cross(polygon[b], polygon[c], polygon[j]) >= 0 && cross(polygon[c], polygon[a], polygon[j]) >= 0;
+        });
+        if (contains) continue;
+        triangles.push([a, b, c]); indices.splice(i, 1); found = true; break;
+      }
+      if (!found) break;
+    }
+    if (indices.length === 3) triangles.push(indices.slice());
+    return triangles;
+  }
+  function fragmentGeometry(polygon, center) {
+    var vertices = [], rings = [], bevel = .062, halfDepth = .21;
+    var vertexNormals = polygon.map(function (p, i) {
+      var prev = polygon[(i + polygon.length - 1) % polygon.length], next = polygon[(i + 1) % polygon.length];
+      var a = normalize([p[1] - prev[1], prev[0] - p[0], 0]);
+      var b = normalize([next[1] - p[1], p[0] - next[0], 0]);
+      return normalize([a[0] + b[0], a[1] + b[1], 0]);
+    });
+    function ring(theta, side) {
+      var outline = insetPolygon(polygon, bevel * (1 - Math.sin(theta)));
+      return outline.map(function (p, i) {
+        return { p: [p[0] - center[0], p[1] - center[1], side * (halfDepth + bevel * Math.cos(theta))],
+          n: [vertexNormals[i][0] * Math.sin(theta), vertexNormals[i][1] * Math.sin(theta), side * Math.cos(theta)] };
+      });
+    }
+    [0, .32, .68, 1.06, Math.PI / 2].forEach(function (theta) { rings.push(ring(theta, 1)); });
+    [Math.PI / 2, 1.06, .68, .32, 0].forEach(function (theta) { rings.push(ring(theta, -1)); });
+    function vertex(v) { vertices.push(v.p[0], v.p[1], v.p[2], v.n[0], v.n[1], v.n[2]); }
+    function triangle(a, b, c) { vertex(a); vertex(b); vertex(c); }
+    for (var r = 0; r < rings.length - 1; r++) {
+      for (var i = 0; i < polygon.length; i++) {
+        var j = (i + 1) % polygon.length;
+        triangle(rings[r][i], rings[r + 1][i], rings[r][j]);
+        triangle(rings[r][j], rings[r + 1][i], rings[r + 1][j]);
+      }
+    }
+    var face = insetPolygon(polygon, bevel);
+    triangulate(face).forEach(function (t) {
+      triangle(rings[0][t[0]], rings[0][t[1]], rings[0][t[2]]);
+      var back = rings[rings.length - 1]; triangle(back[t[2]], back[t[1]], back[t[0]]);
+    });
+    return new Float32Array(vertices);
+  }
+  function makeFragments() {
+    var outline = [[-.96, 1.7], [.04, 1.7], [1.36, 0], [.04, -1.7], [-.96, -1.7], [.33, 0]];
+    if (signedArea(outline) < 0) outline.reverse();
+    var count = 7;
+    return Array.from({ length: count }, function (_, i) {
+      var bottom = -1.7 + i * 3.4 / count, top = -1.7 + (i + 1) * 3.4 / count;
+      var polygon = clipY(clipY(outline, bottom + (i ? .001 : 0), true), top - (i < count - 1 ? .001 : 0), false);
+      var center = polygon.reduce(function (sum, p) { return [sum[0] + p[0] / polygon.length, sum[1] + p[1] / polygon.length, 0]; }, [0, 0, 0]);
+      return { data: gateVertices(fragmentGeometry(polygon, center), center), center: center,
+        offset: [(i % 2 ? 1 : -1) * (.65 + i * .08), (i - 3) * .23, (i % 3 - 1) * .78],
+        spin: [(i % 3 - 1) * .56, (i % 2 ? 1 : -1) * .78, (i - 3) * .13],
+        delay: (i * 3 % count) * 38 };
+    });
+  }
+
+  var vertexSource = "attribute vec3 aPosition;attribute vec3 aNormal;attribute vec3 aGatePosition;attribute vec3 aFinalData;uniform float uMorph;uniform float uFinalAspect;uniform vec3 uFragmentCenter;uniform mat4 uFinalOrientation;uniform mat4 uModel;uniform mat4 uViewProjection;varying vec3 vPosition;varying vec3 vNormal;varying vec2 vArtworkUV;varying float vFinalFace;void main(){vec3 target=(uFinalOrientation*vec4(aGatePosition.x*uFinalAspect,aGatePosition.y,0.0,0.0)).xyz-uFragmentCenter;vec3 origin=aPosition;float sourceY=aGatePosition.y*1.638;float reach=abs(sourceY)/1.7;float innerEdge=.33-1.29*reach+.062*length(vec2(1.0,1.29/1.7));float outerEdge=1.36-1.32*reach-.062*length(vec2(1.0,1.32/1.7));vec3 joined=vec3(mix(innerEdge,outerEdge,aFinalData.x),sourceY,.272)-uFragmentCenter;if(aFinalData.z>.5)origin=mix(origin,joined,smoothstep(0.0,.06,uMorph));vec3 position=mix(origin,target,smoothstep(0.0,.65,uMorph));vec3 targetNormal=mat3(uFinalOrientation)*vec3(0.0,0.0,1.0);vec3 blendedNormal=mix(aNormal,targetNormal,uMorph);vec3 normal=length(blendedNormal)>.00001?normalize(blendedNormal):aNormal;vec4 world=uModel*vec4(position,1.0);vPosition=world.xyz;vNormal=normalize(mat3(uModel)*normal);vArtworkUV=aFinalData.xy;vFinalFace=aFinalData.z;gl_Position=uViewProjection*world;}";
+  var fragmentSource = [
+    "precision highp float;",
+    "uniform sampler2D uEnvironment;uniform sampler2D uBackdrop;uniform sampler2D uFinalArtwork;uniform vec2 uResolution;",
+    "uniform mat4 uViewProjection;uniform vec3 uCamera;uniform float uMorph;varying vec3 vPosition;varying vec3 vNormal;varying vec2 vArtworkUV;varying float vFinalFace;",
+    "const float PI=3.14159265359;",
+    "vec3 environment(vec3 r){",
+    " vec2 uv=vec2(atan(r.x,r.z)/(2.0*PI)+.5,asin(clamp(r.y,-1.0,1.0))/PI+.5);",
+    " vec3 env=texture2D(uEnvironment,uv).rgb;",
+    " float strip=pow(max(0.0,dot(r,normalize(vec3(-.45,.72,.65)))),45.0);",
+    " float edge=pow(max(0.0,dot(r,normalize(vec3(.8,.1,-.45)))),70.0);",
+    " return env+vec3(.839,.831,.929)*strip*1.6+vec3(.741,.706,.078)*edge*.8;}",
+    "void main(){",
+    " if(vFinalFace<.5&&uMorph>=.16)discard;vec4 artwork=texture2D(uFinalArtwork,vArtworkUV);if(uMorph>=.45){gl_FragColor=artwork;return;}vec3 artworkColor=artwork.a>.001?artwork.rgb/artwork.a:vec3(0.0);vec3 n=normalize(vNormal);if(!gl_FrontFacing)n=-n;vec3 v=normalize(uCamera-vPosition);",
+    " float nv=max(dot(n,v),.001);vec3 r=reflect(-v,n);",
+    // An IOR of two bends the camera ray through a virtual thickness behind the
+    // front face. The backdrop contains the actual DOM lettering, not an env-map
+    // imitation of it, so the character entering a bevel visibly changes shape.
+    " vec3 ray=refract(-v,n,.5);float travel=.85/max(.22,-ray.z);",
+    " vec4 projected=uViewProjection*vec4(vPosition+ray*travel,1.0);",
+    " vec2 screen=gl_FragCoord.xy/uResolution;vec2 refracted=projected.xy/projected.w*.5+.5;",
+    " vec2 displacement=clamp(refracted-screen,vec2(-.16),vec2(.16));",
+    " vec2 uv=clamp(screen+displacement,vec2(.001),vec2(.999));",
+    " vec3 transmitted=texture2D(uBackdrop,uv).rgb;",
+    // Beer–Lambert absorption keeps the user's olive/forest palette in the glass
+    // while transmitting the navy strokes and lilac background at full detail.
+    " float path=.58/max(nv,.24);vec3 absorption=vec3(.22,.17,1.08);",
+    " transmitted*=exp(-absorption*path);",
+    " float fresnel=.111111+.888889*pow(1.0-nv,5.0);",
+    " vec3 color=mix(transmitted,environment(r)*.65,fresnel);",
+    " vec3 light=normalize(vec3(-.5,.85,1.0));vec3 h=normalize(light+v);",
+    " float nh=max(dot(n,h),0.0);float nl=max(dot(n,light),0.0);",
+    " float a=.045;float d=a*a/(PI*pow(max(.001,nh*nh*(a*a-1.0)+1.0),2.0));",
+    " float spec=d*nl/(4.0*max(.2,nv));color+=vec3(.839,.831,.929)*min(spec,.9)*.45;",
+    // Material interpolation occurs on this one surface, never on two DOM
+    // silhouettes. The alpha artwork owns all endpoint light and shadow.
+    " float reveal=smoothstep(.02,.45,uMorph);",
+    " float alpha=1.0;if(vFinalFace>.5){color=mix(color,artworkColor,reveal);alpha=mix(1.0,artwork.a,smoothstep(.001,.16,uMorph));}else{alpha=1.0-smoothstep(.001,.16,uMorph);}",
+    " gl_FragColor=vec4(clamp(color,0.0,1.0)*alpha,alpha);}",
+  ].join("\n");
+
+  function compile(type, source) {
+    var shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      var message = gl.getShaderInfoLog(shader); gl.deleteShader(shader); throw new Error(message || "Hero shader unavailable");
+    }
+    return shader;
+  }
+  function loadFinalArtwork() {
+    readyDeadline = performance.now() + 1800;
+    return new Promise(function (resolve, reject) {
+      var artwork = new Image(), settled = false;
+      function complete(error) {
+        if (settled) return;
+        settled = true; clearTimeout(finalTimer); cancelFinalLoad = null;
+        if (error || !artwork.naturalWidth || !artwork.naturalHeight) { reject(error || new Error("Hero artwork unavailable")); return; }
+        finalArtwork = artwork; finalAspect = artwork.naturalWidth / artwork.naturalHeight; resolve();
+      }
+      cancelFinalLoad = function () { complete(new Error("Hero artwork load cancelled")); };
+      on(artwork, "load", function () {
+        var decoded = artwork.decode ? artwork.decode() : Promise.resolve();
+        decoded.then(function () { complete(); }, complete);
+      }, { once: true });
+      on(artwork, "error", function () { complete(new Error("Hero artwork unavailable")); }, { once: true });
+      finalTimer = setTimeout(function () { complete(new Error("Hero artwork decode timed out")); }, 1800);
+      artwork.src = new URL("/assets/images/hero-final.webp", document.baseURI).href;
+    });
+  }
+  function paintFinalArtwork() {
+    if (!finalArtwork) throw new Error("Hero artwork unavailable");
+    var limit = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    if (finalArtwork.naturalWidth > limit || finalArtwork.naturalHeight > limit) throw new Error("Hero artwork exceeds texture size");
+    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, finalTexture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    // The canvas is composited as premultiplied alpha everywhere (WKWebView in
+    // Instagram and other in-app browsers ignores premultipliedAlpha:false), so
+    // the artwork is premultiplied on upload: a transparent texel carries no
+    // colour and linear filtering cannot bleed its RGB into the soft shadow.
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, finalArtwork);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    // NPOT artwork is valid in WebGL1 with clamp/linear sampling. No oversized
+    // resampling canvas or repeated uploads are needed for viewport changes.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  var environmentImage = null;
+  function paintEnvironment() { drawEnvironment(); uploadEnvironment(); }
+  function drawEnvironment() {
+    var image = environmentImage = document.createElement("canvas"); image.width = 2048; image.height = 1024;
+    var context = image.getContext("2d");
+    if (!context) throw new Error("Reflection texture unavailable");
+    var wash = context.createLinearGradient(0, 0, 0, 1024);
+    wash.addColorStop(0, "#0A1628"); wash.addColorStop(.22, "#1B3A32"); wash.addColorStop(.40, "#D6D4ED");
+    wash.addColorStop(.73, "#D6D4ED"); wash.addColorStop(.88, "#BDB414"); wash.addColorStop(1, "#0A1628");
+    context.fillStyle = wash; context.fillRect(0, 0, 2048, 1024);
+    context.fillStyle = "#0A1628"; context.textAlign = "center"; context.textBaseline = "middle";
+    if (reflectionArtwork) {
+      context.drawImage(reflectionArtwork, 270, 215, 1508, 814);
+    } else {
+      context.font = "700 174px Inter, Arial, sans-serif";
+      ["PRODUCT", "WITH", "PURPOSE"].forEach(function (text, i) { context.fillText(text, 1024, 415 + i * 145); });
+    }
+    // Broad studio softboxes give the bevel a clear reflected light-dark edge.
+    context.fillStyle = "#D6D4ED"; context.fillRect(82, 230, 80, 540); context.fillRect(1792, 180, 115, 580);
+    context.fillStyle = "#0A1628"; context.fillRect(1755, 160, 24, 630);
+  }
+  function uploadEnvironment() {
+    var image = environmentImage;
+    environmentImage = null;
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  function paintBackdrop() {
+    if (!backdropTexture || destroyed || lost) return;
+    if (!backdropCanvas) backdropCanvas = document.createElement("canvas");
+    // Power-of-two dimensions permit mipmaps in WebGL 1. Each side is capped;
+    // reusing the canvas avoids allocating a new full-page image on every resize.
+    var cap = Math.min(2048, gl.getParameter(gl.MAX_TEXTURE_SIZE));
+    function dimension(value) { return Math.min(cap, Math.pow(2, Math.ceil(Math.log2(Math.max(2, value))))); }
+    var density = Math.min(devicePixelRatio || 1, 1.5);
+    var targetWidth = dimension(width * density), targetHeight = dimension(height * density);
+    if (backdropCanvas.width !== targetWidth) backdropCanvas.width = targetWidth;
+    if (backdropCanvas.height !== targetHeight) backdropCanvas.height = targetHeight;
+    var context = backdropCanvas.getContext("2d");
+    if (!context) throw new Error("Glass backdrop unavailable");
+    context.setTransform(targetWidth / width, 0, 0, targetHeight / height, 0, 0);
+    context.fillStyle = field; context.fillRect(0, 0, width, height);
+    var artwork = document.querySelector("[data-glass-backdrop]");
+    // The unpinned composition hides the lettering, so the glass would refract a
+    // flat field and read as a solid slab. Paint the same approved title artwork
+    // behind the slot: it stays a refraction source inside the object, never a
+    // second visible layer, because the canvas shows only the glass over it.
+    // A stage whose backdrop keeps a real box (the passage behind the AI
+    // opening) is painted where it stands even in the slot; only a hidden
+    // backdrop is painted around the slot.
+    var placed = artwork && artwork.getBoundingClientRect().width > 0;
+    if (compact && !placed && artwork && artwork.complete && artwork.naturalWidth) {
+      var titleRatio = Number(artwork.getAttribute("width")) / Number(artwork.getAttribute("height")) ||
+        artwork.naturalWidth / artwork.naturalHeight;
+      var titleHeight = height * compactSlot.height * 1.5;
+      var titleWidth = titleHeight * titleRatio;
+      context.drawImage(artwork, width * compactSlot.x - titleWidth / 2,
+        height * compactSlot.y - titleHeight / 2, titleWidth, titleHeight);
+    } else if (artwork && artwork.complete && artwork.naturalWidth) {
+      var box = canvas.getBoundingClientRect(), lettering = artwork.getBoundingClientRect();
+      var scaleX = width / Math.max(1, box.width), scaleY = height / Math.max(1, box.height);
+      // The source SVG's default xMidYMid meet keeps its viewBox proportional
+      // inside the tall mobile <img>. Match that painted area, not its empty box.
+      var imageRatio = Number(artwork.getAttribute("width")) / Number(artwork.getAttribute("height")) || artwork.naturalWidth / artwork.naturalHeight;
+      // A cover-fitted backdrop (the AI passage) paints the box the other way
+      // round: the image overflows the box and object-position picks the crop.
+      var style = getComputedStyle(artwork), cover = style.objectFit === "cover";
+      var paintedWidth = cover ? Math.max(lettering.width, lettering.height * imageRatio) : Math.min(lettering.width, lettering.height * imageRatio);
+      var paintedHeight = paintedWidth / imageRatio;
+      var position = (style.objectPosition || "50% 50%").split(/\s+/).map(function (part) { return parseFloat(part) / 100; });
+      var px = cover && Number.isFinite(position[0]) ? position[0] : .5, py = cover && Number.isFinite(position[1]) ? position[1] : .5;
+      var left = lettering.left + (lettering.width - paintedWidth) * px;
+      var top = lettering.top + (lettering.height - paintedHeight) * py;
+      context.drawImage(artwork, (left - box.left) * scaleX, (top - box.top) * scaleY, paintedWidth * scaleX, paintedHeight * scaleY);
+    }
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, backdropTexture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, backdropCanvas);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  // Startup runs as separate tasks (program, reflection drawing, reflection
+  // upload, artwork texture, first frame), so no single task holds the main thread for the
+  // whole scene. Nothing is drawn until the last step, so the picture is the
+  // same as a one-task start. A lost context restores in one task.
+  function nextTask() {
+    if (window.scheduler && typeof window.scheduler.yield === "function") return window.scheduler.yield();
+    return new Promise(function (resolve) { setTimeout(resolve, 0); });
+  }
+  function afterPaint() {
+    // A hidden tab paints no frames; the timer keeps its start from waiting.
+    return new Promise(function (resolve) {
+      var timer = setTimeout(resolve, 250);
+      requestAnimationFrame(function () { clearTimeout(timer); setTimeout(resolve, 0); });
+    });
+  }
+  function initializeInSteps() {
+    var steps = [setupProgram, drawEnvironment, uploadEnvironment, paintFinalArtwork, present];
+    var index = 0;
+    function next() {
+      if (destroyed || lost) return Promise.reject(new Error("Hero scene stopped"));
+      steps[index]();
+      index += 1;
+      return index < steps.length ? nextTask().then(next) : Promise.resolve();
+    }
+    return next();
+  }
+  function initialize() {
+    setupProgram(); paintEnvironment(); paintFinalArtwork(); present();
+  }
+  function setupProgram() {
+    // Premultiplied output is the one alpha model every compositor agrees on;
+    // the shader writes colour already multiplied by its alpha.
+    gl = canvas.getContext("webgl", { alpha: true, antialias: true, premultipliedAlpha: true, powerPreference: "low-power" });
+    if (!gl) throw new Error("WebGL unavailable");
+    var precision = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
+    var vertex = compile(gl.VERTEX_SHADER, vertexSource);
+    var fragment = compile(gl.FRAGMENT_SHADER, precision && precision.precision ? fragmentSource : fragmentSource.replace("highp", "mediump"));
+    program = gl.createProgram(); gl.attachShader(program, vertex); gl.attachShader(program, fragment); gl.linkProgram(program);
+    gl.deleteShader(vertex); gl.deleteShader(fragment);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error("Hero material unavailable");
+    gl.useProgram(program);
+    ["uModel", "uViewProjection", "uEnvironment", "uBackdrop", "uFinalArtwork", "uFinalAspect", "uFinalOrientation", "uFragmentCenter", "uResolution", "uCamera", "uMorph"].forEach(function (name) { uniforms[name] = gl.getUniformLocation(program, name); });
+    attributes.position = gl.getAttribLocation(program, "aPosition"); attributes.normal = gl.getAttribLocation(program, "aNormal");
+    attributes.gatePosition = gl.getAttribLocation(program, "aGatePosition"); attributes.finalData = gl.getAttribLocation(program, "aFinalData");
+    // A restored context rebuilds the fragments, and the world with them.
+    if (world) { world.destroy(); world = null; body = null; api.world = null; }
+    fragments = makeFragments();
+    fragments.forEach(function (fragment) {
+      fragment.buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, fragment.buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, fragment.data, gl.STATIC_DRAW);
+    });
+    texture = gl.createTexture(); backdropTexture = gl.createTexture(); finalTexture = gl.createTexture();
+    // Lettering that has already decoded goes into the first reflection, so
+    // the reflection texture is painted once instead of twice.
+    var lettering = document.querySelector("[data-glass-backdrop]");
+    if (lettering && lettering.complete && lettering.naturalWidth) reflectionArtwork = lettering;
+  }
+  function present() {
+    gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
+    gl.clearColor(0, 0, 0, 0); initialized = true; lost = false;
+    resize();
+    if (!initialized) throw new Error("Glass backdrop unavailable");
+    stop(); render(performance.now());
+    if (gl.getError() !== gl.NO_ERROR) throw new Error("Hero renderer unavailable");
+    api.status = "ready"; host.dataset.heroScene = "ready";
+    loadReflection();
+  }
+  function loadReflection() {
+    var artwork = document.querySelector("[data-glass-backdrop]");
+    var settled = false;
+    function complete() {
+      if (settled || destroyed || lost) return;
+      settled = true; clearTimeout(reflectionTimer);
+      if (artwork && artwork.complete && artwork.naturalWidth && reflectionArtwork !== artwork) {
+        reflectionArtwork = artwork;
+        try { paintEnvironment(); paintBackdrop(); requestRender(); } catch (error) { reflectionArtwork = null; fallback(); return; }
+      }
+      resolveReady({ status: "ready" });
+      window.dispatchEvent(new CustomEvent("portfolio:heroready", { detail: { status: "ready" } }));
+    }
+    if (!artwork || (artwork.complete && artwork.naturalWidth)) { complete(); return; }
+    on(artwork, "load", function () {
+      if (!settled) { complete(); return; }
+      if (destroyed || lost || !initialized || !artwork.naturalWidth) return;
+      // A readiness deadline must not prevent a later real lettering image
+      // from replacing the temporary reflection after it finally decodes.
+      reflectionArtwork = artwork;
+      try { paintEnvironment(); paintBackdrop(); requestRender(); } catch (error) { fallback(); }
+    }, { once: true });
+    on(artwork, "error", complete, { once: true });
+    // The artwork and late lettering share one initial readiness budget.
+    reflectionTimer = setTimeout(complete, Math.max(0, Math.min(1400, readyDeadline - performance.now())));
+  }
+
+  function fallback() {
+    stop(); initialized = false; api.status = "fallback"; host.dataset.heroScene = "fallback";
+    resolveReady({ status: "fallback" });
+    window.dispatchEvent(new CustomEvent("portfolio:heroready", { detail: { status: "fallback" } }));
+  }
+  // A resize or a restored page changes how scroll maps to the turn: the values
+  // reported in the next two frames snap. Later ones are real scrolling and
+  // follow, so a flag left unspent never turns a scroll into a jump.
+  var snapExpiry = 0;
+  function snapSoon() {
+    snapTurn = true;
+    if (snapExpiry) cancelAnimationFrame(snapExpiry);
+    snapExpiry = requestAnimationFrame(function () { snapExpiry = requestAnimationFrame(function () { snapExpiry = 0; snapTurn = false; }); });
+  }
+  function resize() {
+    if (destroyed || lost) return;
+    snapSoon();
+    updateLayout();
+    requestRender();
+  }
+  function updateLayout() {
+    layoutDirty = false;
+    var box = host.getBoundingClientRect(); width = Math.max(1, box.width); height = Math.max(1, box.height); aspect = width / height;
+    cameraZ = innerWidth <= 991 ? 3.9 : 3.7;
+    // The 60vh sculpture remains inside very narrow/landscape drawing surfaces.
+    sceneScale = Math.min(1, aspect * 2.25);
+    var dpr = Math.min(devicePixelRatio || 1, innerWidth <= 991 ? 1.6 : 2);
+    canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+    if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+    fitGate(); fitCompact();
+    if (initialized) {
+      try { paintBackdrop(); } catch (error) { fallback(); return; }
+    }
+  }
+  function start() {
+    if (destroyed || api.status === "fallback" || assemblyStart !== null) return;
+    arrivalStarted = true;
+    if (reduced()) { finish(); return; }
+    startRequested = performance.now();
+    if (ensureWorld()) schedule();
+    else if (initialized) finish();   // no physics module: the object stands assembled
+    requestRender();
+  }
+  // Geometry begins 200 ms after Enter; each fragment keeps its 0-228 ms delay.
+  // A renderer that became ready after Enter catches up in simulated time, so
+  // the pose is the one the assembly would have reached by now.
+  function schedule() {
+    if (assemblyStart !== null || !world) return;
+    var begin = world.time;
+    assemblyStart = begin;
+    world.start();
+    fragments.forEach(function (fragment) {
+      world.at(begin + .2 + fragment.delay / 1000, function () { fragment.travel.set(0); fragment.twist.set(0); });
+    });
+    var behind = Math.max(0, (performance.now() - startRequested) / 1000 - world.step);
+    if (behind > 2.8) { finish(); return; }
+    while (world.time < begin + behind) world.integrate();
+  }
+  function finish() {
+    assemblyStart = -Infinity;
+    pointer.targetX = pointer.targetY = 0;
+    pointer.inside = false; drag.active = false;
+    rest();
+    requestRender();
+  }
+  // With the caller's frame stamp the object paints in that same frame (the
+  // home composition paints its copy from the same followed value). A frame
+  // this renderer has already painted is painted again only when the value is
+  // the pose itself; a follower target simply moves on the next frame.
+  function paintNow(stamp, pose) {
+    if (typeof stamp !== "number" || !initialized || lost || destroyed || suspended || !intersecting || document.hidden ||
+        (stamp === renderedAt && !pose)) { requestRender(); return; }
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
+    render(stamp);
+  }
+  function setMorphProgress(value, stamp) {
+    if (destroyed || !Number.isFinite(value)) return;
+    var next = clamp(value, 0, 1);
+    if (Math.abs(next - morphProgress) < .00001) return;
+    morphProgress = next;
+    // Scrolling may interrupt arrival. Complete the assembly once instead of
+    // mixing dispersed fragments with a destination shape that is already read.
+    if (next > .001 && assemblyStart !== -Infinity) finish();
+    paintNow(stamp, true);
+  }
+  // The unpinned owner reports how far its own scene has travelled. Scrolling
+  // turns the object inside its slot through the follower; a still page leaves
+  // it still. Entering the slot, the page's first frames, a resize, a page
+  // show and a return into view snap to the scroll instead of catching up.
+  function setCompactProgress(value, stamp) {
+    if (destroyed || !Number.isFinite(value)) return;
+    var next = clamp(value, 0, 1);
+    // An unchanged value still settles a pending snap, so the next real scroll
+    // follows instead of jumping.
+    if (compact && Math.abs(next - compactTurn) < .00001 && !snapTurn) return;
+    // Entering or leaving the slot changes what the glass refracts.
+    if (!compact) { compact = true; host.dataset.heroPose = "compact"; layoutDirty = true; snapTurn = true; }
+    // Scrolling ends an unfinished assembly where the turn stands now; the turn
+    // then follows the scroll on its spring rather than jumping with it.
+    if (assemblyStart !== -Infinity && next > .001) finish();
+    compactTurn = next;
+    if (ensureWorld()) {
+      if (snapTurn || !pageLoaded || reduced()) hold(body.turn, next);
+      else { body.turn.set(next); wake(); }
+      snapTurn = false;
+    }
+    paintNow(stamp, false);
+  }
+  function clearCompact() {
+    if (destroyed || !compact) return;
+    compact = false; delete host.dataset.heroPose; layoutDirty = true;
+    requestRender();
+  }
+  function stop() { if (frame) cancelAnimationFrame(frame); frame = 0; }
+  function requestRender() {
+    if (!frame && initialized && !lost && !destroyed && !suspended && intersecting && !document.hidden) frame = requestAnimationFrame(render);
+  }
+  function render(now) {
+    frame = 0;
+    if (!initialized || destroyed || lost || suspended || !intersecting || document.hidden) return;
+    if (layoutDirty) { updateLayout(); if (!initialized) return; }
+    renderedAt = now;
+    var quiet = reduced(), physics = ensureWorld();
+    if (quiet || !physics) rest();
+    var moving = !quiet && physics ? physics.advance(now) : false;
+    var alpha = physics ? physics.alpha : 1;
+    function at(spring, fallback) { return physics ? spring.at(alpha) : fallback; }
+    var tiltX = quiet ? 0 : at(body && body.tiltX, 0), tiltY = quiet ? 0 : at(body && body.tiltY, 0);
+    var yaw = quiet ? 0 : at(body && body.yaw, REST_YAW) - REST_YAW;
+    // Above .16 the shader drops the glass faces for the flat endpoint, so the
+    // compact slot holds the assembled form and never blends toward artwork.
+    var fold = compact ? 0 : morphProgress;
+    var interaction = compact ? 1 : 1 - clamp(morphProgress / .35, 0, 1);
+    var turn = compact && !quiet ? at(body && body.turn, compactTurn) - .5 : 0;
+    var rootMatrix = compact
+      ? compose(compactPose.x, compactPose.y, 0,
+        tiltX * interaction + turn * 13 * DEG,
+        (-27 + turn * 52) * DEG + tiltY * interaction, 0,
+        compactPose.scale)
+      : multiply(compose(-.16 + (morphPose.x + .16) * morphProgress, morphPose.y * morphProgress, 0,
+        tiltX * interaction + 20 * DEG * morphProgress,
+        (-27 + (innerWidth < 600 ? 39 : 19) * morphProgress) * DEG + (tiltY + yaw) * interaction, 0,
+        sceneScale + (morphPose.scale - sceneScale) * morphProgress),
+        compose(0, 0, 0, 0, 0, Math.PI / 2 * morphProgress, 1));
+    var view = identity(); view[14] = -cameraZ;
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.useProgram(program);
+    gl.uniformMatrix4fv(uniforms.uViewProjection, false, multiply(perspective(), view));
+    gl.uniform3f(uniforms.uCamera, 0, 0, cameraZ);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texture); gl.uniform1i(uniforms.uEnvironment, 0);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, backdropTexture); gl.uniform1i(uniforms.uBackdrop, 1);
+    gl.uniform2f(uniforms.uResolution, canvas.width, canvas.height);
+    gl.uniform1f(uniforms.uMorph, fold);
+    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, finalTexture); gl.uniform1i(uniforms.uFinalArtwork, 2);
+    gl.uniform1f(uniforms.uFinalAspect, finalAspect); gl.uniformMatrix4fv(uniforms.uFinalOrientation, false, finalOrientation);
+    var nudged = false, scatter = 0;
+    fragments.forEach(function (fragment) {
+      // Translation and rotation are separate springs: the slice arrives, then
+      // squares up, and neither pops in its first frame.
+      // Without the module: the starting pose until the assembly is asked for,
+      // which then completes at once.
+      var unset = assemblyStart !== -Infinity && !startRequested ? 1 : 0;
+      var place = quiet ? 0 : at(fragment.travel, unset), spin = quiet ? 0 : at(fragment.twist, unset);
+      scatter = Math.max(scatter, place, spin);
+      var seated = !physics || (fragment.travel.resting && fragment.twist.resting && fragment.travel.value === 0 && fragment.twist.value === 0);
+      var target = [0, 0, 0];
+      if (pointer.inside && !quiet && seated && !drag.active && !compact && morphProgress < .001) {
+        var projected = project(transformPoint(rootMatrix, fragment.center));
+        var dx = projected.x - pointer.x, dy = projected.y - pointer.y, distance = Math.hypot(dx, dy);
+        var weight = Math.max(0, 1 - distance / 105);
+        target = [dx / 105 * weight * .22, -dy / 105 * weight * .22, weight * .12];
+      }
+      var hover = [0, 0, 0];
+      if (physics && !quiet) {
+        fragment.hover.forEach(function (axis, index) {
+          hover[index] = axis.at(alpha);
+          if (Math.abs(axis.target - target[index]) > 1e-6) { axis.set(target[index]); nudged = true; }
+        });
+      }
+      var matrix = compose(fragment.center[0] + fragment.offset[0] * place + hover[0],
+        fragment.center[1] + fragment.offset[1] * place + hover[1], fragment.offset[2] * place + hover[2],
+        fragment.spin[0] * spin, fragment.spin[1] * spin, fragment.spin[2] * spin, 1);
+      gl.uniformMatrix4fv(uniforms.uModel, false, multiply(rootMatrix, matrix));
+      gl.uniform3fv(uniforms.uFragmentCenter, fragment.center);
+      gl.bindBuffer(gl.ARRAY_BUFFER, fragment.buffer);
+      gl.enableVertexAttribArray(attributes.position); gl.vertexAttribPointer(attributes.position, 3, gl.FLOAT, false, 48, 0);
+      gl.enableVertexAttribArray(attributes.normal); gl.vertexAttribPointer(attributes.normal, 3, gl.FLOAT, false, 48, 12);
+      gl.enableVertexAttribArray(attributes.gatePosition); gl.vertexAttribPointer(attributes.gatePosition, 3, gl.FLOAT, false, 48, 24);
+      gl.enableVertexAttribArray(attributes.finalData); gl.vertexAttribPointer(attributes.finalData, 3, gl.FLOAT, false, 48, 36);
+      gl.drawArrays(gl.TRIANGLES, 0, fragment.data.length / 12);
+    });
+    if (nudged) { physics.start(); moving = true; }
+    // What this frame painted, for the motion specs.
+    api.drawn = { stamp: now, morph: morphProgress, turn: compact ? turn + .5 : null, scatter: scatter };
+    // The frame loop runs only while a body moves; at rest it stops.
+    if (!quiet && (moving || drag.active)) requestRender();
+  }
+  function pointerMove(event) {
+    if (reduced() || (!compact && morphProgress > .001) || !fineQuery.matches || event.pointerType === "touch") return;
+    var box = host.getBoundingClientRect();
+    pointer.x = (event.clientX - box.left) * width / Math.max(1, box.width);
+    pointer.y = (event.clientY - box.top) * height / Math.max(1, box.height);
+    pointer.inside = pointer.x >= 0 && pointer.x <= width && pointer.y >= 0 && pointer.y <= height;
+    if (pointer.inside) {
+      pointer.targetY = clamp((pointer.x / width - .5) * 2, -1, 1) * 14.4 * DEG;
+      pointer.targetX = clamp((pointer.y / height - .5) * 2, -1, 1) * 14.4 * DEG;
+    }
+    if (drag.active && body) {
+      // Direct manipulation: .2 degrees per pixel, banded toward the stop.
+      var yaw = band(drag.from + (event.clientX - drag.x) * DRAG_RATE);
+      hold(body.yaw, yaw);
+      drag.samples.push({ t: event.timeStamp, yaw: yaw });
+      while (drag.samples.length > 2 && drag.samples[1].t < event.timeStamp - 4 * FLING_WINDOW) drag.samples.shift();
+    }
+    aim();
+  }
+  // The tilt springs chase the pointer; a renewed input renews the run's
+  // safety clock, so a long hover never freezes mid-way.
+  function aim() {
+    if (body) {
+      body.tiltX.set(pointer.targetX); body.tiltY.set(pointer.targetY);
+      if (world.running) world.runStart = world.time;
+      wake();
+    }
+    requestRender();
+  }
+  function pointerLeave() { pointer.inside = false; pointer.targetX = pointer.targetY = 0; aim(); }
+  // Release: the fling is the yaw's own rate over the last 64 ms, read from the
+  // events' timestamps (interpolated at the window's start), so a 125 Hz and a
+  // 1000 Hz mouse throw the same; clamped to +-600 degrees per second. The
+  // torsion spring then carries the object back to its rest yaw.
+  function release(event, cancelled) {
+    if (!drag.active) return;
+    drag.active = false;
+    if (!body) { requestRender(); return; }
+    // Bring the other bodies up to the release, so the throw starts now and
+    // not at the last painted frame.
+    if (world.running && event.timeStamp > world.last) world.advance(event.timeStamp);
+    var velocity = 0;
+    if (!cancelled) {
+      var end = event.timeStamp, yaw = band(drag.from + (event.clientX - drag.x) * DRAG_RATE);
+      var samples = drag.samples.concat([{ t: end, yaw: yaw }]), begin = end - FLING_WINDOW, first = samples[0];
+      for (var i = samples.length - 1; i > 0; i--) {
+        if (samples[i - 1].t <= begin) {
+          var a = samples[i - 1], b = samples[i], k = b.t > a.t ? (begin - a.t) / (b.t - a.t) : 1;
+          first = { t: begin, yaw: a.yaw + (b.yaw - a.yaw) * clamp(k, 0, 1) };
+          break;
+        }
+      }
+      velocity = end > first.t ? clamp((yaw - first.yaw) / ((end - first.t) / 1000), -FLING_LIMIT, FLING_LIMIT) : 0;
+      hold(body.yaw, yaw);
+    }
+    drag.samples = [];
+    api.fling = velocity;
+    body.yaw.set(REST_YAW, velocity);
+    wake();
+    requestRender();
+  }
+  function on(target, type, callback, options) {
+    target.addEventListener(type, callback, Object.assign({ signal: listeners.signal }, options || {}));
+  }
+  on(mast, "pointermove", pointerMove, { passive: true });
+  on(mast, "pointerleave", pointerLeave, { passive: true });
+  on(mast, "pointerdown", function (event) {
+    if (reduced() || compact || morphProgress > .001 || !fineQuery.matches || event.button !== 0 || event.target.closest("a,button,input,textarea,select")) return;
+    var box = host.getBoundingClientRect();
+    var localX = (event.clientX - box.left) * width / Math.max(1, box.width);
+    var localY = (event.clientY - box.top) * height / Math.max(1, box.height);
+    if (Math.abs(localX - width / 2) > Math.min(width * .30, height * .24) || Math.abs(localY - height / 2) > height * .34) return;
+    if (!ensureWorld()) return;
+    // A swinging object is caught where it is.
+    var yaw = body.yaw.value;
+    hold(body.yaw, yaw);
+    drag.active = true; drag.x = event.clientX; drag.from = unband(yaw);
+    drag.samples = [{ t: event.timeStamp, yaw: yaw }];
+    requestRender();
+  }, { passive: true });
+  on(window, "pointermove", function (event) { if (drag.active && !mast.contains(event.target)) pointerMove(event); }, { passive: true });
+  on(window, "pointerup", function (event) { release(event, false); }, { passive: true });
+  on(window, "pointercancel", function (event) { release(event, true); }, { passive: true });
+  on(window, "portfolio:arrivalstart", start);
+  on(window, "portfolio:arrivalend", function () { if (!arrivalStarted) start(); });
+  on(window, "portfolio:motionchange", function () { if (reduced()) finish(); else requestRender(); });
+  on(reducedQuery, "change", function () { if (reduced()) finish(); else requestRender(); });
+  on(document, "visibilitychange", function () { if (document.hidden) stop(); else requestRender(); });
+  on(window, "pagehide", function () { suspended = true; stop(); });
+  on(window, "pageshow", function (event) { suspended = false; if (event.persisted) snapSoon(); if (world) world.last = 0; requestRender(); });
+  // A reload restores its scroll position while the page loads: the turn
+  // follower starts only after that.
+  function loaded() { requestAnimationFrame(function () { requestAnimationFrame(function () { pageLoaded = true; }); }); }
+  if (document.readyState === "complete") loaded(); else on(window, "load", loaded, { once: true });
+  on(canvas, "webglcontextlost", function (event) { event.preventDefault(); lost = true; fallback(); });
+  on(canvas, "webglcontextrestored", function () { if (!destroyed) { try { initialize(); finish(); } catch (error) { fallback(); } } });
+  on(window, "resize", resize, { passive: true });
+  // The consent transform lands on the drawing frame, which is not always the
+  // same element as the pointer stage: on the home page the mast wraps the scene.
+  var stage = host.closest("[data-glass-frame]");
+  if (stage && typeof MutationObserver === "function") {
+    // The consent refit springs the stage's translate and scale; its owner
+    // writes data-consent-fit only once they rest in their final pose, so the
+    // backdrop is repainted once, from that pose, never per frame.
+    function consentLayoutKey() { return stage.getAttribute("data-consent-fit") || ""; }
+    var consentLayout = consentLayoutKey();
+    // When hidden or offscreen, keep the dirty layout until the loop resumes.
+    consentObserver = new MutationObserver(function () {
+      var next = consentLayoutKey();
+      if (next === consentLayout) return;
+      consentLayout = next; layoutDirty = true; requestRender();
+    });
+    consentObserver.observe(stage, { attributes: true, attributeFilter: ["data-consent-fit"] });
+  }
+  if (typeof ResizeObserver === "function") {
+    resizeObserver = new ResizeObserver(resize); resizeObserver.observe(host);
+    var lettering = document.querySelector("[data-glass-backdrop]");
+    if (lettering) resizeObserver.observe(lettering);
+  }
+  if (typeof IntersectionObserver === "function") {
+    observer = new IntersectionObserver(function (entries) {
+      var returning = !intersecting;
+      intersecting = entries.some(function (entry) { return entry.isIntersecting; });
+      // Back in view, the object shows the pose of the scroll it returns to.
+      if (intersecting && returning && body) { hold(body.turn, compactTurn); world.last = 0; }
+      if (intersecting) requestRender(); else stop();
+    }); observer.observe(host);
+  }
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true; stop(); clearTimeout(reflectionTimer); clearTimeout(finalTimer);
+    if (world) { world.destroy(); world = null; body = null; api.world = null; }
+    if (cancelFinalLoad) cancelFinalLoad(); listeners.abort();
+    if (observer) observer.disconnect(); if (resizeObserver) resizeObserver.disconnect(); if (consentObserver) consentObserver.disconnect();
+    if (gl && !lost) {
+      fragments.forEach(function (fragment) { gl.deleteBuffer(fragment.buffer); });
+      if (texture) gl.deleteTexture(texture); if (backdropTexture) gl.deleteTexture(backdropTexture); if (finalTexture) gl.deleteTexture(finalTexture);
+      if (program) gl.deleteProgram(program);
+    }
+    if (backdropCanvas) { backdropCanvas.width = backdropCanvas.height = 1; backdropCanvas = null; }
+    fragments = []; finalArtwork = null; finalOrientation = null;
+    resolveReady({ status: "fallback" }); api.status = "destroyed"; host.dataset.heroScene = "fallback";
+  }
+  loadFinalArtwork().then(function () {
+    if (destroyed) return;
+    // Start after the next paint, so the page's own first frame (and its
+    // largest picture) never waits behind the scene's setup.
+    return afterPaint().then(initializeInSteps).then(automaticStart, function () { if (!destroyed && !lost) fallback(); });
+  }, function () { if (!destroyed) fallback(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+    // The type-set reflection is only drawn while the lettering artwork is
+    // missing; the backdrop follows the lettering's laid-out box either way.
+    if (!destroyed && initialized && !lost && api.status === "ready") { if (!reflectionArtwork) paintEnvironment(); paintBackdrop(); requestRender(); }
+  }).catch(function () {});
+  function automaticStart() {
+    requestAnimationFrame(function () {
+      if (initialized && !arrivalStarted && !document.querySelector(".site-arrival") && !document.documentElement.classList.contains("arrival-active")) start();
+    });
+  }
+  if (document.readyState === "loading") on(document, "DOMContentLoaded", automaticStart, { once: true });
+  else automaticStart();
+})();

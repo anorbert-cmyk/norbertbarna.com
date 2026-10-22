@@ -428,10 +428,8 @@ if (/smoothTouch/i.test(animationJs)) fail("touch smoothing must remain disabled
 if (/new\s+(?:window\.)?Lenis\b/i.test(animationJs)) fail("custom smooth scrolling must not override native scroll state");
 if (!animationJs.includes('reducedMotionQuery.addEventListener("change"') ||
     !animationJs.includes("enforceReducedMotion") ||
-    !animationJs.includes("window.ScrollTrigger.getAll()") ||
-    !animationJs.includes("function initFooterMeshField()") ||
-    !animationJs.includes("stopFooterMeshField()")) {
-  fail("runtime reduced-motion changes must stop active motion and media (mesh masses go static)");
+    !animationJs.includes("window.ScrollTrigger.getAll()")) {
+  fail("runtime reduced-motion changes must stop active motion and media");
 }
 const sceneJs = readFileSync(join(ROOT, "assets/js/hero-scene.js"), "utf8");
 const journeyJs = readFileSync(join(ROOT, "assets/js/immersive-navigation.js"), "utf8");
@@ -460,8 +458,10 @@ if (!/\.home-mast\[data-glass-live\][^{]*\.home-mast-canvas\s*\{[^}]*visibility:
     !/\.home-mast:not\(\[data-morph-active\]\)\s*\.home-mast-gate-fallback\s*\{[^}]*opacity:\s*1/.test(compositionCss)) {
   fail("the unpinned slot must show exactly one of the live canvas and the static gate drawing");
 }
-if (!animationJs.includes("PortfolioHomeMorph")) {
-  fail("the shared statement animation must yield ownership to the home composition");
+// home-composition.js is the only owner of the home statement (the retired
+// addHomeStatement scrub yielded to it on every page that loads it).
+if (/home-banner-subtitle|addHomeStatement|addHomeMastField/.test(animationJs)) {
+  fail("the shared motion layer must not animate the home statement; home-composition.js owns it");
 }
 if (!journeyJs.includes("scrollY / limit") || /preventDefault\(/.test(journeyJs)) {
   fail("header progress must reflect native page scrolling without intercepting it");
@@ -472,9 +472,9 @@ if (/readingClearance|header\.animate\(|--nav-travel|--nav-brand-scale|immersive
 if (/function initFooterDunes\(|data-footer-dunes|footer-dune-layer/.test(animationJs)) {
   fail("Ironclad dunes: do not revive the footer dune pointer field");
 }
-if (!/MESH_POINTER_RANGE\s*=\s*[1-8](?:\.\d+)?/.test(animationJs) ||
-    /rotate\(/.test(animationJs.slice(animationJs.indexOf("function initFooterMeshField()")))) {
-  fail("MeshParallaxCircus: mesh pointer travel must stay a few pixels with no rotation");
+// The editorial footer has no mesh layers; its retired pointer field stays out.
+if (/MESH_POINTER_RANGE|initFooterMeshField|footer-mesh/.test(animationJs)) {
+  fail("MeshParallaxCircus: the retired footer mesh pointer field must not return");
 }
 if (/html:not\(\.nav-enhanced\)/i.test(responsiveCss)) fail("pre-enhancement navigation must not cause layout shift");
 if (animationJs.includes("enhanceVideoControls")) fail("the old click-to-play controller returned");

@@ -1103,7 +1103,7 @@ Load order is a contract, not a preference:
 
 - `analytics-config.js` → `consent.js` → `analytics.js` on every content page.
 - `physics.js` follows the analytics trio as a deferred head script on the
-  contact pages, the cases, `/` and `/hu`. Deferred scripts run after the
+  contact pages, the cases, `/`, `/hu`, `/de` and every service page with the glass opening (AI and web development, in each language). Deferred scripts run after the
   end-of-body owners and before `DOMContentLoaded`, so an owner reads
   `window.PortfolioPhysics` only once that event has fired (`case-opening.js`
   starts on it; `animations.js` starts after `load`) and settles to its end
@@ -1307,6 +1307,25 @@ creates either, and `responsive.css` keeps `.case-motion-rail` hidden as a guard
 
 The central glass form assembles once, then responds to pointer tilt,
 fragment hover and drag. Its raw WebGL renderer sleeps when idle/offscreen.
+
+**Glass and home morph on physics (2026-10-21, owner request).** Every moving
+quantity of the glass and the home morph runs on one fixed-step
+`PortfolioPhysics` world per owner, on that owner's own frame (external clock).
+Values are ω in rad/s and ζ, mass 1:
+
+| Body | Owner | ω, ζ | Contract |
+|---|---|---|---|
+| Scroll follower | `home-composition.js` (pinned morph), `hero-scene.js` (compact turn) | 36, 1 | Within 1% of a notch in ≤ 200 ms, no overshoot, exact snap at rest. Snaps on mode change, resize, a bfcache `pageshow`, history restore and the first frames before `load`. Paint reads the followed value; `tabindex`, `pointer-events` and `data-morph-hidden` read the scroll position. The glass paints in the copy's frame. |
+| Pointer tilt | `hero-scene.js` | 7.5, .7 | About 4.6% overshoot, stops at rest. |
+| Drag and throw | `hero-scene.js` | 6, .5 | .2° per px, 1:1 to ±45° from facing, then a rubber band toward 60°. Release velocity from `event.timeStamp` over the last 64 ms, clamped to ±600°/s, so mouse rate does not change the throw. Torsion spring back to the −27° rest yaw; hard stops at ±60° with restitution .3, never edge-on. |
+| Fragment hover | `hero-scene.js` | 13.8, .6 | Only on a seated, assembled object with a fine pointer. |
+| Assembly | `hero-scene.js` | translation 2.6, .8; rotation 2.9, .92 | Released 200 ms after Enter plus each fragment's 0–228 ms delay; settled about 2.15 s, inside the locked 2.3 s. Scrolling during it completes it once. |
+| Consent refit | `immersive-navigation.js` | 12, 1 | When the banner leaves, `--consent-lift` and `--consent-scale` relax (≤ .02 scale per frame); `--consent-cover` (layout) and the banner change at once; the glass backdrop repaints once from the final pose. |
+
+Without the module the object stands assembled and still, and the morph paints
+the scroll position directly. Reduced motion and `html.no-motion` run no
+physics frame and paint the end state. `.case-toc a` has `transition: none`, so
+the chip's colour, fill and border change in the same frame.
 The following intro is owned by `home-composition.js`, which couples native
 scroll progress to the same WebGL object and live copy. WebGL failure gives a single static SVG; reduced motion gives
 one static rendered form or the fallback, never both.
@@ -1322,8 +1341,9 @@ and short desktop windows get glass instead of a drawing. User-confirmed
 static drawing on phones as a battery optimisation. The restraint below is
 where that cost is paid. The compact contract
 is restrained: the object never blends toward the flat artwork, its own scene's
-native scroll turns it within a bounded arc, and it holds still when the page
-does. No idle loop, no drag, no fragment scatter and no pointer response on a
+native scroll turns it within a bounded arc through the ω 36 critically damped
+follower (a catch-up of ≤ 200 ms, never a lag that drifts), and it holds still
+when the page does. No idle loop, no drag, no fragment scatter and no pointer response on a
 coarse pointer; a fine pointer may still tilt it. Render density stays capped
 and the renderer sleeps offscreen. It must not overlap the role, dek, primary
 action or proof, and reduced motion, enlarged text and WebGL failure still fall

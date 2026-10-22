@@ -163,7 +163,6 @@
         typeof window.gsap.globalTimeline.clear === "function") {
       window.gsap.globalTimeline.clear();
     }
-    stopFooterMeshField();
     clearWebflowMotionState();
   }
 
@@ -173,7 +172,6 @@
       enforceReducedMotion();
     } else {
       root.classList.remove("no-motion");
-      startFooterMeshField();
       // Resume only after the same ownership/font checkpoints as initial load.
       if (webflowMotionReady && motionRuntimeReady) {
         webflowMotionReady.then(function () {
@@ -222,135 +220,6 @@
           target.focus({ preventScroll: true });
         }, 0);
       });
-    }
-
-    initFooterMeshField();
-  }
-
-  var MESH_POINTER_RANGE = 6.5;
-  var MESH_IDLE_PX = 1.5;
-  var MESH_IDLE_MS = 22000;
-  var MESH_LERP = 0.12;
-  var meshLayers = [];
-  var meshRaf = 0;
-  var meshStart = 0;
-  var meshVisible = false;
-  var meshHover = false;
-  var meshTargetX = 0;
-  var meshTargetY = 0;
-  var meshCurX = 0;
-  var meshCurY = 0;
-  var meshFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-
-  function meshReduced() {
-    return window.PortfolioMedia ? window.PortfolioMedia.isReduced() : reducedMotionQuery.matches;
-  }
-
-  function resetFooterMeshField() {
-    meshTargetX = 0;
-    meshTargetY = 0;
-    meshCurX = 0;
-    meshCurY = 0;
-    meshHover = false;
-    meshLayers.forEach(function (layer) {
-      layer.el.style.transform = "";
-    });
-  }
-
-  function stopFooterMeshField() {
-    if (meshRaf) {
-      cancelAnimationFrame(meshRaf);
-      meshRaf = 0;
-    }
-    resetFooterMeshField();
-  }
-
-  function tickFooterMeshField(now) {
-    meshRaf = 0;
-    if (!meshMotionAllowed() || !meshVisible) {
-      resetFooterMeshField();
-      return;
-    }
-    var towardX = meshHover ? meshTargetX : 0;
-    var towardY = meshHover ? meshTargetY : 0;
-    meshCurX += (towardX - meshCurX) * MESH_LERP;
-    meshCurY += (towardY - meshCurY) * MESH_LERP;
-    meshLayers.forEach(function (layer) {
-      var turn = ((now - meshStart) / (MESH_IDLE_MS * layer.period)) * Math.PI * 2;
-      var idle = MESH_IDLE_PX * layer.idle;
-      var x = meshCurX * layer.depth + Math.sin(turn) * idle;
-      var y = meshCurY * layer.depth + Math.sin(turn * 0.79) * idle * 0.65;
-      layer.el.style.transform = "translate(" + x.toFixed(2) + "px, " + y.toFixed(2) + "px)";
-    });
-    meshRaf = requestAnimationFrame(tickFooterMeshField);
-  }
-
-  function meshMotionAllowed() {
-    return !meshReduced() && !portableViewport.matches;
-  }
-
-  function startFooterMeshField() {
-    if (meshRaf || !meshMotionAllowed() || !meshVisible) return;
-    if (!meshStart) meshStart = performance.now();
-    meshRaf = requestAnimationFrame(tickFooterMeshField);
-  }
-
-  function initFooterMeshField() {
-    var footer = document.querySelector("footer.footer-section");
-    if (!footer) return;
-    var navy = footer.querySelector(".footer-mesh-navy");
-    var olives = footer.querySelectorAll(".footer-mesh-olive");
-    var yellow = footer.querySelector(".footer-mesh-yellow");
-    if (!navy || !yellow || olives.length === 0) return;
-
-    meshLayers = [{ el: navy, depth: 0.3, idle: 0.7, period: 1.12 }];
-    olives.forEach(function (el) {
-      meshLayers.push({ el: el, depth: 0.55, idle: 0.9, period: 0.94 });
-    });
-    meshLayers.push({ el: yellow, depth: 0.92, idle: 1, period: 1 });
-
-    footer.addEventListener("pointermove", function (event) {
-      if (!meshFinePointer.matches || !meshMotionAllowed()) return;
-      var rect = footer.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      var nx = (event.clientX - rect.left) / rect.width - 0.5;
-      var ny = (event.clientY - rect.top) / rect.height - 0.5;
-      meshTargetX = nx * 2 * MESH_POINTER_RANGE;
-      meshTargetY = ny * 2 * MESH_POINTER_RANGE * 0.72;
-      meshHover = true;
-      meshVisible = true;
-      startFooterMeshField();
-    });
-    footer.addEventListener("pointerleave", function () {
-      meshHover = false;
-      meshTargetX = 0;
-      meshTargetY = 0;
-    });
-
-    if (typeof portableViewport.addEventListener === "function") {
-      portableViewport.addEventListener("change", function () {
-        if (portableViewport.matches) stopFooterMeshField();
-        else startFooterMeshField();
-      });
-    } else if (typeof portableViewport.addListener === "function") {
-      portableViewport.addListener(function () {
-        if (portableViewport.matches) stopFooterMeshField();
-        else startFooterMeshField();
-      });
-    }
-
-    if (typeof IntersectionObserver === "function") {
-      var io = new IntersectionObserver(function (entries) {
-        meshVisible = entries.some(function (entry) {
-          return entry.isIntersecting;
-        });
-        if (meshVisible) startFooterMeshField();
-        else stopFooterMeshField();
-      }, { root: null, threshold: 0.01 });
-      io.observe(footer);
-    } else {
-      meshVisible = true;
-      startFooterMeshField();
     }
   }
 
@@ -772,35 +641,12 @@
     };
   }
 
-  /** WebGL owns assembly and pointer response; native document scroll stays untouched. */
-  function addHomeMastField() {
-    return function () {};
-  }
-
-  /** A spacious statement resolves from separated words as the reader scrolls. */
-  function addHomeStatement(splits) {
-    var statement = document.querySelector('.home-banner-subtitle');
-    if (!statement || window.PortfolioHomeMorph) return;
-    var split = splitRevealWords(statement);
-    splits.push(split);
-    gsap.fromTo(split.words, {
-      yPercent: 70,
-      x: function (index) { return (index % 3 - 1) * 36; },
-      rotationX: -36,
-      transformPerspective: 800,
-    }, {
-      yPercent: 0, x: 0, rotationX: 0, stagger: .055, ease: 'power2.out',
-      scrollTrigger: { trigger: statement, start: 'top 92%', end: 'bottom 55%', scrub: .45, invalidateOnRefresh: true },
-    });
-  }
-
   function initDesktopMotion() {
     if (reducedMotion) return function () {};
     var listeners = new AbortController();
     var splits = [];
     var removeCardHover = null;
     var removeWorkListMotion = null;
-    var removeHomeMastField = null;
 
     document.querySelectorAll(".section-title").forEach(function (title) {
       revealWords(title, splits, {
@@ -817,8 +663,6 @@
     removeCardHover = addCardHover(allCards, listeners.signal);
 
     if (isHome) {
-      addHomeStatement(splits);
-      removeHomeMastField = addHomeMastField();
       removeWorkListMotion = addWorkListMotion(listeners.signal, false);
       var aboutArea = document.querySelector(".home-about-area");
       if (aboutArea) revealCollection(aboutArea.children, aboutArea, { y: 34, stagger: 0.12, duration: 0.86 });
@@ -883,7 +727,6 @@
 
     return function () {
       listeners.abort();
-      if (removeHomeMastField) removeHomeMastField();
       if (removeWorkListMotion) removeWorkListMotion();
       if (removeCardHover) removeCardHover();
       splits.reverse().forEach(function (split) {
@@ -897,7 +740,6 @@
     var splits = [];
     var listeners = new AbortController();
     var removeWorkListMotion = null;
-    var removeHomeMastField = null;
     document.querySelectorAll(".section-title, .summary h2, .summary h3").forEach(function (heading) {
       revealElement(heading, { y: 16, duration: 0.54, start: "top 91%" });
     });
@@ -906,8 +748,6 @@
     });
 
     if (isHome) {
-      addHomeStatement(splits);
-      removeHomeMastField = addHomeMastField();
       removeWorkListMotion = addWorkListMotion(listeners.signal, true);
       revealElement(document.querySelector(".home-about-area"), { y: 18, duration: 0.58, start: "top 90%" });
       revealCollection(document.querySelectorAll(".service-item"), document.querySelector(".home-service-grid"), {
@@ -926,7 +766,6 @@
     requestLayoutRefresh();
     return function () {
       listeners.abort();
-      if (removeHomeMastField) removeHomeMastField();
       if (removeWorkListMotion) removeWorkListMotion();
       splits.reverse().forEach(function (split) { split.revert(); });
     };

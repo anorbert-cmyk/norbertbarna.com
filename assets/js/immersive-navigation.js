@@ -64,9 +64,41 @@
   if (isWork && 'ResizeObserver' in window) new ResizeObserver(request).observe(header);
   // Observe only the consent component's owned spacer. Its existing controller
   // already measures the visible banner, including details and font reflow.
-  var consentWatch = new MutationObserver(function () { syncConsent(); });
+  var consentWatch = new MutationObserver(function () { syncConsent(false); });
   var consentSpace = null;
-  function syncConsent() {
+  /* Consent refit (2026-10-07). The home stage yields the banner's space by
+     lifting and scaling its statement, sculpture and baseline. Layout
+     (--consent-cover) and the banner itself change at once, and a growing
+     banner is yielded to at once, so nothing is ever under it. When the
+     banner shrinks or leaves, the stage relaxes into the freed space on a
+     critically damped spring, omega 12 rad/s, zeta 1 (within 2% in .49 s),
+     writing only --consent-lift and --consent-scale. data-consent-fit names
+     the resting pose once it is reached, so the glass repaints its backdrop
+     once, from the final pose. */
+  var REFIT = 12;
+  var stageHeight = 1, refit = null, shown = null, pageLoaded = false;
+  function paintStage(stage, cover) {
+    stage.style.setProperty('--consent-lift', (Math.round(cover * 100) / 100) + 'px');
+    stage.style.setProperty('--consent-scale', String(Math.round(Math.max(.15, 1 - cover / stageHeight) * 1e4) / 1e4));
+    shown = cover;
+  }
+  function fitStage(stage, cover) {
+    stage.setAttribute('data-consent-fit', cover + '/' + Math.round(Math.max(.15, 1 - cover / stageHeight) * 1e4) / 1e4);
+  }
+  function stageSpring(stage) {
+    if (refit || !window.PortfolioPhysics) return refit;
+    var world = window.PortfolioPhysics.createWorld();
+    refit = world.spring({ name: 'consent-cover', stiffness: REFIT * REFIT, dampingCoefficient: 2 * REFIT, precision: .2, restVelocity: 2 });
+    refit.world = world;
+    refit.value = refit.previous = refit.target = shown || 0;
+    world.paint(function (current, alpha) {
+      paintStage(stage, refit.at(alpha));
+      if (refit.resting) fitStage(stage, refit.target);
+    });
+    window.PortfolioConsentStage = world;
+    return refit;
+  }
+  function syncConsent(snap) {
     var next = document.querySelector('.consent-space');
     if (next && next !== consentSpace) {
       consentSpace = next;
@@ -75,14 +107,24 @@
     }
     var space = consentSpace && !consentSpace.hidden ? parseFloat(consentSpace.style.height) || 0 : 0;
     var stage = document.querySelector('.home-mast-scene');
-    if (stage) {
-      var cover = Math.max(0, space - (space ? 16 : 0));
-      stage.style.setProperty('--consent-cover', cover + 'px');
-      stage.style.setProperty('--stage-safe-scale', String(Math.max(.15, 1 - cover / Math.max(1, stage.clientHeight))));
+    if (!stage) return;
+    var cover = Math.max(0, space - (space ? 16 : 0));
+    stage.style.setProperty('--consent-cover', cover + 'px');
+    stageHeight = Math.max(1, stage.clientHeight);
+    var spring = stageSpring(stage);
+    if (snap || !spring || !pageLoaded || shown === null || cover >= shown) {
+      if (spring) { spring.set(cover); spring.snap(); if (spring.world.running) spring.world.settle(); }
+      paintStage(stage, cover);
+      fitStage(stage, cover);
+      return;
     }
+    if (spring.target === cover) return;
+    spring.set(cover);
+    spring.world.start();
   }
   consentWatch.observe(document.body, { childList: true });
-  syncConsent();
-  window.addEventListener('resize', syncConsent, { passive: true });
+  syncConsent(true);
+  window.addEventListener('resize', function () { syncConsent(true); }, { passive: true });
+  window.addEventListener('load', function () { pageLoaded = true; }, { once: true });
   request();
 })();
