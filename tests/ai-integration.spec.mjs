@@ -12,8 +12,8 @@ const LANGUAGE_NAMES = { en: "English", hu: "Magyar", de: "Deutsch" };
 const SECTIONS = ["#top", "#shaped", "#pieces", "#workflow", "#selected-work", "#start", "#questions"];
 // Hungarian pages link only Hungarian pages (whole-site language switch, 2026-10-06);
 // the German pages link the English cases and About, as the case studies stay English.
-const caseHref = (language, slug) => language === "hu" ? `/hu/munka/${slug}` : `/work/${slug}`;
-const aboutHref = (language) => language === "hu" ? "/hu/rolam" : "/about";
+const caseHref = (language, slug) => ({ hu: `/hu/munka/${slug}`, de: `/de/arbeit/${slug}` })[language] || `/work/${slug}`;
+const aboutHref = (language) => ({ hu: "/hu/rolam", de: "/de/ueber-mich" })[language] || "/about";
 const contactHref = (language) => ({ hu: "/hu/kapcsolat", de: "/de/kontakt" })[language] || "/contact";
 const contactLabel = (language) => ({ hu: "Beszéljünk a projektedről", de: "Sprechen wir über Ihr Projekt" })[language] || "Discuss your project";
 const languageOf = (path) => LANGS.find((code) => code !== "en" && path.startsWith(`/${code}/`)) || "en";
