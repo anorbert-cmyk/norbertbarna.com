@@ -5,22 +5,22 @@ lang: de
 slug: ki-datenschutz-dsgvo
 date: 2026-10-21T10:05:00+02:00
 updated: 2026-10-21T10:05:00+02:00
-tags: [ki datenschutz, dsgvo ki, dsgvo konforme ki, ki dsgvo konform, chatgpt dsgvo, datenschutz-folgenabschätzung]
+tags: [ki und datenschutz, ki datenschutz, dsgvo ki, dsgvo konforme ki, ki dsgvo konform, chatgpt dsgvo, datenschutz-folgenabschätzung]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-datenschutz-dsgvo.jpg
-cover_alt: Eine gefaltete Papierhülle, die eine kleinere Papierform nur halb freigibt, mit einem olivfarbenen Riegel davor
+cover_alt: Eine gefaltete Papierhülle, die eine kleinere Papierform nur halb freigibt, mit einem olivfarbenen Riegel davor: KI und Datenschutz, Datensparsamkeit durch Gestaltung
 pair: null
 ---
-Kein KI-Werkzeug ist von sich aus DSGVO-konform. Konform oder nicht ist die Art, wie Sie es einsetzen: welche Daten hineingehen, auf welcher Rechtsgrundlage, bei welchem Anbieter, mit welcher Protokollierung und mit welcher Kontrolle durch Menschen. Die gute Nachricht für Produktteams: Die meisten dieser Fragen lassen sich durch Gestaltung beantworten, nicht durch Papier. Eine KI-Funktion, die nur die nötigen Daten sieht, ihre Quellen zeigt, ihre Ausgaben prüfen lässt und protokolliert, was sie getan hat, erfüllt einen großen Teil der Anforderungen schon durch ihren Aufbau.
+KI und Datenschutz lassen sich nicht trennen: Kein KI-Werkzeug ist von sich aus DSGVO-konform. Konform oder nicht ist die Art, wie Sie es einsetzen: welche Daten hineingehen, auf welcher Rechtsgrundlage, bei welchem Anbieter, mit welcher Protokollierung und mit welcher Kontrolle durch Menschen. Die gute Nachricht für Produktteams: Die meisten dieser Fragen lassen sich durch Gestaltung beantworten, nicht durch Papier. Eine KI-Funktion, die nur die nötigen Daten sieht, ihre Quellen zeigt, ihre Ausgaben prüfen lässt und protokolliert, was sie getan hat, erfüllt einen großen Teil der Anforderungen schon durch ihren Aufbau.
 
 Dieser Artikel ordnet die Fragen, die bei KI und Datenschutz im Unternehmen aufkommen, und zeigt an Beispielen aus meiner Produktarbeit, welche Designentscheidung welche Frage beantwortet. Es ist die Lesart eines Produktteams, keine Rechtsberatung; die Rechtsgrundlage, die Folgenabschätzung und der Vertrag mit dem Anbieter sind Sache Ihres Datenschutzbeauftragten und Ihrer Rechtsberatung.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
 
-## Was Datenschutz mit KI zu tun hat
+## Was hat Datenschutz mit KI zu tun?
 
-Die Datenschutz-Grundverordnung gilt für jede Verarbeitung personenbezogener Daten, und eine KI-Funktion verarbeitet sie an drei Stellen: in den Daten, die hineingehen (die Kundenanfrage, das Dokument, der Gesprächsmitschnitt), in dem, was das Modell daraus macht (eine Zusammenfassung, eine Einschätzung, ein Profil), und in dem, was beim Anbieter bleibt (Protokolle, gegebenenfalls Trainingsdaten). Die KI-Verordnung ersetzt die DSGVO nicht, sie kommt dazu; die Datenschutzaufsicht Nordrhein-Westfalen bringt es auf den Satz „KI-Verordnung kommt, Datenschutz bleibt" (Quelle: [LDI NRW](https://www.ldi.nrw.de/ki-verordnung-kommt-datenschutz-bleibt), abgerufen am 21.10.2026).
+Die Datenschutz-Grundverordnung gilt für jede Verarbeitung personenbezogener Daten, und eine KI-Funktion verarbeitet sie an drei Stellen: in den Daten, die hineingehen (die Kundenanfrage, das Dokument, der Gesprächsmitschnitt), in dem, was das Modell daraus macht (eine Zusammenfassung, eine Einschätzung, ein Profil), und in dem, was beim Anbieter bleibt (Protokolle, gegebenenfalls Trainingsdaten). Die KI-Verordnung ersetzt die DSGVO nicht, sie kommt dazu; die Datenschutzaufsicht Nordrhein-Westfalen bringt es auf den Satz „KI-Verordnung kommt, Datenschutz bleibt“ (Quelle: [LDI NRW](https://www.ldi.nrw.de/ki-verordnung-kommt-datenschutz-bleibt), abgerufen am 21.10.2026).
 
 Zum Stand der Gesetzgebung: Die EU verhandelt im Rahmen des Digital Omnibus auch Änderungen an der DSGVO; im Oktober 2026 waren diese noch im Gesetzgebungsverfahren und nicht geltendes Recht (Quelle: [BTL Rechtsanwälte](https://www.btl-recht.de/blog/eu-digital-omnibus-2026-was-sich-bei-dsgvo-und-ki-vo-aendert/), abgerufen am 21.10.2026). Dieser Artikel beschreibt die DSGVO, wie sie heute gilt.
 
@@ -28,7 +28,7 @@ Zum Stand der Gesetzgebung: Die EU verhandelt im Rahmen des Digital Omnibus auch
 
 ### 1. Welche Daten sieht die KI überhaupt?
 
-Die wichtigste Entscheidung, und sie fällt in der ersten Woche. Datenminimierung ist ein Grundsatz der DSGVO (Artikel 5), und im KI-Projekt heißt das: Die Funktion bekommt nur die Felder, die sie für ihre Aufgabe braucht. Ein Antwortentwurf für den Kundenservice braucht die Frage und die Wissensbasis, nicht die Kontohistorie des Kunden. Bei Instructure, wo ich KI-Funktionen für eine Lernplattform mit mehreren Millionen Nutzern gestaltet habe, war „Privacy by default" ein Designprinzip: Die Datenverwendung wurde offengelegt, Opt-outs und Aufbewahrungsregeln waren sichtbar, und Legal, Compliance und Data Science haben die Abläufe von Anfang an mitgeprüft, nicht am Ende. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+Die wichtigste Entscheidung, und sie fällt in der ersten Woche. Datenminimierung ist ein Grundsatz der DSGVO (Artikel 5), und im KI-Projekt heißt das: Die Funktion bekommt nur die Felder, die sie für ihre Aufgabe braucht. Ein Antwortentwurf für den Kundenservice braucht die Frage und die Wissensbasis, nicht die Kontohistorie des Kunden. Bei Instructure, wo ich KI-Funktionen für eine Lernplattform mit mehreren Millionen Nutzern gestaltet habe, war „Privacy by default“ ein Designprinzip: Die Datenverwendung wurde offengelegt, Opt-outs und Aufbewahrungsregeln waren sichtbar, und Legal, Compliance und Data Science haben die Abläufe von Anfang an mitgeprüft, nicht am Ende. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
 
 ### 2. Auf welcher Rechtsgrundlage?
 
@@ -36,7 +36,7 @@ Vertrag, berechtigtes Interesse oder Einwilligung. Das entscheidet die Rechtsber
 
 ### 3. Wo läuft das Modell, und was behält der Anbieter?
 
-Ein Modell in der EU bei einem Anbieter mit Auftragsverarbeitungsvertrag, der die Eingaben nicht zum Training nutzt und Protokolle nach kurzer Frist löscht, ist eine andere Lage als ein kostenloses Konsumentenwerkzeug. Die Frage „Ist ChatGPT DSGVO-konform?" lässt sich deshalb nicht pauschal beantworten; sie hängt von Vertrag, Konfiguration und Datenfluss ab. Im Projekt gehört die Anbieterprüfung in die erste Phase, bevor der erste Prototyp mit echten Daten läuft.
+Ein Modell in der EU bei einem Anbieter mit Auftragsverarbeitungsvertrag, der die Eingaben nicht zum Training nutzt und Protokolle nach kurzer Frist löscht, ist eine andere Lage als ein kostenloses Konsumentenwerkzeug. Die Frage „Ist ChatGPT DSGVO-konform?“ lässt sich deshalb nicht pauschal beantworten; sie hängt von Vertrag, Konfiguration und Datenfluss ab. Im Projekt gehört die Anbieterprüfung in die erste Phase, bevor der erste Prototyp mit echten Daten läuft.
 
 ### 4. Trifft die KI Entscheidungen über Menschen?
 
@@ -57,6 +57,8 @@ Bei der Gesundheitsplattform Kineticare, die ich entworfen und gebaut habe, blei
 Beim Mobile-Banking-Neubau von Raiffeisen, einem Projekt ohne KI, kamen Compliance und Recht mit festen Anforderungen: PSD2, starke Kundenauthentifizierung, Identitätsprüfung, Prüfpfade. Die Aufgabe war, diese Anforderungen in Gestaltung zu übersetzen, nicht in Bürokratie: klare Zustände, verständliche Sprache, keine Schritte, die der Nutzer nicht versteht. Dieselbe Übersetzung braucht ein KI-Projekt. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
 
 ## Checkliste für DSGVO-konforme KI im Unternehmen
+
+Ob ein KI-Projekt DSGVO-konform ist, entscheidet sich an diesen Punkten, nicht am Namen des Anbieters:
 
 1. Datenfluss aufzeichnen: Was geht hinein, was kommt heraus, was bleibt beim Anbieter.
 2. Datenminimierung umsetzen: nur die nötigen Felder, Pseudonymisierung, wo möglich.

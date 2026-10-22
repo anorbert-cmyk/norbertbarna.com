@@ -9,7 +9,7 @@ tags: [ki automatisierung, ki prozessautomatisierung, ki prozessoptimierung, ki 
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-automatisierung-erster-prozess.jpg
-cover_alt: Mehrere gefaltete Papierbahnen laufen parallel, eine davon ist olivfarben hervorgehoben und führt durch ein kleines Papiertor
+cover_alt: Mehrere gefaltete Papierbahnen laufen parallel, eine davon ist olivfarben hervorgehoben und führt durch ein kleines Papiertor: der erste Prozess für eine KI-Automatisierung
 pair: null
 ---
 Der richtige erste Prozess für eine KI-Automatisierung ist einer, der oft vorkommt, mit unstrukturierten Eingaben wie E-Mails, Dokumenten oder Freitext arbeitet, dessen Ergebnis ein Mensch vor der Wirkung prüfen kann, und dessen Nutzen sich in Minuten pro Vorgang messen lässt. Wenn ein Prozess dagegen festen Regeln folgt und strukturierte Daten verarbeitet, braucht er keine KI, sondern klassische Automatisierung, und die ist billiger und zuverlässiger.
@@ -26,9 +26,9 @@ Die beiden werden oft in einen Topf geworfen, lösen aber verschiedene Probleme.
 
 **KI-Automatisierung** kommt dort ins Spiel, wo die Regel nicht aufschreibbar ist: die Rechnung ist ein Foto, der Betrag steht jedes Mal woanders, die Kundenanfrage ist Freitext in drei Sprachen, der Vertrag muss nach bestimmten Klauseln durchsucht werden. Hier erkennt ein Modell Muster und erzeugt einen Vorschlag. Der Preis dafür: Das Ergebnis ist nicht deterministisch, es kann falsch sein, und es muss geprüft werden.
 
-Daraus folgt die erste Regel für die Auswahl: **Wenn Sie die Regel aufschreiben können, automatisieren Sie klassisch.** KI ist für den Teil, bei dem Sie beim Aufschreiben der Regel sagen würden: „Das sieht man halt."
+Daraus folgt die erste Regel für jede Automatisierung mit KI: **Wenn Sie die Regel aufschreiben können, automatisieren Sie klassisch.** KI ist für den Teil, bei dem Sie beim Aufschreiben der Regel sagen würden: „Das sieht man halt.“
 
-## Fünf Kriterien für den ersten KI-Prozess
+## Welcher Prozess eignet sich für KI-Prozessautomatisierung? Fünf Kriterien
 
 ### 1. Häufigkeit
 
@@ -70,9 +70,9 @@ Ein Prozess, der alle fünf Kriterien erfüllt, ist ein guter Anfang. Vier von f
 
 ## Wie eine KI-Potenzialanalyse wirklich aussieht
 
-Viele Anbieter verkaufen eine „KI-Potenzialanalyse" oder ein „KI-Audit" als Workshop mit Folien. Das Nützliche daran ist unspektakulär: eine Liste Ihrer Prozesse mit den fünf Kriterien oben, aus Beobachtung und Gesprächen mit den Leuten, die die Arbeit machen. Am Ende stehen zwei oder drei Kandidaten mit einer Begründung, warum sie zuerst drankommen, und eine Liste von Prozessen, die besser klassisch automatisiert werden oder gar nicht.
+Viele Anbieter verkaufen eine „KI-Potenzialanalyse“, ein „KI-Audit“ oder eine „KI-Prozessoptimierung“ als Workshop mit Folien. Das Nützliche daran ist unspektakulär: eine Liste Ihrer Prozesse mit den fünf Kriterien oben, aus Beobachtung und Gesprächen mit den Leuten, die die Arbeit machen. Am Ende stehen zwei oder drei Kandidaten mit einer Begründung, warum sie zuerst drankommen, und eine Liste von Prozessen, die besser klassisch automatisiert werden oder gar nicht.
 
-Was ich dabei aus der Produktarbeit mitbringe: Bei Instructure haben wir KI-Funktionen nicht nach dem gewählt, was technisch beeindruckend war, sondern nach den Aufgaben der Nutzer, etwa „einen Entwurf schreiben", „die wichtigsten Punkte herausziehen", „aus Daten eine Handlung ableiten". Jede Funktion bekam vom ersten Tag an eine Kennzeichnung, eine editierbare Ausgabe und einen Weg zurück. Dieselbe Auswahl nach Aufgaben und dieselben Leitplanken gelten für eine Prozessautomatisierung im Mittelstand. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+Was ich dabei aus der Produktarbeit mitbringe: Bei Instructure haben wir KI-Funktionen nicht nach dem gewählt, was technisch beeindruckend war, sondern nach den Aufgaben der Nutzer, etwa „einen Entwurf schreiben“, „die wichtigsten Punkte herausziehen“, „aus Daten eine Handlung ableiten“. Jede Funktion bekam vom ersten Tag an eine Kennzeichnung, eine editierbare Ausgabe und einen Weg zurück. Dieselbe Auswahl nach Aufgaben und dieselben Leitplanken gelten für eine Prozessautomatisierung im Mittelstand. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
 
 ## Vom Kandidaten zum Pilot in sechs Schritten
 

@@ -9,24 +9,24 @@ tags: [ki halluzination, ki halluzinationen, ki halluzinationen vermeiden, ki fa
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-halluzinationen-im-unternehmen.jpg
-cover_alt: Ein gefaltetes Papierblatt mit einer losen, abstehenden Ecke, daneben eine kleine olivfarbene Prüfmarke
+cover_alt: Ein gefaltetes Papierblatt mit einer losen, abstehenden Ecke, daneben eine kleine olivfarbene Prüfmarke: KI-Halluzinationen im Unternehmen auffangen
 pair: null
 ---
-Eine KI-Halluzination ist eine überzeugend formulierte, aber falsche oder erfundene Ausgabe eines Sprachmodells. Im Unternehmen lässt sie sich nicht abschalten, sondern nur auffangen: Die KI arbeitet aus Ihren eigenen Quellen und zeigt sie an, die Ausgabe ist ein Entwurf, den ein Mensch bearbeitet, und bei Fragen, zu denen keine Quelle existiert, sagt das System „weiß ich nicht" statt zu raten. Wer das in die Oberfläche einbaut, hat Halluzinationen nicht beseitigt, aber ihnen die Wirkung genommen.
+Eine KI-Halluzination ist eine überzeugend formulierte, aber falsche oder erfundene Ausgabe eines Sprachmodells. Im Unternehmen lässt sie sich nicht abschalten, sondern nur auffangen: Die KI arbeitet aus Ihren eigenen Quellen und zeigt sie an, die Ausgabe ist ein Entwurf, den ein Mensch bearbeitet, und bei Fragen, zu denen keine Quelle existiert, sagt das System „weiß ich nicht“ statt zu raten. Wer das in die Oberfläche einbaut, hat Halluzinationen nicht beseitigt, aber ihnen die Wirkung genommen.
 
 Die meisten Texte zu diesem Thema erklären, was eine Halluzination ist und warum sie entsteht. Dieser Artikel setzt danach an: Was tut ein Produktteam, das eine KI-Funktion für Mitarbeiter oder Kunden baut, damit eine falsche Antwort keinen Schaden anrichtet. Die sieben Muster stammen aus zwei Produkten, an denen ich gearbeitet habe, KI-Funktionen in der Lernplattform von Instructure und ein KI-gestützter Prognosemarkt-MVP namens SportsGambit.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
 
-## Warum KI halluziniert, in drei Sätzen
+## Warum halluziniert KI? Drei Sätze
 
-Ein Sprachmodell sagt nicht die Wahrheit voraus, sondern das wahrscheinlichste nächste Wort. Wo das Training keine Fakten enthält, füllt es die Lücke mit etwas, das plausibel klingt. Und die gängigen Bewertungsverfahren belohnen das Raten: Eine Forschungsarbeit von OpenAI zeigt, dass ein Modell, das bei Unsicherheit tippt, in den üblichen Tests besser abschneidet als eines, das sich enthält, weil „weiß ich nicht" null Punkte bringt und ein Treffer beim Raten einen (Quelle: Kalai, Nachum, Vempala, Zhang, [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664), 4. September 2025, abgerufen am 21.10.2026).
+Ein Sprachmodell sagt nicht die Wahrheit voraus, sondern das wahrscheinlichste nächste Wort. Wo das Training keine Fakten enthält, füllt es die Lücke mit etwas, das plausibel klingt. Und die gängigen Bewertungsverfahren belohnen das Raten: Eine Forschungsarbeit von OpenAI zeigt, dass ein Modell, das bei Unsicherheit tippt, in den üblichen Tests besser abschneidet als eines, das sich enthält, weil „weiß ich nicht“ null Punkte bringt und ein Treffer beim Raten einen (Quelle: Kalai, Nachum, Vempala, Zhang, [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664), 4. September 2025, abgerufen am 21.10.2026).
 
 Für das Produkt folgt daraus: Das Modell wird nicht von allein vorsichtiger. Die Vorsicht muss die Oberfläche und der Ablauf einbauen.
 
 ## Welche KI-Halluzinationen im Unternehmen wirklich wehtun
 
-Nicht jede falsche Antwort ist gleich teuer. Drei Arten begegnen mir in Unternehmensprojekten am häufigsten:
+Nicht jede falsche Antwort der KI ist gleich teuer. Drei Arten begegnen mir in Unternehmensprojekten am häufigsten:
 
 - **Erfundene Quellen und Zahlen.** Die KI nennt eine Richtlinie, einen Paragrafen oder einen Preis, den es nicht gibt. Gefährlich, weil die Ausgabe nach Belegen aussieht.
 - **Vermischte Fälle.** Die KI beantwortet die Frage eines Kunden mit den Daten eines anderen, weil zwei Dokumente ähnlich aussahen. Im Kundenservice und überall, wo personenbezogene Daten im Spiel sind, ist das der teuerste Fehler.
@@ -34,7 +34,7 @@ Nicht jede falsche Antwort ist gleich teuer. Drei Arten begegnen mir in Unterneh
 
 Die zweite und dritte Art entstehen nicht im Modell, sondern in Ihren Daten. Deshalb beginnt die Arbeit gegen Halluzinationen bei der Frage, aus welchen Quellen die KI überhaupt arbeiten darf.
 
-## Sieben Muster, mit denen ein Produkt Halluzinationen auffängt
+## KI-Halluzinationen vermeiden und auffangen: sieben Muster
 
 ### 1. Die KI arbeitet aus Ihren Quellen, nicht aus ihrem Gedächtnis
 
@@ -46,11 +46,11 @@ Jede Antwort zeigt, aus welchem Dokument und welcher Stelle sie stammt, und der 
 
 ### 3. Die Ausgabe ist ein Entwurf, kein Ergebnis
 
-Die KI schreibt, der Mensch sendet. Das Feld ist editierbar, das Verwerfen ist ein Klick, und das Produkt zeigt nicht „fertig", sondern „Entwurf zur Prüfung". Dieses eine Wort in der Oberfläche verändert, wie die Nutzer mit der Ausgabe umgehen.
+Die KI schreibt, der Mensch sendet. Das Feld ist editierbar, das Verwerfen ist ein Klick, und das Produkt zeigt nicht „fertig“, sondern „Entwurf zur Prüfung“. Dieses eine Wort in der Oberfläche verändert, wie die Nutzer mit der Ausgabe umgehen.
 
 ### 4. Enthaltung ist eine erlaubte Antwort
 
-Wenn die Suche keine passende Stelle in Ihren Quellen findet, antwortet das System nicht aus dem allgemeinen Wissen des Modells, sondern sagt: „Dazu habe ich in den Unterlagen nichts gefunden." Das muss ausdrücklich gestaltet und getestet werden, denn von sich aus rät das Modell lieber. Ein System, das sich zehnmal am Tag enthält, ist besser als eines, das zehnmal am Tag überzeugend falsch liegt.
+Wenn die Suche keine passende Stelle in Ihren Quellen findet, antwortet das System nicht aus dem allgemeinen Wissen des Modells, sondern sagt: „Dazu habe ich in den Unterlagen nichts gefunden.“ Das muss ausdrücklich gestaltet und getestet werden, denn von sich aus rät das Modell lieber. Ein System, das sich zehnmal am Tag enthält, ist besser als eines, das zehnmal am Tag überzeugend falsch liegt.
 
 ### 5. Sicherheit wird angezeigt, nicht behauptet
 
@@ -66,7 +66,7 @@ Der Pilot misst, wie oft Entwürfe umgeschrieben oder verworfen werden, wie oft 
 
 ## Was das für die Wahl des Modells bedeutet
 
-Die Frage „Welche KI halluziniert am wenigsten?" wird oft gestellt, und die Antwort ändert sich mit jeder Modellgeneration. Für ein Unternehmensprodukt ist sie zweitrangig. Ein mittelmäßiges Modell mit sauberen Quellen, sichtbaren Belegen und menschlicher Prüfung ist zuverlässiger als das beste Modell, das frei aus dem Gedächtnis antwortet. Das Modell lässt sich später austauschen; die Quellen, die Oberfläche und der Ablauf bleiben.
+Die Frage „Welche KI halluziniert am wenigsten?“ wird oft gestellt, und die Antwort ändert sich mit jeder Modellgeneration. Für ein Unternehmensprodukt ist sie zweitrangig. Ein mittelmäßiges Modell mit sauberen Quellen, sichtbaren Belegen und menschlicher Prüfung ist zuverlässiger als das beste Modell, das frei aus dem Gedächtnis antwortet. Das Modell lässt sich später austauschen; die Quellen, die Oberfläche und der Ablauf bleiben.
 
 ## Was die KI-Verordnung dazu sagt
 
@@ -76,7 +76,7 @@ Die EU-KI-Verordnung verlangt keine fehlerfreie KI. Sie verlangt bei Hochrisiko-
 
 ### Was bedeutet es, wenn eine KI halluziniert?
 
-Das Modell erzeugt eine Ausgabe, die plausibel klingt, aber falsch ist oder durch keine Quelle gedeckt wird: ein erfundenes Zitat, eine nicht existierende Richtlinie, eine falsche Zahl. Das Modell „lügt" nicht; es hat keinen Begriff von wahr und falsch, nur von wahrscheinlich.
+Das Modell erzeugt eine Ausgabe, die plausibel klingt, aber falsch ist oder durch keine Quelle gedeckt wird: ein erfundenes Zitat, eine nicht existierende Richtlinie, eine falsche Zahl. Das Modell „lügt“ nicht; es hat keinen Begriff von wahr und falsch, nur von wahrscheinlich.
 
 ### Kann man KI-Halluzinationen ganz vermeiden?
 

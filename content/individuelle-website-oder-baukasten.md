@@ -9,12 +9,12 @@ tags: [individuelle website, website erstellen lassen, maßgeschneiderte website
 service: /de/webentwicklung
 service_label: Webentwicklung und individuelle Webanwendungen für Unternehmen
 cover: /assets/images/og/writing/individuelle-website-oder-baukasten.jpg
-cover_alt: Links ein Raster gleichförmiger kleiner Papierkacheln, rechts eine einzelne frei gefaltete Papierform in Olivgrün
+cover_alt: Links ein Raster gleichförmiger kleiner Papierkacheln, rechts eine einzelne frei gefaltete Papierform in Olivgrün: Website-Baukasten oder individuelle Website
 pair: hu/egyedi-weboldal-vagy-sablon
 ---
 Ein Baukasten ist die richtige Wahl, wenn Ihre Website vor allem informieren soll, Sie sie selbst pflegen wollen und keine Anbindung an andere Systeme brauchen. Eine individuelle Website lohnt sich, wenn die Seite Vertrauen aufbauen muss, bevor jemand bezahlt oder anfragt, wenn Zahlung, Buchung oder ein Kundenbereich dazugehören, wenn sie mit Ihrem CRM, ERP oder Buchungssystem sprechen muss, oder wenn Geschwindigkeit und Auffindbarkeit über Aufträge entscheiden. Der Preis ist in dieser Entscheidung nicht das erste Kriterium, sondern das letzte.
 
-Dieser Artikel erklärt den Unterschied, gibt Ihnen sechs Kriterien und eine Entscheidungstabelle, und beantwortet die Frage, die hinter „individuelle Website oder Baukasten" meist steckt: Soll ich die Website selbst bauen oder erstellen lassen?
+Dieser Artikel erklärt den Unterschied, gibt Ihnen sechs Kriterien und eine Entscheidungstabelle, und beantwortet die Frage, die hinter „individuelle Website oder Baukasten“ meist steckt: Soll ich die Website selbst bauen oder erstellen lassen?
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
 
@@ -26,7 +26,7 @@ Eine **individuelle Website** wird für Ihr Unternehmen entworfen und gebaut. St
 
 Dazwischen liegt ein dritter Weg, der oft übersehen wird: ein offenes System wie WordPress oder ein modernes Content-Management-System mit einem individuell entwickelten Design. Das verbindet die Pflege durch das eigene Team mit einer Seite, die nicht aussieht wie tausend andere.
 
-## Sechs Entscheidungskriterien
+## Wann lohnt sich eine individuelle Website statt eines Website-Baukastens? Sechs Kriterien
 
 ### 1. Muss die Seite Vertrauen aufbauen, bevor jemand bezahlt oder anfragt?
 
@@ -75,7 +75,7 @@ Die Frage hinter der Frage. Selbst bauen lohnt sich, wenn Sie Zeit haben, die Se
 
 ## Wie ich arbeite
 
-Ich baue keine Seiten aus Vorlagen. Jede Website beginnt mit der Frage, wer sie besucht und was diese Person entscheiden soll, dann folgen Struktur, Inhalt, Design und Technik. Das Ergebnis gehört Ihnen: der Code, die Inhalte, die Konten. Wer eine schnell befüllte Vorlage sucht, ist bei mir nicht richtig, und das sage ich im ersten Gespräch.
+Ich baue keine Seiten aus Vorlagen. Jede maßgeschneiderte Website beginnt mit der Frage, wer sie besucht und was diese Person entscheiden soll, dann folgen Struktur, Inhalt, Design und Technik. Das Ergebnis gehört Ihnen: der Code, die Inhalte, die Konten. Wer eine schnell befüllte Vorlage sucht, ist bei mir nicht richtig, und das sage ich im ersten Gespräch.
 
 ## Häufige Fragen
 

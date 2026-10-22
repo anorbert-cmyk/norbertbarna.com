@@ -201,6 +201,22 @@ export function citations(markdown) {
 export const outlineOf = (html) => [...html.matchAll(/<h2\b[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/g)]
   .map(([, id, inner]) => ({ id, text: htmlText(inner) }));
 
+// Search-intent check: the first tag is the article's primary keyword. It has
+// to appear in the title, the description and the opening paragraph, with
+// inflection allowed (Hungarian and German bend the words: "ai bevezetés"
+// matches "AI bevezetése", "ki halluzination" matches "KI-Halluzinationen").
+const foldWords = (value) => value.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(" ").filter(Boolean);
+export function mentions(text, keyword) {
+  const words = foldWords(text), needle = foldWords(keyword);
+  if (!needle.length) return false;
+  const fits = (word, part) => word === part || (part.length >= 3 && word.startsWith(part)) || (word.length >= 4 && part.startsWith(word) && part.length - word.length <= 2);
+  return words.some((_, start) => needle.every((part, offset) => words[start + offset] !== undefined && fits(words[start + offset], part)));
+}
+// Typography the articles keep: no dash as punctuation, and the language's own
+// quotation marks („” in Hungarian, „“ in German, “” in English).
+const STRAIGHT_QUOTE = /"/;
+const DASH_PUNCTUATION = /[–—]|(?:^|\s)-(?:\s|$)/m;
+
 export function articleFile(article) {
   return `${SECTIONS[article.lang].dir}/${article.slug}.html`;
 }
@@ -239,6 +255,14 @@ export function loadArticles({ root = ROOT, includeDrafts = false } = {}) {
     if (new Set(data.tags.map((tag) => tag.toLowerCase())).size !== data.tags.length) throw new Error(`${file}: tags repeat a term`);
     if (Boolean(data.service) !== Boolean(data.service_label)) throw new Error(`${file}: service and service_label go together`);
     if (/^#\s/m.test(body)) throw new Error(`${file}: remove the # heading; the title is the H1`);
+    const prose = body.replace(/`[^`]*`/g, "").replace(/\]\([^)]*\)/g, "]").replace(/^\s*[-*]\s+/gm, "").replace(/^\|.*$/gm, "");
+    if (DASH_PUNCTUATION.test(prose)) throw new Error(`${file}: no dash as punctuation; rewrite with a comma, a colon or a full stop`);
+    if (STRAIGHT_QUOTE.test(prose)) throw new Error(`${file}: use the language's quotation marks („” hu, „“ de, “” en), not straight quotes`);
+    const primary = data.tags?.[0] || "";
+    for (const [field, value] of [["title", data.title], ["description", data.description], ["opening paragraph", leadParagraph(body)], ["cover_alt", data.cover_alt || primary]]) {
+      if (!mentions(value, primary)) throw new Error(`${file}: the primary keyword "${primary}" (first tag) is missing from the ${field}`);
+    }
+    if (!/^##\s.*\?/m.test(body)) throw new Error(`${file}: at least one ## heading should be a question people search for`);
     // `pair` names the translations as lang/slug entries (one or a list).
     // A bare slug is the article's pair in the other of hu and en.
     const pairs = [data.pair].flat().filter(Boolean).map((entry) => {
