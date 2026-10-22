@@ -35,6 +35,10 @@
     var lastFocusedControl = document.activeElement;
     document.addEventListener("focusin", function (event) {
       lastFocusedControl = event.target;
+      // The compact menu is a non-modal disclosure over a locked page: when
+      // Tab leaves it, it closes so the newly focused control is not behind it.
+      if (menuButton.getAttribute("aria-expanded") === "true" && compactNavigation.matches &&
+        !event.target.closest(".navbar")) setMenuOpen(false);
     });
     document.addEventListener("focusout", function (event) {
       var box = event.target.getBoundingClientRect();

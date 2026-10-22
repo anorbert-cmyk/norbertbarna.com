@@ -57,7 +57,8 @@ for (const [language, path] of ROUTES) {
     await expect(workflow.locator(".ai-workflow-output")).toHaveCount(5);
     await expect(page.locator("#pieces [data-ai-step]")).toHaveCount(3);
     await expect(page.locator("#pieces #workflow, #pieces a, #pieces button")).toHaveCount(0);
-    // Each language links its own case and About pages (whole-site language switch, 2026-10-06).
+    // Each language links its own case, About and article pages (whole-site language switch, 2026-10-06;
+    // the related articles joined the chapter on 2026-10-22).
     const caseRoot = language === "hu" ? "/hu/munka/" : "/work/";
     const about = language === "hu" ? "/hu/rolam" : "/about";
     await expect(page.locator(`#selected-work a[href="${caseRoot}sportsgambit"]`)).toHaveAccessibleName(/SportsGambit.*MVP/);
@@ -66,7 +67,7 @@ for (const [language, path] of ROUTES) {
       href: link.getAttribute("href"), hreflang: link.getAttribute("hreflang") })));
     expect(evidence.length).toBeGreaterThanOrEqual(5);
     for (const link of evidence) {
-      expect(link.href, "case evidence stays in the page language").toMatch(language === "hu" ? /^\/hu\/(munka\/|rolam)/ : /^\/(work\/|about)/);
+      expect(link.href, "case evidence stays in the page language").toMatch(language === "hu" ? /^\/hu\/(munka\/|rolam|irasok\/)/ : /^\/(work\/|about|writing\/)/);
       expect(link.hreflang, "same-language evidence carries no cross-language hreflang").toBeNull();
     }
     await expectWorkflowInFlow(page);

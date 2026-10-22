@@ -128,8 +128,9 @@ html[lang="hu"] .ai-hero h1 { font-size: clamp(48px, 5.1vw, 88px); }
 .ai-workflow-output strong { font-weight: 600; }
 /* A chapter may close with the project contact capsule, and the reference
    chapter carries the related articles in the same reading rows (2026-10-22). */
-.ai-workflow-steps + p { margin-top: 40px; }
-.ai-workflow-steps + p > .hero-work-link { margin-top: 0; }
+.ai-chapter-cta { margin-top: 40px; }
+/* Enlarged text wraps inside the capsule instead of leaving the viewport. */
+.ai-chapter-cta > .hero-work-link { max-width: 100%; height: auto; margin-top: 0; padding-block: 10px; white-space: normal; overflow-wrap: anywhere; text-align: center; }
 .ai-related .ai-workflow-intro { margin-top: clamp(56px, 7vw, 96px); }
 
 /* The same quiet, geometric list language as the portfolio. One proof per row. */
