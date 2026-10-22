@@ -21,7 +21,7 @@ body.story-page {
   background: #0A1628 !important; color: #D6D4ED; transform: none !important;
   mix-blend-mode: normal !important; --immersive-link-ink: #D6D4ED;
 }
-.story-page .navbar .container { max-width: none; width: 100%; height: 100%; margin: 0; padding: 0 var(--story-gutter) !important; }
+.story-page .navbar .container { max-width: none; width: 100%; height: 100%; margin: 0; padding: 0 22px !important; }
 .story-page .navbar .nav-wrap, .story-page .navbar .nav-wrap.dark { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 100%; min-height: 64px; padding: 0; background: none; }
 .story-page .nav-logo-wrap { display: inline-flex; align-items: center; flex: 0 0 auto; width: 44px; min-width: 44px; min-height: 44px; padding: 0; }
 .story-page .navbar .nav-logo-wrap img { display: block; width: 35px; height: auto; filter: brightness(0) saturate(100%) invert(92%) sepia(8%) saturate(655%) hue-rotate(196deg) brightness(98%) contrast(88%) !important; }
@@ -117,7 +117,9 @@ body.story-page {
 }
 @media (max-width:991px) {
  .story-page .menu-button { display: flex; }
- .story-page .navbar .nav-menu.w-nav-menu { position: absolute; top: 64px; left: 0; right: 0; width: 100%; margin: 0; background: #0A1628; padding: 20px var(--story-gutter) 28px; border: 0; border-bottom: 1px solid rgb(214 212 237 / 25%); border-radius: 0; box-shadow: none; }
+ .story-page .navbar, .story-page .navbar[data-compact-nav] { height: 56px; }
+ .story-page .navbar .nav-wrap, .story-page .navbar .nav-wrap.dark { min-height: 56px; }
+ .story-page .navbar .nav-menu.w-nav-menu { position: absolute; top: 56px; left: 0; right: 0; width: 100%; margin: 0; background: #0A1628; padding: 20px var(--story-gutter) 28px; border: 0; border-bottom: 1px solid rgb(214 212 237 / 25%); border-radius: 0; box-shadow: none; }
  /* Closed from the first paint: the open state is a JS attribute, and the
     no-JS <noscript> sheet on each About page shows the menu in flow instead. */
  .story-page .navbar .nav-menu:not([data-nav-menu-open]) { display: none; }

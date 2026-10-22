@@ -174,7 +174,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 /* Privacy pages join the site's quiet lilac bar instead of the inherited white
    Webflow chrome: same type, 44px targets, the current page marked in olive. */
 @media (min-width: 992px) {
-  body.utility-page .navbar.w-nav { background: #D6D4ED; color: #0A1628; border-bottom: 1px solid rgb(10 22 40 / 12%); }
+  body.utility-page .navbar.w-nav { background: #D6D4ED; color: #0A1628; border: 0; box-shadow: inset 0 -1px 0 rgb(10 22 40 / 12%); }
   body.utility-page .navbar .nav-menu-area { display: flex; align-items: center; gap: 4px 28px; }
   body.utility-page .navbar .nav-link {
     display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0;
@@ -200,6 +200,8 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
   font: inherit; color: inherit; cursor: pointer; text-align: left;
 }
 .navbar .nav-group-trigger, .navbar .nav-lang-trigger { display: inline-flex; align-items: center; gap: 6px; }
+/* EN, HU and DE codes differ by a pixel or two; one width keeps the menu in place across languages. */
+.navbar .nav-lang-trigger { min-width: 68px; justify-content: center; }
 .navbar .nav-group-toggle {
   display: inline-flex; align-items: center; justify-content: center;
   width: 30px; min-width: 30px; min-height: 44px; margin-left: 0; padding: 0; color: inherit;
@@ -284,4 +286,26 @@ html.no-motion .navbar [data-nav-group-open] .nav-group-panel { animation: none;
 @media (min-width: 992px) {
   .navbar .nav-lang-trigger { min-height: 44px; padding: 10px 0; font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; }
   body:is(.works-index, .immersive-case) .navbar .nav-lang-trigger { font-size: clamp(12px, 1.05vw, 14px); }
+}
+
+/* One bar geometry on every page type and language (2026-10-22): the header
+   must not change size or move its controls between the home, work, service,
+   writing, contact and About pages. 64px on desktop, 56px compact, 22px
+   gutters, a 44px logo box holding the 32px mark, the menu button 44px.
+   Each page type keeps its own colours, blend and sticky/fixed behaviour. */
+html body .navbar.w-nav { height: auto; min-height: 0; }
+/* The writing/privacy hairline sits inside the 64px, not under it. */
+html body.utility-page .navbar.w-nav { border-bottom: 0; box-shadow: inset 0 -1px 0 rgb(10 22 40 / 12%); }
+html body .navbar .container, html body .navbar .container.w-container { width: 100%; max-width: none; margin: 0; padding-inline: 22px !important; }
+html body .navbar .nav-wrap, html body .navbar .nav-wrap.dark { min-height: 64px; height: auto; padding: 0; margin: 0; }
+html body .navbar .nav-logo-wrap, html body .navbar .nav-logo-wrap.logo {
+  display: inline-flex; flex: 0 0 44px; width: 44px; min-width: 44px; height: 44px; min-height: 44px;
+  margin: 0; padding: 0; align-items: center; justify-content: flex-start;
+}
+html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; height: 32px; object-fit: contain; }
+@media (max-width: 991px) {
+  html body .navbar .nav-wrap, html body .navbar .nav-wrap.dark { min-height: 56px; }
+  html body .navbar .menu-button, html body .navbar .menu-button.w-nav-button {
+    display: grid; place-items: center; width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0; margin: 0 0 0 auto;
+  }
 }

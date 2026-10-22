@@ -2819,11 +2819,11 @@ body.home .navbar {
 .home-mast .home-highlight-company { color: #D6D4ED; font-size: 16px; line-height: 1.5; }
 body.home .navbar, body.immersive-case .navbar { position: fixed; inset: 0 0 auto; height: auto; z-index: 95; border: 0; background: transparent; color: #D6D4ED; mix-blend-mode: difference; transform: translate3d(0, var(--nav-travel, 0px), 0); pointer-events: none; }
 body.home .navbar .container, body.immersive-case .navbar .container { width: 100%; max-width: none; padding-inline: 22px !important; }
-body.home .navbar .nav-wrap, body.immersive-case .navbar .nav-wrap { position: relative; min-height: 52px; justify-content: space-between; gap: 20px; }
+body.home .navbar .nav-wrap, body.immersive-case .navbar .nav-wrap { position: relative; min-height: 64px; justify-content: space-between; gap: 20px; }
 body.home .navbar .nav-logo-wrap { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 0; }
 .home-nav-monogram { font-family: Inter, "Inter Fallback", sans-serif; font-size: 16px; font-weight: 400; color: #D6D4ED; }
-.home-nav-wordmark { position: absolute; inset: 0; width: max-content; height: 52px; display: flex; align-items: center; margin: auto; font-family: Inter, "Inter Fallback", sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -.065em; line-height: 1; color: #D6D4ED; text-decoration: none; transform-origin: 50% 100%; transform: translateY(var(--nav-brand-offset, 0px)) scale(var(--nav-brand-scale, 1)); }
-.home-nav-progress { position: absolute; left: 74%; display: inline-flex; align-items: center; height: 52px; font-family: Inter, "Inter Fallback", sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
+.home-nav-wordmark { position: absolute; inset: 0; width: max-content; height: 64px; display: flex; align-items: center; margin: auto; font-family: Inter, "Inter Fallback", sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -.065em; line-height: 1; color: #D6D4ED; text-decoration: none; transform-origin: 50% 100%; transform: translateY(var(--nav-brand-offset, 0px)) scale(var(--nav-brand-scale, 1)); }
+.home-nav-progress { position: absolute; left: 74%; display: inline-flex; align-items: center; height: 64px; font-family: Inter, "Inter Fallback", sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
 body.home .navbar .footer-icon { display: none; }
 body.home .navbar .home-nav-label { display: inline; }
 body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { gap: 18px; }
