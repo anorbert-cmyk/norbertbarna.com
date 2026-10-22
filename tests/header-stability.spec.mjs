@@ -77,9 +77,15 @@ for (const device of VIEWPORTS) {
         // its final place (measured 30px before the fallback faces existed).
         // Without a local Arial twin the browser cannot size the fallback.
         const tolerance = fallbackReady ? 6 : Infinity;
+        // On a miss, say where every control sat and which local font stood in.
+        const probes = await page.evaluate(() => {
+          const width = (font) => { const s = document.createElement("span"); s.style.cssText = `position:absolute;white-space:nowrap;font:${font}`; s.textContent = "WORKS SERVICES ARTICLES ABOUT CONTACT LINKEDIN Munkák Szolgáltatások"; document.body.append(s); const w = s.getBoundingClientRect().width; s.remove(); return Math.round(w); };
+          return Object.fromEntries(['400 14px Inter', '400 14px "Inter Fallback"', '400 14px "Inter Fallback Caps"', '400 14px Arial', '400 14px "Liberation Sans"', '400 14px "DejaVu Sans"', '400 14px sans-serif'].map((font) => [font, width(font)]));
+        });
+        const report = after.controls.map((control, index) => `${control.label}: ${before.controls[index]?.box} -> ${control.box}`).join("\n  ");
         for (const [index, control] of after.controls.entries()) {
           const first = before.controls[index];
-          const message = `${path}: "${control.label}" moved from ${first.box} to ${control.box}`;
+          const message = `${path}: "${control.label}" moved from ${first.box} to ${control.box}\n  ${report}\n  probes ${JSON.stringify(probes)}`;
           expect(Math.abs(control.box[0] - first.box[0]), message).toBeLessThanOrEqual(tolerance);
           expect(Math.abs(control.box[2] - first.box[2]), message).toBeLessThanOrEqual(tolerance);
           expect(Math.abs(control.box[1] - first.box[1]), message).toBeLessThanOrEqual(1);
