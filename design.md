@@ -1004,11 +1004,19 @@ the rest as numbered hairline rows with a thumbnail. The article
 (`.writing-article-page`) opens on lilac with a breadcrumb, kicker, title,
 dek and one unlabelled name, date and reading-time line, pulls its 1200×630 cover down into the paper body,
 then runs a sticky table of contents rail (decimal-leading-zero counters,
-from 992px) beside a 720px reading column (`.writing-prose`, Inter 18px,
+from 992px; below that tier the same outline is one horizontally scrolling
+row of numbered pill chips under the cover, so the text starts within a
+screen) beside a 720px reading column (`.writing-prose`, Inter 18px,
 Funnel headings, olive blockquote rule, scrollable tables), ends in the
-lilac CTA card and two related articles (`.writing-related`). An article is a
-schema `Article` (author `#person`, `datePublished`/`dateModified` as full
-date-times) plus a `BreadcrumbList` back to its list. Under the H1 one line
+lilac CTA card and two related articles (`.writing-related`, rows headed
+`h3` under the section's `h2`). An article is a
+schema `Article` (author `#person` with `jobTitle` and `knowsLanguage`,
+`datePublished`/`dateModified` as full date-times) plus a `BreadcrumbList`
+back to its list. The first frontmatter tag is the article's primary search
+phrase: the build refuses an article whose title, description, opening
+paragraph or cover alt lacks it (inflected forms count), that has no
+question-form `##` heading, or that uses a dash as punctuation or straight
+quotes instead of the language's own („” hu, „“ de, “” en). Under the H1 one line
 gives the list link, the date and the reading time; there is still no
 “Written by / Published / Updated” label (**BlogHero**): the date of an
 article is content, a byline is not. A visible FAQ section (`## Gyakori kérdések` / `## Frequently asked

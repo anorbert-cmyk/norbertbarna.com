@@ -9,7 +9,7 @@ tags: [website relaunch, website überarbeiten, website relaunch checkliste, web
 service: /de/webentwicklung
 service_label: Webentwicklung und individuelle Webanwendungen für Unternehmen
 cover: /assets/images/og/writing/website-relaunch-oder-ueberarbeitung.jpg
-cover_alt: Zwei gefaltete Papierformen nebeneinander, eine mit geglätteter Oberfläche, die andere neu und schärfer gefaltet
+cover_alt: Zwei gefaltete Papierformen nebeneinander, eine mit geglätteter Oberfläche, die andere neu und schärfer gefaltet: Website-Relaunch oder Überarbeitung
 pair: null
 ---
 Ein Website-Relaunch lohnt sich, wenn das Problem im Fundament liegt: in der Technik, der Struktur oder der Aussage der Seite. Eine Überarbeitung reicht, wenn das Fundament trägt und nur Inhalte, einzelne Seiten oder die Geschwindigkeit nachgebessert werden müssen. Die Faustregel: Wenn Sie beim Aufzählen der Probleme bei drei Punkten landen, die sich nur mit einem anderen System, einer anderen Struktur oder einer anderen Positionierung lösen lassen, ist es ein Relaunch. Wenn jedes Problem eine einzelne Seite oder einen Text betrifft, ist es eine Überarbeitung.
@@ -30,7 +30,7 @@ Das System ist veraltet, Erweiterungen werden nicht mehr gepflegt, Updates brech
 
 ### 3. Die Seite ist auf dem Handy mühsam
 
-Nicht „sieht auf dem Handy etwas anders aus", sondern: Texte werden winzig, Menüs funktionieren nicht, Formulare sind nicht ausfüllbar. Bei vielen Unternehmenswebsites kommt heute der größere Teil der Besuche vom Handy; Ihre Analytik zeigt Ihnen den Anteil. Wenn die Seite dort versagt, versagt sie bei diesen Besuchern.
+Nicht „sieht auf dem Handy etwas anders aus“, sondern: Texte werden winzig, Menüs funktionieren nicht, Formulare sind nicht ausfüllbar. Bei vielen Unternehmenswebsites kommt heute der größere Teil der Besuche vom Handy; Ihre Analytik zeigt Ihnen den Anteil. Wenn die Seite dort versagt, versagt sie bei diesen Besuchern.
 
 ### 4. Die Geschwindigkeit ist strukturell schlecht
 
@@ -44,7 +44,7 @@ Die Website zieht Anfragen an, die nicht zu Ihrem Angebot passen, oder die richt
 
 Barrierefreiheit nach dem BFSG, Datenschutz, Einwilligungsverwaltung: Wenn das alte System diese Anforderungen nur mit Flickwerk erfüllt, ist der Relaunch der Moment, sie in die Bausteine einzubauen. Mehr dazu im Artikel [Barrierefreie Website und BFSG](/de/wissen/barrierefreie-website-bfsg).
 
-## Wann eine Überarbeitung reicht
+## Wann reicht es, die Website zu überarbeiten?
 
 - Die Technik ist aktuell und wird gepflegt, aber die Inhalte sind veraltet.
 - Einzelne Seiten funktionieren schlecht: eine Landingpage, das Kontaktformular, die Leistungsübersicht.
@@ -71,16 +71,16 @@ Der letzte Punkt ist wichtiger, als er klingt. Ein Relaunch ist einer der häufi
 
 Die Tabelle ist ein Vorschlag aus meiner Erfahrung, kein Regelwerk. In der Praxis entscheidet die Summe: zwei Kreuze in der rechten Spalte sprechen für den Relaunch.
 
-## „Neu bauen oder flicken": Was ich aus der Bank gelernt habe
+## „Neu bauen oder flicken“: Was ich aus der Bank gelernt habe
 
-Beim Mobile-Banking-Neubau von Raiffeisen stand genau diese Frage am Anfang. Die App verlor Vertrauen, die Bewertungen waren schlecht, die Abläufe unterschieden sich zwischen 16 Ländern, und es gab keine Analytik, um Entscheidungen zu steuern. Wir haben zuerst Messungen eingebaut und Interviews geführt, um zu sehen, wo die größten Verluste entstanden. Dann gab es einen Workshop „Rebuild vs. Patch" mit allen Beteiligten. Das Ergebnis war ein vollständiger Neubau auf einem einheitlichen Design-System, aber nicht, weil die Oberfläche alt aussah, sondern weil die Daten zeigten, dass die Probleme in der Struktur saßen. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
+Beim Mobile-Banking-Neubau von Raiffeisen stand genau diese Frage am Anfang. Die App verlor Vertrauen, die Bewertungen waren schlecht, die Abläufe unterschieden sich zwischen 16 Ländern, und es gab keine Analytik, um Entscheidungen zu steuern. Wir haben zuerst Messungen eingebaut und Interviews geführt, um zu sehen, wo die größten Verluste entstanden. Dann gab es einen Workshop „Rebuild vs. Patch“ mit allen Beteiligten. Das Ergebnis war ein vollständiger Neubau auf einem einheitlichen Design-System, aber nicht, weil die Oberfläche alt aussah, sondern weil die Daten zeigten, dass die Probleme in der Struktur saßen. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
 
 Die Lehre für eine Unternehmenswebsite: Erst messen, dann entscheiden. Google Search Console, ein Blick in die Analytik und drei Gespräche mit Kunden sagen mehr über den Bedarf als jede Meinung zum Design.
 
-## Relaunch-Checkliste: So kostet der Neubau keine Sichtbarkeit
+## Website-Relaunch-Checkliste für SEO: So kostet der Neubau keine Sichtbarkeit
 
 1. **URL-Inventar erstellen.** Alle bestehenden Adressen mit ihren Besuchen und Rankings erfassen, bevor irgendetwas gebaut wird. Die Search Console und ein Crawler wie Screaming Frog liefern die Liste.
-2. **Inhalte entscheiden, nicht löschen.** Jede alte Seite bekommt eine Entscheidung: behalten, zusammenlegen, weiterleiten oder bewusst aufgeben. „Vergessen" ist keine Option.
+2. **Inhalte entscheiden, nicht löschen.** Jede alte Seite bekommt eine Entscheidung: behalten, zusammenlegen, weiterleiten oder bewusst aufgeben. „Vergessen“ ist keine Option.
 3. **Weiterleitungen planen.** Jede alte Adresse, die sich ändert, leitet mit Status 301 auf die neue Entsprechung, nicht pauschal auf die Startseite.
 4. **Titel, Beschreibungen und Überschriften mitnehmen.** Was heute rankt, hat Gründe. Die Texte dürfen besser werden, aber die Kernbegriffe bleiben.
 5. **Auf einer geschützten Testumgebung bauen.** Die neue Seite darf vor dem Start nicht von Suchmaschinen gelesen werden, und nach dem Start muss diese Sperre weg. Beides wird häufig vergessen.
@@ -88,7 +88,7 @@ Die Lehre für eine Unternehmenswebsite: Erst messen, dann entscheiden. Google S
 7. **Am Starttag messen.** Search Console auf Fehler prüfen, Weiterleitungen stichprobenartig testen, Analytik und Formulare kontrollieren.
 8. **Vier Wochen beobachten.** Rankings schwanken nach einem Relaunch einige Wochen. Was danach noch fehlt, wird gezielt nachgearbeitet.
 
-## Wovon Aufwand und Kosten eines Relaunchs abhängen
+## Wovon die Kosten eines Website-Relaunchs abhängen
 
 - Zahl und Art der Seiten, und wie viel Inhalt neu geschrieben werden muss.
 - Ob ein Systemwechsel stattfindet und Daten migriert werden.
@@ -127,4 +127,4 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 
 ## Fazit
 
-Die Frage „Relaunch oder Überarbeitung" beantwortet sich nicht am Aussehen der Seite, sondern an der Frage, ob das Fundament trägt. Wenn Sie mir Ihre Adresse und die drei Dinge schicken, die Sie an Ihrer Website am meisten stören, sage ich Ihnen nach einer ersten Prüfung, in welche Spalte der Tabelle Ihr Fall gehört: [Kontakt](/de/kontakt). Wie ich Websites baue, steht auf der Seite [Webentwicklung](/de/webentwicklung).
+Die Frage „Relaunch oder Überarbeitung“ beantwortet sich nicht am Aussehen der Seite, sondern an der Frage, ob das Fundament trägt. Wenn Sie mir Ihre Adresse und die drei Dinge schicken, die Sie an Ihrer Website am meisten stören, sage ich Ihnen nach einer ersten Prüfung, in welche Spalte der Tabelle Ihr Fall gehört: [Kontakt](/de/kontakt). Wie ich Websites baue, steht auf der Seite [Webentwicklung](/de/webentwicklung).

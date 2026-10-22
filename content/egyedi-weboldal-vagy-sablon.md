@@ -1,6 +1,6 @@
 ---
-title: "Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek"
-description: "Egyedi weboldal vagy sablon? Hat döntési szempont cégeknek: bizalom, funkciók, integrációk, tartalomkezelés, bővítés, kereshetőség."
+title: "Egyedi weboldal készítés vagy sablon? Hat szempont cégeknek"
+description: "Egyedi weboldal készítés vagy sablon? Hat szempont cégeknek: bizalom, funkciók, integrációk, tartalomkezelés, bővítés, kereshetőség."
 lang: hu
 slug: egyedi-weboldal-vagy-sablon
 date: 2026-10-21T09:00:00+02:00
@@ -9,22 +9,22 @@ tags: [egyedi weboldal készítés, honlapkészítés, weboldal készítés, egy
 service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
 cover: /assets/images/og/writing/egyedi-weboldal-vagy-sablon.jpg
-cover_alt: Balra egy köteg egyforma hajtogatott papírlap, jobbra egyetlen egyedi papírszobor
+cover_alt: Balra egy köteg egyforma hajtogatott papírlap, jobbra egyetlen egyedi papírszobor: sablon weboldal vagy egyedi weboldal készítés
 pair: de/individuelle-website-oder-baukasten
 ---
-Sablon akkor elég, ha a weboldalad egy névjegy: bemutatod, mit csinálsz, és hogyan érnek el. Egyedi weboldal akkor kell, ha a látogatónak bizalomra van szüksége a döntéshez, ha fizetés, foglalás vagy belépés van az oldalon, vagy ha az oldalnak a meglévő rendszereidhez kell kapcsolódnia. A kérdés nem a design, hanem hogy mit kell az oldalnak elvégeznie.
+Sablon akkor elég, ha a weboldalad egy névjegy: bemutatod, mit csinálsz, és hogyan érnek el. Egyedi weboldal készítés akkor indokolt, ha a látogatónak bizalomra van szüksége a döntéshez, ha fizetés, foglalás vagy belépés van az oldalon, vagy ha az oldalnak a meglévő rendszereidhez kell kapcsolódnia. A kérdés nem a design, hanem hogy mit kell az oldalnak elvégeznie.
 
 Ez a cikk hat szempontot ad a döntéshez, mindegyiknél egy saját projektből vett példával. A végén egy táblázat van, ami a tipikus helyzeteket a két út egyikéhez rendeli.
 
 ## Mi a különbség a sablon és az egyedi weboldal között?
 
-**Sablon:** kész szerkezet és kész megjelenés, a te tartalmaddal. Gyors indulás, alacsony belépési küszöb. A szerkezet a sablonhoz igazodik, nem a látogatódhoz: ha a sablonban három szolgáltatáskártya van, neked is három lesz, akkor is, ha egy vagy hét kellene.
+**Sablon weboldal:** kész szerkezet és kész megjelenés, a te tartalmaddal. Gyors indulás, alacsony belépési küszöb. A szerkezet a sablonhoz igazodik, nem a látogatódhoz: ha a sablonban három szolgáltatáskártya van, neked is három lesz, akkor is, ha egy vagy hét kellene.
 
 **Egyedi weboldal:** a látogató útjából indul, és a szerkezet, a design és a technika ehhez készül. Több előkészítés, cserébe pontosan az kerül bele, ami a döntéshez kell, és semmi, ami nem.
 
 A kettő között van a „testreszabott sablon” sáv: kész alap, egyedi szerkezeti és tartalmi döntésekkel. Sok cégnek ez a jó válasz, ezért a hat szempontnál ezt is jelzem.
 
-## Hat döntési szempont egyedi weboldal és sablon között
+## Mikor éri meg az egyedi weboldal készítés a sablon helyett? Hat szempont
 
 ### 1. Kell-e bizalmat építeni, mielőtt valaki fizet vagy jelentkezik?
 
@@ -76,11 +76,11 @@ A táblázat szerkesztői javaslat a saját tapasztalatomból, nem piaci adat.
 
 ## Hogyan dolgozom
 
-Nem a mennyiségben hiszek, hanem a minőségben. Olyan projekteken dolgozom, ahol a megrendelő is beleteszi az energiát, és mindkettőnk célja egy olyan munka, amely hűen mutatja a márkádat, a termékeidet és a szakmai tudásomat, nem egy sablon. Ha a fenti szempontok alapján sablon kell, azt nyugodtan megmondom. Magyarul és angolul kommunikálok, magyar, EU-s és német megrendelőkkel is.
+Nem a mennyiségben hiszek, hanem a minőségben. Olyan projekteken dolgozom, ahol a megrendelő is beleteszi az energiát, és mindkettőnk célja egy olyan munka, amely hűen mutatja a márkádat, a termékeidet és a szakmai tudásomat, nem egy sablon. Ha a fenti szempontok alapján sablon kell, azt nyugodtan megmondom; a honlapkészítés nálam nem azzal kezdődik, hogy mit tudok eladni, hanem azzal, hogy mire van szükséged. Magyarul és angolul kommunikálok, magyar, EU-s és német megrendelőkkel is.
 
 ## Gyakori kérdések
 
-### Drágább az egyedi weboldal?
+### Drágább az egyedi weboldal készítés, mint a sablon?
 
 Induláskor általában igen. Nálam minden weboldal egyedi munka, a technológiát is a felhasználóid igényeihez szabom, ezért az ár a feladatból következik, nem egy csomagból. A tényezőket a [weboldal árát meghatározó szempontok](/hu/irasok/ceges-weboldal-ara) cikkben írtam le.
 

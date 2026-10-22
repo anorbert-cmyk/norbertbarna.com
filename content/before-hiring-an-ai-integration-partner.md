@@ -9,16 +9,16 @@ tags: [ai integration, ai integration consultant, ai implementation, ai consulti
 service: /ai-integration
 service_label: AI integration for regulated industries
 cover: /assets/images/og/writing/before-hiring-an-ai-integration-partner.jpg
-cover_alt: Five folded paper strips in a row like a checklist, one lifted to show its olive underside
+cover_alt: Five folded paper strips in a row like a checklist, one lifted to show its olive underside: what to prepare before hiring an AI integration partner
 pair: null
 ---
 Before you hire an AI integration partner, prepare five things: one workflow described by the people who do it, a baseline of how it performs today, the data and systems the AI may touch, the decisions a person must keep, and the measure that would make a pilot worth continuing. With those, a first conversation produces a scoped proposal instead of a demo.
 
 This article is the preparation checklist I wish every company brought to the first call, the questions worth asking any partner, and the red flags I would watch for. The tone is practical; the pitch, such as it is, comes at the end.
 
-## Why preparation changes the quality of proposals
+## Why does preparation change the quality of proposals?
 
-Without a workflow and a baseline, a partner can only show you what a model can do, and every partner's model can do roughly the same things. With them, the partner has to say what will change in your work, how, and how you will know. That is a different conversation, and it separates people who integrate AI into real operations from people who sell demos. This is an editorial view from my own projects, not a market figure.
+Without a workflow and a baseline, a partner can only show you what a model can do, and every partner's model can do roughly the same things. With them, the partner has to say what will change in your work, how, and how you will know. That is a different conversation, and it separates an AI integration consultant who puts AI into real operations from people who sell demos. The same holds whether the offer is called AI consulting, AI implementation or AI integration services: the names differ, the test is the same. This is an editorial view from my own projects, not a market figure.
 
 ## The preparation checklist
 
@@ -83,7 +83,7 @@ A bounded problem. A draft of access and review rules. A decision on whether to 
 
 ### What does an AI integration partner do?
 
-Connects AI to the workflow, data and decisions you already have, designs the review and failure paths, and builds the pilot with your systems. The work is in the integration, not in the model.
+An AI integration consultant or partner connects AI to the workflow, data and decisions you already have, designs the review and failure paths, and builds the pilot with your systems. The work is in the integration, not in the model.
 
 ### How long does an AI integration take?
 

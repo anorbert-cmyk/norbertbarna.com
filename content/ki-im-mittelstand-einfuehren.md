@@ -9,22 +9,22 @@ tags: [ki im mittelstand, ki im unternehmen, ki readiness, ki einführung, ki be
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-im-mittelstand-einfuehren.jpg
-cover_alt: Drei gefaltete Papierstufen, die nach rechts ansteigen, vor lilafarbenem Hintergrund
+cover_alt: Drei gefaltete Papierstufen, die nach rechts ansteigen, vor lilafarbenem Hintergrund: KI im Mittelstand einführen in drei Phasen
 pair: hu/ai-bevezetese-kkv-elso-90-nap
 ---
-KI im Mittelstand einzuführen beginnt mit einem einzigen Arbeitsablauf, nicht mit einem Werkzeug. In den ersten drei Monaten wählen Sie eine wiederkehrende Aufgabe aus, legen fest, was die KI tun darf und was ein Mensch prüft, testen das an echten Beispielen und messen es in einem engen Pilotversuch. Am Ende haben Sie keine „KI-Strategie", sondern eine Entscheidung: weitermachen, umbauen oder abbrechen.
+KI im Mittelstand einzuführen beginnt mit einem einzigen Arbeitsablauf, nicht mit einem Werkzeug. In den ersten drei Monaten wählen Sie eine wiederkehrende Aufgabe aus, legen fest, was die KI tun darf und was ein Mensch prüft, testen das an echten Beispielen und messen es in einem engen Pilotversuch. Am Ende haben Sie keine „KI-Strategie“, sondern eine Entscheidung: weitermachen, umbauen oder abbrechen.
 
 Die 90 Tage sind mein Vorschlag für den Ablauf, keine garantierte Dauer. Weiter unten steht, wovon es abhängt, ob die Zeit reicht. Dieser Artikel zeigt, was in den drei Phasen passiert, was Sie am Ende jeder Phase in der Hand haben, und welche Fehler ich in den ersten Monaten am häufigsten sehe.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
 
-## Bevor Sie anfangen: drei Fragen zur KI-Readiness
+## Ist Ihr Unternehmen bereit für KI? Drei Fragen zur KI-Readiness
 
-„KI-Readiness" klingt nach einem Fragebogen mit fünfzig Punkten. In der Praxis entscheiden drei Fragen, ob ein Mittelständler für einen ersten KI-Einsatz bereit ist:
+„KI-Readiness“ klingt nach einem Fragebogen mit fünfzig Punkten. In der Praxis entscheiden drei Fragen, ob ein Mittelständler für eine erste KI-Einführung bereit ist, und das gilt für KI im Unternehmen jeder Größe, vom KMU bis zum Konzern:
 
 1. **Gibt es eine Aufgabe, die jede Woche in ähnlicher Form wiederkehrt?** Angebote aus Anfragen schreiben, Eingangsrechnungen zuordnen, Kundenfragen aus der Dokumentation beantworten, Berichte aus Daten zusammenfassen. Wenn jede Aufgabe ein Einzelfall ist, ist KI das falsche Mittel.
 2. **Liegen die Informationen dafür irgendwo geordnet vor?** Die KI arbeitet aus Ihren Dokumenten, Ihrem ERP, Ihrem Ticketsystem. Wenn das Wissen nur in den Köpfen von zwei Mitarbeitern steckt, ist der erste Schritt kein KI-Projekt, sondern eine Dokumentation.
-3. **Wer trägt die Verantwortung, wenn die KI falsch liegt?** Nicht „die IT", sondern eine Person mit Namen, die den Pilotversuch leitet und das Ergebnis am Ende bewertet.
+3. **Wer trägt die Verantwortung, wenn die KI falsch liegt?** Nicht „die IT“, sondern eine Person mit Namen, die den Pilotversuch leitet und das Ergebnis am Ende bewertet.
 
 Wenn Sie alle drei Fragen beantworten können, sind Sie bereit. Wenn nicht, wissen Sie jetzt, woran Sie zuerst arbeiten. Das ist schon ein Ergebnis.
 
@@ -73,7 +73,7 @@ Nach 90 Tagen gibt es eine Entscheidung mit Zahlen dahinter: weitermachen und au
 
 1. **Mit dem Werkzeug anfangen.** Eine Lizenz kaufen und dann suchen, wofür. Der Ablauf kommt zuerst, das Werkzeug zuletzt.
 2. **Zu breit starten.** Fünf Abteilungen gleichzeitig. Ein enger Pilot mit messbarem Ergebnis überzeugt mehr als fünf halbe.
-3. **Die Prüfung weglassen.** „Die KI ist doch so gut." Sie ist es in der Demo. Im Alltag entscheidet, was passiert, wenn sie irrt.
+3. **Die Prüfung weglassen.** „Die KI ist doch so gut.“ Sie ist es in der Demo. Im Alltag entscheidet, was passiert, wenn sie irrt.
 4. **Keine Ausgangswerte.** Ohne die Zahlen von vorher kann niemand sagen, ob der Pilot etwas gebracht hat.
 5. **Die Mitarbeiter übergehen.** Wer die Arbeit heute macht, weiß, wo sie hakt. Wenn diese Leute die KI als Bedrohung erleben, wird sie nicht genutzt, egal wie gut sie ist.
 6. **Den Datenschutz ans Ende schieben.** Welche Daten die KI sieht, wird in der ersten Woche geklärt, nicht vor dem Rollout.
@@ -86,7 +86,7 @@ Die EU-KI-Verordnung gilt seit dem 2. August 2026 in weiten Teilen. Für die mei
 
 ### Was kostet die Einführung von KI im Mittelstand?
 
-Das hängt vom Zustand der Daten, der Integration und dem Grad der Kontrolle ab, nicht von der Unternehmensgröße. Ich nenne keinen Festpreis, weil jedes Vorhaben individuelle Arbeit ist; der Preis ergibt sich nach der ersten Phase, wenn der Umfang klar ist. Die Methode beschreibe ich auf der Seite [KI-Beratung, Automatisierung und Entwicklung](/de/ki-beratung-entwicklung).
+Das hängt vom Zustand der Daten, der Integration und dem Grad der Kontrolle ab, nicht von der Unternehmensgröße. KI-Beratung für den Mittelstand heißt bei mir: Analyse, Prototyp und Pilot mit Ihrem Team, nicht ein Lizenzverkauf. Ich nenne keinen Festpreis, weil jedes Vorhaben individuelle Arbeit ist; der Preis ergibt sich nach der ersten Phase, wenn der Umfang klar ist. Die Methode beschreibe ich auf der Seite [KI-Beratung, Automatisierung und Entwicklung](/de/ki-beratung-entwicklung).
 
 ### Brauchen wir ein eigenes KI-Modell?
 
@@ -110,4 +110,4 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 
 ## Fazit
 
-KI im Mittelstand einzuführen heißt nicht, eine Technologie zu kaufen, sondern einen Ablauf zu verstehen und zu entscheiden, wo ein Mensch die Kontrolle behält. Wenn Sie mir beschreiben, welche Aufgabe in Ihrem Unternehmen jede Woche wiederkehrt, sage ich Ihnen in einem Gespräch, ob sie sich für einen ersten Pilotversuch eignet: [Kontakt](/de/kontakt).
+KI im Mittelstand einzuführen, ob im KMU oder im größeren Unternehmen, heißt nicht, eine Technologie zu kaufen, sondern einen Ablauf zu verstehen und zu entscheiden, wo ein Mensch die Kontrolle behält. Wenn Sie mir beschreiben, welche Aufgabe in Ihrem Unternehmen jede Woche wiederkehrt, sage ich Ihnen in einem Gespräch, ob sie sich für einen ersten Pilotversuch eignet: [Kontakt](/de/kontakt).

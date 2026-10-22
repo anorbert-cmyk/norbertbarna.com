@@ -9,16 +9,16 @@ tags: [mvp entwicklung, mvp software, mvp entwickeln lassen, minimum viable prod
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/mvp-entwicklung-regulierte-produkte.jpg
-cover_alt: Eine kleine, sauber gefaltete Papierform auf einem festen dunkelgrünen Papiersockel, drumherum Platz für weitere Faltungen
+cover_alt: Eine kleine, sauber gefaltete Papierform auf einem festen dunkelgrünen Papiersockel, drumherum Platz für weitere Faltungen: MVP-Entwicklung für regulierte Produkte
 pair: null
 ---
-Ein MVP, ein Minimum Viable Product, ist die kleinste Version eines Produkts, mit der sich eine zentrale Annahme an echten Nutzern prüfen lässt. In einem regulierten Markt, etwa bei Zahlungen, Gesundheit, Versicherungen oder Glücksspiel, gilt das Prinzip genauso, aber mit einer Einschränkung: Was Sie weglassen dürfen, ist der Funktionsumfang. Was Sie nicht weglassen dürfen, ist alles, was Vertrauen und Zulässigkeit betrifft: Identitätsprüfung, Einwilligung, Datenschutz, sichere Bestätigung folgenreicher Aktionen, Nachvollziehbarkeit. Diese Dinge sind am ersten Tag echt, oder das Produkt darf nicht an echte Nutzer.
+Ein MVP, ein Minimum Viable Product, ist die kleinste Version eines Produkts, mit der sich eine zentrale Annahme an echten Nutzern prüfen lässt. In der MVP-Entwicklung für einen regulierten Markt, etwa bei Zahlungen, Gesundheit, Versicherungen oder Glücksspiel, gilt das Prinzip genauso, aber mit einer Einschränkung: Was Sie weglassen dürfen, ist der Funktionsumfang. Was Sie nicht weglassen dürfen, ist alles, was Vertrauen und Zulässigkeit betrifft: Identitätsprüfung, Einwilligung, Datenschutz, sichere Bestätigung folgenreicher Aktionen, Nachvollziehbarkeit. Diese Dinge sind am ersten Tag echt, oder das Produkt darf nicht an echte Nutzer.
 
 Dieser Artikel beschreibt, wie sich MVP-Entwicklung in regulierten Produkten von der im Startup-Lehrbuch unterscheidet, was in zwei Projekten, an denen ich gearbeitet habe, am ersten Tag echt sein musste, und wie der Ablauf von der Hypothese bis zum ersten Nutzer aussieht.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
 
-## Was ein MVP ist, und was es in regulierten Märkten nicht sein darf
+## Was ist ein MVP, und was darf es in regulierten Märkten nicht sein?
 
 Die Lean-Startup-Idee hinter dem MVP: Bauen, messen, lernen, in kurzen Schleifen, mit so wenig Aufwand wie möglich. Eine Landingpage, ein Klick-Dummy, eine von Hand bediente Fassade reichen oft, um zu prüfen, ob jemand das Produkt will.
 
@@ -59,13 +59,13 @@ Bei SportsGambit, einem KI-gestützten Prognosemarkt-MVP, stand bei jeder Empfeh
 
 1. **Die eine Annahme benennen.** Was muss wahr sein, damit das Produkt Sinn ergibt? Ein Satz, messbar.
 2. **Die Pflichtliste erstellen.** Welche Regeln gelten, sobald ein echter Nutzer da ist. Diese Liste schreibt die Rechtsberatung mit, in der ersten Woche.
-3. **Fassade und Fundament trennen.** Alles auf die Liste „weglassen" oder „von Hand", was nicht Annahme oder Pflicht ist. Alles andere wird echt gebaut.
+3. **Fassade und Fundament trennen.** Alles auf die Liste „weglassen“ oder „von Hand“, was nicht Annahme oder Pflicht ist. Alles andere wird echt gebaut.
 4. **Die kritischen Abläufe zuerst entwerfen.** Onboarding, Bestätigung, Fehler, Weg zurück. Prototyp, Test mit Nutzern, Überarbeitung, bevor eine Zeile Produktcode entsteht.
 5. **Bauen in kurzen Schleifen,** mit Messung von Anfang an: Wo brechen Nutzer ab, wo rufen sie an, wo zögern sie.
 6. **Mit wenigen echten Nutzern starten,** hinter Zugangsbeschränkung, mit einem Verantwortlichen, der jede Woche die Zahlen liest.
 7. **Entscheiden.** Ausbauen, umbauen oder einstellen, auf Basis dessen, was die Nutzer getan haben, nicht dessen, was sie gesagt haben.
 
-## Wovon Aufwand und Kosten abhängen
+## Wovon Aufwand und Kosten abhängen, wenn Sie ein MVP entwickeln lassen
 
 - Welche Pflichten greifen: Identitätsprüfung, Zahlungsabwicklung, Gesundheitsdaten, KI-Kennzeichnung.
 - Ob Zahlungen oder Drittsysteme angebunden werden.
@@ -103,4 +103,4 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 
 ## Fazit
 
-Ein MVP in einem regulierten Markt ist klein im Umfang und vollständig im Fundament. Wenn Sie mir Ihre eine Annahme und den Markt nennen, in dem das Produkt startet, sage ich Ihnen in einem Gespräch, was auf die Pflichtliste gehört und was Sie getrost weglassen können: [Kontakt](/de/kontakt).
+Ein MVP in einem regulierten Markt ist klein im Umfang und vollständig im Fundament; das gilt für MVP-Software mit und ohne KI-Entwicklung, für eine Webanwendung genauso wie für eine App. Wenn Sie mir Ihre eine Annahme und den Markt nennen, in dem das Produkt startet, sage ich Ihnen in einem Gespräch, was auf die Pflichtliste gehört und was Sie getrost weglassen können: [Kontakt](/de/kontakt).

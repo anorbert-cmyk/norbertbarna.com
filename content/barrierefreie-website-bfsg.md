@@ -9,7 +9,7 @@ tags: [barrierefreie website, barrierefreiheitsstärkungsgesetz, bfsg, wcag 2.1,
 service: /de/webentwicklung
 service_label: Webentwicklung und individuelle Webanwendungen für Unternehmen
 cover: /assets/images/og/writing/barrierefreie-website-bfsg.jpg
-cover_alt: Eine breite gefaltete Papierrampe führt sanft zu einer Papierplattform, daneben ein kleiner olivfarbener Kontrast-Keil
+cover_alt: Eine breite gefaltete Papierrampe führt sanft zu einer Papierplattform, daneben ein kleiner olivfarbener Kontrast-Keil: Sinnbild für eine barrierefreie Website nach BFSG
 pair: null
 ---
 Eine barrierefreie Website ist seit dem 28. Juni 2025 für viele Unternehmen in Deutschland Pflicht: Das Barrierefreiheitsstärkungsgesetz (BFSG) verlangt, dass Websites und Apps, über die Verbraucher Verträge schließen, Produkte kaufen, Termine buchen oder Konten führen, barrierefrei nutzbar sind. Maßstab ist in der Praxis die Norm EN 301 549, die auf die WCAG 2.1 auf Stufe AA verweist. Eine reine Informationsseite ohne Bestell- oder Buchungsfunktion fällt nach überwiegender Lesart nicht unter das Gesetz, und Kleinstunternehmen sind bei Dienstleistungen ausgenommen.
@@ -20,7 +20,7 @@ Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU;
 
 ## Welche Websites müssen nach dem BFSG barrierefrei sein?
 
-Das BFSG setzt die europäische Barrierefreiheitsrichtlinie (European Accessibility Act) um und gilt für bestimmte Produkte und Dienstleistungen, die Verbrauchern angeboten werden. Für Websites ist der wichtigste Fall der „elektronische Geschäftsverkehr": Wenn über Ihre Website Verträge mit Verbrauchern geschlossen werden, also ein Onlineshop, eine Terminbuchung mit Bezahlung, ein Kundenkonto oder ein Abo-Abschluss, ist die Website eine Dienstleistung im Sinne des Gesetzes und muss barrierefrei sein. Dazu kommen unter anderem Bankdienstleistungen, Telekommunikation, Personenverkehr und E-Books (Quellen: [Bundesfachstelle Barrierefreiheit](https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz), [IHK München](https://www.ihk-muenchen.de/ratgeber/recht/werbung-fairer-wettbewerb/barrierefreiheitsstaerkungsgesetz/), abgerufen am 21.10.2026).
+Das BFSG setzt die europäische Barrierefreiheitsrichtlinie (European Accessibility Act) um und gilt für bestimmte Produkte und Dienstleistungen, die Verbrauchern angeboten werden. Für Websites ist der wichtigste Fall der „elektronische Geschäftsverkehr“: Wenn über Ihre Website Verträge mit Verbrauchern geschlossen werden, also ein Onlineshop, eine Terminbuchung mit Bezahlung, ein Kundenkonto oder ein Abo-Abschluss, ist die Website eine Dienstleistung im Sinne des Gesetzes und muss barrierefrei sein. Dazu kommen unter anderem Bankdienstleistungen, Telekommunikation, Personenverkehr und E-Books (Quellen: [Bundesfachstelle Barrierefreiheit](https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz), [IHK München](https://www.ihk-muenchen.de/ratgeber/recht/werbung-fairer-wettbewerb/barrierefreiheitsstaerkungsgesetz/), abgerufen am 21.10.2026).
 
 Nicht erfasst sind nach dieser Lesart:
 
@@ -45,7 +45,7 @@ Das BFSG selbst nennt keine technischen Details. Die zugehörige Verordnung (BFS
 
 - Alles, was mit der Maus geht, geht auch mit der Tastatur, und der Fokus ist sichtbar.
 - Es gibt keine Tastaturfallen, zum Beispiel in Menüs oder Dialogen.
-- Überschriften, Linktexte und Seitentitel sagen, wohin es geht; „hier klicken" reicht nicht.
+- Überschriften, Linktexte und Seitentitel sagen, wohin es geht; „hier klicken“ reicht nicht.
 - Bewegte Inhalte lassen sich anhalten.
 
 ### Verständlich
@@ -68,13 +68,13 @@ Zur Vollständigkeit: Für Dienstleistungsverträge, die vor dem 28. Juni 2025 g
 
 ## Barrierefreiheit ist eine Gestaltungsentscheidung, keine Nachrüstung
 
-Die teuerste Art, eine Website barrierefrei zu machen, ist die nachträgliche: eine fertige Seite durch ein Prüfwerkzeug schicken und dann Hunderte Fehler einzeln beheben, oft mit einem „Overlay"-Skript, das die Probleme überdeckt statt löst. Die günstigste Art ist, Barrierefreiheit von Anfang an als Teil des Designs zu behandeln.
+Die teuerste Art, eine Website barrierefrei zu machen, ist die nachträgliche: eine fertige Seite durch ein Prüfwerkzeug schicken und dann Hunderte Fehler einzeln beheben, oft mit einem „Overlay“-Skript, das die Probleme überdeckt statt löst. Die günstigste Art ist, Barrierefreiheit von Anfang an als Teil des Designs zu behandeln.
 
 Zwei Beispiele aus meiner Arbeit. Bei Instructure haben wir KI-Funktionen für eine Lernplattform gestaltet, die Hochschulen, Gesundheitseinrichtungen und öffentliche Träger nutzen; dort war Barrierefreiheit keine Option, sondern Vertragsbedingung. Jede neue Oberfläche wurde gegen WCAG 2.1 AA geprüft, mit Tastaturführung, semantischer Struktur und Vorleseprogrammen, und zwar in allen Zuständen: leer, geladen, Fehler, Wartezeit. Details: [Instructure-Fallstudie](/work/instructure) (Englisch). Beim Mobile-Banking-Neubau von Raiffeisen haben wir eine Komponentenbibliothek aufgebaut, die WCAG-fähig war, bevor die erste Seite entstand: Kontraste, Fokuszustände und Beschriftungen steckten in den Bausteinen, nicht in jeder Seite einzeln. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
 
 Die Lehre für eine Firmenwebsite: Barrierefreiheit gehört in die Bausteine, das Design-System und die Inhaltsregeln. Dann ist sie auf jeder neuen Seite automatisch da, und ein Relaunch zerstört sie nicht.
 
-## So machen Sie eine bestehende Firmenwebsite barrierefrei
+## Wie machen Sie eine bestehende Website barrierefrei?
 
 1. **Klären Sie, ob und welche Teile betroffen sind.** Shop, Buchung, Kundenkonto, Formulare mit Vertragsabschluss. Priorisieren Sie diese Pfade.
 2. **Prüfen Sie automatisch und manuell.** Werkzeuge wie axe oder Lighthouse finden nur einen Teil der Probleme; den Rest findet nur ein Mensch mit Tastatur und Vorleseprogramm, der versucht, einen Kauf abzuschließen.

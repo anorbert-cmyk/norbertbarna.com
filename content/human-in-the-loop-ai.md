@@ -9,14 +9,14 @@ tags: [human in the loop ai, ai integration, ai product design, regulated indust
 service: /ai-integration
 service_label: AI integration for regulated industries
 cover: /assets/images/og/writing/human-in-the-loop-ai.jpg
-cover_alt: A folded paper ribbon passing through a paper gate with a small olive checkpoint fold
+cover_alt: A folded paper ribbon passing through a paper gate with a small olive checkpoint fold: human-in-the-loop AI review before an output takes effect
 pair: de/human-in-the-loop-ki
 ---
 Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.
 
 This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure's learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
 
-## What “human in the loop” means, and what it does not
+## What does human-in-the-loop AI mean, and what does it not?
 
 Three terms are commonly used, and they describe different amounts of human control:
 
@@ -24,7 +24,7 @@ Three terms are commonly used, and they describe different amounts of human cont
 - **Human on the loop:** the system acts on its own; a person monitors and can intervene.
 - **Human out of the loop:** fully automated, with review only after the fact, if at all.
 
-These are design terms, not legal categories. The right level depends on the consequence of a wrong output, not on how good the model is. A draft that a person edits anyway can tolerate a weaker model; an action that reaches a customer or moves money cannot.
+These are design terms, not legal categories. In regulated industries the right level depends on the consequence of a wrong output, not on how good the model is. A draft that a person edits anyway can tolerate a weaker model; an action that reaches a customer or moves money cannot.
 
 Three things have to be true for a person to be genuinely in the loop. They can see that the AI was involved. They can change or reject the output. And the decision is recorded, so that who accepted what, and on what basis, can be reconstructed later. If any one of these is missing, the person is not in the loop. They are watching it.
 
@@ -36,7 +36,7 @@ On timing: the Digital Omnibus on AI (Regulation (EU) 2026/1744, in force since 
 
 This is a design reading of the text, not legal advice. Whether your system is high-risk is a question for your counsel. What I can say from shipped work is that each of the five oversight abilities in Article 14 maps to an interface decision, and the rest of this article is those decisions.
 
-## Seven human-in-the-loop patterns that hold up in review
+## Seven human-in-the-loop AI patterns that hold up in review
 
 ### 1. Label every AI output
 
@@ -87,7 +87,7 @@ Decide: who owns the stop, how fast it can happen, and what is logged for later 
 7. What is logged for later review?
 8. Which measures decide whether the pilot continues?
 
-If these questions do not have answers yet, that is where the work starts. In my method the second step, before anything is built, is defining access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. If you are comparing partners, [what to prepare before hiring an AI integration partner](/writing/before-hiring-an-ai-integration-partner) lists the inputs that make that conversation useful.
+If these questions do not have answers yet, that is where the AI product design work starts, and human oversight is its first deliverable. In my method the second step, before anything is built, is defining access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. If you are comparing partners, [what to prepare before hiring an AI integration partner](/writing/before-hiring-an-ai-integration-partner) lists the inputs that make that conversation useful.
 
 ## What made it hard
 
@@ -125,4 +125,4 @@ Yes. Communication is in English or Hungarian; German-speaking teams work with m
 
 ## Where to start
 
-Oversight is easier to design than to retrofit. The product that passes review is the one where every AI output already had a label, an edit state and a way back. Bring the workflow and the decision you are worried about, and [we start there](/contact).
+Human-in-the-loop AI is easier to design than to retrofit. The product that passes review is the one where every AI output already had a label, an edit state and a way back. Bring the workflow and the decision you are worried about, and [we start there](/contact).
