@@ -221,7 +221,7 @@ const page = ({ head: headHtml, lang, file, current, link, main, bodyClass, arti
 };
 
 const person = {
-  "@type": "Person", "@id": `${ORIGIN}/#person`, name: "Norbert Barna", alternateName: "Barna Norbert", url: `${ORIGIN}/`, sameAs: [LINKEDIN],
+  "@type": "Person", "@id": `${ORIGIN}/#person`, name: "Norbert Barna", alternateName: "Barna Norbert", url: `${ORIGIN}/`, jobTitle: "Product VP", knowsLanguage: ["hu", "en"], sameAs: [LINKEDIN],
 };
 const imageOf = (article) => article.cover
   ? { url: `${ORIGIN}${article.cover.startsWith("/") ? "" : "/"}${article.cover}`, alt: article.cover_alt }
@@ -263,10 +263,10 @@ const kicker = (lang, article) => article.service_label
   ? `<p class="writing-kicker">${escapeHtml(article.service_label)}</p>`
   : `<p class="writing-kicker">${SECTIONS[lang].name}</p>`;
 const thumb = (article, image, eager = false) => `<figure class="writing-row-media"><img src="${escapeHtml(image.url.slice(ORIGIN.length))}" alt="" width="1200" height="630" decoding="async"${eager ? "" : ' loading="lazy"'}/></figure>`;
-function row(lang, article, index) {
+function row(lang, article, index, heading = "h2") {
   const section = SECTIONS[lang];
   const image = imageOf(article);
-  return `<li class="writing-row"><a class="writing-row-link" href="${section.path}/${article.slug}"><span class="writing-row-number" aria-hidden="true">${String(index).padStart(2, "0")}</span>${thumb(article, image)}<div class="writing-row-copy">${kicker(lang, article)}<h2 id="${article.slug}">${escapeHtml(article.title)}</h2><p>${escapeHtml(article.description)}</p>${meta(lang, article)}</div></a></li>`;
+  return `<li class="writing-row"><a class="writing-row-link" href="${section.path}/${article.slug}"><span class="writing-row-number" aria-hidden="true">${String(index).padStart(2, "0")}</span>${thumb(article, image)}<div class="writing-row-copy">${kicker(lang, article)}<${heading} id="${article.slug}">${escapeHtml(article.title)}</${heading}><p>${escapeHtml(article.description)}</p>${meta(lang, article)}</div></a></li>`;
 }
 
 const CTA_ID = { hu: "kapcsolodo-szolgaltatas", en: "related-service", de: "passende-leistung" };
@@ -358,13 +358,13 @@ function renderArticle(article, articles, links) {
     `<p><a class="footer-email hero-work-link" href="${copy.contact}">${copy.ctaButton}</a></p>`,
     `</section>`,
     `</div></div></div>`,
-    others.length ? `<aside class="writing-related" aria-labelledby="writing-related-title"><div class="writing-frame"><h2 id="writing-related-title">${copy.moreHeading}</h2><ol class="writing-rows">${others.map((other, index) => row(lang, other, index + 1)).join("")}</ol></div></aside>` : "",
+    others.length ? `<aside class="writing-related" aria-labelledby="writing-related-title"><div class="writing-frame"><h2 id="writing-related-title">${copy.moreHeading}</h2><ol class="writing-rows">${others.map((other, index) => row(lang, other, index + 1, "h3")).join("")}</ol></div></aside>` : "",
     `</article>`,
   ].join("\n");
   const extraMeta = [
     `<meta content="${article.date}" property="article:published_time"/>`,
     `<meta content="${article.updated}" property="article:modified_time"/>`,
-    `<meta content="${copy.author.name}" property="article:author"/>`,
+    `<meta content="${LINKEDIN}" property="article:author"/>`,
     ...(article.service_label ? [`<meta content="${escapeHtml(article.service_label)}" property="article:section"/>`] : []),
     ...article.tags.map((tag) => `<meta content="${escapeHtml(tag)}" property="article:tag"/>`),
   ];

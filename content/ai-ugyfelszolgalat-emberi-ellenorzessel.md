@@ -9,7 +9,7 @@ tags: [ai ügyfélszolgálat, chatbot fejlesztés, ai automatizálás, human in 
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
 cover: /assets/images/og/writing/ai-ugyfelszolgalat-emberi-ellenorzessel.jpg
-cover_alt: Két egymás felé forduló hajtogatott papírforma, köztük egy kis papírüzenet
+cover_alt: Két egymás felé forduló hajtogatott papírforma, köztük egy kis papírüzenet: AI ügyfélszolgálat emberi ellenőrzéssel
 pair: de/ki-im-kundenservice
 ---
 Az AI ügyfélszolgálat akkor éri meg, ha sok, hasonló kérdés érkezik, a jó válasz megtalálható a saját dokumentumaidban, és egy hibás válasz kijavítható, mielőtt kárt okoz. Emberi ellenőrzéssel ez úgy működik, hogy az AI megírja a válasz vázlatát vagy kiválasztja a forrást, egy munkatárs pedig jóváhagyja, átírja vagy elveti. Ahol pénz, egészség vagy jogi helyzet a tét, az utolsó szó az emberé.
@@ -22,9 +22,9 @@ Ebben a cikkben három szintet írok le, amin az AI egy ügyfélszolgálaton dol
 2. **Válaszvázlat jóváhagyással.** Az AI megírja a választ, ember küldi el. Ez a human-in-the-loop működés: minden kimenő üzenetet ember hagy jóvá.
 3. **Önálló válasz szűk témákban.** Nyitvatartás, rendelés állapota, szállítási idő. Minden más emberhez kerül, és az ügyfél tudja, hogy átadás történt. Itt az ember a folyamat felett áll, nem benne.
 
-Ezek tervezési szintek, nem jogi kategóriák. A legtöbb cégnek az első kettővel érdemes kezdeni.
+Ezek tervezési szintek, nem jogi kategóriák, és a chatbot fejlesztés önmagában egyiket sem dönti el: a kérdés az, hol áll az ember a folyamatban. A legtöbb cégnek az első kettővel érdemes kezdeni.
 
-## Mikor éri meg, és mikor nem
+## Mikor éri meg az AI ügyfélszolgálat, és mikor nem?
 
 **Megéri, ha:** ismétlődő kérdések érkeznek; van rendezett, naprakész tudásanyag; mérhető a várakozási idő; és van, aki átnézi a vázlatokat.
 
@@ -58,7 +58,7 @@ Ha az AI érdemi döntést hoz egy ügyfélről, például hitelről vagy biztos
 - A tudásanyag állapota: mennyi rendezés kell, mielőtt az AI használhatja.
 - Integráció a jegykezelővel vagy a CRM-mel, és a hibakezelés ezekhez.
 - Nyelvek: a magyar válaszok minőségét a saját anyagaidon kell tesztelni.
-- Az ellenőrzés mértéke: minden vázlatot ember néz, vagy csak bizonyos témákat.
+- Az ellenőrzés mértéke: minden vázlatot ember néz, vagy csak bizonyos témákat. Az AI automatizálás aránya ebből következik, nem fordítva.
 - Ki tartja karban a forrásokat az indulás után.
 
 Minden ilyen projekt egyedi munka, ezért az ár a feltárás után derül ki, nem előre gyártott csomagból. A módszerről az [AI tanácsadás és fejlesztés](/hu/ai-tanacsadas-fejlesztes) oldalon írok; az első három hónap menetrendjét külön cikkben: [AI bevezetése KKV-nál](/hu/irasok/ai-bevezetese-kkv-elso-90-nap).

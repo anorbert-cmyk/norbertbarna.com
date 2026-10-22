@@ -9,7 +9,7 @@ tags: [human in the loop, human in the loop ki, menschliche aufsicht ki, ki vero
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/human-in-the-loop-ki.jpg
-cover_alt: Ein gefaltetes Papierband läuft durch ein Papiertor mit einer kleinen olivfarbenen Kontrollfalte
+cover_alt: Ein gefaltetes Papierband läuft durch ein Papiertor mit einer kleinen olivfarbenen Kontrollfalte: Human in the Loop als Prüfschritt vor der Wirkung einer KI-Ausgabe
 pair: en/human-in-the-loop-ai
 ---
 Human in the Loop bedeutet, dass ein Mensch prüft, bearbeitet oder freigibt, was ein KI-System vorschlägt, bevor es Wirkung entfaltet, und dass er es übersteuern oder stoppen kann. In einem regulierten Produkt ist das kein Häkchen am Ende des Projekts. Es ist ein Satz von Entscheidungen über die Oberfläche, die am ersten Tag getroffen werden: Was darf die KI vorschlagen, was muss ein Mensch prüfen, wie sieht er das Warum, und was passiert, wenn die Ausgabe falsch ist.
@@ -18,7 +18,7 @@ Dieser Artikel beschreibt sieben Muster, die in zwei Produkten, an denen ich gea
 
 Zur Zusammenarbeit: Ich arbeite mit Teams in Deutschland und der EU, die Kommunikation läuft auf Englisch oder Ungarisch.
 
-## Was Human in the Loop bedeutet, und was nicht
+## Was bedeutet Human in the Loop bei KI, und was nicht?
 
 Drei Begriffe werden häufig verwendet, und sie beschreiben unterschiedlich viel menschliche Kontrolle:
 
@@ -26,7 +26,7 @@ Drei Begriffe werden häufig verwendet, und sie beschreiben unterschiedlich viel
 - **Human on the Loop:** Das System handelt selbst; ein Mensch überwacht und kann eingreifen.
 - **Human out of the Loop:** vollständig automatisiert, Prüfung höchstens im Nachhinein.
 
-Das sind Gestaltungsbegriffe, keine Rechtskategorien. Die richtige Stufe hängt von den Folgen einer falschen Ausgabe ab, nicht davon, wie gut das Modell ist. Ein Entwurf, den ohnehin jemand überarbeitet, verträgt ein schwächeres Modell; eine Aktion, die einen Kunden erreicht oder Geld bewegt, nicht.
+Das sind Gestaltungsbegriffe, keine Rechtskategorien. Welche Stufe menschlicher Aufsicht eine KI-Integration braucht, hängt von den Folgen einer falschen Ausgabe ab, nicht davon, wie gut das Modell ist. Ein Entwurf, den ohnehin jemand überarbeitet, verträgt ein schwächeres Modell; eine Aktion, die einen Kunden erreicht oder Geld bewegt, nicht.
 
 Drei Dinge müssen gelten, damit ein Mensch wirklich „in the Loop“ ist: Er sieht, dass KI beteiligt war. Er kann die Ausgabe ändern oder ablehnen. Und die Entscheidung wird aufgezeichnet, sodass sich später rekonstruieren lässt, wer was auf welcher Grundlage akzeptiert hat. Fehlt eines davon, ist der Mensch nicht in der Schleife. Er schaut zu.
 
@@ -89,7 +89,7 @@ Entscheiden: Wer ist für den Stopp verantwortlich, wie schnell kann er wirken, 
 7. Was wird für eine spätere Prüfung protokolliert?
 8. Welche Kennzahlen entscheiden, ob der Pilot weiterläuft?
 
-Wenn diese Fragen noch keine Antworten haben, beginnt dort die Arbeit. In meiner Methode ist der zweite Schritt, vor jedem Bau, die Festlegung von Zugriff und menschlicher Kontrolle: Was die KI vorschlagen darf, was ein Mensch prüfen muss, und was passiert, wenn eine Antwort fehlt oder falsch ist.
+Wenn diese Fragen noch keine Antworten haben, beginnt dort die Arbeit, und zwar vor der KI-Entwicklung, nicht danach. In meiner Methode ist der zweite Schritt, vor jedem Bau, die Festlegung von Zugriff und menschlicher Kontrolle: Was die KI vorschlagen darf, was ein Mensch prüfen muss, und was passiert, wenn eine Antwort fehlt oder falsch ist.
 
 ## Was schwierig war
 
@@ -127,4 +127,4 @@ Ja. Die Zusammenarbeit läuft auf Englisch oder Ungarisch; deutschsprachige Team
 
 ## Fazit
 
-Aufsicht lässt sich leichter gestalten als nachrüsten. Das Produkt, das eine Prüfung besteht, ist das, in dem jede KI-Ausgabe schon ein Label, einen Bearbeitungszustand und einen Weg zurück hatte. Bringen Sie den Ablauf und die Entscheidung mit, die Ihnen Sorgen macht, und [dort fangen wir an](/de/kontakt).
+Menschliche Aufsicht lässt sich leichter gestalten als nachrüsten. Das Produkt, das eine Prüfung besteht, ist das, in dem jede KI-Ausgabe schon ein Label, einen Bearbeitungszustand und einen Weg zurück hatte. Bringen Sie den Ablauf und die Entscheidung mit, die Ihnen Sorgen macht, und [dort fangen wir an](/de/kontakt).

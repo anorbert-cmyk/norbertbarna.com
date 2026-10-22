@@ -9,16 +9,16 @@ tags: [was kostet eine website, website kosten, webseite erstellen lassen kosten
 service: /de/webentwicklung
 service_label: Webentwicklung und individuelle Webanwendungen für Unternehmen
 cover: /assets/images/og/writing/was-kostet-eine-website.jpg
-cover_alt: Fünf gefaltete Papiertore in einer Reihe, jedes größer als das vorherige, vor fliederfarbenem Hintergrund
+cover_alt: Fünf gefaltete Papiertore in einer Reihe, jedes größer als das vorherige, vor fliederfarbenem Hintergrund: Was kostet eine Website, die neun Preisfaktoren
 pair: hu/ceges-weboldal-ara
 ---
-Was eine Website kostet, hängt davon ab, was sie leisten muss: für wen sie gemacht ist, was Besucher darauf tun sollen und mit welchen Systemen sie verbunden ist. Zwei Angebote für dieselbe Anfrage können sich um ein Vielfaches unterscheiden, und oft sind beide seriös, weil sie nicht dieselbe Arbeit kalkulieren. Ich behandle jede Website als individuelle Arbeit: Technologie, Struktur, Design und Inhalt richten sich nach den Bedürfnissen Ihrer Nutzer, und daraus ergibt sich der Preis, nicht aus einem vorgefertigten Paket.
+Was kostet eine Website? Das hängt davon ab, was sie leisten muss: für wen sie gemacht ist, was Besucher darauf tun sollen und mit welchen Systemen sie verbunden ist. Zwei Angebote für dieselbe Anfrage können sich um ein Vielfaches unterscheiden, und oft sind beide seriös, weil sie nicht dieselbe Arbeit kalkulieren. Ich behandle jede Website als individuelle Arbeit: Technologie, Struktur, Design und Inhalt richten sich nach den Bedürfnissen Ihrer Nutzer, und daraus ergibt sich der Preis, nicht aus einem vorgefertigten Paket.
 
 In diesem Artikel nenne ich keine Zahlen. Ich gehe die neun Faktoren durch, die den Preis einer Unternehmenswebsite am stärksten bewegen, zeige ein Beispiel aus einem eigenen Projekt und beschreibe, wie Sie ein Angebot so anfragen, dass Sie zwei Angebote wirklich vergleichen können.
 
 Ein Hinweis vorab, weil er für die Zusammenarbeit wichtig ist: Ich arbeite mit Unternehmen in Deutschland, Österreich und der Schweiz, die Zusammenarbeit läuft auf Englisch oder Ungarisch.
 
-## Kurz gesagt: Wovon die Kosten einer Website abhängen
+## Kurz gesagt: Wovon die Website-Kosten abhängen
 
 - **Das Ziel:** Visitenkarte, Kundengewinnung, Onlineshop oder Webanwendung.
 - **Der Inhalt:** Wer schreibt die Texte, woher kommen die Fotos, wie viele Seiten und Sprachen.
@@ -38,7 +38,7 @@ Ich arbeite an Projekten, in die auch der Auftraggeber Energie steckt: Inhalte l
 
 ## Warum Sie sehr unterschiedliche Angebote für dieselbe Anfrage bekommen
 
-Das eine Angebot richtet eine Vorlage mit Ihren Texten ein. Das andere beginnt mit einer Analyse, plant den Weg des Besuchers und baut das System, das dazu gehört. Beides heißt „Website erstellen lassen“. Die Frage ist nicht, welches Angebot günstiger ist, sondern was drinsteckt. Wenn ein Angebot nicht beschreibt, was die Seite erreichen soll, beziehen sich die beiden Angebote wahrscheinlich auf zwei verschiedene Websites.
+Das eine Angebot richtet eine Vorlage mit Ihren Texten ein. Das andere beginnt mit einer Analyse, plant den Weg des Besuchers und baut das System, das dazu gehört. Beides heißt „Website erstellen lassen“, und wer nach „Webseite erstellen lassen, Kosten“ sucht, bekommt beides als Antwort. Die Frage ist nicht, welches Angebot günstiger ist, sondern was drinsteckt. Wenn ein Angebot nicht beschreibt, was die Seite erreichen soll, beziehen sich die beiden Angebote wahrscheinlich auf zwei verschiedene Websites.
 
 ## Was kostet eine Website? Die neun Faktoren im Detail
 
@@ -109,7 +109,7 @@ Für den Preis ist die Lehre: Die „Website“ war in Wirklichkeit ein Produkt.
 
 ### Was kostet eine professionelle Website für ein Unternehmen?
 
-Bei mir ist jede Website individuelle Arbeit, deshalb folgt der Preis aus der Aufgabe: aus Inhalt, Funktionen, Integrationen und Wartung. Wenn Sie die fünf Schritte oben beschreiben, kann ich ein konkretes Angebot machen, und Sie können zwei Angebote für dieselbe Arbeit vergleichen.
+Die Website-Kosten für ein Unternehmen liegen in einer breiten Spanne, weil der Begriff nicht dieselbe Arbeit bezeichnet. Bei mir ist jede Website individuelle Arbeit, deshalb folgt der Preis aus der Aufgabe: aus Inhalt, Funktionen, Integrationen und Wartung. Wenn Sie die fünf Schritte oben beschreiben, kann ich ein konkretes Angebot machen, und Sie können zwei Angebote für dieselbe Arbeit vergleichen.
 
 ### Ist eine Website aus einer Vorlage günstiger?
 

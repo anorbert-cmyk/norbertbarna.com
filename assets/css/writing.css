@@ -126,7 +126,8 @@
   object-fit: cover;
 }
 .writing-feature-copy h2,
-.writing-row-copy h2 {
+.writing-row-copy h2,
+.writing-row-copy h3 {
   margin: 0;
   color: var(--writing-navy);
   font-family: "Funnel Display", Inter, sans-serif;
@@ -137,7 +138,8 @@
   overflow-wrap: anywhere;
 }
 .writing-feature-copy h2 { font-size: clamp(30px, 3.4vw, 48px); }
-.writing-row-copy h2 { font-size: clamp(24px, 2.2vw, 32px); }
+.writing-row-copy h2,
+.writing-row-copy h3 { font-size: clamp(24px, 2.2vw, 32px); }
 .writing-feature-copy p:not(.writing-kicker):not(.writing-meta),
 .writing-row-copy p:not(.writing-kicker):not(.writing-meta) {
   margin: 16px 0 0;
@@ -150,7 +152,7 @@
 .writing-feature-copy .writing-meta,
 .writing-row-copy .writing-meta { margin-top: 18px; }
 .writing-feature-link:is(:hover, :focus-visible) h2,
-.writing-row-link:is(:hover, :focus-visible) h2 {
+.writing-row-link:is(:hover, :focus-visible) :is(h2, h3) {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 6px;
@@ -385,7 +387,7 @@
   line-height: 1.1;
 }
 .writing-related a { color: inherit; text-decoration: none; }
-.writing-related .writing-row-copy h2 { margin: 0; font-size: clamp(22px, 2vw, 28px); }
+.writing-related .writing-row-copy h3 { margin: 0; font-size: clamp(22px, 2vw, 28px); }
 
 /* ---- layout tiers --------------------------------------------------------- */
 @media (min-width: 992px) {
@@ -398,6 +400,35 @@
   .writing-body .writing-frame { grid-template-columns: minmax(220px, 280px) minmax(0, var(--writing-readable)); }
 }
 @media (max-width: 991px) {
+  /* Below the rail tier the outline is a scrolling row of numbered chips, so
+     the text starts within one screen of the cover. */
+  .writing-toc { position: relative; padding: 0; border-bottom: 0; }
+  .writing-toc-label { margin-bottom: 8px; }
+  .writing-toc ol {
+    display: flex;
+    gap: 8px;
+    margin: 0 calc(-1 * var(--writing-gutter));
+    padding: 0 var(--writing-gutter) 14px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .writing-toc ol::-webkit-scrollbar { display: none; }
+  .writing-toc li { flex: 0 0 auto; scroll-snap-align: start; }
+  .writing-toc a {
+    min-height: 40px;
+    padding: 9px 14px 9px 12px;
+    gap: 8px;
+    border: 1px solid rgb(17 17 17 / 18%);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .writing-toc a::before { line-height: 1.55; }
+  .writing-toc a:is(:hover, :focus-visible) { text-decoration: none; border-color: var(--writing-navy); }
+  .writing-body .writing-frame { gap: 24px; }
   .writing-row-link { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
   .writing-row-number { display: none; }
   .writing-page { --writing-cover-pull: 96px; }

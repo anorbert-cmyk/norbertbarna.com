@@ -9,7 +9,7 @@ tags: [ki kennzeichnungspflicht, ki verordnung, eu ai act, ki transparenzpflicht
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-kennzeichnungspflicht.jpg
-cover_alt: Eine große dunkelgrüne Papierform mit einem kleinen olivfarbenen Papieranhänger als Etikett
+cover_alt: Eine große dunkelgrüne Papierform mit einem kleinen olivfarbenen Papieranhänger als Etikett: die KI-Kennzeichnungspflicht nach Artikel 50 der KI-Verordnung
 pair: null
 ---
 Die KI-Kennzeichnungspflicht ergibt sich aus Artikel 50 der EU-KI-Verordnung und gilt seit dem 2. August 2026. Kurz gefasst: Wer ein KI-System betreibt, das direkt mit Menschen interagiert, muss diese Menschen darüber informieren, außer es ist aus den Umständen offensichtlich. Wer KI-generierte Inhalte erzeugt oder veröffentlicht, muss sie in bestimmten Fällen kennzeichnen, insbesondere Deepfakes und maschinell erzeugte Inhalte. Der Digital Omnibus 2026 hat viele Fristen der Verordnung verschoben, diese Pflichten nicht.
@@ -18,9 +18,9 @@ Dieser Artikel ist für Produktteams geschrieben, nicht für Juristen. Er beschr
 
 Zur Zusammenarbeit: Ich arbeite mit Teams in Deutschland und der EU, die Kommunikation läuft auf Englisch oder Ungarisch.
 
-## Was Artikel 50 der KI-Verordnung verlangt
+## Was verlangt Artikel 50 der KI-Verordnung?
 
-Artikel 50 enthält mehrere Transparenzpflichten für Anbieter und Betreiber bestimmter KI-Systeme. In der Lesart eines Produktteams sind es vier Fälle:
+Artikel 50 der KI-Verordnung (im Englischen EU AI Act) enthält mehrere Transparenzpflichten für Anbieter und Betreiber bestimmter KI-Systeme; die KI-Transparenzpflicht und die Kennzeichnungspflicht sind zwei Seiten desselben Artikels. In der Lesart eines Produktteams sind es vier Fälle:
 
 1. **Interaktion mit Menschen.** Ein KI-System, das für die direkte Interaktion mit Personen bestimmt ist (zum Beispiel ein Chatbot im Kundenservice), muss so gestaltet sein, dass die Person erfährt, dass sie mit einer KI interagiert, außer dies ist aus den Umständen für eine verständige Person offensichtlich.
 2. **Synthetische Inhalte.** Systeme, die Audio, Bild, Video oder Text künstlich erzeugen, müssen ihre Ausgaben in maschinenlesbarer Form kennzeichnen, damit sie als künstlich erzeugt oder manipuliert erkennbar sind.

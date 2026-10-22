@@ -9,14 +9,14 @@ tags: [weboldal készítés árak, honlapkészítés, egyedi weboldal készíté
 service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
 cover: /assets/images/og/writing/ceges-weboldal-ara.jpg
-cover_alt: Öt egyre nagyobb, hajtogatott papírkapu sorban, lila háttér előtt
+cover_alt: Öt egyre nagyobb, hajtogatott papírkapu sorban, lila háttér előtt: a weboldal készítés árak mögötti tényezők
 pair: de/was-kostet-eine-website
 ---
-A weboldal készítés ára attól függ, mire kell a weboldalnak: kiknek szól, mit kell a látogatónak megtennie rajta, és milyen rendszerekhez kapcsolódik. Két ajánlat ugyanarra a kérésre sokszorosan eltérhet, és gyakran mindkettő korrekt, mert nem ugyanazt a munkát árazza. Én minden weboldalt egyedi munkaként kezelek: a technológiát, a szerkezetet, a designt és a tartalmat a felhasználóid igényeihez szabom, ezért az ár is ebből következik, nem egy előre gyártott csomagból.
+A weboldal készítés árak 2026-ban is széles sávban mozognak, mert a weboldal készítés ára attól függ, mire kell a weboldalnak: kiknek szól, mit kell a látogatónak megtennie rajta, és milyen rendszerekhez kapcsolódik. Két ajánlat ugyanarra a kérésre sokszorosan eltérhet, és gyakran mindkettő korrekt, mert nem ugyanazt a munkát árazza. Én minden weboldalt egyedi munkaként kezelek: a technológiát, a szerkezetet, a designt és a tartalmat a felhasználóid igényeihez szabom, ezért az ár is ebből következik, nem egy előre gyártott csomagból.
 
 Ebben a cikkben nem írok számokat. Sorra veszem azt a kilenc tényezőt, amely egy egyedi céges weboldal árát a legjobban mozgatja, mutatok egy példát egy saját projektből, és leírom, hogyan kérj úgy ajánlatot, hogy két ajánlatot valóban össze tudj hasonlítani.
 
-## Röviden: mitől függ a weboldal ára
+## Röviden: mitől függnek a weboldal készítés árak
 
 - **A cél:** bemutatkozó oldal, ügyfélszerző oldal, webáruház vagy webalkalmazás.
 - **A tartalom:** ki írja a szövegeket, honnan jönnek a fotók, hány oldal és hány nyelv.
@@ -36,7 +36,7 @@ Olyan projekteken dolgozom, ahol a megrendelő is beleteszi az energiát: ad tar
 
 ## Miért kapsz nagyon eltérő ajánlatokat ugyanarra a kérésre
 
-Két ajánlat ritkán ugyanazt árazza. Az egyik egy sablont állít be a te szövegeddel. A másik feltárással kezd, megtervezi a látogató útját, és megépíti a hozzá tartozó rendszert. Mindkettőt „honlapkészítésnek” hívják. Nem az a kérdés, melyik olcsóbb, hanem az, hogy mi van az árban. Ha az ajánlat nem írja le, mit kell elérnie az oldalnak, a két ajánlat valószínűleg két különböző oldalra vonatkozik.
+Két ajánlat ritkán ugyanazt árazza. Az egyik egy sablont állít be a te szövegeddel. A másik feltárással kezd, megtervezi a látogató útját, és megépíti a hozzá tartozó rendszert. Mindkettőt „honlapkészítésnek” vagy „weboldal készítésnek” hívják. Nem az a kérdés, melyik olcsóbb, hanem az, hogy mi van az árban. Ha az ajánlat nem írja le, mit kell elérnie az oldalnak, a két ajánlat valószínűleg két különböző oldalra vonatkozik.
 
 ## Mitől függ egy céges weboldal ára? Kilenc tényező
 
@@ -117,7 +117,7 @@ A tapasztalatom szerint a folyamatos tartalomgyártás, a fizetett hirdetés, a 
 
 ### Mennyibe kerül egy céges weboldal?
 
-Nálam minden weboldal egyedi munka, ezért az ár a feladatból következik: a tartalomból, a funkciókból, az integrációkból és a karbantartásból. Ha a fenti öt lépést leírod, pontos ajánlatot tudok adni, és két ajánlatot ugyanarra a munkára tudsz összevetni.
+A weboldal készítés árak széles sávban mozognak, mert nem ugyanazt a munkát jelölik. Nálam minden weboldal egyedi munka, ezért az ár a feladatból következik: a tartalomból, a funkciókból, az integrációkból és a karbantartásból. Ha a fenti öt lépést leírod, pontos ajánlatot tudok adni, és két ajánlatot ugyanarra a munkára tudsz összevetni.
 
 ### Olcsóbb, ha sablonból készül a weboldal?
 

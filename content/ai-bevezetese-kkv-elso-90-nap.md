@@ -9,18 +9,18 @@ tags: [ai bevezetés, ai tanácsadás, mesterséges intelligencia cégeknek, ai 
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
 cover: /assets/images/og/writing/ai-bevezetese-kkv-elso-90-nap.jpg
-cover_alt: Három egyre magasabb, hajtogatott papírlépcső lila háttér előtt
+cover_alt: Három egyre magasabb, hajtogatott papírlépcső lila háttér előtt: az AI bevezetés első 90 napjának három szakasza
 pair: de/ki-im-mittelstand-einfuehren
 ---
 Egy kis- vagy középvállalkozásnál az AI bevezetése egyetlen munkafolyamattal kezdődik, nem egy eszközzel. Az első 90 napban kiválasztasz egy ismétlődő feladatot, rögzíted, mit csinálhat az AI és mit ellenőriz ember, kipróbálod valódi példákon, majd egy szűk pilotban mérsz. A végén nem „AI-stratégiád” lesz, hanem egy döntés: folytatod, átalakítod vagy leállítod.
 
 A 90 nap az én javasolt menetrendem, nem garantált időtartam. Lejjebb leírom, mitől függ, hogy elég-e. Ez a cikk azt mutatja meg, mi történik a három szakaszban, mit kapsz a végükön, és milyen hibákat látok a leggyakrabban az első hónapokban.
 
-## Mielőtt elkezded: három kérdés
+## Készen áll a céged az AI bevezetésére? Három kérdés
 
 - **Melyik feladat ismétlődik hetente, sok dokumentummal vagy adattal?** Ajánlatkérések feldolgozása, bejövő e-mailek besorolása, jegyzőkönyvek kivonatolása, termékleírások vázlata. Olyan kell, amelynél világosan mérhető a siker: megtakarított idő, kevesebb hiba vagy gyorsabb válasz.
 - **Mi számítana javulásnak?** Ha erre nincs válasz, a pilot végén nem lesz mit mérni.
-- **Megoldható-e egyszerűbben?** Néha egy szabály, egy sablon vagy egy érthetőbb felület ugyanazt adja, AI nélkül. Ha igen, nem kell hozzá AI, és ezt egy jó tanácsadó az elején megmondja.
+- **Megoldható-e egyszerűbben?** Néha egy szabály, egy sablon vagy egy érthetőbb felület ugyanazt adja, AI nélkül. Ha igen, nem kell hozzá AI, és ezt egy jó AI tanácsadás az elején megmondja: a mesterséges intelligencia cégeknek akkor hoz eredményt, ha valódi feladatot old meg.
 
 ## Az első 90 nap, három szakaszban
 
@@ -45,7 +45,7 @@ Amit kapsz: tesztelhető prototípust, értékelési példákat és egyértelmű
 
 ### A 61. naptól a 90. napig: szűk pilot, kijelölt felelőssel
 
-8. A pilotot a meglévő rendszereidhez kötjük, kis felhasználói körrel. A felület, a rendszerkapcsolatok, a jogosultságok, az ellenőrzési lépések és a hibaágak is a feladat részei.
+8. A pilotot a meglévő rendszereidhez kötjük, kis felhasználói körrel. Ez az a pont, ahol az AI automatizálás először valódi munkát vesz át. A felület, a rendszerkapcsolatok, a jogosultságok, az ellenőrzési lépések és a hibaágak is a feladat részei.
 9. Egy ember felel a pilotért: kezeli a problémákat, és szükség esetén leállíthatja vagy visszaállíthatja az előző verziót.
 10. Mérünk a kiinduló állapothoz képest: feladatok teljesítése, ellenőrzésre fordított munka, a kimenet minősége, válaszidő, működési költség.
 
