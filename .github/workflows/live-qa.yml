@@ -1,0 +1,71 @@
+name: Live QA
+
+# Full check of the deployed site: every page byte-identical to main,
+# redirects, headers, links, the Kineticare video, menus, Turnstile, phone
+# layout and a mobile Lighthouse run. Start it by hand (workflow_dispatch)
+# after a deploy, or let the weekly run catch regressions on the host.
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: Site to check
+        default: https://www.barnanorbert.com
+        required: true
+  schedule:
+    - cron: "17 6 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-qa
+  cancel-in-progress: true
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      LIVE_BASE: ${{ github.event.inputs.base || 'https://www.barnanorbert.com' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Pages, redirects, headers, links
+        run: node scripts/live-qa.mjs
+      - name: Install Chromium
+        if: always()
+        run: npx playwright install --with-deps chromium
+      - name: Video, menus, Turnstile, phone layout
+        if: always()
+        run: node scripts/live-browser.mjs
+      - name: Mobile Lighthouse
+        if: always()
+        run: |
+          mkdir -p lighthouse
+          for path in / /hu /de /hu/ai-tanacsadas-fejlesztes /hu/munka/kineticare /de/wissen/was-kostet-eine-website; do
+            name=$(echo "${path#/}" | tr '/' '_'); name=${name:-home}
+            npx --yes lighthouse@12 "$LIVE_BASE$path" --form-factor=mobile --screenEmulation.mobile --throttling-method=simulate \
+              --chrome-flags="--headless=new --no-sandbox" --only-categories=performance,accessibility,best-practices,seo \
+              --output=json --output=html --output-path="lighthouse/$name" --quiet
+            node -e '
+              const r = JSON.parse(require("fs").readFileSync(process.argv[1] + ".report.json", "utf8"));
+              const c = r.categories, s = (k) => Math.round(c[k].score * 100);
+              const a = r.audits, ms = (k) => Math.round(a[k].numericValue);
+              const line = `| ${process.argv[2]} | ${s("performance")} | ${s("accessibility")} | ${s("best-practices")} | ${s("seo")} | ${ms("largest-contentful-paint")} ms | ${a["cumulative-layout-shift"].numericValue.toFixed(3)} | ${ms("total-blocking-time")} ms |`;
+              console.log(line);
+              require("fs").appendFileSync("lighthouse/summary.md", line + "\n");
+            ' "lighthouse/$name" "$path"
+          done
+          { echo "## Mobile Lighthouse"; echo; echo "| Page | Perf | A11y | Best | SEO | LCP | CLS | TBT |"; echo "|---|---|---|---|---|---|---|---|"; cat lighthouse/summary.md; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Save reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-qa-reports
+          path: lighthouse/
+          retention-days: 14
+          if-no-files-found: ignore

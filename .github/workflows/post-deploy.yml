@@ -38,7 +38,11 @@ jobs:
           }
           expect https://www.barnanorbert.com/ 200
           expect https://www.barnanorbert.com/hu 200
-          expect http://www.barnanorbert.com/about.html 301 https://www.barnanorbert.com/about
+          # Railway's edge answers plain http with its own 301 to https (same path);
+          # the app's .html redirect is checked on https, the scheme hop on its own.
+          expect http://www.barnanorbert.com/ 301 https://www.barnanorbert.com/
+          expect https://www.barnanorbert.com/about.html 301 https://www.barnanorbert.com/about
+          expect https://www.barnanorbert.com/hu/ai-integracio 301 https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes
           expect https://barnanorbert.com/works 301 https://www.barnanorbert.com/works
           expect https://www.barnanorbert.com/works.html 301 https://www.barnanorbert.com/works
           expect https://www.barnanorbert.com/does-not-exist 404
