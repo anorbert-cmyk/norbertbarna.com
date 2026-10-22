@@ -31,6 +31,9 @@ jobs:
   live:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # From a pull request the run reports on the site as it is; it cannot be
+    # that pull request's build, so it never blocks the merge.
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
     env:
       LIVE_BASE: ${{ github.event.inputs.base || 'https://www.barnanorbert.com' }}
     steps:
@@ -46,6 +49,7 @@ jobs:
       - name: Pages, redirects, headers, links
         env:
           EXPECTED_SHA: ${{ github.event_name != 'pull_request' && github.sha || '' }}
+          LIVE_QA_COMPARE: ${{ github.event_name != 'pull_request' && '1' || '0' }}
         run: node scripts/live-qa.mjs
       - name: Install Chromium
         if: always()
@@ -57,11 +61,16 @@ jobs:
         if: always()
         run: |
           mkdir -p lighthouse
+          # Lighthouse occasionally loses the navigation trace (NO_NAVSTART);
+          # one retry, and a page that still fails is a row, not a red job.
+          audit() {
+            npx --yes lighthouse@12 "$LIVE_BASE$1" --form-factor=mobile --screenEmulation.mobile --throttling-method=simulate \
+              --chrome-flags="--headless=new --no-sandbox" --only-categories=performance,accessibility,best-practices,seo \
+              --output=json --output=html --output-path="lighthouse/$2" --quiet
+          }
           for path in / /hu /de /hu/ai-tanacsadas-fejlesztes /hu/munka/kineticare /de/wissen/was-kostet-eine-website; do
             name=$(echo "${path#/}" | tr '/' '_'); name=${name:-home}
-            npx --yes lighthouse@12 "$LIVE_BASE$path" --form-factor=mobile --screenEmulation.mobile --throttling-method=simulate \
-              --chrome-flags="--headless=new --no-sandbox" --only-categories=performance,accessibility,best-practices,seo \
-              --output=json --output=html --output-path="lighthouse/$name" --quiet
+            audit "$path" "$name" || audit "$path" "$name" || { echo "| $path | audit failed twice | | | | | | |" | tee -a lighthouse/summary.md; continue; }
             node -e '
               const r = JSON.parse(require("fs").readFileSync(process.argv[1] + ".report.json", "utf8"));
               const c = r.categories, s = (k) => Math.round(c[k].score * 100);

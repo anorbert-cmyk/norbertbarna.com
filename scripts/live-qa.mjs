@@ -24,6 +24,9 @@ const APEX = HOST.replace(/^www\./, "");
 const KEY = "4cf59849855778fd47f78e60a9143478";
 const UA = "barnanorbert-live-qa/1.0 (+https://github.com/anorbert-cmyk/norbertbarna.com)";
 
+// LIVE_QA_COMPARE=0 (pull request runs): a page that differs from this
+// checkout is a note, since the checkout is not what was deployed.
+const compare = process.env.LIVE_QA_COMPARE !== "0";
 const failures = [];
 const notes = [];
 const passes = [];
@@ -65,7 +68,7 @@ for (const url of urls) {
   const live = await get(`${BASE}${path}`);
   pages[path] = live;
   if (live.status !== 200) { fail(`${path} returned ${live.status}`); continue; }
-  if (live.body !== local) { stale++; fail(`${path} differs from ${file} in this checkout (stale deploy or wrong build)`); continue; }
+  if (live.body !== local) { stale++; (compare ? fail : note)(`${path} differs from ${file} in this checkout (stale deploy or wrong build)`); continue; }
   if (!/<h1[\s>]/.test(live.body)) fail(`${path} has no H1`);
   if (!/<title>[^<]+<\/title>/.test(live.body)) fail(`${path} has no title`);
   if (live.ms > 3000) note(`${path} took ${live.ms} ms`);
@@ -74,7 +77,7 @@ if (!stale) pass(`all ${urls.length} sitemap pages are live and byte-identical t
 const lastmods = [...sitemap.matchAll(/<lastmod>(.*?)<\/lastmod>/g)].map(([, d]) => d);
 note(`sitemap lastmod values: ${[...new Set(lastmods)].sort().join(", ")} (${urls.length} URLs)`);
 const liveSitemap = await get(`${BASE}/sitemap.xml`);
-if (liveSitemap.status !== 200 || liveSitemap.body !== sitemap) fail("live sitemap.xml differs from this checkout");
+if (liveSitemap.status !== 200 || liveSitemap.body !== sitemap) (compare ? fail : note)("live sitemap.xml differs from this checkout");
 else pass("sitemap.xml live and current");
 
 // 2. Service pages: H1, eight visible questions, one FAQPage.
@@ -122,7 +125,9 @@ if (key.status !== 200 || key.body.trim() !== KEY) fail(`IndexNow key file not s
 for (const path of ["/robots.txt", "/llms.txt"]) {
   const local = readFileSync(join(ROOT, path.slice(1)), "utf8");
   const live = await get(`${BASE}${path}`);
-  if (live.status !== 200 || live.body !== local) fail(`${path} not live or stale (${live.status})`); else pass(`${path} live and current`);
+  if (live.status !== 200) fail(`${path} -> ${live.status}`);
+  else if (live.body !== local) (compare ? fail : note)(`${path} differs from this checkout`);
+  else pass(`${path} live and current`);
 }
 for (const path of ["/writing/feed.xml", "/hu/irasok/feed.xml", "/de/wissen/feed.xml"]) {
   if (!existsSync(join(ROOT, path.slice(1)))) continue;
