@@ -538,8 +538,8 @@ test("home subtitle uses the reference break only on normal desktop text", async
     await expect(subtitle).toBeVisible();
     await expect(subtitle.locator("br")).toHaveCount(1);
     await expect(subtitle.locator("br")).toHaveCSS("display", mode.display);
-    expect(await subtitle.textContent(), "hiding the break must not join the two words").toMatch(/Web3,\s+regulated/);
-    expect(await subtitle.innerText()).toMatch(mode.display === "none" ? /Web3, +regulated/ : /Web3,\n\s*regulated/);
+    expect(await subtitle.textContent(), "hiding the break must not join the two words").toMatch(/features\s+for/);
+    expect(await subtitle.innerText()).toMatch(mode.display === "none" ? /features +for/ : /features\n\s*for/);
     if (spacingStyle) {
       await spacingStyle.evaluate((style) => style.remove());
       await expect(mast).not.toHaveAttribute("data-text-reflow");
@@ -1426,7 +1426,7 @@ test("no page or script exposes or assembles the inbox address; every contact ac
 
   const contact = page.locator("footer a.footer-email");
   await expect(page.locator(".home-service-section .footer-email, .home-service-section a.hero-work-link")).toHaveCount(0);
-  await expect(page.locator(".home-service-section h2")).toHaveText(["The Work I Drive"]);
+  await expect(page.locator(".home-service-section h2")).toHaveText(["The work I drive"]);
   const serviceLink = page.locator('.home-service-card-title a[href="/ai-integration"]');
   await expect(serviceLink).toBeVisible();
   await expect(serviceLink).toHaveAccessibleName("AI products");
@@ -2214,7 +2214,7 @@ test("1440 home opening: original centered artwork and semantic role lead into t
   await expect(page.locator(".home-banner-title")).toBeInViewport();
   await expect(page.locator(".hero-work-link")).toBeInViewport();
   await expect(page.locator(".home-mast .hero-kicker")).toHaveText("Norbert Barna");
-  await expect(page.locator(".home-banner-subtitle")).toHaveText(/AI products for fintech, Web3,\s*regulated teams\. I take them from strategy to ship\./);
+  await expect(page.locator(".home-banner-subtitle")).toHaveText(/Websites, web applications and AI features\s*for regulated companies\. I take them from strategy to ship\./);
   await expect(page.locator(".home-mast-proof-chips li")).toHaveText(["Multi-country bankingRaiffeisen", "Enterprise EdTech AIInstructure"]);
   await expect(page.locator(".home-banner-outcomes li")).toHaveText(["BlackRock", "Instructure", "Raiffeisen", "Bitpanda", "Balabit"]);
   // One Contact entry and the language link replace the old Email button.

@@ -137,7 +137,9 @@ for (const device of VIEWPORTS) {
 // language) must not change the header height or move the logo, the menu
 // button or the language control. Colours stay per page type.
 const SITEMAP_PAGES = [...readFileSync(new URL("../sitemap.xml", import.meta.url), "utf8").matchAll(/<loc>https:\/\/www\.barnanorbert\.com([^<]*)<\/loc>/g)]
-  .map((match) => match[1] || "/");
+  .map((match) => match[1] || "/")
+  // The three error documents share the bar too (2026-10-22).
+  .concat(["/this-page-does-not-exist", "/hu/nincs-ilyen-oldal", "/de/diese-seite-gibt-es-nicht"]);
 
 for (const device of VIEWPORTS) {
   test.describe(`${device.name} geometry`, () => {
@@ -158,6 +160,13 @@ for (const device of VIEWPORTS) {
             button: rect(document.querySelector(".menu-button")),
             language: rect(document.querySelector(".nav-lang-trigger")),
             menuRight: (() => { const nav = document.querySelector("#primary-navigation"); const r = nav && nav.getBoundingClientRect(); return r && r.width ? Math.round(r.right) : null; })(),
+            // The destinations share one type (size, weight, case) and 44px
+            // rows on every bar; the Articles chevron paints in the same ink
+            // as the links beside it, so it is visible on the navy bars too.
+            // Case pages carry Works in the breadcrumb and hide the duplicate
+            // .case-nav-works destination on desktop; hidden rows are skipped.
+            links: [...document.querySelectorAll("#primary-navigation .nav-menu-area .nav-link")].filter((el) => getComputedStyle(el).display !== "none").map((el) => { const s = getComputedStyle(el); return { type: `${s.fontSize} ${s.fontWeight} ${s.textTransform}`, height: Math.round(el.getBoundingClientRect().height), color: s.color, current: el.hasAttribute("aria-current") }; }),
+            toggle: (() => { const t = document.querySelector("#primary-navigation .nav-group-toggle"); return t ? getComputedStyle(t).color : null; })(),
           };
         });
         seen.set(path, geometry);
@@ -172,6 +181,14 @@ for (const device of VIEWPORTS) {
         expect(geometry.button, `${path}: menu button`).toBe(reference.button);
         expect(geometry.language, `${path}: language control`).toBe(reference.language);
         expect(geometry.menuRight, `${path}: menu right edge`).toBe(reference.menuRight);
+        if (compact) continue;
+        expect(geometry.links.length, `${path}: destinations`).toBeGreaterThan(4);
+        for (const link of geometry.links) {
+          expect(link.type, `${path}: link type`).toBe(reference.links[0].type);
+          expect(link.height, `${path}: link row height`).toBeGreaterThanOrEqual(44);
+        }
+        const plain = geometry.links.find((link) => !link.current) || geometry.links[0];
+        expect(geometry.toggle, `${path}: the Articles chevron takes the link ink`).toBe(plain.color);
       }
     });
   });

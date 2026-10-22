@@ -53,6 +53,9 @@
       if (isOpen) primaryNavigation.setAttribute("data-nav-menu-open", "");
       else primaryNavigation.removeAttribute("data-nav-menu-open");
       menuButton.setAttribute("aria-label", isOpen ? navLabels.close : navLabels.open);
+      // The open compact menu locks the page behind it (compact-navigation.css
+      // scrolls the menu itself); a desktop menu never does.
+      root.toggleAttribute("data-menu-open", isOpen && compactNavigation.matches);
       if (!isOpen && typeof closeGroups === "function") closeGroups();
       // External links and mail leave this document in place. Never leave
       // keyboard focus on a control that has just become display:none.

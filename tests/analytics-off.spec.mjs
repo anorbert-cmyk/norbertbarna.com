@@ -96,7 +96,7 @@ test('Hungarian first visit can allow analytics from the banner', async ({ page 
   const vendor = await interceptVendor(page);
   await page.goto('/hu/adatvedelem');
   expect(vendor).toEqual([]);
-  await page.getByRole('button', { name: 'Mérés engedélyezése', exact: true }).click();
+  await page.getByRole('button', { name: 'Engedélyezem', exact: true }).click();
   await expect.poll(() => vendor.length).toBe(1);
   await expect(page.locator('[data-consent-banner]')).toBeHidden();
 });

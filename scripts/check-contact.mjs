@@ -316,6 +316,12 @@ for (const page of pages) {
   if (/mailto:/i.test(html)) fail(`${page} contains a mailto link`);
   if (exposesInbox(html)) fail(`${page} exposes the private inbox`);
 }
+// The confirmation is announced even when the focus move to its heading is
+// interrupted (2026-10-22): the thank-you text is a polite live region.
+for (const page of ["contact.html", "hu/kapcsolat.html", "de/kontakt.html"]) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  if (!/<p class="contact-sent-text" aria-live="polite">/.test(html)) fail(`${page}: the thank-you text must be a polite live region`);
+}
 // Every served asset too: retired release copies once carried the address in a comment.
 for (const dir of ["assets/css", "assets/js"]) {
   for (const name of readdirSync(join(ROOT, dir))) {

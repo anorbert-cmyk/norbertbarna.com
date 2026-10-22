@@ -202,9 +202,11 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 .navbar .nav-group-trigger, .navbar .nav-lang-trigger { display: inline-flex; align-items: center; gap: 6px; }
 /* EN, HU and DE codes differ by a pixel or two; one width keeps the menu in place across languages. */
 .navbar .nav-lang-trigger { min-width: 68px; justify-content: center; }
+/* The chevron takes the bar's link ink, so it stays visible on the navy
+   service and About bars too (2026-10-22). */
 .navbar .nav-group-toggle {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 30px; min-width: 30px; min-height: 44px; margin-left: 0; padding: 0; color: inherit;
+  width: 30px; min-width: 30px; min-height: 44px; margin-left: 0; padding: 0; color: var(--immersive-link-ink, #0A1628);
 }
 .navbar .nav-chevron { flex: 0 0 auto; }
 .navbar [data-nav-toggle][aria-expanded="true"] .nav-chevron { transform: rotate(180deg); }
@@ -282,7 +284,7 @@ html:not(.nav-enhanced) .navbar .nav-group:is(:hover, :focus-within) > .nav-grou
 html.no-motion .navbar [data-nav-group-open] .nav-group-panel { animation: none; }
 /* Desktop bars colour their own controls; the language trigger follows the bar ink. */
 .navbar .nav-lang-trigger { color: var(--immersive-link-ink, #0A1628); }
-.story-page .navbar .nav-lang-trigger { color: #D6D4ED; }
+.story-page .navbar :is(.nav-lang-trigger, .nav-group-toggle) { color: #D6D4ED; }
 @media (min-width: 992px) {
   .navbar .nav-lang-trigger { min-height: 44px; padding: 10px 0; font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; }
   body:is(.works-index, .immersive-case) .navbar .nav-lang-trigger { font-size: clamp(12px, 1.05vw, 14px); }
@@ -307,5 +309,24 @@ html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; h
   html body .navbar .nav-wrap, html body .navbar .nav-wrap.dark { min-height: 56px; }
   html body .navbar .menu-button, html body .navbar .menu-button.w-nav-button {
     display: grid; place-items: center; width: auto; min-width: 44px; height: auto; min-height: 44px; padding: 0; margin: 0 0 0 auto;
+  }
+}
+/* Every bar types its destinations alike (2026-10-22): one size, uppercase,
+   44px rows, whatever colour the page type gives them. The Webflow base and
+   story.css no longer size the links on the service and About bars. */
+@media (min-width: 992px) {
+  html body .navbar .nav-menu-area .nav-link {
+    display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0; border: 0; border-radius: 0;
+    font: 400 clamp(12px, 1.05vw, 14px)/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: 0; text-transform: uppercase;
+  }
+}
+/* The open compact menu (2026-10-22) locks the page behind it and scrolls on
+   its own, so the language rows stay reachable on a short screen, and it
+   stacks above the consent banner. navigation.js sets data-menu-open. */
+@media (max-width: 991px) {
+  html[data-menu-open] { overflow: hidden; }
+  html[data-menu-open] body .navbar.w-nav { z-index: 1200; }
+  html body .navbar .nav-menu.w-nav-menu[data-nav-menu-open] {
+    max-height: calc(100vh - 56px); max-height: calc(100svh - 56px); overflow-y: auto; overscroll-behavior: contain;
   }
 }

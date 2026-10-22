@@ -453,7 +453,7 @@ test("consent changes cause no network requests or cookies", async ({ page, cont
 
 for (const [language, title, privacy, reject, accept] of [
   ["en", "Optional analytics", "/privacy", "Decline analytics", "Allow analytics"],
-  ["hu-HU", "Választható látogatottságmérés", "/hu/adatvedelem", "Mérés elutasítása", "Mérés engedélyezése"],
+  ["hu-HU", "Választható látogatottságmérés", "/hu/adatvedelem", "Elutasítom", "Engedélyezem"],
   ["de", "Optionale Besucheranalyse", "/de/datenschutz", "Analyse ablehnen", "Analyse erlauben"],
 ]) {
   test(`${language} has equivalent accessible choices and compact reflow`, async ({ page }, testInfo) => {

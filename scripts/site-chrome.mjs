@@ -21,11 +21,22 @@ const FLAGS = {
 const CHEVRON = `<svg class="nav-chevron" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4"/></svg>`;
 const LINKEDIN_ICON = `<svg class="footer-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 9.1H4.1V20h2.5V9.1ZM5.35 4.2a1.55 1.55 0 1 0 0 3.1 1.55 1.55 0 0 0 0-3.1ZM19.9 13.25c0-3.18-1.7-4.66-3.98-4.66-1.84 0-2.66 1.02-3.12 1.74V9.1h-2.48c.04.72 0 10.9 0 10.9h2.48v-6.08c0-.33.02-.66.12-.9.27-.66.87-1.35 1.89-1.35 1.33 0 1.87 1.02 1.87 2.5V20h2.22v-6.75Z"/></svg>`;
 
+// `list` names the destination of an untranslated article's language link,
+// which leads to that language's article list: "English: all articles".
 export const LANGUAGES = {
-  en: { code: "EN", name: "English", menu: "Language", home: "/" },
-  hu: { code: "HU", name: "Magyar", menu: "Nyelv", home: "/hu" },
-  de: { code: "DE", name: "Deutsch", menu: "Sprache", home: "/de" },
+  en: { code: "EN", name: "English", menu: "Language", home: "/", list: "all articles" },
+  hu: { code: "HU", name: "Magyar", menu: "Nyelv", home: "/hu", list: "összes cikk" },
+  de: { code: "DE", name: "Deutsch", menu: "Sprache", home: "/de", list: "alle Artikel" },
 };
+
+// The visible label of a language link: the language's native name, or, when
+// the link leads to that language's article list instead of a translation,
+// the name with the list named after it (2026-10-22: the destination is
+// honest; the item no longer reads like a translated pair).
+export function languageLinkLabel(code, pair) {
+  const language = LANGUAGES[code];
+  return !pair.alternate && pair.href === SECTIONS[code].path ? `${language.name}: ${language.list}` : language.name;
+}
 
 // Menu copy per language. A `group` renders as a disclosure; `items` are its
 // links. Articles are filled in from content/*.md at build time.
@@ -114,6 +125,11 @@ export const STATIC_PAGES = {
   "de/kontakt.html": { kind: "work", current: "contact" },
   "de/ueber-mich.html": { kind: "about", current: "about" },
   "de/arbeiten.html": { kind: "work", current: "works" },
+  // Error documents (2026-10-22): utility chrome; their language menu leads to
+  // the other languages' homes, as no translation of a missing page exists.
+  "404.html": { kind: "utility", current: null },
+  "hu/404.html": { kind: "utility", current: null },
+  "de/404.html": { kind: "utility", current: null },
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`work/${slug}.html`, { kind: "case", current: null }])),
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`hu/munka/${slug}.html`, { kind: "case", current: null }])),
   ...Object.fromEntries(WORK_SLUGS.map((slug) => [`de/arbeit/${slug}.html`, { kind: "case", current: null }])),
@@ -164,7 +180,7 @@ export function languageMenu({ lang, pairs }) {
     if (code === lang) return `<li><span class="nav-lang-current" aria-current="true" lang="${code}">${FLAGS[code]}<span>${language.name}</span></span></li>`;
     const pair = pairs[code];
     if (!pair) throw new Error(`language menu: no ${code} destination`);
-    return `<li><a class="nav-group-link lang-switch" href="${pair.href}" hreflang="${code}" lang="${code}"${pair.alternate ? ' rel="alternate"' : ""}>${FLAGS[code]}<span>${language.name}</span></a></li>`;
+    return `<li><a class="nav-group-link lang-switch" href="${pair.href}" hreflang="${code}" lang="${code}"${pair.alternate ? ' rel="alternate"' : ""}>${FLAGS[code]}<span>${esc(languageLinkLabel(code, pair))}</span></a></li>`;
   }).join("");
   return `<div class="nav-group nav-lang" data-nav-group><button type="button" class="nav-lang-trigger" data-nav-toggle aria-expanded="false" aria-controls="nav-languages" aria-label="${esc(`${own.menu}: ${own.code}, ${own.name}`)}">${FLAGS[lang]}<span class="nav-lang-code" aria-hidden="true">${own.code}</span><span class="nav-lang-name" aria-hidden="true">${own.name}</span>${CHEVRON}</button><div class="nav-group-panel nav-lang-panel" id="nav-languages" hidden><ul class="nav-group-list">${items}</ul></div></div>`;
 }

@@ -11,7 +11,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SERVICE_PAGES, UTILITY_PAGES, assetPrefix, baseOf, HU_PAGES, DE_PAGES, WRITING_PAGES, ENTRY_PAGES } from "./service-pages.mjs";
+import { ERROR_PAGES, SERVICE_PAGES, UTILITY_PAGES, assetPrefix, baseOf, HU_PAGES, DE_PAGES, WRITING_PAGES, ENTRY_PAGES } from "./service-pages.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
@@ -19,7 +19,7 @@ const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .sort()
   .map((name) => `work/${name}`);
 const ANIMATED_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES, ...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES];
-const ALL_PAGES = [...ANIMATED_PAGES, "404.html"];
+const ALL_PAGES = [...ANIMATED_PAGES, ...ERROR_PAGES];
 
 let failures = 0;
 function fail(message) {

@@ -207,10 +207,10 @@ app.use((req, res, next) => {
   }
   const slashPath = decoded.replaceAll("\\", "/");
   if (slashPath.includes("\0") || /(?:^|\/)\.{1,2}(?:\/|$)/.test(slashPath)) {
-    return sendNotFound(res);
+    return sendNotFound(res, req);
   }
   const normalizedPath = path.posix.normalize(slashPath);
-  if (PRIVATE_PATH.test(normalizedPath)) return sendNotFound(res);
+  if (PRIVATE_PATH.test(normalizedPath)) return sendNotFound(res, req);
   next();
 });
 
@@ -231,8 +231,10 @@ app.post(["/contact", "/hu/kapcsolat", "/de/kontakt"], (req, res) => {
 // object IDs and generated source-image hashes are not output-content hashes,
 // so those assets must revalidate after a deployment.
 const ASSET_ROOT = path.join(__dirname, "assets");
+// The inherited Webflow stylesheets (2026-10-22) carry the same SHA-256 prefix
+// after their Webflow object id, so they cache like the authored releases.
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact|writing)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
+  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact|writing)\.[a-f0-9]{12}\.css|css\/norbertbarna\.webflow\.(?:shared|[a-f0-9]{24})\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");
@@ -252,9 +254,10 @@ app.use(
   })
 );
 
-// The error document itself must never become a successful, indexable page.
+// The error documents themselves must never become successful, indexable pages.
+const ERROR_DOCUMENT = /^\/(?:hu\/|de\/)?404(?:\.html)?$/;
 app.use((req, res, next) => {
-  if (req.path === "/404" || req.path === "/404.html") return sendNotFound(res);
+  if (ERROR_DOCUMENT.test(req.path)) return sendNotFound(res, req);
   next();
 });
 
@@ -302,14 +305,19 @@ app.use(
   })
 );
 
-// Anything unmatched is a 404
-function sendNotFound(res) {
+// Anything unmatched is a 404, answered in the language of the request path
+// (2026-10-22): /hu/... gets hu/404.html, /de/... de/404.html, the rest 404.html.
+function notFoundDocument(requestPath) {
+  const prefix = /^\/(hu|de)(?:\/|$)/.exec(requestPath || "");
+  return prefix ? path.join(__dirname, prefix[1], "404.html") : path.join(__dirname, "404.html");
+}
+function sendNotFound(res, req) {
   res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
-  res.status(404).sendFile(path.join(__dirname, "404.html"), (err) => {
+  res.status(404).sendFile(notFoundDocument(req && req.path), (err) => {
     if (err && !res.headersSent) res.status(404).send("Page not found");
   });
 }
-app.use((req, res) => sendNotFound(res));
+app.use((req, res) => sendNotFound(res, req));
 
 // Express's default error handler echoes a stack trace unless NODE_ENV is
 // production. Keep failures generic; the header middleware already ran.
@@ -317,7 +325,7 @@ app.use((req, res) => sendNotFound(res));
 app.use((err, req, res, next) => {
   if (res.headersSent) return next(err);
   const status = err && Number.isInteger(err.status) && err.status >= 400 && err.status < 600 ? err.status : 500;
-  if (status === 404) return sendNotFound(res);
+  if (status === 404) return sendNotFound(res, req);
   res.setHeader("Cache-Control", "no-store");
   res.status(status).type("text").send(status >= 500 ? "Internal server error" : "Request failed");
 });

@@ -10,10 +10,12 @@ const ROUTES = Object.entries(AI_PAGES);
 const LANGS = Object.keys(AI_PAGES);
 const LANGUAGE_NAMES = { en: "English", hu: "Magyar", de: "Deutsch" };
 const SECTIONS = ["#top", "#shaped", "#pieces", "#workflow", "#selected-work", "#start", "#questions"];
-// Hungarian pages link only Hungarian pages (whole-site language switch, 2026-10-06);
-// the German pages link the English cases and About, as the case studies stay English.
+// Every page links only pages of its own language (whole-site language switch,
+// 2026-10-06; German cases and About, 2026-10-22).
 const caseHref = (language, slug) => ({ hu: `/hu/munka/${slug}`, de: `/de/arbeit/${slug}` })[language] || `/work/${slug}`;
 const aboutHref = (language) => ({ hu: "/hu/rolam", de: "/de/ueber-mich" })[language] || "/about";
+// The reference chapter carries the related-articles heading as well (SEO audit 2026-10-22).
+const headingCount = (id) => id === "#selected-work" ? 2 : 1;
 const contactHref = (language) => ({ hu: "/hu/kapcsolat", de: "/de/kontakt" })[language] || "/contact";
 const contactLabel = (language) => ({ hu: "Beszéljünk a projektedről", de: "Sprechen wir über Ihr Projekt" })[language] || "Discuss your project";
 const languageOf = (path) => LANGS.find((code) => code !== "en" && path.startsWith(`/${code}/`)) || "en";
@@ -127,7 +129,7 @@ for (const [language, path] of ROUTES) {
     for (let index = 1; index < order.length; index += 1) expect(order[index], "sections follow the approved reading order").toBeGreaterThan(order[index - 1]);
     await expect(page.locator("main h1")).toHaveCount(1);
     await expect(page.locator("main h1")).toContainText(language === "de" ? "KI" : "AI");
-    for (const id of SECTIONS.slice(1)) await expect(page.locator(`${id} h2`)).toHaveCount(1);
+    for (const id of SECTIONS.slice(1)) await expect(page.locator(`${id} h2`)).toHaveCount(headingCount(id));
     await expect(page.locator("#pieces a, #pieces button, .ai-step-inline, .ai-start-steps, .ai-better")).toHaveCount(0);
     await expect(page.locator(".ai-shape-art img")).toHaveCount(1);
     await expect(page.locator(".ai-shape-art img")).toHaveAttribute("src", "/assets/images/ai/bars.webp");
@@ -160,7 +162,13 @@ for (const [language, path] of ROUTES) {
     }
     // The opening and the close both link the contact form; no mail button remains.
     await expect(page.locator("button.footer-email")).toHaveCount(0);
-    await expect(page.locator("main a.footer-email")).toHaveCount(1);
+    // The opening plus the capsule after the use cases and after the working chapter (UX audit 2026-10-22).
+    await expect(page.locator("main a.footer-email")).toHaveCount(3);
+    for (const chapter of ["#uses", "#workflow"]) {
+      await expect(page.locator(`${chapter} a.footer-email.hero-work-link`)).toHaveCount(1);
+      await expect(page.locator(`${chapter} a.footer-email`)).toHaveAttribute("href", contactHref(language));
+      await expect(page.locator(`${chapter} a.footer-email`)).toHaveText(contactLabel(language));
+    }
     await expect(page.locator("#top a.footer-email")).toHaveCount(1);
     await expect(page.locator("#top a.footer-email")).toHaveAttribute("href", contactHref(language));
     if (language === "hu") {
@@ -385,6 +393,11 @@ for (const [language, path] of ROUTES) {
     await scrollToCamera(page, .05);
     await expectReadingAvailable(page);
     await page.locator(".ai-hero-explore").focus();
+    // The two mid-page project capsules come first, then the reference rows.
+    for (const chapter of ["#uses", "#workflow"]) {
+      await page.keyboard.press("Tab");
+      await expectFocusedLinkPainted(page, page.locator(`${chapter} a.footer-email`));
+    }
     for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
       await page.keyboard.press("Tab");
       await expectFocusedLinkPainted(page, page.locator(`#selected-work a[href="${caseHref(language, slug)}"]`));
@@ -692,7 +705,7 @@ test("the old Hungarian AI address moves permanently to the new one", async ({ r
   }
 });
 
-for (const [path, subject] of [["/ai-integration", /Human in the loop AI integration/], ["/web-development", /Web development/], ["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/],
+for (const [path, subject] of [["/ai-integration", /AI consulting and integration/], ["/web-development", /Web development/], ["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/],
   ["/de/ki-beratung-entwicklung", /KI-Beratung/], ["/de/webentwicklung", /Webentwicklung/]]) {
   test(`${path}: use cases, scope, price factors and FAQ data match the visible page`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });

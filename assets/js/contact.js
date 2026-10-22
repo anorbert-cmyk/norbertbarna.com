@@ -332,12 +332,27 @@
     captcha.token = null;
     resetCaptcha();
   }
+  // A check that failed to load before the visitor touched the form says so
+  // only once they do (2026-10-22): on the first focus, keystroke or send, so
+  // a blank page never opens with an error line under the Send button.
+  var engaged = false;
+  var noticeHeld = false;
+  function engage() {
+    engaged = true;
+    if (noticeHeld && captcha.failed && !captcha.loading) {
+      noticeHeld = false;
+      say(t.captchaError, true, "captcha");
+    }
+  }
+  form.addEventListener("focusin", engage, true);
+  form.addEventListener("input", engage, true);
+  form.addEventListener("submit", engage, true);
   function captchaError() {
     captcha.token = null;
     captcha.failed = true;
     captcha.loading = false;
     if (checkRow) checkRow.hidden = true;
-    say(t.captchaError, true, "captcha");
+    if (engaged) say(t.captchaError, true, "captcha"); else noticeHeld = true;
     settleWaiters(new Error("captcha"));
   }
   function resetCaptcha() {

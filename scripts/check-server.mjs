@@ -63,12 +63,17 @@ function assetPath(filePath) {
 // This intentionally does not import or duplicate the server classifier.
 // A release is immutable only when it belongs to an approved family and the
 // embedded token is the real SHA-256 prefix of the bytes being served.
+// The inherited Webflow stylesheets (2026-10-22) have no unhashed source: the
+// file under its Webflow object id is the release, named by its own digest.
+const WEBFLOW_RELEASE = /^norbertbarna\.webflow\.(?:shared|[a-f0-9]{24})$/;
 function hasVerifiedReleaseDigest(filePath) {
   const [directory, fileName, extra] = assetPath(filePath).split("/");
   if (extra || !directory || !fileName) return false;
 
   const match = fileName.match(/^(.+)\.([a-f0-9]{12})\.(js|css|woff2)$/i);
-  if (!match || !approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
+  if (!match) return false;
+  const webflow = directory === "css" && match[3] === "css" && WEBFLOW_RELEASE.test(match[1]);
+  if (!webflow && !approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
 
   const actual = createHash("sha256").update(readFileSync(filePath)).digest("hex").slice(0, 12);
   return match[2].toLowerCase() === actual;
@@ -389,9 +394,29 @@ try {
     delete require.cache[require.resolve(serverModulePath)];
   }
 
+  // The error document answers in the language of the request path
+  // (2026-10-22): hu/404.html under /hu/..., de/404.html under /de/..., the
+  // English one elsewhere, each with its own chrome and language links.
+  for (const [path, lang, home] of [
+    ["/does-not-exist", "en", "/"], ["/hu/nincs-ilyen-oldal", "hu", "/hu"], ["/de/gibt-es-nicht", "de", "/de"],
+    ["/hu/munka/nincs", "hu", "/hu"], ["/de/arbeit/x/y", "de", "/de"], ["/work/", "en", "/"], ["/hungary", "en", "/"],
+  ]) {
+    const response = await fetch(`${baseUrl}${path}`, { redirect: "manual" });
+    const body = await response.text();
+    assert(response.status === 404, `${path} returned ${response.status} instead of 404`);
+    assert(body.includes(`<html lang="${lang}">`), `${path} must answer with the ${lang} error document`);
+    assert(/noindex,\s*follow/i.test(body), `${path}: the ${lang} error document must noindex`);
+    assert(/id="primary-navigation"/.test(body) && /class="footer-nav"/.test(body), `${path}: the error document carries the site chrome`);
+    assert(new RegExp(`<a class="footer-brand" href="${home.replace(/\//g, "\\/")}"`).test(body), `${path}: the error document links the ${lang} home`);
+  }
+
   for (const notFoundPath of [
     "/404",
     "/404.html",
+    "/hu/404",
+    "/hu/404.html",
+    "/de/404",
+    "/de/404.html",
     "/cv",
     "/lib/contact.js",
     "/lib/contact",

@@ -38,19 +38,23 @@ const AI_FOOTER_TITLE = {
 };
 const CONSENT_BUTTON = { en: "Analytics settings", hu: "Analitikai beállítások", de: "Analyse-Einstellungen" };
 const contactButtons = (html) => [...html.matchAll(/(<a\b[^>]*class="[^"]*\bfooter-email\b[^"]*"[^>]*>)([\s\S]*?)<\/a>/g)];
-function checkProjectContact(html, scope, language = "en", allowAiArrow = false) {
+// A service page's main content repeats the project action after the use
+// cases and the working chapter (UX audit 2026-10-22), so `repeats` allows
+// several links there; every one of them keeps the same destination and label.
+function checkProjectContact(html, scope, language = "en", allowAiArrow = false, repeats = false) {
   const links = contactButtons(html);
   const copy = PROJECT_CONTACT[language];
   if (/<button\b[^>]*\bfooter-email\b/.test(html)) fail(`${scope}: FakeEmailLink: the project action must not reopen a mail button`);
-  if (links.length !== 1) {
-    fail(`${scope}: expected one project-contact link (got ${links.length})`);
+  if (repeats ? links.length < 1 : links.length !== 1) {
+    fail(`${scope}: expected ${repeats ? "at least one" : "one"} project-contact link (got ${links.length})`);
     return;
   }
-  const [, tag, text] = links[0];
-  if (!tag.includes(`href="${copy.href}"`)) fail(`${scope}: the project action must lead to ${copy.href}`);
-  // The chosen AI action alone includes a decorative, accessibility-hidden arrow.
-  const label = allowAiArrow ? text.replace(/<span aria-hidden="true">→<\/span>$/, "").trim() : text.trim();
-  if (label !== copy.label) fail(`${scope}: project contact must say “${copy.label}”`);
+  for (const [, tag, text] of links) {
+    if (!tag.includes(`href="${copy.href}"`)) fail(`${scope}: the project action must lead to ${copy.href}`);
+    // The chosen AI action alone includes a decorative, accessibility-hidden arrow.
+    const label = allowAiArrow ? text.replace(/<span aria-hidden="true">→<\/span>$/, "").trim() : text.trim();
+    if (label !== copy.label) fail(`${scope}: project contact must say “${copy.label}”`);
+  }
 }
 
 const home = readFileSync(join(ROOT, "index.html"), "utf8");
@@ -293,7 +297,7 @@ if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   const styleSources = readdirSync(join(ROOT, "assets/css"))
     .filter((name) => name.endsWith(".css") && !/\.[0-9a-f]{12}\.css$/.test(name) && name !== "fonts.css")
     .map((name) => [`assets/css/${name}`, readFileSync(join(ROOT, "assets/css", name), "utf8")]);
-  styleSources.push(["404.html", readFileSync(join(ROOT, "404.html"), "utf8")]);
+  for (const page of ["404.html", "hu/404.html", "de/404.html"]) styleSources.push([page, readFileSync(join(ROOT, page), "utf8")]);
   for (const [name, source] of styleSources) {
     for (const match of source.matchAll(/(["']?)(Inter|Funnel Display)\1\s*,\s*(?!\s*["']?\2 Fallback)[^;}]*/g)) {
       fail(`${name}: "${match[0].trim()}" must list "${match[2]} Fallback" right after ${match[2]}`);
@@ -638,7 +642,7 @@ for (const page of footerPages) {
 for (const page of SERVICE_PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
   const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)?.[1] || "";
-  checkProjectContact(main, `${page}: main`, languageOf(page), true);
+  checkProjectContact(main, `${page}: main`, languageOf(page), true, true);
 }
 // The approved AI refinement merges the two boards into one service story.
 // Cases stand outside the camera, FAQ is its own reading section and the
