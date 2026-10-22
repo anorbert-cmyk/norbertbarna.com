@@ -7,7 +7,7 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { createHash } from "node:crypto";
-import { UTILITY_PAGES, HU_PAGES, LANGS, SITE_COPY, WRITING_PAGES, assetPrefix, baseOf, isHungarian, languageOf, urlOf } from "./service-pages.mjs";
+import { UTILITY_PAGES, HU_PAGES, DE_PAGES, LANGS, SITE_COPY, WRITING_PAGES, assetPrefix, baseOf, isHungarian, languageOf, urlOf } from "./service-pages.mjs";
 import { LANGUAGES, pairsOf } from "./site-chrome.mjs";
 
 // Native labels of the About and Contact links per language.
@@ -21,13 +21,13 @@ const PAGES = [
   ...UTILITY_PAGES,
   "404.html",
   ...readdirSync(join(ROOT, "work")).filter((f) => f.endsWith(".html")).map((f) => `work/${f}`),
-  ...HU_PAGES,
+  ...HU_PAGES, ...DE_PAGES,
   ...WRITING_PAGES,
 ];
 
 const CLEAN_URLS = { "/": "index.html", "/works": "works.html", "/about": "about.html" };
 for (const page of UTILITY_PAGES) CLEAN_URLS[urlOf(page)] = page;
-for (const page of [...HU_PAGES, ...WRITING_PAGES]) CLEAN_URLS[urlOf(page)] = page;
+for (const page of [...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES]) CLEAN_URLS[urlOf(page)] = page;
 for (const f of readdirSync(join(ROOT, "work"))) {
   if (f.endsWith(".html")) CLEAN_URLS[`/work/${f.replace(".html", "")}`] = `work/${f}`;
 }
@@ -209,8 +209,8 @@ for (const page of PAGES) {
   if (!is404) {
     const navigation = html.match(/<nav\b[^>]*\bid=["']primary-navigation["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
     const lang = languageOf(page);
-    // German pages link the English biography and case studies (no German mirror).
-    const aboutHref = hungarian ? "/hu/rolam" : "/about";
+    // Every language has its own biography; German pages still link the English case studies.
+    const aboutHref = { en: "/about", hu: "/hu/rolam", de: "/de/ueber-mich" }[lang];
     const aboutLinks = [...navigation.matchAll(new RegExp(`<a\\b[^>]*\\bhref=["']${aboutHref}["'][^>]*>([\\s\\S]*?)<\\/a>`, "gi"))]
       .filter(([tag]) => !/\bhreflang=/.test(tag));
     if (aboutLinks.length !== 1 || visibleText(aboutLinks[0][1]) !== NAV_LABELS[lang].about) {
@@ -461,6 +461,7 @@ const hiringSitemap = [
   "/hu/munkak",
   ...["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"].map(slug => `/hu/munka/${slug}`),
   "/hu/rolam",
+  "/de/ueber-mich",
   // Writing goes last, in build-writing.mjs order (list page, then newest article first).
   ...WRITING_PAGES.map(urlOf),
 ];

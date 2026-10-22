@@ -13,11 +13,11 @@ const canonicalPaths = [...readFileSync(resolve(root, "sitemap.xml"), "utf8").ma
 // `/hu` and the writing list pages are directories served by explicit routes (design.md, Pages and routes).
 const htmlFor = (route) => resolve(root, route === "/" ? "index.html" : ["/hu", "/de", "/writing", "/hu/irasok", "/de/wissen"].includes(route) ? `${route.slice(1)}/index.html` : `${route.slice(1)}.html`);
 const slugs = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
-// English pages in hiring order, then the utility groups (English, Hungarian, German), the German entry page, then the Hungarian mirror, then the generated writing pages.
+// English pages in hiring order, then the utility groups (English, Hungarian, German), the German entry page, then the Hungarian mirror and the German biography, then the generated writing pages.
 const expectedCanonicalPaths = ["/", "/works", ...slugs.map((slug) => `/work/${slug}`), "/about",
   "/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/de/ki-beratung-entwicklung", "/de/webentwicklung",
   "/privacy", "/hu/adatvedelem", "/de/datenschutz", "/contact", "/hu/kapcsolat", "/de/kontakt", "/de",
-  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam", ...writingPages().map(urlOf)];
+  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam", "/de/ueber-mich", ...writingPages().map(urlOf)];
 const cssSource = readFileSync(resolve(root, "assets/css/fonts.css"), "utf8");
 const cssDigest = createHash("sha256").update(cssSource).digest("hex").slice(0, 12);
 const sample = "Norbert Barna ÁÉÍÓÖŐÚÜŰ árvíztűrő tükörfúrógép";

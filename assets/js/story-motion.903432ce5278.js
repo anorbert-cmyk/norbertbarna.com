@@ -18,7 +18,10 @@
   var steps = Array.from(document.querySelectorAll("[data-story-step]"));
   var toggle = root.querySelector("[data-story-motion-toggle]");
   var reducedQuery = matchMedia("(prefers-reduced-motion: reduce)");
-  var labels = /^hu(?:-|$)/i.test(document.documentElement.lang) ? {
+  var labels = /^de(?:-|$)/i.test(document.documentElement.lang) ? {
+    reduced: "Bewegung reduziert", resume: "Bewegung fortsetzen", pause: "Bewegung anhalten",
+    reducedTitle: "Die Bewegung folgt der Einstellung Ihres Geräts oder der Seite.", title: "Die dekorative Kamerabewegung anhalten oder fortsetzen."
+  } : /^hu(?:-|$)/i.test(document.documentElement.lang) ? {
     reduced: "Mozgás csökkentve", resume: "Mozgás folytatása", pause: "Mozgás szüneteltetése",
     reducedTitle: "A mozgás az eszközöd vagy az oldal beállítását követi.", title: "A díszítő kameramozgás szüneteltetése vagy folytatása."
   } : {

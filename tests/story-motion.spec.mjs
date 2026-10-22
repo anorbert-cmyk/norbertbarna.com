@@ -131,6 +131,38 @@ test("Hungarian About runs the same controller with Hungarian Pause labels and n
   await overflow(page);
 });
 
+// The German About (/de/ueber-mich, 2026-10-22) is the third story page; its case links stay English.
+test("German About runs the same controller with German Pause labels and native destinations", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openStory(page, "", "/de/ueber-mich");
+  await expect(page.locator("html")).toHaveAttribute("lang", "de");
+  await expect(page.locator("main[data-story]")).toHaveAttribute("data-story-mode", "cinematic");
+  await expect(page.locator('.navbar a[aria-current="page"]')).toHaveAttribute("href", "/de/ueber-mich");
+  await expect(page.locator(".navbar a.lang-switch").first()).toHaveAttribute("href", "/about");
+  await expect(page.locator(".story-next a.footer-email")).toHaveAttribute("href", "/de/kontakt");
+  const toggle = page.locator("[data-story-motion-toggle]");
+  await alignReading(page, "[data-story-motion-toggle]");
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveText("Bewegung anhalten");
+  await expect(toggle).toHaveAttribute("title", "Die dekorative Kamerabewegung anhalten oder fortsetzen.");
+  await toggle.focus();
+  await toggle.press("Enter");
+  await expect(toggle).toHaveText("Bewegung fortsetzen");
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+  await toggle.press("Enter");
+  await expect(toggle).toHaveText("Bewegung anhalten");
+  // Resizing the opening copy is observed without a runtime error.
+  await page.locator(".story-opening-copy").evaluate((copy) => { copy.style.paddingBottom = "120px"; });
+  await settle(page);
+  await page.setViewportSize({ width: 1180, height: 860 });
+  await settle(page);
+  expect(await page.evaluate(() => window.PortfolioStoryMotion.state)).toMatch(/active|paused/);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(toggle).toHaveText("Bewegung reduziert");
+  await expect(toggle).toHaveAttribute("title", "Die Bewegung folgt der Einstellung Ihres Geräts oder der Seite.");
+  await overflow(page);
+});
+
 test("desktop native scroll changes the visible camera, then releases to stable readable chapters", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await openStory(page);

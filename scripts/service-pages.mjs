@@ -35,7 +35,12 @@ export const HU_MIRRORS = {
 };
 export const HU_PAGES = Object.keys(HU_MIRRORS);
 export const HU_WORK_PAGES = HU_PAGES.filter((page) => page.startsWith("hu/munka/"));
-export const baseOf = (page) => HU_MIRRORS[page] || page;
+// The German biography (owner request, 2026-10-22) mirrors the English story
+// page the same way; the case studies and /works stay English.
+export const DE_MIRRORS = { "de/ueber-mich.html": "about.html" };
+export const DE_PAGES = Object.keys(DE_MIRRORS);
+export const MIRRORS = { ...HU_MIRRORS, ...DE_MIRRORS };
+export const baseOf = (page) => MIRRORS[page] || page;
 export const isHungarian = (page) => page.startsWith("hu/");
 
 // Translation groups of the static pages: every page lists its translations
@@ -47,7 +52,7 @@ export const PAGE_GROUPS = [
   ["privacy.html", "hu/adatvedelem.html", "de/datenschutz.html"],
   ["contact.html", "hu/kapcsolat.html", "de/kontakt.html"],
   ["works.html", "hu/munkak.html"],
-  ["about.html", "hu/rolam.html"],
+  ["about.html", "hu/rolam.html", "de/ueber-mich.html"],
   ...WORK_SLUGS.map((slug) => [`work/${slug}.html`, `hu/munka/${slug}.html`]),
 ];
 // { "hu/index.html": { en: "index.html", hu: "hu/index.html", de: "de/index.html" }, ... }
@@ -59,7 +64,7 @@ export const SERVICE_PAIRS = Object.fromEntries(SERVICE_PAGES.map((page) => [pag
 // URL path of a page file: index.html -> /, hu/index.html -> /hu, x.html -> /x.
 export const urlOf = (page) => page === "index.html" ? "/" : `/${page.replace(/(?:\/index)?\.html$/, "")}`;
 export const assetPrefix = (page) =>
-  page === "404.html" || UTILITY_PAGES.includes(page) || HU_MIRRORS[page] || WRITING_PAGES.includes(page) ? "/" : page.startsWith("work/") ? "../" : "";
+  page === "404.html" || UTILITY_PAGES.includes(page) || MIRRORS[page] || WRITING_PAGES.includes(page) ? "/" : page.startsWith("work/") ? "../" : "";
 
 // Writing (Írások, Articles, Wissen): pages generated from content/*.md by
 // build-writing.mjs. List pages (<section>/index.html) are CollectionPages,
@@ -73,7 +78,7 @@ export const isWritingList = (page) => isWritingPage(page) && page.endsWith("/in
 
 // Every indexable content page, in the order the checks and the sitemap use.
 export const CONTENT_PAGES = ["index.html", "works.html", "about.html", ...UTILITY_PAGES,
-  ...WORK_SLUGS.map((slug) => `work/${slug}.html`), ...HU_PAGES, ...WRITING_PAGES];
+  ...WORK_SLUGS.map((slug) => `work/${slug}.html`), ...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES];
 
 // Per-language site copy the checks share: contact page, privacy page,
 // project action label, LinkedIn label.

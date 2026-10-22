@@ -116,7 +116,7 @@ const REDIRECTS = {
 // need the same .html and trailing-slash variants as every other page.
 for (const page of ["/contact", "/hu/kapcsolat", "/web-development", "/hu/webfejlesztes", "/hu/munkak", "/hu/rolam", ...WORK_SLUGS.map((slug) => `/hu/munka/${slug}`),
   // German pages (2026-10-21): the entry page lives at de/index.html like /hu.
-  "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/datenschutz", "/de/kontakt"]) {
+  "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/datenschutz", "/de/kontakt", "/de/ueber-mich"]) {
   REDIRECTS[`${page}.html`] = page;
   REDIRECTS[`${page}/`] = page;
 }

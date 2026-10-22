@@ -151,7 +151,7 @@ test("crossing the compact breakpoint preserves the same stationary work bar", a
 // bar at every width, and an open compact menu shows a close glyph.
 const OLIVE = "rgb(189, 180, 20)";
 const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/writing", "/writing"],
-  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/irasok", "/hu/irasok"], ["/de/wissen", "/de/wissen"],
+  ["/hu/munkak", "/hu/munkak"], ["/hu/rolam", "/hu/rolam"], ["/hu/irasok", "/hu/irasok"], ["/de/wissen", "/de/wissen"], ["/de/ueber-mich", "/de/ueber-mich"],
   // The service pages live in the Services group: the panel link is current and the group button carries the mark.
   ["/ai-integration", "/ai-integration", "nav-services"], ["/web-development", "/web-development", "nav-services"],
   ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes", "nav-services"], ["/hu/webfejlesztes", "/hu/webfejlesztes", "nav-services"],
@@ -185,7 +185,7 @@ for (const width of [390, 1280]) {
 const MENU_LABELS = {
   en: ["Open navigation", "Close navigation"], hu: ["Navigáció megnyitása", "Navigáció bezárása"], de: ["Navigation öffnen", "Navigation schließen"],
 };
-for (const route of ["/", "/works", "/work/instructure", "/about", "/privacy", "/hu", "/hu/munka/instructure", "/hu/rolam", "/de", "/de/kontakt"]) {
+for (const route of ["/", "/works", "/work/instructure", "/about", "/privacy", "/hu", "/hu/munka/instructure", "/hu/rolam", "/de", "/de/kontakt", "/de/ueber-mich"]) {
   test(`390 ${route}: the open compact menu shows a close glyph and names its action`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(route, { waitUntil: "load" });
