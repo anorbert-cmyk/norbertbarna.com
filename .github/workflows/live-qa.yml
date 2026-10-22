@@ -1,0 +1,91 @@
+name: Live QA
+
+# Full check of the deployed site: every page byte-identical to main,
+# redirects, headers, links, the Kineticare video, menus, Turnstile, phone
+# layout and a mobile Lighthouse run. Start it by hand (workflow_dispatch)
+# after a deploy, or let the weekly run catch regressions on the host.
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: Site to check
+        default: https://www.barnanorbert.com
+        required: true
+  schedule:
+    - cron: "17 6 * * 1"
+  # A change to the checks themselves runs them once from the pull request.
+  pull_request:
+    paths:
+      - .github/workflows/live-qa.yml
+      - scripts/live-qa.mjs
+      - scripts/live-browser.mjs
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # From a pull request the run reports on the site as it is; it cannot be
+    # that pull request's build, so it never blocks the merge.
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+    env:
+      LIVE_BASE: ${{ github.event.inputs.base || 'https://www.barnanorbert.com' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Wait for this commit to be live
+        if: github.event_name != 'pull_request'
+        run: node scripts/wait-live.mjs "$GITHUB_SHA" 20
+      - name: Pages, redirects, headers, links
+        env:
+          EXPECTED_SHA: ${{ github.event_name != 'pull_request' && github.sha || '' }}
+          LIVE_QA_COMPARE: ${{ github.event_name != 'pull_request' && '1' || '0' }}
+        run: node scripts/live-qa.mjs
+      - name: Install Chromium
+        if: always()
+        run: npx playwright install --with-deps chromium
+      - name: Video, menus, Turnstile, phone layout
+        if: always()
+        run: node scripts/live-browser.mjs
+      - name: Mobile Lighthouse
+        if: always()
+        run: |
+          mkdir -p lighthouse
+          # Lighthouse occasionally loses the navigation trace (NO_NAVSTART);
+          # one retry, and a page that still fails is a row, not a red job.
+          audit() {
+            npx --yes lighthouse@12 "$LIVE_BASE$1" --form-factor=mobile --screenEmulation.mobile --throttling-method=simulate \
+              --chrome-flags="--headless=new --no-sandbox" --only-categories=performance,accessibility,best-practices,seo \
+              --output=json --output=html --output-path="lighthouse/$2" --quiet
+          }
+          for path in / /hu /de /hu/ai-tanacsadas-fejlesztes /hu/munka/kineticare /de/wissen/was-kostet-eine-website; do
+            name=$(echo "${path#/}" | tr '/' '_'); name=${name:-home}
+            audit "$path" "$name" || audit "$path" "$name" || { echo "| $path | audit failed twice | | | | | | |" | tee -a lighthouse/summary.md; continue; }
+            node -e '
+              const r = JSON.parse(require("fs").readFileSync(process.argv[1] + ".report.json", "utf8"));
+              const c = r.categories, s = (k) => Math.round(c[k].score * 100);
+              const a = r.audits, ms = (k) => Math.round(a[k].numericValue);
+              const line = `| ${process.argv[2]} | ${s("performance")} | ${s("accessibility")} | ${s("best-practices")} | ${s("seo")} | ${ms("largest-contentful-paint")} ms | ${a["cumulative-layout-shift"].numericValue.toFixed(3)} | ${ms("total-blocking-time")} ms |`;
+              console.log(line);
+              require("fs").appendFileSync("lighthouse/summary.md", line + "\n");
+            ' "lighthouse/$name" "$path"
+          done
+          { echo "## Mobile Lighthouse"; echo; echo "| Page | Perf | A11y | Best | SEO | LCP | CLS | TBT |"; echo "|---|---|---|---|---|---|---|---|"; cat lighthouse/summary.md; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Save reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-qa-reports
+          path: lighthouse/
+          retention-days: 14
+          if-no-files-found: ignore
