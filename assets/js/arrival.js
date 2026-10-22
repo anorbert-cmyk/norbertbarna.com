@@ -50,8 +50,12 @@
   curtain = document.createElement("div");
   curtain.className = "site-arrival" + (isCase ? " site-arrival--case" : "");
   curtain.setAttribute("role", "region");
-  var hungarian = /^hu(?:-|$)/i.test(document.documentElement.lang);
-  var copy = hungarian ? {
+  var pageLang = /^hu(?:-|$)/i.test(document.documentElement.lang) ? "hu" : /^de(?:-|$)/i.test(document.documentElement.lang) ? "de" : "en";
+  var copy = pageLang === "de" ? {
+    region: "Einleitung", enter: "Zum Portfolio", label: "[ EINTRETEN ]",
+    preparing: "Das Portfolio wird geladen. Mit Escape oder Tab überspringen Sie die Einleitung.",
+    ready: "NORBERT.BARNA. Das Portfolio ist bereit. Mit Enter geht es weiter, mit Escape oder Tab überspringen Sie die Einleitung."
+  } : pageLang === "hu" ? {
     region: "Bevezető", enter: "Belépés a portfólióba", label: "[ BELÉPÉS ]",
     preparing: "A portfólió betöltődik. Az Escape vagy a Tab billentyűvel átugorhatod a bevezetőt.",
     ready: "NORBERT.BARNA. A portfólió elkészült. Az Enterrel továbbléphetsz, az Escape vagy a Tab billentyűvel átugorhatod."

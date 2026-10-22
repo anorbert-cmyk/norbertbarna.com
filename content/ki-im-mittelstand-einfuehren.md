@@ -37,7 +37,7 @@ In den ersten Wochen wird nichts gebaut. Ich schaue zu, wie die gewählte Aufgab
 Am Ende der ersten 30 Tage gibt es ein Dokument mit vier Teilen:
 
 - **Der Ablauf heute**, Schritt für Schritt, mit den Stellen, an denen gewartet, gesucht oder nachgefragt wird.
-- **Die Grenzen**: Was darf die KI vorschlagen, was muss ein Mensch freigeben, was darf die KI gar nicht anfassen. Bei Instructure, wo ich KI-Funktionen für eine Lernplattform mit mehreren Millionen Nutzern gestaltet habe, haben wir diese Leitplanken am ersten Tag festgelegt: eindeutige KI-Kennzeichnung, editierbare Ausgaben, Quellenhinweise und ein Weg zurück. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+- **Die Grenzen**: Was darf die KI vorschlagen, was muss ein Mensch freigeben, was darf die KI gar nicht anfassen. Bei Instructure, wo ich KI-Funktionen für eine Lernplattform mit mehreren Millionen Nutzern gestaltet habe, haben wir diese Leitplanken am ersten Tag festgelegt: eindeutige KI-Kennzeichnung, editierbare Ausgaben, Quellenhinweise und ein Weg zurück. Details: [Instructure-Fallstudie](/de/arbeit/instructure).
 - **Die Daten**: Welche Dokumente und Systeme die KI nutzen darf, und welche personenbezogenen Daten dabei berührt werden. Das ist der Punkt, an dem Datenschutz ins Projekt kommt, nicht am Ende.
 - **Die Messgrößen**: Was heute die Ausgangswerte sind. Dauer pro Vorgang, Fehlerquote, Rückfragen. Ohne Ausgangswert kann der Pilot später nichts beweisen.
 

@@ -98,6 +98,12 @@ for (const page of PAGES) {
   const is404 = page === "404.html";
   const base = baseOf(page);
   const hungarian = isHungarian(page);
+  const language = languageOf(page);
+  const WORKS_COPY = {
+    en: { h1: "Selected work", crumb: "Works", path: "/works", facts: "Project facts" },
+    hu: { h1: "Válogatott munkák", crumb: "Munkák", path: "/hu/munkak", facts: "Projektadatok" },
+    de: { h1: "Ausgewählte Arbeiten", crumb: "Arbeiten", path: "/de/arbeiten", facts: "Projektdaten" },
+  }[language];
   const isBiography = base === "about.html";
 
   const h1s = html.match(/<h1\b/g) || [];
@@ -110,7 +116,7 @@ for (const page of PAGES) {
 
   const h1 = visibleText(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1] || "");
   if (base === "works.html") {
-    if (h1 !== (hungarian ? "Válogatott munkák" : "Selected work")) {
+    if (h1 !== WORKS_COPY.h1) {
       fail("TitleDrift: /works H1 must be Selected work");
     } else if (!title.startsWith(h1)) {
       fail("TitleDrift: /works <title> must start with the H1");
@@ -320,7 +326,7 @@ for (const page of PAGES) {
     if (!article) {
       fail(`${page}: missing Article schema`);
     } else {
-      if (article.inLanguage !== (hungarian ? "hu" : "en")) fail(`${page}: Article inLanguage must be ${hungarian ? "hu" : "en"}`);
+      if (article.inLanguage !== language) fail(`${page}: Article inLanguage must be ${language}`);
       for (const work of creativeWorks) {
         if (Object.hasOwn(work, "headline") && work.headline !== title)
           fail(`${page}: Article/CreativeWork headline must match <title>`);
@@ -344,14 +350,14 @@ for (const page of PAGES) {
 
     const breadcrumb = nodes.find((node) => node["@type"] === "BreadcrumbList");
     const firstCrumb = breadcrumb?.itemListElement?.find((item) => item.position === 1);
-    if (firstCrumb?.name !== (hungarian ? "Munkák" : "Works") ||
-        firstCrumb?.item !== `https://www.barnanorbert.com${hungarian ? "/hu/munkak" : "/works"}`)
+    if (firstCrumb?.name !== WORKS_COPY.crumb ||
+        firstCrumb?.item !== `https://www.barnanorbert.com${WORKS_COPY.path}`)
       fail(`${page}: BreadcrumbList must match the visible Works breadcrumb in the header bar`);
 
     if (!html.includes('<article aria-labelledby="case-title" class="case-study-article">') ||
         !html.includes('<h1 id="case-title"'))
       fail(`${page}: case-study article must be named by its H1`);
-    if (!html.includes(`<section class="case-facts-section" aria-label="${hungarian ? "Projektadatok" : "Project facts"}">`))
+    if (!html.includes(`<section class="case-facts-section" aria-label="${WORKS_COPY.facts}">`))
       fail(`${page}: missing recruiter-friendly project facts`);
 
     if (base === "work/kineticare.html") {
@@ -461,6 +467,8 @@ const hiringSitemap = [
   "/hu/munkak",
   ...["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"].map(slug => `/hu/munka/${slug}`),
   "/hu/rolam",
+  "/de/arbeiten",
+  ...["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"].map(slug => `/de/arbeit/${slug}`),
   "/de/ueber-mich",
   // Writing goes last, in build-writing.mjs order (list page, then newest article first).
   ...WRITING_PAGES.map(urlOf),

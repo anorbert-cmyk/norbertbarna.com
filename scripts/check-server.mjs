@@ -151,7 +151,7 @@ try {
 
   for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem",
     "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure",
-    "/de", "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/datenschutz", "/de/kontakt", ...WRITING_PAGES.map(urlOf)]) {
+    "/de", "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/datenschutz", "/de/kontakt", "/de/arbeiten", "/de/arbeit/instructure", "/de/ueber-mich", ...WRITING_PAGES.map(urlOf)]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -482,7 +482,7 @@ try {
   const serverSource = readText(new URL("../server.js", import.meta.url), "utf8");
   const root = new URL("../", import.meta.url);
   const pages = [];
-  for (const dir of ["", "work/", "hu/", "hu/munka/", "de/"]) {
+  for (const dir of ["", "work/", "hu/", "hu/munka/", "de/", "de/arbeit/"]) {
     const url = new URL(dir, root);
     if (!exists(url)) continue;
     for (const name of listDir(url)) if (name.endsWith(".html")) pages.push(dir + name);

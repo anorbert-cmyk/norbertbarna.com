@@ -84,7 +84,7 @@ Der Preis endet nicht beim Start. Es gibt Domain- und Hostinggebühren, das Cont
 
 Zwei Physiotherapeutinnen, spezialisiert auf Hand- und Armrehabilitation, wollten ihre Methode zu Patienten bringen, die nie in die Praxis kommen. Ich habe die Plattform entworfen und entwickelt: Markenauftritt, Inhalte, Oberfläche, eine Next.js-Plattform, Payload als Content-Management-System (die Therapeutinnen veröffentlichen ohne Entwickler), Kursvideos über ein CDN, Barion-Zahlung, ein Mitgliederbereich für bezahlte Inhalte, DSGVO-konforme Einwilligung und eine strenge Content-Security-Policy.
 
-Für den Preis ist die Lehre: Die „Website“ war in Wirklichkeit ein Produkt. Die Arbeit steckte im Patientenweg, in der Zahlung und im Mitgliederzugang, nicht in der Zahl der Seiten. Details in der [Kineticare-Fallstudie](/work/kineticare) (auf Englisch).
+Für den Preis ist die Lehre: Die „Website“ war in Wirklichkeit ein Produkt. Die Arbeit steckte im Patientenweg, in der Zahlung und im Mitgliederzugang, nicht in der Zahl der Seiten. Details in der [Kineticare-Fallstudie](/de/arbeit/kineticare).
 
 ## So fragen Sie ein Angebot für eine Website an
 

@@ -28,7 +28,7 @@ Zum Stand der Gesetzgebung: Die EU verhandelt im Rahmen des Digital Omnibus auch
 
 ### 1. Welche Daten sieht die KI überhaupt?
 
-Die wichtigste Entscheidung, und sie fällt in der ersten Woche. Datenminimierung ist ein Grundsatz der DSGVO (Artikel 5), und im KI-Projekt heißt das: Die Funktion bekommt nur die Felder, die sie für ihre Aufgabe braucht. Ein Antwortentwurf für den Kundenservice braucht die Frage und die Wissensbasis, nicht die Kontohistorie des Kunden. Bei Instructure, wo ich KI-Funktionen für eine Lernplattform mit mehreren Millionen Nutzern gestaltet habe, war „Privacy by default“ ein Designprinzip: Die Datenverwendung wurde offengelegt, Opt-outs und Aufbewahrungsregeln waren sichtbar, und Legal, Compliance und Data Science haben die Abläufe von Anfang an mitgeprüft, nicht am Ende. Details: [Instructure-Fallstudie](/work/instructure) (Englisch).
+Die wichtigste Entscheidung, und sie fällt in der ersten Woche. Datenminimierung ist ein Grundsatz der DSGVO (Artikel 5), und im KI-Projekt heißt das: Die Funktion bekommt nur die Felder, die sie für ihre Aufgabe braucht. Ein Antwortentwurf für den Kundenservice braucht die Frage und die Wissensbasis, nicht die Kontohistorie des Kunden. Bei Instructure, wo ich KI-Funktionen für eine Lernplattform mit mehreren Millionen Nutzern gestaltet habe, war „Privacy by default“ ein Designprinzip: Die Datenverwendung wurde offengelegt, Opt-outs und Aufbewahrungsregeln waren sichtbar, und Legal, Compliance und Data Science haben die Abläufe von Anfang an mitgeprüft, nicht am Ende. Details: [Instructure-Fallstudie](/de/arbeit/instructure).
 
 ### 2. Auf welcher Rechtsgrundlage?
 
@@ -52,9 +52,9 @@ Bei neuen Technologien mit voraussichtlich hohem Risiko für Betroffene verlangt
 
 ## Datenschutz im Code: zwei Beispiele
 
-Bei der Gesundheitsplattform Kineticare, die ich entworfen und gebaut habe, bleiben Analysewerkzeuge aus, bis der Besucher einwilligt, die Einwilligung folgt der DSGVO, und die Anwendung liefert eine strenge Content Security Policy aus. Ein Gesundheitsprodukt trägt mehr Datenschutzrisiko als eine Portfolioseite, und das muss im Code wahr sein, nicht nur auf der Datenschutzseite. Details: [Kineticare-Fallstudie](/work/kineticare) (Englisch).
+Bei der Gesundheitsplattform Kineticare, die ich entworfen und gebaut habe, bleiben Analysewerkzeuge aus, bis der Besucher einwilligt, die Einwilligung folgt der DSGVO, und die Anwendung liefert eine strenge Content Security Policy aus. Ein Gesundheitsprodukt trägt mehr Datenschutzrisiko als eine Portfolioseite, und das muss im Code wahr sein, nicht nur auf der Datenschutzseite. Details: [Kineticare-Fallstudie](/de/arbeit/kineticare).
 
-Beim Mobile-Banking-Neubau von Raiffeisen, einem Projekt ohne KI, kamen Compliance und Recht mit festen Anforderungen: PSD2, starke Kundenauthentifizierung, Identitätsprüfung, Prüfpfade. Die Aufgabe war, diese Anforderungen in Gestaltung zu übersetzen, nicht in Bürokratie: klare Zustände, verständliche Sprache, keine Schritte, die der Nutzer nicht versteht. Dieselbe Übersetzung braucht ein KI-Projekt. Details: [Raiffeisen-Fallstudie](/work/raiffeisen) (Englisch).
+Beim Mobile-Banking-Neubau von Raiffeisen, einem Projekt ohne KI, kamen Compliance und Recht mit festen Anforderungen: PSD2, starke Kundenauthentifizierung, Identitätsprüfung, Prüfpfade. Die Aufgabe war, diese Anforderungen in Gestaltung zu übersetzen, nicht in Bürokratie: klare Zustände, verständliche Sprache, keine Schritte, die der Nutzer nicht versteht. Dieselbe Übersetzung braucht ein KI-Projekt. Details: [Raiffeisen-Fallstudie](/de/arbeit/raiffeisen).
 
 ## Checkliste für DSGVO-konforme KI im Unternehmen
 

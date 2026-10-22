@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CONTACT_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, SITE_COPY, UTILITY_PAGES, languageOf } from "./service-pages.mjs";
+import { CONTACT_PAGES, DE_WORK_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, SITE_COPY, UTILITY_PAGES, languageOf } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -68,7 +68,7 @@ const instructure = readFileSync(join(ROOT, "work/instructure.html"), "utf8");
 // served page inventory plus editable CSS/JS, not retired content-hash copies.
 {
   // The writing directories exist only while an article is published.
-  const pages = ["", "work", "hu", "hu/munka", "hu/irasok", "writing", "de", "de/wissen"].filter((directory) => existsSync(join(ROOT, directory))).flatMap((directory) =>
+  const pages = ["", "work", "hu", "hu/munka", "hu/irasok", "writing", "de", "de/arbeit", "de/wissen"].filter((directory) => existsSync(join(ROOT, directory))).flatMap((directory) =>
     readdirSync(join(ROOT, directory))
       .filter((name) => name.endsWith(".html"))
       .map((name) => join(directory, name))
@@ -463,7 +463,7 @@ if (!/inset:\s*0/.test(instMontage) || !/z-index:\s*0/.test(instMontage) ||
 // No Contact column, no form, no sitemap, no Ironclad dunes, no
 // back-to-top on the copyright row. Mail href is assembled on click.
 const footerPages = ["index.html", "works.html", ...WORK.map((slug) => `work/${slug}.html`), ...PRIVACY_PAGES, ...CONTACT_PAGES,
-  "hu/index.html", "hu/munkak.html", ...HU_WORK_PAGES];
+  "hu/index.html", "hu/munkak.html", ...HU_WORK_PAGES, "de/arbeiten.html", ...DE_WORK_PAGES];
 const footerCanon = footerPages.map((page) => {
   const html = readFileSync(join(ROOT, page), "utf8");
   const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
@@ -478,8 +478,8 @@ const footerCanon = footerPages.map((page) => {
 });
 function footerStructure(footer) {
   return footer.replace(/\s(?:lang|hreflang|aria-label|title)="[^"]*"/g, "").replace(/>[^<]*</g, "><")
-    .replace(/href="\/hu\/munka\//g, 'href="/work/').replace(/href="\/(?:hu|de)"/g, 'href="/"')
-    .replace(/href="\/hu\/munkak"/g, 'href="/works"').replace(/href="\/(?:hu\/kapcsolat|de\/kontakt)"/g, 'href="/contact"')
+    .replace(/href="\/(?:hu\/munka|de\/arbeit)\//g, 'href="/work/').replace(/href="\/(?:hu|de)"/g, 'href="/"')
+    .replace(/href="\/(?:hu\/munkak|de\/arbeiten)"/g, 'href="/works"').replace(/href="\/(?:hu\/kapcsolat|de\/kontakt)"/g, 'href="/contact"')
     .replace(/href="\/(?:hu\/adatvedelem|de\/datenschutz)"/g, 'href="/privacy"').replace(/\saria-current="page"/g, "");
 }
 if (new Set(footerCanon.filter((_, index) => languageOf(footerPages[index]) === "en")).size !== 1 ||
@@ -609,7 +609,7 @@ for (const page of footerPages) {
   } else if (!/linkedin\.com\/in\/barna-norbert/.test(linkedin[0])) {
     fail(`${page}: footer LinkedIn icon must reuse the site LinkedIn URL`);
   }
-  const workHrefs = [...footer.matchAll(/href="(\/(?:hu\/munka|work)\/[^"]+)"/g)].map((m) => m[1].replace("/hu/munka/", "/work/"));
+  const workHrefs = [...footer.matchAll(/href="(\/(?:hu\/munka|de\/arbeit|work)\/[^"]+)"/g)].map((m) => m[1].replace(/^\/(?:hu\/munka|de\/arbeit)\//, "/work/"));
   if (JSON.stringify(workHrefs) !== JSON.stringify([
     "/work/raiffeisen", "/work/instructure", "/work/bitpanda", "/work/kineticare",
   ])) {

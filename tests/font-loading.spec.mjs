@@ -17,7 +17,7 @@ const slugs = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit"
 const expectedCanonicalPaths = ["/", "/works", ...slugs.map((slug) => `/work/${slug}`), "/about",
   "/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/de/ki-beratung-entwicklung", "/de/webentwicklung",
   "/privacy", "/hu/adatvedelem", "/de/datenschutz", "/contact", "/hu/kapcsolat", "/de/kontakt", "/de",
-  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam", "/de/ueber-mich", ...writingPages().map(urlOf)];
+  "/hu", "/hu/munkak", ...slugs.map((slug) => `/hu/munka/${slug}`), "/hu/rolam", "/de/arbeiten", ...slugs.map((slug) => `/de/arbeit/${slug}`), "/de/ueber-mich", ...writingPages().map(urlOf)];
 const cssSource = readFileSync(resolve(root, "assets/css/fonts.css"), "utf8");
 const cssDigest = createHash("sha256").update(cssSource).digest("hex").slice(0, 12);
 const sample = "Norbert Barna ÁÉÍÓÖŐÚÜŰ árvíztűrő tükörfúrógép";

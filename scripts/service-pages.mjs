@@ -35,10 +35,15 @@ export const HU_MIRRORS = {
 };
 export const HU_PAGES = Object.keys(HU_MIRRORS);
 export const HU_WORK_PAGES = HU_PAGES.filter((page) => page.startsWith("hu/munka/"));
-// The German biography (owner request, 2026-10-22) mirrors the English story
-// page the same way; the case studies and /works stay English.
-export const DE_MIRRORS = { "de/ueber-mich.html": "about.html" };
+// German mirrors (owner request, 2026-10-22: a German page links only German
+// pages): the biography, the works index and every case study.
+export const DE_MIRRORS = {
+  "de/arbeiten.html": "works.html",
+  "de/ueber-mich.html": "about.html",
+  ...Object.fromEntries(WORK_SLUGS.map((slug) => [`de/arbeit/${slug}.html`, `work/${slug}.html`])),
+};
 export const DE_PAGES = Object.keys(DE_MIRRORS);
+export const DE_WORK_PAGES = DE_PAGES.filter((page) => page.startsWith("de/arbeit/"));
 export const MIRRORS = { ...HU_MIRRORS, ...DE_MIRRORS };
 export const baseOf = (page) => MIRRORS[page] || page;
 export const isHungarian = (page) => page.startsWith("hu/");
@@ -51,9 +56,9 @@ export const PAGE_GROUPS = [
   ["web-development.html", "hu/webfejlesztes.html", "de/webentwicklung.html"],
   ["privacy.html", "hu/adatvedelem.html", "de/datenschutz.html"],
   ["contact.html", "hu/kapcsolat.html", "de/kontakt.html"],
-  ["works.html", "hu/munkak.html"],
+  ["works.html", "hu/munkak.html", "de/arbeiten.html"],
   ["about.html", "hu/rolam.html", "de/ueber-mich.html"],
-  ...WORK_SLUGS.map((slug) => [`work/${slug}.html`, `hu/munka/${slug}.html`]),
+  ...WORK_SLUGS.map((slug) => [`work/${slug}.html`, `hu/munka/${slug}.html`, `de/arbeit/${slug}.html`]),
 ];
 // { "hu/index.html": { en: "index.html", hu: "hu/index.html", de: "de/index.html" }, ... }
 export const TRANSLATIONS = Object.fromEntries(PAGE_GROUPS.flatMap((group) =>
@@ -85,6 +90,5 @@ export const CONTENT_PAGES = ["index.html", "works.html", "about.html", ...UTILI
 export const SITE_COPY = {
   en: { home: "/", contact: "/contact", privacy: "/privacy", project: "Discuss your project", linkedin: "Find me on LinkedIn (opens in a new tab)", privacyAction: "Contact form", workRoot: "/work/" },
   hu: { home: "/hu", contact: "/hu/kapcsolat", privacy: "/hu/adatvedelem", project: "Beszéljünk a projektedről", linkedin: "LinkedIn-profilom (új lapon nyílik meg)", privacyAction: "Kapcsolatfelvételi űrlap", workRoot: "/hu/munka/" },
-  // German pages link the English case studies: there are no German case pages.
-  de: { home: "/de", contact: "/de/kontakt", privacy: "/de/datenschutz", project: "Sprechen wir über Ihr Projekt", linkedin: "Mein LinkedIn-Profil (öffnet in neuem Tab)", privacyAction: "Kontaktformular", workRoot: "/work/" },
+  de: { home: "/de", contact: "/de/kontakt", privacy: "/de/datenschutz", project: "Sprechen wir über Ihr Projekt", linkedin: "Mein LinkedIn-Profil (öffnet in neuem Tab)", privacyAction: "Kontaktformular", workRoot: "/de/arbeit/" },
 };

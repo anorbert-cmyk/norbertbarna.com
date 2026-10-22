@@ -49,10 +49,13 @@ Every page has a Hungarian version with the same content. The menu's EN | HU swi
 
 ## German pages
 
-The German pages present the two offers to companies in Germany, Austria and Switzerland. There are no German case studies: the German pages link the English case studies and biography. Enquiries in German are answered in English; the work runs in English or Hungarian.
+The German pages present the two offers to companies in Germany, Austria and Switzerland, together with the full portfolio, the case studies and the career story in German. Enquiries in German are answered in English; the work runs in English or Hungarian.
 
 - [Startseite](https://www.barnanorbert.com/de): German entry page with both offers and questions about working with a company from Germany
 - Leistungen: https://www.barnanorbert.com/de/webentwicklung (Webentwicklung und individuelle Webanwendungen), https://www.barnanorbert.com/de/ki-beratung-entwicklung (KI-Beratung, Automatisierung und Entwicklung)
+- [Ausgewählte Arbeiten](https://www.barnanorbert.com/de/arbeiten): German portfolio index
+- Fallstudien: https://www.barnanorbert.com/de/arbeit/raiffeisen, /de/arbeit/instructure, /de/arbeit/bitpanda, /de/arbeit/benker, /de/arbeit/sportsgambit, /de/arbeit/kineticare, /de/arbeit/onrobot
+- [Über mich](https://www.barnanorbert.com/de/ueber-mich): German career story
 - [Kontakt](https://www.barnanorbert.com/de/kontakt): German contact form
 - [Wissen](https://www.barnanorbert.com/de/wissen): German articles on AI in companies and web development
 
