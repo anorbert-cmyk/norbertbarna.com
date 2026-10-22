@@ -1513,6 +1513,9 @@ for (const width of [390, 1440]) {
       expect(errors).toEqual([]);
 
       const identBox = await page.locator("footer .footer-ident").boundingBox();
+      // The fixed header overlays the top of the viewport and follows the
+      // motion preference itself; compare only the footer below its edge.
+      const headerBottom = Math.ceil(await page.locator(".navbar").evaluate((bar) => bar.getBoundingClientRect().bottom)) + 1;
       const cdp = await page.context().newCDPSession(page);
       const { arguments: launchArguments } = await cdp.send("Browser.getBrowserCommandLine");
       expect(launchArguments).toContain("--disable-lcd-text");
@@ -1547,7 +1550,7 @@ for (const width of [390, 1440]) {
       const paint = frames.map((frame) => {
         const image = readPng(frame.bytes);
         let substantialPixels = 0, maxChannelDifference = 0;
-        for (let y = Math.max(53, Math.ceil(identBox.y)); y < Math.min(1100, Math.floor(identBox.y + identBox.height)); y += 1) {
+        for (let y = Math.max(headerBottom, Math.ceil(identBox.y)); y < Math.min(1100, Math.floor(identBox.y + identBox.height)); y += 1) {
           for (let x = Math.ceil(identBox.x); x < Math.floor(identBox.x + identBox.width); x += 1) {
             const pixel = (y * image.width + x) * 4;
             const difference = Math.max(...[0, 1, 2].map((channel) => Math.abs(image.pixels[pixel + channel] - reference.pixels[pixel + channel])));

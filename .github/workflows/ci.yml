@@ -37,7 +37,12 @@ jobs:
       - name: Site invariants
         run: npm test
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        run: |
+          # The runner image ships a packages.microsoft.com apt source that
+          # sometimes answers 403 and aborts apt-get update; Chromium's
+          # dependencies come from the Ubuntu archive alone.
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/microsoft-prod.sources
+          npx playwright install --with-deps chromium
       - name: Browser UX and accessibility
         run: npm run test:e2e
       - name: Save browser verification evidence
