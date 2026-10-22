@@ -126,7 +126,7 @@ for (const device of VIEWPORTS) {
         });
         expect(state.enhanced).toBe(false);
         if (state.compact) expect(state.display, `${path}: no open-menu flash before JavaScript`).toBe("none");
-        expect(state.barHeight).toBe(64);
+        expect(state.barHeight, `${path}: shared bar height`).toBe(state.compact ? 56 : 64);
       });
     }
   });
