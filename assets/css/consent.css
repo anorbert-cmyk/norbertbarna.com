@@ -10,7 +10,7 @@
   border-top: 1px solid rgb(17 17 17 / 24%);
   background: var(--paper-full, #fff);
   color: var(--ink, #111111);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   text-align: left;
 }
 
@@ -44,7 +44,7 @@
 .consent-banner .consent-title {
   margin: 0 0 4px;
   color: inherit;
-  font: 600 20px/1.25 Inter, sans-serif;
+  font: 600 20px/1.25 Inter, "Inter Fallback", sans-serif;
   letter-spacing: normal;
   text-transform: none;
   overflow-wrap: anywhere;
@@ -57,7 +57,7 @@
 .consent-banner p {
   margin: 0;
   color: inherit;
-  font: 400 15px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
   overflow-wrap: anywhere;
 }
 
@@ -90,7 +90,7 @@
   padding: 11px 0;
   box-sizing: border-box;
   color: inherit;
-  font: 400 15px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -101,7 +101,7 @@
   align-items: center;
   min-height: 44px;
   margin-inline-start: 16px;
-  font: 400 15px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
 }
 
 .consent-details[open] + .consent-privacy {
@@ -130,7 +130,7 @@
   border-radius: 12px;
   background: transparent;
   color: var(--ink, #111111);
-  font: 500 15px/1.35 Inter, sans-serif;
+  font: 500 15px/1.35 Inter, "Inter Fallback", sans-serif;
   text-align: center;
   white-space: normal;
   cursor: pointer;
@@ -158,7 +158,7 @@
   padding: 8px;
   border: 0;
   background: transparent;
-  font: 400 15px/1.5 Inter, sans-serif;
+  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
   cursor: pointer;
 }
 
@@ -178,7 +178,7 @@
   gap: 4px 16px;
   max-width: 100%;
   color: var(--ink, #111111);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
 }
 
 .footer-privacy a,
@@ -191,7 +191,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  font: 400 14px/1.5 Inter, sans-serif;
+  font: 400 14px/1.5 Inter, "Inter Fallback", sans-serif;
   white-space: normal;
   cursor: pointer;
 }

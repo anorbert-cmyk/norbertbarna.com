@@ -536,7 +536,7 @@ main {
   background: rgb(11 17 24 / 82%);
   color: #fff;
   padding: 10px 18px;
-  font: 600 14px/1 Inter, sans-serif;
+  font: 600 14px/1 Inter, "Inter Fallback", sans-serif;
   cursor: pointer;
 }
 
@@ -2097,7 +2097,7 @@ html.no-motion .footer-mesh-yellow {
   background: transparent;
   padding: 10px 8px;
   color: #17191a;
-  font: 600 12px/1.4 Inter, sans-serif;
+  font: 600 12px/1.4 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .035em;
   cursor: pointer;
 }
@@ -2174,7 +2174,7 @@ html.no-motion .footer-mesh-yellow {
 .instructure-montage-caption {
   margin: 14px 0 0;
   color: #17191a;
-  font: 600 13px/1.5 Inter, sans-serif;
+  font: 600 13px/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .02em;
   text-align: left;
 }
@@ -2182,7 +2182,7 @@ html.no-motion .footer-mesh-yellow {
   max-width: 76ch;
   margin: 6px 0 0;
   color: #606568;
-  font: 400 14px/1.65 Inter, sans-serif;
+  font: 400 14px/1.65 Inter, "Inter Fallback", sans-serif;
 }
 .site-motion-toggle:disabled { cursor: default; }
 /* A manual pause receives the same static, readable hover fallback as the OS
@@ -2797,15 +2797,15 @@ body.home .navbar {
 .home-mast-sculpture[data-hero-scene="ready"] .home-mast-fallback { opacity: 0 !important; }
 .home-mast-sculpture:not([data-hero-scene="ready"]) .home-mast-canvas { opacity: 0 !important; }
 .home-mast-baseline { position: absolute; z-index: 3; inset: auto 22px 14px; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: end; gap: 16px; }
-.home-mast .home-banner-title { width: auto; max-width: none; margin: 0; color: #0A1628; font-family: Inter, sans-serif; font-size: 16px; font-weight: 400; letter-spacing: -.02em; line-height: 44px; text-align: left; }
-.home-mast-scroll, .home-mast .hero-work-link { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 10px 0; color: #0A1628; font-family: Inter, sans-serif; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; text-decoration: none; }
+.home-mast .home-banner-title { width: auto; max-width: none; margin: 0; color: #0A1628; font-family: Inter, "Inter Fallback", sans-serif; font-size: 16px; font-weight: 400; letter-spacing: -.02em; line-height: 44px; text-align: left; }
+.home-mast-scroll, .home-mast .hero-work-link { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 10px 0; color: #0A1628; font-family: Inter, "Inter Fallback", sans-serif; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; text-decoration: none; }
 .home-mast-scroll { justify-self: center; gap: 10px; }
 .home-mast .hero-work-link { justify-self: end; border: 0; background: transparent; border-radius: 0; margin: 0; }
 .home-mast-scroll:hover, .home-mast .hero-work-link:hover { text-decoration: underline; text-underline-offset: 4px; }
 .home-mast-intro { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; align-content: center; gap: 56px 32px; min-height: 84svh; padding: clamp(80px, 10vw, 170px) clamp(24px, 6vw, 100px); background: #0A1628; color: #D6D4ED; }
 .home-mast .banner-left-wrap, .home-mast .banner-left-wrap.black { grid-column: 1 / -1; width: 100%; max-width: 1200px; display: block; position: relative; margin: 0; padding: 0; }
 .home-mast .hero-kicker { color: #D6D4ED; font-size: var(--mast-kicker-size); font-weight: 400; letter-spacing: var(--mast-kicker-tracking); line-height: 1.5; margin: 0 0 28px; text-transform: none; }
-.home-mast .home-banner-subtitle { max-width: 1200px; margin: 0; color: #D6D4ED; font-family: Funnel Display, sans-serif; font-size: var(--mast-copy-size); font-weight: 500; letter-spacing: -.04em; line-height: 1.08; }
+.home-mast .home-banner-subtitle { max-width: 1200px; margin: 0; color: #D6D4ED; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-size: var(--mast-copy-size); font-weight: 500; letter-spacing: -.04em; line-height: 1.08; }
 .home-mast .home-banner-subtitle::before, .home-mast .hero-kicker::before { content: ""; display: none; font-size: var(--mast-copy-size); letter-spacing: -.04em; word-spacing: 0; }
 .home-mast .hero-kicker::before { font-size: var(--mast-kicker-size); letter-spacing: var(--mast-kicker-tracking); }
 .home-intro-work { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; margin-top: 36px; color: #D6D4ED; font-size: 16px; text-decoration: underline; text-underline-offset: 6px; }
@@ -2821,15 +2821,15 @@ body.home .navbar, body.immersive-case .navbar { position: fixed; inset: 0 0 aut
 body.home .navbar .container, body.immersive-case .navbar .container { width: 100%; max-width: none; padding-inline: 22px !important; }
 body.home .navbar .nav-wrap, body.immersive-case .navbar .nav-wrap { position: relative; min-height: 52px; justify-content: space-between; gap: 20px; }
 body.home .navbar .nav-logo-wrap { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 0; }
-.home-nav-monogram { font-family: Inter, sans-serif; font-size: 16px; font-weight: 400; color: #D6D4ED; }
-.home-nav-wordmark { position: absolute; inset: 0; width: max-content; height: 52px; display: flex; align-items: center; margin: auto; font-family: Inter, sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -.065em; line-height: 1; color: #D6D4ED; text-decoration: none; transform-origin: 50% 100%; transform: translateY(var(--nav-brand-offset, 0px)) scale(var(--nav-brand-scale, 1)); }
-.home-nav-progress { position: absolute; left: 74%; display: inline-flex; align-items: center; height: 52px; font-family: Inter, sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
+.home-nav-monogram { font-family: Inter, "Inter Fallback", sans-serif; font-size: 16px; font-weight: 400; color: #D6D4ED; }
+.home-nav-wordmark { position: absolute; inset: 0; width: max-content; height: 52px; display: flex; align-items: center; margin: auto; font-family: Inter, "Inter Fallback", sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -.065em; line-height: 1; color: #D6D4ED; text-decoration: none; transform-origin: 50% 100%; transform: translateY(var(--nav-brand-offset, 0px)) scale(var(--nav-brand-scale, 1)); }
+.home-nav-progress { position: absolute; left: 74%; display: inline-flex; align-items: center; height: 52px; font-family: Inter, "Inter Fallback", sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
 body.home .navbar .footer-icon { display: none; }
 body.home .navbar .home-nav-label { display: inline; }
 body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { gap: 18px; }
 body.home .navbar .nav-menu-area > .nav-link { position: absolute; left: 64%; }
 body.home .navbar .nav-cta > .footer-contact-link { position: absolute; left: 14%; }
-body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
+body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-family: Inter, "Inter Fallback Caps", sans-serif; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
 body.home .navbar :is(a,button), body.immersive-case .navbar :is(a,button) { pointer-events: auto; }
 body.home .navbar :is(a,button):hover, body.immersive-case .navbar :is(a,button):hover { text-decoration: underline; text-underline-offset: 4px; }
 body.home .navbar .nav-link.white:is(:hover, .w--current), body.immersive-case .navbar .nav-link.white:is(:hover, .w--current) { color: var(--immersive-link-ink, #D6D4ED); background: transparent; }

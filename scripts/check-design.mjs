@@ -280,6 +280,26 @@ if (/Professional<br\s*\/?>Experience/.test(home)) fail("Professional experience
 if (!/Funnel Display/.test(design) || !/\bInter\b/.test(design)) {
   fail("design.md must lock Funnel Display and Inter");
 }
+// Header stability (2026-10-22): every Inter or Funnel Display stack names its
+// metric-matched local fallback right after the web face, so the swap from the
+// system font to the loaded face cannot move the navigation or reflow copy.
+{
+  const fontsCss = readFileSync(join(ROOT, "assets/css/fonts.css"), "utf8");
+  for (const family of ["Inter Fallback", "Funnel Display Fallback"]) {
+    if (!new RegExp(`font-family:\\s*'${family}'[\\s\\S]{0,400}?size-adjust:`).test(fontsCss)) {
+      fail(`fonts.css must declare the metric-matched ${family} face`);
+    }
+  }
+  const styleSources = readdirSync(join(ROOT, "assets/css"))
+    .filter((name) => name.endsWith(".css") && !/\.[0-9a-f]{12}\.css$/.test(name) && name !== "fonts.css")
+    .map((name) => [`assets/css/${name}`, readFileSync(join(ROOT, "assets/css", name), "utf8")]);
+  styleSources.push(["404.html", readFileSync(join(ROOT, "404.html"), "utf8")]);
+  for (const [name, source] of styleSources) {
+    for (const match of source.matchAll(/(["']?)(Inter|Funnel Display)\1\s*,\s*(?!\s*["']?\2 Fallback)[^;}]*/g)) {
+      fail(`${name}: "${match[0].trim()}" must list "${match[2]} Fallback" right after ${match[2]}`);
+    }
+  }
+}
 if (/AIDecor/.test(design) === false) fail("design.md must name the AIDecor anti-pattern");
 if (/EmptyFold/.test(design) === false) fail("design.md must name the EmptyFold anti-pattern");
 if (/CroppedProduct/.test(design) === false) fail("design.md must name the CroppedProduct anti-pattern");
@@ -338,7 +358,7 @@ if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
   fail("PROJECT FLOW rail is not hidden");
 }
 if (!/\.case-toc ol[\s\S]{0,80}flex-wrap:\s*wrap/.test(css)) fail("case TOC must wrap");
-if (!/\.home-mast \.home-banner-title\s*\{[^}]*font-family:\s*Inter,\s*sans-serif/.test(css)) {
+if (!/\.home-mast \.home-banner-title\s*\{[^}]*font-family:\s*Inter,\s*"Inter Fallback",\s*sans-serif/.test(css)) {
   fail("home H1 must retain the existing Inter face through text reflow; Funnel remains the case/section display family");
 }
 if (!/\.home-banner-content-wrap[\s\S]{0,120}--ink/.test(css)) {

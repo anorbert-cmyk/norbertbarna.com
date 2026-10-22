@@ -6,12 +6,12 @@ body.story-page {
   --story-olive: #BDB414;
   --story-gutter: clamp(24px, 5.2vw, 88px);
   margin: 0; padding: 0; background: var(--story-navy); color: var(--story-lilac);
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
 }
 .story-page *, .story-page *::before, .story-page *::after { box-sizing: border-box; }
 .story-page main { margin: 0; padding: 0; outline: none; }
 .story-page :is(h1,h2,h3,p,figure) { margin: 0; color: inherit; }
-.story-page :is(h1,h2) { font-family: 'Funnel Display', sans-serif; font-weight: 700; letter-spacing: -.055em; overflow-wrap: anywhere; }
+.story-page :is(h1,h2) { font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-weight: 700; letter-spacing: -.055em; overflow-wrap: anywhere; }
 .story-page a { color: inherit; }
 .story-page a:focus-visible, .story-page button:focus-visible { outline: 2px solid currentColor; outline-offset: 6px; }
 .story-page section[id] { scroll-margin-top: 88px; }
@@ -30,13 +30,13 @@ body.story-page {
 .story-page .nav-menu-area { display: flex; align-items: center; gap: 32px; }
 .story-page .navbar :is(.nav-link,.footer-email,.menu-button,.w-icon-nav-menu),
 .story-page .navbar[data-compact-nav] :is(.nav-link,.footer-email,.menu-button,.w-icon-nav-menu) {
-  color: #D6D4ED !important; background: transparent !important; font: 400 14px/1.4 Inter,sans-serif; border: 0; border-radius: 0;
+  color: #D6D4ED !important; background: transparent !important; font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif; border: 0; border-radius: 0;
 }
 .story-page .navbar .nav-link { width: auto; min-height: 44px; margin: 0; padding: 12px 0; text-decoration: none; }
 .story-page .navbar .nav-link[aria-current="page"] { text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px; }
 .story-page .menu-button { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; padding: 10px; cursor: pointer; }
 .story-page .w-icon-nav-menu { font-family: webflow-icons !important; font-size: 24px !important; }
-.story-eyebrow { font: 400 11px/1.7 Inter,sans-serif; text-transform: uppercase; letter-spacing: .22em; }
+.story-eyebrow { font: 400 11px/1.7 Inter, "Inter Fallback", sans-serif; text-transform: uppercase; letter-spacing: .22em; }
 .story-opening { position: relative; isolation: isolate; min-height: 780px; height: 100svh; }
 .story-opening-stage { position: absolute; inset: 0; overflow: hidden; background: #0A1628; pointer-events: none; }
 .story-backdrop, .story-wing { display: block; position: absolute; inset: 0; transform-origin: 50% 73%; }
@@ -63,17 +63,17 @@ body.story-page {
 .story-rail a[aria-current="location"] > span:last-child { text-decoration: underline; text-underline-offset: 4px; }
 .story-chapter { position: relative; margin: 0 var(--story-gutter); padding: clamp(72px, 9vw, 132px) 0; border-top: 1px solid rgb(214 212 237 / 55%); display: grid; grid-template-columns: minmax(150px, 24fr) minmax(0, 64fr); gap: 7%; }
 .story-chapter-side { padding-right: clamp(16px, 3vw, 48px); border-right: 1px solid rgb(214 212 237 / 30%); }
-.story-chapter-number { display: block; font-family: 'Funnel Display', sans-serif; font-size: clamp(88px, 14vw, 200px); font-weight: 700; letter-spacing: -.08em; line-height: .8; margin-bottom: 48px; }
+.story-chapter-number { display: block; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-size: clamp(88px, 14vw, 200px); font-weight: 700; letter-spacing: -.08em; line-height: .8; margin-bottom: 48px; }
 .story-chapter-side .story-eyebrow { line-height: 2; }
 .story-reading { min-width: 0; max-width: 62ch; }
 .story-reading h2 { font-size: clamp(42px, 4.7vw, 72px); line-height: .98; margin-bottom: 30px; text-wrap: balance; }
 .story-reading > p { max-width: 62ch; font-size: clamp(18px, 1.45vw, 21px); line-height: 1.65; letter-spacing: -.018em; margin: 0 0 24px; }
 .story-reading p.story-draft-note { max-width: 54ch; font-size: 12px; line-height: 1.6; opacity: .8; margin-bottom: 38px; letter-spacing: 0; }
 .story-draft-note span { color: #D6D4ED; display: block; font-weight: 600; }
-.story-motion-toggle { display: inline-flex; align-items: center; min-height: 44px; margin-top: 44px; background: none; border: 0; border-bottom: 1px solid rgb(214 212 237 / 50%); color: inherit; padding: 10px 0; font: 400 12px/1.4 Inter,sans-serif; cursor: pointer; }
+.story-motion-toggle { display: inline-flex; align-items: center; min-height: 44px; margin-top: 44px; background: none; border: 0; border-bottom: 1px solid rgb(214 212 237 / 50%); color: inherit; padding: 10px 0; font: 400 12px/1.4 Inter, "Inter Fallback", sans-serif; cursor: pointer; }
 .story-motion-toggle[hidden] { display: none; }
 .story-motion-toggle:disabled { cursor: default; opacity: .65; }
-.story-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; min-height: 44px; padding: 8px 0; margin-top: 16px; font: 400 15px/1.5 Inter,sans-serif; color: inherit; background: none; border: 0; border-bottom: 1px solid #BDB414; border-radius: 0; text-decoration: none; cursor: pointer; }
+.story-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; min-height: 44px; padding: 8px 0; margin-top: 16px; font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif; color: inherit; background: none; border: 0; border-bottom: 1px solid #BDB414; border-radius: 0; text-decoration: none; cursor: pointer; }
 .story-text-link:hover { border-bottom-color: currentColor; }
 .story-detail { overflow: hidden; }
 .story-detail-window { position: relative; height: clamp(260px, 34vw, 510px); overflow: hidden; background: #1B3A32; }
@@ -118,8 +118,10 @@ body.story-page {
 @media (max-width:991px) {
  .story-page .menu-button { display: flex; }
  .story-page .navbar .nav-menu.w-nav-menu { position: absolute; top: 64px; left: 0; right: 0; width: 100%; margin: 0; background: #0A1628; padding: 20px var(--story-gutter) 28px; border: 0; border-bottom: 1px solid rgb(214 212 237 / 25%); border-radius: 0; box-shadow: none; }
- html.nav-enhanced .story-page .navbar .nav-menu:not([data-nav-menu-open]) { display: none; }
- html.nav-enhanced .story-page .navbar .nav-menu[data-nav-menu-open] { display: block; }
+ /* Closed from the first paint: the open state is a JS attribute, and the
+    no-JS <noscript> sheet on each About page shows the menu in flow instead. */
+ .story-page .navbar .nav-menu:not([data-nav-menu-open]) { display: none; }
+ .story-page .navbar .nav-menu[data-nav-menu-open] { display: block; }
  .story-page .nav-menu-area { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
  .story-page .navbar .nav-menu .nav-link { text-align: left; width: 100%; justify-content: flex-start; font-size: 17px; }
  .story-opening { min-height: 700px; height: 100svh; }

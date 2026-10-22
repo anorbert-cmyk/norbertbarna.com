@@ -65,7 +65,12 @@ test("every canonical page and 404 load licensed, content-hashed fonts directly 
   for (const family of ["inter", "funnel-display"]) {
     expect(readFileSync(resolve(root, `assets/fonts/${family}-OFL.txt`), "utf8")).toContain("SIL OPEN FONT LICENSE Version 1.1");
   }
-  expect(cssSource).not.toMatch(/font-weight:\s*\d+\s+\d+/);
+  // The licensed faces keep their discrete weight descriptors; only the local
+  // metric-matched fallback faces (no download, no font-display) use ranges.
+  const webFaces = cssSource.replace(/@font-face\s*\{[^}]*Fallback[^}]*\}/g, "");
+  expect(webFaces).not.toMatch(/font-weight:\s*\d+\s+\d+/);
+  expect(webFaces).not.toMatch(/local\(/);
+  expect(cssSource.match(/font-family:\s*'(?:Inter|Funnel Display) Fallback(?: Caps)?'/g)).toHaveLength(5);
   expect(cssSource.match(/font-display: swap/g)).toHaveLength(28);
 });
 

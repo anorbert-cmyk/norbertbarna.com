@@ -29,7 +29,7 @@
   max-width: none;
   margin: 0;
   color: inherit;
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   font-size: var(--arrival-word-size);
   font-weight: 700;
   font-style: normal;
@@ -69,7 +69,7 @@
   width: calc(100% - 44px);
   height: 24px;
   color: #D6D4ED;
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   font-size: 13px;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
@@ -98,7 +98,7 @@
   padding: 12px 14px;
   background: transparent;
   color: #D6D4ED;
-  font-family: Inter, sans-serif;
+  font-family: Inter, "Inter Fallback", sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: .035em;
