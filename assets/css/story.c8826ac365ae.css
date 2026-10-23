@@ -147,8 +147,10 @@ body.story-page {
  .story-opening-copy .story-eyebrow { max-width: 25ch; margin: auto; font-size: 12px; letter-spacing: .16em; }
  .story-opening h1 { font-size: clamp(66px, 17.4vw, 99px); margin-top: 24px; line-height: .91; letter-spacing: -.055em; }
  /* "Egy történet, / ami még íródik." and "Eine Geschichte / in Bewegung." are
-    longer than "A story in / motion.": they keep the two authored lines. */
- html[lang="hu"] .story-opening h1, html[lang="de"] .story-opening h1 { font-size: clamp(38px, 12vw, 72px); }
+    longer than "A story in / motion.": they keep the two authored lines.
+    "Eine Geschichte" is 11.9ch, so the measure is 13ch: at 12ch a browser
+    whose glyphs set a few pixels wider broke it onto three lines. */
+ html[lang="hu"] .story-opening h1, html[lang="de"] .story-opening h1 { max-width: 13ch; font-size: clamp(38px, 12vw, 72px); }
  .story-page .story-opening-dek { max-width: 25ch; font-size: 15px; }
  .story-backdrop img { object-position: 50% 70%; }
  .story-wing { display: none; }
