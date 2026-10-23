@@ -163,11 +163,14 @@ for (const [language, path] of ROUTES) {
     // The opening and the close both link the contact form; no mail button remains.
     await expect(page.locator("button.footer-email")).toHaveCount(0);
     // The opening plus the capsule after the use cases and after the working chapter (UX audit 2026-10-22).
-    await expect(page.locator("main a.footer-email")).toHaveCount(3);
+    // The chapter capsules are their own control (.ai-chapter-cta), so the opening stays the one project action.
+    await expect(page.locator("main a.footer-email")).toHaveCount(1);
     for (const chapter of ["#uses", "#workflow"]) {
-      await expect(page.locator(`${chapter} a.footer-email.hero-work-link`)).toHaveCount(1);
-      await expect(page.locator(`${chapter} a.footer-email`)).toHaveAttribute("href", contactHref(language));
-      await expect(page.locator(`${chapter} a.footer-email`)).toHaveText(contactLabel(language));
+      const capsule = page.locator(`${chapter} .ai-chapter-cta a.hero-work-link`);
+      await expect(capsule).toHaveCount(1);
+      await expect(capsule).toHaveAttribute("href", contactHref(language));
+      await expect(capsule).toHaveText(contactLabel(language));
+      await expect(capsule).toHaveAttribute("data-analytics-cta", "service");
     }
     await expect(page.locator("#top a.footer-email")).toHaveCount(1);
     await expect(page.locator("#top a.footer-email")).toHaveAttribute("href", contactHref(language));
@@ -396,7 +399,7 @@ for (const [language, path] of ROUTES) {
     // The two mid-page project capsules come first, then the reference rows.
     for (const chapter of ["#uses", "#workflow"]) {
       await page.keyboard.press("Tab");
-      await expectFocusedLinkPainted(page, page.locator(`${chapter} a.footer-email`));
+      await expectFocusedLinkPainted(page, page.locator(`${chapter} .ai-chapter-cta a.hero-work-link`));
     }
     for (const slug of ["instructure", "raiffeisen", "kineticare"]) {
       await page.keyboard.press("Tab");
