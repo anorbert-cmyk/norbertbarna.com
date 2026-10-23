@@ -254,6 +254,25 @@ if (!homeServices || /footer-email|hero-work-link|footer-cta|linkedin\.com/.test
 if (contactButtons(home).length !== 1) {
   fail("home keeps its project action in the footer only; the menu carries Contact");
 }
+// Review round 1 (2026-10-23): the home intro sets naturally (a hard break
+// orphaned "features" / "őket."), the decorative domain strip is never a Tab
+// stop, and no link carries a list-item role (ARIA in HTML forbids it).
+for (const page of ["index.html", "hu/index.html"]) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  if (/class="home-banner-subtitle"[^>]*>[^<]*<br\b/.test(html)) {
+    fail(`${page}: OrphanBreak: the home intro statement must not carry a forced <br>; let the 30ch measure set it`);
+  }
+  if (/class="home-about-marquee-area"/.test(html) &&
+      !/<div\b[^>]*aria-hidden="true"[^>]*tabindex="-1"[^>]*class="home-about-marquee-area"/.test(html)) {
+    fail(`${page}: the decorative domain strip scrolls on compact, so it needs tabindex="-1" next to aria-hidden`);
+  }
+  if (/<a\b[^>]*role="listitem"/.test(html)) {
+    fail(`${page}: role="listitem" is not allowed on a link; use a real list or drop the list roles`);
+  }
+  if (/<br\s*\/?>/.test(html.match(/class="home-service-card-title"[^>]*>[\s\S]*?<\/h3>/g)?.join("") || "")) {
+    fail(`${page}: service titles wrap on their own measure, never on a forced break`);
+  }
+}
 const homeHead = home.slice(0, home.indexOf("</head>"));
 if (/AI Product Design Lead|product design lead/i.test(homeHead)) {
   fail("JobTitleDrift: home title, meta and JSON-LD must not say Design Lead");
