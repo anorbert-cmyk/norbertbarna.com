@@ -602,8 +602,10 @@ factual introduction and first landscape row (Raiffeisen) visible in a
 art, original summaries and native links. No “these aren’t mockups” manifesto.
 The works H1 (`Selected work`, `Válogatott munkák`, `Ausgewählte Arbeiten`)
 breaks only at its authored `<br>`, never inside a word: `project-index.css`
-sets `overflow-wrap: normal` and sizes the title per language so the longest
-word fits the title column from 320 to 1920 (EN `clamp(72px, 11vw, 164px)`,
+sizes the title per language so the longest word fits the title column from
+320 to 1920 (`tests/display-titles.spec.mjs`; `overflow-wrap: anywhere` stays
+only as the 200% enlarged-text guard, where a word that cannot fit must break
+rather than be clipped) (EN `clamp(72px, 11vw, 164px)`,
 HU `clamp(56px, 10vw, 164px)`, DE `clamp(44px, 7.9vw, 152px)`; below 600px
 HU `clamp(56px, 18.5vw, 100px)`, DE `clamp(44px, 14.6vw, 72px)`). The HU/DE
 sources carry one soft hyphen (`Válo&shy;gatott`, `Aus&shy;gewählte`) as the

@@ -148,8 +148,10 @@ body.contact-page {
   font-weight: 700;
   line-height: .92;
   letter-spacing: -.055em;
-  /* A word is never cut: the title breaks only between words. */
-  overflow-wrap: normal;
+  /* At its designed measures the title breaks only between words (see the
+     992px block); anywhere is the enlarged-text guard, so a word that cannot
+     fit at 200% breaks instead of being clipped. */
+  overflow-wrap: anywhere;
   text-wrap: balance;
 }
 .contact-lede {

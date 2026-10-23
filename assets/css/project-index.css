@@ -2,12 +2,16 @@
 body.works-index { --composition-gutter: clamp(24px, 4.8vw, 80px); background: #D6D4ED; color: #0A1628; }
 body.works-index .navbar { background: #D6D4ED; border-color: rgb(10 22 40 / 20%); }
 body.works-index .project-index-intro { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 40px; padding: clamp(48px, 8vw, 120px) var(--composition-gutter) 64px; }
-/* The title never breaks inside a word: the authored <br> is the only line
-   break, and each language is sized so its longest word fits the title column
-   (about 47% of the viewport from 600px, the full gutter width below) at every
-   width from 320 to 1920. "Selected" is 3.65em wide at this tracking,
-   "Válogatott" 4.44em, "Ausgewählte" 5.66em. */
-.project-index-intro h1 { margin: 0; color: #0A1628; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-weight: 700; font-size: clamp(72px, 11vw, 164px); line-height: .88; letter-spacing: -.065em; overflow-wrap: normal; hyphens: manual; }
+/* The title breaks only at its authored <br>: each language is sized so its
+   longest word fits the title column (about 47% of the viewport from 600px,
+   the full gutter width below) at every width from 320 to 1920. "Selected" is
+   3.65em wide at this tracking, "Válogatott" 4.44em, "Ausgewählte" 5.66em.
+   overflow-wrap: anywhere never fires at these sizes (display-titles.spec
+   sweeps 13 widths); it stays as the 200% enlarged-text guard, where a word
+   that cannot fit the column must break rather than be clipped (portfolio.spec
+   "320 Works ... reflow at 200%"). The HU/DE sources carry a soft hyphen so
+   such a break lands at a hyphen. */
+.project-index-intro h1 { margin: 0; color: #0A1628; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-weight: 700; font-size: clamp(72px, 11vw, 164px); line-height: .88; letter-spacing: -.065em; overflow-wrap: anywhere; hyphens: manual; }
 html[lang="hu"] .project-index-intro h1 { font-size: clamp(56px, 10vw, 164px); }
 html[lang="de"] .project-index-intro h1 { font-size: clamp(44px, 7.9vw, 152px); }
 .project-index-intro p { max-width: 30ch; margin: 0 0 4px; font-size: clamp(18px, 2vw, 28px); line-height: 1.3; letter-spacing: -.025em; }
