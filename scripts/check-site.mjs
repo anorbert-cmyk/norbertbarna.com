@@ -59,7 +59,9 @@ const decodeEntities = (value) => value
   .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
   .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)));
 
+// A soft hyphen (&shy;, an authored break point in a long compound) is not visible text.
 const visibleText = (value) => decodeEntities(value)
+  .replace(/&shy;|\u00AD/g, "")
   .replace(/<[^>]+>/g, " ")
   .replace(/\s+/g, " ")
   .trim();

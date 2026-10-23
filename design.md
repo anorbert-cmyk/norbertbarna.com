@@ -561,7 +561,14 @@ At normal text size the outlined contact and primary actions remain 44px tall.
 At 200% text size or user-defined text spacing they may wrap and grow vertically
 (44px minimum), while keeping their full visible labels and existing action.
 The header contact row can wrap; it must not overlap LinkedIn. Long opening
-headings may break within a word only when needed to avoid clipping. The menu
+headings may break within a word only when needed to avoid clipping, and a
+Hungarian or German heading breaks a compound only with a hyphen: below 600px
+`h1`-`h3` on `html[lang="hu"]` and `html[lang="de"]` carry `hyphens: auto`,
+and a compound known to exceed a phone column carries an authored `&shy;` at
+the morpheme boundary (Web&shy;anwendungen, munka&shy;folyamatodra), because
+a bare mid-word break is a defect at 320 and 390 (checked for the service
+board in ai-integration.spec.mjs; the sandbox Chromium has no hyphenation
+dictionaries, so the authored soft hyphen is what the check sees). The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
 The home proof and employer list use solid lilac text on the separate navy
