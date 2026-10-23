@@ -29,6 +29,39 @@ const DEFAULT_IMAGE = {
   url: `${ORIGIN}/assets/images/og/forest-olive-folds.jpg`,
   alt: { en: "Forest-green and olive folded geometric sculpture", hu: "Erdőzöld és olívasárga hajtogatott geometriai alakzat", de: "Waldgrüne und olivfarbene gefaltete geometrische Skulptur" },
 };
+// Sandbox and older browsers have no de/hu hyphenation dictionaries, so a long
+// compound in a phone-width H1 would break mid-word. Visible headings get soft
+// hyphens at the compound joints; <title>, meta, JSON-LD and feeds stay plain.
+const SOFT_HYPHENS = {
+  de: {
+    Kennzeichnungspflicht: "Kenn&shy;zeichnungs&shy;pflicht",
+    Automatisierung: "Auto&shy;matisierung",
+    Webentwicklung: "Web&shy;entwicklung",
+    Halluzinationen: "Halluzi&shy;nationen",
+    Kundenservice: "Kunden&shy;service",
+    Datenschutz: "Daten&shy;schutz",
+    Produktteams: "Produkt&shy;teams",
+    Überarbeitung: "Über&shy;arbeitung",
+    Barrierefreie: "Barriere&shy;freie",
+    Baukasten: "Bau&shy;kasten",
+    Mittelstand: "Mittel&shy;stand",
+    Unternehmen: "Unter&shy;nehmen",
+    Geschichte: "Ge&shy;schichte",
+  },
+  hu: {
+    webfejlesztésről: "web&shy;fejlesztésről",
+    ellenőrzéssel: "ellen&shy;őrzéssel",
+    ügyfélszolgálat: "ügyfél&shy;szolgálat",
+    testreszabott: "testre&shy;szabott",
+  },
+};
+export const headingHtml = (lang, text) => {
+  let html = escapeHtml(text);
+  for (const [word, hyphenated] of Object.entries(SOFT_HYPHENS[lang] || {})) {
+    html = html.replace(new RegExp(`(?<![\\p{L}&;])${word}(?![\\p{L}])`, "gu"), hyphenated);
+  }
+  return html;
+};
 const LINKEDIN = "https://www.linkedin.com/in/barna-norbert/";
 const COPY = {
   hu: {
@@ -251,7 +284,10 @@ const breadcrumb = (lang, article) => {
 const tableOfContents = (lang, body) => {
   const outline = outlineOf(body);
   if (outline.length < 3) return "";
-  return `<nav class="writing-toc" aria-labelledby="writing-toc-label"><p class="writing-toc-label" id="writing-toc-label">${COPY[lang].tocLabel}</p><ol>${outline.map(({ id, text }) => `<li><a href="#${id}">${escapeHtml(text)}</a></li>`).join("")}</ol></nav>`;
+  // A native <details>: closed below the rail tier (the label carries the
+  // count), always open as the rail from 992px (writing.css, ::details-content).
+  const label = COPY[lang].tocLabel;
+  return `<nav class="writing-toc" aria-labelledby="writing-toc-label"><details data-label="${label}"><summary class="writing-toc-label" id="writing-toc-label">${label}<span class="writing-toc-count" aria-hidden="true"> (${outline.length})</span></summary><ol>${outline.map(({ id, text }) => `<li><a href="#${id}">${escapeHtml(text)}</a></li>`).join("")}</ol></details></nav>`;
 };
 
 const coverFigure = (article, image, { priority = true } = {}) => article.cover
@@ -266,7 +302,7 @@ const thumb = (article, image, eager = false) => `<figure class="writing-row-med
 function row(lang, article, index, heading = "h2") {
   const section = SECTIONS[lang];
   const image = imageOf(article);
-  return `<li class="writing-row"><a class="writing-row-link" href="${section.path}/${article.slug}"><span class="writing-row-number" aria-hidden="true">${String(index).padStart(2, "0")}</span>${thumb(article, image)}<div class="writing-row-copy">${kicker(lang, article)}<${heading} id="${article.slug}">${escapeHtml(article.title)}</${heading}><p>${escapeHtml(article.description)}</p>${meta(lang, article)}</div></a></li>`;
+  return `<li class="writing-row"><a class="writing-row-link" href="${section.path}/${article.slug}"><span class="writing-row-number" aria-hidden="true">${String(index).padStart(2, "0")}</span>${thumb(article, image)}<div class="writing-row-copy">${kicker(lang, article)}<${heading} id="${article.slug}">${headingHtml(lang, article.title)}</${heading}><p>${escapeHtml(article.description)}</p>${meta(lang, article)}</div></a></li>`;
 }
 
 const CTA_ID = { hu: "kapcsolodo-szolgaltatas", en: "related-service", de: "passende-leistung" };
@@ -283,7 +319,7 @@ function renderArticle(article, articles, links) {
     ? { [lang]: canonical, ...Object.fromEntries(article.pairs.map((pair) => [pair.lang, `${ORIGIN}${SECTIONS[pair.lang].path}/${pair.slug}`])) }
     : null;
   const image = imageOf(article);
-  const body = markdownToHtml(article.markdown, article.source);
+  const body = markdownToHtml(article.markdown, article.source, lang);
   const faq = faqOf(body);
   const sources = citations(article.markdown);
   const words = wordCount(article.markdown);
@@ -343,7 +379,7 @@ function renderArticle(article, articles, links) {
     `<header class="writing-opening writing-opening-article"><div class="writing-frame">`,
     breadcrumb(lang, article),
     kicker(lang, article),
-    `<h1 class="writing-title" id="article-title">${escapeHtml(article.title)}</h1>`,
+    `<h1 class="writing-title" id="article-title">${headingHtml(lang, article.title)}</h1>`,
     `<p class="writing-dek">${escapeHtml(article.description)}</p>`,
     meta(lang, article, true),
     coverFigure(article, image),
@@ -407,11 +443,11 @@ function renderList(lang, own, links, articles) {
   const schema = { "@context": "https://schema.org", "@graph": [page_] };
   const [latest, ...rest] = own;
   const latestImage = imageOf(latest);
-  const feature = `<article class="writing-feature"><a class="writing-feature-link" href="${section.path}/${latest.slug}"><figure class="writing-feature-media"><img src="${escapeHtml(latestImage.url.slice(ORIGIN.length))}" alt="" width="1200" height="630" decoding="async" fetchpriority="high"/></figure><div class="writing-feature-copy">${kicker(lang, latest)}<h2 id="${latest.slug}">${escapeHtml(latest.title)}</h2><p>${escapeHtml(latest.description)}</p>${meta(lang, latest)}</div></a></article>`;
+  const feature = `<article class="writing-feature"><a class="writing-feature-link" href="${section.path}/${latest.slug}"><figure class="writing-feature-media"><img src="${escapeHtml(latestImage.url.slice(ORIGIN.length))}" alt="" width="1200" height="630" decoding="async" fetchpriority="high"/></figure><div class="writing-feature-copy">${kicker(lang, latest)}<h2 id="${latest.slug}">${headingHtml(lang, latest.title)}</h2><p>${escapeHtml(latest.description)}</p>${meta(lang, latest)}</div></a></article>`;
   const main = [
     `<section class="writing-opening" aria-labelledby="writing-title"><div class="writing-frame">`,
     `<p class="writing-eyebrow">${copy.eyebrow}</p>`,
-    `<h1 class="writing-title" id="writing-title">${copy.listHeading}</h1>`,
+    `<h1 class="writing-title" id="writing-title">${headingHtml(lang, copy.listHeading)}</h1>`,
     `<p class="writing-dek">${copy.listIntro}</p>`,
     `<p class="writing-count"><span>${copy.count(own.length)}</span><a href="${section.path}/feed.xml">${copy.feedLabel}</a></p>`,
     `</div></section>`,

@@ -25,7 +25,8 @@ const check = (condition, message) => { if (!condition) errors.push(message); };
 const decode = value => String(value).replace(/&#x([0-9a-f]+);|&#(\d+);|&(amp|quot|apos|nbsp|lt|gt);/gi,
   (_, hex, number, name) => hex || number ? String.fromCodePoint(parseInt(hex || number, hex ? 16 : 10)) :
     ({ amp: "&", quot: '"', apos: "'", nbsp: " ", lt: "<", gt: ">" })[name.toLowerCase()]);
-const text = value => decode(value.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/gi, " ").replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+// A soft hyphen (&shy;, the break opportunity in a long de/hu heading) is formatting, not content.
+const text = value => decode(value.replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/gi, " ").replace(/<[^>]+>/g, " ").replace(/&shy;/gi, "")).replace(/\u00AD/g, "").replace(/\s+/g, " ").trim();
 const attrs = tag => Object.fromEntries([...tag.matchAll(/([\w:-]+)\s*=\s*(["'])(.*?)\2/gs)].map(([, key, , value]) => [key.toLowerCase(), decode(value)]));
 const tags = (html, name) => [...html.matchAll(new RegExp(`<${name}\\b[^>]*>`, "gi"))].map(([tag]) => attrs(tag));
 const types = node => [node?.["@type"]].flat().filter(Boolean);

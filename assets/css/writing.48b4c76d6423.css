@@ -137,7 +137,7 @@
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
-.writing-feature-copy h2 { font-size: clamp(30px, 3.4vw, 48px); }
+.writing-feature-copy h2 { font-size: clamp(30px, 2.8vw, 40px); }
 .writing-row-copy h2,
 .writing-row-copy h3 { font-size: clamp(24px, 2.2vw, 32px); }
 .writing-feature-copy p:not(.writing-kicker):not(.writing-meta),
@@ -228,13 +228,21 @@
   padding: 0 0 20px;
   border-bottom: 1px solid rgb(17 17 17 / 14%);
 }
+/* The outline is a native <details>: a disclosure below the rail tier, a
+   rail that is always open from 992px (::details-content keeps the list
+   visible there; the summary is hidden and the label is drawn by CSS). */
 .writing-toc-label {
+  display: block;
   margin: 0 0 10px;
   color: var(--muted, rgb(17 17 17 / 62%));
   font: 600 13px/1.3 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .02em;
   text-transform: uppercase;
 }
+.writing-toc summary.writing-toc-label { cursor: pointer; list-style: none; }
+.writing-toc summary.writing-toc-label::-webkit-details-marker { display: none; }
+.writing-toc summary.writing-toc-label:focus-visible { outline: 2px solid var(--writing-navy); outline-offset: 4px; }
+.writing-toc-count { font-weight: 400; }
 .writing-toc ol {
   margin: 0;
   padding: 0;
@@ -328,7 +336,12 @@
 }
 .writing-prose th { font-weight: 600; }
 .writing-prose .writing-table { overflow-x: auto; margin: 1.6em 0; }
-.writing-prose .writing-table table { margin: 0; min-width: 480px; }
+/* The decision tables are two columns of short phrases: they set within the
+   reading column at every width (a 320px phone included) instead of forcing a
+   sideways scroll with no affordance. */
+.writing-prose .writing-table table { margin: 0; min-width: 0; width: 100%; }
+.writing-prose .writing-table :is(th, td):first-child { width: 44%; padding-right: 14px; }
+.writing-prose .writing-table :is(th, td) { hyphens: auto; overflow-wrap: anywhere; }
 
 /* The closing offer: one lilac card with the contact action. */
 .writing-cta {
@@ -398,38 +411,49 @@
   .writing-toc { border-bottom: 0; border-left: 1px solid rgb(17 17 17 / 14%); padding: 4px 0 4px 18px; }
   .writing-page { --writing-cover-pull: 160px; }
 }
+@supports selector(::details-content) {
+  @media (min-width: 992px) {
+    .writing-toc details::details-content { display: block; content-visibility: visible; }
+    .writing-toc summary.writing-toc-label { display: none; }
+    .writing-toc details::before {
+      content: attr(data-label);
+      display: block;
+      margin: 0 0 10px;
+      color: var(--muted, rgb(17 17 17 / 62%));
+      font: 600 13px/1.3 Inter, "Inter Fallback", sans-serif;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+  }
+}
 @media (min-width: 1200px) {
   .writing-body .writing-frame { grid-template-columns: minmax(220px, 280px) minmax(0, var(--writing-readable)); }
 }
 @media (max-width: 991px) {
-  /* Below the rail tier the outline is a scrolling row of numbered chips, so
-     the text starts within one screen of the cover. */
-  .writing-toc { position: relative; padding: 0; border-bottom: 0; }
-  .writing-toc-label { margin-bottom: 8px; }
-  .writing-toc ol {
+  /* Below the rail tier the outline is a closed disclosure ("Contents (10)"),
+     so the text starts within one screen of the cover and the whole list is
+     readable, wrapped and reachable once opened: no sideways strip. */
+  .writing-toc { position: relative; padding: 0 0 4px; border-bottom: 1px solid rgb(17 17 17 / 14%); }
+  .writing-toc summary.writing-toc-label {
     display: flex;
-    gap: 8px;
-    margin: 0 calc(-1 * var(--writing-gutter));
-    padding: 0 var(--writing-gutter) 14px;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    margin: 0;
+    padding: 10px 0;
   }
-  .writing-toc ol::-webkit-scrollbar { display: none; }
-  .writing-toc li { flex: 0 0 auto; scroll-snap-align: start; }
-  .writing-toc a {
-    min-height: 40px;
-    padding: 9px 14px 9px 12px;
-    gap: 8px;
-    border: 1px solid rgb(17 17 17 / 18%);
-    border-radius: 999px;
-    background: #fff;
-    font-size: 14px;
-    white-space: nowrap;
+  .writing-toc summary.writing-toc-label::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-left: auto;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
   }
-  .writing-toc a::before { line-height: 1.55; }
-  .writing-toc a:is(:hover, :focus-visible) { text-decoration: none; border-color: var(--writing-navy); }
+  .writing-toc details[open] > summary.writing-toc-label::after { transform: translateY(2px) rotate(-135deg); }
+  .writing-toc ol { padding: 2px 0 12px; }
+  .writing-toc a { min-height: 44px; padding: 10px 0; font-size: 15px; }
   .writing-body .writing-frame { gap: 24px; }
   .writing-row-link { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
   .writing-row-number { display: none; }

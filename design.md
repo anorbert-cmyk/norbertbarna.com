@@ -17,7 +17,7 @@ This file follows the loop in
    mechanics live in CSS. Never read a hashed copy into context. The full
    ownership map is in **System reference** below.
 3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
-   scripts and twenty-eight Playwright specs. Mechanical failures that have
+   scripts and thirty-three Playwright specs. Mechanical failures that have
    already been named must fail CI. **System reference → Checks** says which
    file owns which rule, so a new rule lands in one place.
 
@@ -618,7 +618,10 @@ No lead paragraph and no per-row descriptions: the owner asked for the rows only
    The entrance runs on first-party physics (2026-10-07, see **Motion → Case
    opening**): the panel is a plate hinged on its lower edge that stands up
    against the reading plane, and a parse-time gate keeps the finished title
-   and panel from painting before the entrance.
+   and panel from painting before the entrance. The stage stays a complete
+   viewport opening on phones as well (`portfolio.spec.mjs` holds it at 899px
+   and keeps the fact band below it); the resting bands above and below the
+   full-width panel are that contract, not a defect to tune away.
 3. Fact band with four keys directly under the hero
 4. No visible byline. “Written by / Published / Updated” never appears on
    the page; authorship and dates live in meta tags and JSON-LD only.
@@ -1013,10 +1016,14 @@ the rest as numbered hairline rows with a thumbnail. The article
 (`.writing-article-page`) opens on lilac with a breadcrumb, kicker, title,
 dek and one unlabelled name, date and reading-time line, pulls its 1200×630 cover down into the paper body,
 then runs a sticky table of contents rail (decimal-leading-zero counters,
-from 992px; below that tier the same outline is one horizontally scrolling
-row of numbered pill chips under the cover, so the text starts within a
-screen) beside a 720px reading column (`.writing-prose`, Inter 18px,
-Funnel headings, olive blockquote rule, scrollable tables), ends in the
+from 992px; below that tier the same outline is a closed native `<details>`
+under the cover, `Contents (n)` on a 44px summary and 44px wrapped rows once
+opened, so the text starts within a screen and no entry is ever clipped or
+scrolled sideways; from 992px `::details-content` keeps the list open and the
+summary gives way to a CSS label) beside a 720px reading column
+(`.writing-prose`, Inter 18px, Funnel headings, olive blockquote rule,
+two-column decision tables that fit the column at 320px with hyphenation
+rather than scrolling), ends in the
 lilac CTA card and two related articles (`.writing-related`, rows headed
 `h3` under the section's `h2`). An article is a
 schema `Article` (author `#person` with `jobTitle` and `knowsLanguage`,
@@ -1033,7 +1040,17 @@ questions` with `###` questions) is mirrored word for word as FAQPage schema.
 Covers are 1200×630 JPEGs under `assets/images/og/writing/`, used as the
 social preview and shown on the list and under the article opening.
 `draft: true` keeps an article unpublished; the six first articles were
-published on 2026-10-21. Published articles also feed the Articles menu
+published on 2026-10-21. The list's feature title is capped at 40px so it
+sets in three lines beside the cover. Visible headings get soft hyphens at
+the joints of long German and Hungarian compounds (`SOFT_HYPHENS` in
+`build-writing.mjs`; never in `<title>`, meta, JSON-LD or feeds), so a
+browser without a hyphenation dictionary still breaks `Kenn-zeichnungs-
+pflicht` at a joint instead of anywhere. Every external link in an article
+opens a new tab and ends in a visually hidden `(opens in a new tab)` /
+`(új lapon nyílik meg)` / `(öffnet in neuem Tab)`, the same warning the
+LinkedIn links carry; the build also refuses a numeric date (`21.10.2026`)
+and a straight apostrophe in prose, so each language keeps one date form
+and the ’ apostrophe (`editorial-layout.spec.mjs` measures the rest). Published articles also feed the Articles menu
 group (latest five) and the footer Articles column (latest three) through
 `site-chrome.mjs`. Each article ends with the CTA: an
 optional related-service link from frontmatter and the
@@ -1214,7 +1231,7 @@ scene is ready and motion is allowed.
 
 `npm test` first checks that every page carries the generated chrome
 (`build-nav.mjs --check`) and that the generated writing pages match
-`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs twenty-eight
+`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs thirty-three
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 
@@ -1239,7 +1256,11 @@ Playwright specs, grouped by what they defend:
   springs and the compact menu drop, read from the module's world samples and
   a frame tracer).
 - **Content and access:** `portfolio` (the large accessibility and AA suite),
-  `editorial-media`, `story-motion`.
+  `editorial-media`, `story-motion`, `editorial-layout` (design review
+  2026-10-23: writing headings never break mid-word at 320, the outline
+  disclosure, the new-tab warning, the feature title's three lines, the About
+  label floor, two-line titles and measures, and the related-card hover
+  frame).
 - **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,
   `analytics`, `analytics-off`.
 - **UX findings of 2026-10-22:** `error-page` (the three error documents:
@@ -1446,7 +1467,11 @@ row has one spring clamped to [0, 1] on `PortfolioPhysics`, critically damped,
 current velocity, so the frame decelerates and turns back instead of jumping
 (the former eases moved 13% in their first frame and flipped direction within
 one frame). Related project cards on the cases use the same model: image
-scale to 1.025 at ω 13 and the title line at ω 18. Keyboard focus has
+scale to 1.025 at ω 13 and the title line at ω 18. The title link's
+`::after` makes the whole card the target (one link per card, cursor
+pointer), and the image frame (`.related-work-image-wrap::after`) answers
+`:hover` and `:focus-within` alike, also under reduced motion where the
+springs do not run; no script sets an `is-active` state. Keyboard focus has
 priority over pointer exit and preserves the instant visible outline. Keep
 text, row geometry, separators and native link targets still. Scale the
 complete frame without introducing another image crop. `/works` rows have no
@@ -1522,6 +1547,17 @@ real LinkedIn link, identity, copyright, privacy links and analytics settings.
 Its chapter rail uses named native anchors. The story-only Pause motion button
 starts hidden and is exposed by the story controller; it does not restore the
 retired global motion switch or affect another route's motion state.
+
+Measures and labels (design review, 2026-10-23): every utility label on the
+story (`.story-eyebrow`, the opening cue, the chapter side labels, the rail,
+the footer lines) is at least 12px, and the footer's small print is solid
+lilac rather than lilac at 85%. The opening dek keeps a 28ch measure (25ch on
+phones) centred on the dark corridor, so no part of its box crosses the pale
+paper of the backdrop at tablet widths. The Hungarian and German titles
+(`Egy történet, / ami még íródik.`, `Eine Geschichte / in Bewegung.`) set at
+`clamp(38px, 12vw, 72px)` below 600px so they keep their two authored lines
+like the English `A story in / motion.`. The finale paragraphs keep a 54ch
+centred measure with no forced `<br>`.
 
 ## Eval rubric (first attempt must pass)
 
