@@ -58,7 +58,7 @@ blocking issue. These are their criteria written as checks you can run.
 | The object is whole at every width | The glass chevron or artwork is never cut by the footer, the pane, the bar or the viewport edge at 320, 390, 768, 992, 1024, 1180, 1200, 1440, 1920 |
 | Contrast between object and field | The object never sits on a field of its own colour (round 1: the chevron "dissolved into the yellow paper" below 992 px; fixed by moving its slot over the forest and lilac region) |
 | Edges do not coincide | A pane edge never lands exactly on an artwork edge (fixed with `--contact-art-x: 35%` at 1200 to 1799 px) |
-| Typography holds its intended lines | The display title breaks where it was designed to (`.contact-title { max-width: 6ch }` from 992 px keeps "Write / to me." and "Írj / nekem." on two lines) |
+| Typography holds its intended lines | The display title breaks where it was designed to, and never inside a word (`overflow-wrap: normal`): `.contact-title { max-width: 6ch }` from 992 px keeps "Write / to me." and "Írj / nekem." on two lines, and `html[lang="de"] .contact-title { max-width: 8ch }` keeps "Schreiben / Sie mir." |
 | No native chrome left over | No textarea resize grip (`resize: none` plus `field-sizing: content` with a measured fallback), no double borders, focus rings only on `:focus-visible` |
 | Third-party widgets fit | The Turnstile frame is a fixed 300 × 65 px iframe; below that width the compact widget is rendered and its 140 px row reserved (round 3 blocker at 320 to 371 px) |
 | Motion carries the visitor's content | The fold lifts the visitor's own writing, not a blank sheet (round 3 blocker: "the visitor's words vanish in one frame and a blank ruled sheet folds") |

@@ -148,7 +148,8 @@ body.contact-page {
   font-weight: 700;
   line-height: .92;
   letter-spacing: -.055em;
-  overflow-wrap: anywhere;
+  /* A word is never cut: the title breaks only between words. */
+  overflow-wrap: normal;
   text-wrap: balance;
 }
 .contact-lede {
@@ -687,6 +688,8 @@ body.contact-page {
 /* A keyboard visitor sees the ring on the focused heading; focus set by the
    script after a pointer send shows nothing odd. */
 .contact-sent-title:focus:not(:focus-visible) { outline: none; }
+/* The sent block only holds the focus while the letter folds (contact.js). */
+.contact-sent:focus { outline: none; }
 .contact-sent-text strong { font-weight: 600; overflow-wrap: anywhere; }
 .contact-sent-text {
   max-width: 46ch;
@@ -711,8 +714,11 @@ body.contact-page {
 
 /* ---- Reflow ---- */
 @media (min-width: 992px) {
-  /* The title keeps its two lines; the second carries the full stop. */
+  /* The title keeps its two lines; the second carries the full stop:
+     "Write / to me.", "Írj / nekem." and "Schreiben / Sie mir." ("Schreiben"
+     is 7.63ch at this tracking, so the German measure is 8ch). */
   .contact-title { max-width: 6ch; }
+  html[lang="de"] .contact-title { max-width: 8ch; }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
   body.contact-page { --contact-pane: 520px; }
