@@ -200,8 +200,9 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
   font: inherit; color: inherit; cursor: pointer; text-align: left;
 }
 .navbar .nav-group-trigger, .navbar .nav-lang-trigger { display: inline-flex; align-items: center; gap: 6px; }
-/* EN, HU and DE codes differ by a pixel or two; one width keeps the menu in place across languages. */
-.navbar .nav-lang-trigger { min-width: 68px; justify-content: center; }
+/* EN, HU and DE codes differ by a pixel or two (HU is the widest at 69px with
+   the bar's tracking); one width keeps the menu in place across languages. */
+.navbar .nav-lang-trigger { min-width: 72px; justify-content: center; }
 /* The chevron takes the bar's link ink, so it stays visible on the navy
    service and About bars too (2026-10-22). */
 .navbar .nav-group-toggle {
@@ -258,12 +259,17 @@ html:not(.nav-enhanced) .navbar .nav-group:is(:hover, :focus-within) > .nav-grou
   }
   html body .navbar .nav-menu .nav-group { display: flex; flex-wrap: wrap; align-items: center; width: 100%; }
   html body .navbar .nav-menu .nav-group > .nav-link { flex: 1 1 auto; width: auto; }
-  html body .navbar .nav-menu .nav-group-trigger { width: 100%; justify-content: space-between; }
+  /* The Services trigger and the Articles split control share one grammar
+     (design review, 2026-10-23): both chevrons sit in the same right-edge
+     slot, centred in the 48px the Articles toggle occupies. The selector
+     outranks the .nav-link.white row rule above. */
+  html body .navbar .nav-menu .nav-group-trigger.nav-link { width: 100%; justify-content: space-between; }
+  html body .navbar .nav-menu .nav-group-trigger .nav-chevron { margin-right: 17px; }
   html body .navbar .nav-menu .nav-lang-trigger {
     display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 12px 0;
     color: #0A1628; font: 400 17px/1.4 Inter, "Inter Fallback", sans-serif;
   }
-  html body .navbar .nav-menu .nav-lang-trigger .nav-chevron { margin-left: auto; }
+  html body .navbar .nav-menu .nav-lang-trigger .nav-chevron { margin-left: auto; margin-right: 17px; }
   html body .navbar .nav-menu .nav-lang-code { display: none; }
   html body .navbar .nav-menu .nav-lang-name { display: inline; }
   html body .navbar .nav-menu .nav-group-toggle { width: 48px; min-width: 48px; min-height: 48px; margin: 0; justify-content: center; color: #0A1628; }
@@ -313,12 +319,26 @@ html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; h
 }
 /* Every bar types its destinations alike (2026-10-22): one size, uppercase,
    44px rows, whatever colour the page type gives them. The Webflow base and
-   story.css no longer size the links on the service and About bars. */
+   story.css no longer size the links on the service and About bars.
+   One row geometry too (design review, 2026-10-23): every destination, the
+   home LinkedIn link, the chevron buttons and the language control share the
+   size and the .04em tracking, and the row has one gap on every page type (14 to 16px, sized so the
+   Hungarian work bar still fits beside the wordmark and counter at 1800px), so
+   moving between the home, Works, a service page, the writing section or About
+   never shifts a destination. The selectors outrank the per-page gap and size
+   rules in responsive.css, home-composition.css, story.css and above. */
 @media (min-width: 992px) {
-  html body .navbar .nav-menu-area .nav-link {
-    display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0; border: 0; border-radius: 0;
-    font: 400 clamp(12px, 1.05vw, 14px)/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: 0; text-transform: uppercase;
+  html body .navbar.w-nav .nav-wrap .nav-menu .nav-menu-area {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px clamp(14px, .85vw, 16px);
   }
+  html body .navbar.w-nav .nav-wrap .nav-menu .nav-cta { gap: 0; }
+  html body .navbar .nav-menu-area .nav-link,
+  html body .navbar .nav-menu-area a.footer-contact-link {
+    display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0; border: 0; border-radius: 0;
+    font: 400 clamp(12px, 1.05vw, 14px)/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: .04em; text-transform: uppercase;
+  }
+  html body .navbar .nav-menu-area .home-nav-label { font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  html body .navbar .nav-menu-area :is(.nav-group-toggle, .nav-lang-trigger) { font-size: clamp(12px, 1.05vw, 14px); letter-spacing: .04em; }
 }
 /* The open compact menu (2026-10-22) locks the page behind it and scrolls on
    its own, so the language rows stay reachable on a short screen, and it

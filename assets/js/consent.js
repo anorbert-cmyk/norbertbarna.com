@@ -256,6 +256,14 @@
     opened = true;
     render();
     // Focus moves only after an explicit settings request, never on initial load.
+    // The docked notice (contact pages) sits in the flow above the footer
+    // button that reopened it, so it is brought into view first; the fixed
+    // notice is always on screen and the page stays where it is.
+    if (banner && docked() && typeof banner.scrollIntoView === "function") {
+      var reduced = false;
+      try { reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (error) { reduced = true; }
+      banner.scrollIntoView({ block: "center", behavior: reduced ? "auto" : "smooth" });
+    }
     if (heading) heading.focus({ preventScroll: true });
   }
 

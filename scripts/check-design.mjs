@@ -254,6 +254,25 @@ if (!homeServices || /footer-email|hero-work-link|footer-cta|linkedin\.com/.test
 if (contactButtons(home).length !== 1) {
   fail("home keeps its project action in the footer only; the menu carries Contact");
 }
+// Review round 1 (2026-10-23): the home intro sets naturally (a hard break
+// orphaned "features" / "őket."), the decorative domain strip is never a Tab
+// stop, and no link carries a list-item role (ARIA in HTML forbids it).
+for (const page of ["index.html", "hu/index.html"]) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  if (/class="home-banner-subtitle"[^>]*>[^<]*<br\b/.test(html)) {
+    fail(`${page}: OrphanBreak: the home intro statement must not carry a forced <br>; let the 30ch measure set it`);
+  }
+  if (/class="home-about-marquee-area"/.test(html) &&
+      !/<div\b[^>]*aria-hidden="true"[^>]*tabindex="-1"[^>]*class="home-about-marquee-area"/.test(html)) {
+    fail(`${page}: the decorative domain strip scrolls on compact, so it needs tabindex="-1" next to aria-hidden`);
+  }
+  if (/<a\b[^>]*role="listitem"/.test(html)) {
+    fail(`${page}: role="listitem" is not allowed on a link; use a real list or drop the list roles`);
+  }
+  if (/<br\s*\/?>/.test(html.match(/class="home-service-card-title"[^>]*>[\s\S]*?<\/h3>/g)?.join("") || "")) {
+    fail(`${page}: service titles wrap on their own measure, never on a forced break`);
+  }
+}
 const homeHead = home.slice(0, home.indexOf("</head>"));
 if (/AI Product Design Lead|product design lead/i.test(homeHead)) {
   fail("JobTitleDrift: home title, meta and JSON-LD must not say Design Lead");
@@ -791,6 +810,24 @@ for (const slug of WORK) {
   if (headings.length >= 3 && (firstFigure < 0 || firstFigure > headings[2].index)) {
     fail(`${slug}: first body still must land right after the role section`);
   }
+}
+
+// Typographic punctuation (design review, 2026-10-23): the English cases,
+// About, privacy and the writing pages set “ ” and ’ like every Hungarian and German
+// page; a straight " or ' in visible copy is a drift from the sources.
+const typographicPages = [
+  "about.html",
+  "privacy.html",
+  ...WORK.map((slug) => `work/${slug}.html`),
+  ...readdirSync(join(ROOT, "writing")).filter((name) => name.endsWith(".html")).map((name) => `writing/${name}`),
+];
+for (const page of typographicPages) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  const text = html.slice(html.indexOf("<body"))
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/gi, " ")
+    .replace(/<[^>]+>/g, " ");
+  const straight = text.match(/["']|&quot;|&#0*39;|&apos;/g);
+  if (straight) fail(`${page}: ${straight.length} straight quote(s) in visible English copy; set “ ” and ’ like the rest of the site`);
 }
 
 if (failures) {

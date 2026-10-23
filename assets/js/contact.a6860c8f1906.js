@@ -1341,11 +1341,19 @@
       var clear = Math.max(top, navHeight() + 12);
       sheet.style.minHeight = Math.round(box.height) + "px";
       sheet.setAttribute("data-state", "folding");
+      if (sentCopy) sentCopy.hidden = true;
+      if (sent) sent.hidden = false;
+      // Focus never drops to the body: the button is about to leave the tree
+      // with the form, so the sent block holds the focus while the letter
+      // folds, and settle() hands it to the thank-you heading afterwards.
+      var active = document.activeElement;
+      if (sent && active && (form.contains(active) || (foot && foot.contains(active)))) {
+        sent.setAttribute("tabindex", "-1");
+        sent.focus({ preventScroll: true });
+      }
       if (written) written.hidden = true;
       if (foot) foot.hidden = true;
       form.hidden = true;
-      if (sentCopy) sentCopy.hidden = true;
-      if (sent) sent.hidden = false;
       var folded = fold ? (instant ? runFoldInstant : runFold)(fold, foldSheet, {
         width: box.width,
         height: box.height,

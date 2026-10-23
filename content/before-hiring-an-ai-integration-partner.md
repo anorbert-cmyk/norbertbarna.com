@@ -18,7 +18,7 @@ This article is the preparation checklist I wish every company brought to the fi
 
 ## Why does preparation change the quality of proposals?
 
-Without a workflow and a baseline, a partner can only show you what a model can do, and every partner's model can do roughly the same things. With them, the partner has to say what will change in your work, how, and how you will know. That is a different conversation, and it separates an AI integration consultant who puts AI into real operations from people who sell demos. The same holds whether the offer is called AI consulting, AI implementation or AI integration services: the names differ, the test is the same. This is an editorial view from my own projects, not a market figure.
+Without a workflow and a baseline, a partner can only show you what a model can do, and every partner’s model can do roughly the same things. With them, the partner has to say what will change in your work, how, and how you will know. That is a different conversation, and it separates an AI integration consultant who puts AI into real operations from people who sell demos. The same holds whether the offer is called AI consulting, AI implementation or AI integration services: the names differ, the test is the same. This is an editorial view from my own projects, not a market figure.
 
 ## The preparation checklist
 
@@ -42,7 +42,7 @@ What may the AI suggest, what must a person check, and what happens on a missing
 
 ### 5. A success measure and an owner
 
-Which measure decides whether the pilot continues: task completion, review effort, output quality, response time or running cost, compared with your baseline. And one named person on your side who can pause the pilot or roll it back. In my method that owner exists from the pilot's first day.
+Which measure decides whether the pilot continues: task completion, review effort, output quality, response time or running cost, compared with your baseline. And one named person on your side who can pause the pilot or roll it back. In my method that owner exists from the pilot’s first day.
 
 ### 6. Your constraints
 
@@ -73,7 +73,7 @@ These are opinions from experience, not rules.
 
 ## What I look for in a project
 
-I believe in quality over volume. I take on a small number of projects where the client puts in energy too, and where neither of us is aiming for a template, but for work that represents the client's brand and product and my own craft. A company that prepares the checklist above is usually that client.
+I believe in quality over volume. I take on a small number of projects where the client puts in energy too, and where neither of us is aiming for a template, but for work that represents the client’s brand and product and my own craft. A company that prepares the checklist above is usually that client.
 
 ## What a good first conversation produces
 

@@ -8,6 +8,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ERROR_PAGES, UTILITY_PAGES, baseOf, HU_PAGES, DE_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
+import { BREADCRUMB_LABEL, MENU } from "./site-chrome.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORK_PAGES = readdirSync(join(ROOT, "work"))
@@ -55,6 +56,28 @@ for (const page of ALL_PAGES) {
   }
   if (count(html, /<footer\b/gi) !== 1 || count(html, /<\/footer>/gi) !== 1) {
     fail(`${page}: expected exactly one footer landmark`);
+  }
+  // Landmark names (design review, 2026-10-23): the same thing carries the
+  // same name in every template of a language. The footer's nav is "Footer"
+  // (Lábléc, Fußzeile) on the editorial, service and About footers; the case
+  // and article breadcrumbs are "Breadcrumb" (Morzsamenü,
+  // Brotkrümelnavigation); every aside is named, or it is not an aside.
+  {
+    const lang = languageOf(page);
+    const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
+    const footerNavs = [...footer.matchAll(/<nav\b[^>]*>/gi)].map((match) => match[0]);
+    if (!footerNavs.length) fail(`${page}: the footer carries no nav landmark`);
+    for (const nav of footerNavs) {
+      const label = nav.match(/\saria-label="([^"]*)"/)?.[1];
+      if (label !== MENU[lang].footerLabel) fail(`${page}: footer nav must be named "${MENU[lang].footerLabel}", found ${JSON.stringify(label)}`);
+    }
+    for (const match of html.matchAll(/<nav\b[^>]*\bclass="[^"]*\b(?:nav|writing)-breadcrumb\b[^"]*"[^>]*>/gi)) {
+      const label = match[0].match(/\saria-label="([^"]*)"/)?.[1];
+      if (label !== BREADCRUMB_LABEL[lang]) fail(`${page}: breadcrumb must be named "${BREADCRUMB_LABEL[lang]}", found ${JSON.stringify(label)}`);
+    }
+    for (const match of html.matchAll(/<aside\b[^>]*>/gi)) {
+      if (!/\saria-label(?:ledby)?="[^"]+"/.test(match[0])) fail(`${page}: unnamed aside landmark ${match[0]}`);
+    }
   }
   if (!/name="viewport"[^>]*content="[^"]*viewport-fit=cover/i.test(html) &&
       !/content="[^"]*viewport-fit=cover[^>]*name="viewport"/i.test(html)) {

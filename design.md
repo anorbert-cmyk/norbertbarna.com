@@ -17,7 +17,7 @@ This file follows the loop in
    mechanics live in CSS. Never read a hashed copy into context. The full
    ownership map is in **System reference** below.
 3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
-   scripts and twenty-eight Playwright specs. Mechanical failures that have
+   scripts and thirty-three Playwright specs. Mechanical failures that have
    already been named must fail CI. **System reference → Checks** says which
    file owns which rule, so a new rule lands in one place.
 
@@ -281,7 +281,13 @@ Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
    preserve complete real product UI (`object-fit: contain`)?
 3. Do `/` and `/works` use the same case order?
 4. Can any tracked kicker, icon tile, or marquee motion be removed without
-   losing meaning? Prefer stillness. Do not add marquees.
+   losing meaning? Prefer stillness. Do not add marquees. The existing domain
+   strip (`.home-about-marquee-area`) is decorative (`aria-hidden`,
+   `tabindex="-1"`, one `.sr-only` sentence carries the list) and ends in a
+   short alpha mask (28px on desktop, the page gutter on compact, where the
+   strip scrolls full-bleed) instead of a flat cut or a painted white fade.
+   Home utility labels (`.work-row-meta`, the mast `.metric-context`) sit on
+   a 12px floor; nothing on the home is set below 12px.
 5. On Kineticare at 390: is the dek navy on the lilac field, is the actual
    video contained, and do the following facts wrap cleanly?
 6. Does `npm test` still pass?
@@ -290,7 +296,7 @@ Keep this review internal. Deliver the implementation, not a scorecard.
 
 ## Locked brand (do not regenerate)
 
-**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 68px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The destinations share one type on every bar (Inter, `clamp(12px, 1.05vw, 14px)`, uppercase, 44px rows) and the Articles chevron paints in the bar's link ink, so it is visible on the navy bars too. The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and the error documents and fails on any deviation. The open compact menu locks the page behind it (`html[data-menu-open]`, set by `navigation.js`) and scrolls its own rows within the viewport.
+**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 72px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The destinations share one type on every bar (Inter, `clamp(12px, 1.05vw, 14px)`, uppercase, `.04em` tracking on every uppercase item including the home LinkedIn link and the language code, 44px rows), one row gap (`clamp(14px, .85vw, 16px)`, so the Hungarian work bar still fits beside the wordmark and counter from 1800px), and the Articles chevron paints in the bar's link ink, so it is visible on the navy bars too; so the same destination sits at the same x on every page type of a language (design review, 2026-10-23). The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and the error documents and fails on any deviation, and compares every destination's x, width and type across the page types at 1024, 1280 and 1440. In the compact menu the Services trigger and the Articles split control share one grammar: both chevrons, and the language chevron, sit in the same right-edge slot. The open compact menu locks the page behind it (`html[data-menu-open]`, set by `navigation.js`) and scrolls its own rows within the viewport.
 
 **Type:** Funnel Display 700 for case and section display; Inter for UI, dek,
 and body. The semantic home H1 uses Inter. Original SVG lettering is limited to the
@@ -356,8 +362,21 @@ The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
 - Footer columns (2026-10-21): Work keeps the left half with its two short
   columns and one hairline on its right; Services and Articles (the latest
   three of the page language plus All articles, generated from
-  `site-chrome.mjs`) stack in the right half. Up to 1199px the three stack
+  `site-chrome.mjs`) stack in the right half, inset from the Work hairline
+  by the same `clamp(20px, 2.5vw, 40px)` the Work column keeps on its side,
+  every row on the Work column's 44px rhythm. Up to 1199px the three stack
   in one column. No other column (**SaaSFooter** still holds).
+- The footer title holds two lines in every language: the German
+  `Sprechen wir / über Ihr Produkt.` is longer than its English and
+  Hungarian pairs, so `html[lang="de"]` steps it down
+  (`clamp(52px, 6.7vw, 104px)`, `clamp(40px, 6.5vw, 76px)` up to 991px,
+  `clamp(38px, 11.5vw, 64px)` up to 599px).
+- Landmark names (design review, 2026-10-23): the footer's nav is `Footer`
+  / `Lábléc` / `Fußzeile` on the editorial, service and About footers; the
+  case and article breadcrumbs are `Breadcrumb` / `Morzsamenü` /
+  `Brotkrümelnavigation` (`BREADCRUMB_LABEL` in `site-chrome.mjs`); the
+  article rail is a plain `div` (its `On this page` nav is the landmark).
+  `check-responsive.mjs` enforces all three.
 - Integrate the page-language privacy link and Analytics settings into the same lilac
   footer field with a fine top rule. This is an in-flow utility row, without
   a separate dark slab. Preserve all consent hooks, language attributes and
@@ -390,9 +409,13 @@ equal outlined accept/reject buttons of at least 44px, no initial autofocus and 
 new motion. Up to 600px (2026-10-22) it is one row of title and privacy link,
 the summary, and both choices on one row (the Hungarian choices read
 `Elutasítom` / `Engedélyezem`); the Details disclosure yields to the privacy
-page, so the notice stays under a fifth of a phone viewport. The open compact
+page, and under 360px the one-line summary does too, so the notice stays under
+a fifth of a phone viewport (320x568 included); the privacy link keeps the
+44px row of the choices beside it. The open compact
 menu stacks above it. On the contact pages `consent.js` places the banner in
-the flow between the form and the footer, so it never covers a field. `assets/css/consent.css` is a narrow, revalidated utility stylesheet;
+the flow between the form and the footer, so it never covers a field; the
+footer's Analytics settings scrolls that in-flow notice into view before
+focusing its title (the fixed notice never moves the page). `assets/css/consent.css` is a narrow, revalidated utility stylesheet;
 it may style only this consent component and `.footer-privacy`, not the brand.
 No PostHog request before consent or after withdrawal. No replay, autocapture,
 person profiles or arbitrary URLs/text. Email works independently of analytics.
@@ -544,7 +567,15 @@ At normal text size the outlined contact and primary actions remain 44px tall.
 At 200% text size or user-defined text spacing they may wrap and grow vertically
 (44px minimum), while keeping their full visible labels and existing action.
 The header contact row can wrap; it must not overlap LinkedIn. Long opening
-headings may break within a word only when needed to avoid clipping. The menu
+headings may break within a word only when needed to avoid clipping, and a
+Hungarian or German heading breaks a compound only at an authored hyphen:
+`h1`-`h3` on `html[lang="hu"]` and `html[lang="de"]` keep `hyphens: manual`
+(a browser with a hyphenation dictionary would otherwise cut any display word
+at a line end, even one that fits whole on the next line), and a compound
+known to exceed a phone column carries an authored `&shy;` at the morpheme
+boundary (Web&shy;anwendungen, munka&shy;folyamatodra), because a bare
+mid-word break is a defect at 320 and 390 (checked for the service board in
+ai-integration.spec.mjs and for the articles in editorial-layout.spec.mjs). The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
 The home proof and employer list use solid lilac text on the separate navy
@@ -586,11 +617,20 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 8. User-requested removal (2026-09-04): no `Open for engagements` block,
    company-solicitation paragraph or duplicate LinkedIn/Email actions after
    the services cards. Do not hide this copy in CSS, HTML comments, metadata
-   or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
-   native link to `/ai-integration`, with a visible keyboard focus ring. This
-   preserves factual service discovery without a replacement promotional block.
+   or JSON-LD. The existing `AI products` heading is an ink-colored native
+   link to `/ai-integration` (`/hu/ai-tanacsadas-fejlesztes`) with a visible
+   keyboard focus ring; it rests like its four siblings and underlines on
+   hover and focus, so the six cards read as one component. This preserves
+   factual service discovery without a replacement promotional block.
    All five service headings use ink on paper, never the inherited white
    `--font-color--dark` from the old template. Test their revealed-state contrast.
+   Card anatomy (review round 1, 2026-10-23): from 992px the grid is three
+   equal `minmax(0, 1fr)` tracks and each card stacks a 72px icon over its
+   title (`clamp(22px, 1.8vw, 28px)`, balanced, at most two lines in English
+   and Hungarian; the long Hungarian compounds carry soft hyphens), so the
+   titles of one row start on the same line. Below 992px the icon stays
+   beside the title. The service icons are transparent line drawings with no
+   bounding frame.
 
 **Home offer band (SEO task T2, 2026-10-21):** `.home-offer` sits between the hero and Selected work on the same lilac field: an `Amit cégeknek építek` / `What I build for companies` heading, one lede, then two whole-card links (`.home-offer-card`: number, Funnel title, one sentence, underlined action) to the service pages, split by the hairline. No prices, no icons, no third card. It is the only chapter allowed between the hero and the work rows.
 
@@ -600,6 +640,19 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 factual introduction and first landscape row (Raiffeisen) visible in a
 900px-tall desktop viewport. All seven projects use unique decorative geometric
 art, original summaries and native links. No “these aren’t mockups” manifesto.
+The works H1 (`Selected work`, `Válogatott munkák`, `Ausgewählte Arbeiten`)
+breaks only at its authored `<br>`, never inside a word: `project-index.css`
+sizes the title per language so the longest word fits the title column from
+320 to 1920 (`tests/display-titles.spec.mjs`; `overflow-wrap: anywhere` stays
+only as the 200% enlarged-text guard, where a word that cannot fit must break
+rather than be clipped) (EN `clamp(72px, 11vw, 164px)`,
+HU `clamp(56px, 10vw, 164px)`, DE `clamp(44px, 7.9vw, 152px)`; below 600px
+HU `clamp(56px, 18.5vw, 100px)`, DE `clamp(44px, 14.6vw, 72px)`). The HU/DE
+sources carry one soft hyphen (`Válo&shy;gatott`, `Aus&shy;gewählte`) as the
+safety net, so any forced break shows a hyphen. The small square at the foot
+of a line-final `d` or `a` in Funnel Display is the face's own spur, not a
+stray glyph. `.work-row-meta` keeps the 12px utility floor.
+(2026-10-23, review round 1: LAY-01, I18N-02, VIS-12, A11Y-05.)
 
 **Home professional experience:** five chronological text rows on lilac, original
 roles/companies/dates, the original folded gate beside the heading. Company names
@@ -618,7 +671,10 @@ No lead paragraph and no per-row descriptions: the owner asked for the rows only
    The entrance runs on first-party physics (2026-10-07, see **Motion → Case
    opening**): the panel is a plate hinged on its lower edge that stands up
    against the reading plane, and a parse-time gate keeps the finished title
-   and panel from painting before the entrance.
+   and panel from painting before the entrance. The stage stays a complete
+   viewport opening on phones as well (`portfolio.spec.mjs` holds it at 899px
+   and keeps the fact band below it); the resting bands above and below the
+   full-width panel are that contract, not a defect to tune away.
 3. Fact band with four keys directly under the hero
 4. No visible byline. “Written by / Published / Updated” never appears on
    the page; authorship and dates live in meta tags and JSON-LD only.
@@ -917,7 +973,7 @@ same change that caused the drift.
 | `/hu/munka/{slug}` | `hu/munka/*.html` (7) | Hungarian case studies | default |
 | `/writing`, `/hu/irasok` | `writing/index.html`, `hu/irasok/index.html` | Writing list pages, generated from `content/*.md`; served by explicit routes like `/hu` | default |
 | `/writing/{slug}`, `/hu/irasok/{slug}` | `writing/*.html`, `hu/irasok/*.html` | Articles, generated; RSS at `<section>/feed.xml` | default |
-| (none) | `404.html`, `hu/404.html`, `de/404.html` | Error documents (2026-10-22), one per language: `server.js` answers a missing `/hu/…` path with the Hungarian one, `/de/…` with the German one, anything else with the English one. Utility-page chrome (generated navigation and footer columns, the language menu leading to the other homes), ink on paper, a Funnel `404` kicker, the language's home, works and contact links; `noindex`, never in the sitemap or a content inventory (`ERROR_PAGES` in `service-pages.mjs`), and `/404`, `/hu/404`, `/de/404` (with or without `.html`) never return 200 | — |
+| (none) | `404.html`, `hu/404.html`, `de/404.html` | Error documents (2026-10-22), one per language (one reading axis with the privacy pages since 2026-10-23: code, H1, copy and action share `--site-readable`, the block starts `clamp(56px, 6vw, 88px)` under the bar, `editorial-sections.css`): `server.js` answers a missing `/hu/…` path with the Hungarian one, `/de/…` with the German one, anything else with the English one. Utility-page chrome (generated navigation and footer columns, the language menu leading to the other homes), ink on paper, a Funnel `404` kicker, the language's home, works and contact links; `noindex`, never in the sitemap or a content inventory (`ERROR_PAGES` in `service-pages.mjs`), and `/404`, `/hu/404`, `/de/404` (with or without `.html`) never return 200 | — |
 
 **Whole-site language switch (owner request, 2026-10-06).** Every content page
 has an English and a Hungarian version with the same structure, classes and
@@ -1013,10 +1069,14 @@ the rest as numbered hairline rows with a thumbnail. The article
 (`.writing-article-page`) opens on lilac with a breadcrumb, kicker, title,
 dek and one unlabelled name, date and reading-time line, pulls its 1200×630 cover down into the paper body,
 then runs a sticky table of contents rail (decimal-leading-zero counters,
-from 992px; below that tier the same outline is one horizontally scrolling
-row of numbered pill chips under the cover, so the text starts within a
-screen) beside a 720px reading column (`.writing-prose`, Inter 18px,
-Funnel headings, olive blockquote rule, scrollable tables), ends in the
+from 992px; below that tier the same outline is a closed native `<details>`
+under the cover, `Contents (n)` on a 44px summary and 44px wrapped rows once
+opened, so the text starts within a screen and no entry is ever clipped or
+scrolled sideways; from 992px `::details-content` keeps the list open and the
+summary gives way to a CSS label) beside a 720px reading column
+(`.writing-prose`, Inter 18px, Funnel headings, olive blockquote rule,
+two-column decision tables that fit the column at 320px with hyphenation
+rather than scrolling), ends in the
 lilac CTA card and two related articles (`.writing-related`, rows headed
 `h3` under the section's `h2`). An article is a
 schema `Article` (author `#person` with `jobTitle` and `knowsLanguage`,
@@ -1033,7 +1093,17 @@ questions` with `###` questions) is mirrored word for word as FAQPage schema.
 Covers are 1200×630 JPEGs under `assets/images/og/writing/`, used as the
 social preview and shown on the list and under the article opening.
 `draft: true` keeps an article unpublished; the six first articles were
-published on 2026-10-21. Published articles also feed the Articles menu
+published on 2026-10-21. The list's feature title is capped at 40px so it
+sets in three lines beside the cover. Visible headings get soft hyphens at
+the joints of long German and Hungarian compounds (`SOFT_HYPHENS` in
+`build-writing.mjs`; never in `<title>`, meta, JSON-LD or feeds), so a
+browser without a hyphenation dictionary still breaks `Kenn-zeichnungs-
+pflicht` at a joint instead of anywhere. Every external link in an article
+opens a new tab and ends in a visually hidden `(opens in a new tab)` /
+`(új lapon nyílik meg)` / `(öffnet in neuem Tab)`, the same warning the
+LinkedIn links carry; the build also refuses a numeric date (`21.10.2026`)
+and a straight apostrophe in prose, so each language keeps one date form
+and the ’ apostrophe (`editorial-layout.spec.mjs` measures the rest). Published articles also feed the Articles menu
 group (latest five) and the footer Articles column (latest three) through
 `site-chrome.mjs`. Each article ends with the CTA: an
 optional related-service link from frontmatter and the
@@ -1214,7 +1284,7 @@ scene is ready and motion is allowed.
 
 `npm test` first checks that every page carries the generated chrome
 (`build-nav.mjs --check`) and that the generated writing pages match
-`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs twenty-eight
+`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs thirty-three
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 
@@ -1239,7 +1309,11 @@ Playwright specs, grouped by what they defend:
   springs and the compact menu drop, read from the module's world samples and
   a frame tracer).
 - **Content and access:** `portfolio` (the large accessibility and AA suite),
-  `editorial-media`, `story-motion`.
+  `editorial-media`, `story-motion`, `editorial-layout` (design review
+  2026-10-23: writing headings never break mid-word at 320, the outline
+  disclosure, the new-tab warning, the feature title's three lines, the About
+  label floor, two-line titles and measures, and the related-card hover
+  frame).
 - **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,
   `analytics`, `analytics-off`.
 - **UX findings of 2026-10-22:** `error-page` (the three error documents:
@@ -1446,7 +1520,11 @@ row has one spring clamped to [0, 1] on `PortfolioPhysics`, critically damped,
 current velocity, so the frame decelerates and turns back instead of jumping
 (the former eases moved 13% in their first frame and flipped direction within
 one frame). Related project cards on the cases use the same model: image
-scale to 1.025 at ω 13 and the title line at ω 18. Keyboard focus has
+scale to 1.025 at ω 13 and the title line at ω 18. The title link's
+`::after` makes the whole card the target (one link per card, cursor
+pointer), and the image frame (`.related-work-image-wrap::after`) answers
+`:hover` and `:focus-within` alike, also under reduced motion where the
+springs do not run; no script sets an `is-active` state. Keyboard focus has
 priority over pointer exit and preserves the instant visible outline. Keep
 text, row geometry, separators and native link targets still. Scale the
 complete frame without introducing another image crop. `/works` rows have no
@@ -1522,6 +1600,17 @@ real LinkedIn link, identity, copyright, privacy links and analytics settings.
 Its chapter rail uses named native anchors. The story-only Pause motion button
 starts hidden and is exposed by the story controller; it does not restore the
 retired global motion switch or affect another route's motion state.
+
+Measures and labels (design review, 2026-10-23): every utility label on the
+story (`.story-eyebrow`, the opening cue, the chapter side labels, the rail,
+the footer lines) is at least 12px, and the footer's small print is solid
+lilac rather than lilac at 85%. The opening dek keeps a 28ch measure (25ch on
+phones) centred on the dark corridor, so no part of its box crosses the pale
+paper of the backdrop at tablet widths. The Hungarian and German titles
+(`Egy történet, / ami még íródik.`, `Eine Geschichte / in Bewegung.`) set at
+`clamp(38px, 12vw, 72px)` below 600px so they keep their two authored lines
+like the English `A story in / motion.`. The finale paragraphs keep a 54ch
+centred measure with no forced `<br>`.
 
 ## Eval rubric (first attempt must pass)
 

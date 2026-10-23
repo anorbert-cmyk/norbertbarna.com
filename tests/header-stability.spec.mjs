@@ -193,3 +193,61 @@ for (const device of VIEWPORTS) {
     });
   });
 }
+
+// The destinations themselves stay put (design review LAY-03, 2026-10-23):
+// moving between page types of one language must not shift a destination
+// sideways, change its size or its tracking. Every page type at the three
+// desktop widths the review measured; one row per language, the same page
+// types in every language.
+const DESTINATION_PAGES = {
+  en: ["/", "/about", "/works", "/work/raiffeisen", "/contact", "/ai-integration", "/web-development", "/writing", "/writing/human-in-the-loop-ai", "/privacy", "/this-page-does-not-exist"],
+  hu: ["/hu", "/hu/rolam", "/hu/munkak", "/hu/munka/raiffeisen", "/hu/kapcsolat", "/hu/webfejlesztes", "/hu/irasok", "/hu/irasok/ceges-weboldal-ara", "/hu/adatvedelem"],
+  de: ["/de", "/de/ueber-mich", "/de/arbeiten", "/de/arbeit/raiffeisen", "/de/kontakt", "/de/webentwicklung", "/de/wissen", "/de/wissen/was-kostet-eine-website", "/de/datenschutz"],
+};
+const DESTINATIONS = "#primary-navigation .nav-menu-area > .nav-link, #primary-navigation .nav-group > .nav-link, #primary-navigation .nav-group-trigger, #primary-navigation .nav-group-toggle, #primary-navigation a.footer-contact-link, #primary-navigation .nav-lang-trigger";
+
+for (const width of [1024, 1280, 1440]) {
+  test.describe(`${width} destinations`, () => {
+    test.use({ viewport: { width, height: 900 } });
+    for (const [lang, paths] of Object.entries(DESTINATION_PAGES)) {
+      test(`${lang}: every page type keeps each destination in one place at one size`, async ({ page }) => {
+        test.setTimeout(120_000);
+        const seen = new Map();
+        for (const path of paths) {
+          await page.goto(path, { waitUntil: "load" });
+          await page.evaluate(() => document.fonts.ready);
+          await page.waitForTimeout(150);
+          const row = await page.evaluate((selector) => [...document.querySelectorAll(selector)]
+            .filter((el) => getComputedStyle(el).display !== "none")
+            .map((el) => {
+              const style = getComputedStyle(el);
+              const box = el.getBoundingClientRect();
+              const name = el.classList.contains("nav-group-toggle") ? "chevron" : el.classList.contains("nav-lang-trigger") ? "language" : el.textContent.trim();
+              // The chevron and language buttons carry no text to transform;
+              // size and tracking are the shared part.
+              return { name, x: Math.round(box.x), width: Math.round(box.width), height: Math.round(box.height), type: `${style.fontSize} ${style.letterSpacing}` };
+            }), DESTINATIONS);
+          seen.set(path, row);
+        }
+        // Case pages carry Works in the breadcrumb and hide the duplicate
+        // .case-nav-works link on desktop, so compare by destination name.
+        const reference = seen.get(paths[0]);
+        const byName = (row) => Object.fromEntries(row.map((item) => [item.name, item]));
+        const base = byName(reference);
+        expect(Object.keys(base).length, `${paths[0]}: destinations`).toBeGreaterThan(5);
+        const type = reference[0].type;
+        for (const [path, row] of seen) {
+          const report = `${path}: ${row.map((i) => `${i.name}@${i.x}+${i.width}`).join(" ")}\n  ${paths[0]}: ${reference.map((i) => `${i.name}@${i.x}+${i.width}`).join(" ")}`;
+          for (const item of row) {
+            expect(item.type, `${path}: "${item.name}" type ${item.type} vs ${type}`).toBe(type);
+            expect(item.height, `${path}: "${item.name}" row height`).toBeGreaterThanOrEqual(44);
+            const twin = base[item.name];
+            expect(twin, `${path}: "${item.name}" is not on ${paths[0]}\n  ${report}`).toBeTruthy();
+            expect(Math.abs(item.x - twin.x), `${path}: "${item.name}" sits at ${item.x}, ${twin.x} on ${paths[0]}\n  ${report}`).toBeLessThanOrEqual(1);
+            expect(Math.abs(item.width - twin.width), `${path}: "${item.name}" is ${item.width} wide, ${twin.width} on ${paths[0]}\n  ${report}`).toBeLessThanOrEqual(1);
+          }
+        }
+      });
+    }
+  });
+}

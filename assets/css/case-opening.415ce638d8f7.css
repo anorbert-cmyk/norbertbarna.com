@@ -205,7 +205,7 @@ html[data-case-opening="pending"] .case-study-header :is(.banner-title, .case-he
     padding-bottom: 32px;
   }
   .case-study-header .banner-title { font-size: clamp(40px, 11.5vw, 104px); line-height: 1; letter-spacing: -.065em; }
-  .case-study-header .work-category { max-width: 34ch; font-size: 11px; letter-spacing: .05em; }
+  .case-study-header .work-category { max-width: 34ch; font-size: 12px; letter-spacing: .05em; }
   .case-study-header .case-hero-media,
   .case-study-header .kineticare-hero-bg { width: 100%; }
   .case-study-header .case-hero-shot { max-height: 48svh; }

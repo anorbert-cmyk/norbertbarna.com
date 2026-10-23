@@ -43,6 +43,9 @@ const contentRoutes = [
   "/web-development",
   "/hu/ai-tanacsadas-fejlesztes",
   "/hu/webfejlesztes",
+  "/de/ki-beratung-entwicklung",
+  "/de/webentwicklung",
+  "/de",
   "/privacy",
   "/hu/adatvedelem",
   "/work/benker",
@@ -518,11 +521,13 @@ test.describe("native intro contrast", () => {
   }
 });
 
-test("home subtitle uses the reference break only on normal desktop text", async ({ page }) => {
+// Review round 1 (2026-10-23): the statement sets on its own measure; the
+// former forced break orphaned "features" on every desktop width.
+test("home subtitle sets naturally on normal, compact and user-spaced text", async ({ page }) => {
   for (const mode of [
-    { width: 1280, spacing: false, display: "inline" },
-    { width: 390, spacing: false, display: "none" },
-    { width: 1280, spacing: true, display: "none" },
+    { width: 1280, spacing: false },
+    { width: 390, spacing: false },
+    { width: 1280, spacing: true },
   ]) {
     await page.setViewportSize({ width: mode.width, height: 900 });
     await openStable(page, "/");
@@ -536,14 +541,21 @@ test("home subtitle uses the reference break only on normal desktop text", async
     }
     await readableHomeTarget(page, subtitle);
     await expect(subtitle).toBeVisible();
-    await expect(subtitle.locator("br")).toHaveCount(1);
-    await expect(subtitle.locator("br")).toHaveCSS("display", mode.display);
-    expect(await subtitle.textContent(), "hiding the break must not join the two words").toMatch(/features\s+for/);
-    expect(await subtitle.innerText()).toMatch(mode.display === "none" ? /features +for/ : /features\n\s*for/);
+    await expect(subtitle.locator("br"), "no forced break in the statement").toHaveCount(0);
+    expect(await subtitle.textContent()).toMatch(/features for regulated companies/);
+    const lines = await subtitle.evaluate((element) => {
+      const range = document.createRange(); range.selectNodeContents(element);
+      const tops = new Set([...range.getClientRects()].filter((rect) => rect.width > 0).map((rect) => Math.round(rect.top)));
+      const widths = [...tops].sort((a, b) => a - b).map((top) => {
+        const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && Math.round(rect.top) === top);
+        return Math.max(...rects.map((rect) => rect.right)) - Math.min(...rects.map((rect) => rect.left));
+      });
+      return { widths, fontSize: parseFloat(getComputedStyle(element).fontSize) };
+    });
+    expect(lines.widths[lines.widths.length - 1], "the last line is not a one-word orphan").toBeGreaterThan(lines.fontSize * 4);
     if (spacingStyle) {
       await spacingStyle.evaluate((style) => style.remove());
       await expect(mast).not.toHaveAttribute("data-text-reflow");
-      await expect(subtitle.locator("br")).toHaveCSS("display", "inline");
       // Applying and removing user spacing intentionally changes line wrapping.
       await page.waitForTimeout(100);
       await page.evaluate(() => { window.__cumulativeLayoutShift = 0; });
@@ -740,6 +752,24 @@ for (const route of contentRoutes.filter((route) => route !== "/")) {
         if (videoBehind) await page.locator(".kineticare-hero video").evaluate((video) => video.pause());
         await expectHeaderTextAA(page, target, `${width} ${route} text ${index + 1}`, { raster: videoBehind });
       }
+    }
+  });
+}
+
+// The service opening's actions sit above the glass object in every language
+// (design review 2026-10-23): the yellow link and the lilac secondary link are
+// scored on the composited artwork, where the German copy once pushed them
+// into the yellow chevron.
+for (const route of ["/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/de/ki-beratung-entwicklung", "/de/webentwicklung", "/de"]) {
+  test(`${route}: opening actions meet AA on the composited artwork at phone widths`, async ({ page }) => {
+    await page.route(/posthog\.com/, (request) => request.abort());
+    for (const width of [320, 360, 390, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      await openStable(page, route);
+      await page.waitForFunction(() => /active|reduced|static/.test(window.PortfolioAiMotion?.state || ""));
+      await page.waitForTimeout(250);
+      await expectHeaderTextAA(page, page.locator("#top a.footer-email"), `${width} ${route} primary action over the artwork`, { raster: true });
+      await expectHeaderTextAA(page, page.locator("#top .ai-hero-explore"), `${width} ${route} secondary action over the artwork`, { raster: true });
     }
   });
 }

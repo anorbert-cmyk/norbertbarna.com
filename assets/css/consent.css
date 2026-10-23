@@ -237,7 +237,7 @@
   .consent-banner .consent-privacy {
     grid-column: 2;
     grid-row: 1;
-    min-height: 40px;
+    min-height: 44px;
     margin: 0;
     font-size: 14px;
     white-space: nowrap;
@@ -271,6 +271,65 @@
 
   .consent-banner .consent-close {
     flex: 1 1 100%;
+  }
+}
+
+/* Under 360px (design review, 2026-10-23) the one-line summary yields to the
+   privacy page as well: the notice is the title, its privacy link and the two
+   choices, so it stays under a fifth of a 320x568 viewport. The decision and
+   storage status lines still show once a choice exists. */
+@media (max-width: 360px) {
+  .consent-inner {
+    gap: 6px;
+    padding-top: 8px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  /* The title and the privacy link share the row and may each wrap once
+     (never inside a word), so the row stays the link's 44px. */
+  .consent-copy {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  }
+
+  .consent-banner .consent-title {
+    font-size: 14px;
+    line-height: 1.25;
+  }
+
+  .consent-banner .consent-privacy {
+    justify-self: end;
+    font-size: 13px;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .consent-banner .consent-summary {
+    display: none;
+  }
+
+  .consent-banner :is(.consent-current, .consent-status) {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .consent-banner .consent-choice {
+    padding: 8px 6px;
+    font-size: 13px;
+  }
+}
+
+/* A phone held sideways (390px tall) gets the same reduction: the summary
+   yields to the privacy page, so the notice takes about a third of the
+   screen instead of half (design review round 2, 2026-10-23). */
+@media (max-height: 480px) and (orientation: landscape) {
+  .consent-inner {
+    gap: 6px;
+    padding-top: 8px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .consent-banner .consent-summary {
+    display: none;
   }
 }
 

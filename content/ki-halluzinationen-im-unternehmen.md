@@ -20,7 +20,7 @@ Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU;
 
 ## Warum halluziniert KI? Drei Sätze
 
-Ein Sprachmodell sagt nicht die Wahrheit voraus, sondern das wahrscheinlichste nächste Wort. Wo das Training keine Fakten enthält, füllt es die Lücke mit etwas, das plausibel klingt. Und die gängigen Bewertungsverfahren belohnen das Raten: Eine Forschungsarbeit von OpenAI zeigt, dass ein Modell, das bei Unsicherheit tippt, in den üblichen Tests besser abschneidet als eines, das sich enthält, weil „weiß ich nicht“ null Punkte bringt und ein Treffer beim Raten einen (Quelle: Kalai, Nachum, Vempala, Zhang, [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664), 4. September 2025, abgerufen am 21.10.2026).
+Ein Sprachmodell sagt nicht die Wahrheit voraus, sondern das wahrscheinlichste nächste Wort. Wo das Training keine Fakten enthält, füllt es die Lücke mit etwas, das plausibel klingt. Und die gängigen Bewertungsverfahren belohnen das Raten: Eine Forschungsarbeit von OpenAI zeigt, dass ein Modell, das bei Unsicherheit tippt, in den üblichen Tests besser abschneidet als eines, das sich enthält, weil „weiß ich nicht“ null Punkte bringt und ein Treffer beim Raten einen (Quelle: Kalai, Nachum, Vempala, Zhang, [Why Language Models Hallucinate](https://arxiv.org/abs/2509.04664), 4. September 2025, abgerufen am 21. Oktober 2026).
 
 Für das Produkt folgt daraus: Das Modell wird nicht von allein vorsichtiger. Die Vorsicht muss die Oberfläche und der Ablauf einbauen.
 
