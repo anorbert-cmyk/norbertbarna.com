@@ -281,7 +281,13 @@ Render `/`, `/works`, `/work/raiffeisen`, `/work/instructure`, and
    preserve complete real product UI (`object-fit: contain`)?
 3. Do `/` and `/works` use the same case order?
 4. Can any tracked kicker, icon tile, or marquee motion be removed without
-   losing meaning? Prefer stillness. Do not add marquees.
+   losing meaning? Prefer stillness. Do not add marquees. The existing domain
+   strip (`.home-about-marquee-area`) is decorative (`aria-hidden`,
+   `tabindex="-1"`, one `.sr-only` sentence carries the list) and ends in a
+   short alpha mask (28px on desktop, the page gutter on compact, where the
+   strip scrolls full-bleed) instead of a flat cut or a painted white fade.
+   Home utility labels (`.work-row-meta`, the mast `.metric-context`) sit on
+   a 12px floor; nothing on the home is set below 12px.
 5. On Kineticare at 390: is the dek navy on the lilac field, is the actual
    video contained, and do the following facts wrap cleanly?
 6. Does `npm test` still pass?
@@ -586,11 +592,20 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 8. User-requested removal (2026-09-04): no `Open for engagements` block,
    company-solicitation paragraph or duplicate LinkedIn/Email actions after
    the services cards. Do not hide this copy in CSS, HTML comments, metadata
-   or JSON-LD. The existing `AI products` heading is an underlined, ink-colored
-   native link to `/ai-integration`, with a visible keyboard focus ring. This
-   preserves factual service discovery without a replacement promotional block.
+   or JSON-LD. The existing `AI products` heading is an ink-colored native
+   link to `/ai-integration` (`/hu/ai-tanacsadas-fejlesztes`) with a visible
+   keyboard focus ring; it rests like its four siblings and underlines on
+   hover and focus, so the six cards read as one component. This preserves
+   factual service discovery without a replacement promotional block.
    All five service headings use ink on paper, never the inherited white
    `--font-color--dark` from the old template. Test their revealed-state contrast.
+   Card anatomy (review round 1, 2026-10-23): from 992px the grid is three
+   equal `minmax(0, 1fr)` tracks and each card stacks a 72px icon over its
+   title (`clamp(22px, 1.8vw, 28px)`, balanced, at most two lines in English
+   and Hungarian; the long Hungarian compounds carry soft hyphens), so the
+   titles of one row start on the same line. Below 992px the icon stays
+   beside the title. The service icons are transparent line drawings with no
+   bounding frame.
 
 **Home offer band (SEO task T2, 2026-10-21):** `.home-offer` sits between the hero and Selected work on the same lilac field: an `Amit cégeknek építek` / `What I build for companies` heading, one lede, then two whole-card links (`.home-offer-card`: number, Funnel title, one sentence, underlined action) to the service pages, split by the hairline. No prices, no icons, no third card. It is the only chapter allowed between the hero and the work rows.
 
