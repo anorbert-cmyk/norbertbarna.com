@@ -262,7 +262,9 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
 .editorial-footer .footer-nav > .footer-col-articles { grid-column: 2; grid-row: 2; padding-left: clamp(20px, 2.5vw, 40px); }
 .editorial-footer .footer-col:first-child:last-child { grid-row: auto; padding-right: 0; border-right: 0; }
 .editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col-list { grid-template-columns: minmax(0, 1fr); gap: 0; }
-.editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col a { display: flex; min-height: 0; padding: 7px 0; line-height: 1.35; }
+/* A title that wraps to two lines keeps 7px above and below it, so stacked
+   article titles never touch; one-line rows still sit on the 44px rhythm. */
+.editorial-footer .footer-nav > :is(.footer-col-services, .footer-col-articles) a { display: flex; min-height: 0; padding: 7px 0; line-height: 1.35; }
 .editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col-list li { min-height: 44px; display: flex; align-items: center; }
 .editorial-footer .footer-col-title {
   margin: 0 0 10px;

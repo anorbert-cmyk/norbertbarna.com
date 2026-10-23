@@ -813,10 +813,11 @@ for (const slug of WORK) {
 }
 
 // Typographic punctuation (design review, 2026-10-23): the English cases,
-// About and the writing pages set “ ” and ’ like every Hungarian and German
+// About, privacy and the writing pages set “ ” and ’ like every Hungarian and German
 // page; a straight " or ' in visible copy is a drift from the sources.
 const typographicPages = [
   "about.html",
+  "privacy.html",
   ...WORK.map((slug) => `work/${slug}.html`),
   ...readdirSync(join(ROOT, "writing")).filter((name) => name.endsWith(".html")).map((name) => `writing/${name}`),
 ];

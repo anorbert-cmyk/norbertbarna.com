@@ -50,7 +50,7 @@ body.home .navbar[data-composition-nav] :is(.nav-menu-area > .nav-link, .nav-cta
 body.home #works { background: #D6D4ED; color: #0A1628; padding: 28px var(--composition-gutter) 80px; }
 body.home #works > .container-large { width: 100%; max-width: none; padding: 0 !important; }
 body.home #works .home-work-title-wrap { margin: 0; justify-content: flex-start; padding: 22px 0 18px; border-top: 1px solid rgb(10 22 40 / 30%); }
-body.home #works .about-section-title { margin: 0; color: #485272; font-family: Inter, "Inter Fallback", sans-serif; font-size: 11px; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; }
+body.home #works .about-section-title { margin: 0; color: #485272; font-family: Inter, "Inter Fallback", sans-serif; font-size: 12px; font-weight: 400; letter-spacing: .18em; text-transform: uppercase; }
 body.home #works .home-work-wrap { margin-top: 0; }
 body.home .work-list { border-top: 0; }
 body.home .work-row { grid-template-columns: minmax(0, 35fr) 20px minmax(0, 46fr) minmax(80px, 13fr); gap: clamp(16px, 2vw, 32px); align-items: center; padding: 26px 0; border-color: rgb(10 22 40 / 30%); }
@@ -165,3 +165,6 @@ html.w-mod-js.no-motion .home-mast-sculpture:not([data-hero-scene]) :is(.home-ma
 /* Without the pin the live object keeps the drawing slot the flat gate held. */
 .home-mast[data-glass-live] .home-mast-canvas { visibility: visible; }
 .home-mast[data-glass-live] .home-mast-sculpture[data-hero-scene] .home-mast-gate-fallback { opacity: 0 !important; }
+
+/* "AI-funkciókat" never splits at its hyphen in the Hungarian intro (design review round 2). */
+.home-banner-subtitle .home-nobreak { white-space: nowrap; }

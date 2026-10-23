@@ -63,6 +63,12 @@
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
+/* The index title's soft hyphen is for phones only: from 600px the whole
+   compound fits, and balance would otherwise prefer "web-/fejlesztésről"
+   (design review round 2, 2026-10-23). */
+@media (min-width: 600px) {
+  .writing-index .writing-title { -webkit-hyphens: none; hyphens: none; }
+}
 .writing-dek {
   max-width: 62ch;
   margin: clamp(20px, 2.4vw, 32px) 0 0;

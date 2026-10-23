@@ -322,13 +322,14 @@ html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; h
    story.css no longer size the links on the service and About bars.
    One row geometry too (design review, 2026-10-23): every destination, the
    home LinkedIn link, the chevron buttons and the language control share the
-   size and the .04em tracking, and the row has one gap on every page type, so
+   size and the .04em tracking, and the row has one gap on every page type (14 to 16px, sized so the
+   Hungarian work bar still fits beside the wordmark and counter at 1800px), so
    moving between the home, Works, a service page, the writing section or About
    never shifts a destination. The selectors outrank the per-page gap and size
    rules in responsive.css, home-composition.css, story.css and above. */
 @media (min-width: 992px) {
   html body .navbar.w-nav .nav-wrap .nav-menu .nav-menu-area {
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px clamp(14px, 1.6vw, 24px);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px clamp(14px, .85vw, 16px);
   }
   html body .navbar.w-nav .nav-wrap .nav-menu .nav-cta { gap: 0; }
   html body .navbar .nav-menu-area .nav-link,

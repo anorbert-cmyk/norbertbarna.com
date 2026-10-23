@@ -318,6 +318,21 @@
   }
 }
 
+/* A phone held sideways (390px tall) gets the same reduction: the summary
+   yields to the privacy page, so the notice takes about a third of the
+   screen instead of half (design review round 2, 2026-10-23). */
+@media (max-height: 480px) and (orientation: landscape) {
+  .consent-inner {
+    gap: 6px;
+    padding-top: 8px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .consent-banner .consent-summary {
+    display: none;
+  }
+}
+
 /* The contact pages dock the notice between the form and the footer, so it
    never covers a field; consent.js places it there and keeps no spacer. */
 body.contact-page .consent-banner {

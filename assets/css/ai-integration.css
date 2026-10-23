@@ -15,7 +15,7 @@ body.ai-page {
 /* Rings take the control's own ink (olive on the navy opening, navy on lilac), ahead of the shared site ring. */
 .ai-page :is(main, .ai-footer) :is(a, button, summary):focus-visible { outline: 3px solid currentColor !important; outline-offset: 5px; }
 .ai-page :is(section, header, footer)[id] { scroll-margin-top: 12px; }
-.ai-eyebrow { font: 400 11px/1.8 Inter, "Inter Fallback", sans-serif; letter-spacing: .2em; text-transform: uppercase; }
+.ai-eyebrow { font: 400 12px/1.8 Inter, "Inter Fallback", sans-serif; letter-spacing: .2em; text-transform: uppercase; }
 .ai-eyebrow-rule { display: flex; align-items: center; gap: 14px; }
 .ai-eyebrow-rule::before { content: ""; flex: 0 0 28px; height: 1px; background: currentColor; }
 
@@ -37,7 +37,7 @@ html body.ai-page:not([data-ai-nav="light"]) .navbar .nav-logo-wrap img { filter
 .ai-hero h1 { max-width: 13ch; font-size: clamp(56px, 6.1vw, 104px); line-height: .96; overflow-wrap: normal; }
 /* Hungarian and German copy runs longer: one smaller scale for both, so the three heroes of one template keep the same line count (2026-10-23). */
 html:is([lang="hu"], [lang="de"]) .ai-hero h1 { font-size: clamp(48px, 5.1vw, 88px); }
-.ai-hero-dek { max-width: 28ch; margin-top: 22px; font-size: clamp(20px, 1.85vw, 28px); font-weight: 500; letter-spacing: -.03em; line-height: 1.3; }
+.ai-hero-dek { max-width: 28ch; margin-top: 22px; font-size: clamp(20px, 1.85vw, 28px); font-weight: 500; letter-spacing: -.03em; line-height: 1.3; text-wrap: balance; }
 .ai-hero-services { max-width: 43ch; margin-top: 18px; font-size: clamp(14px, 1.1vw, 17px); line-height: 1.55; }
 .ai-page .footer-email.ai-cta-underline { position: relative; display: inline-flex; align-items: center; gap: 12px; min-height: 48px; height: auto; max-width: 100%; margin: 30px 0 0; padding: 8px 0; border: 0; border-radius: 0; background: transparent; color: var(--ai-olive); font: 500 clamp(18px, 1.5vw, 22px)/1.3 Inter, "Inter Fallback", sans-serif; letter-spacing: -.02em; white-space: normal; text-align: left; text-decoration: none; cursor: pointer; }
 .ai-page .footer-email.ai-cta-underline > span { font-size: 1.15em; line-height: 1; }
@@ -209,7 +209,7 @@ html[lang="de"] .ai-footer h2 { font-size: clamp(52px, 5.8vw, 96px); }
   .ai-lang .nav-link { width: auto !important; min-width: 44px; }
   .ai-hero { min-height: calc(100svh - var(--ai-nav-clearance)); align-items: start; }
   .ai-hero-copy { width: 100%; padding: 32px var(--ai-gutter) clamp(200px, 35svh, 340px); }
-  .ai-hero-kicker { margin-bottom: 20px !important; font-size: 10px; }
+  .ai-hero-kicker { margin-bottom: 20px !important; font-size: 12px; }
   .ai-hero h1 { max-width: 16ch; font-size: clamp(40px, 8.8vw, 74px); line-height: .98; }
   html:is([lang="hu"], [lang="de"]) .ai-hero h1 { font-size: clamp(32px, 7.5vw, 66px); }
   .ai-hero-dek { max-width: 30ch; margin-top: 16px; font-size: clamp(18px, 2.8vw, 24px); }

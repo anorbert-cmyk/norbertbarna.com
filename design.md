@@ -296,7 +296,7 @@ Keep this review internal. Deliver the implementation, not a scorecard.
 
 ## Locked brand (do not regenerate)
 
-**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 72px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The destinations share one type on every bar (Inter, `clamp(12px, 1.05vw, 14px)`, uppercase, `.04em` tracking on every uppercase item including the home LinkedIn link and the language code, 44px rows), one row gap (`clamp(14px, 1.6vw, 24px)`), and the Articles chevron paints in the bar's link ink, so it is visible on the navy bars too; so the same destination sits at the same x on every page type of a language (design review, 2026-10-23). The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and the error documents and fails on any deviation, and compares every destination's x, width and type across the page types at 1024, 1280 and 1440. In the compact menu the Services trigger and the Articles split control share one grammar: both chevrons, and the language chevron, sit in the same right-edge slot. The open compact menu locks the page behind it (`html[data-menu-open]`, set by `navigation.js`) and scrolls its own rows within the viewport.
+**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 72px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The destinations share one type on every bar (Inter, `clamp(12px, 1.05vw, 14px)`, uppercase, `.04em` tracking on every uppercase item including the home LinkedIn link and the language code, 44px rows), one row gap (`clamp(14px, .85vw, 16px)`, so the Hungarian work bar still fits beside the wordmark and counter from 1800px), and the Articles chevron paints in the bar's link ink, so it is visible on the navy bars too; so the same destination sits at the same x on every page type of a language (design review, 2026-10-23). The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and the error documents and fails on any deviation, and compares every destination's x, width and type across the page types at 1024, 1280 and 1440. In the compact menu the Services trigger and the Articles split control share one grammar: both chevrons, and the language chevron, sit in the same right-edge slot. The open compact menu locks the page behind it (`html[data-menu-open]`, set by `navigation.js`) and scrolls its own rows within the viewport.
 
 **Type:** Funnel Display 700 for case and section display; Inter for UI, dek,
 and body. The semantic home H1 uses Inter. Original SVG lettering is limited to the
@@ -568,13 +568,14 @@ At 200% text size or user-defined text spacing they may wrap and grow vertically
 (44px minimum), while keeping their full visible labels and existing action.
 The header contact row can wrap; it must not overlap LinkedIn. Long opening
 headings may break within a word only when needed to avoid clipping, and a
-Hungarian or German heading breaks a compound only with a hyphen: below 600px
-`h1`-`h3` on `html[lang="hu"]` and `html[lang="de"]` carry `hyphens: auto`,
-and a compound known to exceed a phone column carries an authored `&shy;` at
-the morpheme boundary (Web&shy;anwendungen, munka&shy;folyamatodra), because
-a bare mid-word break is a defect at 320 and 390 (checked for the service
-board in ai-integration.spec.mjs; the sandbox Chromium has no hyphenation
-dictionaries, so the authored soft hyphen is what the check sees). The menu
+Hungarian or German heading breaks a compound only at an authored hyphen:
+`h1`-`h3` on `html[lang="hu"]` and `html[lang="de"]` keep `hyphens: manual`
+(a browser with a hyphenation dictionary would otherwise cut any display word
+at a line end, even one that fits whole on the next line), and a compound
+known to exceed a phone column carries an authored `&shy;` at the morpheme
+boundary (Web&shy;anwendungen, munka&shy;folyamatodra), because a bare
+mid-word break is a defect at 320 and 390 (checked for the service board in
+ai-integration.spec.mjs and for the articles in editorial-layout.spec.mjs). The menu
 icon stays centered and the open disclosure is vertically scrollable on short
 screens. Do not apply these header fixes to unrelated footer typography.
 The home proof and employer list use solid lilac text on the separate navy
