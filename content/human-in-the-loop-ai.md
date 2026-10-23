@@ -14,7 +14,7 @@ pair: de/human-in-the-loop-ki
 ---
 Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.
 
-This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure's learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
+This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure’s learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
 
 ## What does human-in-the-loop AI mean, and what does it not?
 
@@ -30,7 +30,7 @@ Three things have to be true for a person to be genuinely in the loop. They can 
 
 ## What the EU AI Act asks of human oversight
 
-Article 14 of the EU AI Act requires that high-risk AI systems be designed so the people overseeing them can understand the system's capacities and limitations, remain aware of automation bias, interpret the output correctly, decide not to use it or override it, and stop it through a “stop” button or a similar procedure (source: [AI Act Service Desk, Article 14](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), accessed 2026-10-21).
+Article 14 of the EU AI Act requires that high-risk AI systems be designed so the people overseeing them can understand the system’s capacities and limitations, remain aware of automation bias, interpret the output correctly, decide not to use it or override it, and stop it through a “stop” button or a similar procedure (source: [AI Act Service Desk, Article 14](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), accessed 2026-10-21).
 
 On timing: the Digital Omnibus on AI (Regulation (EU) 2026/1744, in force since 27 July 2026) moved the Annex III high-risk obligations to 2 December 2027 and the Annex I obligations to 2 August 2028. The Article 50 transparency duties, such as telling people they are interacting with an AI system, still apply from 2 August 2026 (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21).
 
@@ -60,7 +60,7 @@ We shipped accessible component states for empty, loading, error and latency acr
 
 ### 5. Show confidence, and keep a deliberate review step
 
-At SportsGambit, a prediction-market MVP with AI agents recommending picks, every tip carried a confidence score, leaderboards let users check an agent's history before acting on its advice, and a deliberate review step stood before any action. Early product data showed heavy use of AI-originated recommendations; we treated that as a risk to watch, not as a success metric, because automation reliance is exactly the failure mode human oversight is meant to catch. This maps to Article 14's automation-bias requirement.
+At SportsGambit, a prediction-market MVP with AI agents recommending picks, every tip carried a confidence score, leaderboards let users check an agent’s history before acting on its advice, and a deliberate review step stood before any action. Early product data showed heavy use of AI-originated recommendations; we treated that as a risk to watch, not as a success metric, because automation reliance is exactly the failure mode human oversight is meant to catch. This maps to Article 14’s automation-bias requirement.
 
 The case study also states its boundary: the MVP did not validate production wagering safeguards. Details: [SportsGambit case study](/work/sportsgambit).
 
@@ -117,7 +117,7 @@ Yes. The patterns are interface decisions, not infrastructure. Start with one wo
 
 ### What is automation bias?
 
-The tendency to over-trust a system's output. The design response is visible confidence, verifiable sources and a deliberate review step before any action.
+The tendency to over-trust a system’s output. The design response is visible confidence, verifiable sources and a deliberate review step before any action.
 
 ### Do you work with teams in Germany and the rest of the EU?
 

@@ -812,6 +812,23 @@ for (const slug of WORK) {
   }
 }
 
+// Typographic punctuation (design review, 2026-10-23): the English cases,
+// About and the writing pages set “ ” and ’ like every Hungarian and German
+// page; a straight " or ' in visible copy is a drift from the sources.
+const typographicPages = [
+  "about.html",
+  ...WORK.map((slug) => `work/${slug}.html`),
+  ...readdirSync(join(ROOT, "writing")).filter((name) => name.endsWith(".html")).map((name) => `writing/${name}`),
+];
+for (const page of typographicPages) {
+  const html = readFileSync(join(ROOT, page), "utf8");
+  const text = html.slice(html.indexOf("<body"))
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>|<style\b[^>]*>[\s\S]*?<\/style>|<!--[\s\S]*?-->/gi, " ")
+    .replace(/<[^>]+>/g, " ");
+  const straight = text.match(/["']|&quot;|&#0*39;|&apos;/g);
+  if (straight) fail(`${page}: ${straight.length} straight quote(s) in visible English copy; set “ ” and ’ like the rest of the site`);
+}
+
 if (failures) {
   console.error(`\n${failures} design.md check(s) failed`);
   process.exit(1);

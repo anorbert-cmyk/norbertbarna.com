@@ -50,7 +50,7 @@ Die Lehre für KI im Kundenservice: Bevor Sie KI auf die Beantwortung setzen, pr
 
 ## Was die KI-Verordnung für KI im Kundenservice vorschreibt
 
-Die Transparenzpflichten nach Artikel 50 der EU-KI-Verordnung gelten seit dem 2. August 2026: Die Interaktion mit einem KI-System muss kenntlich gemacht werden, außer sie ist aus den Umständen offensichtlich. Der Digital Omnibus 2026 (Verordnung (EU) 2026/1744, in Kraft seit 27. Juli 2026) hat die Fristen für Hochrisiko-Systeme verschoben, Artikel 50 nicht (Quellen: [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force) und [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), abgerufen am 21.10.2026). Mehr dazu im Artikel [KI-Kennzeichnungspflicht](/de/wissen/ki-kennzeichnungspflicht).
+Die Transparenzpflichten nach Artikel 50 der EU-KI-Verordnung gelten seit dem 2. August 2026: Die Interaktion mit einem KI-System muss kenntlich gemacht werden, außer sie ist aus den Umständen offensichtlich. Der Digital Omnibus 2026 (Verordnung (EU) 2026/1744, in Kraft seit 27. Juli 2026) hat die Fristen für Hochrisiko-Systeme verschoben, Artikel 50 nicht (Quellen: [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force) und [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), abgerufen am 21. Oktober 2026). Mehr dazu im Artikel [KI-Kennzeichnungspflicht](/de/wissen/ki-kennzeichnungspflicht).
 
 Trifft die KI eine wesentliche Entscheidung über einen Kunden, etwa über Kredit oder Versicherung, ist das eine andere Kategorie und braucht eine rechtliche Prüfung. Dieser Artikel behandelt die Regulierung als Gestaltungsfrage, nicht als Rechtsberatung.
 

@@ -66,6 +66,11 @@ export { escapeHtml };
 export const slugify = (value) => value.normalize("NFKD").replace(/[̀-ͯ]/g, "")
   .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
+// Every external link opens a new tab (the site convention, as the LinkedIn
+// links do, with their "(opens in a new tab)" name), so each one says so in
+// the page language in a visually hidden span; no glyph, as on the LinkedIn links.
+const NEW_TAB = { en: "opens in a new tab", hu: "új lapon nyílik meg", de: "öffnet in neuem Tab" };
+let inlineLang = "en";
 function inline(text) {
   const codes = [];
   let html = escapeHtml(text).replace(/`([^`]+)`/g, (_, code) => `\u0000${codes.push(code) - 1}\u0000`);
@@ -74,7 +79,7 @@ function inline(text) {
     const external = /^https?:\/\//.test(target) && !target.startsWith(ORIGIN);
     const url = target.startsWith(ORIGIN) ? target.slice(ORIGIN.length) || "/" : target;
     return external
-      ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}</a>`
+      ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${label}<span class="sr-only"> (${NEW_TAB[inlineLang]})</span></a>`
       : `<a href="${escapeHtml(url)}">${label}</a>`;
   });
   html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>");
@@ -83,7 +88,8 @@ function inline(text) {
 
 // Markdown subset: ## and ### headings, paragraphs, - and 1. lists, > quotes,
 // **bold**, *italic*, `code`, [links](/path). A # H1 is refused: the title is the H1.
-export function markdownToHtml(markdown, file) {
+export function markdownToHtml(markdown, file, lang = "en") {
+  inlineLang = NEW_TAB[lang] ? lang : "en";
   const blocks = [];
   const ids = new Set();
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
@@ -214,7 +220,11 @@ export function mentions(text, keyword) {
 }
 // Typography the articles keep: no dash as punctuation, and the language's own
 // quotation marks („” in Hungarian, „“ in German, “” in English).
-const STRAIGHT_QUOTE = /"/;
+const STRAIGHT_QUOTE = /"|(?<=\p{L})'(?=\p{L})/u;
+// Dates in prose follow the language's long form (21 October 2026, 2026.
+// október 21., 21. Oktober 2026); a numeric 21.10.2026 next to them reads as
+// a different convention on the same page.
+const NUMERIC_DATE = /\b\d{1,2}\.\s?\d{1,2}\.\s?\d{4}\b|\b\d{4}\.\s?\d{1,2}\.\s?\d{1,2}\.|\b\d{1,2}\/\d{1,2}\/\d{4}\b/;
 const DASH_PUNCTUATION = /[–—]|(?:^|\s)-(?:\s|$)/m;
 
 export function articleFile(article) {
@@ -257,7 +267,8 @@ export function loadArticles({ root = ROOT, includeDrafts = false } = {}) {
     if (/^#\s/m.test(body)) throw new Error(`${file}: remove the # heading; the title is the H1`);
     const prose = body.replace(/`[^`]*`/g, "").replace(/\]\([^)]*\)/g, "]").replace(/^\s*[-*]\s+/gm, "").replace(/^\|.*$/gm, "");
     if (DASH_PUNCTUATION.test(prose)) throw new Error(`${file}: no dash as punctuation; rewrite with a comma, a colon or a full stop`);
-    if (STRAIGHT_QUOTE.test(prose)) throw new Error(`${file}: use the language's quotation marks („” hu, „“ de, “” en), not straight quotes`);
+    if (STRAIGHT_QUOTE.test(prose)) throw new Error(`${file}: use the language's quotation marks („” hu, „“ de, “” en) and the ’ apostrophe, not straight quotes`);
+    if (NUMERIC_DATE.test(prose)) throw new Error(`${file}: write dates in words (21 October 2026 / 2026. október 21. / 21. Oktober 2026), not numerically`);
     const primary = data.tags?.[0] || "";
     for (const [field, value] of [["title", data.title], ["description", data.description], ["opening paragraph", leadParagraph(body)], ["cover_alt", data.cover_alt || primary]]) {
       if (!mentions(value, primary)) throw new Error(`${file}: the primary keyword "${primary}" (first tag) is missing from the ${field}`);

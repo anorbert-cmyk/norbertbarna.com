@@ -63,6 +63,7 @@ const decodeEntities = (value) => value
 const visibleText = (value) => decodeEntities(value)
   .replace(/&shy;|\u00AD/g, "")
   .replace(/<[^>]+>/g, " ")
+  .replace(/&shy;|\u00AD/gi, "")
   .replace(/\s+/g, " ")
   .trim();
 
