@@ -43,6 +43,9 @@ const contentRoutes = [
   "/web-development",
   "/hu/ai-tanacsadas-fejlesztes",
   "/hu/webfejlesztes",
+  "/de/ki-beratung-entwicklung",
+  "/de/webentwicklung",
+  "/de",
   "/privacy",
   "/hu/adatvedelem",
   "/work/benker",
@@ -740,6 +743,24 @@ for (const route of contentRoutes.filter((route) => route !== "/")) {
         if (videoBehind) await page.locator(".kineticare-hero video").evaluate((video) => video.pause());
         await expectHeaderTextAA(page, target, `${width} ${route} text ${index + 1}`, { raster: videoBehind });
       }
+    }
+  });
+}
+
+// The service opening's actions sit above the glass object in every language
+// (design review 2026-10-23): the yellow link and the lilac secondary link are
+// scored on the composited artwork, where the German copy once pushed them
+// into the yellow chevron.
+for (const route of ["/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/de/ki-beratung-entwicklung", "/de/webentwicklung", "/de"]) {
+  test(`${route}: opening actions meet AA on the composited artwork at phone widths`, async ({ page }) => {
+    await page.route(/posthog\.com/, (request) => request.abort());
+    for (const width of [320, 360, 390, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      await openStable(page, route);
+      await page.waitForFunction(() => /active|reduced|static/.test(window.PortfolioAiMotion?.state || ""));
+      await page.waitForTimeout(250);
+      await expectHeaderTextAA(page, page.locator("#top a.footer-email"), `${width} ${route} primary action over the artwork`, { raster: true });
+      await expectHeaderTextAA(page, page.locator("#top .ai-hero-explore"), `${width} ${route} secondary action over the artwork`, { raster: true });
     }
   });
 }

@@ -11,7 +11,8 @@ const origin = "https://www.barnanorbert.com";
 const home = readFileSync(join(root, "index.html"), "utf8");
 const route = (file) => `/${file.replace(/\.html$/, "")}`;
 const attr = (tag, key) => tag.match(new RegExp(`\\b${key}="([^"]*)"`, "i"))?.[1];
-const text = (html) => html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+// A soft hyphen (&shy;, an authored break point in a long compound) is not visible text.
+const text = (html) => html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "").replace(/&shy;|\u00AD/g, "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 const flatten = (value) => !value || typeof value !== "object" ? [] :
   [...(value["@type"] ? [value] : []), ...Object.values(value).flatMap(flatten)];
 

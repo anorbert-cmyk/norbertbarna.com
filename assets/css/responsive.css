@@ -1802,6 +1802,16 @@ html.no-motion .footer-mesh-yellow {
   }
 }
 
+/* Hungarian and German compounds: at compact widths a display heading
+   hyphenates (dictionary or authored soft hyphen) before it may break inside
+   a word; a bare mid-word break is a defect (design.md, 2026-10-23). */
+@media (max-width: 599px) {
+  html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+}
+
 @media (max-width: 599px) {
   :root {
     --site-gutter: 16px;

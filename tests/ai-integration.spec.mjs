@@ -750,3 +750,50 @@ test("the web development pages are a reciprocal three-language group with the K
     await expect(page.locator(`main a[href="${AI_PAGES[language]}"]`).first()).toBeVisible();
   }
 });
+
+// Phone openings in three languages (design review 2026-10-23): the heading
+// takes the Hungarian/German size step and never leaves the canvas, and no
+// display heading on the service board breaks inside a word without a hyphen.
+// The sandbox Chromium ships no hyphenation dictionaries, so the authored soft
+// hyphens (&shy;) are what breaks a compound here; `hyphens: auto` adds the
+// dictionary breaks in shipping browsers.
+const SERVICE_ROUTES = [...Object.values(AI_PAGES), ...Object.values(WEB_PAGES), "/de"];
+const midWordBreaks = (page) => page.evaluate(() => {
+  const breaks = [];
+  for (const heading of document.querySelectorAll("main h1, main h2, main h3, .ai-footer h2")) {
+    const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT), range = document.createRange();
+    while (walker.nextNode()) {
+      const node = walker.currentNode, text = node.textContent;
+      let previousTop = null, previous = "";
+      for (let index = 0; index < text.length; index += 1) {
+        range.setStart(node, index); range.setEnd(node, index + 1);
+        const rects = range.getClientRects(); if (!rects.length) continue;
+        const rect = rects[rects.length - 1]; if (!rect.height) continue;
+        const character = text[index];
+        if (previousTop !== null && rect.top > previousTop + 2 && /\S/.test(character) && !/\s/.test(previous) && previous !== "­" && !/[-‐‑\/]/.test(previous)) {
+          breaks.push(`${heading.tagName.toLowerCase()}#${heading.id || heading.className}: ${text.slice(Math.max(0, index - 10), index)}|${text.slice(index, index + 10)}`);
+        }
+        previousTop = rect.top; previous = character;
+      }
+    }
+  }
+  return breaks;
+});
+for (const path of SERVICE_ROUTES) {
+  test(`${path}: phone opening keeps the heading inside the canvas and no heading breaks inside a word`, async ({ page }) => {
+    for (const width of [320, 360, 390, 430]) {
+      await page.setViewportSize({ width, height: 844 });
+      await open(page, path);
+      const opening = await page.evaluate(() => {
+        const title = document.querySelector("#ai-title"), copy = document.querySelector(".ai-hero-copy");
+        const range = document.createRange(); range.selectNodeContents(title);
+        const lines = [...range.getClientRects()].filter((rect) => rect.width > 0);
+        return { right: Math.max(...lines.map((rect) => rect.right)), copyWidth: copy.getBoundingClientRect().width, gutter: parseFloat(getComputedStyle(copy).paddingLeft), scrollWidth: document.documentElement.scrollWidth };
+      });
+      expect(opening.right, `${width}: the heading's widest line ends inside the gutter`).toBeLessThanOrEqual(width - opening.gutter + 1);
+      expect(opening.copyWidth, `${width}: the copy column never exceeds the viewport`).toBeLessThanOrEqual(width + .5);
+      expect(opening.scrollWidth, `${width}: no horizontal overflow`).toBeLessThanOrEqual(width);
+      if (width === 320 || width === 390) expect(await midWordBreaks(page), `${width}: a heading breaks inside a word without a hyphen`).toEqual([]);
+    }
+  });
+}
