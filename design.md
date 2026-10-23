@@ -290,7 +290,7 @@ Keep this review internal. Deliver the implementation, not a scorecard.
 
 ## Locked brand (do not regenerate)
 
-**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 68px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The destinations share one type on every bar (Inter, `clamp(12px, 1.05vw, 14px)`, uppercase, 44px rows) and the Articles chevron paints in the bar's link ink, so it is visible on the navy bars too. The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and the error documents and fails on any deviation. The open compact menu locks the page behind it (`html[data-menu-open]`, set by `navigation.js`) and scrolls its own rows within the viewport.
+**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 72px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The destinations share one type on every bar (Inter, `clamp(12px, 1.05vw, 14px)`, uppercase, `.04em` tracking on every uppercase item including the home LinkedIn link and the language code, 44px rows), one row gap (`clamp(14px, 1.6vw, 24px)`), and the Articles chevron paints in the bar's link ink, so it is visible on the navy bars too; so the same destination sits at the same x on every page type of a language (design review, 2026-10-23). The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and the error documents and fails on any deviation, and compares every destination's x, width and type across the page types at 1024, 1280 and 1440. In the compact menu the Services trigger and the Articles split control share one grammar: both chevrons, and the language chevron, sit in the same right-edge slot. The open compact menu locks the page behind it (`html[data-menu-open]`, set by `navigation.js`) and scrolls its own rows within the viewport.
 
 **Type:** Funnel Display 700 for case and section display; Inter for UI, dek,
 and body. The semantic home H1 uses Inter. Original SVG lettering is limited to the
@@ -356,8 +356,21 @@ The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
 - Footer columns (2026-10-21): Work keeps the left half with its two short
   columns and one hairline on its right; Services and Articles (the latest
   three of the page language plus All articles, generated from
-  `site-chrome.mjs`) stack in the right half. Up to 1199px the three stack
+  `site-chrome.mjs`) stack in the right half, inset from the Work hairline
+  by the same `clamp(20px, 2.5vw, 40px)` the Work column keeps on its side,
+  every row on the Work column's 44px rhythm. Up to 1199px the three stack
   in one column. No other column (**SaaSFooter** still holds).
+- The footer title holds two lines in every language: the German
+  `Sprechen wir / über Ihr Produkt.` is longer than its English and
+  Hungarian pairs, so `html[lang="de"]` steps it down
+  (`clamp(52px, 6.7vw, 104px)`, `clamp(40px, 6.5vw, 76px)` up to 991px,
+  `clamp(38px, 11.5vw, 64px)` up to 599px).
+- Landmark names (design review, 2026-10-23): the footer's nav is `Footer`
+  / `Lábléc` / `Fußzeile` on the editorial, service and About footers; the
+  case and article breadcrumbs are `Breadcrumb` / `Morzsamenü` /
+  `Brotkrümelnavigation` (`BREADCRUMB_LABEL` in `site-chrome.mjs`); the
+  article rail is a plain `div` (its `On this page` nav is the landmark).
+  `check-responsive.mjs` enforces all three.
 - Integrate the page-language privacy link and Analytics settings into the same lilac
   footer field with a fine top rule. This is an in-flow utility row, without
   a separate dark slab. Preserve all consent hooks, language attributes and
@@ -390,9 +403,13 @@ equal outlined accept/reject buttons of at least 44px, no initial autofocus and 
 new motion. Up to 600px (2026-10-22) it is one row of title and privacy link,
 the summary, and both choices on one row (the Hungarian choices read
 `Elutasítom` / `Engedélyezem`); the Details disclosure yields to the privacy
-page, so the notice stays under a fifth of a phone viewport. The open compact
+page, and under 360px the one-line summary does too, so the notice stays under
+a fifth of a phone viewport (320x568 included); the privacy link keeps the
+44px row of the choices beside it. The open compact
 menu stacks above it. On the contact pages `consent.js` places the banner in
-the flow between the form and the footer, so it never covers a field. `assets/css/consent.css` is a narrow, revalidated utility stylesheet;
+the flow between the form and the footer, so it never covers a field; the
+footer's Analytics settings scrolls that in-flow notice into view before
+focusing its title (the fixed notice never moves the page). `assets/css/consent.css` is a narrow, revalidated utility stylesheet;
 it may style only this consent component and `.footer-privacy`, not the brand.
 No PostHog request before consent or after withdrawal. No replay, autocapture,
 person profiles or arbitrary URLs/text. Email works independently of analytics.

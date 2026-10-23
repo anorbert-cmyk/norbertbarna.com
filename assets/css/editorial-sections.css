@@ -180,6 +180,10 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   line-height: .96;
   overflow-wrap: anywhere;
 }
+/* The German title ("Sprechen wir / über Ihr Produkt.") is longer than the
+   English and Hungarian pairs; a smaller step keeps it on the designed two
+   lines in the identity column at every width (design review, 2026-10-23). */
+html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); }
 .editorial-footer .footer-lede {
   max-width: 34ch;
   margin: 0;
@@ -249,12 +253,15 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   color: var(--editorial-navy);
 }
 .editorial-footer .footer-col { padding: 0; min-width: 0; }
-.editorial-footer .footer-col + .footer-col { margin: 0; padding: 0; border-left: 0; }
+.editorial-footer .footer-col + .footer-col { margin: 0; border-left: 0; }
 .editorial-footer .footer-col:first-child { grid-column: 1; grid-row: 1 / 3; padding-right: clamp(20px, 2.5vw, 40px); border-right: 1px solid rgb(10 22 40 / 18%); }
-.editorial-footer .footer-col-services { grid-column: 2; grid-row: 1; padding-left: clamp(20px, 2.5vw, 40px); }
-.editorial-footer .footer-col-articles { grid-column: 2; grid-row: 2; padding-left: clamp(20px, 2.5vw, 40px); }
+/* The right half stands clear of the Work hairline by the same inset the Work
+   column keeps on its side, and its rows keep the Work column's 44px rhythm
+   (design review, 2026-10-23). */
+.editorial-footer .footer-nav > .footer-col-services { grid-column: 2; grid-row: 1; padding-left: clamp(20px, 2.5vw, 40px); }
+.editorial-footer .footer-nav > .footer-col-articles { grid-column: 2; grid-row: 2; padding-left: clamp(20px, 2.5vw, 40px); }
 .editorial-footer .footer-col:first-child:last-child { grid-row: auto; padding-right: 0; border-right: 0; }
-.editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col-list { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col-list { grid-template-columns: minmax(0, 1fr); gap: 0; }
 .editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col a { display: flex; min-height: 0; padding: 7px 0; line-height: 1.35; }
 .editorial-footer :is(.footer-col-services, .footer-col-articles) .footer-col-list li { min-height: 44px; display: flex; align-items: center; }
 .editorial-footer .footer-col-title {
@@ -354,6 +361,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   .editorial-experience .section-title { font-size: clamp(42px, 6.5vw, 64px); }
   .editorial-experience .awards-card .awards-card-text { font-size: clamp(28px, 4.5vw, 40px); }
   .editorial-footer-title { font-size: clamp(56px, 8vw, 86px); }
+  html[lang="de"] .editorial-footer-title { font-size: clamp(40px, 6.5vw, 76px); }
   .editorial-footer .footer-chrome { gap: 28px; }
 }
 /* Up to 1199px the footer nav is one stack beside (or under) the identity:
@@ -361,7 +369,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
 @media (max-width: 1199px) {
   .editorial-footer .footer-nav { grid-template-columns: minmax(0, 1fr); gap: 32px 0; }
   .editorial-footer .footer-col:first-child { grid-column: 1; grid-row: auto; padding-right: 0; border-right: 0; }
-  .editorial-footer :is(.footer-col-services, .footer-col-articles) { grid-column: 1; grid-row: auto; padding-left: 0; }
+  .editorial-footer .footer-nav > :is(.footer-col-services, .footer-col-articles) { grid-column: 1; grid-row: auto; padding-left: 0; }
 }
 @media (max-width: 599px) {
   .editorial-experience,
@@ -379,6 +387,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   .editorial-footer .footer-chrome { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .editorial-footer .footer-ident { grid-column: 1; grid-row: 1; gap: 24px; }
   .editorial-footer-title { font-size: clamp(56px, 14vw, 80px); }
+  html[lang="de"] .editorial-footer-title { font-size: clamp(38px, 11.5vw, 64px); }
   .editorial-footer .footer-lede { font-size: 16px; }
   .editorial-footer .footer-nav { grid-column: 1; grid-row: 3; }
   .editorial-footer .footer-bar { margin-top: 36px; gap: 8px; }

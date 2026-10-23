@@ -22,7 +22,7 @@ import {
   wordCount, writingLanguageLinks,
 } from "./writing-content.mjs";
 import { urlOf } from "./service-pages.mjs";
-import { applyChrome } from "./site-chrome.mjs";
+import { BREADCRUMB_LABEL, applyChrome } from "./site-chrome.mjs";
 
 const CHECK = process.argv.includes("--check");
 const DEFAULT_IMAGE = {
@@ -37,7 +37,7 @@ const COPY = {
     contact: "/hu/kapcsolat",
     home: { name: "Főoldal", path: "/hu" },
     author: { name: "Barna Norbert", path: "/hu/rolam" },
-    breadcrumbLabel: "Útvonal",
+    breadcrumbLabel: BREADCRUMB_LABEL.hu,
     tocLabel: "Tartalom",
     updated: "Frissítve",
     minutes: (n) => `${n} perc olvasás`,
@@ -69,7 +69,7 @@ const COPY = {
     contact: "/contact",
     home: { name: "Home", path: "/" },
     author: { name: "Norbert Barna", path: "/about" },
-    breadcrumbLabel: "Breadcrumb",
+    breadcrumbLabel: BREADCRUMB_LABEL.en,
     tocLabel: "Contents",
     updated: "Updated",
     minutes: (n) => `${n} min read`,
@@ -101,7 +101,7 @@ const COPY = {
     contact: "/de/kontakt",
     home: { name: "Startseite", path: "/de" },
     author: { name: "Norbert Barna", path: "/de/ueber-mich" },
-    breadcrumbLabel: "Pfad",
+    breadcrumbLabel: BREADCRUMB_LABEL.de,
     tocLabel: "Inhalt",
     updated: "Aktualisiert",
     minutes: (n) => `${n} Min. Lesezeit`,
@@ -349,7 +349,7 @@ function renderArticle(article, articles, links) {
     coverFigure(article, image),
     `</div></header>`,
     `<div class="writing-body"><div class="writing-frame">`,
-    `<aside class="writing-rail">${tableOfContents(lang, body)}</aside>`,
+    `<div class="writing-rail">${tableOfContents(lang, body)}</div>`,
     `<div class="writing-prose">`,
     wrapTables(body),
     `<section class="writing-cta" aria-labelledby="${CTA_ID[lang]}">`,

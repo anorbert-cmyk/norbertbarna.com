@@ -102,7 +102,7 @@ body.story-page {
 .story-footer-name span { display: block; margin-top: 6px; font-size: 12px; opacity: .7; }
 .story-footer-top p { font-size: 10px; text-transform: uppercase; letter-spacing: .13em; line-height: 1.8; text-align: right; }
 .story-footer-bottom { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-top: 1px solid rgb(214 212 237 / 22%); padding: 22px 0; font-size: 11px; color: rgb(214 212 237 / 85%); }
-.story-footer-bottom > div { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.story-footer-bottom > :is(div, nav) { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
 .story-footer-bottom button { display: inline-flex; align-items: center; min-height: 44px; border: 0; background: none; color: inherit; font: inherit; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .story-footer-bottom button[hidden] { display: none; }
 .story-footer-bottom a { text-decoration: none; }
@@ -168,7 +168,7 @@ body.story-page {
  .story-footer-top { flex-wrap: wrap; align-items: start; }
  .story-footer-top p { display: none; }
  .story-footer-bottom { display: block; font-size: 11px; }
- .story-footer-bottom > div { margin-top: 14px; gap: 16px; }
+ .story-footer-bottom > :is(div, nav) { margin-top: 14px; gap: 16px; }
 }
 @media (max-height:699px) and (min-width:600px) {
  .story-opening { min-height: 740px; height: auto; }

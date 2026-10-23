@@ -92,6 +92,12 @@ export const MENU = {
   },
 };
 
+// Landmark names (design review, 2026-10-23): one name per language for the
+// same thing in every template, so a screen reader's landmark list reads the
+// same page to page. The footer nav takes MENU[lang].footerLabel; the case
+// and article breadcrumbs take these. check-responsive.mjs enforces both.
+export const BREADCRUMB_LABEL = { en: "Breadcrumb", hu: "Morzsamenü", de: "Brotkrümelnavigation" };
+
 export const NAV_ARTICLE_LIMIT = 5;
 export const FOOTER_ARTICLE_LIMIT = 3;
 const WORK_FOOTER = ["raiffeisen", "instructure", "bitpanda", "kineticare"];
