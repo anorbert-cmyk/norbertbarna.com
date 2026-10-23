@@ -4,7 +4,7 @@ description: "KI-Automatisierung: fünf Kriterien für den ersten Prozess, wann 
 lang: de
 slug: ki-automatisierung-erster-prozess
 date: 2026-10-21T10:30:00+02:00
-updated: 2026-10-21T10:30:00+02:00
+updated: 2026-10-22T09:00:00+02:00
 tags: [ki automatisierung, ki prozessautomatisierung, ki prozessoptimierung, ki audit, ki potenzialanalyse, automatisierung mit ki]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
@@ -85,7 +85,7 @@ Was ich dabei aus der Produktarbeit mitbringe: Bei Instructure haben wir KI-Funk
 
 ## Was die KI-Verordnung für Prozessautomatisierung bedeutet
 
-Die meisten internen Automatisierungen, die Dokumente sortieren oder Entwürfe schreiben, sind nach der EU-KI-Verordnung Systeme mit begrenztem oder minimalem Risiko. Zwei Punkte sind trotzdem zu beachten: Tritt die KI Kunden gegenüber, gilt die Kennzeichnungspflicht nach Artikel 50 seit dem 2. August 2026. Bereitet die KI Entscheidungen über Menschen vor, etwa bei Bewerbungen, gelten voraussichtlich die Hochrisiko-Pflichten, deren Anwendung der Digital Omnibus 2026 auf den 2. Dezember 2027 verschoben hat. Die Datenschutz-Grundverordnung gilt daneben unverändert. Das ist die Lesart eines Produktteams, keine Rechtsberatung.
+Die meisten internen Automatisierungen, die Dokumente sortieren oder Entwürfe schreiben, sind nach der EU-KI-Verordnung Systeme mit begrenztem oder minimalem Risiko. Zwei Punkte sind trotzdem zu beachten: Tritt die KI Kunden gegenüber, gilt die Kennzeichnungspflicht nach Artikel 50 seit dem 2. August 2026. Bereitet die KI Entscheidungen über Menschen vor, etwa bei Bewerbungen, gelten voraussichtlich die Hochrisiko-Pflichten, deren Anwendung der Digital Omnibus 2026 auf den 2. Dezember 2027 verschoben hat. Die Datenschutz-Grundverordnung gilt daneben unverändert. Rechtsgrundlage ist die Verordnung (EU) 2024/1689 (Quelle: [EUR-Lex, Verordnung (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), abgerufen am 22.10.2026). Das ist die Lesart eines Produktteams, keine Rechtsberatung.
 
 ## Häufige Fragen
 

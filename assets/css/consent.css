@@ -209,6 +209,79 @@
   }
 }
 
+/* Small screens (2026-10-22): one row for the title and the privacy link,
+   the summary, then both choices on one row. The Details disclosure yields
+   to the privacy page, which carries the full notice. */
+@media (max-width: 600px) {
+  .consent-inner {
+    gap: 8px;
+    padding: 12px var(--site-gutter, 16px);
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .consent-copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    max-width: none;
+  }
+
+  .consent-banner .consent-title {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .consent-banner .consent-privacy {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 40px;
+    margin: 0;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .consent-banner .consent-summary,
+  .consent-banner .consent-current,
+  .consent-banner .consent-status {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .consent-banner .consent-details {
+    display: none;
+  }
+
+  .consent-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .consent-banner .consent-choice {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .consent-banner .consent-close {
+    flex: 1 1 100%;
+  }
+}
+
+/* The contact pages dock the notice between the form and the footer, so it
+   never covers a field; consent.js places it there and keeps no spacer. */
+body.contact-page .consent-banner {
+  position: static;
+  max-height: none;
+  overflow: visible;
+}
+
 @media print {
   .consent-banner,
   .consent-space {

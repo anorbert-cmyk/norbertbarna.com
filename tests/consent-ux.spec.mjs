@@ -68,8 +68,49 @@ for (const [language, path] of [["en", "/ai-integration"], ["hu", "/hu/ai-tanacs
   }
 }
 
+// Small screens (2026-10-22): the banner is one row of title and privacy
+// link, the summary, and both choices on one row; the Details disclosure
+// yields to the privacy page, so the notice stays under a fifth of the
+// viewport and never covers the open menu or a form field.
+for (const [path, width] of [["/hu/ai-tanacsadas-fejlesztes", 390], ["/ai-integration", 320], ["/de/ki-beratung-entwicklung", 390]]) {
+  test(`${path} at ${width}px keeps the consent notice compact`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto(path);
+    await page.waitForFunction(() => document.fonts.status === "loaded");
+    const banner = page.locator("[data-consent-banner]");
+    await expect(banner).toBeVisible();
+    await expect(banner.locator(".consent-details")).toBeHidden();
+    await expect(banner.locator(".consent-privacy")).toBeVisible();
+    const box = await banner.boundingBox();
+    expect(box.height, "under a fifth of the viewport").toBeLessThanOrEqual(168);
+    const choices = await banner.locator(".consent-choice").evaluateAll((buttons) => buttons.map((button) => { const r = button.getBoundingClientRect(); return [Math.round(r.y), Math.round(r.height), Math.round(r.width)]; }));
+    expect(choices).toHaveLength(2);
+    expect(choices[0][0], "both choices on one row").toBe(choices[1][0]);
+    for (const [, height, w] of choices) { expect(height).toBeGreaterThanOrEqual(44); expect(w).toBeGreaterThanOrEqual(120); }
+    const title = await banner.locator(".consent-title").boundingBox();
+    const privacy = await banner.locator(".consent-privacy").boundingBox();
+    expect(Math.abs((title.y + title.height / 2) - (privacy.y + privacy.height / 2)), "title and privacy link share a row").toBeLessThan(12);
+  });
+}
+
+test("the open compact menu stacks above the consent notice", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 600 });
+  await page.goto("/ai-integration");
+  await page.waitForFunction(() => document.fonts.status === "loaded");
+  await expect(page.locator("[data-consent-banner]")).toBeVisible();
+  await page.locator(".menu-button").click();
+  // The 260ms clip-path entrance clips hit-testing too; let it settle.
+  await page.locator("#primary-navigation").evaluate((el) => Promise.all(el.getAnimations().map((animation) => animation.finished)));
+  const language = page.locator("#primary-navigation .nav-lang-trigger");
+  await language.scrollIntoViewIfNeeded();
+  const hit = await language.evaluate((el) => { const r = el.getBoundingClientRect(); const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return top ? Boolean(top.closest("#primary-navigation")) : false; });
+  expect(hit, "the last menu row is tappable over the banner").toBe(true);
+  await language.click();
+  await expect(page.locator("#nav-languages")).toBeVisible();
+});
+
 test("expanded details preserve full disclosures, direct privacy access and an unobscured page action", async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 640 });
+  await page.setViewportSize({ width: 768, height: 640 });
   await page.goto("/hu/ai-tanacsadas-fejlesztes");
   await page.waitForFunction(() => document.fonts.status === "loaded");
   const banner = page.locator("[data-consent-banner]");
@@ -82,7 +123,7 @@ test("expanded details preserve full disclosures, direct privacy access and an u
   await expect(banner.locator(".consent-description")).toContainText("Nincs munkamenet-felvétel vagy hirdetési követés.");
   await expect(banner.locator(".consent-retention")).toBeVisible();
   await expect(banner.locator(".consent-retention")).toContainText("180 napig érvényes");
-  await page.locator("main .footer-email").focus();
+  await page.locator("main .footer-email").first().focus();
   const focused = await focusPosition(page);
   expect(focused.bottom).toBeLessThanOrEqual(focused.bannerTop - 4);
   expect(focused.top).toBeGreaterThanOrEqual(0);

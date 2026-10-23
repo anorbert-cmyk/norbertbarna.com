@@ -4,7 +4,7 @@ description: "MVP-Entwicklung in Fintech, Gesundheit und regulierten Märkten: w
 lang: de
 slug: mvp-entwicklung-regulierte-produkte
 date: 2026-10-21T10:10:00+02:00
-updated: 2026-10-21T10:10:00+02:00
+updated: 2026-10-22T09:00:00+02:00
 tags: [mvp entwicklung, mvp software, mvp entwickeln lassen, minimum viable product, ki entwicklung, webentwicklung]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
@@ -22,7 +22,7 @@ Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU;
 
 Die Lean-Startup-Idee hinter dem MVP: Bauen, messen, lernen, in kurzen Schleifen, mit so wenig Aufwand wie möglich. Eine Landingpage, ein Klick-Dummy, eine von Hand bediente Fassade reichen oft, um zu prüfen, ob jemand das Produkt will.
 
-In regulierten Märkten gibt es zwei Grenzen. Erstens: Sobald echte Nutzer echtes Geld, echte Gesundheitsdaten oder echte Identitäten einbringen, greifen Pflichten, die kein MVP-Status aufhebt: Datenschutz-Grundverordnung, Zahlungsdienste-Regeln wie PSD2 mit starker Kundenauthentifizierung, Geldwäscheprävention mit Identitätsprüfung, je nach Produkt die KI-Verordnung. Zweitens: In diesen Märkten ist Vertrauen die Annahme, die geprüft wird. Ein MVP, das bei der Bestätigung einer Zahlung unsicher wirkt, misst nicht, ob die Idee gut ist, sondern nur, dass die Nutzer dem Produkt nicht trauen.
+In regulierten Märkten gibt es zwei Grenzen. Erstens: Sobald echte Nutzer echtes Geld, echte Gesundheitsdaten oder echte Identitäten einbringen, greifen Pflichten, die kein MVP-Status aufhebt: Datenschutz-Grundverordnung, Zahlungsdienste-Regeln wie PSD2 mit starker Kundenauthentifizierung, Geldwäscheprävention mit Identitätsprüfung, je nach Produkt die KI-Verordnung (EU) 2024/1689 (Quelle: [EUR-Lex, Verordnung (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), abgerufen am 22.10.2026). Zweitens: In diesen Märkten ist Vertrauen die Annahme, die geprüft wird. Ein MVP, das bei der Bestätigung einer Zahlung unsicher wirkt, misst nicht, ob die Idee gut ist, sondern nur, dass die Nutzer dem Produkt nicht trauen.
 
 Daraus folgt die Trennung, die dieser Artikel vorschlägt: **Fassade erlaubt, Fundament nicht.**
 

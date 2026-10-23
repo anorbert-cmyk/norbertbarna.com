@@ -35,6 +35,10 @@
     var lastFocusedControl = document.activeElement;
     document.addEventListener("focusin", function (event) {
       lastFocusedControl = event.target;
+      // The compact menu is a non-modal disclosure over a locked page: when
+      // Tab leaves it, it closes so the newly focused control is not behind it.
+      if (menuButton.getAttribute("aria-expanded") === "true" && compactNavigation.matches &&
+        !event.target.closest(".navbar")) setMenuOpen(false);
     });
     document.addEventListener("focusout", function (event) {
       var box = event.target.getBoundingClientRect();
@@ -53,6 +57,9 @@
       if (isOpen) primaryNavigation.setAttribute("data-nav-menu-open", "");
       else primaryNavigation.removeAttribute("data-nav-menu-open");
       menuButton.setAttribute("aria-label", isOpen ? navLabels.close : navLabels.open);
+      // The open compact menu locks the page behind it (compact-navigation.css
+      // scrolls the menu itself); a desktop menu never does.
+      root.toggleAttribute("data-menu-open", isOpen && compactNavigation.matches);
       if (!isOpen && typeof closeGroups === "function") closeGroups();
       // External links and mail leave this document in place. Never leave
       // keyboard focus on a control that has just become display:none.

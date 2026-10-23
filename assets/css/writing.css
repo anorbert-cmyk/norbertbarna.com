@@ -195,6 +195,8 @@
 }
 .writing-breadcrumb li + li::before { content: "›"; margin-right: 10px; color: var(--writing-rule); }
 .writing-breadcrumb a { color: var(--writing-navy); text-decoration: underline; text-underline-offset: 4px; }
+/* Standalone text links keep a 24px target (WCAG 2.5.8) without moving the line. */
+.writing-breadcrumb a, .writing-meta a, .writing-count a { display: inline-block; padding-block: 6px; margin-block: -6px; }
 .writing-breadcrumb [aria-current="page"] { color: var(--writing-muted); }
 .writing-opening-article .writing-frame { padding-bottom: 0; }
 .writing-cover {

@@ -19,6 +19,11 @@ export const CONTACT_PAGES = ["contact.html", "hu/kapcsolat.html", "de/kontakt.h
 // two service offers, on the service-page board, paired with the two homes.
 export const ENTRY_PAGES = ["de/index.html"];
 export const UTILITY_PAGES = [...SERVICE_PAGES, ...PRIVACY_PAGES, ...CONTACT_PAGES, ...ENTRY_PAGES];
+// The error documents (2026-10-22): one per language, served by server.js
+// from the request path prefix. They carry the utility-page chrome, are
+// noindex and never enter the sitemap or the content inventories.
+export const ERROR_PAGES = ["404.html", "hu/404.html", "de/404.html"];
+export const isErrorPage = (page) => ERROR_PAGES.includes(page);
 export const isServicePage = (page) => SERVICE_PAGES.includes(page);
 export const isContactPage = (page) => CONTACT_PAGES.includes(page);
 export const isEntryPage = (page) => ENTRY_PAGES.includes(page);
@@ -69,7 +74,7 @@ export const SERVICE_PAIRS = Object.fromEntries(SERVICE_PAGES.map((page) => [pag
 // URL path of a page file: index.html -> /, hu/index.html -> /hu, x.html -> /x.
 export const urlOf = (page) => page === "index.html" ? "/" : `/${page.replace(/(?:\/index)?\.html$/, "")}`;
 export const assetPrefix = (page) =>
-  page === "404.html" || UTILITY_PAGES.includes(page) || MIRRORS[page] || WRITING_PAGES.includes(page) ? "/" : page.startsWith("work/") ? "../" : "";
+  ERROR_PAGES.includes(page) || UTILITY_PAGES.includes(page) || MIRRORS[page] || WRITING_PAGES.includes(page) ? "/" : page.startsWith("work/") ? "../" : "";
 
 // Writing (Írások, Articles, Wissen): pages generated from content/*.md by
 // build-writing.mjs. List pages (<section>/index.html) are CollectionPages,

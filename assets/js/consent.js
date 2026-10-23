@@ -35,8 +35,8 @@
       retention: "A döntésed ebben a böngészőben 180 napig érvényes. Az Analitikai beállítások gombbal bármikor módosíthatod.",
       privacy: "Adatvédelmi tájékoztató",
       privacyPath: "/hu/adatvedelem",
-      reject: "Mérés elutasítása",
-      accept: "Mérés engedélyezése",
+      reject: "Elutasítom",
+      accept: "Engedélyezem",
       close: "Beállítások bezárása",
       enabled: "A mérés jelenleg engedélyezve van.",
       disabled: "A mérés jelenleg ki van kapcsolva.",
@@ -116,7 +116,7 @@
   function keepFocusClear() {
     window.cancelAnimationFrame(focusFrame);
     focusFrame = window.requestAnimationFrame(function () {
-      if (!banner || banner.hidden) return;
+      if (!banner || banner.hidden || docked()) return;
       var focused = document.activeElement;
       if (!focused || focused === document.body || banner.contains(focused)) return;
       // Only keyboard focus needs revealing. A pointer press focuses the link
@@ -133,10 +133,16 @@
     });
   }
 
+  function docked() {
+    // On the contact pages the banner sits in the flow before the footer
+    // (consent.css), so it never covers a field and needs no spacer.
+    try { return window.getComputedStyle(banner).position !== "fixed"; } catch (error) { return false; }
+  }
+
   function syncSpace() {
     if (!banner || !space) return;
-    space.hidden = banner.hidden;
-    if (banner.hidden) space.style.removeProperty("height");
+    space.hidden = banner.hidden || docked();
+    if (space.hidden) space.style.removeProperty("height");
     else {
       var height = Math.ceil(banner.getBoundingClientRect().height) + 16 + "px";
       if (space.style.height !== height) space.style.height = height;
@@ -317,7 +323,11 @@
     space.hidden = true;
     space.setAttribute("aria-hidden", "true");
     document.body.appendChild(space);
-    document.body.appendChild(banner);
+    // The contact pages take the notice in the flow, after the form and before
+    // the footer (2026-10-22), so no field is ever covered by it.
+    var footer = document.body.classList.contains("contact-page") ? document.querySelector("body > footer") : null;
+    if (footer) document.body.insertBefore(banner, footer);
+    else document.body.appendChild(banner);
     if (typeof ResizeObserver === "function") new ResizeObserver(syncSpace).observe(banner);
     render();
   }

@@ -6,7 +6,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { UTILITY_PAGES, baseOf, HU_PAGES, DE_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from "./service-pages.mjs";
+import { ERROR_PAGES, UTILITY_PAGES, baseOf, HU_PAGES, DE_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -15,7 +15,7 @@ const WORK_PAGES = readdirSync(join(ROOT, "work"))
   .sort()
   .map((name) => `work/${name}`);
 const CONTENT_PAGES = ["index.html", "works.html", "about.html", ...WORK_PAGES, ...UTILITY_PAGES, ...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES];
-const ALL_PAGES = [...CONTENT_PAGES, "404.html"];
+const ALL_PAGES = [...CONTENT_PAGES, ...ERROR_PAGES];
 const CARD_SIZES = {
   "index.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 799px) calc(46vw - 14px), (max-width: 991px) calc(50vw - 46px), (max-width: 1066px) calc(40vw - 25.6px), (max-width: 1439px) 37.6vw, (max-width: 1829px) 30.08vw, (max-width: 1919px) 550.4px, 516px",
   "works.html": "(max-width: 599px) calc(100vw - 32px), (max-width: 991px) calc(50vw - 28px), (max-width: 1279px) 58vw, 680px",
@@ -53,8 +53,7 @@ for (const page of ALL_PAGES) {
   if (!/<main\b[^>]*\bid="main-content"[^>]*\btabindex="-1"/i.test(html)) {
     fail(`${page}: #main-content is not a programmatic skip-link target`);
   }
-  if (page !== "404.html" &&
-      (count(html, /<footer\b/gi) !== 1 || count(html, /<\/footer>/gi) !== 1)) {
+  if (count(html, /<footer\b/gi) !== 1 || count(html, /<\/footer>/gi) !== 1) {
     fail(`${page}: expected exactly one footer landmark`);
   }
   if (!/name="viewport"[^>]*content="[^"]*viewport-fit=cover/i.test(html) &&
@@ -130,7 +129,7 @@ for (const page of ALL_PAGES) {
     fail(`${page}: non-functional href=# remains (back-to-top is not in the lock)`);
   }
 
-  if (page !== "404.html") {
+  if (!ERROR_PAGES.includes(page)) {
     const ogImage = html.match(/<meta\b[^>]*property="og:image"[^>]*content="([^"]+)"/i)?.[1] ||
       html.match(/<meta\b[^>]*content="([^"]+)"[^>]*property="og:image"/i)?.[1];
     if (!ogImage || !ogImage.startsWith("https://www.barnanorbert.com/assets/images/og/")) {
@@ -362,7 +361,8 @@ const cssContracts = [
   [/@media\s*\(max-width:\s*599px\)[\s\S]*?\.case-facts\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/i, "mobile project facts grid is missing"],
   [/\.case-toc ol[\s\S]*?scrollbar-width:\s*thin/i, "mobile case navigation has no visible scroll affordance"],
   [/\.work-title::after[\s\S]*?inset:\s*0/i, "project title link does not own the full card hit area"],
-  [/\.dark-button\s*\{[\s\S]*?background:\s*#000;[\s\S]*?color:\s*#fff;/i, "primary dark button contrast is not guaranteed"],
+  // Navy on lilac (2026-10-22): the only black element on the lilac home was this button.
+  [/\.dark-button\s*\{[\s\S]*?background:\s*#0A1628;[\s\S]*?color:\s*#D6D4ED;/i, "primary dark button contrast is not guaranteed"],
   [/\.summary\s*>\s*\.case-evidence-note/i, "case-study evidence note styling is missing"],
   [/\.navbar\s*\{[\s\S]{0,200}position:\s*sticky/i, "sticky header bar rule is missing"],
   [/\.banner-section\.gambit:not\(\.kineticare-hero\) \.banner-text/i, "Kineticare must not inherit SportsGambit ink dek"],

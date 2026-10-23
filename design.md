@@ -290,7 +290,7 @@ Keep this review internal. Deliver the implementation, not a scorecard.
 
 ## Locked brand (do not regenerate)
 
-**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 68px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and fails on any deviation.
+**Header geometry (2026-10-22, Norbi: "the header must not jump in any language"):** every page type and language shares one bar: 64px desktop / 56px compact, 22px gutters, the logo in a 44px box at the left gutter holding the 32px mark (the home keeps its `NB` monogram in the same box), the menu button 44px at the right gutter, the language control one width (`min-width: 68px`) so EN/HU/DE do not shift the row. Colours, blend and sticky/fixed behaviour stay per page type (home lilac, Works/cases/Contact/About navy, service pages navy, writing/privacy lilac with the hairline inside the 64px). The destinations share one type on every bar (Inter, `clamp(12px, 1.05vw, 14px)`, uppercase, 44px rows) and the Articles chevron paints in the bar's link ink, so it is visible on the navy bars too. The contract lives at the end of `compact-navigation.css`; `header-stability.spec.mjs` walks the sitemap and the error documents and fails on any deviation. The open compact menu locks the page behind it (`html[data-menu-open]`, set by `navigation.js`) and scrolls its own rows within the viewport.
 
 **Type:** Funnel Display 700 for case and section display; Inter for UI, dek,
 and body. The semantic home H1 uses Inter. Original SVG lettering is limited to the
@@ -387,7 +387,12 @@ The two pages are paired
 WebPage notices, composed from existing reading-width and type primitives, not
 Service or Article pages. A small non-modal consent banner uses navy on lilac,
 equal outlined accept/reject buttons of at least 44px, no initial autofocus and no
-new motion. `assets/css/consent.css` is a narrow, revalidated utility stylesheet;
+new motion. Up to 600px (2026-10-22) it is one row of title and privacy link,
+the summary, and both choices on one row (the Hungarian choices read
+`Elutasítom` / `Engedélyezem`); the Details disclosure yields to the privacy
+page, so the notice stays under a fifth of a phone viewport. The open compact
+menu stacks above it. On the contact pages `consent.js` places the banner in
+the flow between the form and the footer, so it never covers a field. `assets/css/consent.css` is a narrow, revalidated utility stylesheet;
 it may style only this consent component and `.footer-privacy`, not the brand.
 No PostHog request before consent or after withdrawal. No replay, autocapture,
 person profiles or arbitrary URLs/text. Email works independently of analytics.
@@ -479,7 +484,9 @@ links, heading hierarchy and visible keyboard focus.
   language with its flag and native name: the current one as text with
   `aria-current="true"`, the others as `a.lang-switch` with `hreflang`,
   `lang` and `rel="alternate"` to this page's pair (a page without a pair
-  links the other language's home or list page without `rel="alternate"`).
+  links the other language's home or list page without `rel="alternate"`;
+  when it leads to an article list the label says so, `English: all
+  articles` / `Magyar: összes cikk` / `Deutsch: alle Artikel`, 2026-10-22).
   A flag marks the menu, never a language on its own: the native name is
   always beside it.
 - `/works` and all seven cases use one stable navy (`#0A1628`) top bar with
@@ -910,7 +917,7 @@ same change that caused the drift.
 | `/hu/munka/{slug}` | `hu/munka/*.html` (7) | Hungarian case studies | default |
 | `/writing`, `/hu/irasok` | `writing/index.html`, `hu/irasok/index.html` | Writing list pages, generated from `content/*.md`; served by explicit routes like `/hu` | default |
 | `/writing/{slug}`, `/hu/irasok/{slug}` | `writing/*.html`, `hu/irasok/*.html` | Articles, generated; RSS at `<section>/feed.xml` | default |
-| (none) | `404.html` | Error document; `/404` and `/404.html` must never return 200 | — |
+| (none) | `404.html`, `hu/404.html`, `de/404.html` | Error documents (2026-10-22), one per language: `server.js` answers a missing `/hu/…` path with the Hungarian one, `/de/…` with the German one, anything else with the English one. Utility-page chrome (generated navigation and footer columns, the language menu leading to the other homes), ink on paper, a Funnel `404` kicker, the language's home, works and contact links; `noindex`, never in the sitemap or a content inventory (`ERROR_PAGES` in `service-pages.mjs`), and `/404`, `/hu/404`, `/de/404` (with or without `.html`) never return 200 | — |
 
 **Whole-site language switch (owner request, 2026-10-06).** Every content page
 has an English and a Hungarian version with the same structure, classes and
@@ -1235,6 +1242,12 @@ Playwright specs, grouped by what they defend:
   `editorial-media`, `story-motion`.
 - **Consent and analytics:** `consent`, `consent-focus`, `consent-ux`,
   `analytics`, `analytics-off`.
+- **UX findings of 2026-10-22:** `error-page` (the three error documents:
+  language, chrome, palette, 24px targets, never a 200), `ux-polish` (the
+  compact menu's scroll lock and internal scroll, the honest language-menu
+  label on an untranslated article, 24px writing targets, the service-page
+  footer's LinkedIn, the case note's measure, the navy home button and
+  skip-link ring, the held Turnstile notice and the docked contact consent).
 
 `check-design.mjs` also asserts that this file keeps naming every
 anti-pattern in the table above. Renaming one here without renaming it there
@@ -1252,6 +1265,11 @@ twelve characters of their own SHA-256 digest, in these families:
 - CSS: `case-motion`, `responsive`, `arrival`, `home-composition`,
   `case-opening`, `editorial-sections`, `compact-navigation`, `project-index`,
   `story`, `ai-integration`, `fonts`, `contact`
+- The inherited Webflow stylesheets (`norbertbarna.webflow.shared` and the
+  three `norbertbarna.webflow.<object id>` files) have no unhashed source:
+  since 2026-10-22 the file is named by its own digest after the Webflow id
+  and caches like the authored releases. `check-server.mjs` verifies the
+  digest of every served copy.
 
 After editing one of those sources: recompute the digest, write the hashed
 copy beside the source, update every page reference, and delete nothing. Stale

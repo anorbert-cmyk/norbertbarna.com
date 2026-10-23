@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { EXTENDED_SERVICE_PAGES, LANGS, SERVICE_PAGES, SERVICE_PAIRS, SITE_COPY, languageOf } from "./service-pages.mjs";
+import { EXTENDED_SERVICE_PAGES, LANGS, SERVICE_PAGES, SERVICE_PAIRS, SITE_COPY, WRITING_PAGES, isWritingPage, languageOf, urlOf } from "./service-pages.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const origin = "https://www.barnanorbert.com";
@@ -55,6 +55,12 @@ for (const file of SERVICE_PAGES) {
     assert(body.includes(`href="${SITE_COPY[language].workRoot}${slug}"`), `${file}: linked first-hand evidence ${slug}`);
   }
   assert(new RegExp(`<a\\b[^>]*\\bclass="[^"]*\\bfooter-email\\b[^"]*"[^>]*href="${SITE_COPY[language].contact}"`).test(body), `${file}: project action in main content leads to the contact form`);
+  // The hub and spoke runs both ways (SEO audit 2026-10-22): every article links
+  // its service page, and every service page links at least two articles of
+  // its own language in its body, never the nav or footer.
+  const articles = WRITING_PAGES.filter((page) => isWritingPage(page) && !page.endsWith("/index.html") && languageOf(page) === language).map(urlOf);
+  const linkedArticles = articles.filter((article) => body.includes(`href="${article}"`));
+  assert(linkedArticles.length >= 2, `${file}: links at least two ${language} articles in main (found ${linkedArticles.length})`);
   // GA identifiers are uppercase; case-insensitive matching mistakes closing-passage.webp for a tracker.
   assert(!/mailto:|<form\b|googletagmanager|analytics\.google|oaipixel/i.test(html) && !/\bG-[A-Z0-9]{6,}\b/.test(html), `${file}: no exposed email, form or unapproved tracking`);
   const graph = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].flatMap(([, json]) => flatten(JSON.parse(json)));
@@ -69,6 +75,10 @@ for (const file of SERVICE_PAGES) {
   assert.equal(services[0].provider?.["@type"], "Person", `${file}: provider is the home Person`);
   assert.equal(services[0].provider?.jobTitle, "Product VP", `${file}: provider jobTitle lock`);
   assert(!Object.hasOwn(services[0], "offers"), `${file}: do not invent Offer or pricing`);
+  // Where the offer is served (SEO audit 2026-10-22): the four countries and the EU as named areas, with no address.
+  const areas = (services[0].areaServed || []).map((area) => `${area["@type"]}:${area.name}`);
+  assert.deepEqual(areas, ["Country:Hungary", "Country:Germany", "Country:Austria", "Country:Switzerland", "Place:European Union"], `${file}: Service areaServed names Hungary, Germany, Austria, Switzerland and the EU`);
+  assert(!/"address"|PostalAddress|LocalBusiness|ProfessionalService/.test(JSON.stringify(services[0])), `${file}: no address or local-business entity`);
   assert(!/"@type":\s*"(?:Aggregate)?Offer"|priceCurrency|"price"\s*:/.test(JSON.stringify(services[0])), `${file}: no invented price`);
   assert(text(body).includes(services[0].name), `${file}: Service name must be visible`);
   assert(text(body).includes(services[0].description), `${file}: Service description must match visible copy`);

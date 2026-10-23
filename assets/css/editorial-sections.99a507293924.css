@@ -325,6 +325,14 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   box-shadow: 0 0 0 2px #D6D4ED;
 }
 
+/* Utility pages (privacy, the error documents): the shared gutter, air between
+   the title and the lede, and 24px targets on the standalone links. */
+@media (max-width: 599px) { body.utility-page { --site-gutter: 24px; } }
+.utility-page .summary > h1 + p { margin-top: clamp(16px, 2.4vw, 24px); }
+.utility-page .summary a:not(.footer-email) { color: #0A1628; text-decoration: underline; text-underline-offset: 4px; }
+.error-page .error-code { margin: 0 0 6px; color: #0A1628; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-size: clamp(64px, 10vw, 112px); font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+.error-page p > a:not(.footer-email) { display: inline-block; padding-block: 6px; margin-block: -6px; }
+
 /* The existing non-modal consent controller and equal-choice controls remain. */
 .consent-banner {
   color: #0A1628;

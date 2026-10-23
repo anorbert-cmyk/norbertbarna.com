@@ -7,8 +7,8 @@
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { createHash } from "node:crypto";
-import { UTILITY_PAGES, HU_PAGES, DE_PAGES, LANGS, SITE_COPY, WRITING_PAGES, assetPrefix, baseOf, isHungarian, languageOf, urlOf } from "./service-pages.mjs";
-import { LANGUAGES, pairsOf } from "./site-chrome.mjs";
+import { ERROR_PAGES, UTILITY_PAGES, HU_PAGES, DE_PAGES, LANGS, SITE_COPY, WRITING_PAGES, assetPrefix, baseOf, isHungarian, languageOf, urlOf } from "./service-pages.mjs";
+import { LANGUAGES, languageLinkLabel, pairsOf } from "./site-chrome.mjs";
 
 // Native labels of the About and Contact links per language.
 const NAV_LABELS = { en: { about: "About", contact: "Contact" }, hu: { about: "Rólam", contact: "Kapcsolat" }, de: { about: "Über mich", contact: "Kontakt" } };
@@ -19,7 +19,7 @@ const PAGES = [
   "works.html",
   "about.html",
   ...UTILITY_PAGES,
-  "404.html",
+  ...ERROR_PAGES,
   ...readdirSync(join(ROOT, "work")).filter((f) => f.endsWith(".html")).map((f) => `work/${f}`),
   ...HU_PAGES, ...DE_PAGES,
   ...WRITING_PAGES,
@@ -95,7 +95,7 @@ if (!existsSync(versionedResponsivePath)) {
 
 for (const page of PAGES) {
   const html = readFileSync(join(ROOT, page), "utf8");
-  const is404 = page === "404.html";
+  const is404 = ERROR_PAGES.includes(page);
   const base = baseOf(page);
   const hungarian = isHungarian(page);
   const language = languageOf(page);
@@ -212,7 +212,7 @@ for (const page of PAGES) {
     }
   }
 
-  if (!is404) {
+  {
     const navigation = html.match(/<nav\b[^>]*\bid=["']primary-navigation["'][^>]*>[\s\S]*?<\/nav>/i)?.[0] || "";
     const lang = languageOf(page);
     // Every language has its own biography; German pages still link the English case studies.
@@ -248,9 +248,9 @@ for (const page of PAGES) {
       others.forEach((other, index) => {
         const [tag, label] = switchLinks[index];
         const pair = pairs[other];
-        if (label !== LANGUAGES[other].name || !tag.includes(`hreflang="${other}"`) || !tag.includes(`lang="${other}"`) ||
+        if (label !== languageLinkLabel(other, pair) || !tag.includes(`hreflang="${other}"`) || !tag.includes(`lang="${other}"`) ||
             tag.includes('rel="alternate"') !== pair.alternate || /aria-label=|aria-current=/.test(tag) || !tag.includes(`href="${pair.href}"`) || !/<svg class="nav-flag"/.test(tag)) {
-          fail(`${page}: the language link must read ${LANGUAGES[other].name} with its flag, carry ${pair.alternate ? "rel/" : "no rel, only "}hreflang/lang ${other} and lead to ${pair.href}`);
+          fail(`${page}: the language link must read ${languageLinkLabel(other, pair)} with its flag, carry ${pair.alternate ? "rel/" : "no rel, only "}hreflang/lang ${other} and lead to ${pair.href}`);
         }
       });
     }

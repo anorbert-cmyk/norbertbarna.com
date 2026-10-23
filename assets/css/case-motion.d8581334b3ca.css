@@ -262,3 +262,6 @@ html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure
 }
 .case-related-service-link:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 479px) { .case-related-service-card { padding: 22px 18px; border-radius: var(--site-radius-sm, 14px); } }
+/* The measurement note reads at body size in a readable measure (2026-10-22);
+   it had been the smallest text on the page at 14px over 107 characters. */
+body .summary > .case-evidence-note { max-width: 62ch; font-size: 17px; line-height: 1.6; }

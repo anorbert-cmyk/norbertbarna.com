@@ -94,10 +94,10 @@ main {
 }
 
 .dark-button {
-  border: 1px solid #111;
+  border: 1px solid #0A1628;
   border-radius: 8px;
-  background: #000;
-  color: #fff;
+  background: #0A1628;
+  color: #D6D4ED;
 }
 
 .work-content-wrap {
@@ -287,7 +287,19 @@ main {
 
 /* Header focus stays identifiable on both the paper and the mesh. The white
  * inner halo separates the ink ring from any dark part of the background. */
+/* The skip link stays on the palette: navy capsule, lilac text, olive ring inside it. */
+.skip-to-content:focus {
+  background: #0A1628;
+  color: #D6D4ED;
+}
+
+.skip-to-content:focus-visible {
+  outline-color: #BDB414 !important;
+  outline-offset: -6px;
+}
+
 .navbar :is(a, button):focus-visible,
+.home-mast .home-mast-scroll:focus-visible,
 .home-mast .hero-work-link:focus-visible {
   outline: 3px solid #111 !important;
   outline-offset: 3px;

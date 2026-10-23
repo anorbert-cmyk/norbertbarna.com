@@ -61,7 +61,8 @@ const pages = files.map(file => {
 const byUrl = new Map(pages.map(page => [page.canonical, page]));
 const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
-const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage"]);
+// Country and Place name only the Service areaServed (SEO audit 2026-10-22); no address, no LocalBusiness.
+const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage", "Country", "Place"]);
 check(pages.length === files.length && byUrl.size === files.length && files.length === 42 + WRITING_PAGES.length, "expected forty-two distinct indexable content routes (14 English, 14 Hungarian, 14 German) plus the generated writing pages");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
@@ -208,7 +209,7 @@ check(/<urlset\b[^>]*xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9"/.t
 check(entries.length === pages.length && new Set(entries.map(entry => entry.loc)).size === pages.length, "sitemap has exactly every canonical once");
 // Every public HTML file in the repository is a checked page: a new page that
 // is missing from the inventory above would also be missing from the sitemap.
-const NON_PAGES = new Set(["404.html"]);
+const NON_PAGES = new Set(["404.html", "hu/404.html", "de/404.html"]);
 const PRIVATE_DIRS = /^(?:node_modules|docs|scripts|tests|tools|lib|indicators|assets|test-results|playwright-report|blob-report|\.)/;
 const htmlFiles = (dir = "") => readdirSync(join(root, dir), { withFileTypes: true }).flatMap(entry => {
   const relative = dir ? `${dir}/${entry.name}` : entry.name;

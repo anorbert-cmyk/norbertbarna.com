@@ -9,7 +9,7 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { CONTENT_PAGES, languageOf } from "./service-pages.mjs";
+import { CONTENT_PAGES, ERROR_PAGES, languageOf } from "./service-pages.mjs";
 import { ROOT } from "./writing-content.mjs";
 
 const ORIGIN = /^https?:\/\/(?:www\.)?barnanorbert\.com/;
@@ -18,7 +18,8 @@ const attribute = (tag, name) => tag.match(new RegExp(`\\s${name}="([^"]*)"`))?.
 
 let failures = 0;
 let links = 0;
-for (const page of CONTENT_PAGES) {
+const PAGES = [...CONTENT_PAGES, ...ERROR_PAGES];
+for (const page of PAGES) {
   const lang = languageOf(page);
   const html = readFileSync(join(ROOT, page), "utf8");
   if (!html.includes(`<html lang="${lang}"`)) {
@@ -47,4 +48,4 @@ if (failures) {
   console.error(`\n${failures} cross-language link(s)`);
   process.exit(1);
 }
-console.log(`OK: ${links} internal links on ${CONTENT_PAGES.length} pages stay in their page's language`);
+console.log(`OK: ${links} internal links on ${PAGES.length} pages stay in their page's language`);

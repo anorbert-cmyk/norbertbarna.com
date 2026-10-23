@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { UTILITY_PAGES, baseOf, HU_PAGES, DE_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from './service-pages.mjs';
+import { ERROR_PAGES, UTILITY_PAGES, baseOf, HU_PAGES, DE_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from './service-pages.mjs';
 const root = new URL('../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
-const pages = ['index.html', 'works.html', 'about.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p), ...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES];
+const pages = ['index.html', 'works.html', 'about.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p), ...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES, ...ERROR_PAGES];
 for (const page of pages) {
   const html = read(page);
   assert.equal((html.match(/src="\/assets\/js\/analytics-config.js"/g) || []).length, 1, `${page}: one release gate`);
