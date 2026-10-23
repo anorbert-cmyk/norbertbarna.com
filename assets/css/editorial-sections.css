@@ -339,6 +339,13 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
 .utility-page .summary a:not(.footer-email) { color: #0A1628; text-decoration: underline; text-underline-offset: 4px; }
 .error-page .error-code { margin: 0 0 6px; color: #0A1628; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-size: clamp(64px, 10vw, 112px); font-weight: 700; letter-spacing: -.04em; line-height: 1; }
 .error-page p > a:not(.footer-email) { display: inline-block; padding-block: 6px; margin-block: -6px; }
+/* One reading axis on privacy and the error documents: the Funnel code, the
+   title, the copy and the action share the 720px measure, and the block
+   starts a breath below the bar instead of touching it. Writing pages keep
+   their own layout (writing.css). */
+.utility-page:not(.writing-page) .work-single-section { padding-top: clamp(56px, 6vw, 88px); padding-bottom: clamp(72px, 7vw, 100px); }
+.utility-page:not(.writing-page) .summary > h1 { width: min(100%, var(--site-readable)); max-width: none; margin-right: auto; margin-left: auto; }
+.error-page .error-code { width: min(100%, var(--site-readable)); margin: 0 auto 6px; }
 
 /* The existing non-modal consent controller and equal-choice controls remain. */
 .consent-banner {

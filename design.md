@@ -639,6 +639,19 @@ returns to the menu button. Keep native semantics, skip-link and no-JS fallback.
 factual introduction and first landscape row (Raiffeisen) visible in a
 900px-tall desktop viewport. All seven projects use unique decorative geometric
 art, original summaries and native links. No “these aren’t mockups” manifesto.
+The works H1 (`Selected work`, `Válogatott munkák`, `Ausgewählte Arbeiten`)
+breaks only at its authored `<br>`, never inside a word: `project-index.css`
+sizes the title per language so the longest word fits the title column from
+320 to 1920 (`tests/display-titles.spec.mjs`; `overflow-wrap: anywhere` stays
+only as the 200% enlarged-text guard, where a word that cannot fit must break
+rather than be clipped) (EN `clamp(72px, 11vw, 164px)`,
+HU `clamp(56px, 10vw, 164px)`, DE `clamp(44px, 7.9vw, 152px)`; below 600px
+HU `clamp(56px, 18.5vw, 100px)`, DE `clamp(44px, 14.6vw, 72px)`). The HU/DE
+sources carry one soft hyphen (`Válo&shy;gatott`, `Aus&shy;gewählte`) as the
+safety net, so any forced break shows a hyphen. The small square at the foot
+of a line-final `d` or `a` in Funnel Display is the face's own spur, not a
+stray glyph. `.work-row-meta` keeps the 12px utility floor.
+(2026-10-23, review round 1: LAY-01, I18N-02, VIS-12, A11Y-05.)
 
 **Home professional experience:** five chronological text rows on lilac, original
 roles/companies/dates, the original folded gate beside the heading. Company names
@@ -956,7 +969,7 @@ same change that caused the drift.
 | `/hu/munka/{slug}` | `hu/munka/*.html` (7) | Hungarian case studies | default |
 | `/writing`, `/hu/irasok` | `writing/index.html`, `hu/irasok/index.html` | Writing list pages, generated from `content/*.md`; served by explicit routes like `/hu` | default |
 | `/writing/{slug}`, `/hu/irasok/{slug}` | `writing/*.html`, `hu/irasok/*.html` | Articles, generated; RSS at `<section>/feed.xml` | default |
-| (none) | `404.html`, `hu/404.html`, `de/404.html` | Error documents (2026-10-22), one per language: `server.js` answers a missing `/hu/…` path with the Hungarian one, `/de/…` with the German one, anything else with the English one. Utility-page chrome (generated navigation and footer columns, the language menu leading to the other homes), ink on paper, a Funnel `404` kicker, the language's home, works and contact links; `noindex`, never in the sitemap or a content inventory (`ERROR_PAGES` in `service-pages.mjs`), and `/404`, `/hu/404`, `/de/404` (with or without `.html`) never return 200 | — |
+| (none) | `404.html`, `hu/404.html`, `de/404.html` | Error documents (2026-10-22), one per language (one reading axis with the privacy pages since 2026-10-23: code, H1, copy and action share `--site-readable`, the block starts `clamp(56px, 6vw, 88px)` under the bar, `editorial-sections.css`): `server.js` answers a missing `/hu/…` path with the Hungarian one, `/de/…` with the German one, anything else with the English one. Utility-page chrome (generated navigation and footer columns, the language menu leading to the other homes), ink on paper, a Funnel `404` kicker, the language's home, works and contact links; `noindex`, never in the sitemap or a content inventory (`ERROR_PAGES` in `service-pages.mjs`), and `/404`, `/hu/404`, `/de/404` (with or without `.html`) never return 200 | — |
 
 **Whole-site language switch (owner request, 2026-10-06).** Every content page
 has an English and a Hungarian version with the same structure, classes and
