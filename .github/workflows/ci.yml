@@ -34,6 +34,13 @@ jobs:
           node --check assets/js/consent.js
           node --check assets/js/analytics-config.js
           node --check assets/js/analytics.js
+          node --check assets/js/article-comments.js
+          for file in lib/*.js lib/admin/*.js; do node --check "$file"; done
+      - name: The committed admin build matches its source
+        run: |
+          npm run build:admin
+          git diff --exit-code -- admin
+          test -z "$(git status --porcelain -- admin)"
       - name: Site invariants
         run: npm test
       - name: Install Chromium
