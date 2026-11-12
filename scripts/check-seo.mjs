@@ -211,7 +211,7 @@ check(entries.length === pages.length && new Set(entries.map(entry => entry.loc)
 // Every public HTML file in the repository is a checked page: a new page that
 // is missing from the inventory above would also be missing from the sitemap.
 const NON_PAGES = new Set(["404.html", "hu/404.html", "de/404.html"]);
-const PRIVATE_DIRS = /^(?:node_modules|docs|scripts|tests|tools|lib|indicators|assets|test-results|playwright-report|blob-report|\.)/;
+const PRIVATE_DIRS = /^(?:node_modules|admin|admin-ui|docs|scripts|tests|tools|lib|indicators|assets|test-results|playwright-report|blob-report|\.)/;
 const htmlFiles = (dir = "") => readdirSync(join(root, dir), { withFileTypes: true }).flatMap(entry => {
   const relative = dir ? `${dir}/${entry.name}` : entry.name;
   if (entry.isDirectory()) return PRIVATE_DIRS.test(relative) ? [] : htmlFiles(relative);
