@@ -221,6 +221,8 @@ try {
   expect(/Disallow: \/admin/.test(readFileSync(join(ROOT, "robots.txt"), "utf8")), "robots.txt must disallow /admin");
   expect((await fetch(`${siteBase}/admin/api/me`)).status !== 200, "the admin API must not answer 200 without a session");
   // The committed build matches its source: every source file is older than or as old as the build marker.
+  const ignored = readFileSync(join(ROOT, ".dockerignore"), "utf8").split("\n");
+  expect(!ignored.includes("scripts") && ignored.includes("!scripts/writing-content.mjs") && !ignored.includes("lib") && !ignored.includes("content") && !ignored.includes("admin"), "the image must keep what the admin imports at runtime (scripts/writing-content.mjs, lib, content, admin)");
   expect(existsSync(join(ROOT, "admin", "index.html")), "admin/index.html (the built admin) must be committed");
 } finally {
   site.close();
