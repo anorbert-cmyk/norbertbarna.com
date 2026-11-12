@@ -2,8 +2,12 @@
 node_modules
 .claude
 .github
-docs
-scripts
+# The admin reads the article loader and the optional market data at runtime;
+# server.js keeps both directories private.
+docs/*
+!docs/article-seo.json
+scripts/*
+!scripts/writing-content.mjs
 Dockerfile
 .dockerignore
 README.md
