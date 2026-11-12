@@ -3,6 +3,10 @@ const compression = require("compression");
 const fs = require("fs");
 const path = require("path");
 const { createContactRouter } = require("./lib/contact");
+const { createCommentsRouter } = require("./lib/comments");
+const { createAdminRouter } = require("./lib/admin/router");
+const { createTrafficCounter } = require("./lib/admin/traffic");
+const { getStore } = require("./lib/admin/store");
 
 const GOOGLE_SITE_VERIFICATION = "";
 const GSC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,100}$/;
@@ -58,6 +62,18 @@ app.use((req, res, next) => {
   // No popup or OAuth flow needs an opener; isolate the browsing context group.
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // The admin (/admin) is a separate single-page app: its own bundle only, no
+  // inline script, never framed, never indexed.
+  if (req.path === "/admin" || req.path.startsWith("/admin/")) {
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    res.setHeader(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+    );
+    return next();
+  }
   // The contact pages alone load Cloudflare Turnstile (script and iframe).
   const turnstile = TURNSTILE_PAGES.has(req.path);
   res.setHeader(
@@ -197,7 +213,7 @@ app.use((req, res, next) => {
 // docs, dotfiles). Decode first: express.static decodes percent-encoding when
 // resolving, so the filter must see the same path it would serve.
 const PRIVATE_PATH =
-  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$|design\.md$|agents\.md$|tools(?:\/|$)|lib(?:\/|$)|content(?:\/|$))/i;
+  /^\/(?:\.|node_modules(?:\/|$)|docs(?:\/|$)|admin-ui(?:\/|$)|scripts(?:\/|$)|tests(?:\/|$)|test-results(?:\/|$)|playwright-report(?:\/|$)|blob-report(?:\/|$)|indicators(?:\/|$)|server\.js$|playwright\.config\.mjs$|package(?:-lock)?\.json$|railway\.json$|nixpacks\.toml$|dockerfile$|claude\.md$|readme\.md$|design\.md$|agents\.md$|tools(?:\/|$)|lib(?:\/|$)|content(?:\/|$))/i;
 app.use((req, res, next) => {
   let decoded;
   try {
@@ -218,6 +234,38 @@ app.use((req, res, next) => {
 // the private-path filter so /api can never expose repository files.
 app.use("/api/contact", createContactRouter());
 
+// Shared storage for comments, admin sessions and the traffic counters:
+// Postgres when DATABASE_URL is set, in memory otherwise (lib/admin/store.js).
+const store = getStore();
+
+// Reader comments on the articles; every comment waits for moderation.
+app.use("/api/comments", createCommentsRouter({ store }));
+
+// The admin: API behind a signed-in session, then the built single-page app
+// (admin-ui/ is its source, admin/ the committed build).
+app.use("/admin/api", createAdminRouter({ store }));
+const ADMIN_ROOT = path.join(__dirname, "admin");
+app.get(["/admin", "/admin/", "/admin/index.html"], (req, res, next) => {
+  if (req.path !== "/admin") return res.redirect(302, "/admin");
+  res.setHeader("Cache-Control", "no-store");
+  res.sendFile(path.join(ADMIN_ROOT, "index.html"), (err) => {
+    if (err) next(err.status === 404 || err.code === "ENOENT" ? undefined : err);
+  });
+});
+app.use(
+  "/admin/assets",
+  express.static(path.join(ADMIN_ROOT, "assets"), {
+    // Vite names every file by its content hash.
+    setHeaders(res) {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    },
+  })
+);
+app.use("/admin", (req, res) => sendNotFound(res, req));
+
+// Cookieless daily page counters for the admin (lib/admin/traffic.js).
+app.use(createTrafficCounter(store).middleware);
+
 // A native form post (no JavaScript) must never put a message in a URL or a
 // log: answer the page itself without reading the body.
 app.post(["/contact", "/hu/kapcsolat", "/de/kontakt"], (req, res) => {
@@ -234,7 +282,7 @@ const ASSET_ROOT = path.join(__dirname, "assets");
 // The inherited Webflow stylesheets (2026-10-22) carry the same SHA-256 prefix
 // after their Webflow object id, so they cache like the authored releases.
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact|writing)\.[a-f0-9]{12}\.css|css\/norbertbarna\.webflow\.(?:shared|[a-f0-9]{24})\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
+  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics|comments)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact|writing)\.[a-f0-9]{12}\.css|css\/norbertbarna\.webflow\.(?:shared|[a-f0-9]{24})\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");

@@ -28,6 +28,8 @@ const RELEASE_SOURCES = [
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
   "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css",
   "css/contact.css", "js/contact.js", "js/physics.js", "css/writing.css",
+  // Written by build-writing.mjs from contact.js (proof of work) and article-comments.js.
+  "js/comments.js",
 ];
 // Font binaries are distributed once, under their digest-bearing names. Their
 // manifest replaces the unhashed source/release pair used by authored CSS/JS.

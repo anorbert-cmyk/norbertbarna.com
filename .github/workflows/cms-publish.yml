@@ -1,0 +1,57 @@
+name: CMS publish
+
+# A change saved in the admin arrives as a commit on a short-lived cms/ branch
+# (lib/admin/github.js). This workflow rebuilds the generated pages, runs the
+# site invariants and only then moves main forward, which Railway deploys.
+# A change that breaks an invariant stops here; main and the live site stay
+# as they were, and the admin shows the failed run.
+on:
+  push:
+    branches: ["cms/**"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cms-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Take the change on top of the current main
+        run: |
+          git config user.name "site-admin"
+          git config user.email "site-admin@users.noreply.github.com"
+          git fetch origin main
+          git rebase origin/main
+      - name: Only content may change
+        run: |
+          changed="$(git diff --name-only origin/main...HEAD)"
+          echo "$changed"
+          if echo "$changed" | grep -vE '^(content/[a-z0-9-]+\.md|assets/images/og/writing/[a-z0-9-]+\.jpe?g)$' | grep -q .; then
+            echo "::error::A CMS change may touch content/*.md and assets/images/og/writing/ only."
+            exit 1
+          fi
+      - run: npm ci
+      - name: Rebuild the generated pages
+        run: npm run build:writing
+      - name: Site invariants
+        run: npm test
+      - name: Publish to main
+        run: |
+          git add -A
+          git diff --cached --quiet || git commit -m "Rebuild pages for $(git log -1 --format=%s)"
+          git push origin HEAD:main
+      - name: Remove the branch
+        if: success()
+        run: git push origin --delete "${GITHUB_REF_NAME}"
