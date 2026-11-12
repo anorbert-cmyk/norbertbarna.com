@@ -6,7 +6,56 @@
     <atom:link href="https://www.barnanorbert.com/hu/irasok/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Barna Norbert cikkei céges weboldalakról, webfejlesztésről és AI-integrációról, saját projektek tapasztalataiból írva.</description>
     <language>hu</language>
-    <lastBuildDate>Wed, 21 Oct 2026 07:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2026 11:00:00 +0000</lastBuildDate>
+    <item>
+      <title>AI Act: mit kell jelölnie egy terméknek 2026 augusztusa óta</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ai-act-jelolesi-kotelezettseg</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ai-act-jelolesi-kotelezettseg</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>AI Act 50. cikk: mit kell jelölni 2026. augusztus 2. óta, mit nem halasztott el a Digital Omnibus, és hogyan tervezd meg a jelölést.</description>
+      <category>ai act</category>
+      <category>eu ai act</category>
+      <category>mi rendelet</category>
+      <category>ai rendelet</category>
+      <category>mesterséges intelligencia rendelet</category>
+      <category>ai jelölés</category>
+    </item>
+    <item>
+      <title>AI automatizálás cégeknek: melyik folyamattal kezdj</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>AI automatizálás cégeknek: öt szempont az első folyamat kiválasztásához, mikor elég a hagyományos megoldás, és mi vezet a pilotig.</description>
+      <category>ai automatizálás</category>
+      <category>folyamatautomatizálás</category>
+      <category>ai audit</category>
+      <category>ai tanácsadás</category>
+      <category>ai bevezetés</category>
+    </item>
+    <item>
+      <title>Human in the loop: hét minta szabályozott AI-termékhez</title>
+      <link>https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>Human in the loop a gyakorlatban: hét minta, amely kiállja a felülvizsgálatot. AI-jelölés, szerkeszthető kimenet, forrás, stop.</description>
+      <category>human in the loop</category>
+      <category>emberi felügyelet</category>
+      <category>ai act</category>
+      <category>ai fejlesztés</category>
+      <category>ai tanácsadás</category>
+    </item>
+    <item>
+      <title>Weboldal felújítás vagy új oldal? Miből látod, melyik kell</title>
+      <link>https://www.barnanorbert.com/hu/irasok/weboldal-felujitas-vagy-uj-oldal</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/weboldal-felujitas-vagy-uj-oldal</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>Weboldal felújítás vagy teljesen új oldal? Hat jel az újraépítés mellett, mikor elég a javítás, és SEO-ellenőrzőlista a váltáshoz.</description>
+      <category>weboldal felújítás</category>
+      <category>honlap felújítás</category>
+      <category>weboldal redesign</category>
+      <category>weboldal készítés</category>
+      <category>honlapkészítés</category>
+    </item>
     <item>
       <title>AI bevezetése KKV-nál: az első 90 nap lépésről lépésre</title>
       <link>https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap</link>

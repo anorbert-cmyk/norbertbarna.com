@@ -236,8 +236,32 @@
   </url>
   <url>
     <loc>https://www.barnanorbert.com/writing</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/ai-hallucinations-in-business-products</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/eu-ai-act-transparency-obligations</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/how-much-does-a-business-website-cost</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/mvp-development-regulated-products</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
@@ -254,8 +278,32 @@
   </url>
   <url>
     <loc>https://www.barnanorbert.com/hu/irasok</loc>
-    <lastmod>2026-10-21</lastmod>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/ai-act-jelolesi-kotelezettseg</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/weboldal-felujitas-vagy-uj-oldal</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>

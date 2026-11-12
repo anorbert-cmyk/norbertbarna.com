@@ -10,7 +10,7 @@ service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-kennzeichnungspflicht.jpg
 cover_alt: Eine große dunkelgrüne Papierform mit einem kleinen olivfarbenen Papieranhänger als Etikett: die KI-Kennzeichnungspflicht nach Artikel 50 der KI-Verordnung
-pair: null
+pair: [hu/ai-act-jelolesi-kotelezettseg, en/eu-ai-act-transparency-obligations]
 ---
 Die KI-Kennzeichnungspflicht ergibt sich aus Artikel 50 der EU-KI-Verordnung und gilt seit dem 2. August 2026. Kurz gefasst: Wer ein KI-System betreibt, das direkt mit Menschen interagiert, muss diese Menschen darüber informieren, außer es ist aus den Umständen offensichtlich. Wer KI-generierte Inhalte erzeugt oder veröffentlicht, muss sie in bestimmten Fällen kennzeichnen, insbesondere Deepfakes und maschinell erzeugte Inhalte. Der Digital Omnibus 2026 hat viele Fristen der Verordnung verschoben, diese Pflichten nicht.
 

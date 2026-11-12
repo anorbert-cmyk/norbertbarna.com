@@ -55,7 +55,7 @@ test.describe("compact menu", () => {
 test("an untranslated article names the list its language links lead to", async ({ page }) => {
   await rejected(page);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/writing/human-in-the-loop-ai", { waitUntil: "load" });
+  await page.goto("/writing/before-hiring-an-ai-integration-partner", { waitUntil: "load" });
   const links = await page.locator("#primary-navigation a.lang-switch").evaluateAll((anchors) => anchors.map((a) => ({ text: a.textContent.trim(), href: a.getAttribute("href"), rel: a.getAttribute("rel") })));
   for (const link of links) {
     if (link.rel === "alternate") continue;

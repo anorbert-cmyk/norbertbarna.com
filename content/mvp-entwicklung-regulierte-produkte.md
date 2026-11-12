@@ -10,7 +10,7 @@ service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/mvp-entwicklung-regulierte-produkte.jpg
 cover_alt: Eine kleine, sauber gefaltete Papierform auf einem festen dunkelgrünen Papiersockel, drumherum Platz für weitere Faltungen: MVP-Entwicklung für regulierte Produkte
-pair: null
+pair: en/mvp-development-regulated-products
 ---
 Ein MVP, ein Minimum Viable Product, ist die kleinste Version eines Produkts, mit der sich eine zentrale Annahme an echten Nutzern prüfen lässt. In der MVP-Entwicklung für einen regulierten Markt, etwa bei Zahlungen, Gesundheit, Versicherungen oder Glücksspiel, gilt das Prinzip genauso, aber mit einer Einschränkung: Was Sie weglassen dürfen, ist der Funktionsumfang. Was Sie nicht weglassen dürfen, ist alles, was Vertrauen und Zulässigkeit betrifft: Identitätsprüfung, Einwilligung, Datenschutz, sichere Bestätigung folgenreicher Aktionen, Nachvollziehbarkeit. Diese Dinge sind am ersten Tag echt, oder das Produkt darf nicht an echte Nutzer.
 

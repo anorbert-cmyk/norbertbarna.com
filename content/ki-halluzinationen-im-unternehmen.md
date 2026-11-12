@@ -10,7 +10,7 @@ service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-halluzinationen-im-unternehmen.jpg
 cover_alt: Ein gefaltetes Papierblatt mit einer losen, abstehenden Ecke, daneben eine kleine olivfarbene Prüfmarke: KI-Halluzinationen im Unternehmen auffangen
-pair: null
+pair: en/ai-hallucinations-in-business-products
 ---
 Eine KI-Halluzination ist eine überzeugend formulierte, aber falsche oder erfundene Ausgabe eines Sprachmodells. Im Unternehmen lässt sie sich nicht abschalten, sondern nur auffangen: Die KI arbeitet aus Ihren eigenen Quellen und zeigt sie an, die Ausgabe ist ein Entwurf, den ein Mensch bearbeitet, und bei Fragen, zu denen keine Quelle existiert, sagt das System „weiß ich nicht“ statt zu raten. Wer das in die Oberfläche einbaut, hat Halluzinationen nicht beseitigt, aber ihnen die Wirkung genommen.
 

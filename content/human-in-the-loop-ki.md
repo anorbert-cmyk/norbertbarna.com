@@ -10,7 +10,7 @@ service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/human-in-the-loop-ki.jpg
 cover_alt: Ein gefaltetes Papierband läuft durch ein Papiertor mit einer kleinen olivfarbenen Kontrollfalte: Human in the Loop als Prüfschritt vor der Wirkung einer KI-Ausgabe
-pair: en/human-in-the-loop-ai
+pair: [en/human-in-the-loop-ai, hu/human-in-the-loop-emberi-felugyelet]
 ---
 Human in the Loop bedeutet, dass ein Mensch prüft, bearbeitet oder freigibt, was ein KI-System vorschlägt, bevor es Wirkung entfaltet, und dass er es übersteuern oder stoppen kann. In einem regulierten Produkt ist das kein Häkchen am Ende des Projekts. Es ist ein Satz von Entscheidungen über die Oberfläche, die am ersten Tag getroffen werden: Was darf die KI vorschlagen, was muss ein Mensch prüfen, wie sieht er das Warum, und was passiert, wenn die Ausgabe falsch ist.
 

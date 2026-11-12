@@ -1329,7 +1329,7 @@ for (const width of [320, 390, 768, 991, 1440]) {
     await page.waitForTimeout(450);
     const text = page.locator(".editorial-footer-title, .footer-lede, .footer-col-title, .footer-col a, footer .footer-email, footer .footer-contact-link, .footer-copyright, .footer-privacy a, .footer-privacy button");
     // Work column (title + 5), Services (title + 2), Articles (title + latest 3 + all) and the rest.
-    await expect(text).toHaveCount(20);
+    await expect(text).toHaveCount(21);
     for (const element of await text.all()) {
       await expectHeaderTextAA(page, element, "footer rendered text", { raster: true });
       if (await element.evaluate((node) => node.matches("a, button"))) {
@@ -1361,8 +1361,8 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare", "/h
     expect(await work.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href"))))
       .toEqual([...["raiffeisen", "instructure", "bitpanda", "kineticare"].map((slug) => `${copy.caseRoot}${slug}`), copy.works]);
     await expect(footer.locator(".footer-col-services a")).toHaveCount(2);
-    // Latest three articles of the page language plus the All articles row (two English articles so far).
-    await expect(footer.locator(".footer-col-articles a")).toHaveCount(languageOf(route) === "en" ? 3 : 4);
+    // Latest three articles of the page language plus the All articles row.
+    await expect(footer.locator(".footer-col-articles a")).toHaveCount(4);
     await expect(footer.locator(".footer-col-articles a").last()).toHaveAttribute("href", copy.writing);
     // One privacy link, in the page language.
     await expect(footer.locator(".footer-privacy a")).toHaveCount(1);
