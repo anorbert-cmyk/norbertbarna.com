@@ -1,0 +1,1378 @@
+{
+  "measured": "2026-11-12",
+  "sources": "Google Search Console via PostHog warehouse (all time to 2026-11-12); Google SERP, search volume, ranked keywords and LLM mentions via DataForSEO",
+  "site": {
+    "weeklyImpressions": 211,
+    "averagePosition": 42,
+    "clicksLast45Days": 0,
+    "sitemapUrls": 63,
+    "urlsEverShown": 32,
+    "keywordsChecked": 24,
+    "keywordsInTop50": 0,
+    "aiOverviewCitations": 0,
+    "llmMentions": 0
+  },
+  "articles": [
+    {
+      "path": "/hu/irasok/ai-act-jelolesi-kotelezettseg",
+      "source": "content/ai-act-jelolesi-kotelezettseg.md",
+      "lang": "hu",
+      "title": "AI Act: mit kell jelölnie egy terméknek 2026 augusztusa óta",
+      "optimizedFor": {
+        "primaryKeyword": "ai act",
+        "secondaryKeywords": [
+          "eu ai act",
+          "mi rendelet",
+          "ai rendelet",
+          "mesterséges intelligencia rendelet",
+          "ai jelölés"
+        ],
+        "market": "Hungary",
+        "monthlySearches": 880
+      },
+      "translations": [
+        "de/ki-kennzeichnungspflicht",
+        "en/eu-ai-act-transparency-obligations"
+      ],
+      "servicePage": "/hu/ai-tanacsadas-fejlesztes",
+      "seo": {
+        "titleLength": 59,
+        "descriptionLength": 132,
+        "words": 1395,
+        "h2": 6,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 2,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 9
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj",
+      "source": "content/ai-automatizalas-melyik-folyamattal-kezdj.md",
+      "lang": "hu",
+      "title": "AI automatizálás cégeknek: melyik folyamattal kezdj",
+      "optimizedFor": {
+        "primaryKeyword": "ai automatizálás",
+        "secondaryKeywords": [
+          "folyamatautomatizálás",
+          "ai audit",
+          "ai tanácsadás",
+          "ai bevezetés"
+        ],
+        "market": "Hungary",
+        "monthlySearches": 50
+      },
+      "translations": [
+        "de/ki-automatisierung-erster-prozess"
+      ],
+      "servicePage": "/hu/ai-tanacsadas-fejlesztes",
+      "seo": {
+        "titleLength": 51,
+        "descriptionLength": 130,
+        "words": 1393,
+        "h2": 8,
+        "questionH2": 3,
+        "internalLinks": 5,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 14
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/hu/irasok/ai-bevezetese-kkv-elso-90-nap",
+      "source": "content/ai-bevezetese-kkv-elso-90-nap.md",
+      "lang": "hu",
+      "title": "AI bevezetése KKV-nál: az első 90 nap lépésről lépésre",
+      "optimizedFor": {
+        "primaryKeyword": "ai bevezetés",
+        "secondaryKeywords": [
+          "ai tanácsadás",
+          "mesterséges intelligencia cégeknek",
+          "ai automatizálás",
+          "kkv"
+        ],
+        "market": "Hungary",
+        "monthlySearches": null
+      },
+      "translations": [
+        "de/ki-im-mittelstand-einfuehren"
+      ],
+      "servicePage": "/hu/ai-tanacsadas-fejlesztes",
+      "seo": {
+        "titleLength": 54,
+        "descriptionLength": 131,
+        "words": 1013,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 4,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 22
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/writing/ai-hallucinations-in-business-products",
+      "source": "content/ai-hallucinations-in-business-products.md",
+      "lang": "en",
+      "title": "AI hallucinations in business: what a product has to do",
+      "optimizedFor": {
+        "primaryKeyword": "ai hallucinations",
+        "secondaryKeywords": [
+          "how to prevent ai hallucinations",
+          "llm hallucination",
+          "retrieval augmented generation",
+          "human in the loop ai"
+        ],
+        "market": "United States",
+        "monthlySearches": 14800
+      },
+      "translations": [
+        "de/ki-halluzinationen-im-unternehmen"
+      ],
+      "servicePage": "/ai-integration",
+      "seo": {
+        "titleLength": 55,
+        "descriptionLength": 134,
+        "words": 1510,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 6,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 3
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel",
+      "source": "content/ai-ugyfelszolgalat-emberi-ellenorzessel.md",
+      "lang": "hu",
+      "title": "AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg",
+      "optimizedFor": {
+        "primaryKeyword": "ai ügyfélszolgálat",
+        "secondaryKeywords": [
+          "chatbot fejlesztés",
+          "ai automatizálás",
+          "human in the loop",
+          "ai tanácsadás"
+        ],
+        "market": "Hungary",
+        "monthlySearches": 30
+      },
+      "translations": [
+        "de/ki-im-kundenservice"
+      ],
+      "servicePage": "/hu/ai-tanacsadas-fejlesztes",
+      "seo": {
+        "titleLength": 54,
+        "descriptionLength": 134,
+        "words": 971,
+        "h2": 8,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 2,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 16
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 1,
+        "clicks": 0,
+        "averagePosition": 9
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/barrierefreie-website-bfsg",
+      "source": "content/barrierefreie-website-bfsg.md",
+      "lang": "de",
+      "title": "Barrierefreie Website: Was das BFSG für Firmen bedeutet",
+      "optimizedFor": {
+        "primaryKeyword": "barrierefreie website",
+        "secondaryKeywords": [
+          "barrierefreiheitsstärkungsgesetz",
+          "bfsg",
+          "wcag 2.1",
+          "barrierefreiheit website",
+          "website barrierefrei machen"
+        ],
+        "market": "Germany",
+        "monthlySearches": 880
+      },
+      "translations": [],
+      "servicePage": "/de/webentwicklung",
+      "seo": {
+        "titleLength": 55,
+        "descriptionLength": 132,
+        "words": 1428,
+        "h2": 8,
+        "questionH2": 3,
+        "internalLinks": 4,
+        "externalSources": 2,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 25
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 315,
+        "clicks": 0,
+        "averagePosition": 46.7
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/writing/before-hiring-an-ai-integration-partner",
+      "source": "content/before-hiring-an-ai-integration-partner.md",
+      "lang": "en",
+      "title": "What to prepare before hiring an AI integration partner",
+      "optimizedFor": {
+        "primaryKeyword": "ai integration",
+        "secondaryKeywords": [
+          "ai integration consultant",
+          "ai implementation",
+          "ai consulting",
+          "ai integration services"
+        ],
+        "market": "United States",
+        "monthlySearches": null
+      },
+      "translations": [],
+      "servicePage": "/ai-integration",
+      "seo": {
+        "titleLength": 55,
+        "descriptionLength": 132,
+        "words": 1206,
+        "h2": 8,
+        "questionH2": 1,
+        "internalLinks": 4,
+        "externalSources": 2,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 13
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/hu/irasok/ceges-weboldal-ara",
+      "source": "content/ceges-weboldal-ara.md",
+      "lang": "hu",
+      "title": "Weboldal készítés árak 2026: mitől függ egy céges oldal ára",
+      "optimizedFor": {
+        "primaryKeyword": "weboldal készítés árak",
+        "secondaryKeywords": [
+          "honlapkészítés",
+          "egyedi weboldal készítés",
+          "weboldal készítés",
+          "webfejlesztés"
+        ],
+        "market": "Hungary",
+        "monthlySearches": 1000
+      },
+      "translations": [
+        "de/was-kostet-eine-website",
+        "en/how-much-does-a-business-website-cost"
+      ],
+      "servicePage": "/hu/webfejlesztes",
+      "seo": {
+        "titleLength": 59,
+        "descriptionLength": 132,
+        "words": 1726,
+        "h2": 10,
+        "questionH2": 2,
+        "internalLinks": 5,
+        "externalSources": 0,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 22
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 1,
+        "clicks": 0,
+        "averagePosition": 64
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/hu/irasok/egyedi-weboldal-vagy-sablon",
+      "source": "content/egyedi-weboldal-vagy-sablon.md",
+      "lang": "hu",
+      "title": "Egyedi weboldal készítés vagy sablon? Hat szempont cégeknek",
+      "optimizedFor": {
+        "primaryKeyword": "egyedi weboldal készítés",
+        "secondaryKeywords": [
+          "honlapkészítés",
+          "weboldal készítés",
+          "egyedi webfejlesztés",
+          "sablon weboldal"
+        ],
+        "market": "Hungary",
+        "monthlySearches": 90
+      },
+      "translations": [
+        "de/individuelle-website-oder-baukasten"
+      ],
+      "servicePage": "/hu/webfejlesztes",
+      "seo": {
+        "titleLength": 59,
+        "descriptionLength": 132,
+        "words": 1102,
+        "h2": 6,
+        "questionH2": 2,
+        "internalLinks": 6,
+        "externalSources": 0,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 1,
+        "listItems": 0
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 1,
+        "clicks": 0,
+        "averagePosition": 2
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/writing/eu-ai-act-transparency-obligations",
+      "source": "content/eu-ai-act-transparency-obligations.md",
+      "lang": "en",
+      "title": "EU AI Act Article 50: what product teams must label now",
+      "optimizedFor": {
+        "primaryKeyword": "eu ai act",
+        "secondaryKeywords": [
+          "ai act article 50",
+          "ai transparency obligations",
+          "ai disclosure requirements",
+          "ai labelling"
+        ],
+        "market": "United States",
+        "monthlySearches": 8100
+      },
+      "translations": [
+        "de/ki-kennzeichnungspflicht",
+        "hu/ai-act-jelolesi-kotelezettseg"
+      ],
+      "servicePage": "/ai-integration",
+      "seo": {
+        "titleLength": 55,
+        "descriptionLength": 132,
+        "words": 1486,
+        "h2": 6,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 2,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 9
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/writing/how-much-does-a-business-website-cost",
+      "source": "content/how-much-does-a-business-website-cost.md",
+      "lang": "en",
+      "title": "How much does a website cost? What the price depends on",
+      "optimizedFor": {
+        "primaryKeyword": "how much does a website cost",
+        "secondaryKeywords": [
+          "business website cost",
+          "custom website",
+          "web development services",
+          "website pricing factors"
+        ],
+        "market": "United States",
+        "monthlySearches": 2400
+      },
+      "translations": [
+        "hu/ceges-weboldal-ara",
+        "de/was-kostet-eine-website"
+      ],
+      "servicePage": "/web-development",
+      "seo": {
+        "titleLength": 55,
+        "descriptionLength": 135,
+        "words": 1710,
+        "h2": 8,
+        "questionH2": 2,
+        "internalLinks": 5,
+        "externalSources": 0,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 13
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/writing/human-in-the-loop-ai",
+      "source": "content/human-in-the-loop-ai.md",
+      "lang": "en",
+      "title": "Human-in-the-loop AI for regulated products: 7 patterns",
+      "optimizedFor": {
+        "primaryKeyword": "human in the loop ai",
+        "secondaryKeywords": [
+          "ai integration",
+          "ai product design",
+          "regulated industries",
+          "eu ai act",
+          "human oversight"
+        ],
+        "market": "United States",
+        "monthlySearches": 1000
+      },
+      "translations": [
+        "de/human-in-the-loop-ki",
+        "hu/human-in-the-loop-emberi-felugyelet"
+      ],
+      "servicePage": "/ai-integration",
+      "seo": {
+        "titleLength": 55,
+        "descriptionLength": 135,
+        "words": 1647,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 6,
+        "externalSources": 3,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 7,
+        "tables": 0,
+        "listItems": 11
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 1,
+        "clicks": 0,
+        "averagePosition": 92
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/hu/irasok/human-in-the-loop-emberi-felugyelet",
+      "source": "content/human-in-the-loop-emberi-felugyelet.md",
+      "lang": "hu",
+      "title": "Human in the loop: hét minta szabályozott AI-termékhez",
+      "optimizedFor": {
+        "primaryKeyword": "human in the loop",
+        "secondaryKeywords": [
+          "emberi felügyelet",
+          "ai act",
+          "ai fejlesztés",
+          "ai tanácsadás"
+        ],
+        "market": "Hungary",
+        "monthlySearches": 110
+      },
+      "translations": [
+        "en/human-in-the-loop-ai",
+        "de/human-in-the-loop-ki"
+      ],
+      "servicePage": "/hu/ai-tanacsadas-fejlesztes",
+      "seo": {
+        "titleLength": 54,
+        "descriptionLength": 127,
+        "words": 1633,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 6,
+        "externalSources": 3,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 11
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/de/wissen/human-in-the-loop-ki",
+      "source": "content/human-in-the-loop-ki.md",
+      "lang": "de",
+      "title": "Human in the Loop: Was es im regulierten Produkt bedeutet",
+      "optimizedFor": {
+        "primaryKeyword": "human in the loop",
+        "secondaryKeywords": [
+          "human in the loop ki",
+          "menschliche aufsicht ki",
+          "ki verordnung",
+          "ki integration",
+          "ki entwicklung"
+        ],
+        "market": "Germany",
+        "monthlySearches": 2400
+      },
+      "translations": [
+        "en/human-in-the-loop-ai",
+        "hu/human-in-the-loop-emberi-felugyelet"
+      ],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 57,
+        "descriptionLength": 135,
+        "words": 1577,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 6,
+        "externalSources": 3,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 7,
+        "tables": 0,
+        "listItems": 11
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 9,
+        "clicks": 0,
+        "averagePosition": 8.1
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/individuelle-website-oder-baukasten",
+      "source": "content/individuelle-website-oder-baukasten.md",
+      "lang": "de",
+      "title": "Individuelle Website oder Baukasten: Sechs Kriterien",
+      "optimizedFor": {
+        "primaryKeyword": "individuelle website",
+        "secondaryKeywords": [
+          "website erstellen lassen",
+          "maßgeschneiderte website",
+          "website baukasten",
+          "wordpress oder baukasten",
+          "webentwicklung"
+        ],
+        "market": "Germany",
+        "monthlySearches": 30
+      },
+      "translations": [
+        "hu/egyedi-weboldal-vagy-sablon"
+      ],
+      "servicePage": "/de/webentwicklung",
+      "seo": {
+        "titleLength": 52,
+        "descriptionLength": 134,
+        "words": 1332,
+        "h2": 7,
+        "questionH2": 3,
+        "internalLinks": 4,
+        "externalSources": 0,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 1,
+        "listItems": 0
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 3,
+        "clicks": 0,
+        "averagePosition": 69
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/ki-automatisierung-erster-prozess",
+      "source": "content/ki-automatisierung-erster-prozess.md",
+      "lang": "de",
+      "title": "KI-Automatisierung: Mit welchem Prozess Sie anfangen",
+      "optimizedFor": {
+        "primaryKeyword": "ki automatisierung",
+        "secondaryKeywords": [
+          "ki prozessautomatisierung",
+          "ki prozessoptimierung",
+          "ki audit",
+          "ki potenzialanalyse",
+          "automatisierung mit ki"
+        ],
+        "market": "Germany",
+        "monthlySearches": null
+      },
+      "translations": [
+        "hu/ai-automatizalas-melyik-folyamattal-kezdj"
+      ],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 52,
+        "descriptionLength": 121,
+        "words": 1338,
+        "h2": 8,
+        "questionH2": 2,
+        "internalLinks": 4,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 14
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 1,
+        "clicks": 0,
+        "averagePosition": 69
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/ki-datenschutz-dsgvo",
+      "source": "content/ki-datenschutz-dsgvo.md",
+      "lang": "de",
+      "title": "KI und Datenschutz: DSGVO-konforme KI durch Gestaltung",
+      "optimizedFor": {
+        "primaryKeyword": "ki und datenschutz",
+        "secondaryKeywords": [
+          "ki datenschutz",
+          "dsgvo ki",
+          "dsgvo konforme ki",
+          "ki dsgvo konform",
+          "chatgpt dsgvo",
+          "datenschutz-folgenabschätzung"
+        ],
+        "market": "Germany",
+        "monthlySearches": null
+      },
+      "translations": [],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 54,
+        "descriptionLength": 135,
+        "words": 1404,
+        "h2": 6,
+        "questionH2": 1,
+        "internalLinks": 6,
+        "externalSources": 3,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 9
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 26,
+        "clicks": 0,
+        "averagePosition": 54.7
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/ki-halluzinationen-im-unternehmen",
+      "source": "content/ki-halluzinationen-im-unternehmen.md",
+      "lang": "de",
+      "title": "KI-Halluzinationen im Unternehmen: Was ein Produkt tun muss",
+      "optimizedFor": {
+        "primaryKeyword": "ki halluzination",
+        "secondaryKeywords": [
+          "ki halluzinationen",
+          "ki halluzinationen vermeiden",
+          "ki falsche antworten",
+          "rag retrieval augmented generation",
+          "human in the loop"
+        ],
+        "market": "Germany",
+        "monthlySearches": 1300
+      },
+      "translations": [
+        "en/ai-hallucinations-in-business-products"
+      ],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 59,
+        "descriptionLength": 131,
+        "words": 1335,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 3
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/ki-im-kundenservice",
+      "source": "content/ki-im-kundenservice.md",
+      "lang": "de",
+      "title": "KI im Kundenservice: Wann sich menschliche Kontrolle lohnt",
+      "optimizedFor": {
+        "primaryKeyword": "ki im kundenservice",
+        "secondaryKeywords": [
+          "ki kundenservice",
+          "kundenservice ki",
+          "chatbot für unternehmen",
+          "ki automatisierung",
+          "human in the loop"
+        ],
+        "market": "Germany",
+        "monthlySearches": null
+      },
+      "translations": [
+        "hu/ai-ugyfelszolgalat-emberi-ellenorzessel"
+      ],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 58,
+        "descriptionLength": 135,
+        "words": 1108,
+        "h2": 8,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 2,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 16
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/ki-im-mittelstand-einfuehren",
+      "source": "content/ki-im-mittelstand-einfuehren.md",
+      "lang": "de",
+      "title": "KI im Mittelstand einführen: Die ersten drei Monate",
+      "optimizedFor": {
+        "primaryKeyword": "ki im mittelstand",
+        "secondaryKeywords": [
+          "ki im unternehmen",
+          "ki readiness",
+          "ki einführung",
+          "ki beratung mittelstand",
+          "ki für kmu"
+        ],
+        "market": "Germany",
+        "monthlySearches": 170
+      },
+      "translations": [
+        "hu/ai-bevezetese-kkv-elso-90-nap"
+      ],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 51,
+        "descriptionLength": 123,
+        "words": 1517,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 21
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/ki-kennzeichnungspflicht",
+      "source": "content/ki-kennzeichnungspflicht.md",
+      "lang": "de",
+      "title": "KI-Kennzeichnungspflicht: Was Produktteams jetzt umsetzen",
+      "optimizedFor": {
+        "primaryKeyword": "ki kennzeichnungspflicht",
+        "secondaryKeywords": [
+          "ki verordnung",
+          "eu ai act",
+          "ki transparenzpflicht",
+          "ki kennzeichnung",
+          "human in the loop"
+        ],
+        "market": "Germany",
+        "monthlySearches": 2900
+      },
+      "translations": [
+        "hu/ai-act-jelolesi-kotelezettseg",
+        "en/eu-ai-act-transparency-obligations"
+      ],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 57,
+        "descriptionLength": 134,
+        "words": 1294,
+        "h2": 6,
+        "questionH2": 1,
+        "internalLinks": 4,
+        "externalSources": 2,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 9
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/writing/mvp-development-regulated-products",
+      "source": "content/mvp-development-regulated-products.md",
+      "lang": "en",
+      "title": "MVP development for regulated products: what must be real",
+      "optimizedFor": {
+        "primaryKeyword": "mvp development",
+        "secondaryKeywords": [
+          "fintech mvp",
+          "mvp for regulated industries",
+          "minimum viable product",
+          "saas development"
+        ],
+        "market": "United States",
+        "monthlySearches": 590
+      },
+      "translations": [
+        "de/mvp-entwicklung-regulierte-produkte"
+      ],
+      "servicePage": "/web-development",
+      "seo": {
+        "titleLength": 57,
+        "descriptionLength": 127,
+        "words": 1585,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 6,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 16
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/de/wissen/mvp-entwicklung-regulierte-produkte",
+      "source": "content/mvp-entwicklung-regulierte-produkte.md",
+      "lang": "de",
+      "title": "MVP-Entwicklung für regulierte Produkte: Was echt sein muss",
+      "optimizedFor": {
+        "primaryKeyword": "mvp entwicklung",
+        "secondaryKeywords": [
+          "mvp software",
+          "mvp entwickeln lassen",
+          "minimum viable product",
+          "ki entwicklung",
+          "webentwicklung"
+        ],
+        "market": "Germany",
+        "monthlySearches": 110
+      },
+      "translations": [
+        "en/mvp-development-regulated-products"
+      ],
+      "servicePage": "/de/ki-beratung-entwicklung",
+      "seo": {
+        "titleLength": 59,
+        "descriptionLength": 132,
+        "words": 1298,
+        "h2": 7,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 1,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 16
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/de/wissen/was-kostet-eine-website",
+      "source": "content/was-kostet-eine-website.md",
+      "lang": "de",
+      "title": "Was kostet eine Website? Wovon der Preis wirklich abhängt",
+      "optimizedFor": {
+        "primaryKeyword": "was kostet eine website",
+        "secondaryKeywords": [
+          "website kosten",
+          "webseite erstellen lassen kosten",
+          "website erstellen lassen",
+          "webentwicklung"
+        ],
+        "market": "Germany",
+        "monthlySearches": 480
+      },
+      "translations": [
+        "hu/ceges-weboldal-ara",
+        "en/how-much-does-a-business-website-cost"
+      ],
+      "servicePage": "/de/webentwicklung",
+      "seo": {
+        "titleLength": 57,
+        "descriptionLength": 133,
+        "words": 1626,
+        "h2": 9,
+        "questionH2": 1,
+        "internalLinks": 3,
+        "externalSources": 0,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 0,
+        "listItems": 22
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 0,
+        "clicks": 0,
+        "averagePosition": null,
+        "status": "never shown in Google"
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    },
+    {
+      "path": "/hu/irasok/weboldal-felujitas-vagy-uj-oldal",
+      "source": "content/weboldal-felujitas-vagy-uj-oldal.md",
+      "lang": "hu",
+      "title": "Weboldal felújítás vagy új oldal? Miből látod, melyik kell",
+      "optimizedFor": {
+        "primaryKeyword": "weboldal felújítás",
+        "secondaryKeywords": [
+          "honlap felújítás",
+          "weboldal redesign",
+          "weboldal készítés",
+          "honlapkészítés"
+        ],
+        "market": "Hungary",
+        "monthlySearches": 50
+      },
+      "translations": [
+        "de/website-relaunch-oder-ueberarbeitung"
+      ],
+      "servicePage": "/hu/webfejlesztes",
+      "seo": {
+        "titleLength": 58,
+        "descriptionLength": 130,
+        "words": 1454,
+        "h2": 8,
+        "questionH2": 2,
+        "internalLinks": 5,
+        "externalSources": 0,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 1,
+        "listItems": 19
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "status": "published 2026-11-12, no data yet"
+      },
+      "googleRank": null
+    },
+    {
+      "path": "/de/wissen/website-relaunch-oder-ueberarbeitung",
+      "source": "content/website-relaunch-oder-ueberarbeitung.md",
+      "lang": "de",
+      "title": "Website-Relaunch oder Überarbeitung: Woran Sie es erkennen",
+      "optimizedFor": {
+        "primaryKeyword": "website relaunch",
+        "secondaryKeywords": [
+          "website überarbeiten",
+          "website relaunch checkliste",
+          "website relaunch seo",
+          "website relaunch kosten",
+          "webentwicklung"
+        ],
+        "market": "Germany",
+        "monthlySearches": 480
+      },
+      "translations": [
+        "hu/weboldal-felujitas-vagy-uj-oldal"
+      ],
+      "servicePage": "/de/webentwicklung",
+      "seo": {
+        "titleLength": 58,
+        "descriptionLength": 130,
+        "words": 1391,
+        "h2": 8,
+        "questionH2": 1,
+        "internalLinks": 5,
+        "externalSources": 0,
+        "schema": [
+          "Article",
+          "FAQPage",
+          "BreadcrumbList"
+        ]
+      },
+      "aeo": {
+        "directAnswerFirstParagraph": true,
+        "faqQuestions": 6,
+        "tables": 1,
+        "listItems": 19
+      },
+      "geo": {
+        "inLlmsTxt": true,
+        "aiOverviewCitation": false,
+        "llmMentions": 0
+      },
+      "searchConsole": {
+        "impressions": 11,
+        "clicks": 0,
+        "averagePosition": 72.1
+      },
+      "googleRank": "not in top 50 for the primary keyword"
+    }
+  ]
+}

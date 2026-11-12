@@ -10,7 +10,7 @@ service: /de/webentwicklung
 service_label: Webentwicklung und individuelle Webanwendungen für Unternehmen
 cover: /assets/images/og/writing/was-kostet-eine-website.jpg
 cover_alt: Fünf gefaltete Papiertore in einer Reihe, jedes größer als das vorherige, vor fliederfarbenem Hintergrund: Was kostet eine Website, die neun Preisfaktoren
-pair: hu/ceges-weboldal-ara
+pair: [hu/ceges-weboldal-ara, en/how-much-does-a-business-website-cost]
 ---
 Was kostet eine Website? Das hängt davon ab, was sie leisten muss: für wen sie gemacht ist, was Besucher darauf tun sollen und mit welchen Systemen sie verbunden ist. Zwei Angebote für dieselbe Anfrage können sich um ein Vielfaches unterscheiden, und oft sind beide seriös, weil sie nicht dieselbe Arbeit kalkulieren. Ich behandle jede Website als individuelle Arbeit: Technologie, Struktur, Design und Inhalt richten sich nach den Bedürfnissen Ihrer Nutzer, und daraus ergibt sich der Preis, nicht aus einem vorgefertigten Paket.
 

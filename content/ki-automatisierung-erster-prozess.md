@@ -10,7 +10,7 @@ service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-automatisierung-erster-prozess.jpg
 cover_alt: Mehrere gefaltete Papierbahnen laufen parallel, eine davon ist olivfarben hervorgehoben und führt durch ein kleines Papiertor: der erste Prozess für eine KI-Automatisierung
-pair: null
+pair: hu/ai-automatizalas-melyik-folyamattal-kezdj
 ---
 Der richtige erste Prozess für eine KI-Automatisierung ist einer, der oft vorkommt, mit unstrukturierten Eingaben wie E-Mails, Dokumenten oder Freitext arbeitet, dessen Ergebnis ein Mensch vor der Wirkung prüfen kann, und dessen Nutzen sich in Minuten pro Vorgang messen lässt. Wenn ein Prozess dagegen festen Regeln folgt und strukturierte Daten verarbeitet, braucht er keine KI, sondern klassische Automatisierung, und die ist billiger und zuverlässiger.
 

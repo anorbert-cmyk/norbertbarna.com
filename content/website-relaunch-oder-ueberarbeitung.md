@@ -10,7 +10,7 @@ service: /de/webentwicklung
 service_label: Webentwicklung und individuelle Webanwendungen für Unternehmen
 cover: /assets/images/og/writing/website-relaunch-oder-ueberarbeitung.jpg
 cover_alt: Zwei gefaltete Papierformen nebeneinander, eine mit geglätteter Oberfläche, die andere neu und schärfer gefaltet: Website-Relaunch oder Überarbeitung
-pair: null
+pair: hu/weboldal-felujitas-vagy-uj-oldal
 ---
 Ein Website-Relaunch lohnt sich, wenn das Problem im Fundament liegt: in der Technik, der Struktur oder der Aussage der Seite. Eine Überarbeitung reicht, wenn das Fundament trägt und nur Inhalte, einzelne Seiten oder die Geschwindigkeit nachgebessert werden müssen. Die Faustregel: Wenn Sie beim Aufzählen der Probleme bei drei Punkten landen, die sich nur mit einem anderen System, einer anderen Struktur oder einer anderen Positionierung lösen lassen, ist es ein Relaunch. Wenn jedes Problem eine einzelne Seite oder einen Text betrifft, ist es eine Überarbeitung.
 

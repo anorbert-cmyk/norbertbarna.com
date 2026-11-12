@@ -6,7 +6,55 @@
     <atom:link href="https://www.barnanorbert.com/writing/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Articles by Norbert Barna on AI integration, human-in-the-loop product design and web development, drawn from shipped work.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 21 Oct 2026 07:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2026 11:00:00 +0000</lastBuildDate>
+    <item>
+      <title>AI hallucinations in business: what a product has to do</title>
+      <link>https://www.barnanorbert.com/writing/ai-hallucinations-in-business-products</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/ai-hallucinations-in-business-products</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>AI hallucinations cannot be switched off, only contained: sources, drafts, abstention, human review. Seven patterns from shipped work.</description>
+      <category>ai hallucinations</category>
+      <category>how to prevent ai hallucinations</category>
+      <category>llm hallucination</category>
+      <category>retrieval augmented generation</category>
+      <category>human in the loop ai</category>
+    </item>
+    <item>
+      <title>EU AI Act Article 50: what product teams must label now</title>
+      <link>https://www.barnanorbert.com/writing/eu-ai-act-transparency-obligations</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/eu-ai-act-transparency-obligations</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>EU AI Act Article 50 in practice: what has applied since August 2026, what the Digital Omnibus changed, and how to design the label.</description>
+      <category>eu ai act</category>
+      <category>ai act article 50</category>
+      <category>ai transparency obligations</category>
+      <category>ai disclosure requirements</category>
+      <category>ai labelling</category>
+    </item>
+    <item>
+      <title>How much does a website cost? What the price depends on</title>
+      <link>https://www.barnanorbert.com/writing/how-much-does-a-business-website-cost</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/how-much-does-a-business-website-cost</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>How much does a website cost for a business? The nine factors behind the price, a real example and the questions to ask before a quote.</description>
+      <category>how much does a website cost</category>
+      <category>business website cost</category>
+      <category>custom website</category>
+      <category>web development services</category>
+      <category>website pricing factors</category>
+    </item>
+    <item>
+      <title>MVP development for regulated products: what must be real</title>
+      <link>https://www.barnanorbert.com/writing/mvp-development-regulated-products</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/mvp-development-regulated-products</guid>
+      <pubDate>Thu, 12 Nov 2026 11:00:00 +0000</pubDate>
+      <description>MVP development for fintech, health and other regulated markets: what you can leave out, what must be real on day one, and how.</description>
+      <category>mvp development</category>
+      <category>fintech mvp</category>
+      <category>mvp for regulated industries</category>
+      <category>minimum viable product</category>
+      <category>saas development</category>
+    </item>
     <item>
       <title>What to prepare before hiring an AI integration partner</title>
       <link>https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner</link>
