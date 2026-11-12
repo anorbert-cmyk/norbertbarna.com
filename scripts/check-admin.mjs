@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 
-for (const name of ["DATABASE_URL", "ADMIN_GITHUB_TOKEN", "POSTHOG_PERSONAL_API_KEY", "RAILWAY_ENVIRONMENT", "RESEND_API_KEY", "ADMIN_EMAIL"]) delete process.env[name];
+for (const name of ["DATABASE_URL", "ADMIN_GITHUB_TOKEN", "POSTHOG_PERSONAL_API_KEY", "RAILWAY_ENVIRONMENT", "RESEND_API_KEY", "ADMIN_EMAIL", "CONTACT_SECRET"]) delete process.env[name];
 process.env.CONTACT_TO = "owner@example.test";
 
 const express = require("express");
@@ -68,6 +68,10 @@ try {
   expect((await call("/admin/api/me")).status === 503, "admin API must answer 503 without ADMIN_SESSION_SECRET");
   process.env.ADMIN_SESSION_SECRET = "short";
   expect((await call("/admin/api/me")).status === 503, "a session secret under 32 characters must keep the admin closed");
+  delete process.env.ADMIN_SESSION_SECRET;
+  process.env.CONTACT_SECRET = "check-admin-contact-secret-0123456789abcdef";
+  expect((await call("/admin/api/me")).status === 401 && !auth.sessionSecret().equals(Buffer.from(process.env.CONTACT_SECRET)), "the contact secret must open the admin through a derived key, never itself");
+  delete process.env.CONTACT_SECRET;
   process.env.ADMIN_SESSION_SECRET = "check-admin-session-secret-0123456789abcdef";
 
   // ---- sign-in -------------------------------------------------------------
