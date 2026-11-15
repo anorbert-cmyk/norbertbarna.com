@@ -342,6 +342,29 @@
   vertical-align: top;
 }
 .writing-prose th { font-weight: 600; }
+/* A body row's first cell is its row header (scope="row"); it reads as the
+   row's label to assistive technology and keeps the weight of running text. */
+.writing-prose tbody th { font-weight: 400; }
+/* Every table has a caption. It shows above the table like a figure caption,
+   unless a heading directly above already names the table: then it is kept
+   for assistive technology only. */
+.writing-prose caption {
+  caption-side: top;
+  padding: 0 0 10px;
+  color: var(--muted, rgb(17 17 17 / 62%));
+  font-size: .9375rem;
+  text-align: left;
+}
+.writing-prose caption.writing-caption-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .writing-prose .writing-table { overflow-x: auto; margin: 1.6em 0; }
 /* The decision tables are two columns of short phrases: they set within the
    reading column at every width (a 320px phone included) instead of forcing a
@@ -349,6 +372,11 @@
 .writing-prose .writing-table table { margin: 0; min-width: 0; width: 100%; }
 .writing-prose .writing-table :is(th, td):first-child { width: 44%; padding-right: 14px; }
 .writing-prose .writing-table :is(th, td) { hyphens: auto; overflow-wrap: anywhere; }
+/* From four columns on a table cannot fit a phone: it keeps a readable
+   width and its box scrolls, as a focusable region named by the caption. */
+.writing-prose .writing-table-wide table { min-width: 36rem; }
+.writing-prose .writing-table-wide :is(th, td):first-child { width: auto; }
+.writing-prose .writing-table-wide:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 
 /* The closing offer: one lilac card with the contact action. */
 .writing-cta {

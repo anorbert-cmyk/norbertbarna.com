@@ -54,7 +54,7 @@ export const MENU = {
       { label: "Web development", href: "/web-development" },
       { label: "AI integration", href: "/ai-integration" },
     ],
-    navLabel: "Main navigation",
+    navLabel: "Main",
     footerLabel: "Footer",
   },
   hu: {
@@ -70,7 +70,7 @@ export const MENU = {
       { label: "Webfejlesztés", href: "/hu/webfejlesztes" },
       { label: "AI tanácsadás és fejlesztés", href: "/hu/ai-tanacsadas-fejlesztes" },
     ],
-    navLabel: "Fő navigáció",
+    navLabel: "Főmenü",
     footerLabel: "Lábléc",
   },
   // German (task T8, 2026-10-21; works, cases and biography in German since 2026-10-22).
@@ -87,7 +87,7 @@ export const MENU = {
       { label: "Webentwicklung", href: "/de/webentwicklung" },
       { label: "KI-Beratung und Entwicklung", href: "/de/ki-beratung-entwicklung" },
     ],
-    navLabel: "Hauptnavigation",
+    navLabel: "Hauptmenü",
     footerLabel: "Fußzeile",
   },
 };
@@ -96,7 +96,10 @@ export const MENU = {
 // same thing in every template, so a screen reader's landmark list reads the
 // same page to page. The footer nav takes MENU[lang].footerLabel; the case
 // and article breadcrumbs take these. check-responsive.mjs enforces both.
-export const BREADCRUMB_LABEL = { en: "Breadcrumb", hu: "Morzsamenü", de: "Brotkrümelnavigation" };
+// A name never repeats the role (2026-11-15): a screen reader already says
+// "navigation" after it, so the primary nav is "Main" / "Főmenü" /
+// "Hauptmenü" and no nav element carries role="navigation".
+export const BREADCRUMB_LABEL = { en: "Breadcrumb", hu: "Morzsamenü", de: "Brotkrümelpfad" };
 
 export const NAV_ARTICLE_LIMIT = 5;
 export const FOOTER_ARTICLE_LIMIT = 3;
@@ -231,7 +234,7 @@ export function renderPrimaryNav({ page, kind, current, pairs, articles }) {
   }
   parts.push(languageMenu({ lang, pairs }));
   const label = menu.navLabel;
-  const navClass = kind === "about" ? 'class="nav-menu site-nav-menu"' : 'class="nav-menu grey site-nav-menu" role="navigation"';
+  const navClass = kind === "about" ? 'class="nav-menu site-nav-menu"' : 'class="nav-menu grey site-nav-menu"';
   return `<nav id="primary-navigation" ${navClass} aria-label="${label}"><div class="nav-menu-area">${parts.join("")}</div></nav>`;
 }
 

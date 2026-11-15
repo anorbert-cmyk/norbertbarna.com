@@ -56,6 +56,7 @@ Der letzte Punkt ist wichtiger, als er klingt. Ein Relaunch ist einer der häufi
 
 ## Entscheidungstabelle
 
+: Überarbeitung oder Relaunch: Empfehlung für zehn typische Probleme
 | Problem | Überarbeitung | Relaunch |
 |---|---|---|
 | Inhalte veraltet, Struktur stimmt | ja | |

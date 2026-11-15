@@ -54,6 +54,7 @@ Wenn Kunden Sie über Google oder KI-Suchsysteme finden sollen, zählen Ladezeit
 
 ## Entscheidungstabelle
 
+: Baukasten oder individuelle Website: Empfehlung nach zehn Kriterien
 | Kriterium | Baukasten | Individuelle Website |
 |---|---|---|
 | Informieren, Kontakt, Öffnungszeiten | ja | |

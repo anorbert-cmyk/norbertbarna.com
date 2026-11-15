@@ -86,11 +86,13 @@ function inline(text) {
 }
 
 // Markdown subset: ## and ### headings, paragraphs, - and 1. lists, > quotes,
-// **bold**, *italic*, `code`, [links](/path). A # H1 is refused: the title is the H1.
+// **bold**, *italic*, `code`, [links](/path), captioned tables. A # H1 is
+// refused: the title is the H1.
 export function markdownToHtml(markdown, file, lang = "en") {
   inlineLang = NEW_TAB[lang] ? lang : "en";
   const blocks = [];
   const ids = new Set();
+  let tableCount = 0;
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   let index = 0;
   while (index < lines.length) {
@@ -107,13 +109,27 @@ export function markdownToHtml(markdown, file, lang = "en") {
       index++;
       continue;
     }
-    if (line.startsWith("|") && /^\|(?:\s*:?-+:?\s*\|)+\s*$/.test(lines[index + 1] || "")) {
+    // A table: an optional `: caption` line, the header row, a |---| row, the
+    // body rows. Every table carries a <caption> (its accessible name): the
+    // caption line, or else the heading that stands directly above it. With
+    // a heading directly above, the caption is for assistive technology only
+    // (the heading already names the table on screen); otherwise it shows.
+    // Header cells are scoped; the first cell of a body row is its row header.
+    const captionLine = line.match(/^:\s+(\S.*)$/);
+    const tableAt = captionLine ? index + 1 : index;
+    if ((captionLine || line.startsWith("|")) && (lines[tableAt] || "").startsWith("|") && /^\|(?:\s*:?-+:?\s*\|)+\s*$/.test(lines[tableAt + 1] || "")) {
       const cells = (row) => row.trim().replace(/^\||\|$/g, "").split("|").map((cell) => inline(cell.trim()));
-      const head = cells(line);
-      index += 2;
+      const head = cells(lines[tableAt]);
+      index = tableAt + 2;
       const rows = [];
       while (index < lines.length && lines[index].startsWith("|")) rows.push(cells(lines[index++]));
-      blocks.push(`<table><thead><tr>${head.map((cell) => `<th scope="col">${cell}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`);
+      const above = (blocks[blocks.length - 1] || "").match(/^<h[23] id="[^"]*">([\s\S]*)<\/h[23]>$/);
+      const caption = captionLine ? inline(captionLine[1].trim()) : above ? above[1] : "";
+      if (!caption) throw new Error(`${file}: the table "${lines[tableAt].trim()}" needs a caption: put a ": Caption text" line directly above it`);
+      tableCount += 1;
+      const captionClass = above ? ' class="writing-caption-sr"' : "";
+      const body = rows.map((row) => `<tr>${row.map((cell, column) => column === 0 && cell ? `<th scope="row">${cell}</th>` : `<td>${cell}</td>`).join("")}</tr>`).join("");
+      blocks.push(`<table><caption id="writing-table-${tableCount}"${captionClass}>${caption}</caption><thead><tr>${head.map((cell) => `<th scope="col">${cell}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table>`);
       continue;
     }
     const list = line.match(/^(\s*)(?:([-*])|(\d+)\.)\s+/);

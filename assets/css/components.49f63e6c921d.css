@@ -747,6 +747,12 @@ figure {
   display: flex;
 }
 
+/* The icon carries its intrinsic 100 x 100 as attributes (no layout shift);
+   the box sets the width, so the height follows the ratio. */
+.home-service-icon-area img {
+  height: auto;
+}
+
 .home-service-icon-area:hover {
   transform: scale(1.1);
 }

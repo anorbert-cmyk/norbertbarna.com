@@ -120,7 +120,15 @@ turns them into static pages; there is no CMS and no runtime rendering.
      used as the social preview).
    - A `## Gyakori kérdések` / `## Frequently asked questions` section with
      `###` questions becomes FAQPage schema, word for word.
-   - Tables: a `| a | b |` header row, a `|---|---|` row, then body rows.
+   - Tables: an optional `: Caption text` line, a `| a | b |` header row, a
+     `|---|---|` row, then body rows. Every table needs a caption (it is the
+     table's accessible name): write the `: ` line in the article's language,
+     or put the table directly under a `##`/`###` heading, whose text is then
+     used. Directly under a heading the caption is read by screen readers
+     only; anywhere else it shows above the table. The first cell of each
+     body row is that row's header, so put the thing being compared there.
+     Keep to three columns: from four columns on the table scrolls sideways
+     on a phone (in a focusable, named region).
 
 2. `npm run build:writing` writes the article, the list page, the RSS feed,
    the sitemap entries and the `llms.txt` Writing section. It first runs

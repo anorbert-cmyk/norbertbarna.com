@@ -107,6 +107,9 @@
   box-shadow: 0 16px 32px -22px rgb(10 22 40 / 55%);
   transform-origin: 50% 50%;
 }
+/* The hero screenshot is offered as AVIF with the WebP as fallback; the
+   <picture> is not a box of its own. */
+.case-hero-media picture { display: contents; }
 .case-study-header .case-hero-shot {
   display: block;
   width: 100%;

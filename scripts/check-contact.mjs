@@ -321,6 +321,24 @@ for (const page of pages) {
 for (const page of ["contact.html", "hu/kapcsolat.html", "de/kontakt.html"]) {
   const html = readFileSync(join(ROOT, page), "utf8");
   if (!/<p class="contact-sent-text" aria-live="polite">/.test(html)) fail(`${page}: the thank-you text must be a polite live region`);
+  // The Send button is never disabled in the markup (2026-11-15): pressed
+  // early it validates or says what it waits for. Without script the fields
+  // stay disabled, the button is hidden and the noscript note names
+  // LinkedIn; a native post lands on the #contact-unsent notice.
+  const submit = html.match(/<button type="submit" class="contact-submit"[^>]*>/)?.[0] || "";
+  if (!submit || /\sdisabled\b|aria-disabled/.test(submit)) fail(`${page}: the Send button must be enabled in the markup`);
+  if (!/<fieldset class="contact-fields" role="presentation" disabled>/.test(html)) fail(`${page}: the fields stay disabled until the script can answer a submit`);
+  if (!/<noscript><p class="contact-noscript">[^<]+<a href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/.test(html)) fail(`${page}: the no-script note must offer LinkedIn`);
+  if (!/<noscript><style>[^<]*\.contact-form \.contact-submit\{display:none\}/.test(html)) fail(`${page}: without script the Send button is not offered`);
+  if (!/<p class="contact-noscript contact-unsent" id="contact-unsent">[^<]+<a href="https:\/\/www\.linkedin\.com\/in\/barna-norbert\/"/.test(html)) fail(`${page}: the not-sent notice of a native post is missing`);
+  for (const id of ["contact-name", "contact-email", "contact-message"]) {
+    if (!new RegExp(`<(?:input|textarea) id="${id}"[^>]*\\saria-invalid="false"`).test(html)) fail(`${page}: #${id} must start aria-invalid="false"`);
+  }
+}
+{
+  const contactCss = readFileSync(join(ROOT, "assets", "css", "contact.css"), "utf8");
+  if (!/\.contact-unsent \{ display: none; \}\s*\.contact-unsent:target:not\(\[hidden\]\) \{ display: block; \}/.test(contactCss)) fail("contact.css: the not-sent notice shows only as the fragment target");
+  if (!/res\.redirect\(303, `\$\{req\.path\}#contact-unsent`\)/.test(readFileSync(join(ROOT, "server.js"), "utf8"))) fail("server.js: a native contact post must redirect to the not-sent notice without reading the body");
 }
 // Every served asset too: retired release copies once carried the address in a comment.
 for (const dir of ["assets/css", "assets/js"]) {

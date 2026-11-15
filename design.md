@@ -374,9 +374,12 @@ The old `.footer-mesh` / blurred gradient and `.footer-dunes` are removed.
 - Landmark names (design review, 2026-10-23): the footer's nav is `Footer`
   / `Lábléc` / `Fußzeile` on the editorial, service and About footers; the
   case and article breadcrumbs are `Breadcrumb` / `Morzsamenü` /
-  `Brotkrümelnavigation` (`BREADCRUMB_LABEL` in `site-chrome.mjs`); the
+  `Brotkrümelpfad` (`BREADCRUMB_LABEL` in `site-chrome.mjs`); the
   article rail is a plain `div` (its `On this page` nav is the landmark).
-  `check-responsive.mjs` enforces all three.
+  The primary nav is `Main` / `Főmenü` / `Hauptmenü`. A nav's name never
+  repeats its role (a screen reader already says "navigation") and no
+  native element restates its own role (`role="navigation"` on `nav`).
+  `check-responsive.mjs` enforces all of these.
 - Integrate the page-language privacy link and Analytics settings into the same lilac
   footer field with a fine top rule. This is an in-flow utility row, without
   a separate dark slab. Preserve all consent hooks, language attributes and
@@ -1087,7 +1090,13 @@ scrolled sideways; from 992px `::details-content` keeps the list open and the
 summary gives way to a CSS label) beside a 720px reading column
 (`.writing-prose`, Inter 18px, Funnel headings, olive blockquote rule,
 two-column decision tables that fit the column at 320px with hyphenation
-rather than scrolling), ends in the
+rather than scrolling; every table has a `<caption>`, shown in the muted
+figure-caption style or, directly under a heading that already names the
+table, kept for assistive technology as `.writing-caption-sr`; header cells
+carry `scope`, the first cell of a body row is its row header at regular
+weight; only a table of four or more columns may scroll, inside a
+`.writing-table-wide` region that is focusable and named by its caption),
+ends in the
 lilac CTA card and two related articles (`.writing-related`, rows headed
 `h3` under the section's `h2`). An article is a
 schema `Article` (author `#person` with `jobTitle` and `knowsLanguage`,
@@ -1358,6 +1367,43 @@ hashed copies stay on disk so a cached page keeps resolving. `check-motion.mjs`
 verifies that each page's reference is byte-identical to the current source,
 so a forgotten re-hash fails CI rather than shipping a stale file behind an
 immutable header.
+
+### Images, tables and the contact form (HTML rules, 2026-11-15)
+
+- Every `<img>` carries `width` and `height` (the file's intrinsic size; an
+  SVG's own `width`/`height` or `viewBox`). Where CSS sets only the width of
+  such an image, the rule also says `height: auto`
+  (`.home-service-icon-area img`). An `<img alt="">` takes no
+  `role="presentation"`.
+- One image per page at most has `fetchpriority="high"`: the measured LCP
+  image (PerformanceObserver at 1440 and 390px). On the case pages that is
+  `.case-hero-shot` (Kineticare: the video poster, which is preloaded
+  instead). It is never `loading="lazy"`; images below the fold are
+  `loading="lazy"` with `decoding="async"`. A page whose LCP is text has no
+  such image.
+- `sizes` states the width an image is really drawn at. The case hero is
+  drawn with `object-fit: contain` inside a box of limited height, so its
+  `sizes` is derived from the image's ratio:
+  `(max-width: 479px) calc(100vw - 42px), (max-width: 991px) min(92vw, <48 x ratio>vh), min(76vw, <48 x ratio>vh, <520 x ratio, at most 1038>px)`.
+- The six case hero shots are offered as AVIF in a `<picture>` (the `<img>`
+  keeps the WebP set; `.case-hero-media picture` is `display: contents`).
+  An AVIF candidate is kept only at a quality whose SSIM against the resized
+  original is at least that of the WebP, and only when the set is more than
+  20% smaller. `server.js` states `image/avif` (Express 4 does not know it).
+- Article tables: see the Writing section (caption, `scope`, wide-table
+  region). `check-responsive.mjs` enforces caption and scope on every table.
+- Contact form: the Send button is never `disabled`. Pressed early it runs
+  the validation, focuses the error summary and names every problem; while
+  the human check or the proof of work is still running it says so in the
+  status line. `aria-disabled` marks it only while a message is on its way.
+  A field's error appears once the visitor has edited and left it, or tried
+  to send (the timing of `:user-invalid`, with the server's own rules);
+  text fields start `aria-invalid="false"`. Until `contact.js` can answer a
+  submit the fields stay disabled, so nothing typed can be lost to a native
+  post; such a post is never read and is answered with the page at
+  `#contact-unsent` (shown by `:target`). Without script the note above the
+  fields says so and offers LinkedIn, and the button is not shown. There is
+  no script-free way to send: the spam defence needs script.
 
 ### Change runbook
 

@@ -322,11 +322,13 @@ app.use("/admin", (req, res) => sendNotFound(res, req));
 // Cookieless daily page counters for the admin (lib/admin/traffic.js).
 app.use(createTrafficCounter(store).middleware);
 
-// A native form post (no JavaScript) must never put a message in a URL or a
-// log: answer the page itself without reading the body.
+// A native form post (the page's script had not run, or JavaScript is off)
+// must never put a message in a URL or a log, and it is never a way around
+// the spam checks: the body is not read. The answer is the page itself, at
+// the notice that says nothing was sent and how to reach me instead.
 app.post(["/contact", "/hu/kapcsolat", "/de/kontakt"], (req, res) => {
   res.setHeader("Cache-Control", "no-store");
-  res.redirect(303, req.path);
+  res.redirect(303, `${req.path}#contact-unsent`);
 });
 
 // Only release files whose names contain the first 12 characters of their
@@ -351,6 +353,9 @@ app.use(
       if (path.basename(filePath) === "speculation-rules.json") {
         res.setHeader("Content-Type", "application/speculationrules+json");
       }
+      // Express 4's media type table predates AVIF; with nosniff the type
+      // must be stated or the image is not shown.
+      if (path.extname(filePath) === ".avif") res.setHeader("Content-Type", "image/avif");
       if (isContentHashedAsset(filePath)) {
         res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
       } else {
