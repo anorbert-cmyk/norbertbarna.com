@@ -29,9 +29,15 @@ for (const route of ["/contact", "/hu/kapcsolat", "/de/kontakt"]) {
     page.on("console", (message) => {
       if (/Content Security Policy|Refused to (?:load|frame|execute)/i.test(message.text())) violations.push(message.text());
     });
+    // Trusted Types is report-only on the contact pages because Turnstile's
+    // script is Cloudflare's: a report there blocks nothing and is listed on
+    // the test as an annotation, so it shows what Turnstile would need
+    // before the rule is enforced. Anything the enforced policy blocks fails.
     await page.addInitScript(() => {
       document.addEventListener("securitypolicyviolation", (event) => {
-        window.__cspViolations = (window.__cspViolations || []).concat(`${event.violatedDirective} ${event.blockedURI}`);
+        const entry = `${event.violatedDirective} ${event.blockedURI} ${event.sourceFile || ""}`.trim();
+        if (event.disposition === "report") window.__cspReportOnly = (window.__cspReportOnly || []).concat(entry);
+        else window.__cspViolations = (window.__cspViolations || []).concat(entry);
       });
     });
     await page.goto(route, { waitUntil: "load" });
@@ -51,6 +57,9 @@ for (const route of ["/contact", "/hu/kapcsolat", "/de/kontakt"]) {
     expect((await answered).status()).toBe(200);
     expect(violations).toEqual([]);
     expect(await page.evaluate(() => window.__cspViolations || [])).toEqual([]);
+    for (const entry of new Set(await page.evaluate(() => window.__cspReportOnly || []))) {
+      test.info().annotations.push({ type: "trusted-types report-only", description: entry });
+    }
   });
 }
 

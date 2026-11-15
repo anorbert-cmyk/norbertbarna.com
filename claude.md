@@ -110,7 +110,7 @@ Use single-agent or direct tool calls for:
   - works.html -> `...27a5-acb15adb8.css`
   - work/*.html -> `...27a4-603c31720.css`
   - All pages -> `shared.8948b5576.css`
-- **Hashed assets**: pages reference content-hashed copies (e.g. `animations.f4ceb31be702.js`). After editing a source CSS/JS file, re-hash it and update the page references (see AGENTS.md)
+- **Hashed assets**: pages reference content-hashed copies (e.g. `animations.8f348e971783.js`). After editing a source CSS/JS file, re-hash it and update the page references (see AGENTS.md)
 
 -----
 
@@ -128,12 +128,12 @@ GSAP is bundled in the repo, not loaded from a CDN. These script tags go before 
 <script src="assets/js/vendor/ScrollTrigger.min.js"></script>
 
 <!-- Custom Animations (content-hashed filename) -->
-<script src="assets/js/animations.f4ceb31be702.js"></script>
+<script src="assets/js/animations.8f348e971783.js"></script>
 ```
 
 For work/ subpages use `../assets/...` paths. Do not add CDN script tags for animation
 libraries; if a new plugin is needed, vendor it into `assets/js/vendor/`.
-Scrolling is native on every viewport; Lenis is not used and not vendored.
+Scrolling is native on every viewport; Lenis is vendored but intentionally not loaded.
 
 ### Animation Rules (Non-Negotiable)
 
