@@ -58,7 +58,7 @@
   max-width: 100%;
   margin: 0;
   color: var(--case-stage-ink) !important;
-  font: 400 12px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .75rem/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .08em;
   text-align: center;
   text-transform: uppercase;
@@ -71,7 +71,7 @@
   padding: 0 0 .07em;
   color: var(--case-stage-ink) !important;
   font-family: "Funnel Display", "Funnel Display Fallback", sans-serif;
-  font-size: clamp(64px, 10.5vw, 164px);
+  font-size: clamp(4rem, 10.5vw, 10.25rem);
   font-weight: 700;
   line-height: .94;
   letter-spacing: -.065em;
@@ -85,7 +85,7 @@
   max-width: 62ch;
   margin: 0;
   color: var(--case-stage-ink) !important;
-  font: 400 clamp(17px, 1.5vw, 20px)/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 clamp(1.0625rem, 1.5vw, 1.25rem)/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.012em;
   text-align: center;
 }
@@ -190,10 +190,10 @@ html[data-case-opening="pending"] .case-study-header :is(.banner-title, .case-he
 }
 @media (min-width: 992px) and (max-height: 780px) {
   .case-study-header .banner-section { gap: 12px; padding-top: 82px; padding-bottom: 24px; }
-  .case-study-header .banner-title { font-size: clamp(64px, 8.6vw, 126px); }
+  .case-study-header .banner-title { font-size: clamp(4rem, 8.6vw, 7.875rem); }
   .case-study-header .case-hero-shot { max-height: 39svh; }
   .case-study-header .kineticare-hero-bg { width: min(76vw, 69.333svh); }
-  .case-study-header .banner-text { font-size: 17px; }
+  .case-study-header .banner-text { font-size: 1.0625rem; }
 }
 @media (max-width: 991px) {
   .case-study-header .banner-section,
@@ -204,18 +204,18 @@ html[data-case-opening="pending"] .case-study-header :is(.banner-title, .case-he
     padding-top: 86px;
     padding-bottom: 32px;
   }
-  .case-study-header .banner-title { font-size: clamp(40px, 11.5vw, 104px); line-height: 1; letter-spacing: -.065em; }
-  .case-study-header .work-category { max-width: 34ch; font-size: 12px; letter-spacing: .05em; }
+  .case-study-header .banner-title { font-size: clamp(2.5rem, 11.5vw, 6.5rem); line-height: 1; letter-spacing: -.065em; }
+  .case-study-header .work-category { max-width: 34ch; font-size: .75rem; letter-spacing: .05em; }
   .case-study-header .case-hero-media,
   .case-study-header .kineticare-hero-bg { width: 100%; }
   .case-study-header .case-hero-shot { max-height: 48svh; }
   .case-study-header .kineticare-hero-bg { height: auto; }
-  .case-study-header .banner-text { max-width: 43ch; font-size: 17px; line-height: 1.5; }
+  .case-study-header .banner-text { max-width: 43ch; font-size: 1.0625rem; line-height: 1.5; }
 }
 @media (max-width: 479px) {
   .case-study-header .banner-section,
   .case-study-header .banner-section.kineticare-hero { grid-template-rows: auto auto minmax(190px, 1fr) auto; gap: 18px; }
-  .case-study-header .banner-title { font-size: clamp(36px, 12.4vw, 60px); }
+  .case-study-header .banner-title { font-size: clamp(2.25rem, 12.4vw, 3.75rem); }
 }
 @media (max-height: 600px) {
   .case-study-header .banner-section,
