@@ -49,21 +49,34 @@
     // markup hidden until a calculation has run; no-JS has no invented number.
     progress.hidden = false;
     header.dataset.journey = ratio.toFixed(3);
-    if (isWork) document.documentElement.style.setProperty('--work-nav-height', header.offsetHeight + 'px');
+    if (isWork) syncWorkNavHeight();
   }
+  // Scrolling does not change the bar's height: measure it on resize, load,
+  // fonts and the bar's own ResizeObserver, never in the per-frame scroll path.
+  var measureNav = true;
+  var navHeight = -1;
+  function syncWorkNavHeight() {
+    if (!measureNav) return;
+    measureNav = false;
+    var height = header.offsetHeight;
+    if (height === navHeight) return;
+    navHeight = height;
+    document.documentElement.style.setProperty('--work-nav-height', height + 'px');
+  }
+  function requestMeasure() { measureNav = true; request(); }
   function request() { if (!suspended && !frame) frame = requestAnimationFrame(render); }
   window.addEventListener('scroll', request, { passive: true });
-  window.addEventListener('resize', request, { passive: true });
-  window.addEventListener('load', request, { once: true });
-  window.addEventListener('portfolio:arrivalend', request);
+  window.addEventListener('resize', requestMeasure, { passive: true });
+  window.addEventListener('load', requestMeasure, { once: true });
+  window.addEventListener('portfolio:arrivalend', requestMeasure);
   window.addEventListener('pagehide', function () { suspended = true; cancelAnimationFrame(frame); frame = 0; });
-  window.addEventListener('pageshow', function () { suspended = false; request(); });
+  window.addEventListener('pageshow', function () { suspended = false; requestMeasure(); });
   document.addEventListener('visibilitychange', function () {
     suspended = document.hidden;
     if (suspended) { cancelAnimationFrame(frame); frame = 0; } else request();
   });
-  if (document.fonts) document.fonts.ready.then(request);
-  if (isWork && 'ResizeObserver' in window) new ResizeObserver(request).observe(header);
+  if (document.fonts) document.fonts.ready.then(requestMeasure);
+  if (isWork && 'ResizeObserver' in window) new ResizeObserver(requestMeasure).observe(header);
   // Observe only the consent component's owned spacer. Its existing controller
   // already measures the visible banner, including details and font reflow.
   var consentWatch = new MutationObserver(function () { syncConsent(); });

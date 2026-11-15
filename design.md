@@ -17,7 +17,7 @@ This file follows the loop in
    mechanics live in CSS. Never read a hashed copy into context. The full
    ownership map is in **System reference** below.
 3. **Checks** — `scripts/check-design.mjs` plus the seven other `check-*.mjs`
-   scripts and thirty-three Playwright specs. Mechanical failures that have
+   scripts and thirty-six Playwright specs. Mechanical failures that have
    already been named must fail CI. **System reference → Checks** says which
    file owns which rule, so a new rule lands in one place.
 
@@ -605,7 +605,9 @@ The decorative Kineticare header video starts automatically but has a single
 4.5-second preview window, then stays paused for that document visit. Scrolling,
 tab/lifecycle changes and media refresh must not restart an expired preview.
 This keeps header motion below WCAG 2.2.2's five-second threshold without adding
-a Play overlay or motion switch. Non-header media retains its existing behavior.
+a Play overlay or motion switch. Looping non-header media (the home research
+loop, the Instructure montage, the Kineticare walkthrough) plays in view and
+carries the Pause control described under Motion.
 
 The navigation is a non-modal disclosure, not an ARIA menu or focus trap.
 Its button reflects expanded state. Closing it must not leave focus on a hidden
@@ -817,7 +819,8 @@ English-wash the screenshot.
 | MailtoInHtml | `mailto:` or the inbox address appears in page HTML, CSS or JS, or a script assembles it | The address stays in `CONTACT_TO`; contact goes through the form |
 | FakeEmailLink | A mail button or a link without href that opens nothing visible | `<a class="footer-email" href="/contact">` in the page language |
 | SaaSFooter | Product / Company / Resources / Legal sitemap columns or extra socials | Personal contact close, existing Work links and one integrated privacy row |
-| MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only preference |
+| MotionNav | A visible “Motion On/Off” control in the header, footer, or as a chip | Remove it. `prefers-reduced-motion` remains the only site-wide preference; a looping video keeps its own Pause video button beside the media |
+| BlanketMotionReset | `*, *::before, *::after { animation-duration: .01ms }`, `html.no-motion * { opacity: 1 !important }` or any universal-selector animation reset | Switch the specific animation off where it is declared; rest is the stylesheet default |
 | InkOnNight | Ink (`#111`) dek on a dark case field — Kineticare sharing SportsGambit’s `gambit` class | Navy dek on the new lilac case stage; do not revive the superseded dark-video text override |
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
@@ -950,6 +953,7 @@ renaming one silently disables a feature. `data-hero-critical`
 slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow`
 `data-composition-nav` `data-autoplay-video` `data-motion-video`
 `data-video-urls` `data-poster-url` `data-video-label` `data-object-fit` `data-video-fallback`
+`data-video-pause` (the Pause control `media.js` adds after a looping video's frame)
 `data-consent-settings` `data-arrival-gate` (root, parse time: the
 pre-curtain veil) `data-case-opening` (root: `pending` from the parse-time
 gate, then `assembling`, `settled`) `data-case-flat` (the case panel rests
@@ -1194,9 +1198,9 @@ JavaScript dependency is part of this contract.
 | `analytics-config.js` | Release gate; loads first; static `enabled` | no |
 | `consent.js` | Consent record, settings reveal, focus return | no |
 | `analytics.js` | Consent-gated PostHog EU capture | no |
-| `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap | yes |
+| `media.js` | Every `<video>`: muted in-view autoplay, session pause, Save-Data, the Kineticare 4.5s header cap, the Pause control of each looping video | yes |
 | `physics.js` | First-party physics module (`window.PortfolioPhysics`): fixed-step springs with limits, thin-plate hinges with gravity, crease memory, stops and an air cushion before them, normal-based light; self-stopping loop, external clock mode, reduced-motion snap. Not a dependency; a deferred head script on the contact pages, the fourteen cases and both homes | yes |
-| `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; no mail handler; deliberately has no animation dependency | no |
+| `navigation.js` | Mobile disclosure (closes on any link or button in it) and the mast text-enlargement/spacing reflow detector; leaves navigations to documents without the view-transition opt-in plain (`pageswap`); no mail handler; deliberately has no animation dependency | no |
 | `hero-scene.js` | Original WebGL chevron, its pinned and compact poses, SVG fallback, context loss, lifecycle; startup waits for the first paint and runs in separate tasks (program, reflection drawing, reflection upload, artwork, first frame) so none blocks the main thread for long (2026-10-21); runs on `/` and on the two AI openings (`data-glass-slot` names a stage's own slot) | yes |
 | `home-composition.js` | The only home morph scroll owner; calls `PortfolioHeroScene.setMorphProgress`, and `setCompactProgress` for the unpinned slot | yes |
 | `arrival.js` | First-session assembly, real readiness counter, Enter curtain | yes |
@@ -1288,7 +1292,8 @@ Motion and stage scope:
 | `min-width: 1200px`, `min-width: 1800px` | Wide tuning only |
 | `(hover: hover) and (pointer: fine)` | Desktop pointer motion may run |
 | `(hover: none), (pointer: coarse)` | Restrained decorative depth only; a first tap always follows the link |
-| `prefers-reduced-motion: reduce` | Static composited state. The largest single rule group in the codebase |
+| `prefers-reduced-motion: reduce` | Static composited state: each animated element is named, never a universal reset |
+| `prefers-reduced-motion: no-preference` | Opt-in motion: the page-to-page view transition in `base.css` |
 | `max-height: 600px` | Short viewport: role and primary action come before decoration |
 
 The home hero's pointer motion requires 992px **and** a fine pointer, so a wide
@@ -1305,7 +1310,7 @@ scene is ready and motion is allowed.
 
 `npm test` first checks that every page carries the generated chrome
 (`build-nav.mjs --check`) and that the generated writing pages match
-`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs thirty-three
+`content/` (`build-writing.mjs --check`), then runs ten scripts in order; `npm run test:e2e` runs thirty-six
 Playwright specs against the real server at 127.0.0.1:3000. Put a new rule in
 the file that already owns that subject.
 
@@ -1313,7 +1318,7 @@ the file that already owns that subject.
 |---|---|
 | `check-site.mjs` | One H1, unique title and description, canonical, valid JSON-LD, every local reference resolves, the language menu contract on every page |
 | `check-responsive.mjs` | Compact composition, image stability, landmarks, social previews, the reduced-motion and native-scroll contract |
-| `check-motion.mjs` | Pages reference byte-identical hashed release files; motion ownership and initialisation order |
+| `check-motion.mjs` | Pages reference byte-identical hashed release files; motion ownership and initialisation order; the modern motion model (view-transition opt-in and its single name, no blanket reset, compositor-only properties, no permanent `will-change`, back/forward-cache eligibility, the video Pause control) |
 | `check-server.mjs` | Express behaviour: redirects, private paths, and that only content-versioned files get an immutable cache |
 | `check-editorial-media.mjs` | Posters, muted loop attributes, evidence-note chrome, real OG files, breadcrumb and service schema |
 | `check-design.mjs` | This file. Named anti-patterns, work order, header lock, home H1 and JSON-LD identity |
@@ -1428,10 +1433,75 @@ immutable header.
 
 GSAP + ScrollTrigger already own reveals. Native scroll only (no Lenis),
 respect `prefers-reduced-motion`, `html.no-motion` and `PortfolioMedia.isReduced()`.
-Every page carries a blanket `html.no-motion * { opacity: 1 !important }`, so
-anything that hides one of two stacked states has to re-assert it explicitly
-under `html.no-motion` or both show at once. Keep such arithmetic in the owner,
-not in CSS, so the stylesheet's defaults stay the honest resting state.
+No page carries a blanket reset any more (2026-11-15, Chrome Modern Web
+Guidance): the inline `html.no-motion * { opacity: 1 !important; ... }` rule
+and the `*, *::before, *::after { animation-duration: .01ms; transition-duration:
+.01ms }` reset are gone, and so are the `.contact-page *`, `.story-page *` and
+`.ai-page *` variants. The model is:
+
+- **Rest is the default.** A stylesheet's defaults are the honest finished
+  state. An owner that hides or offsets something for an entrance does it
+  inline or behind its own attribute, and restores it under reduced motion and
+  `html.no-motion` itself. Nothing may depend on a blanket rule to become
+  visible.
+- **Switch the specific animation off.** Each spatial animation or transition
+  (transform, translate, scale, rotate, opacity, clip-path) names its own
+  `@media (prefers-reduced-motion: reduce)` and `html.no-motion` rule next to
+  its declaration, or is only declared where motion is opted into
+  (`[data-ai-motion="on"]`, `prefers-reduced-motion: no-preference`). Never a
+  near-zero duration and never a universal selector.
+- **Feedback stays.** Colour, background, border, shadow, fill and stroke
+  transitions on links and controls keep their 180–400ms fade under reduced
+  motion; they are not movement. Menu, focus and validation changes are
+  instant.
+- **Compositor and paint only.** Animate transform, translate, scale, rotate,
+  opacity and clip-path. No transition or keyframe on width, height, inset,
+  margin, padding or type size (the arrival counter travels on `translate`
+  inside its query container, not on `left`). No permanent `will-change`; the
+  arrival slices may hint because the curtain leaves the document.
+- **Back/forward cache.** No `unload` or `beforeunload` handler and no
+  `Cache-Control: no-store` on a public document. Owners stop on `pagehide`
+  and resume on `pageshow`; GSAP contexts are reverted and rebuilt.
+
+`scripts/check-motion.mjs` enforces each of these statically and
+`tests/motion-model.spec.mjs` measures them in the browser.
+
+**Page-to-page transitions (2026-11-15).** `base.css` opts every page into
+cross-document view transitions inside `prefers-reduced-motion: no-preference`:
+a 200ms cross-fade of the two documents, with the header bar as its own group
+(`.navbar { view-transition-name: site-nav }`, the only name on the site: a
+duplicate name aborts the transition), so the bar stays in place while the
+page changes. Every page's head ends with
+`<link rel="expect" href="#primary-navigation" blocking="render"/>`, so the
+incoming header is parsed before the first frame. No element of the works
+index is paired with a case title: the case opening splits and springs that
+title itself, and a morph would animate it twice. Coexistence rules:
+
+- The first-visit arrival never meets a transition (it needs no same-origin
+  referrer, and a transition needs a same-origin navigation); should the gate
+  be raised, `html[data-arrival-gate]::view-transition-*` run no animation and
+  the transition ends at once. `html.no-motion` does the same.
+- The case opening plays inside the live incoming page: its pending gate
+  leaves the title and panel unpainted while the outgoing page fades, then the
+  owner assembles them. History visits skip the opening as before and only
+  cross-fade.
+- A destination without the opt-in (the feed, a file, the admin) is left a
+  plain navigation from `pageswap` in `navigation.js`; otherwise the browser
+  abandons the transition in the new document and reports a rejection there.
+- Reduced motion, and browsers without the feature, navigate as before.
+
+**Pause control (2026-11-15, WCAG 2.2.2).** A video that starts by itself and
+loops runs longer than five seconds, so `media.js` adds one quiet text button
+after its frame (`.video-pause-toggle`, `data-video-pause`): Pause video /
+Play video in the page language, 44px tall, in the frame's own ink, with
+`aria-controls` and no pressed state because the label names the action. It
+stops that video for the visit; scrolling does not restart it. It is not the
+retired MotionNav switch: it sits with the media it controls, never in the
+header or footer and never as a glyph on the picture. It is absent under
+reduced motion and `html.no-motion`, where the video does not start, and on
+the Kineticare header, which stops by itself after 4.5 seconds. The glass
+scenes, the contact fold and the case opening all come to rest by themselves
+and need no control; `/about` keeps its own Pause motion button.
 No new runtime dependency, sound requirement, generated Lottie or visible
 Motion control. Physical motion (springs, hinges, stops) runs on the
 first-party fixed-step `physics.js`: each loop stops at rest, 60 and 120 Hz

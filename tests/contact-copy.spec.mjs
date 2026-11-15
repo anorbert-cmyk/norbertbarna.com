@@ -49,8 +49,9 @@ async function doubleHeaderText(page) {
       .filter((element) => element instanceof HTMLElement)
       .map((element) => ({ element, size: parseFloat(getComputedStyle(element).fontSize) }));
     for (const { element, size } of snapshot) element.style.setProperty("font-size", `${size * 2}px`, "important");
-    // Reduced-motion CSS still gives font-size transitions a .01ms duration.
-    // Wait for the actual computed sizes, rather than reading their start frame.
+    // Reduced motion has no blanket duration reset (design.md, Motion), so a
+    // declared transition could still run. Wait for the actual computed sizes
+    // rather than reading a start frame.
     const deadline = performance.now() + 2000;
     while (snapshot.some(({ element, size }) => Math.abs(parseFloat(getComputedStyle(element).fontSize) - size * 2) > .001)) {
       if (performance.now() >= deadline) throw new Error("Header text did not settle at its requested 200% size");

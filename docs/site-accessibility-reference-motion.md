@@ -116,3 +116,22 @@ The tests preserve each observed painted pose while bringing text into view,
 so sampling cannot accidentally reset the animation to its resting state.
 Provider CI, independent review and the live deployment canary supply the
 release evidence; a local screenshot alone is not a release check.
+
+## Motion model update (2026-11-15)
+
+An audit against Chrome's Modern Web Guidance replaced the blanket
+reduced-motion resets with per-animation rules, added cross-document view
+transitions and gave each looping video a Pause control (WCAG 2.2.2). The
+rules are in `design.md` under Motion; `scripts/check-motion.mjs` enforces
+them statically and `tests/motion-model.spec.mjs` in the browser.
+
+- Reduced motion: no universal selector and no near-zero duration. Spatial
+  animations are switched off where they are declared; colour, border and
+  shadow feedback keeps its fade; every element rests in its final state.
+- Page-to-page: a 200ms cross-fade under `prefers-reduced-motion:
+  no-preference`, the header as its own group, the arrival curtain and the
+  case opening untouched, plain navigation where the feature or the opt-in is
+  missing.
+- Looping video: a text Pause video / Play video button after the frame;
+  absent where the video does not start.
+

@@ -936,11 +936,23 @@
     if (event.persisted) startResponsiveMotion();
   });
 
+  // Building the reveals (word splits, tweens, ScrollTriggers) is the longest
+  // step of this module. Give it a task of its own: the load and font
+  // continuations of the other owners resolve in the same turn, and input or
+  // a frame can then be handled between them.
+  function yieldToMain() {
+    if (window.scheduler && typeof window.scheduler.yield === "function") return window.scheduler.yield();
+    return new Promise(function (resolve) { window.setTimeout(resolve, 0); });
+  }
+  function startAfterYield() {
+    yieldToMain().then(startResponsiveMotion, startResponsiveMotion);
+  }
+
   motionTakeoverReady.then(function () {
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(startResponsiveMotion, startResponsiveMotion);
+      document.fonts.ready.then(startAfterYield, startAfterYield);
     } else {
-      startResponsiveMotion();
+      startAfterYield();
     }
   });
 })();
