@@ -86,7 +86,7 @@ html:is([lang="hu"], [lang="de"]) .ai-hero h1 { font-size: clamp(3rem, 5.1vw, 5.
 .ai-pieces { color: var(--ai-navy); background: var(--ai-lilac); }
 .ai-pieces-track { position: relative; }
 .ai-pieces-stage { position: relative; isolation: isolate; display: grid; align-content: center; gap: clamp(32px, 4svh, 48px); padding: 96px var(--ai-gutter) 64px; overflow: hidden; }
-[data-ai-mode="cinematic"] .ai-pieces-track { height: 240svh; }
+[data-ai-mode="cinematic"] .ai-pieces-track { height: 300svh; }
 [data-ai-mode="cinematic"] .ai-pieces-stage { position: sticky; top: 0; height: 100svh; min-height: 0; }
 .ai-pieces-head { display: grid; grid-template-columns: auto minmax(0, 1.2fr) 1px minmax(0, 1fr); gap: clamp(20px, 3vw, 48px); align-items: start; }
 .ai-pieces-count { font: 600 clamp(1.5rem, 2vw, 2.125rem)/1 Inter, "Inter Fallback", sans-serif; letter-spacing: -.05em; white-space: nowrap; }
@@ -109,6 +109,7 @@ html:is([lang="hu"], [lang="de"]) .ai-hero h1 { font-size: clamp(3rem, 5.1vw, 5.
 .ai-pieces-steps li:first-child { padding-left: 0; border-left: 0; }
 .ai-pieces-steps li::before { content: ""; position: absolute; top: -2px; height: 3px; left: 0; right: 0; background: var(--ai-forest); transform: scaleX(0); transform-origin: left; }
 [data-ai-active="1"] [data-ai-step="1"]::before, [data-ai-active="2"] [data-ai-step="2"]::before, [data-ai-active="3"] [data-ai-step="3"]::before { transform: scaleX(1); }
+@media (prefers-reduced-motion: no-preference) { .ai-pieces-steps li::before { transition: transform .35s cubic-bezier(.45,0,.55,1); } }
 .ai-step-no { padding-top: 3px; }
 .ai-pieces-steps h3 { font: 600 clamp(1.125rem, 1.4vw, 1.375rem)/1.25 Inter, "Inter Fallback", sans-serif; letter-spacing: -.03em; }
 .ai-pieces-steps p { margin-top: 12px; max-width: 36ch; font-size: clamp(.9375rem, 1.05vw, 1.0625rem); line-height: 1.55; }
@@ -306,17 +307,20 @@ html[lang="de"] .ai-footer h2 { font-size: clamp(3.25rem, 5.8vw, 6rem); }
   }
 }
 @keyframes ai-hero-leave { to { transform: translateY(-6%) scale(1.05); } }
+/* The camera is tied to the scroll, so its easing is felt as speed: each move
+   takes a wide share of the run and a symmetric curve, so the ribbon never
+   travels faster than the page under a wheel or a finger. */
 @keyframes ai-lens {
-  0%, 12% { transform: translateX(22.5%) scale(1.45); animation-timing-function: cubic-bezier(.5,0,.1,1); }
-  44%, 52% { transform: translateX(0) scale(1.45); animation-timing-function: cubic-bezier(.5,0,.1,1); }
-  76%, 84% { transform: translateX(-22.5%) scale(1.45); animation-timing-function: cubic-bezier(.4,0,.2,1); }
+  0%, 6% { transform: translateX(22.5%) scale(1.45); animation-timing-function: cubic-bezier(.45,0,.55,1); }
+  36%, 44% { transform: translateX(0) scale(1.45); animation-timing-function: cubic-bezier(.45,0,.55,1); }
+  74%, 80% { transform: translateX(-22.5%) scale(1.45); animation-timing-function: cubic-bezier(.45,0,.55,1); }
   100% { transform: none; }
 }
 @keyframes ai-drift { from { transform: translateY(3%) scale(1.03); } to { transform: translateY(-3%) scale(1.01); } }
 @keyframes ai-pan {
-  0%, 28% { transform: translateX(0); animation-timing-function: cubic-bezier(.5,0,.1,1); }
-  44%, 58% { transform: translateX(-31.3333%); animation-timing-function: cubic-bezier(.5,0,.1,1); }
-  76%, 100% { transform: translateX(-66.6667%); }
+  0%, 17% { transform: translateX(0); animation-timing-function: cubic-bezier(.4,0,.6,1); }
+  50% { transform: translateX(-31.3333%); animation-timing-function: cubic-bezier(.4,0,.6,1); }
+  83%, 100% { transform: translateX(-66.6667%); }
 }
 /* Every animation above is opted into by [data-ai-motion="on"], which the
    owner never sets under reduced motion or html.no-motion; these rules keep

@@ -65,7 +65,7 @@ explanation. Contextual case links must identify what the case actually proves.
    crisp translucent glass and polished olive folds. Do not replace the
    approved picture with simplified procedural U-profiles.
 3. **Make the pieces work together.** The approved shallow folded ribbon crosses
-   three always-readable service steps. Desktop pins for a 240svh track only
+   three always-readable service steps. Desktop pins for a 300svh track only
    when both natural content rows fit the viewport. The camera and 01–03
    counter travel together. Mobile keeps the ribbon under the 56px bar as the
    steps scroll naturally. No reading text or links fade or transform.

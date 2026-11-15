@@ -93,13 +93,13 @@
       var box = pieces.getBoundingClientRect();
       var p = clamp(-box.top / Math.max(1, pieces.offsetHeight - stage.offsetHeight));
       api.camera = p;
-      showCount(p < .36 ? 1 : p < .64 ? 2 : 3);
+      showCount(p < .21 ? 1 : p < .59 ? 2 : 3);
     } else if (journey && ribbon && innerWidth < 992 && innerHeight >= 600) {
       var run = journey.getBoundingClientRect();
       var hold = parseFloat(getComputedStyle(ribbon).top) || 0;
       var q = clamp((hold - run.top) / Math.max(1, run.height - ribbon.offsetHeight));
       api.camera = q;
-      showCount(q < .34 ? 1 : q < .67 ? 2 : 3);
+      showCount(q < .33 ? 1 : q < .67 ? 2 : 3);
     } else { api.camera = 1; showCount(0); }
     painted = true;
   }
