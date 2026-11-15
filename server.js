@@ -47,6 +47,9 @@ const TURNSTILE_PAGES = new Set(["/contact", "/hu/kapcsolat", "/de/kontakt"]);
 // for this header to match the commit they ran for before checking the site.
 const RELEASE = process.env.RAILWAY_GIT_COMMIT_SHA || process.env.RELEASE_SHA || "";
 
+// The rule set every page names in its Speculation-Rules header.
+const SPECULATION_RULES_URL = "/assets/speculation-rules.json";
+
 // Security headers
 app.use((req, res, next) => {
   if (RELEASE) res.setHeader("X-Release", RELEASE);
@@ -73,6 +76,14 @@ app.use((req, res, next) => {
       "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
     );
     return next();
+  }
+  // Pages tell the browser to fetch the next page's HTML when a visitor rests
+  // the pointer on an internal link or starts to press it (Speculation Rules;
+  // browsers without support ignore the header). Prefetch only: the next page
+  // runs no script before the visitor arrives, and lib/admin/traffic.js does
+  // not count requests that carry Sec-Purpose: prefetch.
+  if (!/^\/(?:assets|api)\//.test(req.path)) {
+    res.setHeader("Speculation-Rules", `"${SPECULATION_RULES_URL}"`);
   }
   // The contact pages alone load Cloudflare Turnstile (script and iframe).
   const turnstile = TURNSTILE_PAGES.has(req.path);
@@ -293,6 +304,10 @@ app.use(
   "/assets",
   express.static(ASSET_ROOT, {
     setHeaders(res, filePath) {
+      // Browsers only accept a speculation rule set under this media type.
+      if (path.basename(filePath) === "speculation-rules.json") {
+        res.setHeader("Content-Type", "application/speculationrules+json");
+      }
       if (isContentHashedAsset(filePath)) {
         res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
       } else {

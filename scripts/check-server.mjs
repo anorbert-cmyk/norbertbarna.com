@@ -412,6 +412,32 @@ try {
     assert(new RegExp(`<a class="footer-brand" href="${home.replace(/\//g, "\\/")}"`).test(body), `${path}: the error document links the ${lang} home`);
   }
 
+  // Speculation Rules: every page names the rule set, the rule set is served
+  // under the media type browsers require, and it only ever prefetches.
+  for (const pagePath of ["/", "/hu", "/de/wissen", "/work/benker", "/does-not-exist"]) {
+    const response = await fetch(`${baseUrl}${pagePath}`, { redirect: "manual" });
+    await response.arrayBuffer();
+    assert(response.headers.get("speculation-rules") === '"/assets/speculation-rules.json"', `${pagePath} must name the speculation rule set`);
+  }
+  for (const quietPath of ["/admin", "/assets/speculation-rules.json", "/api/contact/nope"]) {
+    const response = await fetch(`${baseUrl}${quietPath}`, { redirect: "manual" });
+    await response.arrayBuffer();
+    assert(!response.headers.has("speculation-rules"), `${quietPath} must not name a speculation rule set`);
+  }
+  {
+    const response = await fetch(`${baseUrl}/assets/speculation-rules.json`);
+    const rules = await response.json();
+    assert(response.status === 200, "the speculation rule set must be served");
+    assert(/^application\/speculationrules\+json\b/.test(response.headers.get("content-type") || ""), "the speculation rule set needs the application/speculationrules+json media type");
+    assert(cacheDirectives(response.headers.get("cache-control") || "").has("must-revalidate"), "the speculation rule set must revalidate");
+    assert(Object.keys(rules).join() === "prefetch", "speculation rules may only prefetch: a prerender would run page scripts and analytics before the visit");
+    const excluded = JSON.stringify(rules.prefetch.map((rule) => rule.where));
+    for (const privatePath of ["/admin", "/admin/*", "/api/*"]) {
+      assert(excluded.includes(`"${privatePath}"`), `speculation rules must exclude ${privatePath}`);
+    }
+    assert(rules.prefetch.every((rule) => rule.eagerness === "moderate" || rule.eagerness === "conservative"), "speculation rules must wait for a pointer signal");
+  }
+
   for (const notFoundPath of [
     "/404",
     "/404.html",
