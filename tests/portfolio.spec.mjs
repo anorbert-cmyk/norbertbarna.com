@@ -186,41 +186,6 @@ function readPng(buffer) {
   return { width, height, pixels };
 }
 
-function sampleStats(png, { skipEdge = 1 } = {}) {
-  let count = 0;
-  let r = 0;
-  let g = 0;
-  let b = 0;
-  const luminances = [];
-  for (let y = skipEdge; y < png.height - skipEdge; y += 1) {
-    for (let x = skipEdge; x < png.width - skipEdge; x += 1) {
-      const i = (y * png.width + x) * 4;
-      const pr = png.pixels[i];
-      const pg = png.pixels[i + 1];
-      const pb = png.pixels[i + 2];
-      r += pr;
-      g += pg;
-      b += pb;
-      luminances.push(0.2126 * pr + 0.7152 * pg + 0.0722 * pb);
-      count += 1;
-    }
-  }
-  const meanL = luminances.reduce((sum, value) => sum + value, 0) / count;
-  const variance = luminances.reduce((sum, value) => sum + (value - meanL) ** 2, 0) / count;
-  return {
-    r: r / count,
-    g: g / count,
-    b: b / count,
-    luminance: meanL,
-    stddev: Math.sqrt(variance),
-  };
-}
-
-async function screenshotClip(page, clip) {
-  const buffer = await page.screenshot({ clip, type: "png" });
-  return sampleStats(readPng(buffer));
-}
-
 function srgbToLin(channel) {
   const value = channel / 255;
   return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
@@ -269,14 +234,6 @@ function pixelStats(png) {
 
 function colorLuminance(color) {
   return relativeLuminance(color.r, color.g, color.b);
-}
-
-function contrastAgainst(fg, bg) {
-  return contrastRatio(colorLuminance(fg), bg.l);
-}
-
-function hexRgb({ r, g, b }) {
-  return `#${[r, g, b].map((n) => Math.round(n).toString(16).padStart(2, "0")).join("")}`;
 }
 
 async function sampleBehindGlyphs(page, locator, { includePixels = false } = {}) {

@@ -33,7 +33,7 @@ async function open(page, route) {
 async function intoView(video) {
   // A DOM scroll is not a trusted play gesture. Autoplay must work without a click.
   await video.evaluate(v => {
-    const surface = v.closest('.w-background-video') || v;
+    const surface = v.closest('.video-frame') || v;
     surface.scrollIntoView({ block: 'center', behavior: 'instant' });
   });
 }
@@ -183,7 +183,7 @@ for (const viewport of [
         const video = page.locator(example.selector);
         await intoView(video);
         await playing(video);
-        await expect(page.locator('.motion-video-toggle, [data-w-bg-video-control], video[controls]')).toHaveCount(0);
+        await expect(page.locator('.motion-video-toggle, video[controls]')).toHaveCount(0);
         if (example.ratio) {
           const geometry = await video.evaluate(v => {
             const wrap = v.closest('.background-video, .home-about-video, .kineticare-browser-frame') || v.parentElement;
@@ -206,10 +206,10 @@ for (const viewport of [
             expect(Number(geometry.z)).toBeGreaterThanOrEqual(0);
           }
           if (example.name === 'Kineticare walkthrough') {
-            // Webflow caps .w-richtext figure at 60%; the walkthrough spans the text column.
+            // components.css caps .rich-text figure at 60%; the walkthrough spans the text column.
             const span = await video.evaluate(v => {
               const frame = v.closest('.kineticare-browser-frame').getBoundingClientRect();
-              const column = v.closest('.w-richtext').getBoundingClientRect();
+              const column = v.closest('.rich-text').getBoundingClientRect();
               return frame.width / column.width;
             });
             expect(span).toBeGreaterThan(.98);
@@ -373,7 +373,7 @@ test('denied autoplay turns motion off and recovers in one resume without unboun
   await page.waitForTimeout(400);
   expect(await page.evaluate(() => window.__playAttempts)).toBe(before);
   expect(await video.evaluate(v => Boolean(v.poster) && v.paused && !v.controls)).toBe(true);
-  await expect(page.locator('.motion-video-toggle, [data-w-bg-video-control], [data-motion-toggle]')).toHaveCount(0);
+  await expect(page.locator('.motion-video-toggle, [data-motion-toggle]')).toHaveCount(0);
   await page.evaluate(() => window.PortfolioMedia.setPaused(false));
   await expect.poll(() => page.evaluate(() => window.__playAttempts)).toBe(before + 1);
   await playing(video);

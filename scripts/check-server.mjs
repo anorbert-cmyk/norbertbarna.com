@@ -26,7 +26,7 @@ const RELEASE_SOURCES = [
   "js/story-motion.js", "css/case-motion.css", "css/responsive.css",
   "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
-  "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css",
+  "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css", "css/base.css", "css/components.css",
   "css/contact.css", "js/contact.js", "js/physics.js", "css/writing.css",
   // Written by build-writing.mjs from contact.js (proof of work) and article-comments.js.
   "js/comments.js",
@@ -65,17 +65,13 @@ function assetPath(filePath) {
 // This intentionally does not import or duplicate the server classifier.
 // A release is immutable only when it belongs to an approved family and the
 // embedded token is the real SHA-256 prefix of the bytes being served.
-// The inherited Webflow stylesheets (2026-10-22) have no unhashed source: the
-// file under its Webflow object id is the release, named by its own digest.
-const WEBFLOW_RELEASE = /^norbertbarna\.webflow\.(?:shared|[a-f0-9]{24})$/;
 function hasVerifiedReleaseDigest(filePath) {
   const [directory, fileName, extra] = assetPath(filePath).split("/");
   if (extra || !directory || !fileName) return false;
 
   const match = fileName.match(/^(.+)\.([a-f0-9]{12})\.(js|css|woff2)$/i);
   if (!match) return false;
-  const webflow = directory === "css" && match[3] === "css" && WEBFLOW_RELEASE.test(match[1]);
-  if (!webflow && !approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
+  if (!approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
 
   const actual = createHash("sha256").update(readFileSync(filePath)).digest("hex").slice(0, 12);
   return match[2].toLowerCase() === actual;
@@ -148,7 +144,7 @@ try {
 
   assert(immutableAssetCount > 0, "no verified immutable release assets were found");
 
-  const queryProbe = await fetch(`${baseUrl}/assets/js/webfont.js?v=deadbeef`, {
+  const queryProbe = await fetch(`${baseUrl}/assets/js/navigation.js?v=deadbeef`, {
     method: "HEAD",
   });
   const queryCache = cacheDirectives(queryProbe.headers.get("cache-control") || "");
@@ -516,6 +512,162 @@ try {
     assert(cache.get("max-age") === "0" && cache.has("must-revalidate"), `${inventedRelease} must revalidate`);
   }
 
+  // Security headers (2026-11-15). Every public response carries the same
+  // companion headers; the page policy enforces Trusted Types everywhere but
+  // on the three contact pages, where Cloudflare's Turnstile script runs and
+  // the same rule is report-only.
+  const REPORT_PATH = "/api/csp-report";
+  const TRUSTED_TYPES_REPORT_ONLY = `require-trusted-types-for 'script'; trusted-types contact-turnstile; report-uri ${REPORT_PATH}; report-to csp`;
+  const directivesOf = (policy) => policy.split(";").map((directive) => directive.trim()).filter(Boolean);
+  for (const pagePath of ["/", "/hu", "/de", "/works", "/work/benker", "/writing", "/contact", "/hu/kapcsolat", "/de/kontakt", "/does-not-exist"]) {
+    const page = await fetch(`${baseUrl}${pagePath}`, { redirect: "manual" });
+    await page.arrayBuffer();
+    const header = (name) => page.headers.get(name) || "";
+    const directives = directivesOf(header("content-security-policy"));
+    const turnstilePage = ["/contact", "/hu/kapcsolat", "/de/kontakt"].includes(pagePath);
+    assert(header("strict-transport-security") === "max-age=63072000; includeSubDomains; preload", `${pagePath}: HSTS must be two years, includeSubDomains, preload`);
+    assert(header("x-content-type-options") === "nosniff", `${pagePath}: nosniff is missing`);
+    assert(header("x-frame-options") === "SAMEORIGIN", `${pagePath}: X-Frame-Options must match frame-ancestors 'self'`);
+    assert(header("referrer-policy") === "strict-origin-when-cross-origin", `${pagePath}: Referrer-Policy changed`);
+    assert(header("cross-origin-opener-policy") === "same-origin", `${pagePath}: COOP changed`);
+    assert(header("cross-origin-resource-policy") === "same-origin", `${pagePath}: a page is a same-origin resource`);
+    for (const feature of ["camera", "geolocation", "microphone", "payment", "usb"]) {
+      assert(header("permissions-policy").includes(`${feature}=()`), `${pagePath}: Permissions-Policy must deny ${feature}`);
+    }
+    assert(header("reporting-endpoints") === `csp="${REPORT_PATH}", default="${REPORT_PATH}"`, `${pagePath}: Reporting-Endpoints must name the first-party report endpoint`);
+    for (const directive of ["default-src 'self'", "object-src 'none'", "base-uri 'none'", "frame-ancestors 'self'", "form-action 'self'", `report-uri ${REPORT_PATH}`, "report-to csp"]) {
+      assert(directives.includes(directive), `${pagePath}: CSP must carry "${directive}"`);
+    }
+    assert(/^script-src 'self' 'report-sample' /.test(directives.find((directive) => directive.startsWith("script-src")) || ""), `${pagePath}: script-src must ask for report samples`);
+    // Plain http exists on localhost only; there an upgrade would break every asset.
+    assert(!directives.includes("upgrade-insecure-requests"), `${pagePath}: localhost must not upgrade requests`);
+    if (turnstilePage) {
+      assert(!directives.some((directive) => /trusted-types/.test(directive)), `${pagePath}: Trusted Types must not be enforced where Turnstile runs`);
+      assert(header("content-security-policy-report-only") === TRUSTED_TYPES_REPORT_ONLY, `${pagePath}: Trusted Types must be report-only with the contact-turnstile policy`);
+    } else {
+      assert(directives.includes("require-trusted-types-for 'script'") && directives.includes("trusted-types 'none'"), `${pagePath}: Trusted Types must be enforced with no policy allowed`);
+      assert(!page.headers.has("content-security-policy-report-only"), `${pagePath}: no report-only policy outside the contact pages`);
+    }
+  }
+  {
+    const live = await rawGet(address.port, "/about", { host: "www.barnanorbert.com", "x-forwarded-proto": "https" });
+    assert(directivesOf(live.headers["content-security-policy"] || "").includes("upgrade-insecure-requests"), "the production host must upgrade insecure requests");
+    const apex = await rawGet(address.port, "/about", { host: "barnanorbert.com", "x-forwarded-proto": "https" });
+    assert(apex.headers["strict-transport-security"] === "max-age=63072000; includeSubDomains; preload", "the apex redirect must carry HSTS (the preload list reads it there)");
+  }
+
+  // Cross-Origin-Resource-Policy per path class: only what other sites are
+  // meant to load (social previews, icons, crawler files, feeds) is open.
+  const indexNowKey = readdirSync(ROOT).find((name) => /^[a-f0-9]{32}\.txt$/.test(name));
+  assert(indexNowKey, "the IndexNow key file is missing");
+  const immutableScript = assetFiles.map(assetPath).find((name) => /^js\/animations\.[a-f0-9]{12}\.js$/.test(name));
+  const immutableStyle = assetFiles.map(assetPath).find((name) => /^css\/responsive\.[a-f0-9]{12}\.css$/.test(name));
+  for (const [resourcePath, expected] of [
+    ["/assets/images/og/forest-olive-folds.jpg", "cross-origin"],
+    ["/assets/images/og/writing/human-in-the-loop-ai.jpg", "cross-origin"],
+    ["/assets/icons/68f923d010d274634c966a6e_favicon.png", "cross-origin"],
+    ["/assets/icons/68f9237058b27cb0adfe0e4b_webclip.svg", "cross-origin"],
+    ["/favicon.ico", "cross-origin"],
+    ["/robots.txt", "cross-origin"],
+    ["/llms.txt", "cross-origin"],
+    ["/sitemap.xml", "cross-origin"],
+    [`/${indexNowKey}`, "cross-origin"],
+    ["/writing/feed.xml", "cross-origin"],
+    ["/hu/irasok/feed.xml", "cross-origin"],
+    ["/de/wissen/feed.xml", "cross-origin"],
+    [`/assets/${immutableScript}`, "same-origin"],
+    [`/assets/${immutableStyle}`, "same-origin"],
+    [`/assets/fonts/${FONT_RELEASES[0].file}`, "same-origin"],
+    ["/assets/js/vendor/gsap.min.js", "same-origin"],
+    ["/assets/images/hero-final.webp", "same-origin"],
+    ["/assets/speculation-rules.json", "same-origin"],
+    ["/api/contact/challenge", "same-origin"],
+    ["/api/comments/challenge", "same-origin"],
+    ["/admin", "same-origin"],
+    ["/admin/api/session", "same-origin"],
+  ]) {
+    const response = await fetch(`${baseUrl}${resourcePath}`, { redirect: "manual" });
+    await response.arrayBuffer();
+    // The admin API answers 503 until it is configured; the header is there regardless.
+    assert(response.status < 400 || resourcePath.startsWith("/admin/api/"), `${resourcePath} returned ${response.status}`);
+    assert(response.headers.get("cross-origin-resource-policy") === expected, `${resourcePath}: Cross-Origin-Resource-Policy must be ${expected}`);
+  }
+  // Every image a page offers to other sites (og:image, twitter:image) must
+  // sit in a path class that other origins may load.
+  const serverSourceText = readFileSync(serverModulePath, "utf8");
+  const crossOriginPattern = new RegExp(/const CROSS_ORIGIN_RESOURCE =\s*\/(.+)\/;/.exec(serverSourceText)[1]);
+  const htmlFiles = allFiles(ROOT).filter((file) => file.endsWith(".html") && !/[\\/](?:node_modules|admin|admin-ui|lib|docs|tests|test-results|playwright-report)[\\/]/.test(file));
+  assert(htmlFiles.length >= 70, "the page inventory for the header checks is incomplete");
+  let previewImages = 0;
+  for (const file of htmlFiles) {
+    const html = readFileSync(file, "utf8");
+    for (const [tag] of html.matchAll(/<meta\b[^>]*(?:og:image|twitter:image)"[^>]*>/g)) {
+      const content = /content="(https?:[^"]+)"/.exec(tag)?.[1];
+      if (!content || /(?:og:image:|twitter:image:)/.test(tag)) continue;
+      previewImages += 1;
+      assert(crossOriginPattern.test(new URL(content).pathname), `${relative(ROOT, file)}: preview image ${content} is not in a cross-origin path class`);
+    }
+  }
+  assert(previewImages >= 100, "preview images were not found in the pages");
+
+  // The report endpoint: both report media types are accepted without an
+  // Origin header, each report becomes one log line without query strings,
+  // and nothing that is not a small report gets in.
+  {
+    const lines = [];
+    const originalLog = console.log;
+    console.log = (line) => lines.push(String(line));
+    const post = (type, body) => fetch(`${baseUrl}${REPORT_PATH}`, { method: "POST", headers: { "Content-Type": type }, body });
+    try {
+      const batch = await post("application/reports+json", JSON.stringify([{
+        type: "csp-violation", age: 10, url: "https://www.barnanorbert.com/contact?email=ada%40example.com", user_agent: "Mozilla/5.0 (X11) Chrome/141.0.0.0 Safari/537.36",
+        body: {
+          documentURL: "https://www.barnanorbert.com/contact?email=ada%40example.com#sent", blockedURL: "trusted-types-sink", effectiveDirective: "require-trusted-types-for",
+          disposition: "report", sourceFile: "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit", lineNumber: 1, columnNumber: 2345,
+          sample: `Element innerHTML|<div>\n${"x".repeat(300)}`, referrer: "https://referrer.example/secret", originalPolicy: "require-trusted-types-for 'script'",
+        },
+      }, { type: "deprecation", url: "https://www.barnanorbert.com/?token=abc", body: { id: "UnloadHandler", message: "ignored" } }]));
+      assert(batch.status === 204 && (await batch.text()) === "", "a Reporting API batch must be answered 204 with no body");
+      assert(batch.headers.get("cache-control") === "no-store", "report answers must not be cached");
+      const legacy = await post("application/csp-report", JSON.stringify({ "csp-report": {
+        "document-uri": "https://www.barnanorbert.com/hu?utm_source=x", "violated-directive": "script-src-elem", "blocked-uri": "inline", "line-number": 12, "script-sample": "alert(1)",
+      } }));
+      assert(legacy.status === 204, "a legacy report-uri report must be answered 204");
+      assert(lines.length === 3 && lines.every((line) => /^csp-report \{.*\}$/.test(line) && !line.includes("\n")), "each report must become one csp-report log line");
+      const [first, deprecation, old] = lines.map((line) => JSON.parse(line.slice("csp-report ".length)));
+      assert(first.page === "https://www.barnanorbert.com/contact" && first.source === "https://challenges.cloudflare.com/turnstile/v0/api.js", "report URLs must lose their query and fragment");
+      assert(first.directive === "require-trusted-types-for" && first.blocked === "trusted-types-sink" && first.disposition === "report" && first.line === 1 && first.column === 2345, "the report summary keeps what is needed to debug");
+      assert(first.sample.length <= 80 && !/[\n\r]/.test(first.sample) && first.browser === "Chrome/141", "samples are cut and the browser is reduced to name and major version");
+      assert(deprecation.type === "deprecation" && deprecation.id === "UnloadHandler" && deprecation.page === "https://www.barnanorbert.com/", "other report types are summarized without their query");
+      assert(old.directive === "script-src-elem" && old.blocked === "inline" && old.page === "https://www.barnanorbert.com/hu" && old.sample === "alert(1)", "the legacy report is summarized the same way");
+      assert(!lines.join("").includes("ada") && !lines.join("").includes("secret") && !lines.join("").includes("token"), "query strings, referrers and addresses must never be logged");
+
+      const oversized = await post("application/csp-report", JSON.stringify({ "csp-report": { "script-sample": "x".repeat(20000) } }));
+      assert(oversized.status === 413 && (await oversized.text()) === "", "an oversized report must be refused with 413 and no body");
+      const malformed = await post("application/reports+json", "{not json");
+      assert(malformed.status === 400, "a malformed report must be refused with 400");
+      const wrongType = await post("application/json", "{}");
+      assert(wrongType.status === 415, "only the two report media types are accepted");
+      const odd = await post("application/reports+json", JSON.stringify([null, 7, "text", { type: 5 }, { body: "x" }, []]));
+      assert(odd.status === 204, "reports with unexpected shapes are dropped, not errors");
+      assert(lines.length === 3, "rejected and shapeless reports must not be logged");
+      const read = await fetch(`${baseUrl}${REPORT_PATH}`);
+      await read.arrayBuffer();
+      assert(read.status === 404, "the report endpoint only answers POST");
+
+      // One client cannot fill the log: the per-client window closes.
+      let limited = false;
+      for (let attempt = 0; attempt < 40 && !limited; attempt += 1) {
+        const response = await post("application/csp-report", "{}");
+        await response.arrayBuffer();
+        limited = response.status === 429;
+      }
+      assert(limited, "the report endpoint must rate-limit a client");
+    } finally {
+      console.log = originalLog;
+    }
+  }
+
   console.log(
     `OK: HTML and ${assetFiles.length - immutableAssetCount} mutable assets revalidate; ` +
       `${immutableAssetCount} verified release assets are immutable; direct error URLs return 404`
@@ -554,5 +706,88 @@ try {
     process.exitCode = 1;
   } else {
     console.log("OK: every executable inline script has its CSP hash");
+  }
+}
+
+// Trusted Types (2026-11-15). The page policy refuses HTML and script strings
+// at DOM sinks, so a first-party script that writes one breaks its feature.
+// Fail here instead: no script a page loads may contain a string-to-code
+// sink, and the only Trusted Types policy is the one server.js allows.
+{
+  const { readFileSync: readText, readdirSync: listDir, statSync: stat } = await import("node:fs");
+  const root = new URL("../", import.meta.url);
+  const pages = [];
+  (function collect(dir) {
+    for (const name of listDir(new URL(dir, root))) {
+      if (dir === "" && /^(?:node_modules|admin|admin-ui|lib|docs|tests|scripts|content|tools|indicators|assets|test-results|playwright-report|blob-report)$/.test(name)) continue;
+      if (name.startsWith(".")) continue;
+      if (stat(new URL(dir + name, root)).isDirectory()) collect(`${dir}${name}/`);
+      else if (name.endsWith(".html")) pages.push(dir + name);
+    }
+  })("");
+  const scripts = new Set();
+  const failures = [];
+  for (const page of pages) {
+    const html = readText(new URL(page, root), "utf8");
+    for (const [, src] of html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/gi)) {
+      const resolved = new URL(src, new URL(page, "https://site.invalid/"));
+      if (resolved.origin !== "https://site.invalid") failures.push(`${page}: third-party script tag ${src}`);
+      else scripts.add(resolved.pathname.slice(1));
+    }
+    if (/<[a-z][^>]*\son[a-z]+\s*=/i.test(html.replace(/<script\b[\s\S]*?<\/script>/gi, ""))) failures.push(`${page}: inline event handler attribute`);
+    if (/\b(?:href|src|action)\s*=\s*["']?\s*javascript:/i.test(html)) failures.push(`${page}: javascript: URL`);
+  }
+  // The editable sources ship as hashed copies; check both spellings.
+  for (const script of [...scripts]) scripts.add(script.replace(/\.[a-f0-9]{12}\.js$/, ".js"));
+  const SINKS = [
+    [/\.(?:innerHTML|outerHTML)\b/, "innerHTML/outerHTML"],
+    [/\binsertAdjacentHTML\b/, "insertAdjacentHTML"],
+    [/\bdocument\.write(?:ln)?\s*\(/, "document.write"],
+    [/\b(?:DOMParser|createContextualFragment|setHTMLUnsafe|parseHTMLUnsafe)\b/, "HTML string parser"],
+    [/\bsrcdoc\b/, "iframe srcdoc"],
+    [/\beval\s*\(/, "eval"],
+    [/\bnew\s+Function\b|[^.\w]Function\s*\(\s*["'`]/, "Function constructor"],
+    [/\bset(?:Timeout|Interval)\s*\(\s*["'`]/, "timer with a string"],
+    [/setAttribute\(\s*["'`]on/i, "event handler attribute"],
+    [/["'`]\s*javascript:/i, "javascript: URL"],
+    [/\b(?:Shared)?Worker\s*\(|\bimportScripts\s*\(/, "worker script URL"],
+  ];
+  const policies = [];
+  let checked = 0;
+  for (const script of [...scripts].sort()) {
+    let source;
+    try {
+      source = readText(new URL(script, root), "utf8");
+    } catch {
+      failures.push(`${script}: referenced by a page but missing`);
+      continue;
+    }
+    checked += 1;
+    const vendor = script.startsWith("assets/js/vendor/");
+    for (const [pattern, label] of SINKS) {
+      const hit = pattern.exec(source);
+      if (hit) failures.push(`${script}: ${label} (${JSON.stringify(source.slice(Math.max(0, hit.index - 30), hit.index + 50))})`);
+    }
+    for (const [, name] of source.matchAll(/createPolicy\(\s*["'`]([^"'`]+)["'`]/g)) policies.push(`${name} in ${script.replace(/\.[a-f0-9]{12}\.js$/, ".js")}`);
+    if (/createPolicy\(\s*[^"'`\s]/.test(source)) failures.push(`${script}: Trusted Types policy with a computed name`);
+    // A script element is only ever created to load Turnstile, through the policy.
+    const createsScript = /createElement\(\s*["'`]script["'`]\s*\)/i.test(source);
+    if (createsScript && (vendor || !/assets\/js\/contact(?:\.[a-f0-9]{12})?\.js$/.test(script))) failures.push(`${script}: creates a script element`);
+    if (createsScript && !/script\.src = turnstileScriptUrl\(\);/.test(source)) failures.push(`${script}: the injected script URL must come from the contact-turnstile policy`);
+    if (/\bscript\.(?:text|textContent|innerText)\s*=/.test(source)) failures.push(`${script}: writes script text`);
+  }
+  if (checked < 15) failures.push(`only ${checked} page scripts were found; the inventory is incomplete`);
+  const uniquePolicies = [...new Set(policies)].sort().join("; ");
+  if (uniquePolicies !== "contact-turnstile in assets/js/contact.js") failures.push(`unexpected Trusted Types policies: ${uniquePolicies || "none"}`);
+  const contact = readText(new URL("assets/js/contact.js", root), "utf8");
+  if (!/createScriptURL: function \(url\) \{\s*if \(url !== TURNSTILE\.script\) throw new TypeError/.test(contact)) failures.push("assets/js/contact.js: the contact-turnstile policy must accept the Turnstile URL only");
+  if (/create(?:HTML|Script):/.test(contact)) failures.push("assets/js/contact.js: the contact-turnstile policy may only create script URLs");
+  const serverSource = readText(new URL("server.js", root), "utf8");
+  if (!serverSource.includes('`trusted-types ${turnstile ? "contact-turnstile" : "\'none\'"}`')) failures.push("server.js: the trusted-types allow-list must be contact-turnstile on the contact pages and 'none' elsewhere");
+  if (failures.length) {
+    console.error(`FAIL: Trusted Types readiness:\n${failures.join("\n")}`);
+    process.exitCode = 1;
+  } else {
+    console.log(`OK: ${checked} page scripts contain no string-to-code sink; one Trusted Types policy (contact-turnstile)`);
   }
 }

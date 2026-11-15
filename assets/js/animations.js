@@ -19,8 +19,7 @@
   var reducedMotion = window.PortfolioMedia ? window.PortfolioMedia.isReduced() : reducedMotionQuery.matches;
   var portableViewport = window.matchMedia("(max-width: 991px), (hover: none), (pointer: coarse)");
 
-  var webflowMotionSelectors = [
-    "[data-w-id]",
+  var motionOwnedSelectors = [
     ".home-about-content-wrap",
     ".home-about-marquee-area",
     ".home-about-marquee-wrap",
@@ -30,7 +29,6 @@
     ".home-work-card-wrap",
     ".home-work-image-text",
     ".home-work-title-wrap",
-    ".w-layout-hflex",
     ".work-card",
     ".related-work-card",
     ".work-image",
@@ -48,16 +46,16 @@
     ".summary figure",
     ".work-single-section .div-block > div",
   ];
-  var webflowMotionElements = new Set();
+  var motionOwnedElements = new Set();
   var activeMotionMedia = null;
   var motionRuntimeReady = false;
 
-  function clearWebflowMotionState() {
-    document.querySelectorAll(webflowMotionSelectors.join(",")).forEach(function (element) {
-      webflowMotionElements.add(element);
+  function clearInlineMotionState() {
+    document.querySelectorAll(motionOwnedSelectors.join(",")).forEach(function (element) {
+      motionOwnedElements.add(element);
     });
 
-    webflowMotionElements.forEach(function (element) {
+    motionOwnedElements.forEach(function (element) {
       [
         "opacity",
         "transform",
@@ -77,33 +75,18 @@
       if (element.matches(".awards-card-text")) {
         element.style.removeProperty("color");
       }
-      element.removeAttribute("data-w-id");
     });
   }
 
-  /** Stop Webflow IX2 after its async init so GSAP is the single motion owner. */
-  function disableWebflowInteractions() {
-    try {
-      if (window.Webflow && typeof window.Webflow.require === "function") {
-        var ix2 = window.Webflow.require("ix2");
-        if (ix2 && typeof ix2.destroy === "function") ix2.destroy();
-      }
-    } catch (error) {
-      // A missing IX2 module must never make content disappear.
-    }
-
-    clearWebflowMotionState();
-  }
-
-  function scheduleWebflowMotionTakeover() {
+  function scheduleMotionTakeover() {
     return new Promise(function (resolve) {
       var resolved = false;
 
       function takeOwnership(finalCheckpoint) {
-        disableWebflowInteractions();
+        clearInlineMotionState();
         window.requestAnimationFrame(function () {
-          // IX2 can write initial styles while its ready callback is unwinding.
-          disableWebflowInteractions();
+          // A late style write can land while the ready callbacks are unwinding.
+          clearInlineMotionState();
           if (finalCheckpoint && !resolved) {
             resolved = true;
             resolve();
@@ -111,11 +94,7 @@
         });
       }
 
-      if (window.Webflow && typeof window.Webflow.push === "function") {
-        window.Webflow.push(function () {
-          takeOwnership(false);
-        });
-      } else if (document.readyState === "loading") {
+      if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", function () {
           takeOwnership(false);
         }, { once: true });
@@ -123,7 +102,7 @@
         takeOwnership(false);
       }
 
-      // A cold Webflow chunk can finish after DOM ready. Full load is the final
+      // A deferred script can finish after DOM ready. Full load is the final
       // ownership checkpoint; GSAP cannot start until this cleanup has finished.
       if (document.readyState === "complete") {
         takeOwnership(true);
@@ -164,7 +143,7 @@
       window.gsap.globalTimeline.clear();
     }
     stopFooterMeshField();
-    clearWebflowMotionState();
+    clearInlineMotionState();
   }
 
   function handleReducedMotionChange(event) {
@@ -175,8 +154,8 @@
       root.classList.remove("no-motion");
       startFooterMeshField();
       // Resume only after the same ownership/font checkpoints as initial load.
-      if (webflowMotionReady && motionRuntimeReady) {
-        webflowMotionReady.then(function () {
+      if (motionTakeoverReady && motionRuntimeReady) {
+        motionTakeoverReady.then(function () {
           var fonts = document.fonts && document.fonts.ready;
           if (fonts) fonts.then(startResponsiveMotion, startResponsiveMotion);
           else startResponsiveMotion();
@@ -355,7 +334,7 @@
   }
 
   setupNonMotionUi();
-  var webflowMotionReady = scheduleWebflowMotionTakeover();
+  var motionTakeoverReady = scheduleMotionTakeover();
 
   if (reducedMotion) enforceReducedMotion();
 
@@ -403,7 +382,7 @@
       });
 
       caseStudyFigures = Array.from(
-        caseStudySummary.querySelectorAll("figure.w-richtext-figure-type-image")
+        caseStudySummary.querySelectorAll("figure.rich-text-figure-image")
       );
       caseStudyFigures.forEach(function (figure) {
         var mask = figure.querySelector(":scope > div");
@@ -418,7 +397,11 @@
 
   function splitRevealWords(element) {
     if (!element) return { words: [], revert: function () {} };
-    var original = element.innerHTML;
+    // Deep copies of the untouched children; revert() puts them back without
+    // parsing an HTML string (the page enforces Trusted Types).
+    var original = Array.from(element.childNodes).map(function (child) {
+      return child.cloneNode(true);
+    });
 
     function visit(node) {
       Array.from(node.childNodes).forEach(function (child) {
@@ -448,7 +431,7 @@
       words: words,
       revert: function () {
         gsap.killTweensOf(words);
-        element.innerHTML = original;
+        element.replaceChildren.apply(element, original);
       },
     };
   }
@@ -953,7 +936,7 @@
     if (event.persisted) startResponsiveMotion();
   });
 
-  webflowMotionReady.then(function () {
+  motionTakeoverReady.then(function () {
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(startResponsiveMotion, startResponsiveMotion);
     } else {

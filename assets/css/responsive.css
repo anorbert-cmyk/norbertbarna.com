@@ -1,13 +1,15 @@
 /*
  * Norbert Barna portfolio — responsive product-design layer
  *
- * This file intentionally loads after Webflow's generated styles. It owns the
+ * This file intentionally loads after base.css and components.css. It owns the
  * compact/medium layouts and a small set of cross-viewport stability fixes.
- * Generated Webflow CSS remains untouched so desktop composition can evolve
+ * Those two files remain untouched so desktop composition can evolve
  * independently.
  */
 
 :root {
+  /* The site is light only; controls, scrollbars and the canvas follow it. */
+  color-scheme: light;
   --site-gutter: clamp(24px, 4vw, 60px);
   --site-content: 1200px;
   --site-readable: 720px;
@@ -34,6 +36,15 @@ body {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* Site default for a keyboard focus stop that has no ring of its own: the
+ * text colour is already legible on its background, so the ring is too, and
+ * forced colors keeps a real outline. Zero specificity: every component
+ * ring below and in the page stylesheets still wins. */
+:where(a, button, summary, input, textarea, select, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 4px;
 }
 
 /* The skip destination must receive focus without disappearing under chrome. */
@@ -123,14 +134,14 @@ main {
   max-width: 52ch;
   margin: 8px 0 0;
   color: #565c5f;
-  font-size: 15px;
+  font-size: .9375rem;
   line-height: 1.55;
 }
 
 .about-section-title,
 .metric-context {
   color: var(--site-muted);
-  font-size: 13px;
+  font-size: .8125rem;
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: .1em;
@@ -187,7 +198,7 @@ main {
 .case-facts dt {
   margin: 0 0 7px;
   color: var(--site-muted);
-  font-size: 12px;
+  font-size: .75rem;
   font-weight: 750;
   line-height: 1.35;
   letter-spacing: .09em;
@@ -198,7 +209,7 @@ main {
   overflow-wrap: anywhere;
   margin: 0;
   color: #17191a;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.45;
 }
@@ -213,7 +224,7 @@ main {
   flex: 0 0 auto;
   margin: 0;
   color: var(--site-muted);
-  font-size: 13px;
+  font-size: .8125rem;
   font-weight: 750;
   line-height: 1.4;
   letter-spacing: .09em;
@@ -234,18 +245,21 @@ main {
   -webkit-overflow-scrolling: touch;
 }
 
-.case-toc ol::-webkit-scrollbar {
-  height: 4px;
-}
+/* Engines without the standard scrollbar properties get the same thin bar. */
+@supports not (scrollbar-color: auto) {
+  .case-toc ol::-webkit-scrollbar {
+    height: 4px;
+  }
 
-.case-toc ol::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: rgb(17 17 17 / 8%);
-}
+  .case-toc ol::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgb(17 17 17 / 8%);
+  }
 
-.case-toc ol::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgb(17 17 17 / 42%);
+  .case-toc ol::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgb(17 17 17 / 42%);
+  }
 }
 
 .case-toc li {
@@ -261,7 +275,7 @@ main {
   border-radius: 999px;
   color: #262a2c;
   padding: 9px 14px;
-  font-size: 14px;
+  font-size: .875rem;
   font-weight: 600;
   line-height: 1.25;
   text-decoration: none;
@@ -273,6 +287,13 @@ main {
   border-color: #111;
   background: #111;
   color: #fff;
+}
+
+/* The focused chip turns ink; its ring sits inside it (like the skip link), so
+ * the scrolling strip cannot clip it. */
+.case-toc a:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -6px;
 }
 
 .summary :is(h2, h3)[id] {
@@ -330,7 +351,7 @@ main {
 
 .home-banner-outcomes li {
   padding-left: 4px;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 1.58;
   text-wrap: pretty;
 }
@@ -351,7 +372,7 @@ main {
   color: #111;
   padding: 0 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: .9375rem;
   font-weight: 500;
   line-height: 1.2;
   text-decoration: none;
@@ -383,7 +404,7 @@ main {
 }
 
 /*
- * P0 image fix: Webflow sets rich-text images to width:100% while HTML width
+ * P0 image fix: base.css sets rich-text images to width:100% while HTML width
  * and height attributes reserve intrinsic space. Without height:auto the
  * original pixel height survives and screenshots are stretched vertically.
  */
@@ -398,7 +419,7 @@ main {
   max-width: 100%;
 }
 
-.summary .w-richtext-figure-type-image img,
+.summary .rich-text-figure-image img,
 .summary figure[data-rt-type="image"] img,
 .case-motion-figure__media {
   display: block;
@@ -408,14 +429,14 @@ main {
   object-fit: contain;
 }
 
-.summary figure.w-richtext-figure-type-image,
+.summary figure.rich-text-figure-image,
 .summary figure[data-rt-type="image"] {
   width: 100%;
   max-width: 1200px !important;
   margin: clamp(36px, 6vw, 88px) auto;
 }
 
-.summary figure.w-richtext-align-center {
+.summary figure.rich-text-align-center {
   width: min(100%, 820px);
 }
 
@@ -423,7 +444,7 @@ main {
   max-width: 68ch;
   margin: 12px auto 0;
   color: var(--site-muted);
-  font-size: 14px;
+  font-size: .875rem;
   line-height: 1.55;
   text-align: left;
 }
@@ -456,7 +477,7 @@ main {
   background: transparent;
   padding: 0;
   color: var(--site-muted);
-  font-size: 14px;
+  font-size: .875rem;
   line-height: 1.7;
 }
 
@@ -464,7 +485,7 @@ main {
   display: block;
   margin-bottom: 10px;
   color: #343a3d;
-  font-size: 12px;
+  font-size: .75rem;
   font-weight: 600;
   line-height: 1.4;
   letter-spacing: .1em;
@@ -562,7 +583,7 @@ main {
   background: rgb(11 17 24 / 82%);
   color: #fff;
   padding: 10px 18px;
-  font: 600 14px/1 Inter, "Inter Fallback", sans-serif;
+  font: 600 .875rem/1 Inter, "Inter Fallback", sans-serif;
   cursor: pointer;
 }
 
@@ -573,7 +594,7 @@ main {
   position: relative;
 }
 
-/* Reserve media geometry before metadata arrives and keep Webflow video
+/* Reserve media geometry before metadata arrives and keep background video
  * positioning from collapsing or distorting the 16:9 source. */
 .home-about-video {
   width: 100%;
@@ -608,7 +629,7 @@ main {
   background: #0c1b2e;
   color: #d8e2ec;
   padding: 12px 16px 15px;
-  font-size: 13px;
+  font-size: .8125rem;
   line-height: 1.5;
 }
 
@@ -622,7 +643,7 @@ main {
 .kineticare-video-description summary {
   min-height: 44px;
   padding: 13px 0;
-  font-size: 14px;
+  font-size: .875rem;
   font-weight: 650;
   line-height: 1.35;
   cursor: pointer;
@@ -631,7 +652,7 @@ main {
 .kineticare-video-description p {
   margin: 0;
   color: rgb(255 255 255 / 78%);
-  font-size: 14px;
+  font-size: .875rem;
   line-height: 1.65;
 }
 
@@ -652,7 +673,7 @@ main {
   cursor: pointer;
 }
 
-/* TightAwardVideo: Webflow parks the file at inset:-100% / height:500px so
+/* TightAwardVideo: base.css parks the file at inset:-100% / height:500px so
  * hover shows a tight strip. Cover the card. Same fill on tap (.is-award-on). */
 .awards-bg-video-wrap {
   z-index: 0;
@@ -660,7 +681,7 @@ main {
   pointer-events: none;
 }
 
-.awards-bg-video.w-background-video,
+.awards-bg-video.video-frame,
 .awards-bg-video {
   position: absolute;
   inset: 0;
@@ -850,7 +871,7 @@ html.no-motion .footer-mesh-yellow {
   margin: 0;
   max-width: 22.5rem;
   color: var(--footer-ink);
-  font-size: 17px;
+  font-size: 1.0625rem;
   font-weight: 400;
   line-height: 1.45;
 }
@@ -921,7 +942,7 @@ html.no-motion .footer-mesh-yellow {
   color: var(--footer-ink, #111111);
   padding: 0 14px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: .9375rem;
   font-weight: 500;
   line-height: 1.2;
   white-space: nowrap;
@@ -958,7 +979,7 @@ html.no-motion .footer-mesh-yellow {
 .footer-col-title {
   margin: 0 0 14px;
   color: var(--footer-ink);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1.3;
 }
@@ -974,7 +995,7 @@ html.no-motion .footer-mesh-yellow {
 .footer-col a,
 .footer-contact-label {
   color: var(--footer-ink);
-  font-size: 15px;
+  font-size: .9375rem;
   font-weight: 400;
   line-height: 1.4;
   text-decoration: none;
@@ -1004,7 +1025,7 @@ html.no-motion .footer-mesh-yellow {
   margin: 0;
   padding-left: 12px;
   color: #fff;
-  font-size: 13px;
+  font-size: .8125rem;
   font-weight: 500;
   line-height: 1.4;
   text-align: left;
@@ -1033,7 +1054,7 @@ html.no-motion .footer-mesh-yellow {
   }
 
   body {
-    font-size: clamp(17px, 1.5vw, 20px);
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
   }
 
   /* The work I drive: three equal tracks that never grow with a long
@@ -1070,7 +1091,7 @@ html.no-motion .footer-mesh-yellow {
 
   .home-service-card-title {
     margin: 0;
-    font-size: clamp(22px, 1.8vw, 28px);
+    font-size: clamp(1.375rem, 1.8vw, 1.75rem);
     line-height: 1.15;
     text-wrap: balance;
     hyphens: manual;
@@ -1104,25 +1125,25 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .home-banner-title {
-    font-size: clamp(48px, 5.4vw, 64px);
+    font-size: clamp(3rem, 5.4vw, 4rem);
     line-height: 1.05;
   }
 
   .home-banner-subtitle {
-    font-size: clamp(20px, 1.7vw, 22px);
+    font-size: clamp(1.25rem, 1.7vw, 1.375rem);
     font-weight: 400;
     line-height: 1.45;
   }
 
   .banner-text,
   .banner-text strong {
-    font-size: clamp(20px, 1.6vw, 22px);
+    font-size: clamp(1.25rem, 1.6vw, 1.375rem);
     font-weight: 400;
     line-height: 1.45;
   }
 
-  /* Keep the portfolio grid continuous across the Webflow 991/992 switch. */
-  .work-section .w-dyn-items.w-row {
+  /* Keep the portfolio grid continuous across the 991/992 switch. */
+  .work-section .collection-items.layout-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px clamp(28px, 3vw, 48px);
@@ -1157,7 +1178,7 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .summary {
-    font-size: 19px;
+    font-size: 1.1875rem;
     line-height: 1.68;
   }
 
@@ -1221,14 +1242,14 @@ html.no-motion .footer-mesh-yellow {
   }
 
   body {
-    font-size: 17px;
+    font-size: 1.0625rem;
     line-height: 1.6;
     -webkit-text-size-adjust: 100%;
   }
 
   p,
   .summary li {
-    font-size: 17px;
+    font-size: 1.0625rem;
     line-height: 1.65;
   }
 
@@ -1289,7 +1310,7 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .menu-button,
-  .menu-button.w-nav-button {
+  .menu-button.site-nav-toggle {
     display: grid;
     width: auto;
     min-width: 48px;
@@ -1303,25 +1324,25 @@ html.no-motion .footer-mesh-yellow {
     color: #fff;
   }
 
-  .menu-button .w-icon-nav-menu {
+  .menu-button .site-nav-icon {
     display: grid;
     place-items: center;
     margin: 0;
     color: #fff;
-    font-size: 23px;
+    font-size: 1.4375rem;
     line-height: 1;
   }
 
-  .menu-button.w--open {
+  .menu-button.is-open {
     border-color: #111;
     background: #fff;
   }
 
-  .menu-button.w--open .w-icon-nav-menu {
+  .menu-button.is-open .site-nav-icon {
     color: #111;
   }
 
-  .nav-menu.w-nav-menu {
+  .nav-menu.site-nav-menu {
     width: calc(100% - (2 * var(--site-gutter)));
     max-width: none;
     margin: 10px var(--site-gutter) 0;
@@ -1347,7 +1368,7 @@ html.no-motion .footer-mesh-yellow {
     border-radius: 12px;
     padding: 11px 14px;
     color: #111;
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
 
   .home-banner-section,
@@ -1368,17 +1389,17 @@ html.no-motion .footer-mesh-yellow {
 
   .banner-left-wrap > p:first-child {
     margin-bottom: 16px;
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
 
   .home-mast .banner-left-wrap > p.hero-kicker {
     margin-bottom: 10px;
-    font-size: 13px;
+    font-size: .8125rem;
   }
 
   .home-banner-title {
     max-width: 18ch;
-    font-size: clamp(48px, 7vw, 64px);
+    font-size: clamp(3rem, 7vw, 4rem);
     line-height: 1.05;
     letter-spacing: -.03em;
   }
@@ -1386,7 +1407,7 @@ html.no-motion .footer-mesh-yellow {
   .home-banner-subtitle {
     max-width: 36ch;
     margin-top: 22px;
-    font-size: clamp(20px, 2vw, 22px);
+    font-size: clamp(1.25rem, 2vw, 1.375rem);
     font-weight: 400;
     line-height: 1.45;
     letter-spacing: 0;
@@ -1401,7 +1422,7 @@ html.no-motion .footer-mesh-yellow {
     margin-top: 24px;
     border-top: 1px solid rgb(17 17 17 / 16%);
     padding-top: 22px;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.75;
   }
 
@@ -1410,11 +1431,11 @@ html.no-motion .footer-mesh-yellow {
     margin-top: 18px;
     border-top: 1px solid rgb(17 17 17 / 16%);
     padding-top: 20px;
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .home-banner-outcomes li {
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.68;
   }
 
@@ -1432,7 +1453,7 @@ html.no-motion .footer-mesh-yellow {
   .large-text,
   .large-text.black {
     max-width: 34ch;
-    font-size: clamp(24px, 3.3vw, 31px);
+    font-size: clamp(1.5rem, 3.3vw, 1.9375rem);
     line-height: 1.42;
   }
 
@@ -1446,7 +1467,7 @@ html.no-motion .footer-mesh-yellow {
 
   .home-about-video-text {
     max-width: 18ch;
-    font-size: clamp(24px, 4vw, 31px);
+    font-size: clamp(1.5rem, 4vw, 1.9375rem);
     line-height: 1.2;
   }
 
@@ -1520,18 +1541,18 @@ html.no-motion .footer-mesh-yellow {
 
   .home-service-card-title {
     margin: 0;
-    font-size: clamp(23px, 3vw, 28px);
+    font-size: clamp(1.4375rem, 3vw, 1.75rem);
     line-height: 1.15;
   }
 
   .section-title {
-    font-size: clamp(38px, 6vw, 54px);
+    font-size: clamp(2.375rem, 6vw, 3.375rem);
     line-height: 1.02;
     letter-spacing: -.035em;
   }
 
   .home-work-image-text {
-    font-size: clamp(112px, 24vw, 210px);
+    font-size: clamp(7rem, 24vw, 13.125rem);
     line-height: .86;
     letter-spacing: -.06em;
   }
@@ -1571,12 +1592,12 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .work-title {
-    font-size: clamp(27px, 3.5vw, 34px);
+    font-size: clamp(1.6875rem, 3.5vw, 2.125rem);
   }
 
   .work-category-text {
     color: var(--site-muted);
-    font-size: 15px;
+    font-size: .9375rem;
     line-height: 1.45;
   }
 
@@ -1600,7 +1621,7 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .awards-card-title {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 
   .footer-chrome {
@@ -1663,7 +1684,7 @@ html.no-motion .footer-mesh-yellow {
     padding-bottom: 72px;
   }
 
-  .work-section .w-dyn-items.w-row {
+  .work-section .collection-items.layout-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px 28px;
@@ -1734,7 +1755,7 @@ html.no-motion .footer-mesh-yellow {
 
   .work-category {
     margin-bottom: 15px;
-    font-size: 14px;
+    font-size: .875rem;
     font-weight: 600;
     line-height: 1.35;
     letter-spacing: .08em;
@@ -1743,7 +1764,7 @@ html.no-motion .footer-mesh-yellow {
 
   .banner-title {
     margin: 0;
-    font-size: clamp(48px, 6vw, 64px);
+    font-size: clamp(3rem, 6vw, 4rem);
     line-height: 1.05;
     letter-spacing: -.03em;
   }
@@ -1755,7 +1776,7 @@ html.no-motion .footer-mesh-yellow {
 
   .banner-text,
   .banner-text strong {
-    font-size: clamp(18px, 2.5vw, 21px);
+    font-size: clamp(1.125rem, 2.5vw, 1.3125rem);
     line-height: 1.55;
   }
 
@@ -1766,18 +1787,18 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .summary {
-    font-size: 17px;
+    font-size: 1.0625rem;
     line-height: 1.65;
   }
 
   .summary h2 {
-    font-size: clamp(28px, 3.2vw, 32px);
+    font-size: clamp(1.75rem, 3.2vw, 2rem);
     line-height: 1.15;
     letter-spacing: -.02em;
   }
 
   .summary h3 {
-    font-size: clamp(27px, 4vw, 34px) !important;
+    font-size: clamp(1.6875rem, 4vw, 2.125rem) !important;
     line-height: 1.16;
   }
 
@@ -1813,7 +1834,7 @@ html.no-motion .footer-mesh-yellow {
     margin-top: 36px;
   }
 
-  .related-projects-area .w-dyn-items.w-row {
+  .related-projects-area .collection-items.layout-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px;
@@ -1840,7 +1861,7 @@ html.no-motion .footer-mesh-yellow {
     min-height: 44px;
     margin-top: 12px;
     padding: 0;
-    font-size: clamp(25px, 3.5vw, 31px);
+    font-size: clamp(1.5625rem, 3.5vw, 1.9375rem);
   }
 
   .inst-bg-video.mobile,
@@ -1886,7 +1907,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   body,
   p,
   .summary li {
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .home-banner-section,
@@ -1897,24 +1918,24 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
 
   .home-banner-title {
     max-width: 16ch;
-    font-size: clamp(40px, 11vw, 56px);
+    font-size: clamp(2.5rem, 11vw, 3.5rem);
     line-height: 1.05;
   }
 
   .home-banner-subtitle {
     margin-top: 18px;
-    font-size: clamp(20px, 4.4vw, 22px);
+    font-size: clamp(1.25rem, 4.4vw, 1.375rem);
     font-weight: 400;
     line-height: 1.45;
   }
 
   .home-banner-text {
-    font-size: 15px;
+    font-size: .9375rem;
     line-height: 1.72;
   }
 
   .home-banner-outcomes li {
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.68;
   }
 
@@ -1961,7 +1982,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   }
 
   .home-work-image-text {
-    font-size: clamp(88px, 27vw, 132px);
+    font-size: clamp(5.5rem, 27vw, 8.25rem);
   }
 
   .home-work-area {
@@ -1982,7 +2003,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   }
 
   .work-title {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 
   .awards-card {
@@ -1995,7 +2016,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   }
 
   .awards-card-title {
-    font-size: 22px;
+    font-size: 1.375rem;
   }
 
   .work-section {
@@ -2003,8 +2024,8 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
     padding-bottom: 64px;
   }
 
-  .work-section .w-dyn-items.w-row,
-  .related-projects-area .w-dyn-items.w-row {
+  .work-section .collection-items.layout-row,
+  .related-projects-area .collection-items.layout-row {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
@@ -2024,12 +2045,12 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   }
 
   .banner-title {
-    font-size: clamp(44px, 13vw, 58px);
+    font-size: clamp(2.75rem, 13vw, 3.625rem);
   }
 
   .banner-text,
   .banner-text strong {
-    font-size: 17px;
+    font-size: 1.0625rem;
     line-height: 1.58;
   }
 
@@ -2041,17 +2062,17 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
 
   .summary h2 {
     margin-top: 54px;
-    font-size: clamp(26px, 7vw, 30px);
+    font-size: clamp(1.625rem, 7vw, 1.875rem);
   }
 
   .summary h3 {
     margin-top: 42px;
-    font-size: clamp(25px, 7vw, 31px) !important;
+    font-size: clamp(1.5625rem, 7vw, 1.9375rem) !important;
   }
 
-  .summary figure.w-richtext-figure-type-image,
+  .summary figure.rich-text-figure-image,
   .summary figure[data-rt-type="image"],
-  .summary figure.w-richtext-align-center {
+  .summary figure.rich-text-align-center {
     display: block;
     width: 100%;
     max-width: 100% !important;
@@ -2060,7 +2081,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   }
 
   .summary figcaption {
-    font-size: 13px;
+    font-size: .8125rem;
   }
 
   .service-single-divider {
@@ -2092,7 +2113,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
 
   .related-work-title {
     margin-top: 12px;
-    font-size: 27px;
+    font-size: 1.6875rem;
   }
 
   .motion-video-toggle {
@@ -2101,7 +2122,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
     bottom: auto !important;
     min-height: 44px;
     padding: 9px 14px;
-    font-size: 13px;
+    font-size: .8125rem;
   }
 
   .footer-section .container.footer-inner,
@@ -2180,7 +2201,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   background: transparent;
   padding: 10px 8px;
   color: #17191a;
-  font: 600 12px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 600 .75rem/1.4 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .035em;
   cursor: pointer;
 }
@@ -2220,9 +2241,9 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
 }
 
 
-/* The Instructure demo is content, not a cropped 500px Webflow background.
+/* The Instructure demo is content, not a cropped 500px background.
  * Keep the same 16:9 composition visible on phones as on desktop.
- * Webflow `.w-background-video > video` uses inset:-100% and z-index:-100,
+ * The base `.video-frame > video` rule uses inset:-100% and z-index:-100,
  * which parks a playing file outside the overflow clip (navy empty box). */
 .inst-bg-video.mobile {
   display: block;
@@ -2257,7 +2278,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
 .instructure-montage-caption {
   margin: 14px 0 0;
   color: #17191a;
-  font: 600 13px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 600 .8125rem/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .02em;
   text-align: left;
 }
@@ -2265,7 +2286,7 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   max-width: 76ch;
   margin: 6px 0 0;
   color: #606568;
-  font: 400 14px/1.65 Inter, "Inter Fallback", sans-serif;
+  font: 400 .875rem/1.65 Inter, "Inter Fallback", sans-serif;
 }
 .site-motion-toggle:disabled { cursor: default; }
 /* A manual pause receives the same static, readable hover fallback as the OS
@@ -2292,7 +2313,7 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
 .hero-kicker {
   margin: 0 0 10px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: .8125rem;
   font-weight: 600;
   letter-spacing: 0;
   text-transform: none;
@@ -2315,7 +2336,7 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
   display: block;
   margin-top: 10px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: .8125rem;
   font-weight: 500;
   line-height: 1.35;
 }
@@ -2383,6 +2404,7 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
   width: 100%;
   height: auto;
   max-height: min(640px, 70vh);
+  max-height: min(640px, 70svh);
   object-fit: contain;
   object-position: center;
   background: rgb(255 255 255 / 18%);
@@ -2397,6 +2419,7 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
 @media (max-width: 991px) {
   .case-hero-shot {
     max-height: min(420px, 46vh);
+    max-height: min(420px, 46svh);
   }
 
   .kineticare-hero-overlay {
@@ -2419,12 +2442,12 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
 
 .work-title-heading,
 h2.work-title-heading {
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1.2;
 }
 
 .section-title {
-  font-size: clamp(28px, 3vw, 32px);
+  font-size: clamp(1.75rem, 3vw, 2rem);
   line-height: 1.15;
 }
 
@@ -2433,7 +2456,7 @@ h2.work-title-heading {
 }
 
 @media (max-width: 991px) {
-  .nav-menu.w-nav-menu {
+  .nav-menu.site-nav-menu {
     background: #fff;
   }
 
@@ -2472,14 +2495,14 @@ h2.work-title-heading {
   border-radius: 8px;
   padding: 10px 12px;
   color: #111;
-  font-size: 12px;
+  font-size: .75rem;
   font-weight: 600;
   line-height: 1.35;
 }
 
 .navbar .nav-link.white:hover,
-.navbar .nav-link.white.w--current,
-.navbar .nav-link.w--current {
+.navbar .nav-link.white.is-current,
+.navbar .nav-link.is-current {
   background: rgb(17 17 17 / 6%);
   color: #111;
 }
@@ -2525,7 +2548,7 @@ body.home .navbar {
   margin: 0;
   padding: 0;
   color: #555b5e;
-  font-size: 12px;
+  font-size: .75rem;
   font-weight: 600;
   line-height: 1.35;
 }
@@ -2595,7 +2618,7 @@ body.home .navbar {
   }
 
   /* The disclosure remains scrollable at large text sizes/short landscapes. */
-  .navbar .nav-menu.w-nav-menu {
+  .navbar .nav-menu.site-nav-menu {
     max-height: calc(100vh - 76px - env(safe-area-inset-top));
     max-height: calc(100dvh - 76px - env(safe-area-inset-top));
     overflow-y: auto;
@@ -2612,6 +2635,7 @@ body.home .navbar {
  * header media; text sits on the dark field at full measure. */
 .kineticare-hero {
   min-height: min(72vh, 720px);
+  min-height: min(72svh, 720px);
 }
 
 @media (min-width: 992px) {
@@ -2624,11 +2648,11 @@ body.home .navbar {
  * Instructure) with flush tops and equal band height. Row 2 is three equal
  * 4-span columns. Kineticare / OnRobot remain a 7/5 pair. Compact stacks;
  * do not keep a broken 7/5. A/B/C/D/Mesh stay HOLD.
- * RowClearfixHole: Webflow `.w-row::before/::after` use grid-area 1/1, which
+ * RowClearfixHole: the base `.layout-row::before/::after` use grid-area 1/1, which
  * occupies column 1 and wraps a 7/5 pair onto two rows. Kill those pseudos
  * on this grid only. */
-.work-section .w-dyn-items.work-grid::before,
-.work-section .w-dyn-items.work-grid::after {
+.work-section .collection-items.work-grid::before,
+.work-section .collection-items.work-grid::after {
   content: none;
   display: none;
   grid-area: auto;
@@ -2636,8 +2660,8 @@ body.home .navbar {
 
 @media (min-width: 992px) {
   .work-grid,
-  .work-section .w-dyn-items.work-grid,
-  .work-section .w-dyn-items.w-row.work-grid {
+  .work-section .collection-items.work-grid,
+  .work-section .collection-items.layout-row.work-grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     align-items: start;
@@ -2646,7 +2670,7 @@ body.home .navbar {
     margin-right: 0;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item {
+  .work-section .collection-items.work-grid > .work-collection-item {
     width: auto;
     min-width: 0;
     max-width: none;
@@ -2655,19 +2679,19 @@ body.home .navbar {
     float: none;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(1),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(6) {
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(1),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(6) {
     grid-column: span 7;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(2),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(7) {
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(2),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(7) {
     grid-column: span 5;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(3),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(4),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(5) {
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(3),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(4),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(5) {
     grid-column: span 4;
   }
 
@@ -2718,7 +2742,7 @@ body.home .navbar {
 }
 
 .work-section .work-title {
-  font-size: clamp(22px, 1.85vw, 24px);
+  font-size: clamp(1.375rem, 1.85vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: -.02em;
 }
@@ -2732,7 +2756,7 @@ body.home .navbar {
   border-radius: 999px;
   background: #e8e9ea;
   color: #111;
-  font-size: 13px;
+  font-size: .8125rem;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: 0;
@@ -2748,14 +2772,14 @@ body.home .navbar {
 
 @media (max-width: 991px) {
   .work-grid,
-  .work-section .w-dyn-items.work-grid {
+  .work-section .collection-items.work-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
     gap: 28px;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item {
+  .work-section .collection-items.work-grid > .work-collection-item {
     grid-column: auto;
     width: auto;
     min-width: 0;
@@ -2775,7 +2799,7 @@ body.home .navbar {
 
 @media (max-width: 599px) {
   .work-grid,
-  .work-section .w-dyn-items.work-grid {
+  .work-section .collection-items.work-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 36px;
   }
@@ -2834,7 +2858,7 @@ body.home .navbar {
 
 .work-row-arrow {
   color: var(--ink);
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 1;
   opacity: .72;
 }
@@ -2854,8 +2878,8 @@ body.home .navbar {
  * travelling utility chrome. The existing footer supplies all four colors. */
 .home-mast,
 .home-banner-wrap.home-mast {
-  --mast-copy-size: clamp(30px, 4.6vw, 72px);
-  --mast-kicker-size: 18px;
+  --mast-copy-size: clamp(1.875rem, 4.6vw, 4.5rem);
+  --mast-kicker-size: 1.125rem;
   --mast-kicker-tracking: 0;
   position: relative;
   isolation: isolate;
@@ -2880,8 +2904,8 @@ body.home .navbar {
 .home-mast-sculpture[data-hero-scene="ready"] .home-mast-fallback { opacity: 0 !important; }
 .home-mast-sculpture:not([data-hero-scene="ready"]) .home-mast-canvas { opacity: 0 !important; }
 .home-mast-baseline { position: absolute; z-index: 3; inset: auto 22px 14px; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: end; gap: 16px; }
-.home-mast .home-banner-title { width: auto; max-width: none; margin: 0; color: #0A1628; font-family: Inter, "Inter Fallback", sans-serif; font-size: 16px; font-weight: 400; letter-spacing: -.02em; line-height: 44px; text-align: left; }
-.home-mast-scroll, .home-mast .hero-work-link { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 10px 0; color: #0A1628; font-family: Inter, "Inter Fallback", sans-serif; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; text-decoration: none; }
+.home-mast .home-banner-title { width: auto; max-width: none; margin: 0; color: #0A1628; font-family: Inter, "Inter Fallback", sans-serif; font-size: 1rem; font-weight: 400; letter-spacing: -.02em; line-height: 2.75rem; text-align: left; }
+.home-mast-scroll, .home-mast .hero-work-link { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 10px 0; color: #0A1628; font-family: Inter, "Inter Fallback", sans-serif; font-size: .875rem; font-weight: 400; line-height: 1.4; text-transform: uppercase; text-decoration: none; }
 .home-mast-scroll { justify-self: center; gap: 10px; }
 .home-mast .hero-work-link { justify-self: end; border: 0; background: transparent; border-radius: 0; margin: 0; }
 .home-mast-scroll:hover, .home-mast .hero-work-link:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -2891,32 +2915,32 @@ body.home .navbar {
 .home-mast .home-banner-subtitle { max-width: 1200px; margin: 0; color: #D6D4ED; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-size: var(--mast-copy-size); font-weight: 500; letter-spacing: -.04em; line-height: 1.08; }
 .home-mast .home-banner-subtitle::before, .home-mast .hero-kicker::before { content: ""; display: none; font-size: var(--mast-copy-size); letter-spacing: -.04em; word-spacing: 0; }
 .home-mast .hero-kicker::before { font-size: var(--mast-kicker-size); letter-spacing: var(--mast-kicker-tracking); }
-.home-intro-work { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; margin-top: 36px; color: #D6D4ED; font-size: 16px; text-decoration: underline; text-underline-offset: 6px; }
+.home-intro-work { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; margin-top: 36px; color: #D6D4ED; font-size: 1rem; text-decoration: underline; text-underline-offset: 6px; }
 .home-mast-proof-chips { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; max-width: none; margin: 0; padding: 32px 0 0; border-top: 1px solid rgb(214 212 237 / 30%); list-style: none; }
-.home-mast-proof-chips li { display: flex; flex-direction: column; gap: 8px; padding: 0; color: #D6D4ED; font-size: 16px; line-height: 1.5; }
+.home-mast-proof-chips li { display: flex; flex-direction: column; gap: 8px; padding: 0; color: #D6D4ED; font-size: 1rem; line-height: 1.5; }
 .home-mast-proof-chips strong { font-weight: 500; }
 .home-mast .home-banner-content-wrap { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 24px 48px; width: 100%; max-width: none; padding: 0; margin: 0; text-align: left; }
-.home-mast .metric-context { color: #D6D4ED; font-size: 14px; margin: 0; text-transform: none; letter-spacing: 0; }
+.home-mast .metric-context { color: #D6D4ED; font-size: .875rem; margin: 0; text-transform: none; letter-spacing: 0; }
 .home-mast .home-banner-outcomes { display: flex; flex-wrap: wrap; gap: 18px 32px; width: auto; max-width: none; padding: 0; margin: 0; border: 0; list-style: none; }
 .home-mast .home-banner-outcomes li { padding: 0; }
-.home-mast .home-highlight-company { color: #D6D4ED; font-size: 16px; line-height: 1.5; }
+.home-mast .home-highlight-company { color: #D6D4ED; font-size: 1rem; line-height: 1.5; }
 body.home .navbar, body.immersive-case .navbar { position: fixed; inset: 0 0 auto; height: auto; z-index: 95; border: 0; background: transparent; color: #D6D4ED; mix-blend-mode: difference; transform: translate3d(0, var(--nav-travel, 0px), 0); pointer-events: none; }
 body.home .navbar .container, body.immersive-case .navbar .container { width: 100%; max-width: none; padding-inline: 22px !important; }
 body.home .navbar .nav-wrap, body.immersive-case .navbar .nav-wrap { position: relative; min-height: 64px; justify-content: space-between; gap: 20px; }
 body.home .navbar .nav-logo-wrap { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; padding: 0; }
-.home-nav-monogram { font-family: Inter, "Inter Fallback", sans-serif; font-size: 16px; font-weight: 400; color: #D6D4ED; }
-.home-nav-wordmark { position: absolute; inset: 0; width: max-content; height: 64px; display: flex; align-items: center; margin: auto; font-family: Inter, "Inter Fallback", sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -.065em; line-height: 1; color: #D6D4ED; text-decoration: none; transform-origin: 50% 100%; transform: translateY(var(--nav-brand-offset, 0px)) scale(var(--nav-brand-scale, 1)); }
-.home-nav-progress { position: absolute; left: 74%; display: inline-flex; align-items: center; height: 64px; font-family: Inter, "Inter Fallback", sans-serif; font-size: 14px; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
+.home-nav-monogram { font-family: Inter, "Inter Fallback", sans-serif; font-size: 1rem; font-weight: 400; color: #D6D4ED; }
+.home-nav-wordmark { position: absolute; inset: 0; width: max-content; height: 64px; display: flex; align-items: center; margin: auto; font-family: Inter, "Inter Fallback", sans-serif; font-size: 1.25rem; font-weight: 700; letter-spacing: -.065em; line-height: 1; color: #D6D4ED; text-decoration: none; transform-origin: 50% 100%; transform: translateY(var(--nav-brand-offset, 0px)) scale(var(--nav-brand-scale, 1)); }
+.home-nav-progress { position: absolute; left: 74%; display: inline-flex; align-items: center; height: 64px; font-family: Inter, "Inter Fallback", sans-serif; font-size: .875rem; font-variant-numeric: tabular-nums; color: #D6D4ED; white-space: pre; }
 body.home .navbar .footer-icon { display: none; }
 body.home .navbar .home-nav-label { display: inline; }
 body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { gap: 18px; }
 body.home .navbar .nav-menu-area > .nav-link { position: absolute; left: 64%; }
 body.home .navbar .nav-cta > .footer-contact-link { position: absolute; left: 14%; }
-body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-family: Inter, "Inter Fallback Caps", sans-serif; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
+body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-family: Inter, "Inter Fallback Caps", sans-serif; font-size: .875rem; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
 body.home .navbar :is(a,button), body.immersive-case .navbar :is(a,button) { pointer-events: auto; }
 body.home .navbar :is(a,button):hover, body.immersive-case .navbar :is(a,button):hover { text-decoration: underline; text-underline-offset: 4px; }
-body.home .navbar .nav-link.white:is(:hover, .w--current), body.immersive-case .navbar .nav-link.white:is(:hover, .w--current) { color: var(--immersive-link-ink, #D6D4ED); background: transparent; }
-body.home .navbar[data-keyboard="true"]:focus-within, body.home .navbar:has(.w--open), body.immersive-case .navbar[data-keyboard="true"]:focus-within, body.immersive-case .navbar:has(.w--open) { transform: none; mix-blend-mode: normal; background: #0A1628; }
+body.home .navbar .nav-link.white:is(:hover, .is-current), body.immersive-case .navbar .nav-link.white:is(:hover, .is-current) { color: var(--immersive-link-ink, #D6D4ED); background: transparent; }
+body.home .navbar[data-keyboard="true"]:focus-within, body.home .navbar:has(.is-open), body.immersive-case .navbar[data-keyboard="true"]:focus-within, body.immersive-case .navbar:has(.is-open) { transform: none; mix-blend-mode: normal; background: #0A1628; }
 body.home .navbar[data-keyboard="true"]:focus-within .home-nav-wordmark, body.immersive-case .navbar[data-keyboard="true"]:focus-within .home-nav-wordmark { transform: none; }
 body.home .navbar[data-reading-dock], body.immersive-case .navbar[data-reading-dock] { mix-blend-mode: normal; background: #0A1628; }
 .home-mast[data-text-reflow] .home-mast-scene { min-height: 100svh; height: auto; display: grid; grid-template-rows: 50svh auto; gap: 32px; padding-block: 90px 100px; }
@@ -2929,21 +2953,21 @@ body.home .navbar[data-reading-dock], body.immersive-case .navbar[data-reading-d
 .home-mast[data-text-reflow] .home-banner-subtitle br { display: none; }
 @media (max-width: 991px) {
  body.home .navbar .nav-menu, body.immersive-case .navbar .nav-menu { --immersive-link-ink: #0A1628; }
- .home-mast { --mast-copy-size: clamp(32px, 6.6vw, 60px); }
+ .home-mast { --mast-copy-size: clamp(2rem, 6.6vw, 3.75rem); }
  .home-mast-statement { inset: 100px 0 100px; }
  .home-mast-lettering { width: 94%; max-height: 64svh; }
  .home-mast-baseline { inset-inline: 20px; }
- .home-mast-scroll, .home-mast .hero-work-link, .home-mast .home-banner-title { font-size: 12px; }
+ .home-mast-scroll, .home-mast .hero-work-link, .home-mast .home-banner-title { font-size: .75rem; }
  .home-mast-scroll { gap: 5px; }
  .home-mast-intro { min-height: 80svh; gap: 40px; }
  .home-mast .home-banner-subtitle br { display: none; }
- .home-nav-wordmark { font-size: 18px; }
+ .home-nav-wordmark { font-size: 1.125rem; }
  .home-nav-progress { display: none; }
  body.home .navbar .nav-menu-area > .nav-link, body.home .navbar .nav-cta > .footer-contact-link { position: static; }
  body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { flex-direction: column; align-items: stretch; gap: 4px; }
  body.home .navbar .menu-button, body.immersive-case .navbar .menu-button { min-width: 44px; min-height: 44px; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; }
- body.home .navbar .menu-button .w-icon-nav-menu, body.immersive-case .navbar .menu-button .w-icon-nav-menu { color: inherit; }
- body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { justify-content: flex-start; width: 100%; min-height: 48px; padding: 12px; color: #0A1628; font-size: 17px; }
+ body.home .navbar .menu-button .site-nav-icon, body.immersive-case .navbar .menu-button .site-nav-icon { color: inherit; }
+ body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { justify-content: flex-start; width: 100%; min-height: 48px; padding: 12px; color: #0A1628; font-size: 1.0625rem; }
  body.home .navbar .home-nav-label { color: #0A1628; }
  .work-row { grid-template-columns: 72px minmax(0, 1fr) auto; gap: 10px 14px; }
  .work-row-thumb { width: 72px; height: 72px; }

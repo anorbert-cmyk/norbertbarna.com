@@ -37,7 +37,7 @@ body.contact-page {
   background: var(--contact-lilac);
   color: var(--contact-navy);
   font-family: Inter, "Inter Fallback", sans-serif;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1.5;
   letter-spacing: -.012em;
 }
@@ -137,14 +137,14 @@ body.contact-page {
 }
 .contact-eyebrow {
   margin: 0 0 clamp(26px, 3vw, 38px);
-  font: 400 12px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .75rem/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
 .contact-title {
   margin: 0;
   font-family: "Funnel Display", "Funnel Display Fallback", sans-serif;
-  font-size: clamp(60px, 7.6vw, 112px);
+  font-size: clamp(3.75rem, 7.6vw, 7rem);
   font-weight: 700;
   line-height: .92;
   letter-spacing: -.055em;
@@ -157,7 +157,7 @@ body.contact-page {
 .contact-lede {
   max-width: 34ch;
   margin: clamp(34px, 3.6vw, 52px) 0 0;
-  font-size: clamp(17px, 1.3vw, 20px);
+  font-size: clamp(1.0625rem, 1.3vw, 1.25rem);
   line-height: 1.45;
   letter-spacing: -.018em;
   text-wrap: pretty;
@@ -196,7 +196,7 @@ body.contact-page {
   display: block;
   padding: 0;
   margin: 0 0 4px;
-  font: 600 15px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 600 .9375rem/1.4 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.008em;
   color: var(--contact-navy);
 }
@@ -212,7 +212,7 @@ body.contact-page {
   border-radius: 0;
   background: transparent;
   color: var(--contact-navy);
-  font: 400 18px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 1.125rem/1.4 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.012em;
   appearance: none;
   transition: border-color .18s ease, box-shadow .18s ease;
@@ -232,7 +232,6 @@ body.contact-page {
 .contact-textarea:hover { border-bottom-color: rgb(10 22 40 / 80%); }
 .contact-input:focus,
 .contact-textarea:focus {
-  outline: none;
   border-bottom-color: var(--contact-navy);
   box-shadow: 0 1px 0 0 var(--contact-navy);
 }
@@ -267,7 +266,7 @@ body.contact-page {
 .contact-hint,
 .contact-counter {
   margin: 0;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   color: var(--contact-muted);
 }
 .contact-counter { white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -286,7 +285,7 @@ body.contact-page {
 }
 .contact-form-note {
   margin: 0;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   color: var(--contact-muted);
 }
 .contact-form-note + .contact-field { margin-top: -8px; }
@@ -303,7 +302,7 @@ body.contact-page {
 .contact-error-summary:focus-visible { outline: 3px solid var(--contact-navy); outline-offset: 4px; }
 .contact-error-summary-title {
   margin: 0 0 6px;
-  font: 600 18px/1.3 Inter, "Inter Fallback", sans-serif;
+  font: 600 1.125rem/1.3 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
 }
 .contact-error-summary-list {
@@ -318,7 +317,7 @@ body.contact-page {
   min-height: 44px;
   padding: 0;
   color: var(--contact-navy);
-  font: 400 15px/1.45 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.45 Inter, "Inter Fallback", sans-serif;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -329,7 +328,7 @@ body.contact-page {
   align-items: flex-start;
   gap: 8px;
   margin: 12px 0 0;
-  font: 600 15px/1.45 Inter, "Inter Fallback", sans-serif;
+  font: 600 .9375rem/1.45 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.008em;
   color: var(--contact-navy);
 }
@@ -371,7 +370,7 @@ body.contact-page {
   padding: 12px 0;
   border-bottom: 1px solid var(--contact-rule);
   color: var(--contact-navy);
-  font: 400 16px/1.35 Inter, "Inter Fallback", sans-serif;
+  font: 400 1rem/1.35 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.012em;
   cursor: pointer;
   user-select: none;
@@ -461,7 +460,7 @@ body.contact-page {
   border-radius: 999px;
   background: var(--contact-navy);
   color: var(--contact-lilac);
-  font: 400 15px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.4 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.008em;
   text-align: center;
   white-space: normal;
@@ -485,7 +484,7 @@ body.contact-page {
   min-width: 0;
   margin: 0;
   padding: 14px var(--contact-pad) 0;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   color: var(--contact-navy);
 }
 .contact-status:empty { padding-top: 0; }
@@ -518,7 +517,7 @@ body.contact-page {
 .contact-privacy {
   margin: 0;
   padding: clamp(22px, 2.6vw, 30px) var(--contact-pad) 0;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   color: var(--contact-muted);
 }
 .contact-privacy a {
@@ -531,7 +530,7 @@ body.contact-page {
   margin: 0;
   padding: 14px 16px;
   border: 1px solid var(--contact-rule);
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
 }
 /* Honeypot: off screen for people, present for scripts. Never display:none. */
 .contact-hp {
@@ -551,7 +550,7 @@ body.contact-page {
   margin: clamp(18px, 2vw, 26px) 0 0;
   padding: clamp(18px, 2vw, 26px) var(--contact-pad) clamp(24px, 3vw, 40px);
   border-top: 1px solid var(--contact-rule);
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   color: var(--contact-navy);
 }
 .contact-aside-note a {
@@ -681,7 +680,7 @@ body.contact-page {
 .contact-sent-title {
   margin: 0;
   font-family: "Funnel Display", "Funnel Display Fallback", sans-serif;
-  font-size: clamp(32px, 3.4vw, 48px);
+  font-size: clamp(2rem, 3.4vw, 3rem);
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -.045em;
@@ -696,7 +695,7 @@ body.contact-page {
 .contact-sent-text {
   max-width: 46ch;
   margin: 0;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1.5;
   text-wrap: pretty;
 }
@@ -711,7 +710,7 @@ body.contact-page {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  font: 400 15px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.4 Inter, "Inter Fallback", sans-serif;
 }
 
 /* ---- Reflow ---- */
@@ -744,7 +743,7 @@ body.contact-page {
   }
   /* Over the brighter paper the glass is a touch denser, so it never reads beige. */
   .contact-paper { background: linear-gradient(118deg, rgb(255 255 255 / 20%), rgb(255 255 255 / 0%) 46%), rgb(214 212 237 / 88%); }
-  .contact-title { font-size: clamp(52px, 13.5vw, 88px); line-height: .94; }
+  .contact-title { font-size: clamp(3.25rem, 13.5vw, 5.5rem); line-height: .94; }
   .contact-lede { max-width: 40ch; }
   .contact-form, .contact-fields { gap: 26px; }
 }
@@ -752,18 +751,18 @@ body.contact-page {
   body.contact-page { --contact-gutter: 16px; }
   .contact-layout { padding-top: 44svh; padding-bottom: 56px; }
   .contact-eyebrow { margin-bottom: 24px; }
-  .contact-lede { font-size: 17px; }
-  .contact-input, .contact-textarea { font-size: 17px; }
-  .contact-topic { min-height: 50px; font-size: 15px; }
+  .contact-lede { font-size: 1.0625rem; }
+  .contact-input, .contact-textarea { font-size: 1.0625rem; }
+  .contact-topic { min-height: 50px; font-size: .9375rem; }
   .contact-field-foot { flex-wrap: wrap; gap: 4px 16px; }
   .contact-actions { gap: 14px; }
   .contact-submit, .contact-again { width: 100%; }
-  .contact-sent-title { font-size: clamp(28px, 8.6vw, 36px); }
+  .contact-sent-title { font-size: clamp(1.75rem, 8.6vw, 2.25rem); }
   .contact-sent-actions { flex-direction: column; align-items: stretch; }
   .contact-sent-link { justify-content: center; }
 }
 @media (max-width: 359px) {
-  .contact-title { font-size: 46px; }
+  .contact-title { font-size: 2.875rem; }
 }
 @media (min-width: 1800px) {
   body.contact-page { --contact-pane: 700px; --contact-art-x: 48%; }

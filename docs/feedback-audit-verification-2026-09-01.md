@@ -13,7 +13,7 @@ Legend: **TRUE** = fact confirmed · **PARTIAL** = direction right, detail off �
 
 | Claim | Verdict | Notes |
 |---|---|---|
-| Host: Webflow | **PARTIAL / FALSE as hosting** | Live site is self-hosted Express (Railway). CSS/class names are Webflow-export heritage (`norbertbarna.webflow.*.css`, `w-nav`, etc.). |
+| Host: site builder | **FALSE** | Live site is self-hosted Express (Railway); the markup and CSS are first-party. |
 | Audit folder `/workspace/barnanorbert-audit/` | Missing in this workspace | Re-measured live + local instead. |
 | Kineticare / OnRobot fold-pixel not opened | **TRUE** (honesty of original audit) | URLs return 200; hero-crop claims for those two were correctly marked unopened. |
 
@@ -126,7 +126,7 @@ Hiring-path first → case-header template → pixel → leftover cleanup is coh
 
 **Hiring opinion (true observation, subjective fix):** SportsGambit should not lead; Motion out of nav; manifesto “defensive”; comps as poster vs page module.
 
-**Wrong or overstated:** Host=Webflow as live host; case lede “bold”; byline WCAG failure on live color heroes (C7); “félig átlátszó” as ~50% opacity.
+**Wrong or overstated:** Host=site builder as live host; case lede “bold”; byline WCAG failure on live color heroes (C7); “félig átlátszó” as ~50% opacity.
 
 **Cannot judge here:** pixel crops from missing audit pack; D-komp specifics except where live cards echo them.
 

@@ -23,7 +23,6 @@ export const UTILITY_PAGES = [...SERVICE_PAGES, ...PRIVACY_PAGES, ...CONTACT_PAG
 // from the request path prefix. They carry the utility-page chrome, are
 // noindex and never enter the sitemap or the content inventories.
 export const ERROR_PAGES = ["404.html", "hu/404.html", "de/404.html"];
-export const isErrorPage = (page) => ERROR_PAGES.includes(page);
 export const isServicePage = (page) => SERVICE_PAGES.includes(page);
 export const isContactPage = (page) => CONTACT_PAGES.includes(page);
 export const isEntryPage = (page) => ENTRY_PAGES.includes(page);

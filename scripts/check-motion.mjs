@@ -61,29 +61,6 @@ function versionedAsset(sourcePath, stem, extension) {
   return fileName;
 }
 
-function hasAccessibleName(anchor, html) {
-  if (attribute(anchor, "aria-label").trim() || attribute(anchor, "title").trim()) return true;
-
-  const labelledBy = attribute(anchor, "aria-labelledby").trim();
-  if (labelledBy) {
-    const labelsExist = labelledBy.split(/\s+/).every((id) => {
-      const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const labelledElement = html.match(
-        new RegExp(`<([a-z][\\w:-]*)\\b(?=[^>]*\\bid=["']${escaped}["'])[^>]*>([\\s\\S]*?)<\\/\\1>`, "i")
-      );
-      return labelledElement && labelledElement[2].replace(/<[^>]*>/g, "").trim();
-    });
-    if (labelsExist) return true;
-  }
-
-  const content = anchor.replace(/^<a\b[^>]*>|<\/a>$/gi, "");
-  const text = content.replace(/<[^>]*>/g, "").replace(/&nbsp;|&#160;/gi, " ").trim();
-  if (text) return true;
-
-  return [...content.matchAll(/<img\b[^>]*>/gi)]
-    .some((match) => attribute(match[0], "alt").trim());
-}
-
 function checkBackToTop(page, html) {
   const anchors = [...html.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/gi)]
     .map((match) => match[0])
@@ -107,7 +84,7 @@ function hasStableAspect(image, figure) {
 
 function checkRichTextImages(page, html) {
   const figures = [...html.matchAll(
-    /<figure\b[^>]*\bclass=["'][^"']*\bw-richtext-figure-type-image\b[^"']*["'][^>]*>[\s\S]*?<\/figure>/gi
+    /<figure\b[^>]*\bclass=["'][^"']*\brich-text-figure-image\b[^"']*["'][^>]*>[\s\S]*?<\/figure>/gi
   )].map((match) => match[0]);
 
   figures.forEach((figure, figureIndex) => {

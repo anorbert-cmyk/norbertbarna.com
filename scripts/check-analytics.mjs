@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { ERROR_PAGES, UTILITY_PAGES, baseOf, HU_PAGES, DE_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from './service-pages.mjs';
+import { ERROR_PAGES, UTILITY_PAGES, HU_PAGES, DE_PAGES, SITE_COPY, WRITING_PAGES, languageOf } from './service-pages.mjs';
 const root = new URL('../', import.meta.url);
 const read = p => readFileSync(new URL(p, root), 'utf8');
 const pages = ['index.html', 'works.html', 'about.html', ...UTILITY_PAGES, ...readdirSync(new URL('work/', root)).filter(p => p.endsWith('.html')).map(p => 'work/' + p), ...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES, ...ERROR_PAGES];

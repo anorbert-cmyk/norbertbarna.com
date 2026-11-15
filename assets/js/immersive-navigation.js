@@ -29,7 +29,9 @@
     progress = document.createElement('span');
     progress.className = 'home-nav-progress';
     progress.setAttribute('aria-hidden', 'true');
-    progress.innerHTML = '[ <span>001</span> ]';
+    var count = document.createElement('span');
+    count.textContent = '001';
+    progress.append('[ ', count, ' ]');
     wrap.appendChild(progress);
   }
   var counter = progress.querySelector('span');

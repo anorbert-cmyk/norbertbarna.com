@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CONTACT_PAGES, DE_WORK_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, SITE_COPY, UTILITY_PAGES, languageOf } from "./service-pages.mjs";
+import { CONTACT_PAGES, DE_WORK_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, SITE_COPY, languageOf } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -374,7 +374,7 @@ if (/InventedSocial/.test(design) === false) fail("design.md must name the Inven
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
   fail("product crops must use object-fit contain");
 }
-if (!/\.nav-menu\.w-nav-menu[\s\S]{0,80}background:\s*#fff/.test(css)) {
+if (!/\.nav-menu\.site-nav-menu[\s\S]{0,80}background:\s*#fff/.test(css)) {
   fail("mobile menu must be an opaque fill");
 }
 if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
@@ -460,7 +460,7 @@ if (/\.home-work-card-wrap\.top-space[\s\S]{0,80}margin-top:\s*1\d{2}px/.test(cs
   fail("StaggerHole: the 140px stagger offset must not return");
 }
 if (!/\.work-grid::before[\s\S]{0,160}content:\s*none/.test(css)) {
-  fail("RowClearfixHole: /works grid must disable Webflow .w-row clearfix pseudos");
+  fail("RowClearfixHole: /works grid must disable the base .layout-row clearfix pseudos");
 }
 if (!/--site-readable:\s*720px/.test(css)) {
   fail("body lock: reading measure must be 720px");
@@ -806,7 +806,7 @@ for (const slug of WORK) {
   const summaryStart = html.indexOf('class="summary');
   const summary = html.slice(summaryStart);
   const headings = [...summary.matchAll(/<h2 id="/g)];
-  const firstFigure = summary.search(/<figure\b[^>]*w-richtext-figure-type-image/);
+  const firstFigure = summary.search(/<figure\b[^>]*rich-text-figure-image/);
   if (headings.length >= 3 && (firstFigure < 0 || firstFigure > headings[2].index)) {
     fail(`${slug}: first body still must land right after the role section`);
   }
@@ -829,6 +829,15 @@ for (const page of typographicPages) {
   const straight = text.match(/["']|&quot;|&#0*39;|&apos;/g);
   if (straight) fail(`${page}: ${straight.length} straight quote(s) in visible English copy; set “ ” and ’ like the rest of the site`);
 }
+
+// Type sizes follow the reader's browser font size: rem, never px (design.md, Typography).
+for (const name of readdirSync(join(ROOT, "assets/css"))) {
+  if (!name.endsWith(".css") || /\.[0-9a-f]{12}\.css$/.test(name)) continue;
+  const source = readFileSync(join(ROOT, "assets/css", name), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  const px = source.match(/(?:^|[{;\s])(?:font-size|line-height)\s*:[^;{}]*\dpx|(?:^|[{;\s])font\s*:[^;{},]*\dpx/g);
+  if (px) fail(`assets/css/${name}: ${px.length} px type size(s), e.g. "${px[0].trim()}"; write rem (16px = 1rem)`);
+}
+if (!/:root\s*\{[^}]*color-scheme:\s*light/.test(css)) fail("responsive.css: :root must declare color-scheme: light (the site is light only)");
 
 if (failures) {
   console.error(`\n${failures} design.md check(s) failed`);

@@ -163,9 +163,9 @@ switch leads to Hungarian. Do not restore a separate home acquisition pitch.
 The reader in the first five seconds is a VP / hiring manager or a client
 for AI product and web work in regulated or high-trust systems. They need:
 role, access to shipped work, and a contact close. They are not here for a
-Webflow demo, a blog, or a Dribbble cover.
+template demo, a blog, or a Dribbble cover.
 
-Out of scope: live Webflow edits, ads, session deletion, invented metrics,
+Out of scope: ads, session deletion, invented metrics,
 generated product evidence, generated palettes, generated wordmarks, Geist /
 Vercel chrome, a third type family.
 
@@ -563,6 +563,18 @@ keyboard focus uses the existing ink/paper palette: a 3px ink outline with a
 white inner halo so it remains distinct on the mesh, paper and dark fields.
 Do not remove breadcrumb-link focus merely because it is not `.nav-link`.
 
+**Focus, type units and colour scheme (2026-11-15):** every keyboard focus stop
+has a real `outline` (never only a border or `box-shadow`, which forced colors
+drops). A focus stop without a component ring gets the site default at the top
+of `responsive.css`: 3px in the text colour, 4px offset, zero specificity. A
+filled control whose ring would sit on its own colour sets it explicitly (the
+navy capsules ring in navy on lilac; the case outline chip rings in white
+inside the ink chip). Type sizes in the stylesheets are written in `rem`
+(16px = 1rem; the px values in this document are the sizes at the default
+setting) and px line-heights are not authored; `check-design.mjs` fails on a
+px `font-size`, `font` size or `line-height`. `:root` declares
+`color-scheme: light`: the site is light only.
+
 At normal text size the outlined contact and primary actions remain 44px tall.
 At 200% text size or user-defined text spacing they may wrap and grow vertically
 (44px minimum), while keeping their full visible labels and existing action.
@@ -695,7 +707,7 @@ not the yellow “Reimagining Student Banking Journey” device cluster.
 (that file still has a red Figma selection stroke).
 
 **Instructure montage:** the Canvas Career video in `.inst-bg-video` must fill
-the 16:9 frame (`inset: 0; z-index: 0`). Webflow background-video CSS
+the 16:9 frame (`inset: 0; z-index: 0`). The base background-video rule
 (`inset: -100%`, `z-index: -100`) parks a playing file outside the clip.
 
 **Fact keys (identical on every case):** Role, Focus, Period, Delivery.
@@ -778,7 +790,7 @@ English-wash the screenshot.
 | CroppedProduct | Sidebar or phone clipped by `object-fit: cover` **or** by the source artboard | Different existing asset whose UI is fully in frame |
 | FakePII | Invented names, emails, `+123%` in comps we author | Shipped UI only, no unaudited % in our chrome |
 | FigmaLeftover | Red selection stroke on a screenshot (`Data Insights.png`) | Do not use that file as a fold or case hero |
-| TemplateVoice | Webflow lorem about interviews and testing | Delete; keep the 16-year line |
+| TemplateVoice | Template lorem about interviews and testing | Delete; keep the 16-year line |
 | TrackedBody | Uppercase/tracking applied to the dek or evidence body | Tracking is limited to the 13px home name kicker and small labels |
 | AIDecor | Glow blobs, fake words, new palettes or generated product evidence | Existing tokens, original folded geometry and explicitly requested decorative project art; real product UI remains inside cases |
 | YellowDuneSlab | A flat neon-yellow footer or stacked dunes return | Use the quiet editorial lilac field and the existing olive/forest geometry |
@@ -807,11 +819,11 @@ English-wash the screenshot.
 | MotionCover | Any fixed chip covering Role / Focus on a compact fold | No Motion chip; fact values wrap |
 | ClippedChip | A TOC chip cut mid-word (“Design P”) by overflow | TOC wraps or truncates to `+n`; chips never clip |
 | StaggerHole | Dummy columns, stagger offsets or empty gaps interrupt project scanning | A single landscape list on home and Works |
-| RowClearfixHole | Webflow `.w-row::before/::after` (`grid-area: 1 / 1`) occupy column 1 so a 7/5 pair cannot share a row | `content: none` on `.work-section .work-grid` pseudos; do not restyle every `.w-row` |
+| RowClearfixHole | Base `.layout-row::before/::after` (`grid-area: 1 / 1`) occupy column 1 so a 7/5 pair cannot share a row | `content: none` on `.work-section .work-grid` pseudos; do not restyle every `.layout-row` |
 | WorksDomainChip | Decorative pills or invented metrics clutter the list | Large name, original factual summary and quiet domain text |
 | BlogFooterCTA | Third-party or multi-field contact form in the footer | One project link to the contact form |
 | Marquee | New auto-scrolling chip rows | Do not add. Existing domain chips may stay; do not invent a second |
-| HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override Webflow `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
+| HiddenMontage | Instructure 16:9 frame is a navy empty box while the file plays off-canvas | Override the base `inset: -100%` / `z-index: -100` with `inset: 0; z-index: 0` |
 | MeshParallaxCircus | Retired mesh motion or moving footer text returns | Footer content stays still; navigation stays at the top |
 | TravellingWorkBar | Case controls jump between reading slots, fade or grow at the footer | Preserve the reference navy bar at the top, with stable destinations and real progress only |
 | BareWorkSlug | `/raiffeisen` (and the other six root slugs) 404 | 301 to `/work/{slug}` |
@@ -834,7 +846,7 @@ black-and-white empty margin, and it is not a Vercel report shell.
 ## Primitives (HTML vocabulary)
 
 Agents compose pages from these names. Do not invent parallel components.
-Anything not listed here either does not exist yet or is inherited Webflow
+Anything not listed here either does not exist yet or is inherited
 markup that is being retired: check the page before reusing it.
 
 **Chrome (all thirteen content pages):** `.skip-to-content` `.navbar`
@@ -934,7 +946,7 @@ renaming one silently disables a feature. `data-hero-critical`
 `data-morph-active` (the pinned home track) `data-glass-live` (the unpinned
 slot keeps the live object) `data-hero-scene` `data-hero-pose` `data-text-reflow`
 `data-composition-nav` `data-autoplay-video` `data-motion-video`
-`data-video-urls` `data-poster-url` `data-video-label` `data-object-fit`
+`data-video-urls` `data-poster-url` `data-video-label` `data-object-fit` `data-video-fallback`
 `data-consent-settings` `data-arrival-gate` (root, parse time: the
 pre-curtain veil) `data-case-opening` (root: `pending` from the parse-time
 gate, then `assembling`, `settled`) `data-case-flat` (the case panel rests
@@ -943,8 +955,7 @@ untransformed) `data-work-motion` `data-story` `data-story-*` (`-art` `-line` `-
 `data-story-*` attributes in `about.html` — `-backdrop` `-sculpture`
 `-shade` `-wing` — are markup state that no script queries; the animation binds
 to the matching classes, so adding one of those attributes without its class
-animates nothing. `data-w-id` is inherited Webflow state
-that `animations.js` strips; never author a new one.
+animates nothing.
 
 ## System reference
 
@@ -1124,7 +1135,8 @@ only to the sitemap.
 | File | Owns | Loaded by |
 |---|---|---|
 | `fonts.css` | Self-hosted Inter and Funnel Display; Latin and Latin-ext faces, plus metric-matched local Arial fallbacks (`Inter Fallback`, `Inter Fallback Caps` for uppercase bars, `Funnel Display Fallback`) that every Inter/Funnel stack names right after the web face, so the header and copy do not move when the web fonts arrive (check-design enforces the stacks; `header-stability.spec.mjs` measures it) | every page, including 404 |
-| `norbertbarna.webflow.*.css` | Inherited Webflow base | every page |
+| `base.css` | Reset, element defaults, layout primitives (`.layout-container`, `.layout-row`, `.rich-text`), the `.site-nav` collapse and the menu icon face; font sizes in rem | every page |
+| `components.css` | Inherited type scale, colour tokens and component rules, pruned to the selectors the pages use; font sizes in rem | every page except `/about` |
 | `responsive.css` | Site tokens, chrome lock, type scale, reflow, footer base | every page |
 | `arrival.css` | First-session name assembly, curtain and the pre-curtain gate | `/`, cases |
 | `home-composition.css` | Home morph track and the resolved split composition | `/` |
@@ -1137,8 +1149,8 @@ only to the sitemap.
 | `story.css` | `/about` chapters, rail, dark story footer | `/about` |
 | `consent.css` | Consent banner and `.footer-privacy` only | 14 content pages, unhashed |
 
-Two stylesheets must never grow brand rules: the Webflow base (inherited, being
-retired) and `consent.css` (narrow, separately revalidated). A new surface gets
+Three stylesheets must never grow brand rules: `base.css` and
+`components.css` (inherited foundations) and `consent.css` (narrow, separately revalidated). A new surface gets
 a scoped companion; it does not get appended to `responsive.css`.
 
 ### Scripts and motion ownership
@@ -1183,7 +1195,7 @@ JavaScript dependency is part of this contract.
 | `case-opening.js` | Case title and media entrance on `PortfolioPhysics` (hinged panel, rise, mask springs, letter springs) and the native-scroll perspective settle; no GSAP | yes |
 | `story-motion.js` | `/about` camera, chapter rail, Pause control | yes |
 | `ai-motion.js` | `/ai-integration` and `/hu/ai-tanacsadas-fejlesztes`: the motion and mode verdicts, the bar tone, the ribbon counter, and the opening's glass progress (`setMorphProgress` pinned, `setCompactProgress` in the slot) | yes |
-| `animations.js` | GSAP reveals, decorative depth, Webflow IX2 takeover, footer mesh field; the home selected-work and related-card pointer hover on `PortfolioPhysics` springs | yes |
+| `animations.js` | GSAP reveals, decorative depth, inline motion-state cleanup, footer mesh field; the home selected-work and related-card pointer hover on `PortfolioPhysics` springs | yes |
 | `vendor/gsap.min.js`, `vendor/ScrollTrigger.min.js` | Self-hosted, pinned | vendored |
 
 Load order is a contract, not a preference:
@@ -1203,7 +1215,7 @@ Load order is a contract, not a preference:
 - On the AI service pages: `animations.js` → `hero-scene.js` → `ai-motion.js`, the last script.
 - On `/`: `hero-scene.js` → `home-composition.js` → `arrival.js` →
   `immersive-navigation.js` → `animations.js`.
-- `animations.js` waits for the Webflow IX2 takeover and for fonts before it
+- `animations.js` waits for the full-load motion takeover and for fonts before it
   adds `html.gsap-ready`. Do not move that class earlier.
 
 ### Tokens
@@ -1262,7 +1274,7 @@ Motion and stage scope:
 |---|---|
 | `max-width: 479px` | Smallest phone tuning |
 | `max-width: 599px` / `min-width: 600px` | Compact stack turning into two-up |
-| `max-width: 767px` | Inherited Webflow tier. Do not author new rules here. One existing exception: the arrival wordmark block in `arrival.css` |
+| `max-width: 767px` | Inherited tier. Do not author new rules here. One existing exception: the arrival wordmark block in `arrival.css` |
 | `max-width: 991px` / `min-width: 992px` | **The** split: compact disclosure against the expanded stationary desktop bar |
 | `min-width: 1200px`, `min-width: 1800px` | Wide tuning only |
 | `(hover: hover) and (pointer: fine)` | Desktop pointer motion may run |
@@ -1336,14 +1348,9 @@ twelve characters of their own SHA-256 digest, in these families:
 - JS: `animations`, `media`, `arrival`, `hero-scene`, `home-composition`,
   `immersive-navigation`, `case-opening`, `story-motion`, `ai-motion`,
   `contact`, `physics`
-- CSS: `case-motion`, `responsive`, `arrival`, `home-composition`,
+- CSS: `base`, `components`, `case-motion`, `responsive`, `arrival`, `home-composition`,
   `case-opening`, `editorial-sections`, `compact-navigation`, `project-index`,
   `story`, `ai-integration`, `fonts`, `contact`
-- The inherited Webflow stylesheets (`norbertbarna.webflow.shared` and the
-  three `norbertbarna.webflow.<object id>` files) have no unhashed source:
-  since 2026-10-22 the file is named by its own digest after the Webflow id
-  and caches like the authored releases. `check-server.mjs` verifies the
-  digest of every served copy.
 
 After editing one of those sources: recompute the digest, write the hashed
 copy beside the source, update every page reference, and delete nothing. Stale

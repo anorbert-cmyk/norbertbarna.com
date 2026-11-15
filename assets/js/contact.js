@@ -146,9 +146,11 @@
   var lang = /^hu(?:-|$)/.test(pageLang) ? "hu" : /^de(?:-|$)/.test(pageLang) ? "de" : "en";
   var linkedIn = "https://www.linkedin.com/in/barna-norbert/";
   var newTab = { en: " (opens in a new tab)", hu: " (új lapon nyílik meg)", de: " (öffnet in neuem Tab)" }[lang];
-  var linkedInLink = function (label) {
-    return "<a href=\"" + linkedIn + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + label +
-      "<span class=\"contact-sr\">" + newTab + "</span></a>";
+  // A status message that names LinkedIn is kept as its parts (the text
+  // before the link, the link's label, the text after it), so say() can build
+  // the link as a node and no message ever passes through an HTML string.
+  var withLinkedIn = function (before, label, after) {
+    return { before: before, label: label, after: after };
   };
   var STRINGS = {
     en: {
@@ -160,15 +162,15 @@
       still: "The spam check is still running…",
       sending: "Sending…",
       sentStatus: "Thank you, your message is on its way.",
-      rate: "Too many messages have come from your network recently. What you wrote is still here. Try again later, or write to me on " + linkedInLink("LinkedIn") + ".",
-      failed: "Your message was not sent. What you wrote is still here. Try again, or write to me on " + linkedInLink("LinkedIn") + ".",
-      unavailable: "The form is paused for now. What you wrote is still here. Write to me on " + linkedInLink("LinkedIn") + " instead.",
-      unsupported: "This browser cannot run the spam check, so the form cannot send. Write to me on " + linkedInLink("LinkedIn") + " instead.",
+      rate: withLinkedIn("Too many messages have come from your network recently. What you wrote is still here. Try again later, or write to me on ", "LinkedIn", "."),
+      failed: withLinkedIn("Your message was not sent. What you wrote is still here. Try again, or write to me on ", "LinkedIn", "."),
+      unavailable: withLinkedIn("The form is paused for now. What you wrote is still here. Write to me on ", "LinkedIn", " instead."),
+      unsupported: withLinkedIn("This browser cannot run the spam check, so the form cannot send. Write to me on ", "LinkedIn", " instead."),
       captchaWaiting: "Your message will go as soon as the human check above is done. If it shows a checkbox, tick it.",
       captchaStuck: "The human check has not finished, so your message was not sent. What you wrote is still here. Tick the box in the check if it shows one, then send again.",
-      captchaError: "The human check could not load. Check your internet connection and send again, or write to me on " + linkedInLink("LinkedIn") + ".",
+      captchaError: withLinkedIn("The human check could not load. Check your internet connection and send again, or write to me on ", "LinkedIn", "."),
       captchaFailed: "The human check did not go through, so your message was not sent. What you wrote is still here. Send it again.",
-      captchaUnavailable: "The human check is not available right now. What you wrote is still here. Try again later, or write to me on " + linkedInLink("LinkedIn") + ".",
+      captchaUnavailable: withLinkedIn("The human check is not available right now. What you wrote is still here. Try again later, or write to me on ", "LinkedIn", "."),
       errorPrefix: "Error: ",
       remaining: function (n) { return n === 1 ? "You have 1 character left." : "You have " + n + " characters left."; },
       overLimit: function (n) { return "You are " + n + (n === 1 ? " character" : " characters") + " over the limit."; }
@@ -182,15 +184,15 @@
       still: "Még fut a spamszűrő…",
       sending: "Küldés…",
       sentStatus: "Köszönöm, az üzeneted elment.",
-      rate: "A hálózatodról az utóbbi időben túl sok üzenet érkezett. Amit írtál, itt maradt. Próbáld újra később, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
-      failed: "Az üzeneted nem ment el. Amit írtál, itt maradt. Próbáld újra, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
-      unavailable: "Az űrlap most szünetel. Amit írtál, itt maradt. Írj nekem inkább " + linkedInLink("LinkedInen") + ".",
-      unsupported: "Ebben a böngészőben nem fut le a spamszűrő, ezért az űrlap nem tudja elküldeni az üzenetet. Írj nekem inkább " + linkedInLink("LinkedInen") + ".",
+      rate: withLinkedIn("A hálózatodról az utóbbi időben túl sok üzenet érkezett. Amit írtál, itt maradt. Próbáld újra később, vagy írj nekem ", "LinkedInen", "."),
+      failed: withLinkedIn("Az üzeneted nem ment el. Amit írtál, itt maradt. Próbáld újra, vagy írj nekem ", "LinkedInen", "."),
+      unavailable: withLinkedIn("Az űrlap most szünetel. Amit írtál, itt maradt. Írj nekem inkább ", "LinkedInen", "."),
+      unsupported: withLinkedIn("Ebben a böngészőben nem fut le a spamszűrő, ezért az űrlap nem tudja elküldeni az üzenetet. Írj nekem inkább ", "LinkedInen", "."),
       captchaWaiting: "Az üzeneted elmegy, amint kész a fenti emberellenőrzés. Ha jelölőnégyzetet látsz benne, pipáld be.",
       captchaStuck: "Az emberellenőrzés nem fejeződött be, ezért az üzeneted nem ment el. Amit írtál, itt maradt. Ha jelölőnégyzetet látsz benne, pipáld be, és küldd el újra.",
-      captchaError: "Nem töltött be az emberellenőrzés. Ellenőrizd az internetkapcsolatod, és küldd el újra, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
+      captchaError: withLinkedIn("Nem töltött be az emberellenőrzés. Ellenőrizd az internetkapcsolatod, és küldd el újra, vagy írj nekem ", "LinkedInen", "."),
       captchaFailed: "Nem sikerült az emberellenőrzés, ezért az üzeneted nem ment el. Amit írtál, itt maradt. Küldd el újra.",
-      captchaUnavailable: "Az emberellenőrzés most nem érhető el. Amit írtál, itt maradt. Próbáld újra később, vagy írj nekem " + linkedInLink("LinkedInen") + ".",
+      captchaUnavailable: withLinkedIn("Az emberellenőrzés most nem érhető el. Amit írtál, itt maradt. Próbáld újra később, vagy írj nekem ", "LinkedInen", "."),
       errorPrefix: "Hiba: ",
       remaining: function (n) { return "Még " + n + " karaktert írhatsz."; },
       overLimit: function (n) { return "Az üzeneted " + n + " karakterrel hosszabb a megengedettnél."; }
@@ -204,15 +206,15 @@
       still: "Der Spamschutz läuft noch…",
       sending: "Wird gesendet…",
       sentStatus: "Danke, Ihre Nachricht ist unterwegs.",
-      rate: "Aus Ihrem Netzwerk kamen in letzter Zeit zu viele Nachrichten. Ihr Text ist noch da. Versuchen Sie es später erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
-      failed: "Ihre Nachricht wurde nicht gesendet. Ihr Text ist noch da. Versuchen Sie es erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
-      unavailable: "Das Formular ist vorübergehend pausiert. Ihr Text ist noch da. Schreiben Sie mir stattdessen auf " + linkedInLink("LinkedIn") + ".",
-      unsupported: "Dieser Browser kann den Spamschutz nicht ausführen, deshalb kann das Formular nicht senden. Schreiben Sie mir stattdessen auf " + linkedInLink("LinkedIn") + ".",
+      rate: withLinkedIn("Aus Ihrem Netzwerk kamen in letzter Zeit zu viele Nachrichten. Ihr Text ist noch da. Versuchen Sie es später erneut, oder schreiben Sie mir auf ", "LinkedIn", "."),
+      failed: withLinkedIn("Ihre Nachricht wurde nicht gesendet. Ihr Text ist noch da. Versuchen Sie es erneut, oder schreiben Sie mir auf ", "LinkedIn", "."),
+      unavailable: withLinkedIn("Das Formular ist vorübergehend pausiert. Ihr Text ist noch da. Schreiben Sie mir stattdessen auf ", "LinkedIn", "."),
+      unsupported: withLinkedIn("Dieser Browser kann den Spamschutz nicht ausführen, deshalb kann das Formular nicht senden. Schreiben Sie mir stattdessen auf ", "LinkedIn", "."),
       captchaWaiting: "Ihre Nachricht geht ab, sobald die Prüfung oben abgeschlossen ist. Wenn sie ein Kontrollkästchen zeigt, haken Sie es an.",
       captchaStuck: "Die Prüfung ist nicht abgeschlossen, deshalb wurde Ihre Nachricht nicht gesendet. Ihr Text ist noch da. Haken Sie das Kästchen in der Prüfung an, falls sie eines zeigt, und senden Sie erneut.",
-      captchaError: "Die Prüfung konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung und senden Sie erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
+      captchaError: withLinkedIn("Die Prüfung konnte nicht geladen werden. Prüfen Sie Ihre Internetverbindung und senden Sie erneut, oder schreiben Sie mir auf ", "LinkedIn", "."),
       captchaFailed: "Die Prüfung ist fehlgeschlagen, deshalb wurde Ihre Nachricht nicht gesendet. Ihr Text ist noch da. Senden Sie sie erneut.",
-      captchaUnavailable: "Die Prüfung ist derzeit nicht verfügbar. Ihr Text ist noch da. Versuchen Sie es später erneut, oder schreiben Sie mir auf " + linkedInLink("LinkedIn") + ".",
+      captchaUnavailable: withLinkedIn("Die Prüfung ist derzeit nicht verfügbar. Ihr Text ist noch da. Versuchen Sie es später erneut, oder schreiben Sie mir auf ", "LinkedIn", "."),
       errorPrefix: "Fehler: ",
       remaining: function (n) { return n === 1 ? "Sie haben noch 1 Zeichen übrig." : "Sie haben noch " + n + " Zeichen übrig."; },
       overLimit: function (n) { return "Sie liegen " + n + " Zeichen über dem Limit."; }
@@ -227,10 +229,22 @@
   // The status line remembers what kind of message it shows, so a human
   // check that completes can clear its own earlier notice and nothing else.
   var statusKind = "";
-  function say(text, asHtml, kind) {
+  function say(message, kind) {
     if (!status) return;
-    if (asHtml) status.innerHTML = text; else status.textContent = text;
-    statusKind = text ? (kind || "") : "";
+    if (message && typeof message === "object") {
+      var link = document.createElement("a");
+      link.href = linkedIn;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      var hint = document.createElement("span");
+      hint.className = "contact-sr";
+      hint.textContent = newTab;
+      link.append(message.label, hint);
+      status.replaceChildren(message.before, link, message.after);
+    } else {
+      status.textContent = message;
+    }
+    statusKind = message ? (kind || "") : "";
   }
   function enableForm() {
     if (fieldsBox) fieldsBox.disabled = false;
@@ -243,7 +257,7 @@
   if (!window.fetch || typeof TextEncoder !== "function" || !pow || typeof Promise !== "function") {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
-      say(t.unsupported, true);
+      say(t.unsupported);
     });
     enableForm();
     return;
@@ -341,7 +355,7 @@
     engaged = true;
     if (noticeHeld && captcha.failed && !captcha.loading) {
       noticeHeld = false;
-      say(t.captchaError, true, "captcha");
+      say(t.captchaError, "captcha");
     }
   }
   form.addEventListener("focusin", engage, true);
@@ -352,7 +366,7 @@
     captcha.failed = true;
     captcha.loading = false;
     if (checkRow) checkRow.hidden = true;
-    if (engaged) say(t.captchaError, true, "captcha"); else noticeHeld = true;
+    if (engaged) say(t.captchaError, "captcha"); else noticeHeld = true;
     settleWaiters(new Error("captcha"));
   }
   function resetCaptcha() {
@@ -383,13 +397,30 @@
       });
     } catch (error) { captchaError(); }
   }
+  // Trusted Types: a script URL is a guarded sink, so the one URL this page
+  // may inject goes through a policy that accepts Turnstile's and nothing
+  // else. Browsers without Trusted Types take the string as it is.
+  var turnstilePolicy = null;
+  function turnstileScriptUrl() {
+    if (!window.trustedTypes || !window.trustedTypes.createPolicy) return TURNSTILE.script;
+    if (!turnstilePolicy) {
+      turnstilePolicy = window.trustedTypes.createPolicy("contact-turnstile", {
+        createScriptURL: function (url) {
+          if (url !== TURNSTILE.script) throw new TypeError("contact-turnstile: unexpected script URL");
+          return url;
+        }
+      });
+    }
+    return turnstilePolicy.createScriptURL(TURNSTILE.script);
+  }
   // The script is injected here, with its error listener attached before it
   // is appended, so a failed load is known at once rather than after the
   // timeout. A retry removes the old tag and injects a fresh one.
   function injectTurnstile() {
     if (captcha.script && captcha.script.parentNode) captcha.script.parentNode.removeChild(captcha.script);
     var script = document.createElement("script");
-    script.src = TURNSTILE.script;
+    // A policy this page's CSP refused must not take the form down with it.
+    try { script.src = turnstileScriptUrl(); } catch (error) { captchaError(); return; }
     script.async = true;
     script.addEventListener("error", captchaError, { once: true });
     captcha.script = script;
@@ -417,7 +448,7 @@
   function ensureCaptcha() {
     if (captcha.token) return Promise.resolve(captcha.token);
     if (captcha.failed) startCaptcha();
-    say(t.captchaWaiting, false, "captcha");
+    say(t.captchaWaiting, "captcha");
     return new Promise(function (resolve, reject) {
       var waiter = { resolve: resolve, reject: reject, timer: 0 };
       waiter.timer = setTimeout(function () {
@@ -829,21 +860,21 @@
       }
       if (result.kind === "invalid") {
         say("");
-        if (result.fields && result.fields.length) showSummary(result.fields); else say(t.failed, true);
+        if (result.fields && result.fields.length) showSummary(result.fields); else say(t.failed);
         return;
       }
-      if (result.kind === "rate") { say(t.rate, true); return; }
-      if (result.kind === "unavailable") { say(t.unavailable, true); return; }
-      if (result.kind === "captchaError") { if (statusKind !== "captcha") say(t.captchaError, true, "captcha"); return; }
+      if (result.kind === "rate") { say(t.rate); return; }
+      if (result.kind === "unavailable") { say(t.unavailable); return; }
+      if (result.kind === "captchaError") { if (statusKind !== "captcha") say(t.captchaError, "captcha"); return; }
       if (result.kind === "captchaStuck") { say(t.captchaStuck); return; }
       if (result.kind === "captchaFailed") { say(t.captchaFailed); return; }
-      if (result.kind === "captchaUnavailable") { say(t.captchaUnavailable, true); return; }
-      say(t.failed, true);
+      if (result.kind === "captchaUnavailable") { say(t.captchaUnavailable); return; }
+      say(t.failed);
     }).catch(function () {
       setBusy(false);
       prepareChallenge(true);
       resetCaptcha();
-      say(t.failed, true);
+      say(t.failed);
     });
   });
 
@@ -970,20 +1001,27 @@
   // rectangle in sheet coordinates with its computed type, at 1x; the
   // sheet's transform scales it with the paper.
   function measurePrint(scope, origin) {
-    var out = [];
-    function escape(text) {
-      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
+    // A fragment of nodes rather than markup: each piece of the fold clones
+    // it, and no field value is ever parsed as HTML.
+    var out = document.createDocumentFragment();
     function place(node, text, inline, single) {
       if (!node || !text) return;
       var box = node.getBoundingClientRect();
       if (!box.width || !box.height) return;
       var style = getComputedStyle(node);
-      out.push("<span style=\"position:absolute;left:" + (box.left - origin.left).toFixed(1) + "px;top:" + (box.top - origin.top).toFixed(1) + "px;width:" + box.width.toFixed(1) + "px;height:" + box.height.toFixed(1) + "px;box-sizing:border-box;margin:0;" +
+      var span = document.createElement("span");
+      span.setAttribute("style", "position:absolute;left:" + (box.left - origin.left).toFixed(1) + "px;top:" + (box.top - origin.top).toFixed(1) + "px;width:" + box.width.toFixed(1) + "px;height:" + box.height.toFixed(1) + "px;box-sizing:border-box;margin:0;" +
         "padding:" + style.paddingTop + " " + style.paddingRight + " " + style.paddingBottom + " " + style.paddingLeft + ";" +
         "font:" + style.font + ";line-height:" + style.lineHeight + ";letter-spacing:" + style.letterSpacing + ";color:" + style.color + ";" +
         "text-transform:" + style.textTransform + ";text-align:" + style.textAlign + (single ? ";white-space:nowrap;overflow:visible;" : ";white-space:pre-wrap;overflow-wrap:anywhere;overflow:hidden;") +
-        (inline ? "display:flex;align-items:center;" : "display:block;") + "\">" + escape(text) + "</span>");
+        (inline ? "display:flex;align-items:center;" : "display:block;"));
+      span.textContent = text;
+      out.appendChild(span);
+    }
+    function shape(name, attributes) {
+      var node = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.keys(attributes).forEach(function (key) { node.setAttribute(key, attributes[key]); });
+      return node;
     }
     Array.prototype.forEach.call(scope.querySelectorAll(".contact-label"), function (node) { place(node, node.textContent, false, true); });
     Array.prototype.forEach.call(scope.querySelectorAll(".contact-input"), function (node) { place(node, node.value, true); });
@@ -997,12 +1035,17 @@
       if (mark) {
         var box = mark.getBoundingClientRect();
         var ink = getComputedStyle(mark).color;
-        out.push("<svg viewBox=\"0 0 20 20\" aria-hidden=\"true\" style=\"position:absolute;left:" + (box.left - origin.left).toFixed(1) + "px;top:" + (box.top - origin.top).toFixed(1) + "px;width:" + box.width.toFixed(1) + "px;height:" + box.height.toFixed(1) + "px;overflow:visible\">" +
-          "<circle cx=\"10\" cy=\"10\" r=\"8.75\" fill=\"" + ink + "\" stroke=\"" + ink + "\" stroke-width=\"1.5\"/>" +
-          "<path d=\"M10 10v8.75A8.75 8.75 0 0 0 18.75 10Z\" fill=\"#BDB414\"/></svg>");
+        var svg = shape("svg", {
+          viewBox: "0 0 20 20",
+          "aria-hidden": "true",
+          style: "position:absolute;left:" + (box.left - origin.left).toFixed(1) + "px;top:" + (box.top - origin.top).toFixed(1) + "px;width:" + box.width.toFixed(1) + "px;height:" + box.height.toFixed(1) + "px;overflow:visible"
+        });
+        svg.appendChild(shape("circle", { cx: "10", cy: "10", r: "8.75", fill: ink, stroke: ink, "stroke-width": "1.5" }));
+        svg.appendChild(shape("path", { d: "M10 10v8.75A8.75 8.75 0 0 0 18.75 10Z", fill: "#BDB414" }));
+        out.appendChild(svg);
       }
     }
-    return out.join("");
+    return out;
   }
 
   function part(className, parent) {
@@ -1161,7 +1204,11 @@
           put(sheetLayer, "transform", "translate(" + -left + "px," + -top + "px)");
         });
         put(piece.print, "background", options.rules || "none");
-        if (piece.printed !== options.print) { piece.printed = options.print || ""; piece.print.node.innerHTML = piece.printed; }
+        if (piece.printed !== options.print) {
+          piece.printed = options.print || null;
+          piece.print.node.replaceChildren();
+          if (piece.printed) piece.print.node.appendChild(piece.printed.cloneNode(true));
+        }
         ground.inset = Math.max(0, Math.min(FOLD.ground.spread, piece.rect.w / 2 - 1, piece.rect.h / 2 - 1));
         put(ground, "width", (piece.rect.w - 2 * ground.inset) + "px");
         put(ground, "height", (piece.rect.h - 2 * ground.inset) + "px");

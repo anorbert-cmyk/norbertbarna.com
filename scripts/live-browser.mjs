@@ -49,7 +49,7 @@ for (const route of ["/work/kineticare", "/hu/munka/kineticare"]) {
   await page.waitForTimeout(1500);
   const state = await video.evaluate(async (v) => {
     const frame = v.closest(".kineticare-browser-frame").getBoundingClientRect();
-    const column = v.closest(".w-richtext").getBoundingClientRect();
+    const column = v.closest(".rich-text").getBoundingClientRect();
     const start = v.getVideoPlaybackQuality ? v.getVideoPlaybackQuality() : null;
     const t0 = v.currentTime;
     let callbacks = 0;
