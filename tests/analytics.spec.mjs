@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const endpoint = 'https://eu.i.posthog.com/i/v0/e/';
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     window.PortfolioAnalyticsConfig = Object.freeze({ enabled: true });

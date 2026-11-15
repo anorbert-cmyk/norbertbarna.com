@@ -10,9 +10,16 @@ scripts/*
 !scripts/writing-content.mjs
 Dockerfile
 .dockerignore
+.gitignore
+.cursor
 README.md
 claude.md
+AGENTS.md
+design.md
 indicators
+tools
+# admin/ is the committed build the server serves; admin-ui/ is only its source.
+admin-ui
 test-results
 playwright-report
 blob-report

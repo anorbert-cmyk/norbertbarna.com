@@ -133,7 +133,7 @@ GSAP is bundled in the repo, not loaded from a CDN. These script tags go before 
 
 For work/ subpages use `../assets/...` paths. Do not add CDN script tags for animation
 libraries; if a new plugin is needed, vendor it into `assets/js/vendor/`.
-Scrolling is native on every viewport; Lenis is vendored but intentionally not loaded.
+Scrolling is native on every viewport; Lenis is not used and not vendored.
 
 ### Animation Rules (Non-Negotiable)
 
