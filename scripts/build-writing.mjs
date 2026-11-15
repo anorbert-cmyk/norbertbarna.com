@@ -380,8 +380,16 @@ function row(lang, article, index, heading = "h2") {
 
 const CTA_ID = { hu: "kapcsolodo-szolgaltatas", en: "related-service", de: "passende-leistung" };
 
-// Tables scroll inside their own box on narrow screens.
-const wrapTables = (html) => html.replaceAll("<table>", '<div class="writing-table"><table>').replaceAll("</table>", "</table></div>");
+// Tables sit in their own box. Up to three columns set within the reading
+// column at every width (design.md; tests/editorial-layout.spec.mjs proves it
+// at 320 and 390px). A wider table can only scroll sideways on a phone, so
+// its box is a keyboard-focusable region named by the table's caption.
+export const WIDE_TABLE_COLUMNS = 4;
+const wrapTables = (html) => html.replace(/<table>(<caption id="([^"]+)"[\s\S]*?<\/table>)/g, (table, rest, captionId) => {
+  const columns = (table.match(/<thead>[\s\S]*?<\/thead>/)?.[0].match(/<th\b/g) || []).length;
+  const region = columns >= WIDE_TABLE_COLUMNS ? ` writing-table-wide" tabindex="0" role="region" aria-labelledby="${captionId}` : "";
+  return `<div class="writing-table${region}"><table>${rest}</div>`;
+});
 
 function renderArticle(article, articles, links) {
   const { lang } = article;

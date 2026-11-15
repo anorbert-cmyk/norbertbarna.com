@@ -532,6 +532,11 @@ body.contact-page {
   border: 1px solid var(--contact-rule);
   font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
 }
+/* A native post (the page's script had not run yet) is answered with the
+   page at #contact-unsent: the notice shows only as that target, and steps
+   aside once the visitor sends again. */
+.contact-unsent { display: none; }
+.contact-unsent:target:not([hidden]) { display: block; }
 /* Honeypot: off screen for people, present for scripts. Never display:none. */
 .contact-hp {
   position: absolute;

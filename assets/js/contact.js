@@ -12,7 +12,13 @@
  *     paper; this owner only tells it how far the stage has scrolled.
  *  The form binds first and nothing before its submit handler can throw, so
  *  a native submit (GET with the visitor's details in the URL) never happens
- *  on a scripted page. */
+ *  on a scripted page.
+ *  The Send button is never disabled (2026-11-15): pressed early it runs the
+ *  validation and names every problem, or says which check it is waiting
+ *  for; aria-disabled marks it only while a message is on its way. Before
+ *  this file has run, the fields are still disabled and a press posts
+ *  nothing: the server answers that native post with the page and its
+ *  #contact-unsent notice (server.js), so it is never a silent dead end. */
 (function () {
   "use strict";
   var K = new Int32Array([
@@ -246,10 +252,17 @@
     }
     statusKind = message ? (kind || "") : "";
   }
+  // The fields open once this file can answer a submit. The button is
+  // already enabled in the markup; the line below only covers a cached page
+  // from before that.
   function enableForm() {
     if (fieldsBox) fieldsBox.disabled = false;
     if (submit) submit.disabled = false;
   }
+  // The notice a native post lands on (#contact-unsent, shown by :target)
+  // is true until the visitor sends again; then it steps aside.
+  var unsent = form.querySelector("#contact-unsent");
+  function dismissUnsent() { if (unsent) unsent.hidden = true; }
 
   // The form posts JSON after a proof of work. Without fetch, TextEncoder or
   // the solver the page cannot send; the submit is caught and LinkedIn offered.
@@ -257,6 +270,7 @@
   if (!window.fetch || typeof TextEncoder !== "function" || !pow || typeof Promise !== "function") {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
+      dismissUnsent();
       say(t.unsupported);
     });
     enableForm();
@@ -509,7 +523,11 @@
       if (stale && stale.parentNode) summaryList.removeChild(stale.parentNode);
       if (summary && !summaryList.children.length) summary.hidden = true;
     }
-    inputsFor(key).forEach(function (input) { input.removeAttribute("aria-invalid"); });
+    // Text fields go back to an explicit "false": some browsers expose an
+    // empty required field as invalid when the attribute is missing.
+    inputsFor(key).forEach(function (input) {
+      if (key === "topic") input.removeAttribute("aria-invalid"); else input.setAttribute("aria-invalid", "false");
+    });
     describedTargets(key).forEach(function (target) { describedBy(target, node.id, false); });
   }
 
@@ -621,11 +639,15 @@
 
   // Validate a field once the visitor leaves it, and clear its error as soon
   // as they fix it. Never scold while the field is still being typed into.
+  // This is the timing of :user-invalid, with the server's own rules: a field
+  // that was only tabbed through stays quiet, one that was edited and left
+  // empty or wrong is named.
   // A blur caused by a press is checked only after the press has ended and
   // its click has landed: an error line appearing between mousedown and
   // mouseup would move the target from under the pointer.
   var pointerHeld = false;
   var deferredChecks = [];
+  var edited = {};
   function runDeferredChecks() {
     var checks = deferredChecks;
     deferredChecks = [];
@@ -640,13 +662,14 @@
     if (!input) return;
     input.addEventListener("blur", function () {
       var check = function () {
-        if (input.value.trim() === "" && !controlFor(key).hasAttribute("data-invalid")) return;
+        if (input.value.trim() === "" && !edited[key] && !controlFor(key).hasAttribute("data-invalid")) return;
         var message = validateField(key);
         if (message) setError(key, message); else clearError(key);
       };
       if (pointerHeld) deferredChecks.push(check); else check();
     });
     input.addEventListener("input", function () {
+      edited[key] = true;
       if (controlFor(key).hasAttribute("data-invalid") && !validateField(key)) clearError(key);
     });
   });
@@ -841,6 +864,7 @@
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     if (busy) return;
+    dismissUnsent();
     var invalid = validateAll();
     if (invalid.length) {
       say("");
@@ -1435,6 +1459,7 @@
     topics.forEach(function (input) { input.checked = false; });
     if (fields.message) fields.message.value = "";
     if (fields.honeypot) fields.honeypot.value = "";
+    edited = {};
     ORDER.forEach(clearError);
     hideSummary();
     updateCounter();

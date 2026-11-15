@@ -61,7 +61,8 @@ for (const page of ALL_PAGES) {
   // same name in every template of a language. The footer's nav is "Footer"
   // (Lábléc, Fußzeile) on the editorial, service and About footers; the case
   // and article breadcrumbs are "Breadcrumb" (Morzsamenü,
-  // Brotkrümelnavigation); every aside is named, or it is not an aside.
+  // Brotkrümelpfad); every aside is named, or it is not an aside. A nav's
+  // name never repeats its role and a nav never restates role="navigation".
   {
     const lang = languageOf(page);
     const footer = html.slice(html.indexOf("<footer"), html.indexOf("</footer>") + 9);
@@ -74,6 +75,55 @@ for (const page of ALL_PAGES) {
     for (const match of html.matchAll(/<nav\b[^>]*\bclass="[^"]*\b(?:nav|writing)-breadcrumb\b[^"]*"[^>]*>/gi)) {
       const label = match[0].match(/\saria-label="([^"]*)"/)?.[1];
       if (label !== BREADCRUMB_LABEL[lang]) fail(`${page}: breadcrumb must be named "${BREADCRUMB_LABEL[lang]}", found ${JSON.stringify(label)}`);
+    }
+    for (const match of html.matchAll(/<nav\b[^>]*>/gi)) {
+      if (/\srole="navigation"/.test(match[0])) fail(`${page}: redundant role on ${match[0]}`);
+      if (/\saria-label="[^"]*(?:navigation|navigáció)[^"]*"/i.test(match[0])) fail(`${page}: a nav name must not repeat its role: ${match[0]}`);
+    }
+    {
+      const primary = html.match(/<nav\b[^>]*\bid="primary-navigation"[^>]*>/)?.[0] || "";
+      if (!primary.includes(` aria-label="${MENU[lang].navLabel}"`)) fail(`${page}: primary navigation must be named "${MENU[lang].navLabel}"`);
+    }
+    if (/<(main|header|footer|aside|button|li|table|form)\b[^>]*\srole="(main|banner|contentinfo|complementary|button|listitem|table|form)"/i.test(html) &&
+        [...html.matchAll(/<(main|header|footer|aside|button|li|table|form)\b[^>]*\srole="([a-z]+)"/gi)].some(([, tag, role]) =>
+          ({ main: "main", header: "banner", footer: "contentinfo", aside: "complementary", button: "button", li: "listitem", table: "table", form: "form" })[tag.toLowerCase()] === role)) {
+      fail(`${page}: redundant ARIA role on a native element`);
+    }
+    if (/<img\b(?=[^>]*\salt="")[^>]*\srole="presentation"/i.test(html)) fail(`${page}: an image with an empty alt needs no role="presentation"`);
+    // Images: intrinsic size on every <img>; at most one high-priority
+    // image and never a lazy one; an AVIF <source> wraps an <img> with the
+    // same candidates and sizes, and every file it names exists.
+    {
+      const images = [...html.matchAll(/<img\b[^>]*>/gi)].map((match) => match[0]);
+      for (const image of images) {
+        if (!/\swidth="\d+"/.test(image) || !/\sheight="\d+"/.test(image)) fail(`${page}: image without width and height: ${image.slice(0, 120)}`);
+        if (/\sfetchpriority="high"/.test(image) && /\sloading="lazy"/.test(image)) fail(`${page}: a high-priority image must not be lazy`);
+      }
+      if (images.filter((image) => /\sfetchpriority="high"/.test(image)).length > 1) fail(`${page}: more than one fetchpriority="high" image`);
+      for (const [, source, image] of html.matchAll(/<picture>(<source type="image\/avif"[^>]*>)(<img\b[^>]*>)<\/picture>/gi)) {
+        const avif = attribute(source, "srcset").split(",").map((entry) => entry.trim());
+        const webp = attribute(image, "srcset").split(",").map((entry) => entry.trim());
+        if (attribute(source, "sizes") !== attribute(image, "sizes") || avif.length !== webp.length ||
+            avif.some((entry, index) => entry !== webp[index].replace(/\.webp(\s+\d+w)$/, ".avif$1"))) {
+          fail(`${page}: the AVIF source must mirror the image's candidates and sizes`);
+        }
+        for (const entry of avif) {
+          const url = decodeURI(entry.split(/\s+/)[0]);
+          const local = url.startsWith("/") ? join(ROOT, url) : resolve(dirname(join(ROOT, page)), url);
+          if (!existsSync(local)) fail(`${page}: AVIF candidate is missing: ${url}`);
+        }
+      }
+      if (/<source type="image\/avif"/.test(html.replace(/<picture><source type="image\/avif"[^>]*><img\b[^>]*><\/picture>/gi, ""))) fail(`${page}: an AVIF source stands outside <picture><source/><img></picture>`);
+    }
+    // Data tables (articles): a caption names the table, every header cell
+    // says which way it heads, and a box that may scroll is a named region.
+    for (const [table] of html.matchAll(/<table\b[\s\S]*?<\/table>/gi)) {
+      if (!/<caption\b[^>]*>\s*[^<\s]/.test(table)) fail(`${page}: a table has no caption`);
+      if (/<th(?![^>]*\sscope="(?:col|row)")[\s>]/.test(table)) fail(`${page}: a table header cell has no scope`);
+    }
+    for (const [box] of html.matchAll(/<div class="writing-table[^"]*"[^>]*>/gi)) {
+      const wide = /\bwriting-table-wide\b/.test(box);
+      if (wide !== (/\stabindex="0"/.test(box) && /\srole="region"/.test(box) && /\saria-labelledby="writing-table-\d+"/.test(box))) fail(`${page}: only a wide table's box is a focusable named region: ${box}`);
     }
     for (const match of html.matchAll(/<aside\b[^>]*>/gi)) {
       if (!/\saria-label(?:ledby)?="[^"]+"/.test(match[0])) fail(`${page}: unnamed aside landmark ${match[0]}`);

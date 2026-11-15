@@ -56,6 +56,7 @@ A felújítás és a sablonos megoldás nem ugyanaz a kérdés. Arról, hogy mik
 
 ## Döntési táblázat
 
+: Felújítás vagy új oldal: javaslat tíz gyakori problémára
 | Probléma | Felújítás | Új oldal |
 |---|---|---|
 | A tartalom elavult, a szerkezet jó | igen | |

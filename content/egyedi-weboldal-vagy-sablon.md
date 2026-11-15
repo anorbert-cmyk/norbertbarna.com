@@ -64,6 +64,7 @@ Ha a Google-ből vársz ügyfelet: a technikai alapok (sebesség, egyedi címek 
 
 ## Döntési táblázat
 
+: Sablon vagy egyedi weboldal: javaslat öt jellemző helyzetre
 | Helyzet | Javaslat |
 |---|---|
 | Névjegy, néhány oldal, nincs fizetés | sablon vagy testreszabott sablon |

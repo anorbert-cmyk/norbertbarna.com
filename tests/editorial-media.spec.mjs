@@ -418,15 +418,15 @@ test('autoplay has a native scroll fallback without IntersectionObserver', async
   await expect.poll(() => video.evaluate(v => v.paused)).toBe(true);
 });
 
-test('a JavaScript-free visit keeps readable notes, navigation and poster fallbacks', async ({ browser }) => {
+test('a JavaScript-free visit keeps readable notes, navigation and poster fallbacks', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   try {
     const page = await context.newPage();
-    await page.goto('http://127.0.0.1:3000/work/onrobot');
-    await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible();
+    await page.goto(`${baseURL}/work/onrobot`);
+    await expect(page.getByRole('navigation', { name: 'Main', exact: true })).toBeVisible();
     await expect(page.locator('.case-evidence-note')).toBeVisible();
     await expect(page.locator('[data-motion-toggle]')).toHaveCount(0);
-    await page.goto('http://127.0.0.1:3000/work/kineticare');
+    await page.goto(`${baseURL}/work/kineticare`);
     expect(await page.locator('video[autoplay], video[controls]').count()).toBe(0);
   } finally { await context.close(); }
 });

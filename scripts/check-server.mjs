@@ -130,6 +130,10 @@ try {
     const cache = cacheDirectives(response.headers.get("cache-control") || "");
     const shouldBeImmutable = hasVerifiedReleaseDigest(filePath);
     assert(response.ok, `${assetUrl} returned ${response.status}`);
+    // nosniff is sent on every response, so an AVIF must state its type.
+    if (filePath.endsWith(".avif")) {
+      assert(response.headers.get("content-type") === "image/avif", `${assetUrl} must be served as image/avif`);
+    }
 
     if (shouldBeImmutable) {
       immutableAssetCount += 1;
@@ -406,6 +410,20 @@ try {
     assert(/noindex,\s*follow/i.test(body), `${path}: the ${lang} error document must noindex`);
     assert(/id="primary-navigation"/.test(body) && /class="footer-nav"/.test(body), `${path}: the error document carries the site chrome`);
     assert(new RegExp(`<a class="footer-brand" href="${home.replace(/\//g, "\\/")}"`).test(body), `${path}: the error document links the ${lang} home`);
+  }
+
+  // A native form post (the page's script had not run) never reads the body
+  // and never dead-ends: it answers the page at its "not sent" notice.
+  for (const formPath of ["/contact", "/hu/kapcsolat", "/de/kontakt"]) {
+    const response = await fetch(`${baseUrl}${formPath}`, {
+      method: "POST",
+      redirect: "manual",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "name=Ada&email=ada%40example.com&topic=ai&message=A+native+post+must+never+be+delivered",
+    });
+    assert(response.status === 303, `POST ${formPath} returned ${response.status} instead of 303`);
+    assert(response.headers.get("location") === `${formPath}#contact-unsent`, `POST ${formPath} must land on the page's not-sent notice`);
+    assert(/no-store/.test(response.headers.get("cache-control") || ""), `POST ${formPath} must not be stored`);
   }
 
   // Speculation Rules: every page names the rule set, the rule set is served

@@ -50,6 +50,20 @@ for (const width of [320, 390]) {
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), `${path}: no horizontal overflow`).toBeLessThanOrEqual(1);
       const tables = await page.locator(".writing-table").evaluateAll((wraps) => wraps.map((wrap) => wrap.scrollWidth - wrap.clientWidth));
       for (const overflow of tables) expect(overflow, `${path}: tables fit the reading column`).toBeLessThanOrEqual(1);
+      // Every table is named by its caption and scopes its header cells; a
+      // box that is allowed to scroll (four columns or more) is a focusable
+      // region named by that caption.
+      const named = await page.locator(".writing-table").evaluateAll((wraps) => wraps.map((wrap) => {
+        const table = wrap.querySelector("table");
+        const caption = table.caption;
+        const region = wrap.getAttribute("role") === "region" && wrap.tabIndex === 0 && wrap.getAttribute("aria-labelledby") === caption?.id;
+        return {
+          caption: Boolean(caption && caption.textContent.trim()),
+          scoped: [...table.querySelectorAll("th")].every((cell) => /^(col|row)$/.test(cell.getAttribute("scope") || "")),
+          region: wrap.classList.contains("writing-table-wide") ? region : !wrap.hasAttribute("tabindex") && !wrap.hasAttribute("role"),
+        };
+      }));
+      for (const table of named) expect(table, `${path}: table semantics`).toEqual({ caption: true, scoped: true, region: true });
     }
   });
 }
