@@ -15,6 +15,21 @@
   }
   window.PortfolioVisit = { firstArrival: !hasVisited };
 
+  // Page-to-page transitions are declared in base.css. A destination that
+  // does not load that stylesheet (the feed, a file, the admin) cannot take
+  // part: the browser would start the transition, abandon it in the new
+  // document and report an unhandled rejection there. Leave such a
+  // navigation plain from this side instead.
+  window.addEventListener("pageswap", function (event) {
+    var transition = event.viewTransition;
+    if (!transition) return;
+    var path = "";
+    try { path = new URL(event.activation.entry.url).pathname; } catch (error) { path = ""; }
+    if (!path || /\.[a-z0-9]+$/i.test(path) || /^\/(?:admin|api|assets)(?:\/|$)/.test(path)) {
+      transition.skipTransition();
+    }
+  });
+
   function initNavigation() {
     var root = document.documentElement;
     var pageLang = /^hu(?:-|$)/i.test(root.lang) ? "hu" : /^de(?:-|$)/i.test(root.lang) ? "de" : "en";

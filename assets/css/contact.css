@@ -791,14 +791,12 @@ body.contact-page {
   .contact-submit[aria-disabled="true"] { border-color: GrayText; color: GrayText; }
 }
 
-/* Stillness: the state changes instantly, nothing transforms. */
+/* Stillness: nothing transforms and the sent copy does not fade in. The
+   colour, border and shadow feedback on fields and the button keeps its
+   short fade; no blanket reset. */
 @media (prefers-reduced-motion: reduce) {
-  .contact-page *, .contact-page *::before, .contact-page *::after {
-    transition: none !important;
-    animation: none !important;
-  }
+  .contact-topic-mark .mark-fold { transition: none; }
+  .contact-sent-copy { animation: none; }
 }
-html.no-motion .contact-page *, html.no-motion .contact-page *::before, html.no-motion .contact-page *::after {
-  transition: none !important;
-  animation: none !important;
-}
+html.no-motion .contact-topic-mark .mark-fold { transition: none; }
+html.no-motion .contact-sent-copy { animation: none; }

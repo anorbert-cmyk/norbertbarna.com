@@ -183,9 +183,9 @@ body.story-page {
 @media (max-height:699px) and (min-width:600px) {
  .story-opening { min-height: 740px; height: auto; }
 }
-@media (prefers-reduced-motion:reduce) {
- .story-page *, .story-page *::before, .story-page *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
-}
+/* Reduced motion needs no reset here: this stylesheet declares no animation
+   or transition, and story-motion.js writes no camera transform when motion
+   is reduced or paused. */
 
 /* Enlarged type gets its own document space; the camera never clips text. */
 [data-story-reflow] .story-opening { display: flex; flex-direction: column; height: auto; min-height: 0; }

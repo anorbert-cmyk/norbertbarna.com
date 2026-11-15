@@ -318,7 +318,12 @@ html[lang="de"] .ai-footer h2 { font-size: clamp(3.25rem, 5.8vw, 6rem); }
   44%, 58% { transform: translateX(-31.3333%); animation-timing-function: cubic-bezier(.5,0,.1,1); }
   76%, 100% { transform: translateX(-66.6667%); }
 }
+/* Every animation above is opted into by [data-ai-motion="on"], which the
+   owner never sets under reduced motion or html.no-motion; these rules keep
+   the same elements still should the attribute outlive a preference change. */
 @media (prefers-reduced-motion: reduce) {
-  .ai-page *, .ai-page *::before, .ai-page *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+  .ai-page :is(.ai-hero-bg, .ai-hero-bg img, .ai-ribbon-strip, .ai-start-art img),
+  .ai-page .ai-cta-underline::before { animation: none !important; }
 }
-html.no-motion .ai-page :is(*, *::before, *::after) { animation: none !important; transition: none !important; }
+html.no-motion .ai-page :is(.ai-hero-bg, .ai-hero-bg img, .ai-ribbon-strip, .ai-start-art img),
+html.no-motion .ai-page .ai-cta-underline::before { animation: none !important; }

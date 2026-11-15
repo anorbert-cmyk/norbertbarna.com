@@ -81,7 +81,17 @@
   left: calc(var(--arrival-progress) * (100% - 3ch));
   width: 3ch;
   text-align: center;
-  transition: left 180ms ease-out;
+}
+/* The counter travels on the compositor: the meter is the query container,
+   so the same distance is a translate instead of an animated `left`. Without
+   container units the counter still takes each position, without the glide. */
+@supports (width: 1cqw) {
+  .site-arrival__meter { container-type: inline-size; }
+  .site-arrival__counter {
+    left: 0;
+    translate: calc(var(--arrival-progress) * (100cqw - 3ch)) 0;
+    transition: translate 180ms ease-out;
+  }
 }
 .site-arrival__enter {
   position: absolute;
