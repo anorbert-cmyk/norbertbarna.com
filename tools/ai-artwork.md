@@ -55,9 +55,10 @@ The production `ribbon-studio.webp` uses WebP quality95/method6. Only format
 conversion was applied; the displayed7.5:1 crop is CSS, not a destructive edit.
 The full prompt and source provenance are in `ai-ribbon-fidelity.json`.
 
-The previous offline renderer remains under `ribbon-scene/` as historical
-source. It does not supply the restored page artwork. JavaScript in the live
-website does not render WebGL or write artwork transforms; CSS owns motion.
+The previous offline Three.js renderer (`tools/ribbon-scene/`) and its
+unused outputs were removed; they never supplied the restored page artwork and
+remain in the git history. JavaScript in the live website does not render
+WebGL or write artwork transforms; CSS owns motion.
 
 ## Responsive treatment
 

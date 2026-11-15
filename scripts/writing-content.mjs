@@ -7,7 +7,6 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-export const CONTENT_DIR = join(ROOT, "content");
 export const ORIGIN = "https://www.barnanorbert.com";
 
 // Where each language's section lives. The list page is <dir>/index.html.

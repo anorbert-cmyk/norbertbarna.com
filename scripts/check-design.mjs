@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { CONTACT_PAGES, DE_WORK_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, SITE_COPY, UTILITY_PAGES, languageOf } from "./service-pages.mjs";
+import { CONTACT_PAGES, DE_WORK_PAGES, EXTENDED_SERVICE_PAGES, HU_WORK_PAGES, PRIVACY_PAGES, SERVICE_PAGES, SITE_COPY, languageOf } from "./service-pages.mjs";
 import { exposesInbox } from "./private-inbox.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
