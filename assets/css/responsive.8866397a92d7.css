@@ -1,9 +1,9 @@
 /*
  * Norbert Barna portfolio — responsive product-design layer
  *
- * This file intentionally loads after Webflow's generated styles. It owns the
+ * This file intentionally loads after base.css and components.css. It owns the
  * compact/medium layouts and a small set of cross-viewport stability fixes.
- * Generated Webflow CSS remains untouched so desktop composition can evolve
+ * Those two files remain untouched so desktop composition can evolve
  * independently.
  */
 
@@ -383,7 +383,7 @@ main {
 }
 
 /*
- * P0 image fix: Webflow sets rich-text images to width:100% while HTML width
+ * P0 image fix: base.css sets rich-text images to width:100% while HTML width
  * and height attributes reserve intrinsic space. Without height:auto the
  * original pixel height survives and screenshots are stretched vertically.
  */
@@ -398,7 +398,7 @@ main {
   max-width: 100%;
 }
 
-.summary .w-richtext-figure-type-image img,
+.summary .rich-text-figure-image img,
 .summary figure[data-rt-type="image"] img,
 .case-motion-figure__media {
   display: block;
@@ -408,14 +408,14 @@ main {
   object-fit: contain;
 }
 
-.summary figure.w-richtext-figure-type-image,
+.summary figure.rich-text-figure-image,
 .summary figure[data-rt-type="image"] {
   width: 100%;
   max-width: 1200px !important;
   margin: clamp(36px, 6vw, 88px) auto;
 }
 
-.summary figure.w-richtext-align-center {
+.summary figure.rich-text-align-center {
   width: min(100%, 820px);
 }
 
@@ -573,7 +573,7 @@ main {
   position: relative;
 }
 
-/* Reserve media geometry before metadata arrives and keep Webflow video
+/* Reserve media geometry before metadata arrives and keep background video
  * positioning from collapsing or distorting the 16:9 source. */
 .home-about-video {
   width: 100%;
@@ -652,7 +652,7 @@ main {
   cursor: pointer;
 }
 
-/* TightAwardVideo: Webflow parks the file at inset:-100% / height:500px so
+/* TightAwardVideo: base.css parks the file at inset:-100% / height:500px so
  * hover shows a tight strip. Cover the card. Same fill on tap (.is-award-on). */
 .awards-bg-video-wrap {
   z-index: 0;
@@ -660,7 +660,7 @@ main {
   pointer-events: none;
 }
 
-.awards-bg-video.w-background-video,
+.awards-bg-video.video-frame,
 .awards-bg-video {
   position: absolute;
   inset: 0;
@@ -1121,8 +1121,8 @@ html.no-motion .footer-mesh-yellow {
     line-height: 1.45;
   }
 
-  /* Keep the portfolio grid continuous across the Webflow 991/992 switch. */
-  .work-section .w-dyn-items.w-row {
+  /* Keep the portfolio grid continuous across the 991/992 switch. */
+  .work-section .collection-items.layout-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px clamp(28px, 3vw, 48px);
@@ -1289,7 +1289,7 @@ html.no-motion .footer-mesh-yellow {
   }
 
   .menu-button,
-  .menu-button.w-nav-button {
+  .menu-button.site-nav-toggle {
     display: grid;
     width: auto;
     min-width: 48px;
@@ -1303,7 +1303,7 @@ html.no-motion .footer-mesh-yellow {
     color: #fff;
   }
 
-  .menu-button .w-icon-nav-menu {
+  .menu-button .site-nav-icon {
     display: grid;
     place-items: center;
     margin: 0;
@@ -1312,16 +1312,16 @@ html.no-motion .footer-mesh-yellow {
     line-height: 1;
   }
 
-  .menu-button.w--open {
+  .menu-button.is-open {
     border-color: #111;
     background: #fff;
   }
 
-  .menu-button.w--open .w-icon-nav-menu {
+  .menu-button.is-open .site-nav-icon {
     color: #111;
   }
 
-  .nav-menu.w-nav-menu {
+  .nav-menu.site-nav-menu {
     width: calc(100% - (2 * var(--site-gutter)));
     max-width: none;
     margin: 10px var(--site-gutter) 0;
@@ -1663,7 +1663,7 @@ html.no-motion .footer-mesh-yellow {
     padding-bottom: 72px;
   }
 
-  .work-section .w-dyn-items.w-row {
+  .work-section .collection-items.layout-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px 28px;
@@ -1813,7 +1813,7 @@ html.no-motion .footer-mesh-yellow {
     margin-top: 36px;
   }
 
-  .related-projects-area .w-dyn-items.w-row {
+  .related-projects-area .collection-items.layout-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px;
@@ -2003,8 +2003,8 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
     padding-bottom: 64px;
   }
 
-  .work-section .w-dyn-items.w-row,
-  .related-projects-area .w-dyn-items.w-row {
+  .work-section .collection-items.layout-row,
+  .related-projects-area .collection-items.layout-row {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
@@ -2049,9 +2049,9 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
     font-size: clamp(25px, 7vw, 31px) !important;
   }
 
-  .summary figure.w-richtext-figure-type-image,
+  .summary figure.rich-text-figure-image,
   .summary figure[data-rt-type="image"],
-  .summary figure.w-richtext-align-center {
+  .summary figure.rich-text-align-center {
     display: block;
     width: 100%;
     max-width: 100% !important;
@@ -2220,9 +2220,9 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
 }
 
 
-/* The Instructure demo is content, not a cropped 500px Webflow background.
+/* The Instructure demo is content, not a cropped 500px background.
  * Keep the same 16:9 composition visible on phones as on desktop.
- * Webflow `.w-background-video > video` uses inset:-100% and z-index:-100,
+ * The base `.video-frame > video` rule uses inset:-100% and z-index:-100,
  * which parks a playing file outside the overflow clip (navy empty box). */
 .inst-bg-video.mobile {
   display: block;
@@ -2433,7 +2433,7 @@ h2.work-title-heading {
 }
 
 @media (max-width: 991px) {
-  .nav-menu.w-nav-menu {
+  .nav-menu.site-nav-menu {
     background: #fff;
   }
 
@@ -2478,8 +2478,8 @@ h2.work-title-heading {
 }
 
 .navbar .nav-link.white:hover,
-.navbar .nav-link.white.w--current,
-.navbar .nav-link.w--current {
+.navbar .nav-link.white.is-current,
+.navbar .nav-link.is-current {
   background: rgb(17 17 17 / 6%);
   color: #111;
 }
@@ -2595,7 +2595,7 @@ body.home .navbar {
   }
 
   /* The disclosure remains scrollable at large text sizes/short landscapes. */
-  .navbar .nav-menu.w-nav-menu {
+  .navbar .nav-menu.site-nav-menu {
     max-height: calc(100vh - 76px - env(safe-area-inset-top));
     max-height: calc(100dvh - 76px - env(safe-area-inset-top));
     overflow-y: auto;
@@ -2624,11 +2624,11 @@ body.home .navbar {
  * Instructure) with flush tops and equal band height. Row 2 is three equal
  * 4-span columns. Kineticare / OnRobot remain a 7/5 pair. Compact stacks;
  * do not keep a broken 7/5. A/B/C/D/Mesh stay HOLD.
- * RowClearfixHole: Webflow `.w-row::before/::after` use grid-area 1/1, which
+ * RowClearfixHole: the base `.layout-row::before/::after` use grid-area 1/1, which
  * occupies column 1 and wraps a 7/5 pair onto two rows. Kill those pseudos
  * on this grid only. */
-.work-section .w-dyn-items.work-grid::before,
-.work-section .w-dyn-items.work-grid::after {
+.work-section .collection-items.work-grid::before,
+.work-section .collection-items.work-grid::after {
   content: none;
   display: none;
   grid-area: auto;
@@ -2636,8 +2636,8 @@ body.home .navbar {
 
 @media (min-width: 992px) {
   .work-grid,
-  .work-section .w-dyn-items.work-grid,
-  .work-section .w-dyn-items.w-row.work-grid {
+  .work-section .collection-items.work-grid,
+  .work-section .collection-items.layout-row.work-grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     align-items: start;
@@ -2646,7 +2646,7 @@ body.home .navbar {
     margin-right: 0;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item {
+  .work-section .collection-items.work-grid > .work-collection-item {
     width: auto;
     min-width: 0;
     max-width: none;
@@ -2655,19 +2655,19 @@ body.home .navbar {
     float: none;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(1),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(6) {
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(1),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(6) {
     grid-column: span 7;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(2),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(7) {
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(2),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(7) {
     grid-column: span 5;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(3),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(4),
-  .work-section .w-dyn-items.work-grid > .work-collection-item:nth-child(5) {
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(3),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(4),
+  .work-section .collection-items.work-grid > .work-collection-item:nth-child(5) {
     grid-column: span 4;
   }
 
@@ -2748,14 +2748,14 @@ body.home .navbar {
 
 @media (max-width: 991px) {
   .work-grid,
-  .work-section .w-dyn-items.work-grid {
+  .work-section .collection-items.work-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
     gap: 28px;
   }
 
-  .work-section .w-dyn-items.work-grid > .work-collection-item {
+  .work-section .collection-items.work-grid > .work-collection-item {
     grid-column: auto;
     width: auto;
     min-width: 0;
@@ -2775,7 +2775,7 @@ body.home .navbar {
 
 @media (max-width: 599px) {
   .work-grid,
-  .work-section .w-dyn-items.work-grid {
+  .work-section .collection-items.work-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 36px;
   }
@@ -2915,8 +2915,8 @@ body.home .navbar .nav-cta > .footer-contact-link { position: absolute; left: 14
 body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email), body.immersive-case .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { display: inline-flex; width: auto; min-width: 44px; min-height: 44px; height: auto; align-items: center; justify-content: center; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; padding: 10px 0; font-family: Inter, "Inter Fallback Caps", sans-serif; font-size: 14px; font-weight: 400; line-height: 1.4; text-transform: uppercase; }
 body.home .navbar :is(a,button), body.immersive-case .navbar :is(a,button) { pointer-events: auto; }
 body.home .navbar :is(a,button):hover, body.immersive-case .navbar :is(a,button):hover { text-decoration: underline; text-underline-offset: 4px; }
-body.home .navbar .nav-link.white:is(:hover, .w--current), body.immersive-case .navbar .nav-link.white:is(:hover, .w--current) { color: var(--immersive-link-ink, #D6D4ED); background: transparent; }
-body.home .navbar[data-keyboard="true"]:focus-within, body.home .navbar:has(.w--open), body.immersive-case .navbar[data-keyboard="true"]:focus-within, body.immersive-case .navbar:has(.w--open) { transform: none; mix-blend-mode: normal; background: #0A1628; }
+body.home .navbar .nav-link.white:is(:hover, .is-current), body.immersive-case .navbar .nav-link.white:is(:hover, .is-current) { color: var(--immersive-link-ink, #D6D4ED); background: transparent; }
+body.home .navbar[data-keyboard="true"]:focus-within, body.home .navbar:has(.is-open), body.immersive-case .navbar[data-keyboard="true"]:focus-within, body.immersive-case .navbar:has(.is-open) { transform: none; mix-blend-mode: normal; background: #0A1628; }
 body.home .navbar[data-keyboard="true"]:focus-within .home-nav-wordmark, body.immersive-case .navbar[data-keyboard="true"]:focus-within .home-nav-wordmark { transform: none; }
 body.home .navbar[data-reading-dock], body.immersive-case .navbar[data-reading-dock] { mix-blend-mode: normal; background: #0A1628; }
 .home-mast[data-text-reflow] .home-mast-scene { min-height: 100svh; height: auto; display: grid; grid-template-rows: 50svh auto; gap: 32px; padding-block: 90px 100px; }
@@ -2942,7 +2942,7 @@ body.home .navbar[data-reading-dock], body.immersive-case .navbar[data-reading-d
  body.home .navbar .nav-menu-area > .nav-link, body.home .navbar .nav-cta > .footer-contact-link { position: static; }
  body.home .navbar .nav-menu-area, body.home .navbar .nav-cta { flex-direction: column; align-items: stretch; gap: 4px; }
  body.home .navbar .menu-button, body.immersive-case .navbar .menu-button { min-width: 44px; min-height: 44px; border: 0; border-radius: 0; background: transparent; color: #D6D4ED; }
- body.home .navbar .menu-button .w-icon-nav-menu, body.immersive-case .navbar .menu-button .w-icon-nav-menu { color: inherit; }
+ body.home .navbar .menu-button .site-nav-icon, body.immersive-case .navbar .menu-button .site-nav-icon { color: inherit; }
  body.home .navbar :is(.nav-link, a.footer-contact-link, .footer-email) { justify-content: flex-start; width: 100%; min-height: 48px; padding: 12px; color: #0A1628; font-size: 17px; }
  body.home .navbar .home-nav-label { color: #0A1628; }
  .work-row { grid-template-columns: 72px minmax(0, 1fr) auto; gap: 10px 14px; }

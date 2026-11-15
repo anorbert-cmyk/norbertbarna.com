@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Self-hosted portfolio site, originally a Webflow export, served by Express on Node 22
+Self-hosted portfolio site, served by Express on Node 22
 and deployed to Railway. Static HTML, CSS, JS, images and videos; English pages at the
 root, Hungarian pages under `hu/` and German pages under `de/` (entry page, two service
 pages, contact, privacy and the `de/wissen` articles; case studies, Works and About stay
@@ -15,8 +15,8 @@ English and the German pages link them with `hreflang="en"`).
 - **Deployment**: Railway via Nixpacks (`railway.json`); the Dockerfile is an alternative
 - **Pages**: home, works, about, contact, AI integration, web development, privacy, 404, plus 7 case studies (Sportsgambit, Raiffeisen, Instructure, Bitpanda, OnRobot, Kineticare, Benker), each mirrored in Hungarian under `hu/` and `hu/munka/`; German: `/de`, `/de/webentwicklung`, `/de/ki-beratung-entwicklung`, `/de/kontakt`, `/de/datenschutz`, `/de/wissen`
 - **Languages**: `scripts/service-pages.mjs` (`LANGS`, `PAGE_GROUPS`, `SITE_COPY`) is the single source of the language model; the checks and `scripts/site-chrome.mjs` read it. Client scripts switch copy on `<html lang>` (`navigation.js`, `consent.js`, `contact.js` carry en/hu/de)
-- **CSS**: Webflow-generated CSS (1 shared + 3 page-specific) plus first-party layers (`responsive`, `editorial-sections`, `compact-navigation`, `arrival`, `case-motion`, ...), referenced by content-hashed filenames
-- **JS**: first-party scripts (`animations.js`, `navigation.js`, `media.js`, `physics.js`, ...) referenced by content-hashed filenames; jQuery, the Webflow runtime and WebFont Loader are no longer loaded by any page
+- **CSS**: `base.css` (reset and primitives) and `components.css` (inherited component rules) plus first-party layers (`responsive`, `editorial-sections`, `compact-navigation`, `arrival`, `case-motion`, ...), referenced by content-hashed filenames
+- **JS**: first-party scripts (`animations.js`, `navigation.js`, `media.js`, `physics.js`, ...) referenced by content-hashed filenames; no third-party runtime besides the vendored GSAP files
 - **Fonts**: Funnel Display and Inter, self-hosted WOFF2 in `assets/fonts/` via `assets/css/fonts.css` (no Google Fonts)
 - **Animations**: GSAP 3.12.5 + ScrollTrigger, bundled locally in `assets/js/vendor/` (no CDN). Scrolling is native; Lenis is not loaded
 
@@ -27,7 +27,7 @@ index.html, works.html, about.html, contact.html, ai-integration.html, privacy.h
 work/*.html           - Case studies: sportsgambit, raiffeisen, instructure, bitpanda, onrobot, kineticare, benker
 hu/                   - Hungarian pages; hu/munka/*.html mirrors the 7 case studies
 de/                   - German pages; de/wissen/ is GENERATED from content/*.md with lang: de
-assets/css/           - Webflow CSS + first-party CSS (hashed copies are what pages load)
+assets/css/           - base.css, components.css + first-party CSS (hashed copies are what pages load)
 assets/js/            - First-party JS (hashed copies are what pages load)
 assets/js/vendor/     - Self-hosted GSAP + ScrollTrigger
 assets/js/animations.js - CUSTOM: GSAP animation master file
@@ -54,9 +54,9 @@ Use parallel subagent teams for:
 - **Deployment/hosting issues** (CSS missing, assets 404, layout broken)
 - **Cross-cutting bugs** affecting multiple files or systems
 - **Performance audits** (server config + asset optimization + caching + CDN)
-- **Migration tasks** (Webflow re-export, platform migration)
+- **Migration tasks** (platform migration)
 - **Security audits** (headers, SRI, CORS, dependencies)
-- **Animation overhauls** (replacing/enhancing Webflow animations with GSAP across all pages)
+- **Animation overhauls** (reworking the GSAP motion across all pages)
 
 ### Recommended Team Compositions
 
@@ -94,7 +94,7 @@ Use single-agent or direct tool calls for:
 
 ### SRI Integrity Hash Mismatch (RESOLVED 2026-02-07)
 
-**Problem**: Page-specific CSS files were modified after export but HTML still contained original Webflow SRI hashes. Browsers rejected the CSS entirely.
+**Problem**: Page-specific CSS files were modified after export but HTML still contained the original SRI hashes. Browsers rejected the CSS entirely.
 **Fix**: Removed `integrity` and `crossorigin="anonymous"` attributes from all local resource `<link>` and `<script>` tags. SRI is unnecessary for self-hosted same-origin assets.
 **Prevention**: Do NOT add SRI integrity attributes to self-hosted resources.
 
@@ -110,7 +110,7 @@ Use single-agent or direct tool calls for:
   - works.html -> `...27a5-acb15adb8.css`
   - work/*.html -> `...27a4-603c31720.css`
   - All pages -> `shared.8948b5576.css`
-- **Hashed assets**: pages reference content-hashed copies (e.g. `animations.7d6dfc8169d7.js`). After editing a source CSS/JS file, re-hash it and update the page references (see AGENTS.md)
+- **Hashed assets**: pages reference content-hashed copies (e.g. `animations.f4ceb31be702.js`). After editing a source CSS/JS file, re-hash it and update the page references (see AGENTS.md)
 
 -----
 
@@ -128,7 +128,7 @@ GSAP is bundled in the repo, not loaded from a CDN. These script tags go before 
 <script src="assets/js/vendor/ScrollTrigger.min.js"></script>
 
 <!-- Custom Animations (content-hashed filename) -->
-<script src="assets/js/animations.7d6dfc8169d7.js"></script>
+<script src="assets/js/animations.f4ceb31be702.js"></script>
 ```
 
 For work/ subpages use `../assets/...` paths. Do not add CDN script tags for animation
@@ -143,8 +143,7 @@ Scrolling is native on every viewport; Lenis is vendored but intentionally not l
 1. **ALWAYS stagger grouped elements** — nothing should appear all at once
 1. **ALWAYS use `gsap.matchMedia()`** — simplify animations on mobile
 1. **ALWAYS respect `prefers-reduced-motion`**
-1. **Keep Webflow markup intact** — the Webflow JS runtime is no longer loaded; GSAP and first-party scripts own all motion
-1. **Webflow `data-w-id` attributes** — leave them in place; they control some built-in interactions. GSAP adds on top.
+1. **Keep the page markup intact** — GSAP and first-party scripts own all motion
 
 ### Before Writing Any Animation Code
 

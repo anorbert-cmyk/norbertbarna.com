@@ -9,7 +9,7 @@
 }
 
 .navbar[data-compact-nav] :is(.nav-link, .footer-contact-link, .footer-email,
-  .home-nav-monogram, .home-nav-label, .menu-button, .w-icon-nav-menu) {
+  .home-nav-monogram, .home-nav-label, .menu-button, .site-nav-icon) {
   color: #0A1628 !important;
 }
 
@@ -22,7 +22,7 @@ body:has(.navbar[data-compact-nav]) .immersive-nav-landing { display: none; }
    outside columns center the wordmark without placing controls over one another.
    The actual header height also clears native anchor/focus scrolling. */
 html:has(body:is(.works-index, .immersive-case)) { scroll-padding-top: calc(var(--work-nav-height, 64px) + 16px); }
-body:is(.works-index, .immersive-case) .navbar.w-nav {
+body:is(.works-index, .immersive-case) .navbar.site-nav {
   position: sticky; inset: 0 0 auto; z-index: 95; height: auto;
   transform: none !important; mix-blend-mode: normal !important;
   background: #0A1628 !important; color: #D6D4ED; border: 0;
@@ -71,20 +71,20 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
    destinations stay in normal flow, including without JavaScript, so adding
    a link cannot reuse an absolute slot or collide with a central wordmark. */
 @media (min-width: 992px) {
-  body.home .navbar.w-nav,
-  body.home .navbar.w-nav:is([data-keyboard="true"]:focus-within, :has(.w--open), [data-reading-dock]) {
+  body.home .navbar.site-nav,
+  body.home .navbar.site-nav:is([data-keyboard="true"]:focus-within, :has(.is-open), [data-reading-dock]) {
     position: fixed; inset: 0 0 auto; transform: none; mix-blend-mode: normal;
     background: #D6D4ED; color: #0A1628; pointer-events: auto;
     --immersive-link-ink: #0A1628;
   }
-  body.home .navbar.w-nav .nav-wrap { gap: 28px; }
-  body.home .navbar.w-nav :is(.home-nav-wordmark, .home-nav-progress) { display: none; }
-  body.home .navbar.w-nav :is(.nav-link, .footer-contact-link, .footer-email, .home-nav-monogram, .home-nav-label) { color: #0A1628; }
-  body.home .navbar.w-nav :is(.nav-menu-area > .nav-link, .nav-cta > .footer-contact-link) { position: static; }
-  body.home .navbar.w-nav .nav-menu { min-width: 0; }
-  body.home .navbar.w-nav :is(.nav-menu-area, .nav-cta) { gap: 8px 28px; flex-wrap: wrap; justify-content: flex-end; }
-  body.home .navbar.w-nav .nav-cta { flex-shrink: 1; }
-  body.home .navbar.w-nav .nav-link { max-width: 100%; white-space: normal; }
+  body.home .navbar.site-nav .nav-wrap { gap: 28px; }
+  body.home .navbar.site-nav :is(.home-nav-wordmark, .home-nav-progress) { display: none; }
+  body.home .navbar.site-nav :is(.nav-link, .footer-contact-link, .footer-email, .home-nav-monogram, .home-nav-label) { color: #0A1628; }
+  body.home .navbar.site-nav :is(.nav-menu-area > .nav-link, .nav-cta > .footer-contact-link) { position: static; }
+  body.home .navbar.site-nav .nav-menu { min-width: 0; }
+  body.home .navbar.site-nav :is(.nav-menu-area, .nav-cta) { gap: 8px 28px; flex-wrap: wrap; justify-content: flex-end; }
+  body.home .navbar.site-nav .nav-cta { flex-shrink: 1; }
+  body.home .navbar.site-nav .nav-link { max-width: 100%; white-space: normal; }
 }
 
 /* One compact menu on every route (owner request, 2026-09-15): the About page's
@@ -95,7 +95,7 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
   /* The bar itself is the panel's frame, so the panel spans the whole width on
      every route, including the home mast whose wrap is positioned. */
   html body .navbar .nav-wrap, html body .navbar .nav-wrap.dark { position: static !important; }
-  html body .navbar .nav-menu.w-nav-menu {
+  html body .navbar .nav-menu.site-nav-menu {
     position: absolute; top: 100%; left: 0; right: 0; width: 100%; max-width: none; margin: 0;
     padding: 20px 20px 28px; border: 0; border-bottom: 1px solid rgb(10 22 40 / 25%);
     border-radius: 0; background: #D6D4ED; box-shadow: none; color: #0A1628;
@@ -108,13 +108,13 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
   }
   html body .navbar .nav-menu :is(.home-nav-label, .editorial-linkedin-label) { color: inherit; font: inherit; text-transform: none; letter-spacing: 0; }
   html body .navbar .nav-menu :is(.nav-link, .footer-contact-link, .footer-email):is(:hover, :focus-visible) { background: transparent; text-decoration: underline; text-underline-offset: 9px; text-decoration-thickness: 2px; }
-  html body .navbar .nav-menu :is(.nav-link[aria-current="page"], .nav-link.w--current) { background: transparent; color: #0A1628; text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px; }
+  html body .navbar .nav-menu :is(.nav-link[aria-current="page"], .nav-link.is-current) { background: transparent; color: #0A1628; text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px; }
   html body .navbar .menu-button { border: 0; border-radius: 0; background: transparent; color: #0A1628; }
-  html body .navbar .menu-button .w-icon-nav-menu, html body .navbar .menu-button.w--open .w-icon-nav-menu { color: #0A1628; }
+  html body .navbar .menu-button .site-nav-icon, html body .navbar .menu-button.is-open .site-nav-icon { color: #0A1628; }
   body:is(.works-index, .immersive-case) .navbar .nav-wrap { min-height: 56px; }
   body:is(.works-index, .immersive-case) .work-nav-end { display: contents; }
   body:is(.works-index, .immersive-case) .navbar :is(.home-nav-wordmark, .home-nav-progress, .nav-breadcrumb) { display: none; }
-  body:is(.works-index, .immersive-case) .navbar :is(.menu-button, .menu-button .w-icon-nav-menu, .menu-button.w--open .w-icon-nav-menu) { color: #D6D4ED !important; }
+  body:is(.works-index, .immersive-case) .navbar :is(.menu-button, .menu-button .site-nav-icon, .menu-button.is-open .site-nav-icon) { color: #D6D4ED !important; }
 }
 
 /* The open disclosure drops from the bar (2026-10-07): its clip opens downward
@@ -124,11 +124,11 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
    glyph turns a quarter into place (omega 26, zeta .7). Closing is instant,
    navigation.js stays animation-free, and reduced motion gets none. */
 @media (max-width: 991px) {
-  html body .navbar .nav-menu.w-nav-menu[data-nav-menu-open] {
+  html body .navbar .nav-menu.site-nav-menu[data-nav-menu-open] {
     animation: compact-menu-drop 260ms cubic-bezier(.22, .8, .3, 1);
     animation: compact-menu-drop 260ms linear(0, 0.057, 0.172, 0.305, 0.434, 0.549, 0.65, 0.73, 0.794, 0.844, 0.884, 0.915, 0.938, 0.955, 0.968, 0.978, 0.985, 0.991, 0.995, 0.998, 1);
   }
-  html body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu::before {
+  html body .navbar .menu-button[aria-expanded="true"] .site-nav-icon::before {
     animation: compact-menu-turn 300ms cubic-bezier(.3, 1.3, .5, 1);
     animation: compact-menu-turn 300ms linear(0, 0.047, 0.157, 0.298, 0.447, 0.588, 0.712, 0.815, 0.895, 0.955, 0.997, 1.024, 1.039, 1.045, 1.045, 1.041, 1.036, 1.029, 1.022, 1.016, 1.011, 1.007, 1.004, 1.002, 1);
   }
@@ -136,11 +136,11 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
 @keyframes compact-menu-drop { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
 @keyframes compact-menu-turn { from { transform: rotate(-90deg); } to { transform: rotate(0deg); } }
 @media (prefers-reduced-motion: reduce) {
-  html body .navbar .nav-menu.w-nav-menu[data-nav-menu-open],
-  html body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu::before { animation: none; }
+  html body .navbar .nav-menu.site-nav-menu[data-nav-menu-open],
+  html body .navbar .menu-button[aria-expanded="true"] .site-nav-icon::before { animation: none; }
 }
-html.no-motion body .navbar .nav-menu.w-nav-menu[data-nav-menu-open],
-html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu::before { animation: none; }
+html.no-motion body .navbar .nav-menu.site-nav-menu[data-nav-menu-open],
+html.no-motion body .navbar .menu-button[aria-expanded="true"] .site-nav-icon::before { animation: none; }
 
 /* Language link (owner request, 2026-10-06; NN/g audit): one link that names
    the other language in that language (Magyar / English), at the end of the
@@ -152,7 +152,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 .navbar .nav-menu .nav-link[aria-current="page"] { text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px; }
 
 /* An open compact menu shows a close glyph, matching its "Close navigation" name. */
-.navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu::before { content: "\00D7"; font-family: Inter, "Inter Fallback", sans-serif; font-size: 30px; font-weight: 300; line-height: 1; }
+.navbar .menu-button[aria-expanded="true"] .site-nav-icon::before { content: "\00D7"; font-family: Inter, "Inter Fallback", sans-serif; font-size: 30px; font-weight: 300; line-height: 1; }
 
 /* The work and case bars give the menu its whole outside column. Words never
    break inside a destination; on narrow desktops the row wraps whole items. */
@@ -172,9 +172,9 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .w-icon-nav-menu:
 }
 
 /* Privacy pages join the site's quiet lilac bar instead of the inherited white
-   Webflow chrome: same type, 44px targets, the current page marked in olive. */
+   Inherited chrome: same type, 44px targets, the current page marked in olive. */
 @media (min-width: 992px) {
-  body.utility-page .navbar.w-nav { background: #D6D4ED; color: #0A1628; border: 0; box-shadow: inset 0 -1px 0 rgb(10 22 40 / 12%); }
+  body.utility-page .navbar.site-nav { background: #D6D4ED; color: #0A1628; border: 0; box-shadow: inset 0 -1px 0 rgb(10 22 40 / 12%); }
   body.utility-page .navbar .nav-menu-area { display: flex; align-items: center; gap: 4px 28px; }
   body.utility-page .navbar .nav-link {
     display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0;
@@ -301,24 +301,24 @@ html.no-motion .navbar [data-nav-group-open] .nav-group-panel { animation: none;
    writing, contact and About pages. 64px on desktop, 56px compact, 22px
    gutters, a 44px logo box holding the 32px mark, the menu button 44px.
    Each page type keeps its own colours, blend and sticky/fixed behaviour. */
-html body .navbar.w-nav { height: auto; min-height: 0; }
+html body .navbar.site-nav { height: auto; min-height: 0; }
 /* The writing/privacy hairline sits inside the 64px, not under it. */
-html body.utility-page .navbar.w-nav { border-bottom: 0; box-shadow: inset 0 -1px 0 rgb(10 22 40 / 12%); }
-html body .navbar .container, html body .navbar .container.w-container { width: 100%; max-width: none; margin: 0; padding-inline: 22px !important; }
+html body.utility-page .navbar.site-nav { border-bottom: 0; box-shadow: inset 0 -1px 0 rgb(10 22 40 / 12%); }
+html body .navbar .container, html body .navbar .container.layout-container { width: 100%; max-width: none; margin: 0; padding-inline: 22px !important; }
 html body .navbar .nav-wrap, html body .navbar .nav-wrap.dark { min-height: 64px; height: auto; padding: 0; margin: 0; }
 html body .navbar .nav-logo-wrap, html body .navbar .nav-logo-wrap.logo {
   display: inline-flex; flex: 0 0 44px; width: 44px; min-width: 44px; height: 44px; min-height: 44px;
   margin: 0; padding: 0; align-items: center; justify-content: flex-start;
 }
-html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; height: 32px; object-fit: contain; }
+html body .navbar.site-nav .nav-logo-wrap.logo img { display: block; width: 32px; height: 32px; object-fit: contain; }
 @media (max-width: 991px) {
   html body .navbar .nav-wrap, html body .navbar .nav-wrap.dark { min-height: 56px; }
-  html body .navbar .menu-button, html body .navbar .menu-button.w-nav-button {
+  html body .navbar .menu-button, html body .navbar .menu-button.site-nav-toggle {
     display: grid; place-items: center; width: auto; min-width: 44px; height: auto; min-height: 44px; padding: 0; margin: 0 0 0 auto;
   }
 }
 /* Every bar types its destinations alike (2026-10-22): one size, uppercase,
-   44px rows, whatever colour the page type gives them. The Webflow base and
+   44px rows, whatever colour the page type gives them. The base stylesheet and
    story.css no longer size the links on the service and About bars.
    One row geometry too (design review, 2026-10-23): every destination, the
    home LinkedIn link, the chevron buttons and the language control share the
@@ -328,10 +328,10 @@ html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; h
    never shifts a destination. The selectors outrank the per-page gap and size
    rules in responsive.css, home-composition.css, story.css and above. */
 @media (min-width: 992px) {
-  html body .navbar.w-nav .nav-wrap .nav-menu .nav-menu-area {
+  html body .navbar.site-nav .nav-wrap .nav-menu .nav-menu-area {
     display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px clamp(14px, .85vw, 16px);
   }
-  html body .navbar.w-nav .nav-wrap .nav-menu .nav-cta { gap: 0; }
+  html body .navbar.site-nav .nav-wrap .nav-menu .nav-cta { gap: 0; }
   html body .navbar .nav-menu-area .nav-link,
   html body .navbar .nav-menu-area a.footer-contact-link {
     display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0; border: 0; border-radius: 0;
@@ -345,8 +345,8 @@ html body .navbar.w-nav .nav-logo-wrap.logo img { display: block; width: 32px; h
    stacks above the consent banner. navigation.js sets data-menu-open. */
 @media (max-width: 991px) {
   html[data-menu-open] { overflow: hidden; }
-  html[data-menu-open] body .navbar.w-nav { z-index: 1200; }
-  html body .navbar .nav-menu.w-nav-menu[data-nav-menu-open] {
+  html[data-menu-open] body .navbar.site-nav { z-index: 1200; }
+  html body .navbar .nav-menu.site-nav-menu[data-nav-menu-open] {
     max-height: calc(100vh - 56px); max-height: calc(100svh - 56px); overflow-y: auto; overscroll-behavior: contain;
   }
 }

@@ -107,7 +107,7 @@ function hasStableAspect(image, figure) {
 
 function checkRichTextImages(page, html) {
   const figures = [...html.matchAll(
-    /<figure\b[^>]*\bclass=["'][^"']*\bw-richtext-figure-type-image\b[^"']*["'][^>]*>[\s\S]*?<\/figure>/gi
+    /<figure\b[^>]*\bclass=["'][^"']*\brich-text-figure-image\b[^"']*["'][^>]*>[\s\S]*?<\/figure>/gi
   )].map((match) => match[0]);
 
   figures.forEach((figure, figureIndex) => {

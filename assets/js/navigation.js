@@ -53,7 +53,7 @@
       var restoreFocus = !isOpen && compactNavigation.matches &&
         primaryNavigation.contains(document.activeElement);
       menuButton.setAttribute("aria-expanded", String(isOpen));
-      menuButton.classList.toggle("w--open", isOpen);
+      menuButton.classList.toggle("is-open", isOpen);
       if (isOpen) primaryNavigation.setAttribute("data-nav-menu-open", "");
       else primaryNavigation.removeAttribute("data-nav-menu-open");
       menuButton.setAttribute("aria-label", isOpen ? navLabels.close : navLabels.open);

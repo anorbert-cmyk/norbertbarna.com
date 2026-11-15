@@ -91,17 +91,17 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      // Exactly four executable inline scripts exist: the Webflow w-mod touch
+      // Exactly four executable inline scripts exist: the has-js / has-touch
       // class setter (first script on every page except About and 404), the
       // home mast morph gate inside .home-mast in index.html, the arrival
       // pre-curtain gate (first in the head of the two homes and the fourteen
       // cases) and the case-opening pending gate (after it on the cases). Hash
       // them so no other inline script can run. JSON-LD blocks are data, not
       // scripts, and need no hash. check-server fails when a body changes.
-      `script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE=' 'sha256-kFAFn3NkiuErEZDGYIGhtN8V/TAKmruXqYqBGtzpn/k=' 'sha256-omJdRt4l13xsZ2235O8IiiERzUD4GMpSC1kV3l1j1Sc='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
+      `script-src 'self' 'sha256-ZDVNXKWTQo91hI71gIGtTUMR9uPAICIond3wbhrzux0=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE=' 'sha256-kFAFn3NkiuErEZDGYIGhtN8V/TAKmruXqYqBGtzpn/k=' 'sha256-omJdRt4l13xsZ2235O8IiiERzUD4GMpSC1kV3l1j1Sc='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
       // Inline style attributes and GSAP-driven styles need 'unsafe-inline';
-      // fonts are self-hosted (assets/fonts) and the Webflow CSS still embeds
-      // data: fonts. Google Fonts is no longer referenced by any page.
+      // fonts are self-hosted (assets/fonts) and base.css still embeds
+      // the menu icon as a data: font. Google Fonts is no longer referenced by any page.
       "style-src 'self' 'unsafe-inline'",
       "font-src 'self' data:",
       "img-src 'self' data:",
@@ -286,14 +286,12 @@ app.post(["/contact", "/hu/kapcsolat", "/de/kontakt"], (req, res) => {
 
 // Only release files whose names contain the first 12 characters of their
 // SHA-256 digest are immutable. check-motion and check-editorial-media verify
-// these release families; check-server independently verifies every digest. Webflow
-// object IDs and generated source-image hashes are not output-content hashes,
+// these release families; check-server independently verifies every digest. Upload
+// ids in media file names and generated source-image hashes are not output-content hashes,
 // so those assets must revalidate after a deployment.
 const ASSET_ROOT = path.join(__dirname, "assets");
-// The inherited Webflow stylesheets (2026-10-22) carry the same SHA-256 prefix
-// after their Webflow object id, so they cache like the authored releases.
 const CONTENT_HASHED_ASSET =
-  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics|comments)\.[a-f0-9]{12}\.js|css\/(?:case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact|writing)\.[a-f0-9]{12}\.css|css\/norbertbarna\.webflow\.(?:shared|[a-f0-9]{24})\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
+  /^(?:js\/(?:animations|media|arrival|hero-scene|home-composition|immersive-navigation|case-opening|story-motion|ai-motion|contact|physics|comments)\.[a-f0-9]{12}\.js|css\/(?:base|components|case-motion|responsive|arrival|home-composition|case-opening|editorial-sections|compact-navigation|project-index|story|ai-integration|fonts|contact|writing)\.[a-f0-9]{12}\.css|fonts\/(?:inter|funnel-display)-latin(?:-ext)?\.[a-f0-9]{12}\.woff2)$/i;
 
 function isContentHashedAsset(filePath) {
   const relativePath = path.relative(ASSET_ROOT, filePath).split(path.sep).join("/");

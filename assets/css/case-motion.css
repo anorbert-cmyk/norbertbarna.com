@@ -97,7 +97,7 @@ html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure
 .summary a:focus-visible,
 .nav-menu-area > .nav-link:focus-visible,
 .nav-logo-wrap:focus-visible,
-.w-backgroundvideo-backgroundvideoplaypausebutton:focus-visible {
+.video-frame-toggle:focus-visible {
   outline: 2px solid var(--case-motion-focus);
   outline-offset: 4px;
 }
@@ -113,7 +113,7 @@ html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure
   text-underline-offset: .3em;
 }
 
-/* CTA layers are injected inside the existing Webflow button. */
+/* CTA layers are injected inside the existing button. */
 .dark-button.projects.case-motion-button {
   position: relative;
   isolation: isolate;
@@ -193,7 +193,7 @@ html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure
   .back-to-top-arrow-wrap,
   .nav-menu-area > .nav-link,
   .nav-logo-wrap,
-  .w-backgroundvideo-backgroundvideoplaypausebutton {
+  .video-frame-toggle {
     animation: none !important;
     transition-duration: .01ms !important;
     transition-delay: 0ms !important;
@@ -211,7 +211,7 @@ html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure
   .back-to-top-arrow-wrap,
   .nav-menu-area > .nav-link,
   .nav-logo-wrap,
-  .w-backgroundvideo-backgroundvideoplaypausebutton {
+  .video-frame-toggle {
     opacity: 1;
     filter: none;
     scale: 1;

@@ -123,7 +123,6 @@ for (const page of pages) {
     assert(html.includes(`assets/js/${mediaFile}`),'active media fingerprint is missing');
     assert(html.includes(`assets/css/${cssFile}`),'active CSS fingerprint is missing');
     assert(html.indexOf(`assets/js/${mediaFile}`)<html.indexOf('assets/js/animations.'),'media must initialize before GSAP owner');
-    assert(!/<(?:button|a)\b[^>]*\bdata-w-bg-video-control/.test(html),'old Webflow control returned');
     const videos=[...html.matchAll(/<video\b[^>]*>/g)].map(([tag])=>attrs(tag));
     for(const a of videos) {
       assert(a.has('data-autoplay-video'),'unmanaged video');

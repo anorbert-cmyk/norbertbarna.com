@@ -26,7 +26,7 @@ const RELEASE_SOURCES = [
   "js/story-motion.js", "css/case-motion.css", "css/responsive.css",
   "css/arrival.css", "css/home-composition.css", "css/case-opening.css",
   "css/editorial-sections.css", "css/compact-navigation.css", "css/project-index.css",
-  "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css",
+  "css/story.css", "js/ai-motion.js", "css/ai-integration.css", "css/fonts.css", "css/base.css", "css/components.css",
   "css/contact.css", "js/contact.js", "js/physics.js", "css/writing.css",
   // Written by build-writing.mjs from contact.js (proof of work) and article-comments.js.
   "js/comments.js",
@@ -65,17 +65,13 @@ function assetPath(filePath) {
 // This intentionally does not import or duplicate the server classifier.
 // A release is immutable only when it belongs to an approved family and the
 // embedded token is the real SHA-256 prefix of the bytes being served.
-// The inherited Webflow stylesheets (2026-10-22) have no unhashed source: the
-// file under its Webflow object id is the release, named by its own digest.
-const WEBFLOW_RELEASE = /^norbertbarna\.webflow\.(?:shared|[a-f0-9]{24})$/;
 function hasVerifiedReleaseDigest(filePath) {
   const [directory, fileName, extra] = assetPath(filePath).split("/");
   if (extra || !directory || !fileName) return false;
 
   const match = fileName.match(/^(.+)\.([a-f0-9]{12})\.(js|css|woff2)$/i);
   if (!match) return false;
-  const webflow = directory === "css" && match[3] === "css" && WEBFLOW_RELEASE.test(match[1]);
-  if (!webflow && !approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
+  if (!approvedReleaseSources.has(`${directory}/${match[1]}.${match[3]}`)) return false;
 
   const actual = createHash("sha256").update(readFileSync(filePath)).digest("hex").slice(0, 12);
   return match[2].toLowerCase() === actual;
@@ -148,7 +144,7 @@ try {
 
   assert(immutableAssetCount > 0, "no verified immutable release assets were found");
 
-  const queryProbe = await fetch(`${baseUrl}/assets/js/webfont.js?v=deadbeef`, {
+  const queryProbe = await fetch(`${baseUrl}/assets/js/navigation.js?v=deadbeef`, {
     method: "HEAD",
   });
   const queryCache = cacheDirectives(queryProbe.headers.get("cache-control") || "");

@@ -44,8 +44,8 @@
 .case-study-header .banner-content-wrap {
   display: contents !important;
 }
-.case-study-header .w-container::before,
-.case-study-header .w-container::after { content: none; display: none; }
+.case-study-header .layout-container::before,
+.case-study-header .layout-container::after { content: none; display: none; }
 .case-study-header :is(.work-category, .banner-title, .banner-text, .case-hero-media, .kineticare-hero-bg) { grid-column: 1; }
 .case-study-header .work-category {
   position: static;

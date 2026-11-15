@@ -41,7 +41,7 @@ A /hu/rolam mobil futása megszakadt (a desktop 100). A többi /hu/munka oldal u
 
 **Ami javítandó, javaslat a fizika-animáció szálának (#92):**
 1. *TBT/INP a főoldalakon.* A `hero-scene.js` egyetlen indulási feladata mobilon 600-1570 ms, a GSAP-é 400-860 ms. A hero-jelenet a kapcsolat- és szolgáltatásoldalakon is fut. Javaslat: a WebGL-jelenet inicializálását `requestIdleCallback`-be vagy az első interakció utánra tenni, és több részre bontani (`scheduler.yield`), hogy egyik feladat se legyen 50 ms-nál hosszabb.
-2. *Render-blokkoló CSS.* Egy oldal 8-10 külön stíluslapot tölt (Webflow shared + oldal-specifikus + responsive + compact-navigation + consent ...), mobilon kb. 400-700 ms becsült megtakarítással. Javaslat: a hajtás feletti kritikus CSS inline, a többi egy-két csomagban. Ez a hash-elt release-rendszert érinti, külön PR-ben érdemes.
+2. *Render-blokkoló CSS.* Egy oldal 8-10 külön stíluslapot tölt (base + components + responsive + compact-navigation + consent ...), mobilon kb. 400-700 ms becsült megtakarítással. Javaslat: a hajtás feletti kritikus CSS inline, a többi egy-két csomagban. Ez a hash-elt release-rendszert érinti, külön PR-ben érdemes.
 3. *A süti-sáv mint LCP.* Mobilon több oldalon (pl. /work/instructure) a hozzájárulási sáv szövege lesz a legnagyobb tartalmi elem, mert a halasztott `consent.js` későn fedi fel. Minden első látogató ezt látja. Javaslat: a sáv szövegét kisebbre venni, vagy a sávot CSS-ből megjeleníteni, és csak a gombokat kötni JS-hez.
 4. *Kép:* a `story/fold-detail.webp` (2172×724, 146 KB) a kapcsolatoldal háttere. A Lighthouse 98 KB megtakarítást jelez. Mivel `object-fit: cover` kitölti a teljes képernyőmagasságot, mobilon is kell a felbontás, ezért ezt nem vágtam le.
 
