@@ -48,11 +48,11 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
   body:is(.works-index, .immersive-case) .navbar .home-nav-wordmark {
     position: static; inset: auto; width: auto; max-width: 100%; height: auto; min-height: 44px;
     margin: 0; justify-self: center; transform: none; color: #D6D4ED;
-    font-size: clamp(17px, 1.5vw, 20px); text-align: center; overflow-wrap: anywhere;
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem); text-align: center; overflow-wrap: anywhere;
   }
   body:is(.works-index, .immersive-case) .navbar .home-nav-progress {
     position: static; flex: 0 0 auto; height: auto; color: #D6D4ED;
-    font-size: 12px; line-height: 1.4;
+    font-size: .75rem; line-height: 1.4;
   }
   body:is(.works-index, .immersive-case) .navbar .nav-menu { margin: 0; min-width: 0; }
   body:is(.works-index, .immersive-case) .navbar .nav-menu-area { flex-wrap: wrap; justify-content: flex-end; gap: 4px clamp(12px, 1.5vw, 24px); }
@@ -60,7 +60,7 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
     min-width: 44px; min-height: 44px; max-width: 100%; margin: 0; padding: 10px 0;
     display: inline-flex; align-items: center; justify-content: center;
     color: #D6D4ED; background: transparent; border-radius: 0;
-    font: 400 clamp(12px, 1.05vw, 14px)/1.4 Inter, "Inter Fallback Caps", sans-serif;
+    font: 400 clamp(.75rem, 1.05vw, .875rem)/1.4 Inter, "Inter Fallback Caps", sans-serif;
     text-transform: uppercase; white-space: normal; overflow-wrap: anywhere;
   }
   body:is(.works-index, .immersive-case) .navbar .nav-link:is(:hover, :focus-visible, [aria-current="page"]) { color: #D6D4ED; background: transparent; text-decoration: underline; text-underline-offset: 6px; }
@@ -104,7 +104,7 @@ body:is(.works-index, .immersive-case) .navbar .home-nav-progress[hidden] { disp
   html body .navbar .nav-menu :is(.nav-link, .nav-link.white, .footer-contact-link, .footer-email) {
     display: flex; justify-content: flex-start; align-items: center; width: 100%; min-height: 48px; margin: 0; padding: 12px 0;
     border: 0; border-radius: 0; background: transparent; color: #0A1628; text-align: left; text-decoration: none;
-    font: 400 17px/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; text-transform: none;
+    font: 400 1.0625rem/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; text-transform: none;
   }
   html body .navbar .nav-menu :is(.home-nav-label, .editorial-linkedin-label) { color: inherit; font: inherit; text-transform: none; letter-spacing: 0; }
   html body .navbar .nav-menu :is(.nav-link, .footer-contact-link, .footer-email):is(:hover, :focus-visible) { background: transparent; text-decoration: underline; text-underline-offset: 9px; text-decoration-thickness: 2px; }
@@ -152,7 +152,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .site-nav-icon::b
 .navbar .nav-menu .nav-link[aria-current="page"] { text-decoration: underline; text-decoration-color: #BDB414; text-underline-offset: 9px; text-decoration-thickness: 2px; }
 
 /* An open compact menu shows a close glyph, matching its "Close navigation" name. */
-.navbar .menu-button[aria-expanded="true"] .site-nav-icon::before { content: "\00D7"; font-family: Inter, "Inter Fallback", sans-serif; font-size: 30px; font-weight: 300; line-height: 1; }
+.navbar .menu-button[aria-expanded="true"] .site-nav-icon::before { content: "\00D7"; font-family: Inter, "Inter Fallback", sans-serif; font-size: 1.875rem; font-weight: 300; line-height: 1; }
 
 /* The work and case bars give the menu its whole outside column. Words never
    break inside a destination; on narrow desktops the row wraps whole items. */
@@ -179,7 +179,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .site-nav-icon::b
   body.utility-page .navbar .nav-link {
     display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0;
     color: #0A1628; background: transparent; border-radius: 0;
-    font: 400 14px/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: 0; text-transform: uppercase;
+    font: 400 .875rem/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: 0; text-transform: uppercase;
   }
   body.utility-page .navbar .nav-link:is(:hover, :focus-visible) { color: #0A1628; background: transparent; text-decoration: underline; text-underline-offset: 6px; }
 }
@@ -218,7 +218,7 @@ html.no-motion body .navbar .menu-button[aria-expanded="true"] .site-nav-icon::b
 .navbar .nav-group-list { list-style: none; display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; }
 .navbar .nav-group-link, .navbar .nav-lang-current {
   display: flex; align-items: center; gap: 10px; min-height: 44px; margin: 0; padding: 10px 12px;
-  color: #0A1628; background: transparent; font: 400 15px/1.35 Inter, "Inter Fallback", sans-serif;
+  color: #0A1628; background: transparent; font: 400 .9375rem/1.35 Inter, "Inter Fallback", sans-serif;
   letter-spacing: 0; text-transform: none; text-decoration: none; overflow-wrap: anywhere;
 }
 .navbar .nav-group-link:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
@@ -239,7 +239,7 @@ html:not(.nav-enhanced) .navbar .nav-group:is(:hover, :focus-within) > .nav-grou
 @media (min-width: 992px) {
   .navbar .nav-group-panel {
     position: absolute; top: calc(100% + 4px); left: -12px; z-index: 120;
-    min-width: 248px; max-width: min(380px, calc(100vw - 32px)); padding: 8px;
+    min-width: 248px; max-width: 380px; padding: 8px;
     color: #0A1628; background: #D6D4ED; border: 1px solid rgb(10 22 40 / 26%);
     box-shadow: 0 18px 40px rgb(10 22 40 / 18%);
   }
@@ -267,7 +267,7 @@ html:not(.nav-enhanced) .navbar .nav-group:is(:hover, :focus-within) > .nav-grou
   html body .navbar .nav-menu .nav-group-trigger .nav-chevron { margin-right: 17px; }
   html body .navbar .nav-menu .nav-lang-trigger {
     display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 12px 0;
-    color: #0A1628; font: 400 17px/1.4 Inter, "Inter Fallback", sans-serif;
+    color: #0A1628; font: 400 1.0625rem/1.4 Inter, "Inter Fallback", sans-serif;
   }
   html body .navbar .nav-menu .nav-lang-trigger .nav-chevron { margin-left: auto; margin-right: 17px; }
   html body .navbar .nav-menu .nav-lang-code { display: none; }
@@ -277,7 +277,7 @@ html:not(.nav-enhanced) .navbar .nav-group:is(:hover, :focus-within) > .nav-grou
     position: static; width: 100%; min-width: 0; max-width: none; margin: 0 0 6px; padding: 2px 0 6px 16px;
     border: 0; border-left: 2px solid rgb(10 22 40 / 22%); background: transparent; box-shadow: none;
   }
-  html body .navbar .nav-menu .nav-group-link, html body .navbar .nav-menu .nav-lang-current { justify-content: flex-start; min-height: 44px; padding: 10px 0; font-size: 16px; text-align: left; }
+  html body .navbar .nav-menu .nav-group-link, html body .navbar .nav-menu .nav-lang-current { justify-content: flex-start; min-height: 44px; padding: 10px 0; font-size: 1rem; text-align: left; }
   html body .navbar .nav-menu .nav-group-more { margin-top: 4px; padding-top: 12px; }
   /* About keeps its navy disclosure: rows stay lilac on it. */
   .story-page .navbar .nav-menu :is(.nav-group-link, .nav-lang-current, .nav-group-toggle, .nav-lang-trigger) { color: #D6D4ED; }
@@ -292,8 +292,8 @@ html.no-motion .navbar [data-nav-group-open] .nav-group-panel { animation: none;
 .navbar .nav-lang-trigger { color: var(--immersive-link-ink, #0A1628); }
 .story-page .navbar :is(.nav-lang-trigger, .nav-group-toggle) { color: #D6D4ED; }
 @media (min-width: 992px) {
-  .navbar .nav-lang-trigger { min-height: 44px; padding: 10px 0; font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; }
-  body:is(.works-index, .immersive-case) .navbar .nav-lang-trigger { font-size: clamp(12px, 1.05vw, 14px); }
+  .navbar .nav-lang-trigger { min-height: 44px; padding: 10px 0; font: 400 .875rem/1.4 Inter, "Inter Fallback", sans-serif; letter-spacing: 0; }
+  body:is(.works-index, .immersive-case) .navbar .nav-lang-trigger { font-size: clamp(.75rem, 1.05vw, .875rem); }
 }
 
 /* One bar geometry on every page type and language (2026-10-22): the header
@@ -335,10 +335,10 @@ html body .navbar.site-nav .nav-logo-wrap.logo img { display: block; width: 32px
   html body .navbar .nav-menu-area .nav-link,
   html body .navbar .nav-menu-area a.footer-contact-link {
     display: inline-flex; align-items: center; min-height: 44px; margin: 0; padding: 10px 0; border: 0; border-radius: 0;
-    font: 400 clamp(12px, 1.05vw, 14px)/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: .04em; text-transform: uppercase;
+    font: 400 clamp(.75rem, 1.05vw, .875rem)/1.4 Inter, "Inter Fallback Caps", sans-serif; letter-spacing: .04em; text-transform: uppercase;
   }
   html body .navbar .nav-menu-area .home-nav-label { font: inherit; letter-spacing: inherit; text-transform: inherit; }
-  html body .navbar .nav-menu-area :is(.nav-group-toggle, .nav-lang-trigger) { font-size: clamp(12px, 1.05vw, 14px); letter-spacing: .04em; }
+  html body .navbar .nav-menu-area :is(.nav-group-toggle, .nav-lang-trigger) { font-size: clamp(.75rem, 1.05vw, .875rem); letter-spacing: .04em; }
 }
 /* The open compact menu (2026-10-22) locks the page behind it and scrolls on
    its own, so the language rows stay reachable on a short screen, and it

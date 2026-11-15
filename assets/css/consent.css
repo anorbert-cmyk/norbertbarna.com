@@ -44,7 +44,7 @@
 .consent-banner .consent-title {
   margin: 0 0 4px;
   color: inherit;
-  font: 600 20px/1.25 Inter, "Inter Fallback", sans-serif;
+  font: 600 1.25rem/1.25 Inter, "Inter Fallback", sans-serif;
   letter-spacing: normal;
   text-transform: none;
   overflow-wrap: anywhere;
@@ -57,7 +57,7 @@
 .consent-banner p {
   margin: 0;
   color: inherit;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   overflow-wrap: anywhere;
 }
 
@@ -90,7 +90,7 @@
   padding: 11px 0;
   box-sizing: border-box;
   color: inherit;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -101,7 +101,7 @@
   align-items: center;
   min-height: 44px;
   margin-inline-start: 16px;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
 }
 
 .consent-details[open] + .consent-privacy {
@@ -130,7 +130,7 @@
   border-radius: 12px;
   background: transparent;
   color: var(--ink, #111111);
-  font: 500 15px/1.35 Inter, "Inter Fallback", sans-serif;
+  font: 500 .9375rem/1.35 Inter, "Inter Fallback", sans-serif;
   text-align: center;
   white-space: normal;
   cursor: pointer;
@@ -158,7 +158,7 @@
   padding: 8px;
   border: 0;
   background: transparent;
-  font: 400 15px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.5 Inter, "Inter Fallback", sans-serif;
   cursor: pointer;
 }
 
@@ -191,7 +191,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  font: 400 14px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .875rem/1.5 Inter, "Inter Fallback", sans-serif;
   white-space: normal;
   cursor: pointer;
 }
@@ -231,7 +231,7 @@
     grid-column: 1;
     grid-row: 1;
     margin: 0;
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .consent-banner .consent-privacy {
@@ -239,7 +239,7 @@
     grid-row: 1;
     min-height: 44px;
     margin: 0;
-    font-size: 14px;
+    font-size: .875rem;
     white-space: nowrap;
   }
 
@@ -248,7 +248,7 @@
   .consent-banner .consent-status {
     grid-column: 1 / -1;
     margin: 0;
-    font-size: 14px;
+    font-size: .875rem;
     line-height: 1.4;
   }
 
@@ -266,7 +266,7 @@
     flex: 1 1 0;
     min-width: 0;
     padding: 10px 8px;
-    font-size: 14px;
+    font-size: .875rem;
   }
 
   .consent-banner .consent-close {
@@ -292,13 +292,13 @@
   }
 
   .consent-banner .consent-title {
-    font-size: 14px;
+    font-size: .875rem;
     line-height: 1.25;
   }
 
   .consent-banner .consent-privacy {
     justify-self: end;
-    font-size: 13px;
+    font-size: .8125rem;
     text-align: right;
     white-space: normal;
   }
@@ -308,13 +308,13 @@
   }
 
   .consent-banner :is(.consent-current, .consent-status) {
-    font-size: 13px;
+    font-size: .8125rem;
     line-height: 1.35;
   }
 
   .consent-banner .consent-choice {
     padding: 8px 6px;
-    font-size: 13px;
+    font-size: .8125rem;
   }
 }
 

@@ -830,6 +830,15 @@ for (const page of typographicPages) {
   if (straight) fail(`${page}: ${straight.length} straight quote(s) in visible English copy; set “ ” and ’ like the rest of the site`);
 }
 
+// Type sizes follow the reader's browser font size: rem, never px (design.md, Typography).
+for (const name of readdirSync(join(ROOT, "assets/css"))) {
+  if (!name.endsWith(".css") || /\.[0-9a-f]{12}\.css$/.test(name)) continue;
+  const source = readFileSync(join(ROOT, "assets/css", name), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  const px = source.match(/(?:^|[{;\s])(?:font-size|line-height)\s*:[^;{}]*\dpx|(?:^|[{;\s])font\s*:[^;{},]*\dpx/g);
+  if (px) fail(`assets/css/${name}: ${px.length} px type size(s), e.g. "${px[0].trim()}"; write rem (16px = 1rem)`);
+}
+if (!/:root\s*\{[^}]*color-scheme:\s*light/.test(css)) fail("responsive.css: :root must declare color-scheme: light (the site is light only)");
+
 if (failures) {
   console.error(`\n${failures} design.md check(s) failed`);
   process.exit(1);

@@ -44,7 +44,7 @@
   margin: 0;
   color: var(--editorial-navy);
   font-family: Inter, "Inter Fallback", sans-serif;
-  font-size: clamp(36px, 4.2vw, 68px);
+  font-size: clamp(2.25rem, 4.2vw, 4.25rem);
   font-weight: 700;
   letter-spacing: -.065em;
   line-height: 1.04;
@@ -97,7 +97,7 @@
   margin: 0;
   color: var(--editorial-navy);
   font-family: Inter, "Inter Fallback", sans-serif;
-  font-size: clamp(26px, 3.2vw, 46px);
+  font-size: clamp(1.625rem, 3.2vw, 2.875rem);
   font-weight: 600;
   letter-spacing: -.05em;
   line-height: 1.13;
@@ -106,7 +106,7 @@
 .editorial-experience .awards-card .awards-card-title {
   margin: 0;
   color: var(--editorial-muted);
-  font: 400 17px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 1.0625rem/1.4 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
 }
 .editorial-experience .awards-year-wrap {
@@ -122,7 +122,7 @@
   padding: 0;
   color: var(--editorial-navy);
   background: transparent;
-  font: 400 14px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .875rem/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
   white-space: nowrap;
 }
@@ -174,7 +174,7 @@ html.no-motion .editorial-experience .awards-card .awards-year {
   margin: 6px 0 0;
   color: var(--editorial-navy);
   font-family: Inter, "Inter Fallback", sans-serif;
-  font-size: clamp(60px, 8.5vw, 132px);
+  font-size: clamp(3.75rem, 8.5vw, 8.25rem);
   font-weight: 700;
   letter-spacing: -.065em;
   line-height: .96;
@@ -183,12 +183,12 @@ html.no-motion .editorial-experience .awards-card .awards-year {
 /* The German title ("Sprechen wir / über Ihr Produkt.") is longer than the
    English and Hungarian pairs; a smaller step keeps it on the designed two
    lines in the identity column at every width (design review, 2026-10-23). */
-html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); }
+html[lang="de"] .editorial-footer-title { font-size: clamp(3.25rem, 6.7vw, 6.5rem); }
 .editorial-footer .footer-lede {
   max-width: 34ch;
   margin: 0;
   color: var(--editorial-navy);
-  font: 400 17px/1.45 Inter, "Inter Fallback", sans-serif;
+  font: 400 1.0625rem/1.45 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
 }
 .editorial-footer .footer-cta {
@@ -207,7 +207,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   border-radius: 999px;
   color: var(--editorial-lilac);
   background: var(--editorial-navy);
-  font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 .875rem/1.4 Inter, "Inter Fallback", sans-serif;
   white-space: normal;
   text-align: center;
   text-decoration: none;
@@ -222,7 +222,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   border-radius: 0;
   color: var(--editorial-navy);
   background: transparent;
-  font: 400 14px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 .875rem/1.4 Inter, "Inter Fallback", sans-serif;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
@@ -269,7 +269,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
 .editorial-footer .footer-col-title {
   margin: 0 0 10px;
   color: var(--editorial-muted);
-  font: 400 13px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 .8125rem/1.4 Inter, "Inter Fallback", sans-serif;
 }
 .editorial-footer .footer-col-list {
   display: grid;
@@ -284,7 +284,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   max-width: 100%;
   min-height: 44px;
   color: var(--editorial-navy);
-  font: 400 15px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 400 .9375rem/1.4 Inter, "Inter Fallback", sans-serif;
   overflow-wrap: anywhere;
   white-space: normal;
 }
@@ -304,7 +304,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   margin: 0;
   padding: 0;
   color: var(--editorial-muted);
-  font: 400 12px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .75rem/1.5 Inter, "Inter Fallback", sans-serif;
 }
 .editorial-footer .footer-bar .footer-privacy {
   gap: 4px 22px;
@@ -316,7 +316,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   padding: 8px 0;
   color: var(--editorial-navy);
   background: transparent;
-  font: 400 12px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 .75rem/1.5 Inter, "Inter Fallback", sans-serif;
   text-decoration: none;
 }
 .editorial-footer .footer-bar .footer-privacy :is(a, button):hover {
@@ -339,7 +339,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
 @media (max-width: 599px) { body.utility-page { --site-gutter: 24px; } }
 .utility-page .summary > h1 + p { margin-top: clamp(16px, 2.4vw, 24px); }
 .utility-page .summary a:not(.footer-email) { color: #0A1628; text-decoration: underline; text-underline-offset: 4px; }
-.error-page .error-code { margin: 0 0 6px; color: #0A1628; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-size: clamp(64px, 10vw, 112px); font-weight: 700; letter-spacing: -.04em; line-height: 1; }
+.error-page .error-code { margin: 0 0 6px; color: #0A1628; font-family: "Funnel Display", "Funnel Display Fallback", sans-serif; font-size: clamp(4rem, 10vw, 7rem); font-weight: 700; letter-spacing: -.04em; line-height: 1; }
 .error-page p > a:not(.footer-email) { display: inline-block; padding-block: 6px; margin-block: -6px; }
 /* One reading axis on privacy and the error documents: the Funnel code, the
    title, the copy and the action share the 720px measure, and the block
@@ -367,10 +367,10 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
 
 @media (max-width: 991px) {
   .editorial-experience .awards-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-  .editorial-experience .section-title { font-size: clamp(42px, 6.5vw, 64px); }
-  .editorial-experience .awards-card .awards-card-text { font-size: clamp(28px, 4.5vw, 40px); }
-  .editorial-footer-title { font-size: clamp(56px, 8vw, 86px); }
-  html[lang="de"] .editorial-footer-title { font-size: clamp(40px, 6.5vw, 76px); }
+  .editorial-experience .section-title { font-size: clamp(2.625rem, 6.5vw, 4rem); }
+  .editorial-experience .awards-card .awards-card-text { font-size: clamp(1.75rem, 4.5vw, 2.5rem); }
+  .editorial-footer-title { font-size: clamp(3.5rem, 8vw, 5.375rem); }
+  html[lang="de"] .editorial-footer-title { font-size: clamp(2.5rem, 6.5vw, 4.75rem); }
   .editorial-footer .footer-chrome { gap: 28px; }
 }
 /* Up to 1199px the footer nav is one stack beside (or under) the identity:
@@ -386,18 +386,18 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   .editorial-experience { padding-top: 44px; }
   .editorial-experience .awards-grid { gap: 36px; padding-top: 30px; padding-bottom: 48px; }
   .editorial-experience .awards-title-area { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .editorial-experience .section-title { font-size: clamp(38px, 10vw, 54px); }
+  .editorial-experience .section-title { font-size: clamp(2.375rem, 10vw, 3.375rem); }
   .editorial-experience .awards-card { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 24px 0; }
   .editorial-experience .awards-card:first-child { padding-top: 0; }
   .editorial-experience .awards-year-wrap { grid-row: 1; padding: 0; }
-  .editorial-experience .awards-card .awards-card-text { font-size: 30px; }
-  .editorial-experience .awards-card .awards-card-title { font-size: 16px; }
-  .editorial-experience .awards-card .awards-year { font-size: 13px; }
+  .editorial-experience .awards-card .awards-card-text { font-size: 1.875rem; }
+  .editorial-experience .awards-card .awards-card-title { font-size: 1rem; }
+  .editorial-experience .awards-card .awards-year { font-size: .8125rem; }
   .editorial-footer .footer-chrome { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .editorial-footer .footer-ident { grid-column: 1; grid-row: 1; gap: 24px; }
-  .editorial-footer-title { font-size: clamp(56px, 14vw, 80px); }
-  html[lang="de"] .editorial-footer-title { font-size: clamp(38px, 11.5vw, 64px); }
-  .editorial-footer .footer-lede { font-size: 16px; }
+  .editorial-footer-title { font-size: clamp(3.5rem, 14vw, 5rem); }
+  html[lang="de"] .editorial-footer-title { font-size: clamp(2.375rem, 11.5vw, 4rem); }
+  .editorial-footer .footer-lede { font-size: 1rem; }
   .editorial-footer .footer-nav { grid-column: 1; grid-row: 3; }
   .editorial-footer .footer-bar { margin-top: 36px; gap: 8px; }
   .editorial-footer .footer-copyright { width: 100%; }
@@ -431,7 +431,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   margin: 0;
   color: var(--editorial-navy);
   font-family: Inter, "Inter Fallback", sans-serif;
-  font-size: clamp(30px, 3.6vw, 56px);
+  font-size: clamp(1.875rem, 3.6vw, 3.5rem);
   font-weight: 700;
   letter-spacing: -.06em;
   line-height: 1.04;
@@ -441,7 +441,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   max-width: 58ch;
   margin: 0;
   color: var(--editorial-navy);
-  font: 400 17px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 1.0625rem/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.015em;
 }
 .home-offer-grid {
@@ -464,14 +464,14 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   grid-row: 1 / 4;
   padding-top: 8px;
   color: var(--editorial-muted);
-  font: 500 13px/1.2 Inter, "Inter Fallback", sans-serif;
+  font: 500 .8125rem/1.2 Inter, "Inter Fallback", sans-serif;
   font-variant-numeric: tabular-nums;
 }
 .home-offer-title {
   display: block;
   color: var(--editorial-navy);
   font-family: "Funnel Display", "Funnel Display Fallback", Inter, "Inter Fallback", sans-serif;
-  font-size: clamp(26px, 2.6vw, 38px);
+  font-size: clamp(1.625rem, 2.6vw, 2.375rem);
   font-weight: 700;
   letter-spacing: -.025em;
   line-height: 1.1;
@@ -481,7 +481,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   display: block;
   max-width: 48ch;
   color: var(--editorial-navy);
-  font: 400 17px/1.5 Inter, "Inter Fallback", sans-serif;
+  font: 400 1.0625rem/1.5 Inter, "Inter Fallback", sans-serif;
   letter-spacing: -.012em;
 }
 .home-offer-action {
@@ -490,7 +490,7 @@ html[lang="de"] .editorial-footer-title { font-size: clamp(52px, 6.7vw, 104px); 
   min-height: 44px;
   margin-top: 4px;
   color: var(--editorial-navy);
-  font: 500 14px/1.4 Inter, "Inter Fallback", sans-serif;
+  font: 500 .875rem/1.4 Inter, "Inter Fallback", sans-serif;
   text-decoration: underline;
   text-underline-offset: 6px;
   text-decoration-thickness: 1.5px;
