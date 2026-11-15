@@ -637,3 +637,23 @@ label {
   height: auto;
   overflow: visible;
 }
+
+/* Page-to-page transitions (cross-document view transitions).
+ * A same-origin navigation cross-fades the two documents in 200ms and the
+ * header bar is its own group, so it stays in place instead of fading with
+ * the page. Motion is opted into: reduced motion never enables the rule, and
+ * browsers without the feature navigate exactly as before. The first-visit
+ * arrival curtain and a paused page (html.no-motion) run no transition
+ * animation, which ends the transition at once; the case opening plays in the
+ * live incoming page while the outgoing one fades. One name per page. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  .navbar { view-transition-name: site-nav; }
+  ::view-transition-group(*) { animation-duration: 200ms; }
+  html[data-arrival-gate]::view-transition-group(*),
+  html[data-arrival-gate]::view-transition-old(*),
+  html[data-arrival-gate]::view-transition-new(*),
+  html.no-motion::view-transition-group(*),
+  html.no-motion::view-transition-old(*),
+  html.no-motion::view-transition-new(*) { animation: none; }
+}

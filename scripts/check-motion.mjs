@@ -317,6 +317,123 @@ for (const page of ANIMATED_PAGES) {
   }
 }
 
+// ---- Modern motion model (2026-11-15) ---------------------------------------
+// Encodes Chrome's Modern Web Guidance for this site: page-to-page view
+// transitions are opted into under no-preference, reduced motion is handled
+// per animation instead of by a blanket reset, only compositor or paint
+// properties animate, nothing keeps `will-change`, pages stay eligible for the
+// back/forward cache, and a looping video carries a Pause control.
+{
+  const cssDir = join(ROOT, "assets/css");
+  const cssSources = readdirSync(cssDir).filter((name) => /\.css$/.test(name) && !/\.[0-9a-f]{12}\.css$/.test(name));
+  const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, "");
+  const LAYOUT_PROPERTY = /^(?:all|width|height|min-width|max-width|min-height|max-height|top|right|bottom|left|inset(?:-[a-z-]+)?|margin(?:-[a-z-]+)?|padding(?:-[a-z-]+)?|font-size|line-height|letter-spacing|border(?:-[a-z]+)?-width|flex(?:-[a-z]+)?|gap|grid-[a-z-]+)$/;
+  const TIME = /^-?(?:\d+\.?\d*|\.\d+)m?s$/;
+  const EASING = /^(?:ease|ease-in|ease-out|ease-in-out|linear|step-start|step-end|cubic-bezier\(|linear\(|steps\(|var\()/;
+  let viewTransitionOptIns = 0;
+  const namedSelectors = [];
+  for (const name of cssSources) {
+    const css = strip(readFileSync(join(cssDir, name), "utf8"));
+    if (/(?:animation|transition)(?:-duration)?\s*:[^;{}]*(?<![\d.])0?\.0\d*m?s\b/.test(css)) {
+      fail(`${name}: a near-zero animation or transition duration is the blanket reduced-motion reset; switch the specific animation off instead`);
+    }
+    for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      const selectors = selector.trim().split(/\s*,\s*(?![^()]*\))/);
+      const universal = selectors.some((part) => !/::view-transition/.test(part) && /(?:^|[\s>+~(])\*(?:::?[a-z-]+)?\)?\s*$/.test(part.trim()));
+      if (universal && /(?:^|;)\s*(?:animation|transition)(?:-[a-z-]+)?\s*:/.test(body)) {
+        fail(`${name}: "${selector.trim().slice(0, 80)}" resets animation or transition for every element; name the animated elements`);
+      }
+      if (/\bhtml\.no-motion\s+\*\s*$/.test(selector.trim())) {
+        fail(`${name}: the blanket html.no-motion * rule must not return`);
+      }
+      if (/(?:^|;)\s*will-change\s*:/.test(body) && !(name === "arrival.css" && /\.site-arrival__slice\b/.test(selector))) {
+        fail(`${name}: "${selector.trim().slice(0, 80)}" keeps will-change permanently; only the arrival curtain, which is removed from the document, may hint`);
+      }
+      const named = body.match(/(?:^|;)\s*view-transition-name\s*:\s*([^;]+)/);
+      if (named && named[1].trim() !== "none") namedSelectors.push(`${name}: ${selector.trim()} = ${named[1].trim()}`);
+      for (const [, property, value] of body.matchAll(/(?:^|;)\s*(transition|transition-property)\s*:\s*([^;]+)/g)) {
+        if (/^\s*none\b/.test(value)) continue;
+        for (const item of value.split(/,(?![^()]*\))/)) {
+          const words = item.trim().replace(/!important/, "").split(/\s+(?![^()]*\))/).filter(Boolean);
+          const target = property === "transition-property" ? words[0]
+            : words.find((word) => !TIME.test(word) && !EASING.test(word) && word !== "allow-discrete" && word !== "normal") || "all";
+          if (LAYOUT_PROPERTY.test(target)) {
+            fail(`${name}: "${selector.trim().slice(0, 80)}" transitions ${target}, which triggers layout; animate transform, translate, scale, opacity or clip-path`);
+          }
+        }
+      }
+    }
+    for (const [, keyframes, block] of css.matchAll(/@keyframes\s+([\w-]+)\s*\{((?:[^{}]*\{[^{}]*\})*)[^{}]*\}/g)) {
+      for (const [, property] of block.matchAll(/(?:\{|;)\s*([a-z-]+)\s*:/g)) {
+        if (LAYOUT_PROPERTY.test(property)) fail(`${name}: @keyframes ${keyframes} animates ${property}, which triggers layout`);
+      }
+    }
+    const optIns = [...css.matchAll(/@view-transition\s*\{[^}]*\}/g)];
+    viewTransitionOptIns += optIns.length;
+    if (optIns.length && name !== "base.css") fail(`${name}: the view-transition opt-in lives in base.css, which every page loads`);
+  }
+  const baseCss = strip(readFileSync(join(cssDir, "base.css"), "utf8"));
+  if (viewTransitionOptIns !== 1 ||
+      !/@media\s*\(prefers-reduced-motion:\s*no-preference\)\s*\{\s*@view-transition\s*\{\s*navigation:\s*auto;?\s*\}/.test(baseCss)) {
+    fail("base.css must opt into cross-document view transitions once, inside prefers-reduced-motion: no-preference");
+  }
+  if (namedSelectors.length !== 1 || !/^base\.css: \.navbar = site-nav$/.test(namedSelectors[0])) {
+    fail(`exactly one view-transition-name is allowed (.navbar = site-nav in base.css); a duplicate name on a page aborts the transition. Found: ${namedSelectors.join(" | ") || "none"}`);
+  }
+  if (!/html\[data-arrival-gate\]::view-transition-group\(\*\)[\s\S]{0,400}animation:\s*none/.test(baseCss)) {
+    fail("the first-visit arrival curtain must end a view transition at once (html[data-arrival-gate]::view-transition-* { animation: none })");
+  }
+  if (!/::view-transition-group\(\*\)\s*\{\s*animation-duration:\s*(\d+)ms/.test(baseCss) || Number(RegExp.$1) > 250) {
+    fail("the page-to-page cross-fade must stay at or under 250ms");
+  }
+
+  const jsDir = join(ROOT, "assets/js");
+  for (const name of readdirSync(jsDir).filter((entry) => /\.js$/.test(entry) && !/\.[0-9a-f]{12}\.js$/.test(entry))) {
+    const js = readFileSync(join(jsDir, name), "utf8");
+    if (/addEventListener\(\s*["'](?:unload|beforeunload)["']|\bon(?:before)?unload\s*=/.test(js)) {
+      fail(`${name}: unload and beforeunload handlers make a page ineligible for the back/forward cache; use pagehide`);
+    }
+    if (/["']will-change["']\s*,\s*["'][^"']|willChange\s*=\s*["'][^"']/.test(js)) {
+      fail(`${name}: scripts must not set will-change; the animating engine promotes layers itself`);
+    }
+  }
+  const navigationJs = readFileSync(join(jsDir, "navigation.js"), "utf8");
+  if (!/addEventListener\("pageswap"/.test(navigationJs) || !/skipTransition\(\)/.test(navigationJs)) {
+    fail("navigation.js must leave navigations to documents without the opt-in (feed, files, admin) plain, from pageswap");
+  }
+  const mediaJs = readFileSync(join(jsDir, "media.js"), "utf8");
+  if (!/data-video-pause/.test(mediaJs) || !/userStopped/.test(mediaJs) || /aria-pressed/.test(mediaJs)) {
+    fail("media.js must give every looping video a Pause control whose label names the action (no aria-pressed)");
+  }
+  const serverJs = readFileSync(join(ROOT, "server.js"), "utf8");
+  for (const [index, line] of serverJs.split("\n").entries()) {
+    if (!/no-store/.test(line)) continue;
+    const context = serverJs.split("\n").slice(Math.max(0, index - 6), index + 1).join("\n");
+    if (!/admin|app\.post\(|headersSent|err\b/.test(context)) {
+      fail(`server.js:${index + 1}: Cache-Control: no-store on a public document blocks the back/forward cache`);
+    }
+  }
+
+  const EXPECT_LINK = '<link rel="expect" href="#primary-navigation" blocking="render"/>';
+  for (const page of ALL_PAGES) {
+    const html = uncommented(readFileSync(join(ROOT, page), "utf8"));
+    if (/html\.no-motion\s+\*\s*\{/.test(html)) {
+      fail(`${page}: the inline blanket html.no-motion * rule must not return; reduced motion is handled per animation`);
+    }
+    if (/view-transition-name/.test(html)) {
+      fail(`${page}: view-transition names are declared in base.css only`);
+    }
+    const navbars = [...html.matchAll(/<[a-z]+\b[^>]*\bclass="([^"]*)"/g)].filter((match) => match[1].split(/\s+/).includes("navbar"));
+    if (navbars.length !== 1) {
+      fail(`${page}: expected one .navbar (the view-transition name site-nav must be unique), found ${navbars.length}`);
+    }
+    const head = html.slice(0, html.indexOf("</head>"));
+    if (head.split(EXPECT_LINK).length !== 2 || (html.match(/\bid="primary-navigation"/g) || []).length !== 1) {
+      fail(`${page}: expected one render-blocking hint for #primary-navigation in the head, and that id once in the page`);
+    }
+  }
+}
+
 if (WORK_PAGES.length !== 7) {
   fail(`expected 7 work pages, found ${WORK_PAGES.length}`);
 }

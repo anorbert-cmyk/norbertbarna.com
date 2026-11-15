@@ -195,8 +195,7 @@ html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure
   .nav-logo-wrap,
   .video-frame-toggle {
     animation: none !important;
-    transition-duration: .01ms !important;
-    transition-delay: 0ms !important;
+    transition: none !important;
   }
 
   html.case-motion-ready .case-motion-figure.is-motion-pending .case-motion-figure__mask {

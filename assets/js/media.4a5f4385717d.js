@@ -62,7 +62,7 @@
 
   function shouldPlay(state) {
     return !isReduced() && !suspended && !document.hidden && state.visible &&
-      !state.failed && !state.previewEnded &&
+      !state.failed && !state.previewEnded && !state.userStopped &&
       (state.previewDeadline === null || performance.now() < state.previewDeadline) &&
       awardVisible(state);
   }
@@ -171,10 +171,57 @@
     de: { device: "Die Bewegung ist aus, weil Ihr Gerät reduzierte Bewegung oder Datensparen verlangt.", toggle: "Automatische Videos und Seitenbewegung ein- oder ausschalten.", off: "Aus", on: "An" }
   };
 
+  // A looping video that starts by itself runs longer than five seconds, so
+  // it carries its own Pause control (WCAG 2.2.2): a quiet text button after
+  // the frame, never a glyph on the media. The label names the action and
+  // changes with the state, so no pressed state is announced. Reduced motion and
+  // html.no-motion never start the video, and then there is no control. The
+  // Kineticare header stops by itself after 4.5 s and needs none.
+  var PAUSE_COPY = {
+    en: { pause: "Pause video", play: "Play video" },
+    hu: { pause: "Videó szüneteltetése", play: "Videó lejátszása" },
+    de: { pause: "Video anhalten", play: "Video abspielen" }
+  };
+
+  function pauseCopy() {
+    return /^hu(?:-|$)/i.test(root.lang) ? PAUSE_COPY.hu : /^de(?:-|$)/i.test(root.lang) ? PAUSE_COPY.de : PAUSE_COPY.en;
+  }
+
+  function syncPauseControl(state) {
+    var button = state.control;
+    if (!button) return;
+    var copy = pauseCopy();
+    var label = state.userStopped ? copy.play : copy.pause;
+    button.hidden = isReduced() || state.failed;
+    if (button.textContent !== label) button.textContent = label;
+  }
+
+  function addPauseControl(state, index) {
+    if (state.headerPreview || state.award || !state.video.loop) return;
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "video-pause-toggle";
+    button.setAttribute("data-video-pause", "");
+    button.hidden = true;
+    if (!state.video.id) state.video.id = "managed-video-" + (index + 1);
+    button.setAttribute("aria-controls", state.video.id);
+    button.addEventListener("click", function () {
+      state.userStopped = !state.userStopped;
+      if (!state.userStopped) state.blocked = false;
+      measure(state);
+      reconcile(state);
+      syncPauseControl(state);
+    });
+    state.target.insertAdjacentElement("afterend", button);
+    state.control = button;
+    syncPauseControl(state);
+  }
+
   function syncControls() {
     var reduced = isReduced();
     root.classList.toggle("no-motion", reduced);
     root.setAttribute("data-motion", reduced ? "off" : "on");
+    states.forEach(syncPauseControl);
     document.querySelectorAll("[data-motion-toggle]").forEach(function (button) {
       button.hidden = false;
       button.disabled = deviceReduced();
@@ -240,7 +287,8 @@
         near: false, warmed: false, pending: false, blocked: false,
         failed: false, pauseGeneration: 0,
         headerPreview: Boolean(video.closest(".case-study-header")),
-        previewDeadline: null, previewEnded: false
+        previewDeadline: null, previewEnded: false,
+        userStopped: false, control: null
       };
       states.push(state);
       stateByTarget.set(state.target, state);
@@ -271,7 +319,9 @@
         state.failed = true;
         stop(state);
         setStatus(state, "error");
+        syncPauseControl(state);
       });
+      addPauseControl(state, states.length - 1);
       if (state.award) {
         if (!state.award.hasAttribute("tabindex")) state.award.setAttribute("tabindex", "0");
         state.award.addEventListener("pointerenter", function () { measure(state); reconcile(state); });

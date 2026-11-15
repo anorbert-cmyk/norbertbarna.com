@@ -101,7 +101,9 @@ test.describe("without JavaScript", () => {
     const action = page.locator(".home-intro-work");
     await action.scrollIntoViewIfNeeded();
     await expect(action).toBeVisible();
-    expect(await exposed(action), "the product introduction CTA remains an exposed native link").toBe(true);
+    // The history visit cross-fades for 200ms (view transition); while it
+    // runs, the transition layer is the hit target, so wait for the page.
+    await expect.poll(() => exposed(action), "the product introduction CTA remains an exposed native link").toBe(true);
     await action.click();
     await expect(page).toHaveURL(/\/works$/);
   });

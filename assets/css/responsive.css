@@ -656,6 +656,43 @@ main {
   line-height: 1.65;
 }
 
+/* Pause control of a looping video (media.js, WCAG 2.2.2): a quiet text
+ * button after the frame, in the frame's own ink. Never a glyph on the media,
+ * and absent under reduced motion, where the video does not start. */
+.video-pause-toggle {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin: 4px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 10px 0;
+  color: inherit;
+  font: 600 .8125rem/1.4 Inter, "Inter Fallback", sans-serif;
+  letter-spacing: .02em;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.video-pause-toggle:focus-visible {
+  outline: 3px solid var(--site-focus);
+  outline-offset: 4px;
+}
+.home-about-video-wrap > .video-pause-toggle { position: relative; z-index: 2; }
+.kineticare-browser-frame > .video-pause-toggle {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  background: #0c1b2e;
+  padding: 10px 16px 0;
+  color: #d8e2ec;
+}
+.kineticare-browser-frame > .video-pause-toggle:focus-visible { outline-color: #d8e2ec; outline-offset: -4px; }
+.video-pause-toggle[hidden],
+.kineticare-browser-frame > .video-pause-toggle[hidden] { display: none; }
+
 .home-about-video > .motion-video-toggle,
 .kineticare-browser-frame > .motion-video-toggle,
 .kineticare-hero > .motion-video-toggle {
@@ -2154,18 +2191,22 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
   }
 }
 
+/* Reduced motion (2026-11-15): no blanket duration reset. Each spatial
+ * animation or transition is switched off where it is declared, so every
+ * element rests in its final state; colour, border and shadow feedback on
+ * links and controls keeps its short fade, and state changes stay instant. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto !important;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: .01ms !important;
+  .work-image-wrap,
+  .home-service-icon-area {
+    transition: none;
+  }
+
+  .home-service-icon-area:hover {
+    transform: none;
   }
 
   .home-about-marquee-wrap,
@@ -2187,6 +2228,11 @@ html:is([lang="hu"], [lang="de"]) :is(h1, h2, h3) {
     clip-path: none !important;
   }
 }
+
+/* The same stillness for a paused page (html.no-motion: Save-Data, a denied
+ * autoplay), which the media query above does not cover. */
+html.no-motion :is(.work-image-wrap, .home-service-icon-area) { transition: none; }
+html.no-motion .home-service-icon-area:hover { transform: none; }
 
 /* One quiet page-level motion preference; never a play button on the media. */
 .site-motion-toggle {
