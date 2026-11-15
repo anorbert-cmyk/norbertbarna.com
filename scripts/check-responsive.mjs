@@ -146,7 +146,7 @@ for (const page of ALL_PAGES) {
     if (/\.mp4$/i.test(src) && attribute(source, "type") !== "video/mp4") fail(`${page}: MP4 source lacks its MIME type`);
     if (/\.webm$/i.test(src) && attribute(source, "type") !== "video/webm") fail(`${page}: WebM source lacks its MIME type`);
   }
-  if (/\bdata-autoplay=["']true["']/i.test(html)) fail(`${page}: Webflow video wrapper still autoplays`);
+  if (/\bdata-autoplay=["']true["']/i.test(html)) fail(`${page}: background video wrapper still autoplays`);
 
   for (const match of html.matchAll(/<a\b[^>]*\bhref="#"[^>]*>/gi)) {
     fail(`${page}: non-functional href=# remains (back-to-top is not in the lock)`);
@@ -176,13 +176,10 @@ for (const page of ALL_PAGES) {
       fail(`${page}: mobile menu links do not follow the trigger in keyboard order`);
     }
     const noScriptNavigation = baseOf(page) === "about.html"
-      ? /<noscript>[\s\S]*?\.story-page\s+\.nav-menu(?:\.w-nav-menu)?\s*\{\s*display:\s*block!important/i
-      : /<noscript>[\s\S]*?\.nav-menu\.w-nav-menu\{display:block!important/i;
+      ? /<noscript>[\s\S]*?\.story-page\s+\.nav-menu(?:\.site-nav-menu)?\s*\{\s*display:\s*block!important/i
+      : /<noscript>[\s\S]*?\.nav-menu\.site-nav-menu\{display:block!important/i;
     if (!noScriptNavigation.test(html)) {
       fail(`${page}: no-JavaScript navigation fallback is missing`);
-    }
-    if (/assets\/js\/(?:jquery|webflow)[^"']*\.js/i.test(html)) {
-      fail(`${page}: legacy Webflow or jQuery runtime returned`);
     }
     const navigationScripts = [...html.matchAll(/<script[^>]*src="([^"]*assets\/js\/navigation\.js)"[^>]*><\/script>/gi)];
     if (navigationScripts.length !== 1) {
@@ -305,7 +302,7 @@ for (const page of ALL_PAGES) {
         count(article, /<dt\b/gi) !== 4 || count(article, /<dd\b/gi) !== 4) {
       fail(`${page}: project facts must expose four labelled scan points`);
     }
-    const figures = [...html.matchAll(/<figure\b[^>]*\bw-richtext-figure-type-image\b[^>]*>[\s\S]*?<\/figure>/gi)];
+    const figures = [...html.matchAll(/<figure\b[^>]*\brich-text-figure-image\b[^>]*>[\s\S]*?<\/figure>/gi)];
     if (!figures.length) fail(`${page}: no rich-text figures found`);
     for (const [index, figureMatch] of figures.entries()) {
       const image = figureMatch[0].match(/<img\b[^>]*>/i)?.[0] || "";
@@ -413,11 +410,8 @@ if (reducedIndex < 0 || libraryGuardIndex < 0 || reducedIndex > libraryGuardInde
 if (!animationJs.includes("min-width: 992px") || !animationJs.includes("pointer: fine")) {
   fail("desktop motion is not isolated from mobile/tablet/coarse pointers");
 }
-if (!animationJs.includes('window.Webflow.require("ix2")') || !animationJs.includes("ix2.destroy()")) {
-  fail("Webflow IX2 is not disabled before GSAP claims motion ownership");
-}
-if (!animationJs.includes("window.Webflow.push") || !animationJs.includes("scheduleWebflowMotionTakeover")) {
-  fail("GSAP must wait for and then deterministically take over Webflow motion");
+if (!animationJs.includes("function scheduleMotionTakeover()") || !animationJs.includes('window.addEventListener("load"')) {
+  fail("GSAP must wait for the full-load checkpoint before it claims motion ownership");
 }
 if (!navigationJs.includes('primaryNavigation.setAttribute("data-nav-menu-open", "")') ||
     !navigationJs.includes('event.key !== "Escape"') ||
@@ -432,11 +426,11 @@ if (exposesInbox(navigationJs) || /mailto:/.test(navigationJs)) {
 if (/mailto|\["mai", "lto"\]|footerMailHref/.test(navigationJs)) {
   fail("No script may assemble or open a mail address; contact goes through the form");
 }
-const takeoverIndex = animationJs.indexOf("var webflowMotionReady = scheduleWebflowMotionTakeover()");
+const takeoverIndex = animationJs.indexOf("var motionTakeoverReady = scheduleMotionTakeover()");
 const startIndex = animationJs.indexOf("function startResponsiveMotion()");
 const readyClassIndex = animationJs.indexOf('root.classList.add("gsap-ready")', startIndex);
 if (takeoverIndex < 0 || startIndex < takeoverIndex || readyClassIndex < startIndex) {
-  fail("gsap-ready must only be applied inside motion start after Webflow takeover");
+  fail("gsap-ready must only be applied inside motion start after the motion takeover");
 }
 if (/setTimeout\([^)]*900/i.test(animationJs)) fail("900ms font fallback must not return");
 if (/querySelectorAll\([^)]*["']img\[loading=["']lazy/i.test(animationJs)) {

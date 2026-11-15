@@ -374,7 +374,7 @@ if (/InventedSocial/.test(design) === false) fail("design.md must name the Inven
 if (!/\.case-hero-shot[\s\S]{0,240}object-fit:\s*contain/.test(css)) {
   fail("product crops must use object-fit contain");
 }
-if (!/\.nav-menu\.w-nav-menu[\s\S]{0,80}background:\s*#fff/.test(css)) {
+if (!/\.nav-menu\.site-nav-menu[\s\S]{0,80}background:\s*#fff/.test(css)) {
   fail("mobile menu must be an opaque fill");
 }
 if (!/\.case-motion-rail[\s\S]{0,40}display:\s*none\s*!important/.test(css)) {
@@ -460,7 +460,7 @@ if (/\.home-work-card-wrap\.top-space[\s\S]{0,80}margin-top:\s*1\d{2}px/.test(cs
   fail("StaggerHole: the 140px stagger offset must not return");
 }
 if (!/\.work-grid::before[\s\S]{0,160}content:\s*none/.test(css)) {
-  fail("RowClearfixHole: /works grid must disable Webflow .w-row clearfix pseudos");
+  fail("RowClearfixHole: /works grid must disable the base .layout-row clearfix pseudos");
 }
 if (!/--site-readable:\s*720px/.test(css)) {
   fail("body lock: reading measure must be 720px");
@@ -806,7 +806,7 @@ for (const slug of WORK) {
   const summaryStart = html.indexOf('class="summary');
   const summary = html.slice(summaryStart);
   const headings = [...summary.matchAll(/<h2 id="/g)];
-  const firstFigure = summary.search(/<figure\b[^>]*w-richtext-figure-type-image/);
+  const firstFigure = summary.search(/<figure\b[^>]*rich-text-figure-image/);
   if (headings.length >= 3 && (firstFigure < 0 || firstFigure > headings[2].index)) {
     fail(`${slug}: first body still must land right after the role section`);
   }

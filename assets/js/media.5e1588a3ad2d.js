@@ -37,9 +37,9 @@
   }
 
   function visibilityTarget(video) {
-    // Webflow background videos are absolutely centred well outside their
+    // Background videos are absolutely centred well outside their
     // clipped frame. Their own rect is therefore not the user-visible surface.
-    return video.closest(".w-background-video") || video;
+    return video.closest(".video-frame") || video;
   }
 
   function awardOn(card) {

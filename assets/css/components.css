@@ -1,0 +1,2051 @@
+/*
+ * Component stylesheet: the type scale, colour tokens and the inherited
+ * component rules of the home, case, index and utility pages. It loads right
+ * after base.css on every page except the About story pages. The page layers
+ * (responsive.css and the files after it) override it; do not author brand
+ * rules here (see design.md, "Stylesheets").
+ * A ":where(body...)" prefix keeps a rule off a page family that never
+ * received it, without adding specificity.
+ * Font sizes are in rem (16px = 1rem).
+ */
+
+:root {
+  --font-family--content: Inter, "Inter Fallback", sans-serif;
+  --font-color--dark: #fff;
+  --font-family--title: "Funnel Display", "Funnel Display Fallback", sans-serif;
+  --bg-color--transparent: #0000;
+  --bg-color--black: #000;
+  --bg-color--white-shade: #e3e8eb;
+  --bg-color--white: white;
+  --font-color--grey: #8e8e8e;
+}
+
+body {
+  font-family: var(--font-family--content);
+  color: var(--font-color--dark);
+  letter-spacing: .02em;
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+h1 {
+  font-family: var(--font-family--title);
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 3.75rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+h2 {
+  font-family: var(--font-family--title);
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 3.25rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+h3 {
+  font-family: var(--font-family--title);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 2.875rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+h4 {
+  font-family: var(--font-family--title);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+h5 {
+  font-family: var(--font-family--title);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 1.875rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+h6 {
+  font-family: var(--font-family--title);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 1.5625rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: underline;
+  transition: color .2s;
+}
+
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-left: 40px;
+}
+
+img {
+  max-width: 100%;
+  display: inline-block;
+}
+
+blockquote {
+  text-align: center;
+  background-color: #e4e9ec;
+  background-image: url("../images/68f648c185978b91769e2817_quote-icon.svg");
+  background-position: 50% 50px;
+  background-repeat: no-repeat;
+  background-size: auto;
+  border-left: 0 solid #e2e2e2;
+  border-radius: 25px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 150px 85px 50px;
+  line-height: 1.5;
+}
+
+figure {
+  margin-bottom: 10px;
+}
+
+.layout-block {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.layout-vflex {
+  flex-direction: column;
+  align-items: flex-start;
+  display: flex;
+}
+
+.layout-grid {
+  grid-row-gap: 16px;
+  grid-column-gap: 16px;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-columns: 1fr;
+  display: grid;
+}
+
+@media screen and (max-width: 991px) {
+  .layout-block {
+    max-width: 728px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .layout-block {
+    max-width: none;
+  }
+}
+
+.navbar {
+  z-index: 22;
+  background-color: var(--bg-color--transparent);
+  padding-top: 40px;
+}
+
+.container {
+  max-width: 1200px;
+  margin-left: 40px;
+  margin-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.container.product-details-header {
+  height: 100%;
+  min-height: 1px;
+  display: flex;
+}
+
+.container.product-details-header.black.raiffeisen-header-black {
+  color: var(--bg-color--black);
+  padding-left: 0;
+}
+
+.container.product-details-header.black.panda {
+  margin-left: 0;
+  padding-left: 0;
+  display: block;
+}
+
+.container.product-details-header.text-white.depot {
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-left: 0;
+}
+
+.nav-wrap {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.nav-wrap.dark {
+  font-size: .75rem;
+}
+
+.nav-link {
+  border-radius: 8px;
+  margin-left: 1px;
+  margin-right: 1px;
+  padding: 10px 15px;
+  font-size: 1.125rem;
+  transition: background-color .2s;
+}
+
+.nav-link:hover {
+  background-color: var(--bg-color--white-shade);
+}
+
+.nav-link.is-current {
+  background-color: var(--bg-color--white-shade);
+  color: var(--font-color--dark);
+}
+
+.nav-link.white:hover {
+  background-color: var(--bg-color--white);
+}
+
+.nav-link.white.is-current {
+  background-color: var(--bg-color--black);
+}
+
+.nav-menu {
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 80%;
+  display: flex;
+}
+
+.large-text {
+  font-family: var(--font-family--title);
+  font-size: 1.875rem;
+}
+
+.large-text.black {
+  color: var(--bg-color--black);
+}
+
+.text-small {
+  font-size: 1.125rem;
+}
+
+.nav-logo-wrap {
+  padding-left: 0;
+}
+
+.nav-logo-wrap.logo.is-current {
+  color: var(--bg-color--black);
+  font-size: .75rem;
+}
+
+.home-banner-wrap {
+  background-color: #e0eaec;
+}
+
+.home-banner-section {
+  padding-top: 80px;
+  position: relative;
+}
+
+.home-banner-section.raiffeisen-header-black {
+  padding-left: 40px;
+}
+
+.home-about-section {
+  padding-top: 120px;
+  padding-bottom: 120px;
+  position: relative;
+}
+
+.section-title {
+  color: var(--bg-color--black);
+  text-transform: capitalize;
+  -webkit-text-fill-color: inherit;
+  background-image: none;
+  background-clip: border-box;
+  font-size: 3.125rem;
+}
+
+.banner-title {
+  font-size: 4.6875rem;
+  font-weight: 700;
+}
+
+.home-about-video-wrap {
+  background-color: var(--bg-color--black);
+  color: var(--bg-color--white);
+  border-radius: 55px;
+  min-width: 460px;
+  max-width: 460px;
+  padding: 45px;
+}
+
+.home-about-video-text {
+  z-index: 2;
+  margin-top: 0;
+  font-size: 1.8125rem;
+  position: relative;
+}
+
+.home-about-marquee-area {
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  flex-flow: column;
+  justify-content: center;
+  margin-top: 60px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-about-video {
+  z-index: 1;
+  mix-blend-mode: luminosity;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 390px;
+  margin-top: -40px;
+}
+
+.home-about-marquee-wrap {
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+}
+
+.home-about-marquee-wrap.reverse {
+  flex: 1;
+}
+
+.home-about-marquee-card {
+  grid-column-gap: 6px;
+  grid-row-gap: 6px;
+  white-space: nowrap;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-right: 20px;
+  padding: 10px 20px;
+  display: flex;
+}
+
+.home-about-marquee-icon {
+  justify-content: center;
+  align-items: center;
+  min-width: 15px;
+  max-width: 15px;
+  min-height: 15px;
+  max-height: 15px;
+  display: flex;
+}
+
+.home-about-content-wrap {
+  max-width: 44%;
+}
+
+.home-about-area {
+  grid-column-gap: 30px;
+  grid-row-gap: 30px;
+  justify-content: space-between;
+  display: flex;
+}
+
+.home-about-marquee-holder {
+  color: var(--bg-color--black);
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+}
+
+.home-about-left-linear {
+  background-image: linear-gradient(90deg, var(--bg-color--white), var(--bg-color--transparent));
+  width: 13%;
+  position: absolute;
+  inset: -2% auto -2% 0%;
+}
+
+.home-about-right-linear {
+  background-image: linear-gradient(270deg, var(--bg-color--white), var(--bg-color--transparent));
+  width: 13%;
+  position: absolute;
+  inset: -2% -1% -2% auto;
+}
+
+.home-service-section {
+  padding-top: 120px;
+  padding-bottom: 100px;
+}
+
+.home-service-title-area {
+  max-width: 300px;
+}
+
+.bottom-space-section {
+  padding-top: 80px;
+  padding-bottom: 120px;
+}
+
+.home-work-divider-line {
+  background-image: linear-gradient(90deg, #d9d9d9, #7e7e7e 50%, #d9d9d9);
+  height: 1px;
+}
+
+.awards-grid {
+  grid-column-gap: 100px;
+  grid-row-gap: 100px;
+  grid-template-rows: auto;
+  grid-template-columns: .75fr 1fr;
+  align-items: start;
+}
+
+.awards-card-wrap {
+  grid-column-gap: 25px;
+  grid-row-gap: 25px;
+  flex-flow: column;
+  display: flex;
+}
+
+.awards-card {
+  grid-row-gap: 15px;
+  color: var(--bg-color--black);
+  background-color: #f0f0f0;
+  border-radius: 40px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color 0.4s ease;
+}
+
+.awards-card:hover {
+  color: var(--bg-color--white, #fff);
+}
+
+.awards-card:hover .awards-bg-video-wrap {
+  opacity: 1;
+}
+
+.awards-card:hover .awards-card-text {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.awards-card:hover .awards-year {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.awards-card-title {
+  font-family: var(--font-family--content);
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 1.5625rem;
+  font-weight: 500;
+}
+
+.awards-card-text {
+  color: var(--font-color--grey);
+  margin-bottom: 0;
+  transition: color 0.4s ease;
+}
+
+.awards-year-wrap {
+  z-index: 3;
+  grid-column-gap: 12px;
+  grid-row-gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.awards-year {
+  background-color: var(--bg-color--white);
+  border-radius: 49px;
+  padding: 10px 15px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.awards-title-wrap {
+  z-index: 3;
+  position: relative;
+}
+
+.awards-bg-video-wrap {
+  opacity: 0;
+  position: absolute;
+  inset: 0%;
+  transition: opacity 0.4s ease;
+}
+
+.container-large {
+  max-width: 1720px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.inner-container-1200px {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.work-section {
+  padding-top: 100px;
+  padding-bottom: 50px;
+}
+
+:where(body:is(.home, .immersive-case)) .summary {
+  text-align: left;
+}
+
+:where(body:is(.home, .immersive-case)) .summary p {
+  margin-bottom: 25px;
+}
+
+:where(body:is(.home, .immersive-case)) .summary li {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 1.125rem;
+}
+
+:where(body:is(.home, .immersive-case)) .summary ol, :where(body:is(.home, .immersive-case)) .summary ul {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+:where(body:is(.home, .immersive-case)) .summary img {
+  border-radius: 30px;
+}
+
+:where(body:is(.home, .immersive-case)) .summary figure {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+:where(body:is(.home, .immersive-case)) .summary h2 {
+  margin-top: 25px;
+  font-size: 2.8125rem;
+}
+
+.summary.inst {
+  color: var(--bg-color--black);
+}
+
+.service-single-divider {
+  background-image: linear-gradient(90deg, #d9d9d9, #7e7e7e 50%, #d9d9d9);
+  height: 1px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.work-card {
+  color: var(--bg-color--black);
+  margin-bottom: 100px;
+}
+
+.work-image-wrap {
+  transition-property: border-radius;
+  transition-duration: .5s;
+  overflow: hidden;
+}
+
+.work-image-wrap:hover {
+  border-top-left-radius: 100px;
+  border-top-right-radius: 100px;
+}
+
+.work-image {
+  border-radius: 40px;
+  transition: transform .5s;
+}
+
+.work-image:hover {
+  transform: scale(1.1);
+}
+
+.work-title {
+  font-family: var(--font-family--title);
+  color: var(--bg-color--black);
+  font-size: 2.1875rem;
+  text-decoration: none;
+}
+
+.work-category-text {
+  margin-bottom: 0;
+  font-size: 1.125rem;
+}
+
+.work-title-line {
+  border-bottom: 2px solid var(--font-color--dark);
+}
+
+:where(body:is(.home, .immersive-case)) .work-single-section {
+  padding-top: 100px;
+  padding-bottom: 120px;
+}
+
+.work-category {
+  border: 1px solid #e7e7e7;
+  border-radius: 100px;
+  padding: 7px 15px;
+  font-size: 1.125rem;
+  display: inline-block;
+}
+
+.work-category.raiffeisen-work {
+  -webkit-text-stroke-color: var(--bg-color--black);
+  border-color: #000;
+}
+
+.work-category.benker-black {
+  border-color: var(--bg-color--black);
+}
+
+.related-projects-area {
+  margin-top: 60px;
+}
+
+.related-work-card {
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  align-items: center;
+  display: flex;
+}
+
+.related-work-image-wrap {
+  border-radius: 20px;
+  justify-content: center;
+  align-items: center;
+  max-width: 35%;
+  max-height: 180px;
+  display: flex;
+  overflow: hidden;
+}
+
+.related-work-title {
+  color: var(--bg-color--black);
+  margin-top: 20px;
+  font-size: 2.1875rem;
+  text-decoration: none;
+  display: block;
+}
+
+:where(body:not(.home)) .dark-button {
+  border: 1px solid var(--font-color--dark);
+  background-color: var(--bg-color--black);
+  border-radius: 8px;
+  padding: 13px 25px;
+  transition: background-color .2s, color .2s;
+}
+
+:where(body:not(.home)) .dark-button:hover {
+  background-color: var(--bg-color--white);
+  color: var(--font-color--dark);
+}
+
+:where(body:not(.home)) .dark-button.projects:hover {
+  border-color: var(--bg-color--black);
+  color: var(--bg-color--black);
+  border-color: var(--bg-color--black);
+}
+
+.home-service-grid {
+  grid-column-gap: 50px;
+  grid-row-gap: 50px;
+  color: var(--bg-color--black);
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.home-service-icon-wrap {
+  grid-column-gap: 15px;
+  grid-row-gap: 15px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 15px;
+  display: flex;
+}
+
+.home-service-card-title {
+  font-family: var(--font-family--title);
+  color: var(--font-color--dark);
+  cursor: default;
+  border: 1px #fff;
+  font-size: 1.75rem;
+  font-style: normal;
+  text-decoration: none;
+  display: block;
+}
+
+.home-service-card-title:hover {
+  text-decoration: none;
+}
+
+.home-work-title-wrap {
+  text-align: center;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.home-work-wrap {
+  margin-top: 60px;
+}
+
+.home-work-card-wrap {
+  max-width: 40%;
+}
+
+.home-work-card-wrap.top-space {
+  margin-top: 140px;
+}
+
+.home-service-icon-area {
+  justify-content: center;
+  align-items: center;
+  min-width: 100px;
+  max-width: 100px;
+  min-height: 100px;
+  max-height: 100px;
+  text-decoration: none;
+  transition-property: transform;
+  display: flex;
+}
+
+.home-service-icon-area:hover {
+  transform: scale(1.1);
+}
+
+.back-to-top-wrap {
+  background-color: var(--font-color--dark);
+  border-radius: 50px;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 55px;
+  max-width: 55px;
+  min-height: 80px;
+  max-height: 80px;
+  padding-top: 29px;
+  transition: background-color .3s;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.back-to-top-wrap:hover {
+  background-color: var(--font-color--grey);
+}
+
+.back-to-top-arrow-wrap {
+  grid-column-gap: 50px;
+  grid-row-gap: 50px;
+  flex-flow: column;
+  display: flex;
+}
+
+.text-white {
+  color: var(--bg-color--white);
+}
+
+.related-service-title-area {
+  grid-column-gap: 20px;
+  grid-row-gap: 10px;
+  flex-flow: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 40px;
+  display: flex;
+}
+
+.banner-section {
+  background-color: #e0eaec;
+  flex-flow: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  display: flex;
+  position: relative;
+}
+
+.banner-section.raiffesen {
+  background-color: #fee500;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner-section.raiffesen.depot {
+  background-color: #191719;
+}
+
+.banner-section.instructure {
+  background-color: #0c1b2f;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner-section.instructure.depot {
+  background-color: #fee500;
+  border-radius: 0;
+}
+
+.banner-section.instructure.raiffeisen {
+  background-color: #fee500;
+}
+
+.banner-section.bitpanda {
+  background-color: #203d36;
+  flex-flow: row;
+  margin-left: auto;
+}
+
+.banner-section.bitpanda.benker {
+  background-color: #d9daf2;
+}
+
+.banner-section.bitpanda.benker.onrobot {
+  background-color: #ecf2f5;
+}
+
+.banner-section.gambit {
+  background-color: #aaed15;
+  flex-flow: row;
+}
+
+.banner-content-area {
+  z-index: 20;
+  flex: 1;
+  align-items: stretch;
+  margin-top: 0;
+  margin-left: auto;
+  padding-left: 20px;
+  display: block;
+  position: relative;
+}
+
+.banner-content-area.product-header {
+  padding-left: 0;
+}
+
+.banner-content-area.product-header.instructure {
+  color: var(--bg-color--white);
+  flex-flow: column;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+}
+
+.banner-content-area.product-header.instructure.panda {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: 0;
+  padding-left: 20px;
+  display: block;
+  overflow: hidden;
+}
+
+.banner-content-area.product-header.instructure.panda.inner-container-1200px {
+  margin-right: auto;
+  padding-left: 0;
+}
+
+.banner-content-wrap {
+  max-width: 850px;
+}
+
+.banner-content-wrap.instructure.text-white {
+  margin-left: 0;
+}
+
+.banner-text {
+  color: #000;
+}
+
+.banner-text.inst {
+  color: var(--bg-color--white);
+}
+
+.div-block {
+  text-align: center;
+}
+
+.body, .benker-black {
+  color: var(--bg-color--black);
+}
+
+.home-about-video-text-wrap {
+  z-index: 1;
+  position: relative;
+}
+
+.home-work-image-text {
+  color: var(--bg-color--black);
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 15rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.awards-title-area {
+  position: sticky;
+  top: 25px;
+}
+
+.home-banner-area {
+  grid-column-gap: 40px;
+  grid-row-gap: 40px;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: stretch;
+  display: flex;
+}
+
+.home-banner-title {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 3.4em;
+  font-weight: 700;
+  line-height: 1;
+  overflow: visible;
+}
+
+.home-banner-title.logo {
+  color: var(--bg-color--black);
+  font-size: 3em;
+}
+
+.banner-left-wrap {
+  width: auto;
+  max-width: 100%;
+  padding-bottom: 40px;
+}
+
+.banner-left-wrap.black {
+  box-sizing: border-box;
+  color: var(--bg-color--black);
+  max-width: 90%;
+}
+
+.home-banner-content-wrap {
+  width: 100%;
+  max-width: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.home-banner-subtitle {
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+.home-banner-details-wrap {
+  width: 100%;
+  margin-top: 40px;
+}
+
+@media screen and (min-width: 1280px) {
+  h1 {
+    font-size: 3.875rem;
+  }
+
+  h2 {
+    font-size: 3.5rem;
+  }
+
+  h3 {
+    font-size: 3rem;
+  }
+
+  h4 {
+    font-size: 2.5rem;
+  }
+
+  .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .nav-link {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .nav-menu {
+    justify-content: space-between;
+    max-width: 73%;
+  }
+
+  .nav-menu.grey {
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .section-title {
+    font-size: 3.5rem;
+  }
+
+  .home-about-video-wrap {
+    min-width: 460px;
+  }
+
+  .home-about-content-wrap {
+    max-width: 53%;
+  }
+
+  .awards-card {
+    border-radius: 48px;
+  }
+
+  .banner-title {
+    margin-top: 0;
+    font-size: 5.3125rem;
+  }
+
+  .work-single-section {
+    padding-bottom: 140px;
+  }
+
+  .home-service-grid {
+    grid-column-gap: 75px;
+    grid-row-gap: 75px;
+  }
+
+  .home-service-card-title {
+    font-size: 1.875rem;
+  }
+
+  .home-work-image-text {
+    font-size: 17.5rem;
+  }
+
+  .home-banner-area {
+    grid-column-gap: 60px;
+    grid-row-gap: 60px;
+  }
+
+  .home-banner-title {
+    font-size: 5.3125rem;
+  }
+
+  .home-banner-subtitle {
+    font-size: 2.125rem;
+  }
+
+  .banner-section {
+    padding-bottom: 110px;
+  }
+
+  .banner-section.raiffesen, .banner-section.instructure, .banner-section.bitpanda, .banner-section.gambit, .banner-section.raiffesen, .banner-section.instructure, .banner-section.bitpanda, .banner-section.gambit {
+    padding-top: 50px;
+  }
+
+  .banner-content-area {
+    margin-top: 100px;
+  }
+
+  .banner-content-area.product-header.instructure.panda.inner-container-1200px {
+    padding-left: 0;
+  }
+
+  .banner-content-wrap {
+    max-width: 900px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  h1 {
+    font-size: 4rem;
+  }
+
+  h2 {
+    font-size: 3.75rem;
+  }
+
+  h3 {
+    font-size: 3.125rem;
+  }
+
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .nav-wrap.dark {
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-menu {
+    max-width: 74%;
+  }
+
+  .nav-menu.grey {
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .banner-title {
+    font-size: 6.5625rem;
+  }
+
+  .home-work-card-wrap {
+    max-width: 32%;
+  }
+
+  .home-banner-title {
+    font-size: 6.5625rem;
+  }
+
+  .banner-left-wrap {
+    max-width: 90%;
+  }
+
+  .home-banner-subtitle {
+    font-size: 2.375rem;
+  }
+
+  .banner-section {
+    padding-bottom: 140px;
+  }
+
+  .banner-section.raiffesen, .banner-section.bitpanda, .banner-section.gambit, .banner-section.raiffesen, .banner-section.bitpanda, .banner-section.gambit {
+    padding-top: 50px;
+  }
+}
+
+@media screen and (min-width: 1920px) {
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .nav-wrap.dark {
+    justify-content: space-between;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .nav-menu.grey {
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .home-banner-section.raiffeisen-header-black {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .banner-title {
+    font-size: 7.1875rem;
+  }
+
+  .container-large.inner-container-1200px {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .home-work-card-wrap {
+    max-width: 30%;
+  }
+
+  .home-banner-area {
+    flex-flow: row;
+  }
+
+  .home-banner-title {
+    font-size: 8.25rem;
+  }
+
+  .banner-left-wrap {
+    padding-left: 40px;
+  }
+
+  .banner-left-wrap.black {
+    flex: 0 auto;
+  }
+
+  .home-banner-content-wrap {
+    width: auto;
+    padding-top: 20px;
+    padding-left: 0;
+  }
+
+  .home-banner-subtitle {
+    font-size: 2.5rem;
+  }
+
+  .banner-section.raiffesen, .banner-section.bitpanda {
+    padding-top: 50px;
+  }
+
+  .banner-section.gambit, .banner-section.raiffesen, .banner-section.bitpanda {
+    padding-top: 50px;
+  }
+
+  .banner-section.bitpanda.benker.onrobot {
+    background-color: #ecf2f5;
+  }
+
+  .banner-section.gambit {
+    padding-top: 50px;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  h1 {
+    font-size: 3.5rem;
+  }
+
+  h2 {
+    font-size: 3rem;
+  }
+
+  h3 {
+    font-size: 2.625rem;
+  }
+
+  h4 {
+    font-size: 2.125rem;
+  }
+
+  h5 {
+    font-size: 1.75rem;
+  }
+
+  h6 {
+    font-size: 1.5rem;
+  }
+
+  blockquote {
+    background-position: 50% 40px;
+    padding: 140px 60px 40px;
+  }
+
+  .navbar {
+    padding-top: 30px;
+  }
+
+  .container.product-details-header.black.raiffeisen-header-black {
+    padding-left: 0;
+  }
+
+  .nav-wrap.dark {
+    margin-bottom: 10px;
+  }
+
+  .nav-link {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  .nav-menu-area {
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: flex;
+  }
+
+  .nav-menu {
+    background-color: var(--bg-color--white);
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: none;
+    padding: 25px 20px;
+    box-shadow: 0 2px 30px #0003;
+  }
+
+  .nav-menu.grey {
+    background-color: var(--bg-color--white-shade);
+    background-color: var(--bg-color--white-shade);
+  }
+
+  .menu-button {
+    border: 1px solid var(--bg-color--white-shade);
+    background-color: var(--font-color--dark);
+    color: var(--bg-color--black);
+    border-radius: 5px;
+    padding: 15px;
+  }
+
+  .menu-button.is-open {
+    border-color: var(--font-color--dark);
+    background-color: var(--bg-color--transparent);
+    color: var(--font-color--dark);
+  }
+
+  .menu-button.white {
+    border-color: var(--bg-color--white);
+    background-color: var(--bg-color--white);
+  }
+
+  .menu-button.white.is-open {
+    border-color: var(--font-color--dark);
+    background-color: var(--bg-color--transparent);
+  }
+
+  .large-text {
+    font-size: 1.75rem;
+  }
+
+  .home-banner-section {
+    padding-top: 60px;
+  }
+
+  .home-banner-section.raiffeisen-header-black {
+    padding-left: 20px;
+  }
+
+  .home-about-section {
+    padding-top: 80px;
+    padding-bottom: 100px;
+  }
+
+  .section-title {
+    font-size: 2.75rem;
+  }
+
+  .home-about-video-wrap {
+    border-radius: 40px;
+    max-width: none;
+  }
+
+  .home-about-marquee-area {
+    margin-top: 30px;
+  }
+
+  .home-about-video {
+    max-width: 50%;
+    max-height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-about-content-wrap {
+    max-width: none;
+  }
+
+  .home-about-area {
+    flex-flow: column;
+  }
+
+  .home-service-section {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+
+  .bottom-space-section {
+    padding-bottom: 100px;
+  }
+
+  .awards-grid {
+    grid-column-gap: 50px;
+    grid-row-gap: 50px;
+    grid-template-columns: .7fr 1fr;
+  }
+
+  .awards-card {
+    border-radius: 30px;
+    padding-left: 35px;
+    padding-right: 35px;
+  }
+
+  .banner-title {
+    font-size: 4.0625rem;
+  }
+
+  .summary img {
+    border-radius: 25px;
+  }
+
+  .summary h2 {
+    font-size: 2.625rem;
+  }
+
+  .service-single-divider {
+    margin-top: 70px;
+    margin-bottom: 80px;
+  }
+
+  .work-section {
+    padding-top: 60px;
+  }
+
+  .work-card {
+    margin-bottom: 80px;
+  }
+
+  .work-image {
+    border-radius: 40px;
+  }
+
+  .work-title {
+    font-size: 1.875rem;
+  }
+
+  .work-single-section {
+    padding-top: 80px;
+    padding-bottom: 100px;
+  }
+
+  .work-single-section.instructure-bg-video {
+    padding-top: 20px;
+  }
+
+  .related-projects-area {
+    margin-top: 50px;
+  }
+
+  .related-work-title {
+    font-size: 1.875rem;
+  }
+
+  .home-service-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .home-service-card-title {
+    font-size: 1.625rem;
+  }
+
+  .home-work-image-text {
+    font-size: 11.875rem;
+  }
+
+  .home-banner-area {
+    grid-row-gap: 20px;
+    flex-flow: column;
+    justify-content: center;
+    display: flex;
+  }
+
+  .home-banner-title {
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 4.6875rem;
+    display: flex;
+  }
+
+  .banner-left-wrap {
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 100%;
+    display: block;
+  }
+
+  .home-banner-content-wrap {
+    max-width: 90vw;
+    padding-top: 0;
+  }
+
+  .home-banner-subtitle {
+    font-size: 1.75rem;
+  }
+
+  .banner-section.raiffesen, .banner-section.instructure {
+    padding-top: 0;
+    padding-bottom: 50px;
+  }
+
+  .banner-section.raiffesen, .banner-section.instructure {
+    padding-top: 0;
+    padding-bottom: 50px;
+  }
+
+  .banner-section.bitpanda {
+    justify-content: space-between;
+    align-items: center;
+    margin-right: auto;
+    padding-top: 50px;
+  }
+
+  .banner-section.gambit {
+    padding-top: 0;
+    padding-bottom: 30px;
+  }
+
+  .banner-content-area {
+    margin-top: 70px;
+  }
+
+  .banner-content-wrap.instructure.text-white {
+    margin-left: 40px;
+    margin-right: auto;
+  }
+
+  .banner-content-wrap.raiffeisen-header-black {
+    padding-left: 0;
+  }
+
+  .black {
+    color: var(--bg-color--black);
+  }
+}
+
+@media screen and (max-width: 767px) {
+  h1 {
+    font-size: 3.25rem;
+  }
+
+  h2 {
+    font-size: 2.75rem;
+  }
+
+  h3 {
+    font-size: 2.375rem;
+  }
+
+  h4 {
+    font-size: 2rem;
+  }
+
+  h5 {
+    font-size: 1.625rem;
+  }
+
+  h6 {
+    font-size: 1.375rem;
+  }
+
+  p {
+    font-size: 1.125rem;
+  }
+
+  blockquote {
+    background-position: 50% 35px;
+    background-size: 70px;
+    border-radius: 20px;
+    padding: 120px 30px 30px;
+  }
+
+  .navbar {
+    padding-top: 25px;
+  }
+
+  .container {
+    padding-left: 0;
+  }
+
+  .large-text {
+    font-size: 1.5rem;
+  }
+
+  .home-about-section {
+    padding-top: 60px;
+    padding-bottom: 80px;
+  }
+
+  .section-title {
+    font-size: 2.375rem;
+  }
+
+  .home-about-video-wrap {
+    border-radius: 30px;
+    min-width: auto;
+    padding: 30px;
+  }
+
+  .home-about-marquee-area {
+    margin-top: 20px;
+  }
+
+  .home-about-video {
+    max-width: 80%;
+    max-height: 270px;
+  }
+
+  .home-about-marquee-card {
+    font-size: 1.125rem;
+  }
+
+  .home-service-section {
+    padding-top: 80px;
+    padding-bottom: 70px;
+  }
+
+  .bottom-space-section {
+    padding-bottom: 80px;
+  }
+
+  .home-work-divider-line {
+    margin-top: 40px;
+  }
+
+  .awards-grid {
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+    grid-template-columns: 1fr;
+  }
+
+  .awards-card {
+    border-radius: 20px;
+  }
+
+  .banner-title {
+    font-size: 3.125rem;
+  }
+
+  .summary img {
+    border-radius: 20px;
+  }
+
+  .summary h2 {
+    font-size: 2.25rem;
+  }
+
+  .service-single-divider {
+    margin-top: 50px;
+    margin-bottom: 70px;
+  }
+
+  .work-section {
+    padding-top: 50px;
+  }
+
+  .work-card {
+    max-width: 80%;
+    margin-bottom: 60px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .work-title {
+    font-size: 1.75rem;
+  }
+
+  .work-single-section {
+    padding-top: 70px;
+    padding-bottom: 60px;
+  }
+
+  .related-projects-area {
+    margin-top: 40px;
+  }
+
+  .related-work-card {
+    margin-bottom: 30px;
+  }
+
+  .related-work-image-wrap {
+    border-radius: 15px;
+  }
+
+  .related-work-title {
+    font-size: 1.75rem;
+  }
+
+  .home-service-grid {
+    grid-column-gap: 35px;
+    grid-row-gap: 35px;
+    grid-template-columns: 1fr;
+  }
+
+  .home-service-card-title {
+    font-size: 1.5rem;
+  }
+
+  .home-work-card-wrap {
+    max-width: none;
+  }
+
+  .home-work-card-wrap.top-space {
+    margin-top: 0;
+  }
+
+  .related-work-collection-item {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .home-work-image-text {
+    font-size: 6.875rem;
+  }
+
+  .awards-title-area {
+    position: static;
+  }
+
+  .home-banner-area {
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+  }
+
+  .home-banner-title {
+    font-size: 3.75rem;
+  }
+
+  .banner-left-wrap {
+    max-width: none;
+    padding-bottom: 20px;
+  }
+
+  .home-banner-content-wrap {
+    max-width: none;
+  }
+
+  .home-banner-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .banner-section {
+    padding-bottom: 80px;
+  }
+
+  .banner-content-area {
+    margin-top: 60px;
+  }
+
+  .banner-content-wrap.instructure.text-white {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .inst-bg-video.mobile {
+    display: none;
+  }
+
+  .background-video {
+    overflow: hidden;
+  }
+
+  .container-2 {
+    max-width: 90vw;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  h1 {
+    font-size: 2.875rem;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  h3 {
+    font-size: 2.125rem;
+  }
+
+  h4 {
+    font-size: 1.75rem;
+  }
+
+  h5 {
+    font-size: 1.5rem;
+  }
+
+  h6 {
+    font-size: 1.25rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  blockquote {
+    background-position: 50% 25px;
+    background-size: 60px;
+    border-radius: 15px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    padding: 100px 20px 20px;
+  }
+
+  .container {
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .container.product-details-header.black.panda {
+    margin-right: 20px;
+    padding-right: 0;
+  }
+
+  .nav-link {
+    font-size: 1rem;
+  }
+
+  .large-text {
+    font-size: 1.25rem;
+  }
+
+  .nav-logo-wrap {
+    max-width: 170px;
+  }
+
+  .nav-logo-wrap.logo {
+    font-size: .75rem;
+  }
+
+  .home-about-section {
+    padding-top: 50px;
+  }
+
+  .section-title {
+    font-size: 1.875rem;
+  }
+
+  .home-about-video-wrap {
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  .home-about-marquee-area {
+    margin-top: 15px;
+  }
+
+  .home-about-video {
+    max-width: 100%;
+    max-height: 250px;
+  }
+
+  .home-about-marquee-card {
+    font-size: 1rem;
+  }
+
+  .home-service-section {
+    padding-bottom: 50px;
+  }
+
+  .awards-card {
+    border-radius: 10px;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 35px 25px;
+  }
+
+  .awards-title-wrap {
+    max-width: none;
+  }
+
+  .banner-title {
+    font-size: 2.5rem;
+  }
+
+  .container-large {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .container-large.inner-container-1200px {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .summary p {
+    margin-bottom: 20px;
+  }
+
+  .summary ol {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 30px;
+  }
+
+  .summary ul {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 25px;
+  }
+
+  .summary img {
+    border-radius: 15px;
+  }
+
+  .summary h2 {
+    margin-top: 20px;
+    font-size: 2rem;
+  }
+
+  .service-single-divider {
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+
+  .work-section {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .work-card {
+    max-width: none;
+    margin-bottom: 40px;
+  }
+
+  .work-title {
+    font-size: 1.625rem;
+  }
+
+  .work-category-text {
+    font-size: 1rem;
+  }
+
+  .work-single-section {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+
+  .work-single-section.instructure-bg-video {
+    padding-top: 0;
+  }
+
+  .related-projects-area {
+    margin-top: 30px;
+  }
+
+  .related-work-image-wrap {
+    border-radius: 10px;
+    max-width: 40%;
+  }
+
+  .related-work-title {
+    font-size: 1.625rem;
+  }
+
+  .contact-link {
+    font-size: 1rem;
+  }
+
+  .dark-button {
+    font-size: 1.125rem;
+  }
+
+  .dark-button:hover {
+    border-style: solid;
+    border-top-color: var(--bg-color--black);
+    background-color: var(--bg-color--white);
+    color: var(--bg-color--black);
+    -webkit-text-stroke-color: var(--bg-color--black);
+    border-radius: 5px;
+  }
+
+  .home-service-grid {
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+  }
+
+  .home-service-card-title {
+    font-size: 1.375rem;
+  }
+
+  .home-service-icon-area {
+    min-width: 80px;
+    max-width: 80px;
+    min-height: 80px;
+    max-height: 80px;
+  }
+
+  .back-to-top-wrap {
+    border-radius: 25px;
+    order: -1;
+    min-width: 50px;
+    max-width: 50px;
+    min-height: 60px;
+    max-height: 60px;
+    margin-bottom: -60px;
+    margin-left: auto;
+    padding-top: 20px;
+  }
+
+  .home-work-image-text {
+    font-size: 5rem;
+  }
+
+  .home-banner-title {
+    font-size: 3.125rem;
+  }
+
+  .banner-left-wrap {
+    padding-bottom: 10px;
+  }
+
+  .home-banner-content-wrap {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .home-banner-subtitle {
+    font-size: 1.375rem;
+  }
+
+  .home-banner-details-wrap {
+    margin-top: 20px;
+  }
+
+  .banner-section {
+    padding-bottom: 60px;
+  }
+
+  .banner-section.gambit {
+    padding-top: 25px;
+  }
+
+  .banner-content-area {
+    margin-top: 40px;
+  }
+
+  .banner-content-area.product-header.instructure.panda.inner-container-1200px {
+    margin-top: 2px;
+    margin-right: 5px;
+    padding-left: 0;
+  }
+
+  .banner-content-wrap.instructure.text-white.benker {
+    max-width: none;
+    margin-right: 0;
+  }
+
+  .banner-content-wrap.raiffeisen-header-black {
+    padding-left: 0;
+  }
+
+  .benker-black {
+    width: 100%;
+  }
+
+  .container-2 {
+    padding-top: 20px;
+  }
+}

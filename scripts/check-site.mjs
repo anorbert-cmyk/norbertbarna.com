@@ -168,8 +168,10 @@ for (const page of PAGES) {
   }
   if (/cdnjs\.cloudflare\.com|unpkg\.com|cdn\.jsdelivr\.net/.test(html))
     fail(`${page}: references an external JS CDN (should be self-hosted)`);
-  if (/<script[^>]+src=["'][^"']*(?:jquery|webflow(?:\.[^"']*)?\.js)[^"']*["']/i.test(html))
-    fail(`${page}: legacy jQuery/Webflow runtime returned`);
+  // The site-builder export is retired: none of its classes, attributes or
+  // file names may return to a page.
+  if (new RegExp(`(?<![\\w-])w-(?:-?[a-z])|\\sdata-w-id=|\\sdata-wf-|${["web", "flow"].join("")}|jquery`, "i").test(html))
+    fail(`${page}: site-builder vocabulary (legacy class, attribute or file name) returned`);
   if (/href="[^"]*raiffesen[^"]*"/.test(html)) fail(`${page}: links to misspelled raiffesen URL`);
   if (!is404) {
     const animationScripts = [
@@ -389,7 +391,7 @@ for (const page of PAGES) {
     fail(`${page}: removed unsupported SportsGambit metrics returned`);
 
   // Every local reference must resolve to a real file (not a directory):
-  // href/src, srcset candidates, Webflow video data attributes, inline url()
+  // href/src, srcset candidates, background video data attributes, inline url()
   const refs = [];
   for (const [, attr, url] of html.matchAll(/(href|src)="([^"]+)"/g)) refs.push([attr, url]);
   for (const [, list] of html.matchAll(/srcset="([^"]+)"/g))

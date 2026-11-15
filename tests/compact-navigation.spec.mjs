@@ -40,7 +40,7 @@ async function expectStableBar(page, label) {
     const opening = aiRoute && document.querySelector("[data-ai-hero]")?.getBoundingClientRect().bottom > nav.getBoundingClientRect().height;
     return { y: nav.getBoundingClientRect().top, opacity: Number(style.opacity), animations: nav.getAnimations().length,
       background: style.backgroundColor, expectedBackground: (opening || workRoute) ? "rgb(10, 22, 40)" : "rgb(214, 212, 237)", blend: style.mixBlendMode,
-      iconInk: getComputedStyle(toggle.querySelector(".w-icon-nav-menu")).color, iconBacking,
+      iconInk: getComputedStyle(toggle.querySelector(".site-nav-icon")).color, iconBacking,
       toggleHit: toggle.contains(document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)),
       overflow: document.documentElement.scrollWidth - innerWidth };
   });
@@ -191,7 +191,7 @@ for (const route of ["/", "/works", "/work/instructure", "/about", "/privacy", "
     await page.goto(route, { waitUntil: "load" });
     const toggle = page.locator(".menu-button");
     await expect(toggle).toHaveAttribute("data-navigation-ready", "true");
-    const glyph = () => toggle.locator(".w-icon-nav-menu").evaluate((icon) => getComputedStyle(icon, "::before").content);
+    const glyph = () => toggle.locator(".site-nav-icon").evaluate((icon) => getComputedStyle(icon, "::before").content);
     const closed = await glyph();
     const [open, close] = MENU_LABELS[["hu", "de"].find((code) => route === `/${code}` || route.startsWith(`/${code}/`)) || "en"];
     await expect(toggle).toHaveAttribute("aria-label", open);

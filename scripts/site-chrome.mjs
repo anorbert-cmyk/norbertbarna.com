@@ -159,10 +159,10 @@ export function pairsOf(page, writingLinks = writingLanguageLinks()) {
 }
 
 // ---- rendering --------------------------------------------------------------
-const linkClass = (kind) => kind === "about" ? "nav-link w-nav-link" : "nav-link white w-nav-link";
+const linkClass = (kind) => kind === "about" ? "nav-link site-nav-link" : "nav-link white site-nav-link";
 
 function plainLink(kind, item, current, extraClass = "") {
-  const classes = [extraClass, linkClass(kind), current ? "w--current" : ""].filter(Boolean).join(" ");
+  const classes = [extraClass, linkClass(kind), current ? "is-current" : ""].filter(Boolean).join(" ");
   return `<a${current ? ' aria-current="page"' : ""} class="${classes}" href="${item.href}">${esc(item.label)}</a>`;
 }
 
@@ -231,7 +231,7 @@ export function renderPrimaryNav({ page, kind, current, pairs, articles }) {
   }
   parts.push(languageMenu({ lang, pairs }));
   const label = menu.navLabel;
-  const navClass = kind === "about" ? 'class="nav-menu w-nav-menu"' : 'class="nav-menu grey w-nav-menu" role="navigation"';
+  const navClass = kind === "about" ? 'class="nav-menu site-nav-menu"' : 'class="nav-menu grey site-nav-menu" role="navigation"';
   return `<nav id="primary-navigation" ${navClass} aria-label="${label}"><div class="nav-menu-area">${parts.join("")}</div></nav>`;
 }
 

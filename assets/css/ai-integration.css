@@ -23,7 +23,7 @@ body.ai-page {
    The shared menu panel retains its existing lilac treatment. */
 .ai-page .navbar { position: sticky; top: 0; z-index: 40; border: 0; background: var(--ai-lilac) !important; }
 html body.ai-page:not([data-ai-nav="light"]) .navbar { background: var(--ai-navy) !important; color: var(--ai-lilac); --immersive-link-ink: var(--ai-lilac); }
-html body.ai-page:not([data-ai-nav="light"]) .navbar :is(.nav-link, .home-nav-monogram, .home-nav-label, .menu-button, .w-icon-nav-menu) { color: var(--ai-lilac) !important; }
+html body.ai-page:not([data-ai-nav="light"]) .navbar :is(.nav-link, .home-nav-monogram, .home-nav-label, .menu-button, .site-nav-icon) { color: var(--ai-lilac) !important; }
 html body.ai-page:not([data-ai-nav="light"]) .navbar .nav-logo-wrap img { filter: brightness(0) saturate(100%) invert(92%) sepia(8%) saturate(655%) hue-rotate(196deg) brightness(98%) contrast(88%) !important; }
 .ai-lang { display: inline-flex; align-items: center; gap: 2px; }
 .ai-lang > span { color: inherit; opacity: .74; font-size: 12px; }

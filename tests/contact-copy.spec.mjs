@@ -153,7 +153,7 @@ async function assertMenuIconFits(page) {
   await page.locator(".menu-button").scrollIntoViewIfNeeded();
   const geometry = await page.locator(".menu-button").evaluate((button) => {
     const outer = button.getBoundingClientRect();
-    const icon = button.querySelector(".w-icon-nav-menu").getBoundingClientRect();
+    const icon = button.querySelector(".site-nav-icon").getBoundingClientRect();
     return {
       inset: [icon.left - outer.left, outer.right - icon.right, icon.top - outer.top, outer.bottom - icon.bottom],
       centerX: Math.abs((icon.left + icon.right - outer.left - outer.right) / 2),

@@ -173,7 +173,7 @@ function chrome(lang) {
   };
   return {
     preload: pick(/<head>\n(<meta charset="utf-8"\/>[^\n]*)\n/, "font preloads"),
-    assets: pick(/\n(<link href="\/assets\/css\/norbertbarna\.webflow\.shared[^\n]*)\n/, "head stylesheets"),
+    assets: pick(/\n(<link href="\/assets\/css\/base\.[^\n]*)\n/, "head stylesheets"),
     headTail: pick(/(<noscript>[\s\S]*?)<\/head>/, "head scripts"),
     header: pick(/(<body\b[^>]*>[\s\S]*?)<main\b/, "navigation"),
     footer: pick(/<\/main>\n?([\s\S]*)$/, "footer"),
