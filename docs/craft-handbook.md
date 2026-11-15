@@ -699,8 +699,29 @@ Run these for every interactive state:
 - Third-party hosts are added per route only: Turnstile's
   `https://challenges.cloudflare.com` goes into `script-src` and `frame-src`
   on `/contact` and `/hu/kapcsolat` alone (`TURNSTILE_PAGES` in `server.js`).
-- `form-action 'self'`, `object-src 'none'`, `base-uri 'self'`,
-  `frame-ancestors 'self'`.
+- `form-action 'self'`, `object-src 'none'`, `base-uri 'none'`,
+  `frame-ancestors 'self'`; `upgrade-insecure-requests` on every host but
+  localhost.
+- Trusted Types: `require-trusted-types-for 'script'; trusted-types 'none'`
+  is enforced on every page except the contact pages. No page script may
+  write an HTML string to the DOM (`innerHTML`, `outerHTML`,
+  `insertAdjacentHTML`, `document.write`), build code from a string or create
+  a script element; build nodes with `createElement`, `textContent`,
+  `append` and `replaceChildren`. `check-server.mjs` fails on any of these in
+  a script a page loads.
+- The contact pages carry the same rule in
+  `Content-Security-Policy-Report-Only` with `trusted-types
+  contact-turnstile`: `contact.js` injects Turnstile through that policy
+  (it accepts the one Turnstile URL), and Cloudflare's own script is not ours
+  to audit. Promote it to the enforced policy once the reports stay empty.
+- Violations are posted to `/api/csp-report` (`Reporting-Endpoints`,
+  `report-to csp`, `report-uri`); `lib/csp-report.js` logs one `csp-report`
+  line per report to stdout and stores nothing.
+- `Cross-Origin-Resource-Policy` is `same-origin` by default and
+  `cross-origin` for what other sites load: `/assets/images/og/`,
+  `/assets/icons/`, `robots.txt`, `llms.txt`, `sitemap.xml`, the IndexNow key
+  and the feeds (`CROSS_ORIGIN_RESOURCE` in `server.js`). A new social
+  preview image belongs under `/assets/images/og/`.
 - New third-party scripts are injected by the owner with their error listener
   attached before append, not as static tags.
 
@@ -722,10 +743,11 @@ script without a hash. JSON-LD needs no hash.
   every optional API.
 - Forget a single-use token **before** `await post()`, so a lost response can
   never re-post it (finding N2: one message delivered twice).
-- Visitor text never reaches `innerHTML` unescaped. In `contact.js` only
-  constant strings use `innerHTML`; field values go through `textContent` or
-  the `escape()` in `measurePrint()`. In the email every value is
-  HTML-escaped before it reaches `lib/contact-email.html`.
+- Visitor text is never parsed as HTML. `contact.js` has no `innerHTML`:
+  status messages and the folded letter's writing (`measurePrint()`) are
+  built as nodes, and field values only ever reach `textContent`. In the
+  email every value is HTML-escaped before it reaches
+  `lib/contact-email.html`.
 - Length checks run before regexes (a 100 000-character email took 3.3 s in
   the client regex during review).
 
@@ -834,7 +856,7 @@ mechanical. Each belongs in the script that already owns the subject.
 | GET forms | Every `<form>` has `method="post"`, an `action`, and a submit rendered `disabled` | `check-site.mjs` |
 | Third-party hosts outside their route | Generalise the Turnstile CSP assertion to any added host | `check-server.mjs` |
 | Utility pairs listed twice | Export the pairs from `service-pages.mjs` and import them in `check-site` and `check-seo` | `service-pages.mjs` |
-| Unescaped `innerHTML` | Fail on `innerHTML =` with a non-literal right side in page scripts, except an allow-listed escaping helper | `check-design.mjs` |
+| HTML or code built from strings | Fail on `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `eval`, string timers and script elements in any script a page loads (done 2026-11-15) | `check-server.mjs` |
 
 ### 9.4 Specs to add
 

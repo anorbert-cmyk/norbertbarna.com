@@ -145,12 +145,14 @@ for (const path of ["/writing/feed.xml", "/hu/irasok/feed.xml", "/de/wissen/feed
 
 // 5. Security headers on a page, a contact page and an asset.
 const REQUIRED_HEADERS = {
-  "strict-transport-security": /max-age=\d{7,}/,
+  "strict-transport-security": /^max-age=\d{8,}; includeSubDomains; preload$/,
   "content-security-policy": /default-src 'self'/,
   "x-content-type-options": /^nosniff$/,
   "x-frame-options": /^SAMEORIGIN$/i,
   "referrer-policy": /strict-origin-when-cross-origin/,
   "cross-origin-opener-policy": /same-origin/,
+  "cross-origin-resource-policy": /^same-origin$/,
+  "reporting-endpoints": /csp="\/api\/csp-report"/,
 };
 for (const path of ["/", "/hu/kapcsolat", "/de/kontakt"]) {
   const { headers } = pages[path];
@@ -162,9 +164,16 @@ for (const path of ["/", "/hu/kapcsolat", "/de/kontakt"]) {
   const contact = path !== "/";
   if (contact !== csp.includes("challenges.cloudflare.com")) fail(`${path}: CSP Turnstile allowance wrong for this page`);
   if (/unsafe-eval/.test(csp)) fail(`${path}: CSP allows unsafe-eval`);
+  for (const directive of ["object-src 'none'", "base-uri 'none'", "report-to csp", ...(BASE.startsWith("https:") ? ["upgrade-insecure-requests"] : [])]) {
+    if (!csp.includes(directive)) fail(`${path}: CSP lacks ${directive}`);
+  }
+  // Trusted Types is enforced everywhere but where Turnstile runs (report-only there).
+  const reportOnly = headers.get("content-security-policy-report-only") || "";
+  if (contact ? !/require-trusted-types-for 'script'; trusted-types contact-turnstile/.test(reportOnly) || /trusted-types/.test(csp)
+    : !/require-trusted-types-for 'script'; trusted-types 'none'/.test(csp) || reportOnly) fail(`${path}: Trusted Types mode wrong for this page`);
   if (headers.get("x-powered-by")) fail(`${path}: X-Powered-By leaks the stack`);
 }
-pass("security headers (HSTS, CSP, nosniff, SAMEORIGIN, referrer, COOP) on page and contact pages");
+pass("security headers (HSTS preload, CSP with Trusted Types and reporting, nosniff, SAMEORIGIN, referrer, COOP, CORP) on page and contact pages");
 
 // 6. Employer naming rules (owner decision 2026-10-22): the name may appear on
 // the home and About pages only, never on client-facing or German service pages or llms.txt.

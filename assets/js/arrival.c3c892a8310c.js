@@ -65,23 +65,39 @@
     ready: "NORBERT.BARNA. The portfolio is ready. Press Enter to continue, or Escape or Tab to skip."
   };
   curtain.setAttribute("aria-label", copy.region);
-  curtain.innerHTML = '<div class="site-arrival__meter" aria-hidden="true"><span class="site-arrival__counter">000</span></div>' +
-    '<div class="site-arrival__center"><p class="site-arrival__wordmark" aria-hidden="true"></p>' +
-    '<button class="site-arrival__enter" type="button" hidden aria-label="' + copy.enter + '">' + copy.label + '</button></div>' +
-    '<p class="site-arrival__status" role="status" aria-live="polite">' + copy.preparing + '</p>';
-  var wordmark = curtain.querySelector(".site-arrival__wordmark");
-  var counter = curtain.querySelector(".site-arrival__counter");
-  var enter = curtain.querySelector(".site-arrival__enter");
-  var status = curtain.querySelector(".site-arrival__status");
+  // Built node by node: the page enforces Trusted Types, so nothing here
+  // goes through an HTML string.
+  function make(tag, className, text) {
+    var node = document.createElement(tag);
+    node.className = className;
+    if (text) node.textContent = text;
+    return node;
+  }
+  var meter = make("div", "site-arrival__meter");
+  meter.setAttribute("aria-hidden", "true");
+  var counter = meter.appendChild(make("span", "site-arrival__counter", "000"));
+  var center = make("div", "site-arrival__center");
+  var wordmark = center.appendChild(make("p", "site-arrival__wordmark"));
+  wordmark.setAttribute("aria-hidden", "true");
+  var enter = center.appendChild(make("button", "site-arrival__enter", copy.label));
+  enter.type = "button";
+  enter.hidden = true;
+  enter.setAttribute("aria-label", copy.enter);
+  var status = make("p", "site-arrival__status", copy.preparing);
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  curtain.append(meter, center, status);
   "NORBERT.BARNA".split("").forEach(function (character, index) {
     var letter = document.createElement("span");
     letter.className = "site-arrival__letter";
     letter.style.setProperty("--letter-index", index);
     letter.style.setProperty("--slice-x", ((index % 5) - 2) * .22 + "em");
     letter.style.setProperty("--slice-y", (index % 2 ? -1 : 1) * (1 + (index % 3) * .24) + "em");
-    letter.innerHTML = '<span class="site-arrival__measure">' + character + '</span>' +
-      '<span class="site-arrival__slice site-arrival__slice--upper">' + character + '</span>' +
-      '<span class="site-arrival__slice site-arrival__slice--lower">' + character + '</span>';
+    letter.append(
+      make("span", "site-arrival__measure", character),
+      make("span", "site-arrival__slice site-arrival__slice--upper", character),
+      make("span", "site-arrival__slice site-arrival__slice--lower", character)
+    );
     wordmark.appendChild(letter);
   });
   document.body.appendChild(curtain);

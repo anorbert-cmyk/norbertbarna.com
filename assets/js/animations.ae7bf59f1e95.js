@@ -418,7 +418,11 @@
 
   function splitRevealWords(element) {
     if (!element) return { words: [], revert: function () {} };
-    var original = element.innerHTML;
+    // Deep copies of the untouched children; revert() puts them back without
+    // parsing an HTML string (the page enforces Trusted Types).
+    var original = Array.from(element.childNodes).map(function (child) {
+      return child.cloneNode(true);
+    });
 
     function visit(node) {
       Array.from(node.childNodes).forEach(function (child) {
@@ -448,7 +452,7 @@
       words: words,
       revert: function () {
         gsap.killTweensOf(words);
-        element.innerHTML = original;
+        element.replaceChildren.apply(element, original);
       },
     };
   }

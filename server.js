@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { createContactRouter } = require("./lib/contact");
 const { createCommentsRouter } = require("./lib/comments");
+const { createCspReportRouter } = require("./lib/csp-report");
 const { createAdminRouter } = require("./lib/admin/router");
 const { createTrafficCounter } = require("./lib/admin/traffic");
 const { getStore } = require("./lib/admin/store");
@@ -50,6 +51,25 @@ const RELEASE = process.env.RAILWAY_GIT_COMMIT_SHA || process.env.RELEASE_SHA ||
 // The rule set every page names in its Speculation-Rules header.
 const SPECULATION_RULES_URL = "/assets/speculation-rules.json";
 
+// Browsers post policy violations here (lib/csp-report.js): the Reporting API
+// through Reporting-Endpoints and report-to, older ones through report-uri.
+// The URL is relative, so preview hosts report to themselves. "default" also
+// collects the deprecation and intervention reports browsers send unasked.
+const CSP_REPORT_PATH = "/api/csp-report";
+const REPORTING_ENDPOINTS = `csp="${CSP_REPORT_PATH}", default="${CSP_REPORT_PATH}"`;
+const CSP_REPORTING = [`report-uri ${CSP_REPORT_PATH}`, "report-to csp"];
+
+// Cross-Origin-Resource-Policy decides who may embed a response as a no-cors
+// subresource (an <img>, a <script>, a stylesheet). Pages, scripts, styles,
+// fonts, case-study media and every API answer are for this origin only.
+// What other sites and their readers are meant to load stays open: the social
+// preview images (og:image, JSON-LD), the icons a bookmark or feed reader
+// shows next to the site's name, and the crawler files (robots.txt, llms.txt,
+// the sitemap, the IndexNow key, the RSS feeds). Navigations, crawlers and
+// server-side fetches never consult this header.
+const CROSS_ORIGIN_RESOURCE =
+  /^\/(?:assets\/images\/og\/|assets\/icons\/|favicon\.ico$|robots\.txt$|llms\.txt$|sitemap\.xml$|[a-f0-9]{32}\.txt$|(?:hu\/irasok|writing|de\/wissen)\/feed\.xml$)/;
+
 // Security headers
 app.use((req, res, next) => {
   if (RELEASE) res.setHeader("X-Release", RELEASE);
@@ -64,7 +84,9 @@ app.use((req, res, next) => {
   );
   // No popup or OAuth flow needs an opener; isolate the browsing context group.
   res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  res.setHeader("Cross-Origin-Resource-Policy", CROSS_ORIGIN_RESOURCE.test(req.path) ? "cross-origin" : "same-origin");
+  // Two years, every subdomain, and consent to the browsers' preload list.
+  res.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
   // The admin (/admin) is a separate single-page app: its own bundle only, no
   // inline script, never framed, never indexed.
   if (req.path === "/admin" || req.path.startsWith("/admin/")) {
@@ -87,6 +109,22 @@ app.use((req, res, next) => {
   }
   // The contact pages alone load Cloudflare Turnstile (script and iframe).
   const turnstile = TURNSTILE_PAGES.has(req.path);
+  res.setHeader("Reporting-Endpoints", REPORTING_ENDPOINTS);
+  // Trusted Types: no first-party script writes an HTML string to the DOM, so
+  // every page refuses string-to-code sinks (innerHTML, script.src, eval) and
+  // allows no policy at all. The contact pages are the exception. contact.js
+  // injects Turnstile through its "contact-turnstile" policy, and Turnstile's
+  // own script is Cloudflare's code, which changes without notice; a sink in
+  // it that enforcement refused would stop the form from sending. There the
+  // same rule is report-only: nothing breaks, and whatever Turnstile needs
+  // shows up in the reports before it is enforced.
+  const trustedTypes = ["require-trusted-types-for 'script'", `trusted-types ${turnstile ? "contact-turnstile" : "'none'"}`];
+  if (turnstile) {
+    res.setHeader("Content-Security-Policy-Report-Only", [...trustedTypes, ...CSP_REPORTING].join("; "));
+  }
+  // Plain http only exists on localhost (tests, local preview), where an
+  // upgrade would point every asset at a port that does not speak TLS.
+  const local = req.hostname === "localhost" || req.hostname === "127.0.0.1";
   res.setHeader(
     "Content-Security-Policy",
     [
@@ -98,7 +136,8 @@ app.use((req, res, next) => {
       // cases) and the case-opening pending gate (after it on the cases). Hash
       // them so no other inline script can run. JSON-LD blocks are data, not
       // scripts, and need no hash. check-server fails when a body changes.
-      `script-src 'self' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE=' 'sha256-kFAFn3NkiuErEZDGYIGhtN8V/TAKmruXqYqBGtzpn/k=' 'sha256-omJdRt4l13xsZ2235O8IiiERzUD4GMpSC1kV3l1j1Sc='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
+      // 'report-sample' puts the first characters of a blocked script in its report.
+      `script-src 'self' 'report-sample' 'sha256-mjdgHR9aXy+6OwAGlNS/XgNcYG1Uhd2U4pl8vi7+XCY=' 'sha256-ajNAYd+0yNgPcpVjs2eysG1wKi43JcdHSYQTNWQc3WE=' 'sha256-kFAFn3NkiuErEZDGYIGhtN8V/TAKmruXqYqBGtzpn/k=' 'sha256-omJdRt4l13xsZ2235O8IiiERzUD4GMpSC1kV3l1j1Sc='${turnstile ? " https://challenges.cloudflare.com" : ""}`,
       // Inline style attributes and GSAP-driven styles need 'unsafe-inline';
       // fonts are self-hosted (assets/fonts) and the Webflow CSS still embeds
       // data: fonts. Google Fonts is no longer referenced by any page.
@@ -108,11 +147,14 @@ app.use((req, res, next) => {
       "media-src 'self'",
       "connect-src 'self' https://eu.i.posthog.com",
       "object-src 'none'",
-      "base-uri 'self'",
+      // No page has a <base> element; none may be injected.
+      "base-uri 'none'",
       "frame-ancestors 'self'",
       "form-action 'self'",
-      // Cloudflare Turnstile runs on the two contact pages only.
-      ...(turnstile ? ["frame-src https://challenges.cloudflare.com"] : []),
+      // Cloudflare Turnstile runs on the three contact pages only.
+      ...(turnstile ? ["frame-src https://challenges.cloudflare.com"] : [...trustedTypes]),
+      ...(local ? [] : ["upgrade-insecure-requests"]),
+      ...CSP_REPORTING,
     ].join("; ")
   );
   next();
@@ -244,6 +286,9 @@ app.use((req, res, next) => {
 // Contact form: proof-of-work challenge and the Resend relay. Mounted after
 // the private-path filter so /api can never expose repository files.
 app.use("/api/contact", createContactRouter());
+
+// Policy violation reports from browsers; logged, never stored.
+app.use(CSP_REPORT_PATH, createCspReportRouter());
 
 // Shared storage for comments, admin sessions and the traffic counters:
 // Postgres when DATABASE_URL is set, in memory otherwise (lib/admin/store.js).
