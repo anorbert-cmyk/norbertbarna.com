@@ -448,7 +448,7 @@
 }
 .writing-comments-field input { max-width: 34ch; }
 .writing-comments-field textarea { min-height: 132px; resize: vertical; }
-.writing-comments-field :is(input, textarea):focus { outline: none; border-bottom-color: var(--writing-navy); box-shadow: 0 1px 0 0 var(--writing-navy); }
+.writing-comments-field :is(input, textarea):focus { border-bottom-color: var(--writing-navy); box-shadow: 0 1px 0 0 var(--writing-navy); }
 .writing-comments :is(input, textarea, button, a):focus-visible { outline: 3px solid var(--writing-navy); outline-offset: 4px; }
 .writing-comments-trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .writing-comments .writing-comments-note { margin: 0 0 20px; font-size: .875rem; color: var(--writing-muted); }

@@ -232,7 +232,6 @@ body.contact-page {
 .contact-textarea:hover { border-bottom-color: rgb(10 22 40 / 80%); }
 .contact-input:focus,
 .contact-textarea:focus {
-  outline: none;
   border-bottom-color: var(--contact-navy);
   box-shadow: 0 1px 0 0 var(--contact-navy);
 }

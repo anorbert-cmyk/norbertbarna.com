@@ -8,6 +8,8 @@
  */
 
 :root {
+  /* The site is light only; controls, scrollbars and the canvas follow it. */
+  color-scheme: light;
   --site-gutter: clamp(24px, 4vw, 60px);
   --site-content: 1200px;
   --site-readable: 720px;
@@ -34,6 +36,15 @@ body {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* Site default for a keyboard focus stop that has no ring of its own: the
+ * text colour is already legible on its background, so the ring is too, and
+ * forced colors keeps a real outline. Zero specificity: every component
+ * ring below and in the page stylesheets still wins. */
+:where(a, button, summary, input, textarea, select, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 4px;
 }
 
 /* The skip destination must receive focus without disappearing under chrome. */
@@ -234,18 +245,21 @@ main {
   -webkit-overflow-scrolling: touch;
 }
 
-.case-toc ol::-webkit-scrollbar {
-  height: 4px;
-}
+/* Engines without the standard scrollbar properties get the same thin bar. */
+@supports not (scrollbar-color: auto) {
+  .case-toc ol::-webkit-scrollbar {
+    height: 4px;
+  }
 
-.case-toc ol::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: rgb(17 17 17 / 8%);
-}
+  .case-toc ol::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgb(17 17 17 / 8%);
+  }
 
-.case-toc ol::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgb(17 17 17 / 42%);
+  .case-toc ol::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgb(17 17 17 / 42%);
+  }
 }
 
 .case-toc li {
@@ -273,6 +287,13 @@ main {
   border-color: #111;
   background: #111;
   color: #fff;
+}
+
+/* The focused chip turns ink; its ring sits inside it (like the skip link), so
+ * the scrolling strip cannot clip it. */
+.case-toc a:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -6px;
 }
 
 .summary :is(h2, h3)[id] {
@@ -2383,6 +2404,7 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
   width: 100%;
   height: auto;
   max-height: min(640px, 70vh);
+  max-height: min(640px, 70svh);
   object-fit: contain;
   object-position: center;
   background: rgb(255 255 255 / 18%);
@@ -2397,6 +2419,7 @@ html.no-motion .awards-card .awards-year { background: #fff !important; color: #
 @media (max-width: 991px) {
   .case-hero-shot {
     max-height: min(420px, 46vh);
+    max-height: min(420px, 46svh);
   }
 
   .kineticare-hero-overlay {
@@ -2612,6 +2635,7 @@ body.home .navbar {
  * header media; text sits on the dark field at full measure. */
 .kineticare-hero {
   min-height: min(72vh, 720px);
+  min-height: min(72svh, 720px);
 }
 
 @media (min-width: 992px) {

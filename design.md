@@ -563,6 +563,18 @@ keyboard focus uses the existing ink/paper palette: a 3px ink outline with a
 white inner halo so it remains distinct on the mesh, paper and dark fields.
 Do not remove breadcrumb-link focus merely because it is not `.nav-link`.
 
+**Focus, type units and colour scheme (2026-11-15):** every keyboard focus stop
+has a real `outline` (never only a border or `box-shadow`, which forced colors
+drops). A focus stop without a component ring gets the site default at the top
+of `responsive.css`: 3px in the text colour, 4px offset, zero specificity. A
+filled control whose ring would sit on its own colour sets it explicitly (the
+navy capsules ring in navy on lilac; the case outline chip rings in white
+inside the ink chip). Type sizes in the stylesheets are written in `rem`
+(16px = 1rem; the px values in this document are the sizes at the default
+setting) and px line-heights are not authored; `check-design.mjs` fails on a
+px `font-size`, `font` size or `line-height`. `:root` declares
+`color-scheme: light`: the site is light only.
+
 At normal text size the outlined contact and primary actions remain 44px tall.
 At 200% text size or user-defined text spacing they may wrap and grow vertically
 (44px minimum), while keeping their full visible labels and existing action.
