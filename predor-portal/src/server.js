@@ -42,7 +42,7 @@ function cookies(req) {
   return out;
 }
 function setSid(res, sid, maxAge) {
-  res.setHeader('Set-Cookie', `sid=${sid}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${maxAge}${IS_PROD ? '; Secure' : ''}`);
+  res.setHeader('Set-Cookie', `sid=${sid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${IS_PROD ? '; Secure' : ''}`);
 }
 
 // ---------- ingest from the on-prem connector (outbound push, HMAC signed) ----------
