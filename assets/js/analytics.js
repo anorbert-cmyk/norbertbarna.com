@@ -13,15 +13,18 @@
   var PROJECT_KEY = 'phc_A6NZzdAmwhiRd9yXKevru3nqDWX5eqmNvzhxMHCn4T3Q';
   var SESSION_KEY = 'bn-analytics-session-v1';
   var RELEASE = 'consent-v1-20260905';
-  // Every canonical route in both languages (sitemap.xml). A route missing
-  // here is silently unmeasured, which hid the Hungarian site until 2026-10-21.
+  // Every canonical route in all three languages (sitemap.xml). A route missing
+  // here is silently unmeasured, which hid the Hungarian site until 2026-10-21
+  // and the German site until 2026-11-27. check-analytics compares with the sitemap.
   var CASES = ['raiffeisen', 'instructure', 'bitpanda', 'benker', 'sportsgambit', 'kineticare', 'onrobot'];
-  var ROUTES = ['/', '/works', '/about', '/ai-integration', '/contact', '/privacy', '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/hu/kapcsolat', '/hu/adatvedelem']
-    .concat(CASES.map(function (slug) { return '/work/' + slug; }), CASES.map(function (slug) { return '/hu/munka/' + slug; }));
+  var ROUTES = ['/', '/works', '/about', '/ai-integration', '/web-development', '/contact', '/privacy',
+    '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/hu/kapcsolat', '/hu/adatvedelem',
+    '/de', '/de/arbeiten', '/de/ueber-mich', '/de/ki-beratung-entwicklung', '/de/webentwicklung', '/de/kontakt', '/de/datenschutz']
+    .concat(CASES.map(function (slug) { return '/work/' + slug; }), CASES.map(function (slug) { return '/hu/munka/' + slug; }), CASES.map(function (slug) { return '/de/arbeit/' + slug; }));
   var CTA_IDS = ['consultation', 'contact', 'service'];
   // The writing section is generated from content/, so its slugs are matched
   // by shape: lowercase words joined by hyphens, never a query or file name.
-  var WRITING = /^\/(?:writing|hu\/irasok)(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?$/;
+  var WRITING = /^\/(?:writing|hu\/irasok|de\/wissen)(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?$/;
   var SOURCES = ['direct', 'google', 'bing', 'linkedin', 'chatgpt', 'perplexity', 'claude', 'gemini', 'copilot', 'other'];
   var CHANNELS = ['direct_or_unknown', 'organic_search', 'social_referral', 'ai_referral', 'paid', 'other_referral'];
   var pending = new Set();
@@ -112,13 +115,13 @@
     try { sessionStorage.removeItem(SESSION_KEY); } catch (_) { /* remains fail closed */ }
   }
   function pageType() {
-    if (path === '/' || path === '/hu') return 'home';
-    if (path === '/works' || path === '/hu/munkak') return 'work_index';
-    if (path.startsWith('/work/') || path.startsWith('/hu/munka/')) return 'case_study';
-    if (path === '/about' || path === '/hu/rolam') return 'about';
-    if (path === '/contact' || path === '/hu/kapcsolat') return 'contact';
-    if (path === '/privacy' || path === '/hu/adatvedelem') return 'privacy';
-    if (WRITING.test(path)) return path === '/writing' || path === '/hu/irasok' ? 'writing_index' : 'article';
+    if (path === '/' || path === '/hu' || path === '/de') return 'home';
+    if (path === '/works' || path === '/hu/munkak' || path === '/de/arbeiten') return 'work_index';
+    if (path.startsWith('/work/') || path.startsWith('/hu/munka/') || path.startsWith('/de/arbeit/')) return 'case_study';
+    if (path === '/about' || path === '/hu/rolam' || path === '/de/ueber-mich') return 'about';
+    if (path === '/contact' || path === '/hu/kapcsolat' || path === '/de/kontakt') return 'contact';
+    if (path === '/privacy' || path === '/hu/adatvedelem' || path === '/de/datenschutz') return 'privacy';
+    if (WRITING.test(path)) return path === '/writing' || path === '/hu/irasok' || path === '/de/wissen' ? 'writing_index' : 'article';
     return 'service';
   }
   function capture(event, placement) {
@@ -136,7 +139,7 @@
       $device_type: /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
       acquisition_source: s.source,
       acquisition_channel: s.channel,
-      page_language: path === '/hu' || path.startsWith('/hu/') ? 'hu' : 'en',
+      page_language: path === '/hu' || path.startsWith('/hu/') ? 'hu' : path === '/de' || path.startsWith('/de/') ? 'de' : 'en',
       page_type: pageType(),
       is_test: isTest,
       consent_version: 1,
@@ -178,7 +181,7 @@
   // Capture phase never cancels, replaces or delays the native navigation to
   // the contact page. Language links are not contact intent.
   document.addEventListener('click', function (event) {
-    var button = event.target instanceof Element ? event.target.closest('.footer-email, a[href="/contact"], a[href="/hu/kapcsolat"], [data-analytics-cta]') : null;
+    var button = event.target instanceof Element ? event.target.closest('.footer-email, a[href="/contact"], a[href="/hu/kapcsolat"], a[href="/de/kontakt"], [data-analytics-cta]') : null;
     if (!button) return;
     // data-analytics-cta names a call to action (e.g. "consultation" on a
     // service page) so the conversion goals can tell the offers apart.

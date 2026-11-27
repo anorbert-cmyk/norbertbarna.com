@@ -44,6 +44,18 @@ assert(!/phx_|phs_|lead_received|lead_qualified|meeting_booked/.test(analytics),
 for (const extra of ['.posthog', 'posthog.json', 'posthog-dashboards.json', 'insights.json']) {
   assert(!existsSync(new URL(extra, root)), `do not build PostHog dashboards in-repo (${extra})`);
 }
+// Every sitemap URL must be measurable: a route the allow-list misses sends
+// nothing and looks like an empty market (the German site, until 2026-11-27).
+{
+  const cases = analytics.match(/var CASES = (\[[^\]]*\]);/)[1];
+  const routes = new Function(`var CASES = ${cases}; return ${analytics.match(/var ROUTES = ([\s\S]*?);\n  var CTA_IDS/)[1]};`)();
+  const writing = new RegExp(analytics.match(/var WRITING = \/(.*)\/;/)[1]);
+  const sitemap = [...read('sitemap.xml').matchAll(/<loc>https:\/\/www\.barnanorbert\.com([^<]*)<\/loc>/g)].map(m => m[1] || '/');
+  assert(sitemap.length > 60, 'sitemap parsed');
+  for (const path of sitemap) assert(routes.includes(path) || writing.test(path), `${path}: in the sitemap but not measured by analytics.js`);
+  for (const path of routes) assert(sitemap.includes(path), `${path}: measured but not in the sitemap`);
+  assert(analytics.includes("path.startsWith('/de/') ? 'de'"), 'German pages report page_language de');
+}
 const CONSENT_META = { en: 'Optional, consent-gated PostHog analytics', hu: 'Opcionális, hozzájáruláshoz kötött PostHog-mérés', de: 'Optionale, einwilligungspflichtige PostHog-Analyse' };
 for (const [page, lang, route] of [['privacy.html', 'en', '/privacy'], ['hu/adatvedelem.html', 'hu', '/hu/adatvedelem'], ['de/datenschutz.html', 'de', '/de/datenschutz']]) {
   const html = read(page);
