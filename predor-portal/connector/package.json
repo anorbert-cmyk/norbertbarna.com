@@ -1,0 +1,10 @@
+{
+  "name": "predor-connector",
+  "version": "0.1.0",
+  "private": true,
+  "description": "On-prem connector: reads Predor events and pushes them outbound to the hosted portal",
+  "type": "module",
+  "main": "index.js",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node index.js" }
+}
