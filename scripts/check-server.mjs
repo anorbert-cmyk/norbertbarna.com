@@ -187,6 +187,49 @@ try {
   assert((await llms.text()).includes("# Norbert Barna, Product VP"), "/llms.txt content is incomplete");
   assert(llmsCache.get("max-age") === "0", "/llms.txt must revalidate after a deploy");
 
+  // Search and Markdown for agents (lib/agent-search.js).
+  const searchUrl = `${baseUrl}/.well-known/search`;
+  const found = await fetch(`${searchUrl}?q=${encodeURIComponent("human in the loop AI patterns")}`);
+  const foundBody = await found.text();
+  assert(found.status === 200 && /^text\/markdown/.test(found.headers.get("content-type") || ""), "/.well-known/search must answer a query in Markdown");
+  assert(foundBody.startsWith('# Search results for: "human in the loop AI patterns"'), "search results must open with the query");
+  assert(/^## https:\/\/www\.barnanorbert\.com\/writing\/human-in-the-loop-ai \(score: 1\.000\)$/m.test(foundBody), "the human-in-the-loop article must lead its own query");
+  assert((foundBody.match(/^## https:\/\//gm) || []).length <= 10, "search returns at most ten passages");
+  assert(found.headers.get("cross-origin-resource-policy") === "cross-origin" && found.headers.get("access-control-allow-origin") === "*", "search results must be readable from any origin");
+  assert(/noindex/.test(found.headers.get("x-robots-tag") || ""), "search results must not be indexed as pages");
+  for (const [query, expectedPath] of [["mennyibe kerül egy weboldal", "/hu/irasok/ceges-weboldal-ara"], ["Was kostet eine Website", "/de/wissen/was-kostet-eine-website"], ["KYC onboarding banking", "/work/benker"]]) {
+    const first = (await (await fetch(`${searchUrl}?q=${encodeURIComponent(query)}`)).text()).match(/^## (\S+) /m)?.[1];
+    assert(first === `https://www.barnanorbert.com${expectedPath}`, `search "${query}" must lead with ${expectedPath}, got ${first}`);
+  }
+  const queryText = await fetch(searchUrl, { method: "QUERY", headers: { "content-type": "text/plain" }, body: "Was kostet eine Website" });
+  assert(queryText.status === 200 && (await queryText.text()).includes("/de/wissen/was-kostet-eine-website"), "HTTP QUERY with a text body must search");
+  const queryJson = await fetch(searchUrl, { method: "QUERY", headers: { "content-type": "application/json" }, body: JSON.stringify({ q: "KYC onboarding" }) });
+  assert(queryJson.status === 200 && (await queryJson.text()).includes("/work/benker"), "HTTP QUERY with a JSON body must search");
+  const nothing = await fetch(`${searchUrl}?q=xyzzyqwerty`);
+  assert(nothing.status === 200 && (await nothing.text()).includes("No matching content"), "a query without matches is an empty result, not an error");
+  assert((await fetch(searchUrl)).status === 400, "search without a query is a 400 with usage");
+  assert((await fetch(searchUrl, { method: "POST", body: "x" })).status === 405, "search refuses methods that are not GET or QUERY");
+  assert((await fetch(searchUrl, { method: "QUERY", body: "x".repeat(5000) })).status === 413, "search refuses an oversized QUERY body");
+  assert((await fetch(`${baseUrl}/.well-known/security.txt`)).status === 404 && (await fetch(`${searchUrl}/x`)).status === 404, "only the search lives under /.well-known");
+  const employer = await (await fetch(`${searchUrl}?q=${encodeURIComponent("web development company website")}`)).text();
+  assert(!/<script|<div|aria-hidden/i.test(employer), "search results are Markdown, never page markup");
+
+  for (const pagePath of ["/", "/hu/webfejlesztes", "/de/wissen/was-kostet-eine-website", "/work/benker", "/writing"]) {
+    const markdown = await fetch(`${baseUrl}${pagePath}`, { headers: { accept: "text/markdown, text/html;q=0.9" } });
+    const text = await markdown.text();
+    assert(markdown.status === 200 && /^text\/markdown/.test(markdown.headers.get("content-type") || ""), `${pagePath}: Accept: text/markdown must return Markdown`);
+    assert(text.startsWith("---\ntitle: ") && text.includes('  endpoint: "https://www.barnanorbert.com/.well-known/search?q={query}"'), `${pagePath}: Markdown opens with front matter that names the search`);
+    assert(/^# \S/m.test(text) && !/<\/?(?:div|span|script|svg|section)\b/i.test(text), `${pagePath}: Markdown has a heading and no page markup`);
+    assert(/\bAccept\b/i.test(markdown.headers.get("vary") || ""), `${pagePath}: Markdown response must vary on Accept`);
+    const html = await fetch(`${baseUrl}${pagePath}`, { headers: { accept: "text/html,application/xhtml+xml,*/*;q=0.8" } });
+    assert(/^text\/html/.test(html.headers.get("content-type") || "") && /\bAccept\b/i.test(html.headers.get("vary") || ""), `${pagePath}: browsers still get HTML, varying on Accept`);
+    assert((await html.text()).includes('<meta content="https://www.barnanorbert.com/.well-known/search?q={query}" name="agent:endpoint"/>'), `${pagePath}: page advertises the search endpoint`);
+  }
+  const missingMarkdown = await fetch(`${baseUrl}/does-not-exist`, { headers: { accept: "text/markdown" } });
+  assert(missingMarkdown.status === 404, "an unknown page asked for as Markdown is still a 404");
+  const privateMarkdown = await fetch(`${baseUrl}/server.js`, { headers: { accept: "text/markdown" } });
+  assert(privateMarkdown.status === 404, "private paths stay private when asked for as Markdown");
+
   const homeWithoutToken = await fetch(`${baseUrl}/`);
   assert(homeWithoutToken.ok, "homepage without GSC token did not return 200");
   assert(
@@ -588,6 +631,7 @@ try {
     ["/favicon.ico", "cross-origin"],
     ["/robots.txt", "cross-origin"],
     ["/llms.txt", "cross-origin"],
+    ["/.well-known/search?q=website", "cross-origin"],
     ["/sitemap.xml", "cross-origin"],
     [`/${indexNowKey}`, "cross-origin"],
     ["/writing/feed.xml", "cross-origin"],

@@ -8,6 +8,7 @@ const { createCspReportRouter } = require("./lib/csp-report");
 const { createAdminRouter } = require("./lib/admin/router");
 const { createTrafficCounter } = require("./lib/admin/traffic");
 const { getStore } = require("./lib/admin/store");
+const { SEARCH_PATH, markdownNegotiation, searchHandler } = require("./lib/agent-search");
 
 const GOOGLE_SITE_VERIFICATION = "";
 const GSC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,100}$/;
@@ -65,10 +66,11 @@ const CSP_REPORTING = [`report-uri ${CSP_REPORT_PATH}`, "report-to csp"];
 // What other sites and their readers are meant to load stays open: the social
 // preview images (og:image, JSON-LD), the icons a bookmark or feed reader
 // shows next to the site's name, and the crawler files (robots.txt, llms.txt,
-// the sitemap, the IndexNow key, the RSS feeds). Navigations, crawlers and
+// the sitemap, the IndexNow key, the RSS feeds, the search for agents).
+// Navigations, crawlers and
 // server-side fetches never consult this header.
 const CROSS_ORIGIN_RESOURCE =
-  /^\/(?:assets\/images\/og\/|assets\/icons\/|favicon\.ico$|robots\.txt$|llms\.txt$|sitemap\.xml$|[a-f0-9]{32}\.txt$|(?:hu\/irasok|writing|de\/wissen)\/feed\.xml$)/;
+  /^\/(?:assets\/images\/og\/|assets\/icons\/|favicon\.ico$|robots\.txt$|llms\.txt$|sitemap\.xml$|[a-f0-9]{32}\.txt$|\.well-known\/search$|(?:hu\/irasok|writing|de\/wissen)\/feed\.xml$)/;
 
 // Security headers
 app.use((req, res, next) => {
@@ -106,6 +108,7 @@ app.use((req, res, next) => {
   // not count requests that carry Sec-Purpose: prefetch.
   if (!/^\/(?:assets|api)\//.test(req.path)) {
     res.setHeader("Speculation-Rules", `"${SPECULATION_RULES_URL}"`);
+    res.vary("Accept");
   }
   // The contact pages alone load Cloudflare Turnstile (script and iframe).
   const turnstile = TURNSTILE_PAGES.has(req.path);
@@ -261,6 +264,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Search for agents (lib/agent-search.js): the question in, the most relevant
+// passages of the site out, as Markdown. It reads no file named by the
+// request, so it sits before the private-path filter, which refuses every
+// other path that starts with a dot.
+app.use(SEARCH_PATH, (req, res, next) => (req.path === "/" ? searchHandler()(req, res).catch(next) : next()));
+
 // The page mount below serves the repo root, so explicitly refuse paths that
 // are deployment internals rather than site content (server source, manifests,
 // docs, dotfiles). Decode first: express.static decodes percent-encoding when
@@ -318,6 +327,11 @@ app.use(
   })
 );
 app.use("/admin", (req, res) => sendNotFound(res, req));
+
+// A client that asks for text/markdown ahead of HTML gets the page as
+// Markdown (lib/agent-search.js). Every other request falls through to the
+// HTML below, which is why page responses vary on Accept.
+app.use(markdownNegotiation());
 
 // Cookieless daily page counters for the admin (lib/admin/traffic.js).
 app.use(createTrafficCounter(store).middleware);

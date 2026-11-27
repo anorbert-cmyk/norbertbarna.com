@@ -130,6 +130,12 @@ Articles by Norbert Barna, written from his own project work; each opens with it
 - [Contact form](https://www.barnanorbert.com/contact) (Hungarian: https://www.barnanorbert.com/hu/kapcsolat; German: https://www.barnanorbert.com/de/kontakt): name, email, topic (website or app development, AI integration, a product leadership role, something else) and message
 - Project enquiries can also use the email button on the site; no address is published in this file.
 
+## For agents
+
+- Site search: `GET https://www.barnanorbert.com/.well-known/search?q={query}` takes keywords or a natural-language question in English, Hungarian or German and returns the most relevant passages of this site in Markdown, each with its source URL and a relevance score. It returns retrieved text, not a generated answer. The HTTP QUERY method works too, with the question as a text/plain body or as JSON `{"q": "..."}`.
+- Markdown pages: request any page with `Accept: text/markdown` to receive it as Markdown with YAML front matter (title, description, canonical URL, language).
+- Every HTML page names the search endpoint in `<meta name="agent:endpoint">`.
+
 ## Canonical and reuse guidance
 
 - Prefer the canonical URLs listed above.

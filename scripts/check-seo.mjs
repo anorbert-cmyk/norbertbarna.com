@@ -14,12 +14,14 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import { CONTACT_PAGES, LANGS, PAGE_GROUPS, UTILITY_PAGES, SERVICE_PAGES, WRITING_PAGES, WRITING_LANGUAGE_LINKS, baseOf, HU_PAGES, DE_PAGES, isWritingList, isWritingPage, languageOf, urlOf } from "./service-pages.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const origin = "https://www.barnanorbert.com";
 const files = ["index.html", "works.html", "about.html", ...UTILITY_PAGES,
   ...readdirSync(join(root, "work")).filter(f => f.endsWith(".html")).map(f => `work/${f}`), ...HU_PAGES, ...DE_PAGES, ...WRITING_PAGES];
+const { AGENT } = createRequire(import.meta.url)("../lib/agent-search.js");
 const errors = [];
 const check = (condition, message) => { if (!condition) errors.push(message); };
 const decode = value => String(value).replace(/&#x([0-9a-f]+);|&#(\d+);|&(amp|quot|apos|nbsp|lt|gt);/gi,
@@ -95,6 +97,10 @@ for (const page of pages) {
   check(robots.length === 1 && /\bindex\b/.test(robots[0]) && /\bfollow\b/.test(robots[0]), `${file}: explicit index/follow`);
   check(![...robots, ...page.metas("googlebot")].some(value => /\b(noindex|nofollow|none)\b/i.test(value)), `${file}: conflicting crawl directives`);
   check(page.language === languageOf(file), `${file}: document language`);
+  // Search for agents: every page names the endpoint, exactly as the server answers it.
+  for (const [key, value] of Object.entries(AGENT)) {
+    check(page.metas(`agent:${key}`).length === 1 && page.metas(`agent:${key}`)[0] === value, `${file}: one <meta name="agent:${key}"> with the value from lib/agent-search.js`);
+  }
   const bingVerification = page.metas("msvalidate.01");
   check(baseOf(file) === "index.html" ? bingVerification.length === 1 && /^[A-F0-9]{32}$/i.test(bingVerification[0]) : bingVerification.length === 0,
     `${file}: one provider-issued Bing verification value belongs on the homepage only`);
