@@ -9,6 +9,7 @@ const { createAdminRouter } = require("./lib/admin/router");
 const { createTrafficCounter } = require("./lib/admin/traffic");
 const { getStore } = require("./lib/admin/store");
 const { SEARCH_PATH, markdownNegotiation, searchHandler } = require("./lib/agent-search");
+const { createAgentAnalytics } = require("./lib/agent-analytics");
 
 const GOOGLE_SITE_VERIFICATION = "";
 const GSC_TOKEN_PATTERN = /^[A-Za-z0-9_-]{20,100}$/;
@@ -263,6 +264,11 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+// AI agent traffic as PostHog events (lib/agent-analytics.js): searches,
+// Markdown requests and AI crawler page fetches. It reads the finished
+// response only and is silent outside the deployed site.
+app.use(createAgentAnalytics().middleware);
 
 // Search for agents (lib/agent-search.js): the question in, the most relevant
 // passages of the site out, as Markdown. It reads no file named by the

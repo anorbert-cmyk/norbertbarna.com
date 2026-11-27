@@ -225,6 +225,65 @@ try {
     assert(/^text\/html/.test(html.headers.get("content-type") || "") && /\bAccept\b/i.test(html.headers.get("vary") || ""), `${pagePath}: browsers still get HTML, varying on Accept`);
     assert((await html.text()).includes('<meta content="https://www.barnanorbert.com/.well-known/search?q={query}" name="agent:endpoint"/>'), `${pagePath}: page advertises the search endpoint`);
   }
+  // AI agent traffic as PostHog events (lib/agent-analytics.js), with the
+  // sender replaced so nothing leaves the machine.
+  {
+    const express = require("express");
+    const { createAgentAnalytics, agentOf, redact } = require(join(ROOT, "lib/agent-analytics.js"));
+    const agentSearch = require(join(ROOT, "lib/agent-search.js"));
+    const sent = [];
+    const analytics = createAgentAnalytics({ enabled: true, key: "phc_test", send: async (batch, target) => sent.push(...batch.map((event) => ({ ...event, target }))) });
+    const probe = express();
+    probe.use(analytics.middleware);
+    probe.use(agentSearch.SEARCH_PATH, (req, res, next) => agentSearch.searchHandler()(req, res).catch(next));
+    probe.use(agentSearch.markdownNegotiation());
+    probe.get("/web-development", (req, res) => res.type("html").send("<p>page</p>"));
+    probe.get("/llms.txt", (req, res) => res.type("text/plain").send("guide"));
+    probe.get("/assets/a.css", (req, res) => res.type("css").send("a{}"));
+    const probeServer = probe.listen(0, "127.0.0.1");
+    await once(probeServer, "listening");
+    const probeUrl = `http://127.0.0.1:${probeServer.address().port}`;
+    const gpt = { "user-agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; GPTBot/1.2; +https://openai.com/gptbot" };
+    const person = { "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15" };
+    try {
+      await (await fetch(`${probeUrl}/.well-known/search?q=${encodeURIComponent("website for jane.doe@example.com call +36 30 123 4567")}`, { headers: { "user-agent": "Claude-User/1.0", "x-forwarded-for": "203.0.113.9", referer: "https://example.com/secret" } })).text();
+      await (await fetch(`${probeUrl}/.well-known/search`, { headers: gpt })).text();
+      await (await fetch(`${probeUrl}/web-development`, { headers: { ...person, accept: "text/markdown" } })).text();
+      await (await fetch(`${probeUrl}/web-development`, { headers: gpt })).text();
+      await (await fetch(`${probeUrl}/llms.txt`, { headers: gpt })).text();
+      await (await fetch(`${probeUrl}/assets/a.css`, { headers: gpt })).text();
+      await (await fetch(`${probeUrl}/web-development`, { headers: person })).text();
+      await new Promise((done) => setTimeout(done, 50));
+      await analytics.flush();
+    } finally {
+      probeServer.close();
+    }
+    assert(sent.map((event) => event.event).join() === "agent_search,agent_search,agent_markdown_request,ai_bot_request,ai_bot_request", `agent analytics: unexpected events ${sent.map((event) => event.event).join()}`);
+    const [asked, empty, markdown, crawl] = sent;
+    assert(asked.target.key === "phc_test" && asked.target.host === "https://eu.i.posthog.com", "agent analytics posts to the EU PostHog host");
+    assert(asked.distinct_id === "agent:Claude-User" && asked.properties.agent_kind === "ai-bot" && asked.properties.results > 0 && asked.properties.top_result?.startsWith("/"), "agent_search names the agent family and its result");
+    assert(asked.properties.query === "website for [email] call [number]", `agent_search must mask personal data in the query, got ${asked.properties.query}`);
+    assert(empty.properties.status === 400 && empty.properties.answered === false && empty.properties.query === "", "a search without a query is recorded as unanswered");
+    assert(markdown.distinct_id === "agent:browser" && markdown.properties.path === "/web-development", "agent_markdown_request carries the page path");
+    assert(crawl.distinct_id === "agent:GPTBot" && crawl.properties.path === "/web-development" && sent[4].properties.path === "/llms.txt", "ai_bot_request covers pages and llms.txt");
+    for (const event of sent) {
+      const flat = JSON.stringify(event);
+      assert(event.properties.$process_person_profile === false && event.properties.$ip === null && event.properties.$geoip_disable === true, `${event.event}: must stay anonymous`);
+      assert(!/203\.0\.113\.9|example\.com\/secret|jane\.doe|Mozilla|AppleWebKit/.test(flat), `${event.event}: carries an address, a referrer, an e-mail or a raw user agent`);
+    }
+    assert(agentOf("curl/8.5.0").agent === "curl" && agentOf("").kind === "other" && redact("a".repeat(300)).length === 200, "agent analytics helpers");
+    // The app itself stays silent wherever it is not the deployed site.
+    const silent = createAgentAnalytics({ send: async () => { throw new Error("sent"); } });
+    silent.capture("agent_search", "GPTBot", {});
+    assert(silent.pending() === 0, "agent analytics must be off outside Railway");
+    // A PostHog failure is swallowed.
+    const failing = createAgentAnalytics({ enabled: true, send: async () => { throw new Error("down"); } });
+    failing.capture("agent_search", "GPTBot", {});
+    const quiet = console.error;
+    console.error = () => {};
+    try { await failing.flush(); } finally { console.error = quiet; }
+  }
+
   const missingMarkdown = await fetch(`${baseUrl}/does-not-exist`, { headers: { accept: "text/markdown" } });
   assert(missingMarkdown.status === 404, "an unknown page asked for as Markdown is still a 404");
   const privateMarkdown = await fetch(`${baseUrl}/server.js`, { headers: { accept: "text/markdown" } });
