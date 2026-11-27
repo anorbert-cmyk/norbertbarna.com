@@ -238,6 +238,7 @@ try {
     probe.use(agentSearch.SEARCH_PATH, (req, res, next) => agentSearch.searchHandler()(req, res).catch(next));
     probe.use(agentSearch.markdownNegotiation());
     probe.get("/web-development", (req, res) => res.type("html").send("<p>page</p>"));
+    probe.get("/de/wissen", (req, res) => res.type("html").send("<p>wissen</p>"));
     probe.get("/llms.txt", (req, res) => res.type("text/plain").send("guide"));
     probe.get("/assets/a.css", (req, res) => res.type("css").send("a{}"));
     const probeServer = probe.listen(0, "127.0.0.1");
@@ -245,6 +246,7 @@ try {
     const probeUrl = `http://127.0.0.1:${probeServer.address().port}`;
     const gpt = { "user-agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; GPTBot/1.2; +https://openai.com/gptbot" };
     const person = { "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15" };
+    const phone = { "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1" };
     try {
       await (await fetch(`${probeUrl}/.well-known/search?q=${encodeURIComponent("website for jane.doe@example.com call +36 30 123 4567")}`, { headers: { "user-agent": "Claude-User/1.0", "x-forwarded-for": "203.0.113.9", referer: "https://example.com/secret" } })).text();
       await (await fetch(`${probeUrl}/.well-known/search`, { headers: gpt })).text();
@@ -252,13 +254,18 @@ try {
       await (await fetch(`${probeUrl}/web-development`, { headers: gpt })).text();
       await (await fetch(`${probeUrl}/llms.txt`, { headers: gpt })).text();
       await (await fetch(`${probeUrl}/assets/a.css`, { headers: gpt })).text();
-      await (await fetch(`${probeUrl}/web-development`, { headers: person })).text();
+      await (await fetch(`${probeUrl}/web-development?utm_source=newsletter`, { headers: { ...person, "x-forwarded-for": "203.0.113.9", referer: "https://example.com/secret", cookie: "sid=abc123" } })).text();
+      await (await fetch(`${probeUrl}/de/wissen/`, { headers: { ...phone, "sec-fetch-site": "cross-site", referer: "https://www.google.com/search?q=secret" } })).text();
+      await (await fetch(`${probeUrl}/de/wissen`, { headers: { ...person, "sec-fetch-site": "same-origin", referer: "https://www.barnanorbert.com/de" } })).text();
+      await (await fetch(`${probeUrl}/de/wissen`, { headers: { ...person, "sec-purpose": "prefetch;prerender" } })).text();
+      await (await fetch(`${probeUrl}/assets/a.css`, { headers: person })).text();
+      await (await fetch(`${probeUrl}/missing`, { headers: person })).text();
       await new Promise((done) => setTimeout(done, 50));
       await analytics.flush();
     } finally {
       probeServer.close();
     }
-    assert(sent.map((event) => event.event).join() === "agent_search,agent_search,agent_markdown_request,ai_bot_request,ai_bot_request", `agent analytics: unexpected events ${sent.map((event) => event.event).join()}`);
+    assert(sent.map((event) => event.event).join() === "agent_search,agent_search,agent_markdown_request,ai_bot_request,ai_bot_request,server_pageview,server_pageview,server_pageview", `agent analytics: unexpected events ${sent.map((event) => event.event).join()}`);
     const [asked, empty, markdown, crawl] = sent;
     assert(asked.target.key === "phc_test" && asked.target.host === "https://eu.i.posthog.com", "agent analytics posts to the EU PostHog host");
     assert(asked.distinct_id === "agent:Claude-User" && asked.properties.agent_kind === "ai-bot" && asked.properties.results > 0 && asked.properties.top_result?.startsWith("/"), "agent_search names the agent family and its result");
@@ -266,6 +273,19 @@ try {
     assert(empty.properties.status === 400 && empty.properties.answered === false && empty.properties.query === "", "a search without a query is recorded as unanswered");
     assert(markdown.distinct_id === "agent:browser" && markdown.properties.path === "/web-development", "agent_markdown_request carries the page path");
     assert(crawl.distinct_id === "agent:GPTBot" && crawl.properties.path === "/web-development" && sent[4].properties.path === "/llms.txt", "ai_bot_request covers pages and llms.txt");
+    // People are counted without consent only because nothing in the event
+    // can tell one of them from another.
+    const [campaign, search, inside] = sent.slice(5);
+    assert(sent.slice(5).every((event) => event.distinct_id === "anonymous-visitor"), "server_pageview: every visitor shares one id");
+    assert(campaign.properties.path === "/web-development" && campaign.properties.page_language === "en" && campaign.properties.page_type === "service" && campaign.properties.is_entry === true && campaign.properties.acquisition_source === "newsletter" && campaign.properties.$device_type === "Desktop", `server_pageview: campaign visit, got ${JSON.stringify(campaign.properties)}`);
+    assert(search.properties.path === "/de/wissen" && search.properties.page_language === "de" && search.properties.page_type === "writing_index" && search.properties.acquisition_source === "google" && search.properties.acquisition_channel === "organic_search" && search.properties.$device_type === "Mobile", `server_pageview: search visit, got ${JSON.stringify(search.properties)}`);
+    assert(inside.properties.is_entry === false && inside.properties.acquisition_channel === "internal", "server_pageview: a move inside the site is not a new visit");
+    const allowed = ["$current_url", "$device_type", "$geoip_disable", "$host", "$ip", "$lib", "$pathname", "$process_person_profile", "acquisition_channel", "acquisition_source", "agent", "agent_kind", "is_entry", "page_language", "page_type", "path"];
+    for (const event of sent.slice(5)) {
+      const extra = Object.keys(event.properties).filter((name) => !allowed.includes(name));
+      assert(extra.length === 0, `server_pageview: unexpected properties ${extra.join()}`);
+      assert(!/abc123|utm_source|q=secret/.test(JSON.stringify(event)), "server_pageview: carries a cookie or a query string");
+    }
     for (const event of sent) {
       const flat = JSON.stringify(event);
       assert(event.properties.$process_person_profile === false && event.properties.$ip === null && event.properties.$geoip_disable === true, `${event.event}: must stay anonymous`);

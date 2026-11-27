@@ -136,6 +136,20 @@ for (const path of ["/robots.txt", "/llms.txt"]) {
   else if (live.body !== local) (compare ? fail : note)(`${path} differs from this checkout`);
   else pass(`${path} live and current`);
 }
+// The deployed analytics sender measures every language. A stale or cached
+// copy without the German routes sends nothing from /de (until 2026-11-27).
+{
+  const live = await get(`${BASE}/assets/js/analytics.js`);
+  const body = live.body;
+  if (live.status !== 200) fail(`/assets/js/analytics.js -> ${live.status}`);
+  else if (!["'/web-development'", "'/de/kontakt'", "'/de/arbeit/'", "de\\/wissen", "? 'de' : 'en'"].every((part) => body.includes(part))) fail("live analytics.js does not measure the German pages and /web-development");
+  else pass("live analytics.js measures the English, Hungarian and German routes");
+  for (const page of ["/de", "/de/wissen", "/web-development"]) {
+    const html = (await get(`${BASE}${page}`)).body;
+    if (!html.includes('src="/assets/js/analytics.js"') || !html.includes('src="/assets/js/consent.js"')) fail(`${page} does not load the consent and analytics scripts`);
+    else pass(`${page} loads the consent and analytics scripts`);
+  }
+}
 // Search and Markdown for agents (lib/agent-search.js).
 {
   const answer = await get(`${BASE}/.well-known/search?q=${encodeURIComponent("human in the loop AI")}`);
