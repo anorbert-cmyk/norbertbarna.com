@@ -6,7 +6,59 @@
     <atom:link href="https://www.barnanorbert.com/hu/irasok/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Barna Norbert cikkei céges weboldalakról, webfejlesztésről és AI-integrációról, saját projektek tapasztalataiból írva.</description>
     <language>hu</language>
-    <lastBuildDate>Thu, 12 Nov 2026 11:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Nov 2026 22:30:00 +0000</lastBuildDate>
+    <item>
+      <title>AI fejlesztés ára: mitől függ, és mit kérdezz előtte</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>AI fejlesztés ára: nyolc tényező, amely drágítja vagy olcsóbbá teszi, a szakaszolás, két ajánlat összevetése és a futó költségek.</description>
+      <category>ai fejlesztés</category>
+      <category>ai integráció</category>
+      <category>ai fejlesztés ára</category>
+      <category>ai bevezetés</category>
+      <category>ai tanácsadás</category>
+      <category>ai automatizálás</category>
+    </item>
+    <item>
+      <title>AI fejlesztő partner: 10 kérdés, mielőtt megbízod</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>Mit kérdezz egy AI fejlesztő partnertől a megbízás előtt: öt dolog, amit előre készíts elő, és tíz kérdés a jó válasz ismérveivel.</description>
+      <category>ai fejlesztő</category>
+      <category>ai fejlesztés</category>
+      <category>ai tanácsadás</category>
+      <category>ai bevezetés</category>
+      <category>ai automatizálás</category>
+      <category>ai integráció</category>
+    </item>
+    <item>
+      <title>AI hallucináció céges termékben: mi az, és hogyan kezeld</title>
+      <link>https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>Az AI hallucináció nem kapcsolható ki, de kezelhető: saját források, vázlat, tartózkodás, emberi ellenőrzés. Hét minta a gyakorlatból.</description>
+      <category>ai hallucináció</category>
+      <category>ai hallucináció kezelése</category>
+      <category>mesterséges intelligencia hallucináció</category>
+      <category>rag</category>
+      <category>human in the loop</category>
+      <category>ai bevezetés</category>
+    </item>
+    <item>
+      <title>MVP fejlesztés szabályozott iparágban: mi legyen valódi?</title>
+      <link>https://www.barnanorbert.com/hu/irasok/mvp-fejlesztes-szabalyozott-termekhez</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/hu/irasok/mvp-fejlesztes-szabalyozott-termekhez</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>MVP fejlesztés fintech és egészségügyi termékhez: mit hagyhatsz ki, minek kell az első napon valódinak lennie, és milyen sorrendben.</description>
+      <category>mvp fejlesztés</category>
+      <category>fintech mvp</category>
+      <category>mvp szabályozott iparágban</category>
+      <category>egészségügyi szoftverfejlesztés</category>
+      <category>minimum viable product</category>
+      <category>webalkalmazás fejlesztés</category>
+    </item>
     <item>
       <title>AI Act: mit kell jelölnie egy terméknek 2026 augusztusa óta</title>
       <link>https://www.barnanorbert.com/hu/irasok/ai-act-jelolesi-kotelezettseg</link>

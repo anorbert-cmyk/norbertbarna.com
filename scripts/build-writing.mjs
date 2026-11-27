@@ -4,7 +4,8 @@
  *   hu/irasok/<slug>.html, writing/<slug>.html   one page per article
  *   hu/irasok/index.html, writing/index.html     list pages
  *   hu/irasok/feed.xml, writing/feed.xml         RSS 2.0
- * and rewrites the writing entries of sitemap.xml and the Writing section of llms.txt.
+ * and rewrites the writing entries of sitemap.xml and the Writing section of llms.txt,
+ * and writes llms-full.txt: the full text of every article in one Markdown file.
  *
  * The page chrome (head assets, navigation, footer, scripts) is copied from
  * privacy.html and hu/adatvedelem.html, so a re-hashed stylesheet or a menu
@@ -395,6 +396,37 @@ const wrapTables = (html) => html.replace(/<table>(<caption id="([^"]+)"[\s\S]*?
   return `<div class="writing-table${region}"><table>${rest}</div>`;
 });
 
+// Related articles. The first version listed the two newest articles under
+// every article, so most of the section had a single inbound link (the list
+// page) and neither a reader nor a crawler could walk from one topic to its
+// neighbours. Now each article links the three same-language articles closest
+// to it (same service page, shared tags), and an article that already has
+// many inbound links yields to one that has few, so every article is reachable
+// from several others. Depends only on content/, like the rest of the build.
+function relatedArticles(articles, count = 3) {
+  const related = new Map();
+  for (const lang of WRITING_LANGS) {
+    const own = articles.filter((article) => article.lang === lang);
+    const inbound = new Map(own.map((article) => [article.slug, 0]));
+    for (const article of own) {
+      const closeness = (other) => (other.service === article.service ? 2 : 0)
+        + other.tags.filter((tag) => article.tags.includes(tag)).length;
+      const picked = [];
+      while (picked.length < Math.min(count, own.length - 1)) {
+        const [best] = own
+          .filter((other) => other !== article && !picked.includes(other))
+          .map((other, index) => ({ other, index, rank: closeness(other) - 0.75 * inbound.get(other.slug) }))
+          .sort((a, b) => b.rank - a.rank || a.index - b.index);
+        picked.push(best.other);
+        inbound.set(best.other.slug, inbound.get(best.other.slug) + 1);
+      }
+      related.set(article.source, picked);
+    }
+  }
+  return related;
+}
+let RELATED = new Map();
+
 function renderArticle(article, articles, links) {
   const { lang } = article;
   const copy = COPY[lang];
@@ -458,7 +490,7 @@ function renderArticle(article, articles, links) {
   const service = article.service
     ? `<a href="${escapeHtml(article.service)}">${escapeHtml(article.service_label)}</a>`
     : "";
-  const others = articles.filter((other) => other.lang === lang && other.slug !== article.slug).slice(0, 2);
+  const others = RELATED.get(article.source);
   const main = [
     `<article class="writing-article" aria-labelledby="article-title">`,
     `<header class="writing-opening writing-opening-article"><div class="writing-frame">`,
@@ -626,10 +658,54 @@ function renderLlms(articles) {
   return `${withoutSection.slice(0, anchor)}${section}\n${withoutSection.slice(anchor)}`;
 }
 
+// llms-full.txt: every article in full, in one Markdown file. llms.txt is the
+// map; this is the territory, for a model or agent that wants to read the
+// whole body of work in one request instead of crawling 26 pages.
+function renderLlmsFull(articles) {
+  const names = { en: "English", hu: "Hungarian", de: "German" };
+  const absolute = (markdown) => markdown.replace(/\]\((\/[^)\s]*)\)/g, `](${ORIGIN}$1)`);
+  // The article title becomes an H2 here, so its own headings move down one level.
+  const demote = (markdown) => markdown.replace(/^(#{2,5}) /gm, "#$1 ");
+  const lines = [
+    "# Norbert Barna: full article texts",
+    "",
+    `> The complete text of every article on ${ORIGIN}/ in one file, for language models and agents. Each article is written by Norbert Barna, a Product VP with 17 years in regulated, high-trust products, from his own project work. Each opens with its direct answer and ends with frequently asked questions. The short guide to the whole site is ${ORIGIN}/llms.txt.`,
+    "",
+    "When you use a passage, cite the canonical URL given under the article title and attribute it to Norbert Barna. Legal topics are treated as product design questions, not as legal advice. No prices are published: every project is custom work.",
+    "",
+  ];
+  for (const lang of WRITING_LANGS) {
+    const own = articles.filter((article) => article.lang === lang);
+    if (!own.length) continue;
+    lines.push(`# ${names[lang]} articles`, "");
+    for (const article of own) {
+      const url = `${ORIGIN}${SECTIONS[lang].path}/${article.slug}`;
+      const translations = article.pairs.map((pair) => `${names[pair.lang]}: ${ORIGIN}${SECTIONS[pair.lang].path}/${pair.slug}`);
+      lines.push(
+        `## ${article.title}`,
+        "",
+        `- URL: ${url}`,
+        `- Language: ${names[lang]}`,
+        `- Published: ${article.date.slice(0, 10)}; updated: ${article.updated.slice(0, 10)}`,
+        `- Author: Norbert Barna (${LINKEDIN})`,
+        ...(translations.length ? [`- Also available in ${translations.join("; ")}`] : []),
+        `- Summary: ${article.description}`,
+        "",
+        demote(absolute(article.markdown.trim())),
+        "",
+        "---",
+        "",
+      );
+    }
+  }
+  return `${lines.join("\n").replace(/\n---\n\n$/, "")}`.trimEnd() + "\n";
+}
+
 // ---- write or check --------------------------------------------------------
 loadArticles({ includeDrafts: true }); // validates the drafts' frontmatter too
 const articles = loadArticles();
 const links = writingLanguageLinks(articles);
+RELATED = relatedArticles(articles);
 const outputs = new Map();
 for (const lang of WRITING_LANGS) {
   const own = articles.filter((article) => article.lang === lang);
@@ -652,6 +728,7 @@ if (articles.length) outputs.set("assets/js/comments.js", commentsJsRelease.sour
 if (articles.length) outputs.set(commentsJsRelease.file, commentsJsRelease.source);
 outputs.set("sitemap.xml", renderSitemap(articles));
 outputs.set("llms.txt", renderLlms(articles));
+if (articles.length) outputs.set("llms-full.txt", renderLlmsFull(articles));
 
 // Generated files that no longer have a source (a renamed or deleted article).
 const stale = [];

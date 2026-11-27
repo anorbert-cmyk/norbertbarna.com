@@ -10,7 +10,7 @@ service: /ai-integration
 service_label: AI integration for regulated industries
 cover: /assets/images/og/writing/before-hiring-an-ai-integration-partner.jpg
 cover_alt: Five folded paper strips in a row like a checklist, one lifted to show its olive underside: what to prepare before hiring an AI integration partner
-pair: null
+pair: [hu/ai-fejleszto-partner-valasztasa, de/ki-dienstleister-auswaehlen]
 ---
 Before you hire an AI integration partner, prepare five things: one workflow described by the people who do it, a baseline of how it performs today, the data and systems the AI may touch, the decisions a person must keep, and the measure that would make a pilot worth continuing. With those, a first conversation produces a scoped proposal instead of a demo.
 

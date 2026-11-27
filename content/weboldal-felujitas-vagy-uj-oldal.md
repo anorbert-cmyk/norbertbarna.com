@@ -10,7 +10,7 @@ service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
 cover: /assets/images/og/writing/website-relaunch-oder-ueberarbeitung.jpg
 cover_alt: Két hajtogatott papírforma egymás mellett, az egyik felülete kisimítva, a másik újonnan és élesebben hajtogatva, azt jelképezve, hogy weboldal felújítás vagy új oldal kell
-pair: de/website-relaunch-oder-ueberarbeitung
+pair: [de/website-relaunch-oder-ueberarbeitung, en/website-redesign-or-rebuild]
 ---
 A weboldal felújítás akkor elég, ha az alap jó, és csak a tartalmat, egyes oldalakat vagy a sebességet kell rendbe tenni. Új oldalt akkor érdemes építeni, ha a baj az alapban van: a technikában, a szerkezetben vagy abban, amit az oldal a cégedről állít. Az ökölszabály: ha a problémák felsorolásakor három olyan pontig jutsz, amely csak másik rendszerrel, másik szerkezettel vagy másik pozicionálással oldható meg, akkor újraépítés kell. Ha minden probléma egy-egy oldalt vagy szöveget érint, akkor felújítás.
 

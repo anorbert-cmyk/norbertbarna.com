@@ -10,7 +10,7 @@ service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-im-kundenservice.jpg
 cover_alt: Zwei einander zugewandte gefaltete Papierformen, dazwischen eine kleine Papiernotiz: KI im Kundenservice mit menschlicher Kontrolle
-pair: hu/ai-ugyfelszolgalat-emberi-ellenorzessel
+pair: [hu/ai-ugyfelszolgalat-emberi-ellenorzessel, en/ai-customer-service-with-human-oversight]
 ---
 KI im Kundenservice lohnt sich, wenn viele ähnliche Anfragen eingehen, die richtige Antwort in Ihren eigenen Dokumenten steht, und eine falsche Antwort korrigiert werden kann, bevor sie Schaden anrichtet. Mit menschlicher Kontrolle funktioniert das so: Die KI schreibt den Entwurf einer Antwort oder wählt die Quelle aus, und eine Mitarbeiterin gibt frei, schreibt um oder verwirft. Wo Geld, Gesundheit oder eine Rechtslage auf dem Spiel stehen, hat der Mensch das letzte Wort.
 

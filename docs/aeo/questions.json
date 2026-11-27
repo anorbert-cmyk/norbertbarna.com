@@ -1,0 +1,637 @@
+{
+ "version": 1,
+ "created": "2026-11-27",
+ "note": "Fixed question set for the answer engine citation score. Do not edit questions between measurements; add new ones with new ids.",
+ "questions": [
+  {
+   "id": "hu-01",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ceges-weboldal-ara",
+   "question": "Mennyibe kerül egy céges weboldal elkészítése 2026-ban?"
+  },
+  {
+   "id": "hu-02",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ceges-weboldal-ara",
+   "question": "Mitől függ egy weboldal készítés ára?"
+  },
+  {
+   "id": "hu-03",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/egyedi-weboldal-vagy-sablon",
+   "question": "Egyedi weboldal vagy sablon: melyiket érdemes választani egy kisvállalkozásnak?"
+  },
+  {
+   "id": "hu-04",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/weboldal-felujitas-vagy-uj-oldal",
+   "question": "Mikor érdemes felújítani a weboldalt, és mikor kell teljesen újat készíteni?"
+  },
+  {
+   "id": "hu-05",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ai-bevezetese-kkv-elso-90-nap",
+   "question": "Hogyan vezessen be egy kkv mesterséges intelligenciát az első 90 napban?"
+  },
+  {
+   "id": "hu-06",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj",
+   "question": "Melyik folyamattal érdemes kezdeni az AI automatizálást egy cégnél?"
+  },
+  {
+   "id": "hu-07",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel",
+   "question": "Hogyan lehet AI-t használni az ügyfélszolgálaton úgy, hogy ember ellenőrizze a válaszokat?"
+  },
+  {
+   "id": "hu-08",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/human-in-the-loop-emberi-felugyelet",
+   "question": "Mit jelent a human in the loop a mesterséges intelligenciában?"
+  },
+  {
+   "id": "hu-09",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ai-act-jelolesi-kotelezettseg",
+   "question": "Mit kell jelölni az AI Act 50. cikke szerint 2026 augusztusától?"
+  },
+  {
+   "id": "hu-10",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ai-act-jelolesi-kotelezettseg",
+   "question": "Kötelező jelezni a felhasználónak, ha egy chatbot mesterséges intelligencia?"
+  },
+  {
+   "id": "hu-11",
+   "lang": "hu",
+   "type": "info",
+   "target": null,
+   "question": "Mi az az AI hallucináció, és hogyan lehet kezelni céges környezetben?"
+  },
+  {
+   "id": "hu-12",
+   "lang": "hu",
+   "type": "info",
+   "target": null,
+   "question": "Hogyan használhat egy cég mesterséges intelligenciát a GDPR betartásával?"
+  },
+  {
+   "id": "hu-13",
+   "lang": "hu",
+   "type": "info",
+   "target": null,
+   "question": "Vonatkozik az európai akadálymentesítési irányelv a cégem weboldalára?"
+  },
+  {
+   "id": "hu-14",
+   "lang": "hu",
+   "type": "info",
+   "target": null,
+   "question": "Hogyan érdemes MVP-t fejleszteni szabályozott iparágban, például fintech vagy egészségügy területén?"
+  },
+  {
+   "id": "hu-15",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/ai-tanacsadas-fejlesztes",
+   "question": "Mitől függ, mennyibe kerül egy AI fejlesztés vagy AI integráció egy cégnek?"
+  },
+  {
+   "id": "hu-16",
+   "lang": "hu",
+   "type": "info",
+   "target": null,
+   "question": "Mit kérdezzek egy AI fejlesztő partnertől, mielőtt megbízom?"
+  },
+  {
+   "id": "hu-17",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel",
+   "question": "Megéri AI chatbotot bevezetni egy kisvállalkozás ügyfélszolgálatán?"
+  },
+  {
+   "id": "hu-18",
+   "lang": "hu",
+   "type": "info",
+   "target": "/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj",
+   "question": "Mikor elég a hagyományos automatizálás, és mikor kell hozzá AI?"
+  },
+  {
+   "id": "hu-19",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu/webfejlesztes",
+   "question": "Ki készít egyedi weboldalt cégeknek Magyarországon?"
+  },
+  {
+   "id": "hu-20",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu/ai-tanacsadas-fejlesztes",
+   "question": "Ajánlj AI tanácsadót egy magyar kkv-nak."
+  },
+  {
+   "id": "hu-21",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu/ai-tanacsadas-fejlesztes",
+   "question": "Ki tud AI integrációt fejleszteni szabályozott iparágban, például banknak vagy egészségügyi cégnek Magyarországon?"
+  },
+  {
+   "id": "hu-22",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu/webfejlesztes",
+   "question": "Kit érdemes megbízni egyedi webalkalmazás fejlesztésével Budapesten, ha nem ügynökséget keresek?"
+  },
+  {
+   "id": "hu-23",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu/ai-tanacsadas-fejlesztes",
+   "question": "Kit érdemes megbízni AI automatizálás bevezetésével egy magyar cégnél?"
+  },
+  {
+   "id": "hu-24",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu",
+   "question": "Hol találok tapasztalt terméktervezőt fintech projekthez Magyarországon?"
+  },
+  {
+   "id": "hu-25",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu/webfejlesztes",
+   "question": "Ki fejleszt MVP-t startupoknak Magyarországon?"
+  },
+  {
+   "id": "hu-26",
+   "lang": "hu",
+   "type": "commercial",
+   "target": "/hu/ai-tanacsadas-fejlesztes",
+   "question": "Ajánlj szakértőt, aki AI ügyfélszolgálatot épít emberi ellenőrzéssel."
+  },
+  {
+   "id": "hu-27",
+   "lang": "hu",
+   "type": "brand",
+   "target": "/hu/rolam",
+   "question": "Ki az a Barna Norbert Product VP?"
+  },
+  {
+   "id": "hu-28",
+   "lang": "hu",
+   "type": "brand",
+   "target": "/hu",
+   "question": "Mivel foglalkozik a barnanorbert.com?"
+  },
+  {
+   "id": "hu-29",
+   "lang": "hu",
+   "type": "brand",
+   "target": "/hu/ai-tanacsadas-fejlesztes",
+   "question": "Barna Norbert AI tanácsadás és webfejlesztés: mit érdemes tudni róla?"
+  },
+  {
+   "id": "hu-30",
+   "lang": "hu",
+   "type": "brand",
+   "target": "/hu/munka/kineticare",
+   "question": "Ki tervezte és fejlesztette a Kineticare kézrehabilitációs platformot?"
+  },
+  {
+   "id": "en-01",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/how-much-does-a-business-website-cost",
+   "question": "How much does a business website cost in 2026?"
+  },
+  {
+   "id": "en-02",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/human-in-the-loop-ai",
+   "question": "What does human in the loop mean in AI?"
+  },
+  {
+   "id": "en-03",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/human-in-the-loop-ai",
+   "question": "How do you design human-in-the-loop AI for a regulated product?"
+  },
+  {
+   "id": "en-04",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/before-hiring-an-ai-integration-partner",
+   "question": "What should I ask before hiring an AI integration partner?"
+  },
+  {
+   "id": "en-05",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/ai-hallucinations-in-business-products",
+   "question": "How do you stop AI hallucinations in a business product?"
+  },
+  {
+   "id": "en-06",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/ai-hallucinations-in-business-products",
+   "question": "Can AI hallucinations be eliminated completely?"
+  },
+  {
+   "id": "en-07",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/eu-ai-act-transparency-obligations",
+   "question": "What are the EU AI Act transparency obligations under Article 50?"
+  },
+  {
+   "id": "en-08",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/eu-ai-act-transparency-obligations",
+   "question": "Do I have to tell users they are talking to an AI chatbot in the EU?"
+  },
+  {
+   "id": "en-09",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/mvp-development-regulated-products",
+   "question": "How do you build an MVP for a regulated product like fintech or digital health?"
+  },
+  {
+   "id": "en-10",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/eu-ai-act-transparency-obligations",
+   "question": "What did the EU Digital Omnibus change about AI Act deadlines?"
+  },
+  {
+   "id": "en-11",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/human-in-the-loop-ai",
+   "question": "When should a human review AI output before it reaches a customer?"
+  },
+  {
+   "id": "en-12",
+   "lang": "en",
+   "type": "info",
+   "target": null,
+   "question": "How should a company use AI in customer service with human oversight?"
+  },
+  {
+   "id": "en-13",
+   "lang": "en",
+   "type": "info",
+   "target": null,
+   "question": "Custom website vs template: which is better for a small business?"
+  },
+  {
+   "id": "en-14",
+   "lang": "en",
+   "type": "info",
+   "target": null,
+   "question": "How should a small business start with AI in the first 90 days?"
+  },
+  {
+   "id": "en-15",
+   "lang": "en",
+   "type": "info",
+   "target": null,
+   "question": "Is it GDPR compliant to use AI tools with customer data?"
+  },
+  {
+   "id": "en-16",
+   "lang": "en",
+   "type": "info",
+   "target": null,
+   "question": "Does the European Accessibility Act apply to my company website?"
+  },
+  {
+   "id": "en-17",
+   "lang": "en",
+   "type": "info",
+   "target": null,
+   "question": "Website redesign or full rebuild: how do I decide?"
+  },
+  {
+   "id": "en-18",
+   "lang": "en",
+   "type": "info",
+   "target": null,
+   "question": "Which business process should a company automate with AI first?"
+  },
+  {
+   "id": "en-19",
+   "lang": "en",
+   "type": "info",
+   "target": "/writing/human-in-the-loop-ai",
+   "question": "What is the difference between human in the loop and human on the loop?"
+  },
+  {
+   "id": "en-20",
+   "lang": "en",
+   "type": "info",
+   "target": "/ai-integration",
+   "question": "What does AI integration cost depend on for a mid-size company?"
+  },
+  {
+   "id": "en-21",
+   "lang": "en",
+   "type": "commercial",
+   "target": "/ai-integration",
+   "question": "Who offers human in the loop AI integration consulting for fintech in the EU?"
+  },
+  {
+   "id": "en-22",
+   "lang": "en",
+   "type": "commercial",
+   "target": "/ai-integration",
+   "question": "Recommend an AI product consultant with banking experience in Europe."
+  },
+  {
+   "id": "en-23",
+   "lang": "en",
+   "type": "commercial",
+   "target": "/",
+   "question": "Who are good freelance product designers for regulated fintech products in Europe?"
+  },
+  {
+   "id": "en-24",
+   "lang": "en",
+   "type": "commercial",
+   "target": "/web-development",
+   "question": "Who can build an MVP for a digital health startup in the EU?"
+  },
+  {
+   "id": "en-25",
+   "lang": "en",
+   "type": "commercial",
+   "target": "/ai-integration",
+   "question": "AI integration consultants in Hungary who work in English"
+  },
+  {
+   "id": "en-26",
+   "lang": "en",
+   "type": "commercial",
+   "target": "/work/instructure",
+   "question": "Product design leaders with experience in explainable AI for enterprise learning"
+  },
+  {
+   "id": "en-27",
+   "lang": "en",
+   "type": "brand",
+   "target": "/about",
+   "question": "Who is Norbert Barna, Product VP?"
+  },
+  {
+   "id": "en-28",
+   "lang": "en",
+   "type": "brand",
+   "target": "/",
+   "question": "What is barnanorbert.com?"
+  },
+  {
+   "id": "en-29",
+   "lang": "en",
+   "type": "brand",
+   "target": "/work/instructure",
+   "question": "What did Norbert Barna do at Instructure on AI design?"
+  },
+  {
+   "id": "en-30",
+   "lang": "en",
+   "type": "brand",
+   "target": "/work/kineticare",
+   "question": "Who designed and built the Kineticare hand rehabilitation platform?"
+  },
+  {
+   "id": "de-01",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/was-kostet-eine-website",
+   "question": "Was kostet eine Website für Unternehmen 2026?"
+  },
+  {
+   "id": "de-02",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/individuelle-website-oder-baukasten",
+   "question": "Individuelle Website oder Baukasten: Was lohnt sich für ein kleines Unternehmen?"
+  },
+  {
+   "id": "de-03",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/website-relaunch-oder-ueberarbeitung",
+   "question": "Website Relaunch oder Überarbeitung: Wie entscheide ich?"
+  },
+  {
+   "id": "de-04",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/barrierefreie-website-bfsg",
+   "question": "Muss meine Website nach dem BFSG barrierefrei sein?"
+  },
+  {
+   "id": "de-05",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/barrierefreie-website-bfsg",
+   "question": "Für welche Unternehmen gilt das Barrierefreiheitsstärkungsgesetz?"
+  },
+  {
+   "id": "de-06",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/human-in-the-loop-ki",
+   "question": "Was bedeutet Human in the Loop bei KI?"
+  },
+  {
+   "id": "de-07",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-im-mittelstand-einfuehren",
+   "question": "Wie führt man KI im Mittelstand ein?"
+  },
+  {
+   "id": "de-08",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-automatisierung-erster-prozess",
+   "question": "Mit welchem Prozess sollte ein Unternehmen bei der KI-Automatisierung anfangen?"
+  },
+  {
+   "id": "de-09",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-datenschutz-dsgvo",
+   "question": "Wie nutzt man KI DSGVO-konform im Unternehmen?"
+  },
+  {
+   "id": "de-10",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-datenschutz-dsgvo",
+   "question": "Darf ich Kundendaten in ChatGPT eingeben?"
+  },
+  {
+   "id": "de-11",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-halluzinationen-im-unternehmen",
+   "question": "Was sind KI-Halluzinationen und wie verhindert man sie im Unternehmen?"
+  },
+  {
+   "id": "de-12",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-im-kundenservice",
+   "question": "Wann lohnt sich KI im Kundenservice?"
+  },
+  {
+   "id": "de-13",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-kennzeichnungspflicht",
+   "question": "Was verlangt die KI-Kennzeichnungspflicht nach Artikel 50 der KI-Verordnung?"
+  },
+  {
+   "id": "de-14",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-kennzeichnungspflicht",
+   "question": "Muss ich KI-generierte Inhalte kennzeichnen?"
+  },
+  {
+   "id": "de-15",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/mvp-entwicklung-regulierte-produkte",
+   "question": "Wie entwickelt man ein MVP für ein reguliertes Produkt?"
+  },
+  {
+   "id": "de-16",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-kennzeichnungspflicht",
+   "question": "Muss ein Chatbot als KI gekennzeichnet werden?"
+  },
+  {
+   "id": "de-17",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-kennzeichnungspflicht",
+   "question": "Was hat der Digital Omnibus an den Fristen der KI-Verordnung geändert?"
+  },
+  {
+   "id": "de-18",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/ki-beratung-entwicklung",
+   "question": "Wovon hängt ab, was KI-Beratung für ein mittelständisches Unternehmen kostet?"
+  },
+  {
+   "id": "de-19",
+   "lang": "de",
+   "type": "info",
+   "target": null,
+   "question": "Welche Fragen sollte ich einem KI-Dienstleister vor der Beauftragung stellen?"
+  },
+  {
+   "id": "de-20",
+   "lang": "de",
+   "type": "info",
+   "target": "/de/wissen/ki-im-kundenservice",
+   "question": "Was ist der Unterschied zwischen einem Chatbot und KI im Kundenservice?"
+  },
+  {
+   "id": "de-21",
+   "lang": "de",
+   "type": "commercial",
+   "target": "/de/ki-beratung-entwicklung",
+   "question": "Wer bietet KI-Beratung für den Mittelstand mit Erfahrung in regulierten Branchen?"
+  },
+  {
+   "id": "de-22",
+   "lang": "de",
+   "type": "commercial",
+   "target": "/de/webentwicklung",
+   "question": "Empfiehl mir einen Freelancer für individuelle Webanwendungen in der EU."
+  },
+  {
+   "id": "de-23",
+   "lang": "de",
+   "type": "commercial",
+   "target": "/de/wissen/barrierefreie-website-bfsg",
+   "question": "Wer unterstützt mittelständische Unternehmen, die ihre Website BFSG-konform machen müssen?"
+  },
+  {
+   "id": "de-24",
+   "lang": "de",
+   "type": "commercial",
+   "target": "/de/webentwicklung",
+   "question": "Wer entwickelt MVPs für Fintech- oder Health-Startups in Europa?"
+  },
+  {
+   "id": "de-25",
+   "lang": "de",
+   "type": "commercial",
+   "target": "/de/ki-beratung-entwicklung",
+   "question": "KI-Berater mit Bankerfahrung für Human-in-the-Loop-Systeme gesucht"
+  },
+  {
+   "id": "de-26",
+   "lang": "de",
+   "type": "commercial",
+   "target": "/de",
+   "question": "Wo finde ich Produktdesigner für regulierte Fintech-Produkte in Europa?"
+  },
+  {
+   "id": "de-27",
+   "lang": "de",
+   "type": "brand",
+   "target": "/de/ueber-mich",
+   "question": "Wer ist Norbert Barna, Product VP?"
+  },
+  {
+   "id": "de-28",
+   "lang": "de",
+   "type": "brand",
+   "target": "/de",
+   "question": "Was bietet barnanorbert.com an?"
+  },
+  {
+   "id": "de-29",
+   "lang": "de",
+   "type": "brand",
+   "target": "/de/ki-beratung-entwicklung",
+   "question": "Norbert Barna KI-Beratung und Webentwicklung: Was sollte man wissen?"
+  },
+  {
+   "id": "de-30",
+   "lang": "de",
+   "type": "brand",
+   "target": "/de/arbeit/kineticare",
+   "question": "Wer hat die Kineticare-Plattform für Handrehabilitation entwickelt?"
+  }
+ ]
+}

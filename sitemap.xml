@@ -236,8 +236,44 @@
   </url>
   <url>
     <loc>https://www.barnanorbert.com/writing</loc>
-    <lastmod>2026-11-12</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/ai-customer-service-with-human-oversight</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/ai-for-small-business-first-90-days</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/custom-website-or-template</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/website-redesign-or-rebuild</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/what-ai-integration-cost-depends-on</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/writing/which-process-to-automate-with-ai-first</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
@@ -278,8 +314,32 @@
   </url>
   <url>
     <loc>https://www.barnanorbert.com/hu/irasok</loc>
-    <lastmod>2026-11-12</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/hu/irasok/mvp-fejlesztes-szabalyozott-termekhez</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
@@ -332,8 +392,20 @@
   </url>
   <url>
     <loc>https://www.barnanorbert.com/de/wissen</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-beratung-kosten</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
