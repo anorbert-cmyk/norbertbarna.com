@@ -211,6 +211,15 @@ test('Hungarian routes are measured with their own language and page type', asyn
   expect(sent[0].properties.page_type).toBe('case_study');
 });
 
+test('German routes are measured with their own language and page type', async ({ page }) => {
+  for (const [path, type] of [['/de/arbeit/kineticare', 'case_study'], ['/de/wissen/was-kostet-eine-website', 'article'], ['/de/webentwicklung', 'service']]) {
+    const sent = await setup(page, { accepted: true, path });
+    await expect.poll(() => sent.length).toBe(1);
+    expect(sent[0].properties.page_language).toBe('de');
+    expect(sent[0].properties.page_type).toBe(type);
+  }
+});
+
 test('generated writing routes are measured as articles; other shapes are not', async ({ page }) => {
   const sent = await setup(page, { accepted: true, path: '/hu/irasok/ai-bevezetes-lepesei' });
   await expect.poll(() => sent.length).toBe(1);
