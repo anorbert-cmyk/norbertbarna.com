@@ -26,12 +26,12 @@ A termékre nézve ebből az következik, hogy a modell magától nem lesz óvat
 
 Nem minden hibás válasz kerül ugyanannyiba. A céges projektekben három fajtával találkozom a leggyakrabban, és a háromból kettő nem a modellben keletkezik, hanem a cég adataiban.
 
-: Az AI hallucináció három gyakori fajtája céges környezetben, az eredete és az ellenszere
-| Fajta | Példa | Hol keletkezik | Mi fogja meg |
-| --- | --- | --- | --- |
-| Kitalált forrás vagy szám | Nem létező szabályzatra, szerződési pontra vagy árra hivatkozik | A modellben | Saját források, látható hivatkozás, tartózkodás |
-| Összekevert esetek | Az egyik ügyfél kérdésére a másik ügyfél adataival válaszol | A keresésben és az adatokban | Szűk jogosultság, forrás a válasz mellett, emberi jóváhagyás |
-| Elavult igazság | A válasz két éve helyes volt, a dokumentumot azóta senki sem frissítette | A dokumentumokban | Gazdája van minden forrásnak, a hibákat méred |
+: Az AI hallucináció három gyakori fajtája céges környezetben és az ellenszere
+| Fajta és eredete | Példa | Mi fogja meg |
+| --- | --- | --- |
+| Kitalált forrás vagy szám (a modellben keletkezik) | Nem létező szabályzatra, szerződési pontra vagy árra hivatkozik | Saját források, látható hivatkozás, tartózkodás |
+| Összekevert esetek (a keresésben és az adatokban) | Az egyik ügyfél kérdésére a másik ügyfél adataival válaszol | Szűk jogosultság, forrás a válasz mellett, emberi jóváhagyás |
+| Elavult igazság (a dokumentumokban) | A válasz két éve helyes volt, a dokumentumot azóta senki sem frissítette | Gazdája van minden forrásnak, a hibákat méred |
 
 A kitalált forrás azért veszélyes, mert a kimenet bizonyítéknak látszik. Az összekevert eset az ügyfélszolgálaton és mindenhol, ahol személyes adat van, a legdrágább hiba. Az elavult igazság szigorúan véve nem hallucináció, de a felhasználónak ugyanaz. Ezért a hallucináció elleni munka egy egyszerű kérdéssel indul: milyen forrásokból dolgozhat egyáltalán az AI?
 
