@@ -217,6 +217,9 @@ for (const [path, { body }] of Object.entries(pages)) {
     let target;
     try { target = new URL(raw, `${BASE}${path}`); } catch { continue; }
     if (target.host !== HOST) continue;
+    // The search endpoint in <meta name="agent:endpoint"> is a URL template
+    // (?q={query}); without a query it answers 400 by design. Step 4 checks it.
+    if (target.pathname === "/.well-known/search") continue;
     refs.add(target.pathname);
   }
   for (const [, raw] of body.matchAll(/\bsrcset="([^"]+)"/g)) {
