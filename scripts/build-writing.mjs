@@ -15,6 +15,7 @@
  *   node scripts/build-writing.mjs --check   fail if any output is stale (npm test)
  */
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import {
@@ -23,6 +24,8 @@ import {
 } from "./writing-content.mjs";
 import { urlOf } from "./service-pages.mjs";
 import { BREADCRUMB_LABEL, applyChrome } from "./site-chrome.mjs";
+
+const { AGENT_META } = createRequire(import.meta.url)("../lib/agent-search.js");
 
 const CHECK = process.argv.includes("--check");
 const DEFAULT_IMAGE = {
@@ -299,7 +302,8 @@ function head({ lang, title, description, keywords, canonical, type, image, alte
     `<meta content="${escapeHtml(image.alt)}" name="twitter:image:alt"/>`,
     `<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>`,
     `<meta content="#000000" name="theme-color"/>`,
-    `<meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/>`,
+    // The search for agents every page advertises (lib/agent-search.js).
+    `<meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/>${AGENT_META}`,
     `<meta content="Norbert Barna" name="author"/>`,
     `<link rel="canonical" href="${canonical}"/>`,
     ...(alternates ? [

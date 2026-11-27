@@ -136,6 +136,16 @@ for (const path of ["/robots.txt", "/llms.txt"]) {
   else if (live.body !== local) (compare ? fail : note)(`${path} differs from this checkout`);
   else pass(`${path} live and current`);
 }
+// Search and Markdown for agents (lib/agent-search.js).
+{
+  const answer = await get(`${BASE}/.well-known/search?q=${encodeURIComponent("human in the loop AI")}`);
+  if (answer.status !== 200 || !/^text\/markdown/.test(answer.headers.get("content-type") || "") || !answer.body.includes(`${BASE}/writing/human-in-the-loop-ai`)) (compare ? fail : note)(`/.well-known/search does not answer in Markdown (${answer.status})`);
+  else pass("/.well-known/search answers a query in Markdown");
+  const page = await fetch(`${BASE}/web-development`, { headers: { "user-agent": UA, accept: "text/markdown" } });
+  const text = await page.text();
+  if (page.status !== 200 || !/^text\/markdown/.test(page.headers.get("content-type") || "") || !text.startsWith("---\ntitle: ")) (compare ? fail : note)(`Accept: text/markdown does not return Markdown (${page.status})`);
+  else pass("pages answer Accept: text/markdown with Markdown");
+}
 for (const path of ["/writing/feed.xml", "/hu/irasok/feed.xml", "/de/wissen/feed.xml"]) {
   if (!existsSync(join(ROOT, path.slice(1)))) continue;
   const live = await get(`${BASE}${path}`);
