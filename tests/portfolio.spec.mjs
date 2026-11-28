@@ -24,7 +24,7 @@ const languageOf = (route) => LANGS.find((code) => code !== "en" && (route === `
 const SLUGS = ["raiffeisen", "instructure", "bitpanda", "benker", "sportsgambit", "kineticare", "onrobot"];
 // Every published content page with its translations (whole-site language switch, 2026-10-06; German, 2026-10-21).
 const PAGE_GROUPS = [{ en: "/", hu: "/hu", de: "/de" }, { en: "/works", hu: "/hu/munkak", de: "/de/arbeiten" }, { en: "/about", hu: "/hu/rolam", de: "/de/ueber-mich" },
-  { en: "/ai-integration", hu: "/hu/ai-tanacsadas-fejlesztes", de: "/de/ki-beratung-entwicklung" }, { en: "/web-development", hu: "/hu/webfejlesztes", de: "/de/webentwicklung" },
+  { en: "/ai-integration", hu: "/hu/ai-tanacsadas-fejlesztes", de: "/de/ki-beratung-entwicklung" }, { en: "/web-development", hu: "/hu/webfejlesztes", de: "/de/webentwicklung" }, { en: "/mvp-development", hu: "/hu/mvp-fejlesztes", de: "/de/mvp-entwicklung" },
   { en: "/privacy", hu: "/hu/adatvedelem", de: "/de/datenschutz" }, { en: "/contact", hu: "/hu/kapcsolat", de: "/de/kontakt" }, ...SLUGS.map((slug) => ({ en: `/work/${slug}`, hu: `/hu/munka/${slug}`, de: `/de/arbeit/${slug}` }))];
 const ALL_ROUTES = PAGE_GROUPS.flatMap((group) => Object.values(group));
 
@@ -41,10 +41,13 @@ const contentRoutes = [
   "/works",
   "/ai-integration",
   "/web-development",
+  "/mvp-development",
   "/hu/ai-tanacsadas-fejlesztes",
   "/hu/webfejlesztes",
+  "/hu/mvp-fejlesztes",
   "/de/ki-beratung-entwicklung",
   "/de/webentwicklung",
+  "/de/mvp-entwicklung",
   "/de",
   "/privacy",
   "/hu/adatvedelem",
@@ -717,7 +720,7 @@ for (const route of contentRoutes.filter((route) => route !== "/")) {
 // (design review 2026-10-23): the yellow link and the lilac secondary link are
 // scored on the composited artwork, where the German copy once pushed them
 // into the yellow chevron.
-for (const route of ["/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/de/ki-beratung-entwicklung", "/de/webentwicklung", "/de"]) {
+for (const route of ["/ai-integration", "/web-development", "/mvp-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/hu/mvp-fejlesztes", "/de/ki-beratung-entwicklung", "/de/webentwicklung", "/de/mvp-entwicklung", "/de"]) {
   test(`${route}: opening actions meet AA on the composited artwork at phone widths`, async ({ page }) => {
     await page.route(/posthog\.com/, (request) => request.abort());
     for (const width of [320, 360, 390, 430]) {
@@ -1285,8 +1288,8 @@ for (const width of [320, 390, 768, 991, 1440]) {
     await page.mouse.move(width * .92, Math.min(1090, footerBox.y + footerBox.height * .86));
     await page.waitForTimeout(450);
     const text = page.locator(".editorial-footer-title, .footer-lede, .footer-col-title, .footer-col a, footer .footer-email, footer .footer-contact-link, .footer-copyright, .footer-privacy a, .footer-privacy button");
-    // Work column (title + 5), Services (title + 2), Articles (title + latest 3 + all) and the rest.
-    await expect(text).toHaveCount(21);
+    // Work column (title + 5), Services (title + 3), Articles (title + latest 3 + all) and the rest.
+    await expect(text).toHaveCount(22);
     for (const element of await text.all()) {
       await expectHeaderTextAA(page, element, "footer rendered text", { raster: true });
       if (await element.evaluate((node) => node.matches("a, button"))) {
@@ -1317,7 +1320,7 @@ for (const route of ["/", "/works", "/work/instructure", "/work/kineticare", "/h
     await expect(work.locator("a")).toHaveText(["Raiffeisen", "Instructure", "Bitpanda", "Kineticare", copy.allWork]);
     expect(await work.locator("a").evaluateAll((links) => links.map((link) => link.getAttribute("href"))))
       .toEqual([...["raiffeisen", "instructure", "bitpanda", "kineticare"].map((slug) => `${copy.caseRoot}${slug}`), copy.works]);
-    await expect(footer.locator(".footer-col-services a")).toHaveCount(2);
+    await expect(footer.locator(".footer-col-services a")).toHaveCount(3);
     // Latest three articles of the page language plus the All articles row.
     await expect(footer.locator(".footer-col-articles a")).toHaveCount(4);
     await expect(footer.locator(".footer-col-articles a").last()).toHaveAttribute("href", copy.writing);

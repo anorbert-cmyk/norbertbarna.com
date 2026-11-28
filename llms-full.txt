@@ -1666,6 +1666,234 @@ Human-in-the-loop AI is easier to design than to retrofit. The product that pass
 
 # Hungarian articles
 
+## AI automatizálás biztosítási alkusznak: ember hagy jóvá
+
+- URL: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-biztositasi-alkusznak
+- Language: Hungarian
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in German: https://www.barnanorbert.com/de/wissen/ki-automatisierung-versicherungsmakler
+- Summary: AI automatizálás biztosítási alkusznak: mit készít elő az AI, mit hagy jóvá a kolléga, mit kér az adatvédelem, és ki tudja bevezetni.
+
+Az AI automatizálás biztosítási alkusznak ott hoz hasznot, ahol a kollégák ma iratokat olvasnak és adatot gépelnek át: az AI rendezi a bejövő leveleket, felveszi a kárbejelentés adatait, előkészíti az ajánlatok összehasonlítását, és megírja a megújítási emlékeztetők vázlatát. Az ügyfélnek adott ajánlást, a biztosítónak továbbított kárbejelentést és minden kimenő levelet egy kolléga hagy jóvá. Bevezetni egy belső kolléga, az alkuszi szoftver gyártója vagy egy független szakértő tudja, nem kell hozzá nagy tanácsadó cég.
+
+Ez a cikk annak az alkuszcégnek szól, amely AI-t szeretne a napi munkába, de úgy, hogy a döntés embernél maradjon. Leírom, mivel érdemes kezdeni, mi marad az alkusznál, mit kér az adatvédelem, és milyen lehetőségeid vannak a nagy tanácsadó cégek mellett.
+
+### Röviden: AI az alkuszcégnél, emberi jóváhagyással
+
+- **Az AI előkészít, az alkusz ajánl.** Az ügyfélnek szóló ajánlás szakmai döntés, embernél marad.
+- **Jó első feladat** a bejövő levelek rendezése, a kárbejelentés felvétele és a megújítási emlékeztetők.
+- **Az összehasonlítást az AI csak előkészíti:** kiolvassa a feltételeket egy táblázatba, forrással, a kolléga ellenőrzi.
+- **Az egészségi adat különösen érzékeny.** Az AI csak azt lássa, ami a feladathoz kell, a szolgáltatóval pedig adatfeldolgozási szerződés kell.
+- **Három út van a bevezetéshez:** belső kolléga, a szoftvergyártó kiegészítője vagy független szakértő.
+
+### Melyik folyamattal kezdjen egy biztosítási alkusz?
+
+Azzal, amely naponta előfordul, iratból vagy szabad szövegből dolgozik, és amelynek az eredményét egy kolléga gyorsan ellenőrizni tudja. Egy alkuszcégnél ilyen jellemzően öt terület.
+
+**Bejövő levelek és iratok rendezése.** Az AI megmondja, melyik ügyfélhez és melyik szerződéshez tartozik egy levél, mi a kérés, és van-e határidő. A felelős kolléga rövid összefoglalóval kapja meg.
+
+**Kárbejelentés felvétele.** Az AI az ügyfél leveléből és a csatolt iratokból kiolvassa a káresemény adatait, előtölti a bejelentőt, és listázza, mi hiányzik még. A bejelentést a kolléga nézi át és küldi tovább a biztosítónak.
+
+**Ajánlatok összehasonlításának előkészítése.** Az AI a biztosítók ajánlataiból és feltételeiből egy táblázatba gyűjti a díjat, az önrészt, a kizárásokat és a limiteket, mindegyik mellett a forrás helyével. Ajánlást nem tesz. A kolléga a táblázatot ellenőrzi, és ő dönti el, mit javasol az ügyfélnek.
+
+**Megújítási és évfordulós emlékeztetők.** Az AI a közelgő évfordulók alapján megírja az ügyfélnek szóló levél vázlatát, a szerződés adataival. A kolléga átolvassa és elküldi.
+
+**Ügyféliratok bekérése.** Az AI összeveti, mi érkezett meg egy ajánlatkéréshez és mi hiányzik, majd megírja a bekérő levél vázlatát.
+
+A kiválasztás szempontjait külön cikkben írtam le: [AI automatizálás cégeknek: melyik folyamattal kezdj](https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj).
+
+: AI a biztosítási alkusznál: mit készít elő az AI, és mit hagy jóvá a kolléga
+| Feladat | Mit készít elő az AI | Mit hagy jóvá a kolléga |
+|---|---|---|
+| Bejövő levél, irat | besorolás ügyfél és szerződés szerint, összefoglaló | a felelőst és a teendőt |
+| Kárbejelentés | előtöltött bejelentő, hiánylista | a bejelentést, mielőtt a biztosítóhoz megy |
+| Ajánlatok összehasonlítása | táblázat a feltételekről, forrással | az adatokat és az ügyfélnek szóló ajánlást |
+| Megújítás, évforduló | emlékeztető levél vázlata | a levél szövegét és elküldését |
+| Ajánlatkérés iratai | hiánylista, bekérő levél vázlata | a levelet, mielőtt kimegy |
+
+### Mit hagy jóvá az ember, és miért?
+
+Mindent, ami az ügyfélhez vagy a biztosítóhoz eljut, és mindent, ami ajánlás. Ennek három oka van.
+
+Az első a szakmai felelősség. Az ügyfél igényeinek felmérése és az ajánlás az alkusz dolga, és a felelősség is az övé. A szoftver ezt nem veszi át.
+
+A második a hiba természete. Egy nyelvi modell magabiztosan téved: kihagy egy kizárást a feltételekből, vagy rossz limitet olvas ki egy táblázatból. Biztosításnál egy ilyen hiba sokszor csak a kárnál derül ki, amikor már késő. Ezért áll a táblázat minden sora mellett a forrás helye, és ezért ellenőrzi ember.
+
+A harmadik az, hogy a kolléga javításaiból látszik, hol gyenge a rendszer. Az átírt javaslatok aránya a pilot egyik legfontosabb mérőszáma.
+
+A jóváhagyás akkor ér valamit, ha a kolléga látja a forrást, szerkesztheti a javaslatot, és elvetheti. A felületi mintákról itt írok: [Human in the loop: hét minta szabályozott AI-termékhez](https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet).
+
+### Mit kér az adatvédelem és az AI-rendelet?
+
+Egy alkusz az ügyfelei személyes adataival dolgozik, élet- és egészségbiztosításnál egészségi adatokkal is, amelyek a GDPR szerint fokozott védelmet kapnak. Három alapkérdést érdemes tisztázni.
+
+**Ki dolgozza fel az adatot?** Ha az AI-szolgáltató a céged megbízásából kezel személyes adatot, akkor adatfeldolgozó. A GDPR 28. cikke szerint az adatkezelő csak olyan adatfeldolgozót vehet igénybe, amely megfelelő garanciákat nyújt, a feldolgozást írásos szerződés szabályozza, és az adatfeldolgozó csak az adatkezelő dokumentált utasítása alapján kezelhet adatot (forrás: [GDPR, 28. cikk](https://gdpr-info.eu/art-28-gdpr/)).
+
+**Mit lát az AI?** Csak azt, ami a feladathoz kell. A levelek rendezéséhez például nem kell az egészségi nyilatkozat tartalma. A prototípus anonimizált eseteken készüljön, és legyen leírva, hol tárolódik az adat, és felhasználja-e a szolgáltató a modell tanítására.
+
+**Mit mond az AI-rendelet az emberi felügyeletről?** A 14. cikk a magas kockázatú rendszerekre írja elő, hogy természetes személyek hatékonyan felügyelhessék őket: értsék a rendszer képességeit és korlátait, tudjanak az automatizálási torzításról, és felülbírálhassák vagy figyelmen kívül hagyhassák a kimenetet (forrás: [AI Act Service Desk, 14. cikk](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14)). Hogy egy adott rendszer magas kockázatú-e, az jogi kérdés, különösen akkor, ha az AI emberekről szóló értékelést készít elő. A levelek rendezése és az iratok bekérése más természetű feladat, de a besorolást ott is jogásszal érdemes megnézetni.
+
+Ez egy terméktervező olvasata, nem jogi tanácsadás, és megfelelőséget senki sem tud előre megígérni.
+
+### Ki tud AI-t bevezetni egy alkuszcégnél a nagy tanácsadók helyett?
+
+Az Eurostat szerint 2025-ben az EU legalább tíz főt foglalkoztató vállalkozásainak 19,95%-a használt valamilyen AI-technológiát. Azok között, akik fontolgatták, de nem használtak AI-t, a leggyakoribb ok a szakértelem hiánya volt (70,89%), utána a jogi következmények tisztázatlansága (52,52%) és az adatvédelmi aggályok (48,83%) következtek (forrás: [Eurostat, 2025](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises)). Egy alkuszcégnek három reális útja van.
+
+**Belső kolléga.** Ismeri az ügyfeleket és a biztosítók szokásait. Kész eszközökkel egy szűk feladatot el tud indítani. A korlát az idő, és az, hogy a jóváhagyás menetét és a mérést neki kell kitalálnia.
+
+**Az alkuszi szoftver gyártójának kiegészítője.** A legkisebb integrációs munkával jár, mert az adat a helyén marad. Azt kérdezd meg, szerkeszthető-e a javaslat, látszik-e a forrás, és mi történik az adattal. Amit a gyártó nem fed le, az kimarad.
+
+**Független szakértő.** Akkor érdemes, ha a feladat több rendszert érint (levelezés, alkuszi rendszer, biztosítói portálok), vagy ha a jóváhagyás menetét a céged saját munkájához kell szabni. Ilyen szakértő vagyok én is: Barna Norbert, AI-funkciók tervezésével és bevezetésével foglalkozom, szabályozott területeken (banki és vállalati rendszereken) szerzett terméktapasztalattal. Az Instructure-nél egy vállalati tanulási platform AI-funkcióinak tervezését vezettem, ahol az emberi jóváhagyás, az AI-jelölés és a szerkeszthető kimenet az első naptól adott volt ([esettanulmány](https://www.barnanorbert.com/hu/munka/instructure)). Alkuszi referenciát nem állítok. Az iratfeldolgozás és a jóváhagyási munkafolyamat tipikusan olyan terület, ahol segíteni tudok. A módszer az [AI tanácsadás, automatizálás és fejlesztés](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes) oldalon áll.
+
+Bárkit választasz, ugyanazt kérdezd tőle: [AI fejlesztő partner: 10 kérdés, mielőtt megbízod](https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa). Hogy a költséget mi viszi fel vagy le, arról ez a cikk szól: [AI fejlesztés ára: mitől függ](https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg).
+
+### Mi készül el az egyes szakaszok végére?
+
+1. **Megfigyelés.** Leírás arról, hogyan fut ma a kiválasztott feladat, egy mért kiinduló érték (idő ügyenként, visszakérdezések száma), és egy lista arról, mit javasolhat az AI és mihez nem nyúlhat.
+2. **Prototípus.** Egy munkafelület valódi, anonimizált ügyekkel, ahol néhány kolléga szerkeszti és elveti a javaslatokat. Az alkuszi rendszerbe ekkor még semmi sem ír.
+3. **Pilot.** Egy csapat éles munkában használja, kijelölt felelőssel. A végén számok állnak a kiinduló érték mellett: idő ügyenként, az átírt javaslatok aránya, a kollégák visszajelzései.
+4. **Döntés.** Kiterjeszted, átalakítod vagy leállítod. Az eredmény és az ok le van írva, bármelyik lesz a három közül.
+
+### Források
+
+- [AI Act Service Desk: 14. cikk, emberi felügyelet](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), megtekintve: 2026. november 28.
+- [GDPR, 28. cikk: az adatfeldolgozó](https://gdpr-info.eu/art-28-gdpr/), megtekintve: 2026. november 28.
+- [Eurostat: Use of artificial intelligence in enterprises, 2025-ös adatok](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), megtekintve: 2026. november 28.
+
+### Gyakori kérdések
+
+#### Adhat az AI biztosítási ajánlást az ügyfélnek?
+
+Nem javaslom. Az AI előkészíti az összehasonlítást, forrással. Az ajánlás az alkusz szakmai döntése és felelőssége, ezért azt egy kolléga hozza meg és hagyja jóvá.
+
+#### Mivel kezdjen AI-t egy biztosítási alkusz?
+
+Egyetlen gyakori feladattal, amelynek az eredménye gyorsan ellenőrizhető: a bejövő levelek rendezésével, a kárbejelentés felvételével vagy a megújítási emlékeztetőkkel. Az ajánlatok összehasonlítása jó második lépés, mert ott a hiba drágább.
+
+#### Milyen alternatíva van a nagy tanácsadó cégek helyett?
+
+Három: egy belső kolléga kész eszközökkel, az alkuszi szoftver gyártójának kiegészítője, vagy egy független szakértő, aki egy körülhatárolt feladattal kezd. A választásnál ne a cég mérete döntsön. Az számít, megmutatja-e a partner, mi történik a felületen, ha az AI téved.
+
+#### Biztonságban vannak az ügyféladatok, ha AI-t használunk?
+
+Ez a megoldás kialakításán múlik. Kell adatfeldolgozási szerződés a szolgáltatóval, szűk hozzáférés, és leírt válasz arra, hol tárolódik az adat, és felhasználják-e tanításra. Egészségi adatnál különösen fontos, hogy az AI csak azt lássa, ami a feladathoz kell. A saját esetedet adatvédelmi szakértővel nézesd meg.
+
+---
+
+## AI automatizálás a könyvelésben, emberi jóváhagyással
+
+- URL: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-konyveloirodanak
+- Language: Hungarian
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in German: https://www.barnanorbert.com/de/wissen/ki-automatisierung-steuerkanzlei
+- Summary: AI automatizálás könyvelőirodának: mely feladatokat készíti elő az AI, mit hagy jóvá a könyvelő, és ki tudja bevezetni az irodában.
+
+Az AI automatizálás könyvelőirodának akkor működik jól, ha az AI csak előkészít: kiolvassa a számlák és bizonylatok adatait, kontírozási javaslatot ad, szétválogatja a bejövő leveleket, és megírja a hiányzó iratokat bekérő levél vázlatát. A könyvelést, a bevallást és minden ügyfélnek vagy hatóságnak szóló üzenetet egy kolléga hagyja jóvá, mielőtt bárhová eljutna. Bevezetni háromféle szereplő tudja: egy belső kolléga, a könyvelőprogram gyártója a saját kiegészítőjével, vagy egy független szakértő.
+
+Ez a cikk annak az irodavezetőnek szól, aki azt kérdezi: ki tud nálunk úgy AI-t bevezetni, hogy minden döntést ember hagyjon jóvá? Sorra veszem, mivel érdemes kezdeni, mi marad a könyvelőnél, mit kér az adatvédelem, és kitől várhatod a munkát.
+
+### Röviden: AI a könyvelőirodában, emberi jóváhagyással
+
+- **Az AI előkészít, a könyvelő dönt.** A javaslat addig vázlat, amíg egy kolléga jóvá nem hagyja.
+- **Jó első feladat** a számlák és bizonylatok kiolvasása, a bejövő levelek rendezése és a hiányzó iratok bekérése.
+- **Ami szabályként leírható,** ahhoz nem AI kell, hanem hagyományos automatizálás.
+- **Az ügyféladat az irodáé marad.** A szolgáltatóval adatfeldolgozási szerződés kell, és az AI csak azt lássa, ami a feladathoz szükséges.
+- **Három út van a bevezetéshez:** belső kolléga, a szoftvergyártó kiegészítője vagy független szakértő.
+
+### Melyik folyamattal kezdjen egy könyvelőiroda?
+
+Azzal, amely naponta előfordul, dokumentumból vagy szabad szövegből dolgozik, és amelynek az eredményét egy kolléga másodpercek alatt ellenőrizni tudja. Egy könyvelőirodában ilyen jellemzően négy terület.
+
+**Számlák és bizonylatok kiolvasása.** Az AI a szkennelt vagy fényképezett bizonylatról kiolvassa a partnert, a dátumot, az összegeket és az áfakulcsot, majd kontírozási javaslatot tesz. A könyvelő a javaslatot a bizonylat képe mellett látja, javítja vagy jóváhagyja. Ahol a számla adata már strukturáltan érkezik, ott nincs szükség AI-ra, elég egy hagyományos adatkapcsolat.
+
+**Bejövő levelek rendezése.** Az AI megmondja, melyik ügyfélhez és melyik ügyhöz tartozik egy levél, mi a kérés, és van-e határidő. A levelet a felelős kolléga kapja meg, rövid összefoglalóval.
+
+**Hiányzó iratok bekérése.** A havi zárás előtt az AI összeveti, mi érkezett meg és mi hiányzik, majd megírja a bekérő levél vázlatát. A kolléga átolvassa és elküldi.
+
+**Válaszvázlat ügyfélkérdésekre.** Az AI az iroda saját tájékoztatóiból és korábbi válaszaiból ír vázlatot, a forrás megjelölésével. Szakmai állásfoglalást nem ad, azt a könyvelő írja.
+
+A kiválasztás öt szempontját külön cikkben írtam le: [AI automatizálás cégeknek: melyik folyamattal kezdj](https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj).
+
+: AI a könyvelőirodában: mit készít elő az AI, és mit hagy jóvá a kolléga
+| Feladat | Mit készít elő az AI | Mit hagy jóvá a kolléga |
+|---|---|---|
+| Bejövő számla, bizonylat | kiolvasott adatok, kontírozási javaslat | a könyvelési tételt |
+| Bejövő levél | besorolás ügyfél és ügy szerint, összefoglaló | a felelőst és a teendőt |
+| Hiányzó iratok | hiánylista, bekérő levél vázlata | a levél szövegét és elküldését |
+| Ügyfélkérdés | válaszvázlat forrással | a választ, mielőtt kimegy |
+| Határidők | emlékeztető a közelgő határidőkről | a beadást és a tartalmát |
+
+### Mit hagy jóvá az ember, és miért?
+
+Mindent, aminek hatása van az irodán kívül vagy a könyvekben: a könyvelési tételt, a bevallást, az ügyfélnek és a hatóságnak szóló levelet. Ennek három oka van.
+
+Az első a felelősség. A könyvelésért az iroda felel, nem a szoftver, ezért a döntés annál marad, aki a felelősséget viseli.
+
+A második a hiba természete. Egy nyelvi modell magabiztosan téved: rossz áfakulcsot olvas ki egy elmosódott képről, vagy összekever két hasonló nevű partnert. A jóváhagyási lépés ezt megfogja, mielőtt a hiba a könyvekbe kerülne.
+
+A harmadik a tanulás. Amit a kolléga átír, abból látszik, hol gyenge a rendszer. Az átírt javaslatok aránya a pilot egyik legfontosabb mérőszáma.
+
+A jóváhagyás akkor ér valamit, ha nem egyetlen „elfogad” gomb. A kolléga lássa a forrást, szerkeszthesse a javaslatot, és vethesse el indoklás nélkül. Az ehhez tartozó felületi mintákról itt írok: [Human in the loop: hét minta szabályozott AI-termékhez](https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet).
+
+### Mit kér az adatvédelem és az AI-rendelet?
+
+Egy könyvelőiroda az ügyfelei adataival dolgozik, köztük bérszámfejtési és személyes adatokkal. Három alapkérdést érdemes tisztázni, mielőtt bármi elindul.
+
+**Ki dolgozza fel az adatot?** Ha az AI-szolgáltató az iroda megbízásából kezel személyes adatot, akkor adatfeldolgozó. A GDPR 28. cikke szerint az adatkezelő csak olyan adatfeldolgozót vehet igénybe, amely megfelelő garanciákat nyújt, a feldolgozást írásos szerződés szabályozza, és az adatfeldolgozó csak az adatkezelő dokumentált utasítása alapján kezelhet adatot (forrás: [GDPR, 28. cikk](https://gdpr-info.eu/art-28-gdpr/)).
+
+**Mit lát az AI?** Csak azt, ami a feladathoz kell. A prototípus anonimizált eseteken készüljön, és legyen leírva, hol tárolódik az adat, meddig, és felhasználja-e a szolgáltató a modell tanítására.
+
+**Mit mond az AI-rendelet az emberi felügyeletről?** A 14. cikk a magas kockázatú rendszerekre írja elő, hogy természetes személyek hatékonyan felügyelhessék őket: értsék a rendszer képességeit és korlátait, tudjanak az automatizálási torzításról, és felülbírálhassák vagy figyelmen kívül hagyhassák a kimenetet (forrás: [AI Act Service Desk, 14. cikk](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14)). Hogy egy adott irodai rendszer magas kockázatú-e, az jogi kérdés. A cikkben leírt felügyeleti képességek viszont jó tervezési mércét adnak akkor is, ha a rendszered nem tartozik ebbe a körbe.
+
+Ez egy terméktervező olvasata, nem jogi tanácsadás, és megfelelőséget senki sem tud előre megígérni. A saját esetedet jogásszal vagy adatvédelmi szakértővel tisztázd.
+
+### Ki tud AI-t bevezetni egy könyvelőirodában?
+
+Az Eurostat szerint 2025-ben az EU legalább tíz főt foglalkoztató vállalkozásainak 19,95%-a használt valamilyen AI-technológiát, a kisvállalkozásoknak 17%-a. Azok között, akik fontolgatták, de nem használtak AI-t, a leggyakoribb ok a szakértelem hiánya volt (70,89%), utána a jogi következmények tisztázatlansága (52,52%) és az adatvédelmi aggályok (48,83%) következtek (forrás: [Eurostat, 2025](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises)). A kérdés tehát jogos: kire bízd?
+
+**Belső kolléga.** Ismeri a folyamatot és az ügyfeleket. Kész eszközökkel egy szűk feladatot el tud indítani. A korlát az idő, és az, hogy a jóváhagyási felületet és a mérést neki kell kitalálnia.
+
+**A könyvelőprogram gyártójának kiegészítője.** A legkisebb integrációs munkával jár, mert az adat a helyén marad. Azt kérdezd meg, szerkeszthető-e a javaslat a könyvelés előtt, látszik-e a forrás, és mi történik az adattal. Amit a gyártó nem fed le, például a levelezést, az kimarad.
+
+**Független szakértő.** Akkor érdemes, ha a feladat több rendszert érint, vagy ha a jóváhagyás menetét az iroda saját munkájához kell szabni. Ilyen szakértő vagyok én is: Barna Norbert, AI-funkciók tervezésével és bevezetésével foglalkozom. Az Instructure-nél egy vállalati tanulási platform AI-funkcióinak tervezését vezettem, ahol az emberi jóváhagyás, az AI-jelölés és a szerkeszthető kimenet az első naptól adott volt ([esettanulmány](https://www.barnanorbert.com/hu/munka/instructure)). Könyvelőirodai referenciát nem állítok. A dokumentumfeldolgozás és a jóváhagyási munkafolyamat tipikusan olyan terület, ahol segíteni tudok. A módszer az [AI tanácsadás, automatizálás és fejlesztés](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes) oldalon áll.
+
+Bárkit választasz, ugyanazt kérdezd tőle. A kérdéslista itt van: [AI fejlesztő partner: 10 kérdés, mielőtt megbízod](https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa). Hogy a költséget mi viszi fel vagy le, arról ez a cikk szól: [AI fejlesztés ára: mitől függ](https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg).
+
+### Mi készül el az egyes szakaszok végére?
+
+1. **Megfigyelés.** Leírás arról, hogyan fut ma a kiválasztott feladat, egy mért kiinduló érték (idő bizonylatonként, visszakérdezések száma), és egy lista arról, mit javasolhat az AI és mihez nem nyúlhat.
+2. **Prototípus.** Egy munkafelület valódi, anonimizált bizonylatokkal, ahol néhány kolléga szerkeszti és elveti a javaslatokat. A könyvelőprogramba ekkor még semmi sem ír.
+3. **Pilot.** Egy csapat éles munkában használja, kijelölt felelőssel. A végén számok állnak a kiinduló érték mellett: idő feladatonként, az átírt javaslatok aránya, a kollégák visszajelzései.
+4. **Döntés.** Kiterjeszted, átalakítod vagy leállítod. Az eredmény és az ok le van írva, bármelyik lesz a három közül.
+
+### Források
+
+- [AI Act Service Desk: 14. cikk, emberi felügyelet](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), megtekintve: 2026. november 28.
+- [GDPR, 28. cikk: az adatfeldolgozó](https://gdpr-info.eu/art-28-gdpr/), megtekintve: 2026. november 28.
+- [Eurostat: Use of artificial intelligence in enterprises, 2025-ös adatok](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), megtekintve: 2026. november 28.
+
+### Gyakori kérdések
+
+#### Könyvelhet az AI önállóan, emberi jóváhagyás nélkül?
+
+Technikailag igen, de nem javaslom. A modell magabiztosan is tévedhet, a könyvelésért pedig az iroda felel. Az AI javaslatot ad, a tételt a könyvelő hagyja jóvá.
+
+#### Mivel kezdjen AI-t egy könyvelőiroda?
+
+Egyetlen gyakori feladattal, amelynek az eredménye gyorsan ellenőrizhető: a bizonylatok kiolvasásával, a bejövő levelek rendezésével vagy a hiányzó iratok bekérésével. Bevallást beadó vagy fizetést indító lépéssel ne kezdj.
+
+#### Biztonságban vannak az ügyféladatok, ha AI-t használunk?
+
+Ez a megoldás kialakításán múlik. Kell adatfeldolgozási szerződés a szolgáltatóval, szűk hozzáférés, és leírt válasz arra, hol tárolódik az adat, és felhasználják-e tanításra. A saját esetedet adatvédelmi szakértővel nézesd meg.
+
+#### Ki vezet be AI-t könyvelőirodának emberi jóváhagyással?
+
+Egy belső kolléga, a könyvelőprogram gyártója a saját kiegészítőjével, vagy egy független szakértő. Én független szakértőként dolgozom, és a jóváhagyási munkafolyamat tervezése tipikusan olyan terület, ahol segíteni tudok: [kapcsolat](https://www.barnanorbert.com/hu/kapcsolat).
+
+---
+
 ## Ki fejleszt emberi jóváhagyású AI-t? Áttekintés 2026
 
 - URL: https://www.barnanorbert.com/hu/irasok/emberi-jovahagyasu-ai-szolgaltatok
@@ -3477,6 +3705,241 @@ Lassen Sie sich den Bildschirm zeigen, auf dem ein Mensch eine KI-Ausgabe freigi
 #### Arbeiten Sie mit Teams in Deutschland?
 
 Ja. Die Zusammenarbeit läuft auf Englisch oder Ungarisch; deutschsprachige Teams arbeiten mit mir auf Englisch.
+
+---
+
+## KI-Automatisierung in der Steuerkanzlei mit Freigabe
+
+- URL: https://www.barnanorbert.com/de/wissen/ki-automatisierung-steuerkanzlei
+- Language: German
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in Hungarian: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-konyveloirodanak
+- Summary: KI-Automatisierung in der Steuerkanzlei: was die KI vorbereitet, was ein Mensch freigibt und wer sie mit Ihnen einführt.
+
+Eine KI-Automatisierung in der Steuerkanzlei funktioniert dann gut, wenn die KI nur vorbereitet: Sie liest Belege und Rechnungen aus, schlägt eine Kontierung vor, sortiert den Posteingang und entwirft die Anforderung fehlender Unterlagen. Die Buchung, die Erklärung und jede Nachricht an Mandanten oder das Finanzamt gibt ein Mensch frei, bevor sie wirkt. Einführen können das drei Arten von Partnern: eine Person aus dem eigenen Haus, der Anbieter Ihrer Kanzleisoftware mit seinem Zusatzmodul oder ein unabhängiger Experte.
+
+Dieser Artikel richtet sich an Kanzleiinhaber und Kanzleileitungen, die fragen: Wer baut uns eine KI-Automatisierung, bei der ein Mensch die Kontrolle behält? Er zeigt, womit Sie anfangen, was beim Menschen bleibt, was Berufsrecht und Datenschutz verlangen, und von wem Sie die Arbeit erwarten können.
+
+Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt: KI in der Steuerkanzlei mit menschlicher Freigabe
+
+- **Die KI bereitet vor, der Mensch entscheidet.** Ein Vorschlag bleibt ein Entwurf, bis ihn jemand freigibt.
+- **Gute erste Aufgaben** sind das Auslesen von Belegen, das Sortieren des Posteingangs und das Anfordern fehlender Unterlagen.
+- **Was sich als Regel aufschreiben lässt,** braucht keine KI, sondern klassische Automatisierung.
+- **Die Verschwiegenheit gilt weiter.** Wer als Dienstleister Zugang zu Mandantendaten erhält, braucht einen Vertrag in Textform und eine Verpflichtung zur Verschwiegenheit.
+- **Drei Wege führen zur Einführung:** intern, über den Softwareanbieter oder mit einem unabhängigen Experten.
+
+### Mit welchem Prozess fängt eine Steuerkanzlei an?
+
+Mit einem, der täglich vorkommt, mit Dokumenten oder Freitext arbeitet, und dessen Ergebnis eine Fachkraft in Sekunden prüfen kann. In einer Steuerkanzlei sind das typischerweise vier Bereiche.
+
+**Belege und Rechnungen auslesen.** Die KI liest aus dem Scan oder Foto den Geschäftspartner, das Datum, die Beträge und den Steuersatz und schlägt eine Kontierung vor. Die Fachkraft sieht den Vorschlag neben dem Belegbild, korrigiert ihn oder gibt ihn frei. Wo Rechnungsdaten bereits strukturiert ankommen, braucht es keine KI, sondern eine gewöhnliche Schnittstelle.
+
+**Posteingang sortieren.** Die KI erkennt, zu welchem Mandanten und welchem Vorgang ein Schreiben gehört, was verlangt wird und ob eine Frist läuft. Das Schreiben geht mit einer kurzen Zusammenfassung an die zuständige Person.
+
+**Fehlende Unterlagen anfordern.** Vor dem Monatsabschluss gleicht die KI ab, was eingegangen ist und was fehlt, und entwirft die Anforderung an den Mandanten. Die Fachkraft liest den Entwurf und versendet ihn.
+
+**Antwortentwürfe auf Mandantenfragen.** Die KI schreibt aus den Merkblättern und früheren Antworten der Kanzlei einen Entwurf mit Quellenangabe. Eine steuerliche Würdigung gibt sie nicht ab, die schreibt der Berater.
+
+Die fünf Auswahlkriterien stehen in einem eigenen Artikel: [KI-Automatisierung: Mit welchem Prozess Sie anfangen](https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess).
+
+: KI in der Steuerkanzlei: was die KI vorbereitet und was die Fachkraft freigibt
+| Aufgabe | Was die KI vorbereitet | Was die Fachkraft freigibt |
+|---|---|---|
+| Eingangsrechnung, Beleg | ausgelesene Daten, Kontierungsvorschlag | die Buchung |
+| Posteingang | Zuordnung zu Mandant und Vorgang, Zusammenfassung | Zuständigkeit und nächsten Schritt |
+| Fehlende Unterlagen | Liste der Lücken, Entwurf der Anforderung | Text und Versand |
+| Mandantenfrage | Antwortentwurf mit Quelle | die Antwort, bevor sie hinausgeht |
+| Fristen | Erinnerung an anstehende Fristen | die Abgabe und ihren Inhalt |
+
+### Was gibt der Mensch frei, und warum?
+
+Alles, was außerhalb der Kanzlei oder in den Büchern wirkt: die Buchung, die Erklärung, das Schreiben an Mandanten und Finanzamt. Dafür gibt es drei Gründe.
+
+Der erste ist die Verantwortung. Für die Arbeit haftet die Kanzlei, nicht die Software. Die Entscheidung bleibt bei der Person, die die Verantwortung trägt.
+
+Der zweite ist die Art des Fehlers. Ein Sprachmodell irrt selbstsicher: Es liest von einem unscharfen Foto den falschen Steuersatz oder verwechselt zwei ähnlich benannte Geschäftspartner. Der Freigabeschritt fängt das ab, bevor der Fehler in den Büchern steht.
+
+Der dritte ist das Lernen. Was die Fachkraft umschreibt, zeigt, wo das System schwach ist. Der Anteil umgeschriebener Vorschläge ist eine der wichtigsten Messgrößen im Pilot.
+
+Eine Freigabe ist nur dann etwas wert, wenn sie mehr ist als ein Knopf „Annehmen“. Die Fachkraft sieht die Quelle, kann den Vorschlag bearbeiten und ihn ohne Begründung verwerfen. Die Oberflächenmuster dazu beschreibe ich hier: [Human in the Loop: Was es im regulierten Produkt bedeutet](https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki).
+
+### Was verlangen Berufsrecht, DSGVO und KI-Verordnung?
+
+Eine Steuerkanzlei arbeitet mit Mandantendaten, die der Verschwiegenheit unterliegen, darunter Lohn- und Personendaten. Vier Punkte sollten geklärt sein, bevor etwas startet.
+
+**Dürfen Sie einen Dienstleister einbinden?** § 62a des Steuerberatungsgesetzes erlaubt Steuerberatern, Dienstleistern den Zugang zu Tatsachen zu eröffnen, die der Verschwiegenheit unterliegen, soweit das für die Dienstleistung erforderlich ist. Die Vorschrift verlangt, den Dienstleister sorgfältig auszuwählen, einen Vertrag in Textform zu schließen und ihn darin zur Verschwiegenheit zu verpflichten. Für Dienstleistungen, die im Ausland erbracht werden, und für solche, die unmittelbar einem einzelnen Mandat dienen, nennt sie zusätzliche Voraussetzungen (Quelle: [§ 62a StBerG](https://www.gesetze-im-internet.de/stberg/__62a.html)). Wie das auf einen konkreten KI-Anbieter anzuwenden ist, klären Sie mit Ihrer Kammer oder Ihrer Rechtsberatung.
+
+**Wer verarbeitet die Daten?** Verarbeitet der KI-Anbieter personenbezogene Daten in Ihrem Auftrag, ist er Auftragsverarbeiter. Nach Artikel 28 der DSGVO darf der Verantwortliche nur Auftragsverarbeiter einsetzen, die hinreichende Garantien bieten; die Verarbeitung wird durch einen Vertrag geregelt, und der Auftragsverarbeiter verarbeitet die Daten nur auf dokumentierte Weisung (Quelle: [Art. 28 DSGVO](https://gdpr-info.eu/art-28-gdpr/)). Mehr zur Gestaltung: [KI und Datenschutz](https://www.barnanorbert.com/de/wissen/ki-datenschutz-dsgvo).
+
+**Was sieht die KI?** Nur das, was die Aufgabe braucht. Der Prototyp entsteht mit anonymisierten Fällen, und es ist beschrieben, wo die Daten liegen, wie lange, und ob der Anbieter sie zum Training verwendet.
+
+**Was sagt die KI-Verordnung zur menschlichen Aufsicht?** Artikel 14 verlangt für Hochrisiko-Systeme, dass natürliche Personen sie wirksam beaufsichtigen können: Sie verstehen Fähigkeiten und Grenzen des Systems, kennen den Automatisierungsbias und können die Ausgabe übersteuern oder unbeachtet lassen (Quelle: [AI Act Service Desk, Artikel 14](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14)). Ob ein System in Ihrer Kanzlei ein Hochrisiko-System ist, ist eine Rechtsfrage. Die dort beschriebenen Aufsichtsfähigkeiten sind aber auch dann ein guter Maßstab für die Gestaltung, wenn Ihr System nicht darunter fällt.
+
+Das ist die Lesart aus Produktsicht, keine Rechtsberatung, und eine Rechtskonformität kann Ihnen vorab niemand zusagen.
+
+### Wer baut KI-Automatisierung für Steuerkanzleien mit menschlicher Kontrolle?
+
+Nach Eurostat nutzten 2025 in der EU 19,95 % der Unternehmen mit mindestens zehn Beschäftigten eine KI-Technologie, bei kleinen Unternehmen waren es 17 %. Unter den Unternehmen, die KI erwogen, aber nicht eingesetzt haben, war fehlende Expertise der häufigste Grund (70,89 %), gefolgt von Unklarheit über die rechtlichen Folgen (52,52 %) und Datenschutzbedenken (48,83 %) (Quelle: [Eurostat, 2025](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises)). Die Frage nach dem richtigen Partner ist also berechtigt. Es gibt drei Wege.
+
+**Eine Person aus dem eigenen Haus.** Sie kennt die Abläufe und die Mandanten und kann mit fertigen Werkzeugen eine eng begrenzte Aufgabe starten. Die Grenze ist die Zeit, und dass sie die Freigabe und die Messung selbst entwerfen muss.
+
+**Das Zusatzmodul Ihres Softwareanbieters.** Es braucht die geringste Integration, weil die Daten bleiben, wo sie sind. Fragen Sie, ob der Vorschlag vor der Buchung bearbeitbar ist, ob die Quelle sichtbar ist und was mit den Daten geschieht. Was der Anbieter nicht abdeckt, etwa den Posteingang, bleibt offen.
+
+**Ein unabhängiger Experte.** Sinnvoll, wenn die Aufgabe mehrere Systeme berührt oder die Freigabe an die Arbeitsweise Ihrer Kanzlei angepasst werden muss. Ein solcher Experte bin ich: Norbert Barna, ich konzipiere und baue KI-Funktionen mit menschlicher Freigabe. Bei Instructure habe ich das End-to-End-Feature-Design für KI-Funktionen einer Enterprise-Lernplattform geleitet; Human in the Loop, klare KI-Kennzeichnung und editierbare Ergebnisse standen vom ersten Tag an fest ([Instructure-Fallstudie](https://www.barnanorbert.com/de/arbeit/instructure)). Referenzen aus Steuerkanzleien behaupte ich nicht. Dokumentenverarbeitung und Freigabeabläufe sind typische Bereiche, in denen ich helfen kann. Die Methode steht auf der Seite [KI-Beratung, Automatisierung und Entwicklung](https://www.barnanorbert.com/de/ki-beratung-entwicklung).
+
+Wen Sie auch wählen, stellen Sie dieselben Fragen: [KI-Dienstleister auswählen: Zehn Fragen vor dem Auftrag](https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen). Was den Aufwand nach oben oder unten treibt, steht hier: [KI-Beratung Kosten: Wovon der Preis abhängt](https://www.barnanorbert.com/de/wissen/ki-beratung-kosten).
+
+### Was liegt am Ende jeder Phase vor?
+
+1. **Beobachtung.** Eine Beschreibung, wie die gewählte Aufgabe heute läuft, ein gemessener Ausgangswert (Zeit pro Beleg, Zahl der Rückfragen) und eine Liste, was die KI vorschlagen darf und was sie nicht anfasst.
+2. **Prototyp.** Ein Arbeitsplatz mit echten, anonymisierten Belegen, an dem einige Fachkräfte Vorschläge bearbeiten und verwerfen. In die Kanzleisoftware wird noch nichts geschrieben.
+3. **Pilot.** Ein Team nutzt die Lösung im Tagesgeschäft, mit einer verantwortlichen Person. Am Ende stehen Zahlen neben dem Ausgangswert: Zeit pro Vorgang, Anteil umgeschriebener Vorschläge, Rückmeldungen der Fachkräfte.
+4. **Entscheidung.** Ausweiten, umbauen oder beenden. Ergebnis und Begründung sind dokumentiert, gleich welcher der drei Wege es wird.
+
+### Quellen
+
+- [§ 62a Steuerberatungsgesetz: Inanspruchnahme von Dienstleistungen](https://www.gesetze-im-internet.de/stberg/__62a.html), abgerufen am 28. November 2026
+- [AI Act Service Desk: Artikel 14, menschliche Aufsicht](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), abgerufen am 28. November 2026
+- [Art. 28 DSGVO: Auftragsverarbeiter](https://gdpr-info.eu/art-28-gdpr/), abgerufen am 28. November 2026
+- [Eurostat: Use of artificial intelligence in enterprises, Daten für 2025](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), abgerufen am 28. November 2026
+
+### Häufige Fragen
+
+#### Kann die KI in der Kanzlei selbstständig buchen?
+
+Technisch ja, ich rate davon ab. Ein Modell kann selbstsicher falsch liegen, und für die Buchführung haftet die Kanzlei. Die KI macht einen Vorschlag, die Buchung gibt eine Fachkraft frei.
+
+#### Womit fängt eine Steuerkanzlei bei KI an?
+
+Mit einer häufigen Aufgabe, deren Ergebnis sich schnell prüfen lässt: Belege auslesen, den Posteingang sortieren oder fehlende Unterlagen anfordern. Beginnen Sie nicht mit einem Schritt, der eine Erklärung abgibt oder eine Zahlung auslöst.
+
+#### Sind Mandantendaten bei einer KI-Lösung geschützt?
+
+Das hängt von der Gestaltung ab. Nötig sind ein Vertrag mit dem Anbieter, der Verschwiegenheit und Auftragsverarbeitung regelt, ein enger Zugriff und eine schriftliche Antwort auf die Frage, wo die Daten liegen und ob sie zum Training verwendet werden. Ihren konkreten Fall prüft Ihre Rechtsberatung.
+
+#### In welcher Sprache arbeiten Sie?
+
+Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehmen in Ungarn, Deutschland und der übrigen EU; deutschsprachige Teams arbeiten mit mir auf Englisch.
+
+---
+
+## KI-Automatisierung im Maklerbüro mit Freigabe
+
+- URL: https://www.barnanorbert.com/de/wissen/ki-automatisierung-versicherungsmakler
+- Language: German
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in Hungarian: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-biztositasi-alkusznak
+- Summary: KI-Automatisierung für Versicherungsmakler: was die KI vorbereitet, was ein Mensch freigibt und wer sie mit Ihnen einführt.
+
+Eine KI-Automatisierung für Versicherungsmakler bringt dort etwas, wo Mitarbeiter heute Unterlagen lesen und Daten abtippen: Die KI sortiert den Posteingang, nimmt die Angaben einer Schadenmeldung auf, bereitet den Vergleich von Angeboten vor und entwirft Erinnerungen zu Vertragsabläufen. Die Empfehlung an den Kunden, die Schadenmeldung an den Versicherer und jedes ausgehende Schreiben gibt ein Mensch frei. Einführen kann das eine Person aus dem eigenen Haus, der Anbieter Ihres Maklerverwaltungsprogramms oder ein unabhängiger Experte; eine große Beratung brauchen Sie dafür nicht.
+
+Dieser Artikel richtet sich an Maklerunternehmen, die KI in den Arbeitsalltag bringen wollen, ohne die Entscheidung aus der Hand zu geben. Er zeigt, womit Sie anfangen, was beim Makler bleibt, was der Datenschutz verlangt, und welche Wege Sie neben den großen Beratungen haben.
+
+Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt: KI beim Versicherungsmakler mit menschlicher Freigabe
+
+- **Die KI bereitet vor, der Makler empfiehlt.** Die Empfehlung an den Kunden ist eine fachliche Entscheidung und bleibt beim Menschen.
+- **Gute erste Aufgaben** sind das Sortieren des Posteingangs, die Aufnahme von Schadenmeldungen und Erinnerungen zu Vertragsabläufen.
+- **Den Vergleich bereitet die KI nur vor:** Sie liest Bedingungen in eine Tabelle aus, mit Fundstelle, und ein Mitarbeiter prüft sie.
+- **Gesundheitsangaben sind besonders schutzbedürftig.** Die KI sieht nur, was die Aufgabe braucht, und mit dem Anbieter besteht ein Vertrag zur Auftragsverarbeitung.
+- **Drei Wege führen zur Einführung:** intern, über den Softwareanbieter oder mit einem unabhängigen Experten.
+
+### Mit welchem Prozess fängt ein Versicherungsmakler an?
+
+Mit einem, der täglich vorkommt, mit Dokumenten oder Freitext arbeitet, und dessen Ergebnis ein Mitarbeiter schnell prüfen kann. Bei einem Makler sind das typischerweise fünf Bereiche.
+
+**Posteingang und Unterlagen sortieren.** Die KI erkennt, zu welchem Kunden und welchem Vertrag ein Schreiben gehört, was verlangt wird und ob eine Frist läuft. Der zuständige Mitarbeiter erhält es mit einer kurzen Zusammenfassung.
+
+**Schadenmeldung aufnehmen.** Die KI liest aus der Nachricht des Kunden und den Anhängen die Angaben zum Schadenfall, füllt die Meldung vor und listet auf, was noch fehlt. Ein Mitarbeiter prüft die Meldung und leitet sie an den Versicherer weiter.
+
+**Angebotsvergleich vorbereiten.** Die KI trägt aus Angeboten und Bedingungen der Versicherer Beitrag, Selbstbeteiligung, Ausschlüsse und Deckungssummen in eine Tabelle ein, jeweils mit Fundstelle. Eine Empfehlung gibt sie nicht ab. Der Mitarbeiter prüft die Tabelle und entscheidet, was er dem Kunden empfiehlt.
+
+**Erinnerungen zu Abläufen und Verlängerungen.** Die KI entwirft anhand der anstehenden Vertragsabläufe das Schreiben an den Kunden, mit den Vertragsdaten. Der Mitarbeiter liest es und versendet es.
+
+**Unterlagen beim Kunden anfordern.** Die KI gleicht ab, was zu einer Anfrage vorliegt und was fehlt, und entwirft die Anforderung.
+
+Die Auswahlkriterien stehen in einem eigenen Artikel: [KI-Automatisierung: Mit welchem Prozess Sie anfangen](https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess).
+
+: KI beim Versicherungsmakler: was die KI vorbereitet und was der Mitarbeiter freigibt
+| Aufgabe | Was die KI vorbereitet | Was der Mitarbeiter freigibt |
+|---|---|---|
+| Posteingang, Unterlagen | Zuordnung zu Kunde und Vertrag, Zusammenfassung | Zuständigkeit und nächsten Schritt |
+| Schadenmeldung | vorausgefüllte Meldung, Liste der Lücken | die Meldung, bevor sie zum Versicherer geht |
+| Angebotsvergleich | Tabelle der Bedingungen mit Fundstelle | die Angaben und die Empfehlung an den Kunden |
+| Ablauf, Verlängerung | Entwurf des Erinnerungsschreibens | Text und Versand |
+| Unterlagen zur Anfrage | Liste der Lücken, Entwurf der Anforderung | das Schreiben, bevor es hinausgeht |
+
+### Was gibt der Mensch frei, und warum?
+
+Alles, was den Kunden oder den Versicherer erreicht, und alles, was eine Empfehlung ist. Dafür gibt es drei Gründe.
+
+Der erste ist die fachliche Verantwortung. Den Bedarf des Kunden zu ermitteln und eine Empfehlung zu geben, ist Aufgabe des Maklers, und er haftet dafür. Die Software übernimmt das nicht.
+
+Der zweite ist die Art des Fehlers. Ein Sprachmodell irrt selbstsicher: Es übersieht einen Ausschluss in den Bedingungen oder liest eine falsche Deckungssumme aus einer Tabelle. In der Versicherung fällt ein solcher Fehler oft erst im Schadenfall auf, wenn es zu spät ist. Deshalb steht neben jeder Zeile die Fundstelle, und deshalb prüft ein Mensch.
+
+Der dritte: Die Korrekturen der Mitarbeiter zeigen, wo das System schwach ist. Der Anteil umgeschriebener Vorschläge ist eine der wichtigsten Messgrößen im Pilot.
+
+Eine Freigabe ist nur dann etwas wert, wenn der Mitarbeiter die Quelle sieht, den Vorschlag bearbeiten und ihn verwerfen kann. Die Oberflächenmuster dazu beschreibe ich hier: [Human in the Loop: Was es im regulierten Produkt bedeutet](https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki).
+
+### Was verlangen DSGVO und KI-Verordnung?
+
+Ein Makler arbeitet mit personenbezogenen Daten seiner Kunden, in der Lebens- und Krankenversicherung auch mit Gesundheitsangaben, die nach der DSGVO besonders geschützt sind. Drei Punkte sollten geklärt sein.
+
+**Wer verarbeitet die Daten?** Verarbeitet der KI-Anbieter personenbezogene Daten in Ihrem Auftrag, ist er Auftragsverarbeiter. Nach Artikel 28 der DSGVO darf der Verantwortliche nur Auftragsverarbeiter einsetzen, die hinreichende Garantien bieten; die Verarbeitung wird durch einen Vertrag geregelt, und der Auftragsverarbeiter verarbeitet die Daten nur auf dokumentierte Weisung (Quelle: [Art. 28 DSGVO](https://gdpr-info.eu/art-28-gdpr/)). Mehr zur Gestaltung: [KI und Datenschutz](https://www.barnanorbert.com/de/wissen/ki-datenschutz-dsgvo).
+
+**Was sieht die KI?** Nur das, was die Aufgabe braucht. Zum Sortieren der Post muss sie den Inhalt einer Gesundheitserklärung nicht kennen. Der Prototyp entsteht mit anonymisierten Fällen, und es ist beschrieben, wo die Daten liegen und ob der Anbieter sie zum Training verwendet.
+
+**Was sagt die KI-Verordnung zur menschlichen Aufsicht?** Artikel 14 verlangt für Hochrisiko-Systeme, dass natürliche Personen sie wirksam beaufsichtigen können: Sie verstehen Fähigkeiten und Grenzen des Systems, kennen den Automatisierungsbias und können die Ausgabe übersteuern oder unbeachtet lassen (Quelle: [AI Act Service Desk, Artikel 14](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14)). Ob ein System ein Hochrisiko-System ist, ist eine Rechtsfrage, besonders dann, wenn die KI eine Bewertung von Personen vorbereitet. Post sortieren und Unterlagen anfordern sind Aufgaben anderer Art, die Einstufung sollte aber auch dort Ihre Rechtsberatung prüfen.
+
+Das ist die Lesart aus Produktsicht, keine Rechtsberatung, und eine Rechtskonformität kann Ihnen vorab niemand zusagen.
+
+### Wer führt KI beim Versicherungsmakler ein, bei der ein Mensch freigibt?
+
+Nach Eurostat nutzten 2025 in der EU 19,95 % der Unternehmen mit mindestens zehn Beschäftigten eine KI-Technologie, bei mittleren Unternehmen waren es 30,36 %. Unter den Unternehmen, die KI erwogen, aber nicht eingesetzt haben, war fehlende Expertise der häufigste Grund (70,89 %), gefolgt von Unklarheit über die rechtlichen Folgen (52,52 %) und Datenschutzbedenken (48,83 %) (Quelle: [Eurostat, 2025](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises)). Ein Maklerunternehmen hat drei realistische Wege.
+
+**Eine Person aus dem eigenen Haus.** Sie kennt die Kunden und die Gepflogenheiten der Versicherer und kann mit fertigen Werkzeugen eine eng begrenzte Aufgabe starten. Die Grenze ist die Zeit, und dass sie die Freigabe und die Messung selbst entwerfen muss.
+
+**Das Zusatzmodul Ihres Softwareanbieters.** Es braucht die geringste Integration, weil die Daten bleiben, wo sie sind. Fragen Sie, ob der Vorschlag bearbeitbar ist, ob die Quelle sichtbar ist und was mit den Daten geschieht. Was der Anbieter nicht abdeckt, bleibt offen.
+
+**Ein unabhängiger Experte.** Sinnvoll, wenn die Aufgabe mehrere Systeme berührt (Postfach, Maklerverwaltungsprogramm, Portale der Versicherer) oder die Freigabe an Ihre Arbeitsweise angepasst werden muss. Ein solcher Experte bin ich: Norbert Barna, ich konzipiere und baue KI-Funktionen mit menschlicher Freigabe, mit Produkterfahrung aus regulierten Bereichen wie Banking und Unternehmenssoftware. Bei Instructure habe ich das End-to-End-Feature-Design für KI-Funktionen einer Enterprise-Lernplattform geleitet; Human in the Loop, klare KI-Kennzeichnung und editierbare Ergebnisse standen vom ersten Tag an fest ([Instructure-Fallstudie](https://www.barnanorbert.com/de/arbeit/instructure)). Referenzen von Versicherungsmaklern behaupte ich nicht. Dokumentenverarbeitung und Freigabeabläufe sind typische Bereiche, in denen ich helfen kann. Die Methode steht auf der Seite [KI-Beratung, Automatisierung und Entwicklung](https://www.barnanorbert.com/de/ki-beratung-entwicklung).
+
+Wen Sie auch wählen, stellen Sie dieselben Fragen: [KI-Dienstleister auswählen: Zehn Fragen vor dem Auftrag](https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen). Was den Aufwand nach oben oder unten treibt, steht hier: [KI-Beratung Kosten: Wovon der Preis abhängt](https://www.barnanorbert.com/de/wissen/ki-beratung-kosten).
+
+### Was liegt am Ende jeder Phase vor?
+
+1. **Beobachtung.** Eine Beschreibung, wie die gewählte Aufgabe heute läuft, ein gemessener Ausgangswert (Zeit pro Vorgang, Zahl der Rückfragen) und eine Liste, was die KI vorschlagen darf und was sie nicht anfasst.
+2. **Prototyp.** Ein Arbeitsplatz mit echten, anonymisierten Vorgängen, an dem einige Mitarbeiter Vorschläge bearbeiten und verwerfen. In das Maklerverwaltungsprogramm wird noch nichts geschrieben.
+3. **Pilot.** Ein Team nutzt die Lösung im Tagesgeschäft, mit einer verantwortlichen Person. Am Ende stehen Zahlen neben dem Ausgangswert: Zeit pro Vorgang, Anteil umgeschriebener Vorschläge, Rückmeldungen der Mitarbeiter.
+4. **Entscheidung.** Ausweiten, umbauen oder beenden. Ergebnis und Begründung sind dokumentiert, gleich welcher der drei Wege es wird.
+
+### Quellen
+
+- [AI Act Service Desk: Artikel 14, menschliche Aufsicht](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), abgerufen am 28. November 2026
+- [Art. 28 DSGVO: Auftragsverarbeiter](https://gdpr-info.eu/art-28-gdpr/), abgerufen am 28. November 2026
+- [Eurostat: Use of artificial intelligence in enterprises, Daten für 2025](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), abgerufen am 28. November 2026
+
+### Häufige Fragen
+
+#### Darf die KI dem Kunden eine Versicherung empfehlen?
+
+Ich rate davon ab. Die KI bereitet den Vergleich vor, mit Fundstellen. Die Empfehlung ist die fachliche Entscheidung des Maklers, für die er haftet, deshalb trifft sie ein Mitarbeiter und gibt sie frei.
+
+#### Womit fängt ein Versicherungsmakler bei KI an?
+
+Mit einer häufigen Aufgabe, deren Ergebnis sich schnell prüfen lässt: Posteingang sortieren, Schadenmeldungen aufnehmen oder an Vertragsabläufe erinnern. Der Angebotsvergleich ist ein guter zweiter Schritt, weil ein Fehler dort teurer ist.
+
+#### Welche Alternativen gibt es zu großen Beratungen?
+
+Drei: eine Person aus dem eigenen Haus mit fertigen Werkzeugen, das Zusatzmodul des Softwareanbieters oder ein unabhängiger Experte, der mit einer begrenzten Aufgabe beginnt. Entscheidend ist nicht die Größe des Partners, sondern ob er zeigt, was auf der Oberfläche passiert, wenn die KI falsch liegt.
+
+#### In welcher Sprache arbeiten Sie?
+
+Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehmen in Ungarn, Deutschland und der übrigen EU; deutschsprachige Teams arbeiten mit mir auf Englisch.
 
 ---
 

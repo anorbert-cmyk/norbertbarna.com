@@ -66,7 +66,7 @@ const definitions = new Map();
 const titles = new Set(), descriptions = new Set();
 // Country and Place name only the Service areaServed (SEO audit 2026-10-22); no address, no LocalBusiness.
 const allowedTypes = new Set(["ProfilePage", "Person", "Occupation", "Organization", "ImageObject", "WebSite", "CollectionPage", "ItemList", "ListItem", "AboutPage", "Article", "WebPage", "BreadcrumbList", "FAQPage", "Question", "Answer", "Service", "ContactPage", "Country", "Place"]);
-check(pages.length === files.length && byUrl.size === files.length && files.length === 42 + WRITING_PAGES.length, "expected forty-two distinct indexable content routes (14 English, 14 Hungarian, 14 German) plus the generated writing pages");
+check(pages.length === files.length && byUrl.size === files.length && files.length === 45 + WRITING_PAGES.length, "expected forty-five distinct indexable content routes (15 English, 15 Hungarian, 15 German) plus the generated writing pages");
 for (const page of pages) for (const node of page.nodes) {
   if (node["@id"] && types(node).length) {
     const previous = definitions.get(node["@id"]);

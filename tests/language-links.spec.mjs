@@ -17,9 +17,9 @@ test.beforeEach(async ({ page }) => {
 const languageOf = (path) => /^\/hu(?:\/|$)/.test(path) ? "hu" : /^\/de(?:\/|$)/.test(path) ? "de" : "en";
 
 const ROUTES = {
-  en: ["/", "/works", "/work/raiffeisen", "/about", "/web-development", "/ai-integration", "/contact", "/writing"],
-  hu: ["/hu", "/hu/munkak", "/hu/munka/raiffeisen", "/hu/rolam", "/hu/webfejlesztes", "/hu/ai-tanacsadas-fejlesztes", "/hu/kapcsolat", "/hu/irasok"],
-  de: ["/de", "/de/arbeiten", "/de/arbeit/raiffeisen", "/de/ueber-mich", "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/kontakt", "/de/wissen"],
+  en: ["/", "/works", "/work/raiffeisen", "/about", "/web-development", "/ai-integration", "/mvp-development", "/contact", "/writing"],
+  hu: ["/hu", "/hu/munkak", "/hu/munka/raiffeisen", "/hu/rolam", "/hu/webfejlesztes", "/hu/ai-tanacsadas-fejlesztes", "/hu/mvp-fejlesztes", "/hu/kapcsolat", "/hu/irasok"],
+  de: ["/de", "/de/arbeiten", "/de/arbeit/raiffeisen", "/de/ueber-mich", "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/mvp-entwicklung", "/de/kontakt", "/de/wissen"],
 };
 
 for (const [language, routes] of Object.entries(ROUTES)) {

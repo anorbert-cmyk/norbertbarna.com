@@ -156,9 +156,9 @@ try {
   assert(!queryCache.has("immutable"), "a query string made an unversioned asset immutable");
   assert(queryCache.get("max-age") === "0", "query-string cache probe must use max-age=0");
 
-  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/web-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/privacy", "/hu/adatvedelem",
+  for (const pagePath of ["/", "/works", "/about", "/work/instructure", "/ai-integration", "/web-development", "/mvp-development", "/hu/ai-tanacsadas-fejlesztes", "/hu/webfejlesztes", "/hu/mvp-fejlesztes", "/privacy", "/hu/adatvedelem",
     "/contact", "/hu/kapcsolat", "/hu", "/hu/munkak", "/hu/rolam", "/hu/munka/instructure",
-    "/de", "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/datenschutz", "/de/kontakt", "/de/arbeiten", "/de/arbeit/instructure", "/de/ueber-mich", ...WRITING_PAGES.map(urlOf)]) {
+    "/de", "/de/webentwicklung", "/de/ki-beratung-entwicklung", "/de/mvp-entwicklung", "/de/datenschutz", "/de/kontakt", "/de/arbeiten", "/de/arbeit/instructure", "/de/ueber-mich", ...WRITING_PAGES.map(urlOf)]) {
     const page = await fetch(`${baseUrl}${pagePath}`, { method: "HEAD" });
     const pageCache = cacheDirectives(page.headers.get("cache-control") || "");
     const contentSecurityPolicy = page.headers.get("content-security-policy") || "";
@@ -383,6 +383,9 @@ try {
     ["/de/", "/de"],
     ["/de/index.html?utm_source=de", "/de?utm_source=de"],
     ["/de/webentwicklung.html", "/de/webentwicklung"],
+    ["/mvp-development.html", "/mvp-development"],
+    ["/hu/mvp-fejlesztes/", "/hu/mvp-fejlesztes"],
+    ["/de/mvp-entwicklung.html", "/de/mvp-entwicklung"],
     ["/de/ki-beratung-entwicklung/?utm_campaign=ki", "/de/ki-beratung-entwicklung?utm_campaign=ki"],
     ["/de/datenschutz/", "/de/datenschutz"],
     ["/de/kontakt.html", "/de/kontakt"],

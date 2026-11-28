@@ -17,9 +17,9 @@
   // here is silently unmeasured, which hid the Hungarian site until 2026-10-21
   // and the German site until 2026-11-27. check-analytics compares with the sitemap.
   var CASES = ['raiffeisen', 'instructure', 'bitpanda', 'benker', 'sportsgambit', 'kineticare', 'onrobot'];
-  var ROUTES = ['/', '/works', '/about', '/ai-integration', '/web-development', '/contact', '/privacy',
-    '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/hu/kapcsolat', '/hu/adatvedelem',
-    '/de', '/de/arbeiten', '/de/ueber-mich', '/de/ki-beratung-entwicklung', '/de/webentwicklung', '/de/kontakt', '/de/datenschutz']
+  var ROUTES = ['/', '/works', '/about', '/ai-integration', '/web-development', '/mvp-development', '/contact', '/privacy',
+    '/hu', '/hu/munkak', '/hu/rolam', '/hu/ai-tanacsadas-fejlesztes', '/hu/webfejlesztes', '/hu/mvp-fejlesztes', '/hu/kapcsolat', '/hu/adatvedelem',
+    '/de', '/de/arbeiten', '/de/ueber-mich', '/de/ki-beratung-entwicklung', '/de/webentwicklung', '/de/mvp-entwicklung', '/de/kontakt', '/de/datenschutz']
     .concat(CASES.map(function (slug) { return '/work/' + slug; }), CASES.map(function (slug) { return '/hu/munka/' + slug; }), CASES.map(function (slug) { return '/de/arbeit/' + slug; }));
   var CTA_IDS = ['consultation', 'contact', 'service'];
   // The writing section is generated from content/, so its slugs are matched

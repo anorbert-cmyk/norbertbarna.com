@@ -6,6 +6,7 @@ import { expect, test } from "@playwright/test";
 // The AI service page in its three languages (German structure, task T8, 2026-10-21).
 const AI_PAGES = { en: "/ai-integration", hu: "/hu/ai-tanacsadas-fejlesztes", de: "/de/ki-beratung-entwicklung" };
 const WEB_PAGES = { en: "/web-development", hu: "/hu/webfejlesztes", de: "/de/webentwicklung" };
+const MVP_PAGES = { en: "/mvp-development", hu: "/hu/mvp-fejlesztes", de: "/de/mvp-entwicklung" };
 const ROUTES = Object.entries(AI_PAGES);
 const LANGS = Object.keys(AI_PAGES);
 const LANGUAGE_NAMES = { en: "English", hu: "Magyar", de: "Deutsch" };
@@ -709,7 +710,8 @@ test("the old Hungarian AI address moves permanently to the new one", async ({ r
 });
 
 for (const [path, subject] of [["/ai-integration", /AI consulting and integration/], ["/web-development", /Web development/], ["/hu/ai-tanacsadas-fejlesztes", /AI tanácsadás/], ["/hu/webfejlesztes", /Weboldal készítés/],
-  ["/de/ki-beratung-entwicklung", /KI-Beratung/], ["/de/webentwicklung", /Webentwicklung/]]) {
+  ["/de/ki-beratung-entwicklung", /KI-Beratung/], ["/de/webentwicklung", /Webentwicklung/],
+  ["/mvp-development", /MVP development/], ["/hu/mvp-fejlesztes", /MVP fejlesztés/], ["/de/mvp-entwicklung", /MVP-Entwicklung/]]) {
   test(`${path}: use cases, scope, price factors and FAQ data match the visible page`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await open(page, path);
@@ -751,13 +753,37 @@ test("the web development pages are a reciprocal three-language group with the K
   }
 });
 
+test("the MVP development pages are a reciprocal three-language group with regulated case studies as evidence", async ({ page }) => {
+  const absolute = Object.fromEntries(Object.entries(MVP_PAGES).map(([code, path]) => [code, `https://www.barnanorbert.com${path}`]));
+  for (const [language, path] of Object.entries(MVP_PAGES)) {
+    await open(page, path);
+    const alternates = await page.locator('link[rel="alternate"][hreflang]').evaluateAll((links) => Object.fromEntries(links.map((link) => [link.hreflang, link.href])));
+    expect(alternates).toEqual({ ...absolute, "x-default": absolute.en });
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", absolute[language]);
+    const others = LANGS.filter((code) => code !== language);
+    const switches = page.locator(".navbar a.lang-switch");
+    await expect(switches).toHaveCount(others.length);
+    for (const [index, other] of others.entries()) {
+      await expect(switches.nth(index)).toHaveAttribute("href", MVP_PAGES[other]);
+      await expect(page.locator(`main a[href="${MVP_PAGES[other]}"]`)).toHaveCount(1);
+    }
+    for (const slug of ["raiffeisen", "kineticare", "instructure"]) await expect(page.locator(`#selected-work a[href="${caseHref(language, slug)}"]`)).toHaveCount(1);
+    for (const slug of ["benker", "bitpanda", "sportsgambit"]) await expect(page.locator(`main a[href="${caseHref(language, slug)}"]`)).toHaveCount(1);
+    // The AI question links the AI offer of the same language (inside a closed disclosure until opened).
+    await expect(page.locator(`#questions a[href="${AI_PAGES[language]}"]`)).toHaveCount(1);
+    await expect(page.locator('#nav-services a[aria-current="page"]')).toHaveAttribute("href", path);
+    // The offer never names the employer and never states a price or a duration in weeks.
+    await expect(page.locator("main")).not.toContainText(/BlackRock|\d\s?(?:Ft|forint|EUR|€)|\d+\s?(?:weeks?|hét|Wochen?)/);
+  }
+});
+
 // Phone openings in three languages (design review 2026-10-23): the heading
 // takes the Hungarian/German size step and never leaves the canvas, and no
 // display heading on the service board breaks inside a word without a hyphen.
 // The sandbox Chromium ships no hyphenation dictionaries, so the authored soft
 // hyphens (&shy;) are what breaks a compound here; `hyphens: auto` adds the
 // dictionary breaks in shipping browsers.
-const SERVICE_ROUTES = [...Object.values(AI_PAGES), ...Object.values(WEB_PAGES), "/de"];
+const SERVICE_ROUTES = [...Object.values(AI_PAGES), ...Object.values(WEB_PAGES), ...Object.values(MVP_PAGES), "/de"];
 const midWordBreaks = (page) => page.evaluate(() => {
   const breaks = [];
   for (const heading of document.querySelectorAll("main h1, main h2, main h3, .ai-footer h2")) {

@@ -980,6 +980,7 @@ same change that caused the drift.
 | `/about` | `about.html` | Story in Motion, the written biography | `index, follow, max-image-preview:large` |
 | `/ai-integration` | `ai-integration.html` | English service offer, the two approved boards | default |
 | `/hu/ai-tanacsadas-fejlesztes` | `hu/ai-tanacsadas-fejlesztes.html` | Hungarian pair of the same board, `lang="hu"` | default |
+| `/mvp-development`, `/hu/mvp-fejlesztes`, `/de/mvp-entwicklung` | `mvp-development.html`, `hu/mvp-fejlesztes.html`, `de/mvp-entwicklung.html` | MVP development for regulated products (2026-11-28), a three-language group on the same service board and chapter skeleton | default |
 | `/hu/webfejlesztes` | `hu/webfejlesztes.html` | Hungarian web development offer on the same board, no English pair yet | default |
 | `/privacy` | `privacy.html` | Consent and analytics notice | default |
 | `/hu/adatvedelem` | `hu/adatvedelem.html` | Hungarian pair, `lang="hu"` | default |

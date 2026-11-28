@@ -7,8 +7,9 @@ export const languageOf = (page) => page.startsWith("hu/") ? "hu" : page.startsW
 
 // Keep client landing pages in every site-wide verification inventory.
 // These are service pages, not portfolio Articles.
-export const SERVICE_PAGES = ["ai-integration.html", "web-development.html", "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html",
-  "de/ki-beratung-entwicklung.html", "de/webentwicklung.html"];
+export const SERVICE_PAGES = ["ai-integration.html", "web-development.html", "mvp-development.html", "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html",
+  "hu/mvp-fejlesztes.html", "de/ki-beratung-entwicklung.html", "de/webentwicklung.html", "de/mvp-entwicklung.html"];
+// The MVP development group (2026-11-28) is the third offer, next to AI and web.
 // Service pages built on the extended template (2026-10-21 SEO plan):
 // use cases, scope, price factors and eight questions with matching FAQPage data.
 export const EXTENDED_SERVICE_PAGES = SERVICE_PAGES;
@@ -58,6 +59,7 @@ export const PAGE_GROUPS = [
   ["index.html", "hu/index.html", "de/index.html"],
   ["ai-integration.html", "hu/ai-tanacsadas-fejlesztes.html", "de/ki-beratung-entwicklung.html"],
   ["web-development.html", "hu/webfejlesztes.html", "de/webentwicklung.html"],
+  ["mvp-development.html", "hu/mvp-fejlesztes.html", "de/mvp-entwicklung.html"],
   ["privacy.html", "hu/adatvedelem.html", "de/datenschutz.html"],
   ["contact.html", "hu/kapcsolat.html", "de/kontakt.html"],
   ["works.html", "hu/munkak.html", "de/arbeiten.html"],

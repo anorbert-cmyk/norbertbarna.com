@@ -1132,7 +1132,7 @@
       "translations": [
         "de/mvp-entwicklung-regulierte-produkte"
       ],
-      "servicePage": "/web-development",
+      "servicePage": "/mvp-development",
       "seo": {
         "titleLength": 57,
         "descriptionLength": 127,
@@ -1183,7 +1183,7 @@
       "translations": [
         "en/mvp-development-regulated-products"
       ],
-      "servicePage": "/de/ki-beratung-entwicklung",
+      "servicePage": "/de/mvp-entwicklung",
       "seo": {
         "titleLength": 59,
         "descriptionLength": 132,

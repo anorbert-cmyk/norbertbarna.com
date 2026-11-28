@@ -6,8 +6,8 @@ slug: mvp-entwicklung-regulierte-produkte
 date: 2026-10-21T10:10:00+02:00
 updated: 2026-11-28T12:00:00+01:00
 tags: [mvp entwicklung, mvp software, mvp entwickeln lassen, minimum viable product, ki entwicklung, webentwicklung]
-service: /de/ki-beratung-entwicklung
-service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
+service: /de/mvp-entwicklung
+service_label: MVP-Entwicklung für regulierte Produkte
 cover: /assets/images/og/writing/mvp-entwicklung-regulierte-produkte.jpg
 cover_alt: Eine kleine, sauber gefaltete Papierform auf einem festen dunkelgrünen Papiersockel, drumherum Platz für weitere Faltungen: MVP-Entwicklung für regulierte Produkte
 pair: [en/mvp-development-regulated-products, hu/mvp-fejlesztes-szabalyozott-termekhez]
