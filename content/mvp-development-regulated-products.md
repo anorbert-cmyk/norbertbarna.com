@@ -4,7 +4,7 @@ description: "MVP development for fintech, health and other regulated markets: w
 lang: en
 slug: mvp-development-regulated-products
 date: 2026-11-12T12:00:00+01:00
-updated: 2026-11-12T12:00:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [mvp development, fintech mvp, mvp for regulated industries, minimum viable product, saas development]
 service: /web-development
 service_label: Web development and product design for SaaS and fintech
@@ -15,6 +15,14 @@ pair: [de/mvp-entwicklung-regulierte-produkte, hu/mvp-fejlesztes-szabalyozott-te
 An MVP, a minimum viable product, is the smallest version of a product that lets you test one central assumption with real users. In MVP development for a regulated market, such as payments, health, insurance or gambling, the principle is the same, with one restriction: what you may leave out is scope. What you may not leave out is everything that concerns trust and permissibility: identity verification, consent, data protection, secure confirmation of consequential actions, traceability. Those are real on day one, or the product does not go to real users.
 
 This article describes how building an MVP for regulated industries differs from the startup textbook, what had to be real on day one in projects I worked on, and what the process looks like from hypothesis to first user. I work with companies across the EU; the work runs in English or Hungarian.
+
+## In short: an MVP for a regulated market
+
+- **Definition:** an MVP, a minimum viable product, is the smallest version of a product that lets you test one central assumption with real users.
+- **The rule:** you may cut scope. You may not cut identity verification, consent, data protection, confirmation of consequential actions or traceability. A facade is allowed, a fake foundation is not.
+- **Prototype or MVP:** a prototype is not functional and does not go to real users; an MVP is functional and does. In a regulated product the prototype comes first, because the critical flows can be tested before any duties apply.
+- **AI in the MVP:** if users interact with an AI system, the AI Act’s transparency rules (Article 50) apply from 2 August 2026, to an MVP as well. The European Commission lists credit scoring among the high-risk use cases, whose rules apply from 2 December 2027.
+- **What sets the duration:** the duty list and the integrations, such as identity verification and payment, more than the features.
 
 ## What is an MVP, and what can it not be in a regulated market?
 
@@ -57,7 +65,7 @@ Who approved what and when, which version of the terms the user accepted, which 
 
 ### 5. With AI: labelling, review, confidence
 
-At SportsGambit, an AI-supported prediction-market MVP, every recommendation carried a confidence score and the agent’s track record, and a deliberate review step stood before any action. Early telemetry showed that users relied heavily on the AI suggestions, which we treated as a risk, not as a success. The patterns behind this are described in [human-in-the-loop AI for regulated products](/writing/human-in-the-loop-ai).
+At SportsGambit, an AI-supported prediction-market MVP, every recommendation carried a confidence score and the agent’s track record, and a deliberate review step stood before any action. Early telemetry showed that users relied heavily on the AI suggestions, which we treated as a risk, not as a success. The AI Act names this tendency: Article 14(4)(b) asks that the people overseeing a high-risk system “remain aware of the possible tendency of automatically relying or over-relying on the output”, which it calls automation bias. The patterns behind this are described in [human-in-the-loop AI for regulated products](/writing/human-in-the-loop-ai).
 
 The case study draws a clear boundary here. It describes the information architecture and the explainability of the MVP, and it does not claim that production-grade safeguards for real-money betting were shipped. Before a launch with real money, age and location checks, deposit and loss limits, self-exclusion options and a legal review would be launch requirements. Details: [SportsGambit case study](/work/sportsgambit).
 
@@ -73,6 +81,24 @@ The case study draws a clear boundary here. It describes the information archite
 
 The order matters. Step two comes before any design work because the duty list decides how much of the product is foundation and how much can stay facade.
 
+: MVP development for a regulated product: what is ready at the end of each phase, and who must take part
+| Phase | Ready at the end | Who must take part |
+|---|---|---|
+| Assumption and duty list (steps 1 and 2) | One measurable assumption; a written list of the rules that apply once a real user arrives | Founder or product owner, legal counsel |
+| Facade and foundation (step 3) | Three lists: leave out, do by hand, build for real | Product owner, designer, lead developer |
+| Critical flows (step 4) | A prototype of onboarding, confirmation, errors and the way back, tested with users and revised | Designer, test users, whoever reviews compliance |
+| Build (step 5) | A working product with real identity checks, consent, confirmations and records; measurement switched on | Developers, designer, the identity and payment providers |
+| Restricted launch (step 6) | A few real users behind restricted access; numbers read every week | One named owner, support |
+| Decision (step 7) | A documented decision: extend, rebuild or stop | Product owner and whoever funds the next stage |
+
+## Who builds an MVP for a regulated market?
+
+A small team builds it: one person who owns the product decisions, a designer for the critical flows, one or more developers, and legal counsel who co-writes the duty list. Identity verification and payment are usually connected from specialised providers, not built from scratch. I cover the product design and the web development; the legal review stays with your counsel.
+
+## What is ready at the end of an MVP?
+
+At the end of an MVP you have a working product in the hands of a few real users, complete records of who consented to and approved what, and measurements of where users dropped off or hesitated. You also have a decision on the one assumption: extend, rebuild or stop. What you do not have yet is scale, secondary features or refined design.
+
 ## What effort and cost depend on when you commission an MVP
 
 - Which duties apply: identity verification, payment processing, health data, AI labelling.
@@ -86,6 +112,11 @@ I do not quote a fixed price, because every project is individual work; the pric
 ## Where to start
 
 An MVP in a regulated market is small in scope and complete in its foundation. That holds with or without AI, for a web application as much as for a mobile app. Tell me your one assumption and the market the product launches in, and in one conversation I will tell you what belongs on the duty list and what you can safely leave out: [get in touch](/contact).
+
+## Sources
+
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
+- [Article 14: Human oversight](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), AI Act Service Desk, European Commission, accessed 28 November 2026
 
 ## Frequently asked questions
 

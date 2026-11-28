@@ -632,6 +632,258 @@
    "type": "brand",
    "target": "/de/arbeit/kineticare",
    "question": "Wer hat die Kineticare-Plattform für Handrehabilitation entwickelt?"
+  },
+  {
+   "id": "bhu-01",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Melyik a legjobb AI automatizálással foglalkozó cég Magyarországon kkv-knak?"
+  },
+  {
+   "id": "bhu-02",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Könyvelőirodánk vagyunk, 40 fővel. Ki tud nekünk AI-t bevezetni úgy, hogy minden döntést ember hagyjon jóvá?"
+  },
+  {
+   "id": "bhu-03",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "AI tanácsadó cég vagy szabadúszó AI fejlesztő: melyiket válasszam egy 100 fős magyar cégnél?"
+  },
+  {
+   "id": "bhu-04",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Milyen alternatívák vannak a nagy tanácsadó cégek helyett, ha AI integrációt akarunk egy magyar biztosítási alkuszhoz?"
+  },
+  {
+   "id": "bhu-05",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Legjobb egyedi webalkalmazás fejlesztők Budapesten 2026"
+  },
+  {
+   "id": "bhu-06",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Logisztikai cég vagyunk, a beérkező megrendeléseket kézzel gépeljük be. Kit keressek, aki ezt AI-val automatizálja, de ellenőrizhető marad?"
+  },
+  {
+   "id": "bhu-07",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Ajánlj tapasztalt UX és termékdizájnert banki vagy fintech projekthez Magyarországon"
+  },
+  {
+   "id": "bhu-08",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Beléptető rendszerünk van, és a munkaidő-adatokból vezetői riportokat szeretnénk. Ki tud erre egyedi portált fejleszteni?"
+  },
+  {
+   "id": "bhu-09",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "n8n vagy egyedi fejlesztés: mi éri meg jobban egy magyar kkv-nak AI automatizáláshoz, és ki tud segíteni?"
+  },
+  {
+   "id": "bhu-10",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Kik a legismertebb human-in-the-loop AI szakértők Magyarországon?"
+  },
+  {
+   "id": "bhu-11",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "Startup vagyunk, egészségügyi alkalmazást építünk. Ki készít MVP-t Magyarországon, aki érti a szabályozást?"
+  },
+  {
+   "id": "bhu-12",
+   "lang": "hu",
+   "type": "buyer",
+   "target": null,
+   "question": "aiworks.hu alternatívák AI automatizálásra"
+  },
+  {
+   "id": "ben-01",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Best AI consultants for fintech startups in Europe 2026"
+  },
+  {
+   "id": "ben-02",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "We are a regtech startup and need an AI feature with human approval and an audit trail for the EU AI Act. Who can build it?"
+  },
+  {
+   "id": "ben-03",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Freelance product designer vs agency for a fintech MVP: which is better and who do you recommend in Europe?"
+  },
+  {
+   "id": "ben-04",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Alternatives to S-PRO for building an MVP for a regulated fintech product"
+  },
+  {
+   "id": "ben-05",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Top human in the loop AI design experts"
+  },
+  {
+   "id": "ben-06",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Our healthtech startup needs an MVP with explainable AI that passes compliance review. Recommend a small team or freelancer in the EU."
+  },
+  {
+   "id": "ben-07",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Best freelance AI product designers in Eastern Europe"
+  },
+  {
+   "id": "ben-08",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Should I hire a big consultancy or an independent expert to add AI to our banking product?"
+  },
+  {
+   "id": "ben-09",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Who designs AI agents with approval workflows for financial services companies?"
+  },
+  {
+   "id": "ben-10",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Best nearshore MVP developers in Hungary"
+  },
+  {
+   "id": "ben-11",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "Toptal alternatives for hiring a senior AI product designer with banking experience"
+  },
+  {
+   "id": "ben-12",
+   "lang": "en",
+   "type": "buyer",
+   "target": null,
+   "question": "I need someone who can turn our AI prototype into a production feature that a bank compliance team will accept. Who should I talk to?"
+  },
+  {
+   "id": "bde-01",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Beste KI-Beratung für den Mittelstand 2026"
+  },
+  {
+   "id": "bde-02",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Wir sind ein Versicherungsmakler mit 60 Mitarbeitern. Wer führt KI ein, bei der ein Mensch jede Entscheidung freigibt?"
+  },
+  {
+   "id": "bde-03",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "KI-Agentur oder freiberuflicher KI-Berater: was ist für ein mittelständisches Unternehmen besser?"
+  },
+  {
+   "id": "bde-04",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Alternativen zu großen Beratungen für KI-Projekte in regulierten Branchen"
+  },
+  {
+   "id": "bde-05",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Beste Agenturen für barrierefreie Websites nach BFSG"
+  },
+  {
+   "id": "bde-06",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Wir brauchen ein MVP für ein Fintech-Produkt mit Audit-Trail und menschlicher Freigabe. Wer kann das in Europa bauen?"
+  },
+  {
+   "id": "bde-07",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Empfehlenswerte freiberufliche UX-Designer für Banking-Software"
+  },
+  {
+   "id": "bde-08",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Nearshoring nach Ungarn oder Polen für Softwareentwicklung: wer ist empfehlenswert?"
+  },
+  {
+   "id": "bde-09",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Wer baut KI-Automatisierung für Buchhaltungskanzleien mit menschlicher Kontrolle?"
+  },
+  {
+   "id": "bde-10",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Top Human-in-the-Loop KI Experten in Europa"
+  },
+  {
+   "id": "bde-11",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Alternativen zu Freelancermap, um einen KI-Produktdesigner zu finden"
+  },
+  {
+   "id": "bde-12",
+   "lang": "de",
+   "type": "buyer",
+   "target": null,
+   "question": "Welcher Berater hilft, KI-Funktionen EU AI Act konform mit menschlicher Aufsicht umzusetzen?"
   }
  ]
 }

@@ -4,7 +4,7 @@ description: "AI fejlesztés ára: nyolc tényező, amely drágítja vagy olcsó
 lang: hu
 slug: ai-fejlesztes-ara-mitol-fugg
 date: 2026-11-27T23:30:00+01:00
-updated: 2026-11-27T23:30:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ai fejlesztés, ai integráció, ai fejlesztés ára, ai bevezetés, ai tanácsadás, ai automatizálás]
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
@@ -15,6 +15,15 @@ pair: [en/what-ai-integration-cost-depends-on, de/ki-beratung-kosten]
 Az AI fejlesztés ára elsősorban nem a modelltől függ, hanem attól, mekkora folyamatot érint, milyen állapotban vannak az adataid, hány rendszerhez kell kapcsolódni, és mennyi ellenőrzés kell ahhoz, hogy az eredményben meg lehessen bízni. Ugyanaz a modell egy válaszvázlatot író belső eszközben és egy ügyfelekkel beszélő, több rendszerbe író megoldásban egészen más munkát jelent. Az indulás után futó költségek is vannak: a modellhasználat, a figyelés és a források karbantartása.
 
 Ebben a cikkben nem írok számokat, mert minden AI fejlesztés és AI integráció egyedi munka, és egy szám feladat nélkül félrevezet. Nyolc tényezőt veszek sorra, utána leírom, hogyan bontható szakaszokra a munka, hogyan vess össze két ajánlatot, és mely futó költségek maradnak ki sok ajánlatból.
+
+## Röviden: mitől függ az AI fejlesztés ára
+
+- **Nyolc tényező mozgatja az árat:** a folyamat terjedelme, az adatok állapota, az integrációk, az emberi ellenőrzés szintje, a kiértékelés, a kockázat és a szabályozás, a nyelvek száma, és az, hogy ki tartja karban a megoldást.
+- **A modell a kisebb tétel:** a munka nagy része tervezés, adat-előkészítés, integráció, ellenőrző felület és kiértékelés, nem a modell bekötése.
+- **Így indulsz a legkisebb kiadással:** egyetlen szűk folyamat, rendezett források, és olyan kapcsolat, amely csak olvas a rendszereidből.
+- **Négy szakasz, négy döntési pont:** felmérés, prototípus, pilot, bevezetés és átadás. Mindegyik végén dönthetsz, hogy folytatod-e.
+- **Három futó költség marad az indulás után:** a modellhasználat, a monitorozás és a források karbantartása. Ehhez jön a jóváhagyó kolléga munkaideje.
+- **Szabály két ajánlat összevetéséhez:** ha az egyikből hiányzik a kiértékelés, az emberi ellenőrzés vagy a hibaágak kezelése, akkor az nem olcsóbb, hanem kisebb munkát áraz.
 
 ## Mitől függ az AI fejlesztés ára? Nyolc tényező
 
@@ -75,6 +84,14 @@ Egy AI integráció költsége szakaszolható, és minden szakasz végén dönth
 
 A lépéseket az [AI tanácsadás, automatizálás és fejlesztés](/hu/ai-tanacsadas-fejlesztes) oldalon részletezem, a kkv-knak szóló menetrendet az [AI bevezetése KKV-nál: az első 90 nap](/hu/irasok/ai-bevezetese-kkv-elso-90-nap) cikkben.
 
+## Mi készül el az egyes szakaszok végére, és ki dolgozik rajta?
+
+A felmérés végén körülhatárolt probléma és kiinduló érték van, ehhez a folyamatot végző munkatársak és a folyamat gazdája kell. A prototípus végén valódi példákon kipróbált munkafelület van, még integráció nélkül, és a leendő felhasználók mondanak róla véleményt. A pilot végén mért eredmény és mért működési költség van, egy kijelölt felelőssel, aki le is állíthatta volna. Az átadás végén a tiéd a kód, a promptok, az értékelési példák és a működtetési útmutató. A te oldaladon végig három ember idejével számolj: a folyamat gazdájáéval, egy vagy két munkatárséval, aki a munkát ma végzi, és azéval, aki a rendszerekhez hozzáférést ad.
+
+## Mennyi ideig tart egy AI fejlesztés?
+
+Az időtartam ugyanattól a nyolc tényezőtől függ, mint az ár, ezért heteket feladat nélkül ugyanúgy nem lehet mondani, mint összeget. Három dolog nyújtja meg leggyakrabban: a rendszerekhez való hozzáférés jóváhagyása, a szétszórt források rendbetétele és a jogi egyeztetés. Egy nagykereskedésnél, ahol a rendelések e-mailben érkeznek és a cikktörzs rendezett, a prototípus gyorsan eljut a pilotig. Egy biztosítási alkusznál, ahol ügyféladat és több biztosító rendszere érintett, a hozzáférés és az adatkezelés tisztázása viszi az idő nagyobb részét.
+
 ## Egy példa: mi volt a munka az Instructure AI-funkcióiban
 
 Az Instructure-nél egy tanulási platform AI-funkcióinak tervezését vezettem. A védőkorlátokat az első napon rögzítettük: emberi ellenőrzés, egyértelmű AI-jelölés, szerkeszthető kimenetek, forrásjelzések és helyreállítási utak. A folyamatokat a jogi, a megfelelőségi és a data science csapattal közösen néztük át, és mértük a használatba vételt és a feladatok befejezését.
@@ -109,6 +126,10 @@ Számolj az ellenőrzésre fordított munkaidővel is: a jóváhagyó kolléga i
 ## Összegzés
 
 Az AI fejlesztés ára a feladat következménye. A folyamat terjedelme, az adatok állapota, az integrációk, az ellenőrzés és a kiértékelés szintje, a kockázat, a nyelvek és a karbantartás együtt határozza meg, és a legtöbbet az adatok rendbetételével és egy szűk első folyamattal tudsz spórolni. Ha leírod a folyamatot, az érintett rendszereket és azt, mi számítana sikernek, [küldd el](/hu/kapcsolat), és megmondom, melyik szakasszal érdemes kezdeni.
+
+## Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek, ha az AI-rendszer természetes személyekkel lép kapcsolatba](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ## Gyakori kérdések
 

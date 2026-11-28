@@ -4,7 +4,7 @@ description: "MVP fejlesztés fintech és egészségügyi termékhez: mit hagyha
 lang: hu
 slug: mvp-fejlesztes-szabalyozott-termekhez
 date: 2026-11-27T23:30:00+01:00
-updated: 2026-11-27T23:30:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [mvp fejlesztés, fintech mvp, mvp szabályozott iparágban, egészségügyi szoftverfejlesztés, minimum viable product, webalkalmazás fejlesztés]
 service: /hu/webfejlesztes
 service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
@@ -15,6 +15,15 @@ pair: [de/mvp-entwicklung-regulierte-produkte, en/mvp-development-regulated-prod
 Szabályozott iparágban, például fintech vagy egészségügyi terméknél az MVP fejlesztés ugyanazt jelenti, mint máshol: a legkisebb termékváltozatot építed meg, amellyel egyetlen központi feltevést valódi felhasználókkal ellenőrizni tudsz. Egy megkötés van: a terjedelmet szűkítheted, a bizalmat és a megengedhetőséget érintő részeket nem. Az azonosítás, a hozzájárulás, az adatvédelem, a következménnyel járó műveletek megerősítése és a visszakereshetőség az első napon valódi, különben a termék nem kerülhet valódi felhasználók elé.
 
 Ebben a cikkben leírom, miben tér el a szabályozott piacra szánt MVP a startup-tankönyvtől, mi volt valódi az első napon azokban a projektekben, amelyeken dolgoztam, és milyen sorrendben érdemes haladni a feltevéstől az első felhasználóig. A jogi kérdéseket tervezési szempontként kezelem: ez nem jogi tanácsadás.
+
+## Röviden: mi legyen valódi egy szabályozott MVP-ben
+
+- **Meghatározás:** az MVP (minimum viable product) a legkisebb működő termékváltozat, amellyel egyetlen feltevést valódi felhasználókkal ellenőrzöl.
+- **Öt dolog valódi az első napon:** azonosítás és hozzájárulás, a következménnyel járó műveletek megerősítése, adatvédelem a kódban, teljes napló, és ha van AI, annak jelölése és emberi ellenőrzése.
+- **Ami kimaradhat:** másodlagos funkciók, a háttérfolyamatok automatizálása, skálázás és kidolgozott látvány. A háttérmunkát egyelőre ember is végezheti kézzel.
+- **Döntési szabály:** a fizetést és az ügyfél-azonosítást vedd engedéllyel rendelkező szolgáltatótól, ha nem ez a terméked lényege. Saját megoldást csak akkor építs, ha maga a feltevés erről szól.
+- **Prototípus előbb, MVP utána:** a prototípusban nincs valódi adat, ezért a kritikus folyamatokat kötelezettség nélkül tesztelheted. Az MVP-re már az első valódi felhasználótól érvényes a GDPR.
+- **AI esetén:** az EU AI-rendelete, az (EU) 2024/1689 rendelet 50. cikke szerint a felhasználót tájékoztatni kell, ha AI-rendszerrel lép kapcsolatba. Ez 2026. augusztus 2. óta alkalmazandó, MVP-re is.
 
 ## Mi az MVP, és mi nem lehet szabályozott piacon?
 
@@ -81,6 +90,14 @@ Az esettanulmány itt világos határt húz: az MVP információs architektúrá
 
 A sorrend számít. A második lépés azért előzi meg a tervezést, mert a kötelezettséglista dönti el, a termék mekkora része alap, és mekkora maradhat homlokzat. Egy kkv-nál vagy korai fázisú startupnál ez a lista arra is választ ad, mit érdemes engedéllyel rendelkező szolgáltatótól venni, például a fizetést vagy az ügyfél-azonosítást, ahelyett, hogy saját magad építenéd meg.
 
+## Ki vesz részt egy szabályozott MVP fejlesztésében?
+
+Három szerep kell az elejétől. A termék gazdája dönt a feltevésről és a terjedelemről. A jogász vagy a compliance felelős írja veled a kötelezettséglistát. A tervező és fejlesztő megépíti a kritikus folyamatokat, és bekapcsolja az engedéllyel rendelkező szolgáltatókat, például a fizetési vagy az azonosítási szolgáltatót. Egy 20 és 250 fő közötti cégnél, például egy biztosítási alkusznál vagy egy könyvelőirodánál, amely ügyfélportált indít, a termék gazdája sokszor az ügyvezető, a jogi szerep pedig a külső ügyvéd vagy az adatvédelmi tisztviselő.
+
+## Mi készül el az egyes szakaszok végére?
+
+A feltárás végén megvan az egy mondatos feltevés, a kötelezettséglista, és a három kupac: kimarad, kézzel, valódi. A tervezés végén kész a kritikus folyamatok felhasználókkal tesztelt prototípusa: onboarding, megerősítés, hibák, visszaút. Az építés végén korlátozott hozzáférés mögött fut a működő termék, valódi azonosítással, naplóval és méréssel. Az első mérési időszak végén döntés születik: bővítés, átépítés vagy leállítás.
+
 ## Mitől függ egy szabályozott MVP ráfordítása és költsége?
 
 - **A kötelezettségek:** ügyfél-azonosítás, fizetés, egészségügyi adat, AI-jelölés.
@@ -94,6 +111,10 @@ Fix árat nem írok, mert minden projekt egyedi munka: az ár akkor adható meg,
 ## Összegzés
 
 Egy szabályozott piacra szánt MVP terjedelmében kicsi, alapjaiban teljes. Ez AI-val és AI nélkül, webalkalmazásnál és mobilalkalmazásnál egyaránt igaz. Ha a termékedben AI is beszél a felhasználóval, az indulás előtt nézd át az [AI Act jelölési kötelezettségéről](/hu/irasok/ai-act-jelolesi-kotelezettseg) szóló cikket is. Írd meg az egy feltevésedet és azt, melyik piacon indul a termék, és egy beszélgetésben megmondom, mi kerül a kötelezettséglistára, és mit hagyhatsz ki nyugodtan: [vedd fel velem a kapcsolatot](/hu/kapcsolat).
+
+## Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek, 113. cikk: alkalmazási dátumok](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ## Gyakori kérdések
 

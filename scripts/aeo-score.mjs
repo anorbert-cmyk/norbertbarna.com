@@ -96,7 +96,7 @@ function report(file, previousFile) {
   const total = now.slice(() => true);
   const totalBefore = before?.slice(() => true);
   lines.push(`# Answer engine citation score, ${now.measured}`, "");
-  lines.push(`${questions.length} fixed questions, ${now.engines.length} engines, ${now.ok.length} usable answers of ${now.records.length}.`, "");
+  lines.push(`${now.questionIds.length} questions measured, ${now.engines.length} engines, ${now.ok.length} usable answers of ${now.records.length}.`, "");
   lines.push(`- **Answers that cite barnanorbert.com: ${total.cited} of ${total.answers} (${pct(total.cited, total.answers)})**${delta(total.cited, totalBefore?.cited)}`);
   lines.push(`- Answers that name Norbert Barna or the site: ${total.mentioned} of ${total.answers} (${pct(total.mentioned, total.answers)})${delta(total.mentioned, totalBefore?.mentioned)}`);
   lines.push(`- Questions where at least one engine cites or names the site: ${now.present.length} of ${now.questionIds.length}${delta(now.present.length, before?.present.length)}`, "");
@@ -111,7 +111,7 @@ function report(file, previousFile) {
   };
   table("By engine", now.engines.map((engine) => [ENGINE_NAMES[engine], (record) => record.engine === engine]));
   table("By language", ["hu", "en", "de"].map((lang) => [lang.toUpperCase(), (record) => byId.get(record.id).lang === lang]));
-  table("By question type", ["info", "commercial", "brand"].map((type) => [type, (record) => byId.get(record.id).type === type]));
+  table("By question type", ["info", "commercial", "buyer", "brand"].map((type) => [type, (record) => byId.get(record.id).type === type]));
   lines.push("## Questions where the site appears", "");
   if (!now.present.length) lines.push("None.", "");
   for (const id of now.present) {

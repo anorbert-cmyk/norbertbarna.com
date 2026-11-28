@@ -453,7 +453,7 @@ Keep the domain whenever possible. A domain change is a separate project with it
 
 - URL: https://www.barnanorbert.com/writing/what-ai-integration-cost-depends-on
 - Language: English
-- Published: 2026-11-27; updated: 2026-11-27
+- Published: 2026-11-27; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in Hungarian: https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg; German: https://www.barnanorbert.com/de/wissen/ki-beratung-kosten
 - Summary: AI integration cost for a mid-size company depends on eight factors. How each moves the price, what to stage, how to compare quotes.
@@ -461,6 +461,14 @@ Keep the domain whenever possible. A domain change is a separate project with it
 For a mid-size company, AI integration cost depends far more on the work around the model than on the model. Eight factors decide it: the scope of the workflow, the readiness of your data, the number of integrations, the level of human review, how the output is evaluated, risk and regulation, the languages involved, and who maintains the result after launch. Two quotes for the same request can differ widely and both be fair, because they answer those eight questions differently.
 
 There are no price figures in this article. Every AI integration is custom work, and a number without a scope says nothing about your project. I work with companies across the EU, in English or Hungarian.
+
+### In short: what AI integration cost depends on
+
+- **Eight factors decide the cost:** workflow scope, data readiness, number of integrations, level of human review, evaluation, risk and regulation, languages, and who maintains the feature after launch.
+- **The strongest lever you control:** narrow the project to one repeated task for one team. Reading from a system is also a smaller job than writing to it.
+- **It can be bought in stages:** discovery ends with a focused problem, an initial scope and a baseline; the prototype ends with evaluation examples and a build decision; the pilot ends with a bounded version measured against the baseline. You can stop after any stage.
+- **Five running costs start on launch day:** model usage billed by volume, monitoring, source maintenance, reviewer time, and retesting after changes.
+- **Where mid-size companies stand:** in 2025, 30.36% of medium-sized EU enterprises used AI, against 17% of small and 55.03% of large enterprises (Eurostat, data extracted December 2025).
 
 ### Why do quotes for the same AI project differ so much?
 
@@ -486,11 +494,11 @@ A review step is designed work: an interface for checking, editing and rejecting
 
 #### 5. Evaluation
 
-Evaluation is the set of your own examples, with expected results, that the feature is tested against before launch and after every change. Building that set takes time from the people who know the work. Without it nobody can say whether the pilot helped or whether a model update made it worse.
+Evaluation is the set of your own examples, with expected results, that the feature is tested against before launch and after every change. Building that set takes time from the people who know the work. Without it nobody can say whether the pilot helped or whether a model update made it worse. The NIST AI Risk Management Framework, a voluntary framework released on 26 January 2023, treats evaluation as part of an AI product in the same breath as its design, development and use.
 
 #### 6. Risk and regulation
 
-Personal, health or financial data and decisions that affect people need more design, testing and documentation. EU AI Act obligations widen the evidence you will want to keep. These are design questions here, not legal advice: which rules apply to you is for your counsel. The labelling duties are covered in [EU AI Act Article 50: what product teams must label now](https://www.barnanorbert.com/writing/eu-ai-act-transparency-obligations).
+Personal, health or financial data and decisions that affect people need more design, testing and documentation. EU AI Act obligations widen the evidence you will want to keep: the European Commission lists CV-sorting software for recruitment and credit scoring among the high-risk use cases, and the rules for those apply from 2 December 2027. These are design questions here, not legal advice: which rules apply to you is for your counsel. The labelling duties are covered in [EU AI Act Article 50: what product teams must label now](https://www.barnanorbert.com/writing/eu-ai-act-transparency-obligations).
 
 #### 7. Languages
 
@@ -522,6 +530,14 @@ An AI integration can be bought in stages. Each stage ends with a decision, and 
 4. **Rollout.** Wider use, once the pilot is measured against the baseline.
 
 Staging lowers the risk: you commit to a build only after the prototype has shown what the task needs. The steps are on my [AI integration](https://www.barnanorbert.com/ai-integration) page, and [what to prepare before hiring an AI integration partner](https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner) lists the inputs that keep discovery short.
+
+### Who does the work in an AI integration, and how much of it is yours?
+
+The partner maps the workflow, designs the review interface, connects the systems and sets up the evaluation. Your side supplies what no partner can: the people who do the task describe it, assemble the examples with expected results and review the outputs; the owner of each system grants access; one named person owns the pilot. That internal time appears in no quote, so plan it before you compare offers.
+
+### How long does an AI integration take?
+
+The duration follows the stages, and each stage ends with something you can check: a scope and a baseline, then evaluation examples and a build decision, then a measured pilot. What stretches the calendar is rarely the model. It is data approval, access to the connected systems and the availability of the people who review outputs. I do not give a duration before discovery, for the same reason I do not give a price.
 
 ### An example: where the work went at Instructure
 
@@ -557,6 +573,12 @@ If one quote answers all seven and the other answers three, the price difference
 
 AI integration cost follows from scope, and you can write the scope down before any partner is involved. Pick one workflow, name the systems and data it touches, decide what a person must approve, and say which languages matter at launch. [Send me that description](https://www.barnanorbert.com/contact) and I will tell you which stage makes sense first.
 
+### Sources
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat Statistics Explained, data extracted December 2025, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
+- [AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), National Institute of Standards and Technology (NIST), AI RMF 1.0 released 26 January 2023, accessed 28 November 2026
+
 ### Frequently asked questions
 
 #### What does AI integration cost depend on for a mid-size company?
@@ -585,7 +607,7 @@ Model usage billed by volume, monitoring and re-evaluation, keeping source mater
 
 - URL: https://www.barnanorbert.com/writing/which-process-to-automate-with-ai-first
 - Language: English
-- Published: 2026-11-27; updated: 2026-11-27
+- Published: 2026-11-27; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in German: https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess; Hungarian: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj
 - Summary: AI automation works best on a first process that is frequent, reads messy input, is checked by a person and is cheap to get wrong.
@@ -593,6 +615,14 @@ Model usage billed by volume, monitoring and re-evaluation, keeping source mater
 The first business process a company should hand to AI automation is one that runs daily or weekly, starts from unstructured input such as emails, documents or free text, produces a result a person can check in seconds before it takes effect, and is cheap to correct when it is wrong. In most companies that is intake and triage: reading incoming requests or documents, classifying them, and preparing a draft or a pre-filled record for a colleague to approve. A process that follows fixed rules on structured data needs classic automation, not AI.
 
 Below are five criteria, a decision table and six steps to a measured pilot. I work with companies across the EU, in English or Hungarian.
+
+### In short: the first process for AI automation
+
+- **The first process:** one that runs daily or weekly, starts from unstructured input, produces a result a person can check in seconds, and is cheap to correct. In most companies that is intake and triage.
+- **The rule:** if you can write the rule down, use classic automation. Use AI only for the part where no rule can be written.
+- **Not first:** payments, contracts and decisions about people. The European Commission lists CV-sorting software for recruitment and credit scoring among the high-risk use cases of the AI Act, whose rules apply from 2 December 2027.
+- **What others use AI for:** in 2025, 19.95% of EU enterprises used AI technologies, 6.47 percentage points more than in 2024. The most common use was the analysis of written language (text mining), at 11.75% of enterprises (Eurostat, data extracted December 2025).
+- **A pilot is measured by:** time per case against the baseline, the share of suggestions that were rewritten, and what the employees report.
 
 ### Which business process should a company automate with AI first?
 
@@ -623,14 +653,14 @@ The working rule: **if you can write the rule down, automate it the classic way.
 Four out of five is often enough, unless checkable output or limited consequence is the missing one.
 
 : Decision table: classic automation, AI automation or not yet
-| What the process looks like | Recommendation |
-|---|---|
-| Fixed rules, structured data | Classic automation, no AI |
-| Frequent, messy input, a person approves the draft, errors are cheap | AI automation, a good first project |
-| Messy input, but the output acts without review | Add a review step first, or choose another process |
-| Triggers payments or concludes contracts | Not first, and never without human approval |
-| Decides about people: hiring, credit, performance | Legal review before any technical work |
-| Undocumented, or nobody owns it | Document it and name an owner first |
+| What the process looks like | Recommendation | Example |
+|---|---|---|
+| Fixed rules, structured data | Classic automation, no AI | Filing an incoming invoice and entering the amount in a table |
+| Frequent, messy input, a person approves the draft, errors are cheap | AI automation, a good first project | Ticket triage with a draft reply; fields read from delivery notes into a form |
+| Messy input, but the output acts without review | Add a review step first, or choose another process | A customer-facing bot that answers on its own |
+| Triggers payments or concludes contracts | Not first, and never without human approval | Releasing a bank transfer; accepting a contract |
+| Decides about people: hiring, credit, performance | Legal review before any technical work | CV screening, credit scoring |
+| Undocumented, or nobody owns it | Document it and name an owner first | A task only one colleague knows how to do |
 
 ### Which processes should you not automate with AI first?
 
@@ -660,6 +690,14 @@ The same order applies to process automation: observe the work, pick the task, f
 
 The tool comes last. Workflow platforms such as n8n or Make are often sensible for a prototype, but the process and the limits are decided first. If you plan to bring in outside help, [what to prepare before hiring an AI integration partner](https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner) lists the inputs that make the first conversation useful.
 
+### Who should take part in choosing the first process?
+
+Four roles: the people who do the work, because only they know the inputs and the exceptions; the process owner, who can change how the work is done; whoever runs the systems the AI would read; and one named person who will own the pilot and can pause it. Where the process touches customer data or decisions about people, your counsel joins before any technical work.
+
+### What is ready at the end of the pilot?
+
+At the end of the pilot you have a comparison of time per case against the baseline, the share of AI suggestions that employees rewrote or rejected, a list of the cases where the output failed, and the employees’ own account. From those you take a documented decision: extend, rebuild or stop.
+
 ### What the answer depends on
 
 The right first process depends on where unstructured input arrives in volume, how well the process is documented, which systems can be read without a large integration, and what a wrong output would cost. Regulation matters as well. Most internal automations that sort documents or write drafts are limited-risk or minimal-risk systems under the EU AI Act, Regulation (EU) 2024/1689 (source: [EUR-Lex](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), accessed 22 October 2026). When the AI talks to customers directly, the transparency duties described in [EU AI Act Article 50](https://www.barnanorbert.com/writing/eu-ai-act-transparency-obligations) apply. This is a product team’s design reading, not legal advice.
@@ -667,6 +705,11 @@ The right first process depends on where unstructured input arrives in volume, h
 ### Where to start
 
 AI automation rarely fails on technology and often fails on the choice of the first process. The full method is on the [AI integration](https://www.barnanorbert.com/ai-integration) page. Name three processes that consume time in your company, and I will tell you which meets the five criteria and which is better automated without AI: [contact](https://www.barnanorbert.com/contact).
+
+### Sources
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat Statistics Explained, data extracted December 2025, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
 
 ### Frequently asked questions
 
@@ -1035,7 +1078,7 @@ Yes. I work with clients in Hungary, Germany and other EU countries. The work ru
 
 - URL: https://www.barnanorbert.com/writing/mvp-development-regulated-products
 - Language: English
-- Published: 2026-11-12; updated: 2026-11-12
+- Published: 2026-11-12; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in German: https://www.barnanorbert.com/de/wissen/mvp-entwicklung-regulierte-produkte; Hungarian: https://www.barnanorbert.com/hu/irasok/mvp-fejlesztes-szabalyozott-termekhez
 - Summary: MVP development for fintech, health and other regulated markets: what you can leave out, what must be real on day one, and how.
@@ -1043,6 +1086,14 @@ Yes. I work with clients in Hungary, Germany and other EU countries. The work ru
 An MVP, a minimum viable product, is the smallest version of a product that lets you test one central assumption with real users. In MVP development for a regulated market, such as payments, health, insurance or gambling, the principle is the same, with one restriction: what you may leave out is scope. What you may not leave out is everything that concerns trust and permissibility: identity verification, consent, data protection, secure confirmation of consequential actions, traceability. Those are real on day one, or the product does not go to real users.
 
 This article describes how building an MVP for regulated industries differs from the startup textbook, what had to be real on day one in projects I worked on, and what the process looks like from hypothesis to first user. I work with companies across the EU; the work runs in English or Hungarian.
+
+### In short: an MVP for a regulated market
+
+- **Definition:** an MVP, a minimum viable product, is the smallest version of a product that lets you test one central assumption with real users.
+- **The rule:** you may cut scope. You may not cut identity verification, consent, data protection, confirmation of consequential actions or traceability. A facade is allowed, a fake foundation is not.
+- **Prototype or MVP:** a prototype is not functional and does not go to real users; an MVP is functional and does. In a regulated product the prototype comes first, because the critical flows can be tested before any duties apply.
+- **AI in the MVP:** if users interact with an AI system, the AI Act’s transparency rules (Article 50) apply from 2 August 2026, to an MVP as well. The European Commission lists credit scoring among the high-risk use cases, whose rules apply from 2 December 2027.
+- **What sets the duration:** the duty list and the integrations, such as identity verification and payment, more than the features.
 
 ### What is an MVP, and what can it not be in a regulated market?
 
@@ -1085,7 +1136,7 @@ Who approved what and when, which version of the terms the user accepted, which 
 
 #### 5. With AI: labelling, review, confidence
 
-At SportsGambit, an AI-supported prediction-market MVP, every recommendation carried a confidence score and the agent’s track record, and a deliberate review step stood before any action. Early telemetry showed that users relied heavily on the AI suggestions, which we treated as a risk, not as a success. The patterns behind this are described in [human-in-the-loop AI for regulated products](https://www.barnanorbert.com/writing/human-in-the-loop-ai).
+At SportsGambit, an AI-supported prediction-market MVP, every recommendation carried a confidence score and the agent’s track record, and a deliberate review step stood before any action. Early telemetry showed that users relied heavily on the AI suggestions, which we treated as a risk, not as a success. The AI Act names this tendency: Article 14(4)(b) asks that the people overseeing a high-risk system “remain aware of the possible tendency of automatically relying or over-relying on the output”, which it calls automation bias. The patterns behind this are described in [human-in-the-loop AI for regulated products](https://www.barnanorbert.com/writing/human-in-the-loop-ai).
 
 The case study draws a clear boundary here. It describes the information architecture and the explainability of the MVP, and it does not claim that production-grade safeguards for real-money betting were shipped. Before a launch with real money, age and location checks, deposit and loss limits, self-exclusion options and a legal review would be launch requirements. Details: [SportsGambit case study](https://www.barnanorbert.com/work/sportsgambit).
 
@@ -1101,6 +1152,24 @@ The case study draws a clear boundary here. It describes the information archite
 
 The order matters. Step two comes before any design work because the duty list decides how much of the product is foundation and how much can stay facade.
 
+: MVP development for a regulated product: what is ready at the end of each phase, and who must take part
+| Phase | Ready at the end | Who must take part |
+|---|---|---|
+| Assumption and duty list (steps 1 and 2) | One measurable assumption; a written list of the rules that apply once a real user arrives | Founder or product owner, legal counsel |
+| Facade and foundation (step 3) | Three lists: leave out, do by hand, build for real | Product owner, designer, lead developer |
+| Critical flows (step 4) | A prototype of onboarding, confirmation, errors and the way back, tested with users and revised | Designer, test users, whoever reviews compliance |
+| Build (step 5) | A working product with real identity checks, consent, confirmations and records; measurement switched on | Developers, designer, the identity and payment providers |
+| Restricted launch (step 6) | A few real users behind restricted access; numbers read every week | One named owner, support |
+| Decision (step 7) | A documented decision: extend, rebuild or stop | Product owner and whoever funds the next stage |
+
+### Who builds an MVP for a regulated market?
+
+A small team builds it: one person who owns the product decisions, a designer for the critical flows, one or more developers, and legal counsel who co-writes the duty list. Identity verification and payment are usually connected from specialised providers, not built from scratch. I cover the product design and the web development; the legal review stays with your counsel.
+
+### What is ready at the end of an MVP?
+
+At the end of an MVP you have a working product in the hands of a few real users, complete records of who consented to and approved what, and measurements of where users dropped off or hesitated. You also have a decision on the one assumption: extend, rebuild or stop. What you do not have yet is scale, secondary features or refined design.
+
 ### What effort and cost depend on when you commission an MVP
 
 - Which duties apply: identity verification, payment processing, health data, AI labelling.
@@ -1114,6 +1183,11 @@ I do not quote a fixed price, because every project is individual work; the pric
 ### Where to start
 
 An MVP in a regulated market is small in scope and complete in its foundation. That holds with or without AI, for a web application as much as for a mobile app. Tell me your one assumption and the market the product launches in, and in one conversation I will tell you what belongs on the duty list and what you can safely leave out: [get in touch](https://www.barnanorbert.com/contact).
+
+### Sources
+
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
+- [Article 14: Human oversight](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), AI Act Service Desk, European Commission, accessed 28 November 2026
 
 ### Frequently asked questions
 
@@ -1147,7 +1221,7 @@ Everything that concerns trust and permissibility: identity verification and con
 
 - URL: https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner
 - Language: English
-- Published: 2026-10-21; updated: 2026-10-21
+- Published: 2026-10-21; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in Hungarian: https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa; German: https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen
 - Summary: What to prepare before hiring an AI integration partner: one workflow, a baseline, data access, what stays human, and a pilot owner.
@@ -1155,6 +1229,14 @@ Everything that concerns trust and permissibility: identity verification and con
 Before you hire an AI integration partner, prepare five things: one workflow described by the people who do it, a baseline of how it performs today, the data and systems the AI may touch, the decisions a person must keep, and the measure that would make a pilot worth continuing. With those, a first conversation produces a scoped proposal instead of a demo.
 
 This article is the preparation checklist I wish every company brought to the first call, the questions worth asking any partner, and the red flags I would watch for. The tone is practical; the pitch, such as it is, comes at the end.
+
+### In short: what to prepare before hiring an AI integration partner
+
+- **Bring five things:** one workflow described by the people who do it, a baseline, the data and systems the AI may touch, the decisions a person keeps, and the measure that decides whether a pilot continues.
+- **A baseline is:** time per case, error rate and waiting time, taken from your own records before any partner is hired.
+- **Do not share yet:** passwords, customer data or confidential material. An anonymised one-page description of the workflow is enough for a first conversation.
+- **A good first conversation ends with:** a bounded problem, a draft of access and review rules, a decision on whether to prototype, and a statement of what the prototype must prove.
+- **Why outside help is common:** in 2025, 19.95% of EU enterprises used AI technologies, and among enterprises that considered AI but did not use it, lack of relevant expertise was the reason given most often (70.89%), ahead of unclear legal consequences (52.52%) (Eurostat, data extracted December 2025).
 
 ### Why does preparation change the quality of proposals?
 
@@ -1186,7 +1268,7 @@ Which measure decides whether the pilot continues: task completion, review effor
 
 #### 6. Your constraints
 
-Languages, regulated data, accessibility requirements, procurement rules, and your exposure to the EU AI Act. For orientation: the Article 50 transparency duties apply from 2 August 2026, and after the Digital Omnibus (Regulation (EU) 2026/1744) the Annex III high-risk obligations apply from 2 December 2027 (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21). Not legal advice; which category your system falls into is a question for your counsel.
+Languages, regulated data, accessibility requirements, procurement rules, and your exposure to the EU AI Act. For orientation: the Article 50 transparency duties apply from 2 August 2026, and after the Digital Omnibus (Regulation (EU) 2026/1744) the Annex III high-risk obligations apply from 2 December 2027, dates the European Commission’s AI Act page confirms (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21). Not legal advice; which category your system falls into is a question for your counsel.
 
 ### Questions to ask an AI integration partner
 
@@ -1199,6 +1281,17 @@ Languages, regulated data, accessibility requirements, procurement rules, and yo
 7. Which of your past projects is closest to ours, and what exactly was your role in it?
 8. How do you handle our data during the prototype?
 
+: Questions to ask an AI integration partner: what a good answer contains and what should warn you
+| Question to ask | A good answer | A warning sign |
+|---|---|---|
+| What would you test before building anything? | Names your workflow, representative examples and what the prototype must prove | A demo before any question about your workflow |
+| How do you evaluate quality on our own examples? | A set of your cases with expected results, compared with your baseline | Success promised before a baseline exists |
+| What happens when the output is wrong, empty or late? | Describes the review step, the failure states and the way back | No answer on failure states |
+| Who owns it after hand-over, and how do we stop it? | A named owner on your side who can pause the pilot or roll it back | No named owner after hand-over |
+| What will you not do? | A written “not in scope” list | A proposal that names a model before it names your task |
+| Which past project is closest, and what was your role? | Role and boundaries stated, including what was not shipped | A logo list with no role named |
+| How do you handle our data during the prototype? | Approved, anonymised examples and an agreed sharing method | A request for passwords or raw customer data up front |
+
 Question seven is the one most portfolios answer vaguely. Mine states role and boundaries on every case page, including what was not shipped, because that is the information you need to compare partners.
 
 ### Red flags
@@ -1210,6 +1303,10 @@ These are opinions from experience, not rules.
 - Success promised before a baseline exists.
 - No named owner after hand-over.
 - A proposal that names a model before it names your task.
+
+### Who should be in the first conversation from your side?
+
+Three roles are enough: the person who owns the workflow and can decide, someone who does the task every day and can describe its inputs and exceptions, and whoever approves access to the systems and data. If the workflow touches customers or regulated data, add your compliance contact or counsel early. A first call with only a sponsor and no one who does the work usually ends with a demo request.
 
 ### What I look for in a project
 
@@ -1249,13 +1346,18 @@ Every engagement is scoped to the workflow, the data and the integrations, so th
 
 Bring the workflow, who uses it, the systems and data involved, and what success would look like. That is enough for a [first conversation](https://www.barnanorbert.com/contact), and it is the difference between a proposal and a demo.
 
+### Sources
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat Statistics Explained, data extracted December 2025, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
+
 ---
 
 ## Human-in-the-loop AI for regulated products: 7 patterns
 
 - URL: https://www.barnanorbert.com/writing/human-in-the-loop-ai
 - Language: English
-- Published: 2026-10-21; updated: 2026-10-21
+- Published: 2026-10-21; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in German: https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki; Hungarian: https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet
 - Summary: Human-in-the-loop AI patterns that hold up in review: labels, editable outputs, source cues, failure states, a stop. From shipped work.
@@ -1263,6 +1365,14 @@ Bring the workflow, who uses it, the systems and data involved, and what success
 Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.
 
 This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure’s learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
+
+### In short: human-in-the-loop AI in five facts
+
+- **Definition:** human-in-the-loop AI is a workflow in which the system proposes and a person reviews, edits or approves each consequential output before it takes effect.
+- **The test:** a person is in the loop only if three things hold: they can see that AI was involved, they can change or reject the output, and the decision is recorded.
+- **The decision rule:** choose human in the loop when a wrong output would reach a customer, move money or affect a person’s rights. Human on the loop is enough only where an error is cheap and someone sees it afterwards.
+- **The law:** Article 14 of the EU AI Act (Regulation (EU) 2024/1689) requires that high-risk AI systems can be “effectively overseen by natural persons” while in use, including the ability to override the output and to interrupt the system through a “stop” button or a similar procedure.
+- **The dates:** according to the European Commission, the AI Act’s transparency rules apply from 2 August 2026, the rules for Annex III high-risk use cases from 2 December 2027, and those for high-risk systems embedded in regulated products (Annex I) from 2 August 2028.
 
 ### What does human-in-the-loop AI mean, and what does it not?
 
@@ -1283,6 +1393,15 @@ Article 14 of the EU AI Act requires that high-risk AI systems be designed so th
 On timing: the Digital Omnibus on AI (Regulation (EU) 2026/1744, in force since 27 July 2026) moved the Annex III high-risk obligations to 2 December 2027 and the Annex I obligations to 2 August 2028. The Article 50 transparency duties, such as telling people they are interacting with an AI system, still apply from 2 August 2026 (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21).
 
 This is a design reading of the text, not legal advice. Whether your system is high-risk is a question for your counsel. What I can say from shipped work is that each of the five oversight abilities in Article 14 maps to an interface decision, and the rest of this article is those decisions.
+
+: Article 14(4) of the EU AI Act: the five oversight abilities and the interface decision behind each
+| Ability in Article 14(4) | Interface decision | Pattern below |
+|---|---|---|
+| (a) Understand capacities and limitations, monitor operation | Label every AI output; show the empty, late and error states | 1 and 4 |
+| (b) Remain aware of automation bias | Show confidence and track record; keep a deliberate review step | 5 |
+| (c) Interpret the output correctly | Show signals and sources before the suggestion | 2 |
+| (d) Decide not to use, disregard, override or reverse the output | Editable, undoable outputs with draft, reviewed and published states | 3 |
+| (e) Intervene or interrupt through a “stop” button or similar | Feature flag and a named owner who can pause or roll back | 7 |
 
 ### Seven human-in-the-loop AI patterns that hold up in review
 
@@ -1337,6 +1456,14 @@ Decide: who owns the stop, how fast it can happen, and what is logged for later 
 
 If these questions do not have answers yet, that is where the AI product design work starts, and human oversight is its first deliverable. In my method the second step, before anything is built, is defining access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. If you are comparing partners, [what to prepare before hiring an AI integration partner](https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner) lists the inputs that make that conversation useful.
 
+### Who designs human oversight in an AI product?
+
+Human oversight is designed by the product team, not added by a reviewer at the end: the person responsible for the interface, with legal, compliance and data science reviewing the flows from the start. Article 14(3) of the EU AI Act splits the measures in two: those the provider builds into the system before it goes on the market, and those the provider identifies for the deployer to carry out. So if you buy an AI component, ask the vendor which oversight measures are built in and which are left to you.
+
+### What is ready at the end of the oversight design work?
+
+Before any model is connected, the design work ends with written answers to the eight questions above: what the AI may suggest and what a person must approve, the wording and place of the AI label, the review states, the screens for empty, late and wrong output, the named person who can stop the feature, and the list of what is logged. That set is what legal and compliance review, and it is what the pilot is built from. The NIST AI Risk Management Framework, a voluntary framework released on 26 January 2023, asks for the same thing in other words: trustworthiness considered in the design, development, use and evaluation of an AI product.
+
 ### What made it hard
 
 Most AI projects start with what can be automated. At Instructure we started with what must stay human. The hard part was ethical, not technical: designing for the AI being wrong, biased or misused, instead of pretending those cases would not occur. That does not make for an impressive slide deck. It makes for AI that real institutions can roll out to millions of people and still sleep at night. Details: [Instructure case study](https://www.barnanorbert.com/work/instructure).
@@ -1375,6 +1502,12 @@ Yes. Communication is in English or Hungarian; German-speaking teams work with m
 
 Human-in-the-loop AI is easier to design than to retrofit. The product that passes review is the one where every AI output already had a label, an edit state and a way back. Bring the workflow and the decision you are worried about, and [we start there](https://www.barnanorbert.com/contact).
 
+### Sources
+
+- [Article 14: Human oversight](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), AI Act Service Desk, European Commission, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
+- [AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), National Institute of Standards and Technology (NIST), AI RMF 1.0 released 26 January 2023, accessed 28 November 2026
+
 ---
 
 # Hungarian articles
@@ -1383,7 +1516,7 @@ Human-in-the-loop AI is easier to design than to retrofit. The product that pass
 
 - URL: https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg
 - Language: Hungarian
-- Published: 2026-11-27; updated: 2026-11-27
+- Published: 2026-11-27; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in English: https://www.barnanorbert.com/writing/what-ai-integration-cost-depends-on; German: https://www.barnanorbert.com/de/wissen/ki-beratung-kosten
 - Summary: AI fejlesztés ára: nyolc tényező, amely drágítja vagy olcsóbbá teszi, a szakaszolás, két ajánlat összevetése és a futó költségek.
@@ -1391,6 +1524,15 @@ Human-in-the-loop AI is easier to design than to retrofit. The product that pass
 Az AI fejlesztés ára elsősorban nem a modelltől függ, hanem attól, mekkora folyamatot érint, milyen állapotban vannak az adataid, hány rendszerhez kell kapcsolódni, és mennyi ellenőrzés kell ahhoz, hogy az eredményben meg lehessen bízni. Ugyanaz a modell egy válaszvázlatot író belső eszközben és egy ügyfelekkel beszélő, több rendszerbe író megoldásban egészen más munkát jelent. Az indulás után futó költségek is vannak: a modellhasználat, a figyelés és a források karbantartása.
 
 Ebben a cikkben nem írok számokat, mert minden AI fejlesztés és AI integráció egyedi munka, és egy szám feladat nélkül félrevezet. Nyolc tényezőt veszek sorra, utána leírom, hogyan bontható szakaszokra a munka, hogyan vess össze két ajánlatot, és mely futó költségek maradnak ki sok ajánlatból.
+
+### Röviden: mitől függ az AI fejlesztés ára
+
+- **Nyolc tényező mozgatja az árat:** a folyamat terjedelme, az adatok állapota, az integrációk, az emberi ellenőrzés szintje, a kiértékelés, a kockázat és a szabályozás, a nyelvek száma, és az, hogy ki tartja karban a megoldást.
+- **A modell a kisebb tétel:** a munka nagy része tervezés, adat-előkészítés, integráció, ellenőrző felület és kiértékelés, nem a modell bekötése.
+- **Így indulsz a legkisebb kiadással:** egyetlen szűk folyamat, rendezett források, és olyan kapcsolat, amely csak olvas a rendszereidből.
+- **Négy szakasz, négy döntési pont:** felmérés, prototípus, pilot, bevezetés és átadás. Mindegyik végén dönthetsz, hogy folytatod-e.
+- **Három futó költség marad az indulás után:** a modellhasználat, a monitorozás és a források karbantartása. Ehhez jön a jóváhagyó kolléga munkaideje.
+- **Szabály két ajánlat összevetéséhez:** ha az egyikből hiányzik a kiértékelés, az emberi ellenőrzés vagy a hibaágak kezelése, akkor az nem olcsóbb, hanem kisebb munkát áraz.
 
 ### Mitől függ az AI fejlesztés ára? Nyolc tényező
 
@@ -1451,6 +1593,14 @@ Egy AI integráció költsége szakaszolható, és minden szakasz végén dönth
 
 A lépéseket az [AI tanácsadás, automatizálás és fejlesztés](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes) oldalon részletezem, a kkv-knak szóló menetrendet az [AI bevezetése KKV-nál: az első 90 nap](https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap) cikkben.
 
+### Mi készül el az egyes szakaszok végére, és ki dolgozik rajta?
+
+A felmérés végén körülhatárolt probléma és kiinduló érték van, ehhez a folyamatot végző munkatársak és a folyamat gazdája kell. A prototípus végén valódi példákon kipróbált munkafelület van, még integráció nélkül, és a leendő felhasználók mondanak róla véleményt. A pilot végén mért eredmény és mért működési költség van, egy kijelölt felelőssel, aki le is állíthatta volna. Az átadás végén a tiéd a kód, a promptok, az értékelési példák és a működtetési útmutató. A te oldaladon végig három ember idejével számolj: a folyamat gazdájáéval, egy vagy két munkatárséval, aki a munkát ma végzi, és azéval, aki a rendszerekhez hozzáférést ad.
+
+### Mennyi ideig tart egy AI fejlesztés?
+
+Az időtartam ugyanattól a nyolc tényezőtől függ, mint az ár, ezért heteket feladat nélkül ugyanúgy nem lehet mondani, mint összeget. Három dolog nyújtja meg leggyakrabban: a rendszerekhez való hozzáférés jóváhagyása, a szétszórt források rendbetétele és a jogi egyeztetés. Egy nagykereskedésnél, ahol a rendelések e-mailben érkeznek és a cikktörzs rendezett, a prototípus gyorsan eljut a pilotig. Egy biztosítási alkusznál, ahol ügyféladat és több biztosító rendszere érintett, a hozzáférés és az adatkezelés tisztázása viszi az idő nagyobb részét.
+
 ### Egy példa: mi volt a munka az Instructure AI-funkcióiban
 
 Az Instructure-nél egy tanulási platform AI-funkcióinak tervezését vezettem. A védőkorlátokat az első napon rögzítettük: emberi ellenőrzés, egyértelmű AI-jelölés, szerkeszthető kimenetek, forrásjelzések és helyreállítási utak. A folyamatokat a jogi, a megfelelőségi és a data science csapattal közösen néztük át, és mértük a használatba vételt és a feladatok befejezését.
@@ -1486,6 +1636,10 @@ Számolj az ellenőrzésre fordított munkaidővel is: a jóváhagyó kolléga i
 
 Az AI fejlesztés ára a feladat következménye. A folyamat terjedelme, az adatok állapota, az integrációk, az ellenőrzés és a kiértékelés szintje, a kockázat, a nyelvek és a karbantartás együtt határozza meg, és a legtöbbet az adatok rendbetételével és egy szűk első folyamattal tudsz spórolni. Ha leírod a folyamatot, az érintett rendszereket és azt, mi számítana sikernek, [küldd el](https://www.barnanorbert.com/hu/kapcsolat), és megmondom, melyik szakasszal érdemes kezdeni.
 
+### Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek, ha az AI-rendszer természetes személyekkel lép kapcsolatba](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
+
 ### Gyakori kérdések
 
 #### Mennyibe kerül egy AI fejlesztés egy cégnek?
@@ -1514,7 +1668,7 @@ A havi költség a modellhasználatból, a monitorozásból, a források karbant
 
 - URL: https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa
 - Language: Hungarian
-- Published: 2026-11-27; updated: 2026-11-27
+- Published: 2026-11-27; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in English: https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner; German: https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen
 - Summary: Mit kérdezz egy AI fejlesztő partnertől a megbízás előtt: öt dolog, amit előre készíts elő, és tíz kérdés a jó válasz ismérveivel.
@@ -1522,6 +1676,14 @@ A havi költség a modellhasználatból, a monitorozásból, a források karbant
 Egy AI fejlesztő partnertől a megbízás előtt azt kérdezd meg, mit tesztelne, mielőtt bármit építene, hogyan méri a kimenet minőségét a te valódi eseteiden, mi történik a felületen, ha az AI téved, kik dolgoznak a projekten, és kié lesz a rendszer az átadás után. Előtte készíts elő öt dolgot: egy folyamatot, annak mai kiinduló értékét, az érintett adatokat és rendszereket, azt, hogy mi marad emberi döntés, és a mérőszámot, amely eldönti, folytatódik-e a pilot. Ezekkel az első beszélgetésből körülhatárolt ajánlat lesz, nélkülük egy demó.
 
 Ez a cikk két listát ad: mit vigyél magaddal az első egyeztetésre, és mit kérdezz ott, a jó válasz ismérveivel együtt. Tizenhét éve dolgozom szabályozott termékeken (banki, vállalati biztonsági és vállalati EdTech rendszereken), és a listák a saját projektjeimből állnak össze, nem piaci felmérésből.
+
+### Röviden: hogyan válassz AI fejlesztő partnert
+
+- **Öt dolgot vigyél az első egyeztetésre:** egy folyamat leírását, a mai kiinduló értékét, az érintett adatok és rendszerek listáját, azt, hogy mi marad emberi döntés, és a mérőszámot, amely a pilot folytatásáról dönt.
+- **A legfontosabb kérdés:** „Mit tesztelnél, mielőtt bármit építesz?” A jó válasz megnevez egy feltevést, egy próbát a te anonimizált eseteiden, és azt az eredményt, amelynél a partner azt javasolná, hogy ne építsetek semmit.
+- **Döntési szabály:** azt a partnert válaszd, aki írásban, a te folyamatodra vonatkoztatva válaszol a tíz kérdésre. Ha a demó előbb jön, mint a kérdések a folyamatodról, keress tovább.
+- **Tulajdon:** az átadás után a kód, a promptok, a tesztkészlet és a dokumentáció a tiéd, a szolgáltatói fiókok a te nevedben futnak. Ezt a szerződés előtt rögzítsd írásban.
+- **Adat:** az első beszélgetéshez elég a folyamat egyoldalas, anonimizált leírása. Jelszót és ügyféladatot ne küldj, amíg a megosztás módja nincs írásban rögzítve.
 
 ### Miért az előkészítésen múlik, milyen ajánlatot kapsz?
 
@@ -1557,20 +1719,28 @@ A kérdéseket küldd el előre. Aki írásban, a te folyamatodra vonatkoztatva 
 Az alábbi jelek tapasztalatból származó vélemények, nem szabályok.
 
 : Figyelmeztető jelek az AI fejlesztő partner kiválasztásánál
-| Amit látsz | Amit jelent |
-| --- | --- |
-| Demó, mielőtt a folyamatodról kérdezne | Kész megoldáshoz keres problémát |
-| Nincs válasz a hibás vagy üres kimenetre | A felület csak a jó esetre készül |
-| Eredményt ígér, mielőtt kiinduló érték lenne | Nem lesz mihez mérni a pilotot |
-| Az ajánlat előbb nevez meg modellt, mint feladatot | Az eszköz vezeti a tervet, nem a munka |
-| Nincs megnevezett gazda az átadás után | A rendszer az első hibánál magára marad |
-| Nincs lista arról, ami nem része a munkának | A határ menet közben, vitában dől el |
+| Amit látsz | Amit jelent | Mit kérj helyette |
+| --- | --- | --- |
+| Demó, mielőtt a folyamatodról kérdezne | Kész megoldáshoz keres problémát | Próbát a te anonimizált eseteiden |
+| Nincs válasz a hibás vagy üres kimenetre | A felület csak a jó esetre készül | Az üres, a hibás és a késő állapot leírását |
+| Eredményt ígér, mielőtt kiinduló érték lenne | Nem lesz mihez mérni a pilotot | Mérést a saját nyilvántartásodból, a pilot előtt |
+| Az ajánlat előbb nevez meg modellt, mint feladatot | Az eszköz vezeti a tervet, nem a munka | A feladat és az elfogadási szempontok leírását |
+| Nincs megnevezett gazda az átadás után | A rendszer az első hibánál magára marad | Nevet, szerepet és működtetési útmutatót |
+| Nincs lista arról, ami nem része a munkának | A határ menet közben, vitában dől el | Írott listát arról, ami kívül esik a munkán |
 
 ### Példa: hogyan hangzik a jó válasz egy valódi projekten
 
 Az Instructure-nél egy vállalati tanulási platform AI-funkcióinak teljes körű tervezését vezettem. A védőkorlátokat az első napon rögzítettük: human-in-the-loop működés, egyértelmű AI-jelölés, szerkeszthető kimenetek, forrásjelzések és helyreállítási utak. A hibatűrő állapotokat (üres, hiba, betöltés, késleltetés) külön megterveztük, a folyamatokat a jogi, a megfelelőségi és a data science csapattal közösen néztük át, a funkciók pedig feature flagek mögött kerültek ki, mért használat mellett. A negyedik és a kilencedik kérdésre ilyen konkrét választ várj. Részletek: [Instructure esettanulmány](https://www.barnanorbert.com/hu/munka/instructure).
 
 A hetedik kérdéshez: az esettanulmányaim mindegyike megnevezi a szerepemet és a határait, mert partnereket összehasonlítani ebből az adatból lehet.
+
+### Ki végzi az AI fejlesztést: tanácsadó, fejlesztő cég vagy önálló szakember?
+
+Három típus közül választhatsz. A tanácsadó felméri a folyamatot és tervet ad, de nem mindig épít. A fejlesztő cég épít, és nagyobb csapatot tud adni, cserébe több kézen megy át a munka. Az önálló szakember egy személyben tervez és épít, kisebb terjedelemben. Válassz tanácsadót, ha még nem tudod, melyik folyamattal kezdj. Válassz fejlesztő céget vagy önálló szakembert, ha a folyamat és a kiinduló érték már megvan. A hatodik és a tizedik kérdés mindhárom típusnál ugyanazt tisztázza: ki felel az eredményért, és kié a rendszer.
+
+### Mi készül el az első szakasz végére?
+
+Az első szakasz a felmérés, és a végén három dolog van a kezedben: egy körülhatárolt probléma, egy kiinduló érték a saját adataidból, és egy javaslat arról, kell-e egyáltalán AI. Egy könyvelőirodánál ez lehet például a bejövő számlák rögzítésének leírása a mai átfutási idővel és hibaaránnyal. Egy logisztikai cégnél a szállítólevelek feldolgozása. Ha a felmérés végén nincs ilyen leírás és nincs mérés, akkor a partner még nem a te folyamatodon dolgozott.
 
 ### Mitől függ az ár és az időtartam?
 
@@ -1579,6 +1749,10 @@ Az AI fejlesztés ára és időtartama négy tényezőtől függ: hány folyamat
 ### Összegzés
 
 Az AI fejlesztő partner kiválasztása két listán múlik. Az egyik a tiéd: egy folyamat, kiinduló érték, adatok, emberi döntési pontok, sikermérőszám és felelős. A másik a tíz kérdés, amelyekre konkrét, a te folyamatodra szabott választ kell kapnod, főleg a tesztelésről, a hibás kimenetről, az adatkezelésről és az átadás utáni tulajdonról. Kevés megbízást vállalok, olyanokat, ahol az ügyfél is energiát tesz a munkába. Aki ezzel a két listával érkezik, az általában ilyen ügyfél. A módszerem lépéseit az [AI tanácsadás, automatizálás és fejlesztés](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes) oldalon találod. Ha megvan a folyamatod egyoldalas leírása, egy beszélgetéshez ennyi elég: [kapcsolat](https://www.barnanorbert.com/hu/kapcsolat).
+
+### Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek az AI-rendszerek szolgáltatói és alkalmazói számára](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ### Gyakori kérdések
 
@@ -1722,7 +1896,7 @@ Ez minden modellgenerációval változik, és a te esetedben csak a saját dokum
 
 - URL: https://www.barnanorbert.com/hu/irasok/mvp-fejlesztes-szabalyozott-termekhez
 - Language: Hungarian
-- Published: 2026-11-27; updated: 2026-11-27
+- Published: 2026-11-27; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in German: https://www.barnanorbert.com/de/wissen/mvp-entwicklung-regulierte-produkte; English: https://www.barnanorbert.com/writing/mvp-development-regulated-products
 - Summary: MVP fejlesztés fintech és egészségügyi termékhez: mit hagyhatsz ki, minek kell az első napon valódinak lennie, és milyen sorrendben.
@@ -1730,6 +1904,15 @@ Ez minden modellgenerációval változik, és a te esetedben csak a saját dokum
 Szabályozott iparágban, például fintech vagy egészségügyi terméknél az MVP fejlesztés ugyanazt jelenti, mint máshol: a legkisebb termékváltozatot építed meg, amellyel egyetlen központi feltevést valódi felhasználókkal ellenőrizni tudsz. Egy megkötés van: a terjedelmet szűkítheted, a bizalmat és a megengedhetőséget érintő részeket nem. Az azonosítás, a hozzájárulás, az adatvédelem, a következménnyel járó műveletek megerősítése és a visszakereshetőség az első napon valódi, különben a termék nem kerülhet valódi felhasználók elé.
 
 Ebben a cikkben leírom, miben tér el a szabályozott piacra szánt MVP a startup-tankönyvtől, mi volt valódi az első napon azokban a projektekben, amelyeken dolgoztam, és milyen sorrendben érdemes haladni a feltevéstől az első felhasználóig. A jogi kérdéseket tervezési szempontként kezelem: ez nem jogi tanácsadás.
+
+### Röviden: mi legyen valódi egy szabályozott MVP-ben
+
+- **Meghatározás:** az MVP (minimum viable product) a legkisebb működő termékváltozat, amellyel egyetlen feltevést valódi felhasználókkal ellenőrzöl.
+- **Öt dolog valódi az első napon:** azonosítás és hozzájárulás, a következménnyel járó műveletek megerősítése, adatvédelem a kódban, teljes napló, és ha van AI, annak jelölése és emberi ellenőrzése.
+- **Ami kimaradhat:** másodlagos funkciók, a háttérfolyamatok automatizálása, skálázás és kidolgozott látvány. A háttérmunkát egyelőre ember is végezheti kézzel.
+- **Döntési szabály:** a fizetést és az ügyfél-azonosítást vedd engedéllyel rendelkező szolgáltatótól, ha nem ez a terméked lényege. Saját megoldást csak akkor építs, ha maga a feltevés erről szól.
+- **Prototípus előbb, MVP utána:** a prototípusban nincs valódi adat, ezért a kritikus folyamatokat kötelezettség nélkül tesztelheted. Az MVP-re már az első valódi felhasználótól érvényes a GDPR.
+- **AI esetén:** az EU AI-rendelete, az (EU) 2024/1689 rendelet 50. cikke szerint a felhasználót tájékoztatni kell, ha AI-rendszerrel lép kapcsolatba. Ez 2026. augusztus 2. óta alkalmazandó, MVP-re is.
 
 ### Mi az MVP, és mi nem lehet szabályozott piacon?
 
@@ -1796,6 +1979,14 @@ Az esettanulmány itt világos határt húz: az MVP információs architektúrá
 
 A sorrend számít. A második lépés azért előzi meg a tervezést, mert a kötelezettséglista dönti el, a termék mekkora része alap, és mekkora maradhat homlokzat. Egy kkv-nál vagy korai fázisú startupnál ez a lista arra is választ ad, mit érdemes engedéllyel rendelkező szolgáltatótól venni, például a fizetést vagy az ügyfél-azonosítást, ahelyett, hogy saját magad építenéd meg.
 
+### Ki vesz részt egy szabályozott MVP fejlesztésében?
+
+Három szerep kell az elejétől. A termék gazdája dönt a feltevésről és a terjedelemről. A jogász vagy a compliance felelős írja veled a kötelezettséglistát. A tervező és fejlesztő megépíti a kritikus folyamatokat, és bekapcsolja az engedéllyel rendelkező szolgáltatókat, például a fizetési vagy az azonosítási szolgáltatót. Egy 20 és 250 fő közötti cégnél, például egy biztosítási alkusznál vagy egy könyvelőirodánál, amely ügyfélportált indít, a termék gazdája sokszor az ügyvezető, a jogi szerep pedig a külső ügyvéd vagy az adatvédelmi tisztviselő.
+
+### Mi készül el az egyes szakaszok végére?
+
+A feltárás végén megvan az egy mondatos feltevés, a kötelezettséglista, és a három kupac: kimarad, kézzel, valódi. A tervezés végén kész a kritikus folyamatok felhasználókkal tesztelt prototípusa: onboarding, megerősítés, hibák, visszaút. Az építés végén korlátozott hozzáférés mögött fut a működő termék, valódi azonosítással, naplóval és méréssel. Az első mérési időszak végén döntés születik: bővítés, átépítés vagy leállítás.
+
 ### Mitől függ egy szabályozott MVP ráfordítása és költsége?
 
 - **A kötelezettségek:** ügyfél-azonosítás, fizetés, egészségügyi adat, AI-jelölés.
@@ -1809,6 +2000,10 @@ Fix árat nem írok, mert minden projekt egyedi munka: az ár akkor adható meg,
 ### Összegzés
 
 Egy szabályozott piacra szánt MVP terjedelmében kicsi, alapjaiban teljes. Ez AI-val és AI nélkül, webalkalmazásnál és mobilalkalmazásnál egyaránt igaz. Ha a termékedben AI is beszél a felhasználóval, az indulás előtt nézd át az [AI Act jelölési kötelezettségéről](https://www.barnanorbert.com/hu/irasok/ai-act-jelolesi-kotelezettseg) szóló cikket is. Írd meg az egy feltevésedet és azt, melyik piacon indul a termék, és egy beszélgetésben megmondom, mi kerül a kötelezettséglistára, és mit hagyhatsz ki nyugodtan: [vedd fel velem a kapcsolatot](https://www.barnanorbert.com/hu/kapcsolat).
+
+### Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek, 113. cikk: alkalmazási dátumok](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ### Gyakori kérdések
 
@@ -1950,7 +2145,7 @@ Az 50. cikk azt az AI-val készült szöveget nevezi meg, amelyet azért tesznek
 
 - URL: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj
 - Language: Hungarian
-- Published: 2026-11-12; updated: 2026-11-12
+- Published: 2026-11-12; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in German: https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess; English: https://www.barnanorbert.com/writing/which-process-to-automate-with-ai-first
 - Summary: AI automatizálás cégeknek: öt szempont az első folyamat kiválasztásához, mikor elég a hagyományos megoldás, és mi vezet a pilotig.
@@ -1958,6 +2153,14 @@ Az 50. cikk azt az AI-val készült szöveget nevezi meg, amelyet azért tesznek
 Az AI automatizálás első folyamata legyen olyan, amely gyakran előfordul, strukturálatlan bemenettel dolgozik (e-mail, dokumentum, szabad szöveg), az eredményét ember ellenőrizni tudja, mielőtt hatása lenne, és a haszna folyamatonként percekben mérhető. Ha egy folyamat rögzített szabályokat követ és strukturált adatokat dolgoz fel, akkor nem AI kell hozzá, hanem hagyományos automatizálás. Az olcsóbb és megbízhatóbb.
 
 Ebben a cikkben öt szempontot kapsz, amellyel sorba rendezheted a folyamataidat. Megmutatom, hol a határ az AI és a hagyományos automatizálás között, hozok példát jó és rossz első jelöltre, és leírom, milyen lépésekben lesz egy jelöltből mérhető pilot. A cikk az [AI bevezetése KKV-nál: az első 90 nap](https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap) folytatása. Az a menetrendről szól, ez a kiválasztásról.
+
+### Röviden: melyik folyamattal kezdd az AI automatizálást
+
+- **Öt szempont az első folyamathoz:** gyakran fut, strukturálatlan a bemenete, a kimenetét ember másodpercek alatt ellenőrizni tudja, a hiba következménye korlátozott, és van mérhető kiinduló értéke.
+- **Döntési szabály:** ha le tudod írni a szabályt, automatizálj hagyományosan. AI arra a részre kell, ahol e-mailt, dokumentumot vagy szabad szöveget kell megérteni.
+- **Ötből négy sokszor elég,** de az ellenőrizhető kimenet és a korlátozott következményű hiba nem hiányozhat. Ha valamelyik hiányzik, az nem első folyamat.
+- **Ne ezzel kezdd:** fizetést indító vagy szerződést kötő folyamat emberi jóváhagyás nélkül, emberekről szóló döntés, leíratlan tudásra épülő folyamat, és olyan folyamat, amelynek nincs gazdája.
+- **Jogi dátum:** ha az AI ügyfelekkel lép kapcsolatba, az EU AI-rendelete, az (EU) 2024/1689 rendelet 50. cikke szerinti tájékoztatási kötelezettség 2026. augusztus 2. óta alkalmazandó.
 
 ### AI automatizálás vagy hagyományos automatizálás?
 
@@ -2009,6 +2212,19 @@ Az a folyamat, amely mind az öt szempontnak megfelel, jó kezdet. Ötből négy
 - Olyan folyamatok, amelyeknek a tudása nincs leírva. Itt az első lépés a dokumentálás.
 - Olyan folyamatok, amelyeknek a cégen belül nincs gazdája.
 
+Így néz ki a besorolás néhány tipikus folyamaton, 20 és 250 fő közötti magyar cégeknél. A példák szemléltetnek, a te folyamatodat a megfigyelés dönti el.
+
+: Példafolyamatok besorolása: melyik jó első jelölt az AI automatizáláshoz, és melyik nem
+| Folyamat | Besorolás | Miért |
+| --- | --- | --- |
+| Könyvelőiroda: bejövő számlák és bizonylatok adatainak kiolvasása, előtöltés rögzítésre | Jó első jelölt | Naponta fut, a bemenet PDF vagy fotó, a könyvelő rögzítés előtt ellenőrzi |
+| Biztosítási alkusz: beérkező ügyfélmegkeresések besorolása és válaszvázlat | Jó első jelölt | Szabad szöveg, a munkatárs küldés előtt átírja, a téves besorolás javítható |
+| Logisztika: szállítólevelek és fuvarokmányok mezőinek kiolvasása | Jó első jelölt | Gyakori, szkennelt irat, az előtöltött adat ránézésre ellenőrizhető |
+| Nagykereskedés: e-mailben érkező rendelések előkészítése a rendszerbe | Jó első jelölt, olvasó kapcsolattal | A rendelést ember hagyja jóvá, mielőtt bekerül a rendszerbe |
+| Nagykereskedés: készletszint alatti automatikus újrarendelés | Hagyományos automatizálás | A szabály leírható, az adat strukturált, nem kell hozzá AI |
+| Bármely cég: utalás indítása emberi jóváhagyás nélkül | Nem első folyamat | A hiba drága, és nem fordítható vissza |
+| Bármely cég: jelentkezők előszűrése | Előbb jogi vizsgálat | Emberekről szóló döntés, várhatóan magas kockázatú terület |
+
 ### Hogyan néz ki valójában egy AI audit?
 
 Sok szolgáltató „AI auditot”, „AI potenciálelemzést” vagy „AI folyamatoptimalizálást” árul, ami a gyakorlatban egy workshop, diákkal. Ami ebből hasznos, az nem látványos: egy lista a folyamataidról a fenti öt szempont szerint. Megfigyelésből áll össze, és beszélgetésekből azokkal, akik a munkát végzik. A végén két vagy három jelölt marad, indoklással arról, miért ezek kerülnek sorra először. Mellette egy másik lista azokról a folyamatokról, amelyeket jobb hagyományosan automatizálni, vagy sehogy.
@@ -2028,6 +2244,14 @@ Egy jó AI tanácsadás tehát nem azzal kezdődik, hogy mit tud az AI, hanem az
 
 A hat lépés sorrendje számít. Az eszköz kiválasztása a végére marad, a megfigyelés pedig nem hagyható ki, mert abból lesz a kiinduló érték, amelyhez a pilotot méred.
 
+### Ki végzi a kiválasztást, és kinek kell részt vennie?
+
+A kiválasztást az végzi, aki a megfigyelést vezeti, de három ember nélkül nem megy. A folyamat gazdája dönt arról, mi számít sikernek. Egy vagy két munkatárs, aki a munkát ma végzi, megmutatja a valódi eseteket és a kivételeket. Aki a rendszerekért felel, megmondja, melyik adat érhető el és hogyan. Ha az AI ügyféladatot is lát, az adatvédelemért felelős kollégát már a határok meghúzásánál vond be.
+
+### Mi készül el az egyes lépések végére?
+
+A megfigyelés végén megvan a kiinduló érték: időtartam, hibák és visszakérdezések esetenként. A határok meghúzása után írásban áll, mit javasol az AI, mit hagy jóvá az ember, és milyen adatot láthat a rendszer. A prototípus végén a munkatársak valódi, anonimizált eseteken próbálták ki a javaslatokat. A pilot végén mért eredményed van a kiinduló értékhez képest, és ebből születik a döntés: kiterjesztés, átalakítás vagy leállítás.
+
 ### Mit jelent az AI-rendelet a folyamatautomatizálásra nézve
 
 A legtöbb belső automatizálás, amely dokumentumokat rendez vagy vázlatokat ír, az EU AI-rendelete szerint korlátozott vagy minimális kockázatú rendszer. Két dologra mégis figyelni kell. Ha az AI ügyfelekkel lép kapcsolatba, az 50. cikk szerinti jelölési kötelezettség 2026. augusztus 2. óta alkalmazandó. Erről az esetről külön cikk szól: [AI ügyfélszolgálat emberi ellenőrzéssel](https://www.barnanorbert.com/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel). Ha az AI emberekről szóló döntéseket készít elő, például jelentkezések elbírálásánál, akkor várhatóan a magas kockázatú rendszerekre vonatkozó kötelezettségek érvényesek, amelyek alkalmazását a 2026-os Digital Omnibus 2027. december 2-ra halasztotta.
@@ -2037,6 +2261,10 @@ Az általános adatvédelmi rendelet (GDPR) emellett változatlanul érvényes. 
 ### Összegzés
 
 Az AI automatizálás ritkán a technikán bukik el, és gyakran azon, hogy rossz folyamattal indul. Az első folyamat legyen gyakori, strukturálatlan bemenetű, ellenőrizhető kimenetű, olcsón javítható hibájú és mérhető. Amit szabályként le tudsz írni, azt automatizáld hagyományosan. A módszer többi lépését az [AI tanácsadás, automatizálás és fejlesztés](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes) oldalon írom le. Ha megnevezel három folyamatot, amely a cégednél viszi az időt, egy beszélgetésben megmondom, melyik felel meg az öt szempontnak, és melyiket jobb hagyományosan automatizálni: [kapcsolat](https://www.barnanorbert.com/hu/kapcsolat).
+
+### Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek, 6. cikk (2) bekezdés és III. melléklet: magas kockázatú AI-rendszerek](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ### Gyakori kérdések
 
@@ -2070,7 +2298,7 @@ Egyetlen folyamattal, amelyet két hétig megfigyelsz és megmérsz. Válassz ol
 
 - URL: https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet
 - Language: Hungarian
-- Published: 2026-11-12; updated: 2026-11-12
+- Published: 2026-11-12; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in English: https://www.barnanorbert.com/writing/human-in-the-loop-ai; German: https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki
 - Summary: Human in the loop a gyakorlatban: hét minta, amely kiállja a felülvizsgálatot. AI-jelölés, szerkeszthető kimenet, forrás, stop.
@@ -2078,6 +2306,14 @@ Egyetlen folyamattal, amelyet két hétig megfigyelsz és megmérsz. Válassz ol
 A human in the loop azt jelenti, hogy egy ember átnézi, szerkeszti vagy jóváhagyja, amit az AI-rendszer javasol, mielőtt annak bármilyen hatása lenne, és felül is bírálhatja vagy leállíthatja a rendszert. Szabályozott termékben ez nem egy pipa a projekt végén. Felületi döntések sora, amelyeket az első napon kell meghozni: mit javasolhat az AI, mit kell embernek ellenőriznie, miből látja az ellenőrző a javaslat okát, és mi történik, ha a kimenet hibás.
 
 Ebben a cikkben hét mintát írok le. Mind kiállta a felülvizsgálatot két termékben, amelyen dolgoztam: az egyik az Instructure tanulási platformjának AI-funkciói, a másik a SportsGambit, egy AI-alapú előrejelzési piac MVP-je. A példák ezekből a projektekből valók, a következtetések az enyémek.
+
+### Röviden: mit jelent a human in the loop, és mikor kell
+
+- **Meghatározás:** human in the loop az a működés, amelyben minden következménnyel járó AI-kimenetet ember néz át, szerkeszt vagy hagy jóvá, mielőtt az hatni kezd.
+- **Három feltétel:** az ember látja, hogy AI is részt vett a munkában, meg tudja változtatni vagy el tudja vetni a kimenetet, és a döntését a rendszer naplózza. Ha bármelyik hiányzik, a felügyelet csak látszat.
+- **Döntési szabály:** válaszd a human in the loop működést, ha a kimenet ügyfélhez jut el, pénzt mozgat vagy emberről szóló döntést készít elő. A human on the loop akkor elég, ha a hiba gyorsan észrevehető és visszafordítható.
+- **Jogi alap:** az EU AI-rendelete, az (EU) 2024/1689 rendelet 14. cikkének (4) bekezdése öt képességet vár el a magas kockázatú rendszert felügyelő embertől: megérti a rendszer korlátait, számol az automatizálási torzítással, helyesen értelmezi a kimenetet, felülbírálhatja, és le tudja állítani.
+- **Dátumok:** az 50. cikk átláthatósági kötelezettségei 2026. augusztus 2. óta alkalmazandók. A III. melléklet szerinti magas kockázatú rendszerek kötelezettségei a 2026-os Digital Omnibus után 2027. december 2-tól, az I. melléklet szerintieké 2028. augusztus 2-tól.
 
 ### Mit jelent a human in the loop, és mit nem?
 
@@ -2098,6 +2334,17 @@ Az EU AI-rendelet (AI Act) 14. cikke szerint a magas kockázatú AI-rendszereket
 A határidőkről: az AI-ra vonatkozó Digital Omnibus (az (EU) 2026/1744 rendelet, hatályos 2026. július 27-től) a III. melléklet szerinti magas kockázatú rendszerek kötelezettségeit 2027. december 2-ra, az I. melléklet szerintiekét 2028. augusztus 2-ra tolta. Az 50. cikk átláthatósági kötelezettségei, például annak jelzése, hogy a felhasználó AI-rendszerrel lép kapcsolatba, változatlanul 2026. augusztus 2. óta alkalmazandók (források: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/) és [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), lekérve 2026. október 21-én).
 
 Ez egy terméktervező olvasata, nem jogi tanácsadás. Hogy a te rendszered magas kockázatú-e, azt jogásszal kell tisztáznod. Amit élesbe állított munkák alapján mondani tudok: a 14. cikk öt felügyeleti képessége mind megfeleltethető egy felületi döntésnek. A cikk hátralévő része ezekről a döntésekről szól.
+
+: Az AI-rendelet 14. cikkének (4) bekezdése szerinti öt felügyeleti képesség és a felületi megfelelőjük
+| Amit a 14. cikk (4) bekezdése elvár | Felületi döntés | Minta a cikkben |
+| --- | --- | --- |
+| a) Megérti a rendszer képességeit és korlátait, és figyeli a működését | AI-címke minden kimeneten, látható üres, hibás és késő állapot | 1. és 4. minta |
+| b) Tudatában marad az automatizálási torzításnak | Bizonyossági szint és tudatos ellenőrző lépés a művelet előtt | 5. minta |
+| c) Helyesen értelmezi a kimenetet | Előbb a jelzések és a források, utána a javaslat | 2. minta |
+| d) Dönthet úgy, hogy nem használja, felülbírálja vagy visszafordítja | Szerkeszthető, elvethető, visszavonható kimenet három állapottal: vázlat, ellenőrzött, közzétett | 3. minta |
+| e) Beavatkozik, vagy „stop” gombbal leállítja a rendszert | Feature flag és név szerint kijelölt felelős, aki szüneteltethet | 7. minta |
+
+A megfeleltetés az én tervezői olvasatom. A rendelet a képességeket írja elő, felületi megoldást nem nevez meg.
 
 ### Hét human in the loop minta, amely kiállja a felülvizsgálatot
 
@@ -2152,6 +2399,14 @@ Döntsd el: ki felel a leállításért, milyen gyorsan történhet meg, és mi 
 
 Ha ezekre még nincs válasz, ott kezdődik a munka, mégpedig az AI fejlesztés előtt, nem utána. Az emberi felügyelet a tervezés első leszállítandó eredménye. A módszeremben a második lépés, még mielőtt bármi megépülne, a hozzáférés és az emberi kontroll rögzítése: mit javasolhat az AI, mit kell embernek átnéznie, és mi történik, ha egy válasz hiányzik vagy hibás. Hogy ez hogyan illeszkedik egy teljes bevezetés menetrendjébe, arról az [AI bevezetése KKV-nál: az első 90 nap](https://www.barnanorbert.com/hu/irasok/ai-bevezetese-kkv-elso-90-nap) című cikkben írok.
 
+### Ki felel az emberi felügyeletért egy AI-projektben?
+
+Az emberi felügyeletet nem egy ember tervezi meg. A terméktervező írja le a felületi állapotokat, a jogi és a compliance terület mondja meg, mit kell embernek jóváhagynia, a data science pedig azt, mikor bizonytalan a modell. Az üzleti oldal név szerint kijelöl egy felelőst, aki a funkciót szüneteltetheti vagy leállíthatja. Egy 20 és 250 fő közötti cégnél, például egy könyvelőirodánál vagy egy biztosítási alkusznál, ez gyakran két ember: a folyamat gazdája és az, aki a jogi kérdésekért felel.
+
+### Mi készül el a tervezés végére, még az építés előtt?
+
+A tervezési szakasz végén négy dolog van írásban. Az első a lista arról, mit javasolhat az AI, és mit kell embernek jóváhagynia. A második a kimenet állapotai és a címke pontos szövege. A harmadik a leállításért felelős ember neve. A negyedik az, hogy mi kerül a naplóba a későbbi felülvizsgálathoz. Ha ezek megvannak, a fejlesztés már nem a felügyeletről vitatkozik, hanem megépíti.
+
 ### Mi volt benne a nehéz
 
 A legtöbb AI-projekt azzal indul, mit lehet automatizálni. Az Instructure-nél azzal kezdtük, minek kell emberi kézben maradnia. A nehéz rész nem technikai volt, hanem etikai: arra az esetre tervezni, amikor az AI téved, elfogult, vagy visszaélnek vele, ahelyett hogy úgy tennénk, mintha ilyen nem fordulna elő. Ebből nem lesz látványos prezentáció. Olyan AI lesz belőle, amelyet valódi intézmények több millió embernek vezethetnek be, és utána is nyugodtan alszanak. Részletek: [Instructure esettanulmány](https://www.barnanorbert.com/hu/munka/instructure).
@@ -2159,6 +2414,10 @@ A legtöbb AI-projekt azzal indul, mit lehet automatizálni. Az Instructure-nél
 ### Összegzés
 
 Az emberi felügyeletet könnyebb megtervezni, mint utólag beépíteni. Az a termék megy át a felülvizsgálaton, amelyben már az elejétől minden AI-kimenethez tartozott címke, szerkesztési állapot és visszaút. Hozd a munkafolyamatot és azt a döntést, amely miatt aggódsz, és [ott kezdjük](https://www.barnanorbert.com/hu/kapcsolat).
+
+### Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 14. cikk: emberi felügyelet, 50. cikk: átláthatósági kötelezettségek](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ### Gyakori kérdések
 
@@ -2766,7 +3025,7 @@ A sablon és az egyedi weboldal között nem az ízlés dönt, hanem az, mit kel
 
 - URL: https://www.barnanorbert.com/de/wissen/ki-beratung-kosten
 - Language: German
-- Published: 2026-11-27; updated: 2026-11-27
+- Published: 2026-11-27; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in English: https://www.barnanorbert.com/writing/what-ai-integration-cost-depends-on; Hungarian: https://www.barnanorbert.com/hu/irasok/ai-fejlesztes-ara-mitol-fugg
 - Summary: KI-Beratung Kosten im Mittelstand: acht Faktoren, die den Preis bewegen, was sich staffeln lässt und welche Betriebskosten bleiben.
@@ -2776,6 +3035,14 @@ KI-Beratung Kosten: Was ein mittelständisches Unternehmen zahlt, hängt nicht v
 In diesem Artikel nenne ich keine Zahlen, denn jedes KI-Projekt ist individuelle Arbeit. Ich beschreibe die acht Faktoren hinter dem Preis, was sich staffeln lässt, wie Sie zwei Angebote vergleichen und welche laufenden Kosten gern vergessen werden.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt: Wovon die Kosten einer KI-Beratung abhängen
+
+- **Acht Faktoren:** Umfang des Prozesses, Zustand der Daten, Integrationen, Grad der menschlichen Kontrolle, Evaluierung, Risiko und Regulierung, Sprachen, Pflege nach dem Start.
+- **Vier Stufen:** Analyse, Prototyp, Pilot, Einführung. Jede Stufe endet mit einem Ergebnis, nach dem Sie aufhören können; die nächste beauftragen Sie erst, wenn die vorherige ihren Nutzen gezeigt hat.
+- **Vergleichsregel:** Zwei Angebote sind nur vergleichbar, wenn beide denselben Prozess, dieselbe Endstufe und dieselbe Datenaufbereitung beschreiben. Vergleichen Sie zuerst den Leistungsumfang, dann den Preis.
+- **Laufende Kosten:** Modellnutzung, Monitoring, Pflege der Quellen, Änderungen und Support. Modelle und externe Dienste werden nach Nutzung abgerechnet; verlässlich messen lässt sich das erst im Pilot.
+- **Einordnung:** 2025 nutzten laut Eurostat 17 % der kleinen, 30,36 % der mittleren und 55,03 % der großen Unternehmen in der EU KI. Als mögliche Gründe für den Abstand nennt Eurostat die Komplexität der Einführung, Größenvorteile und die Kosten.
 
 ### Wovon hängen die Kosten einer KI-Beratung ab?
 
@@ -2817,6 +3084,10 @@ Ein KI-Projekt muss nicht als Ganzes beauftragt werden. Am Ende jeder Stufe steh
 
 Die Staffelung senkt nicht den Gesamtaufwand, sie senkt das Risiko: Sie zahlen für die nächste Stufe erst, wenn die vorherige gezeigt hat, dass sie sich lohnt. Den zeitlichen Ablauf beschreibt der Artikel [KI im Mittelstand einführen](https://www.barnanorbert.com/de/wissen/ki-im-mittelstand-einfuehren), den Leistungsumfang die Seite [KI-Beratung und Entwicklung](https://www.barnanorbert.com/de/ki-beratung-entwicklung).
 
+### Wer muss auf Ihrer Seite mitarbeiten?
+
+Zum Preis einer KI-Beratung gehört die Zeit Ihrer eigenen Leute, und sie steht in keinem Angebot. In der Analyse beschreiben die Menschen aus dem Fachbereich den Ablauf, im Prototyp bewerten sie die Ergebnisse an echten Beispielen, im Pilot prüfen sie Vorschläge im Alltag. Die IT gibt Zugriffe frei, der Datenschutzbeauftragte bewertet die Datenwege, und eine benannte Person entscheidet nach jeder Stufe über die nächste. Fragen Sie jeden Anbieter, wie viel Mitarbeit er von wem erwartet, und rechnen Sie diese Zeit in Ihren Vergleich ein.
+
 ### Ein Beispiel aus der Praxis: Wo die Arbeit bei Instructure lag
 
 Bei Instructure habe ich die End-to-End-Entwicklung von Features einer Enterprise-Lernplattform geleitet, darunter KI-Vorschläge für Lehrende und Lernende. Laut Fallstudie war kein Black-Box-Verhalten zulässig: Jeder KI-Vorschlag musste erklärbar, editierbar und auditierbar sein. Die Leitplanken standen vom ersten Tag an, die Abläufe wurden gemeinsam mit Legal, Compliance und Data Science geprüft und danach in wiederverwendbare Muster überführt.
@@ -2851,6 +3122,10 @@ Die Kosten eines KI-Projekts enden nicht beim Start. Vier Posten fehlen in viele
 
 Was KI-Beratung kostet, ist die Folge der Aufgabe: Prozess, Daten, Integrationen, Kontrolle, Evaluierung, Risiko, Sprachen und Pflege. Den größten Hebel haben Sie selbst in der Hand, nämlich einen abgegrenzten ersten Prozess, geordnete Quellen und eine benannte verantwortliche Person. Beschreiben Sie mir den Ablauf, die betroffenen Systeme und Daten und was als Erfolg gelten würde, [am besten in wenigen Sätzen](https://www.barnanorbert.com/de/kontakt), und ich sage Ihnen, mit welcher Stufe wir sinnvoll beginnen.
 
+### Quellen
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat, Daten für 2025, Datenstand Dezember 2025, abgerufen am 28. November 2026
+
 ### Häufige Fragen
 
 #### Was kostet KI-Beratung für ein mittelständisches Unternehmen?
@@ -2883,7 +3158,7 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 
 - URL: https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen
 - Language: German
-- Published: 2026-11-27; updated: 2026-11-27
+- Published: 2026-11-27; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in English: https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner; Hungarian: https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa
 - Summary: KI-Dienstleister auswählen: was Sie selbst vorbereiten, zehn Fragen für das Erstgespräch und woran Sie eine gute Antwort erkennen.
@@ -2893,6 +3168,14 @@ Einen KI-Dienstleister fragen Sie vor der Beauftragung vor allem fünf Dinge: wa
 Dieser Artikel enthält zuerst die Liste dessen, was Sie selbst vorbereiten, dann zehn Fragen an den Anbieter mit einer Beschreibung, wie eine gute Antwort klingt, und zuletzt die Warnsignale.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt: KI-Dienstleister auswählen
+
+- **Fünf Kernfragen:** Was testen Sie vor dem Bau, wie messen Sie die Qualität an unseren Beispielen, was passiert bei einer falschen Antwort, wer ist nach der Übergabe verantwortlich, wie stoppen wir den Pilotversuch?
+- **Ihre Vorbereitung:** ein Arbeitsablauf, Ausgangswerte wie Bearbeitungszeit und Fehlerquote, Daten und Zugriffe, die Rolle des Menschen, eine Erfolgsgröße mit verantwortlicher Person, Ihre Rahmenbedingungen.
+- **Entscheidungsregel:** Wählen Sie den Anbieter, der zuerst nach Ihrem Ablauf fragt und an Ihren eigenen, anonymisierten Fällen testet. Nennt ein Angebot das Modell, bevor es Ihre Aufgabe nennt, ist das ein Warnsignal.
+- **Eigentum:** Code, Prompts, Testfälle und Dokumentation gehören schriftlich Ihnen, einschließlich der Zugänge zu den Konten, in denen das System läuft.
+- **Einordnung:** 2025 setzten laut Eurostat 19,95 % der Unternehmen in der EU mit mindestens zehn Beschäftigten KI ein, 6,47 Prozentpunkte mehr als 2024. Bei kleinen Unternehmen waren es 17 %, bei großen 55,03 %.
 
 ### Warum entscheidet Ihre Vorbereitung über die Qualität der Angebote?
 
@@ -2910,6 +3193,10 @@ Sechs Punkte reichen für ein Erstgespräch.
 6. **Ihre Rahmenbedingungen.** Sprachen, regulierte Daten, Barrierefreiheit, Einkaufsregeln, Betriebsrat, und die Einordnung nach der EU-KI-Verordnung. Welche Risikoklasse Ihr System hat, klärt Ihre Rechtsberatung, nicht der Anbieter allein.
 
 Seien Sie auf die ehrliche Antwort vorbereitet, dass die Aufgabe keine KI braucht, sondern klarere Regeln oder eine bessere Oberfläche. Ein guter Anbieter sagt das im ersten Termin.
+
+### Wer sollte auf Ihrer Seite an der Auswahl beteiligt sein?
+
+Vier Rollen: die Menschen aus dem Fachbereich, die den Ablauf ausführen und später die Ergebnisse prüfen, die IT für Systeme und Zugriffe, der Datenschutzbeauftragte für die Datenwege, und die Person, die den Pilotversuch anhalten darf. Wo es einen Betriebsrat gibt, gehört er früh dazu. Die Einordnung nach der EU-KI-Verordnung kommt von Ihrer Rechtsberatung: Die Europäische Kommission unterscheidet vier Risikostufen und nennt als Beispiel für Hochrisiko unter anderem Software, die Bewerbungen sortiert.
 
 ### Zehn Fragen an einen KI-Dienstleister, und wie eine gute Antwort klingt
 
@@ -2954,6 +3241,11 @@ Ein gutes Erstgespräch liefert vier Ergebnisse: ein abgegrenztes Problem, einen
 ### Fazit
 
 Einen KI-Dienstleister wählen Sie nicht nach der Demo aus, sondern nach seinen Antworten auf Fragen zu Tests, Fehlerfällen, Daten, Eigentum und Ausstieg. Bereiten Sie einen Arbeitsablauf, Ausgangswerte und Ihre Datengrenzen vor, stellen Sie allen Anbietern dieselben zehn Fragen und vergleichen Sie die Antworten schriftlich. Wenn Sie die Fragen an mir ausprobieren möchten, schicken Sie mir die anonymisierte Beschreibung eines Ablaufs: [Kontakt](https://www.barnanorbert.com/de/kontakt). Den Weg danach beschreibt [KI im Mittelstand einführen](https://www.barnanorbert.com/de/wissen/ki-im-mittelstand-einfuehren).
+
+### Quellen
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat, Daten für 2025, Datenstand Dezember 2025, abgerufen am 28. November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026
 
 ### Häufige Fragen
 
@@ -3433,7 +3725,7 @@ Die Entscheidung zwischen individueller Website und Baukasten fällt nicht am Pr
 
 - URL: https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki
 - Language: German
-- Published: 2026-10-21; updated: 2026-10-21
+- Published: 2026-10-21; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in English: https://www.barnanorbert.com/writing/human-in-the-loop-ai; Hungarian: https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet
 - Summary: Human in the Loop bei KI: sieben Muster, die eine Prüfung bestehen. Kennzeichnung, editierbare Ausgaben, Quellen, Stopp. Art. 14 KI-VO.
@@ -3443,6 +3735,14 @@ Human in the Loop bedeutet, dass ein Mensch prüft, bearbeitet oder freigibt, wa
 Dieser Artikel beschreibt sieben Muster, die in zwei Produkten, an denen ich gearbeitet habe, einer Prüfung standgehalten haben: KI-Funktionen in der Lernplattform von Instructure und ein KI-gestützter Prognosemarkt-MVP namens SportsGambit. Die Beispiele stammen aus diesen Projekten; die Schlussfolgerungen sind meine.
 
 Zur Zusammenarbeit: Ich arbeite mit Teams in Deutschland und der EU, die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt: Human in the Loop und menschliche Aufsicht
+
+- **Definition:** Bei Human in the Loop gibt ein Mensch jede folgenreiche KI-Ausgabe frei, bevor sie wirkt. Bei Human on the Loop handelt das System selbst, und ein Mensch überwacht und greift ein.
+- **Drei Bedingungen:** Der Mensch sieht, dass KI beteiligt war, er kann die Ausgabe ändern oder ablehnen, und seine Entscheidung wird aufgezeichnet. Fehlt eine davon, schaut er nur zu.
+- **Entscheidungsregel:** Wählen Sie die Stufe der Aufsicht nach den Folgen einer falschen Ausgabe, nicht nach der Qualität des Modells. Erreicht die Ausgabe einen Kunden oder bewegt sie Geld, gibt ein Mensch sie vorher frei.
+- **Artikel 14 der KI-Verordnung (EU) 2024/1689:** Absatz 4 nennt fünf Fähigkeiten der beaufsichtigenden Person: Grenzen des Systems verstehen, Automatisierungsbias kennen, Ausgaben richtig interpretieren, Ausgaben verwerfen oder übersteuern, das System über eine „Stopp“-Taste anhalten.
+- **Termine:** Die Transparenzpflichten nach Artikel 50 gelten seit dem 2. August 2026; der Hinweis muss nach Artikel 50 Absatz 5 spätestens bei der ersten Interaktion erfolgen. Die Hochrisiko-Pflichten gelten für Anhang III ab dem 2. Dezember 2027 und für Anhang I ab dem 2. August 2028.
 
 ### Was bedeutet Human in the Loop bei KI, und was nicht?
 
@@ -3463,6 +3763,21 @@ Artikel 14 der EU-KI-Verordnung verlangt, dass Hochrisiko-KI-Systeme so gestalte
 Zum Zeitplan: Der Digital Omnibus zur KI (Verordnung (EU) 2026/1744, in Kraft seit 27. Juli 2026) hat die Pflichten für Hochrisiko-Systeme nach Anhang III auf den 2. Dezember 2027 und nach Anhang I auf den 2. August 2028 verschoben. Die Transparenzpflichten nach Artikel 50, etwa der Hinweis, dass man mit einem KI-System interagiert, gelten weiterhin seit dem 2. August 2026 (Quellen: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), abgerufen am 21. Oktober 2026). Was die Kennzeichnung konkret für Produktteams bedeutet, steht in einem eigenen Artikel: [KI-Kennzeichnungspflicht](https://www.barnanorbert.com/de/wissen/ki-kennzeichnungspflicht).
 
 Das ist die Lesart aus Produktsicht, keine Rechtsberatung. Ob Ihr System ein Hochrisiko-System ist, klärt Ihre Rechtsabteilung. Aus Projekten, die live gegangen sind, kann ich sagen: Jede der fünf Aufsichtsfähigkeiten in Artikel 14 entspricht einer Entscheidung über die Oberfläche. Der Rest dieses Artikels sind diese Entscheidungen.
+
+: Artikel 14 Absatz 4 der KI-Verordnung: fünf Aufsichtsfähigkeiten und die passende Entscheidung in der Oberfläche
+| Art. 14 Abs. 4 | Was die beaufsichtigende Person können muss | Entscheidung in der Oberfläche |
+| --- | --- | --- |
+| Buchstabe a | Fähigkeiten und Grenzen des Systems verstehen, den Betrieb überwachen, Anomalien erkennen | Sichtbare Zustände für leer, laden, Fehler und Verzögerung (Muster 4) |
+| Buchstabe b | Sich des Automatisierungsbias bewusst bleiben | Konfidenzwert und bewusster Prüfschritt vor jeder Aktion (Muster 5) |
+| Buchstabe c | Die Ausgabe richtig interpretieren | KI-Label, Signale und Quellen vor dem Vorschlag (Muster 1 und 2) |
+| Buchstabe d | Das System nicht verwenden, die Ausgabe verwerfen, übersteuern oder rückgängig machen | Editierbare Ausgabe mit den Zuständen Entwurf, geprüft, veröffentlicht (Muster 3) |
+| Buchstabe e | Eingreifen oder das System über eine „Stopp“-Taste in einen sicheren Zustand bringen | Feature-Flag und eine benannte Person, die stoppen darf (Muster 7) |
+
+Die Zuordnung in der dritten Spalte ist meine Lesart aus der Produktarbeit; die Verordnung schreibt kein bestimmtes Oberflächenmuster vor.
+
+### Wer ist für die menschliche Aufsicht verantwortlich?
+
+Artikel 14 Absatz 3 kennt zwei Arten von Aufsichtsmaßnahmen: solche, die der Anbieter vor dem Inverkehrbringen in das System einbaut, und solche, die der Anbieter festlegt und der Betreiber umsetzt. Für ein Produktteam heißt das: Label, Prüfzustände und Stopp gehören ins Produkt, und der Betreiber benennt die Personen, die prüfen und anhalten dürfen. Nach Absatz 3 müssen die Maßnahmen dem Risiko, dem Grad der Autonomie und dem Einsatzkontext des Systems angemessen sein. An der Gestaltung sitzen deshalb Produkt und Design, die späteren Prüfer aus dem Fachbereich, Recht und Compliance sowie Data Science an einem Tisch.
 
 ### Sieben Human-in-the-Loop-Muster, die eine Prüfung bestehen
 
@@ -3517,6 +3832,10 @@ Entscheiden: Wer ist für den Stopp verantwortlich, wie schnell kann er wirken, 
 
 Wenn diese Fragen noch keine Antworten haben, beginnt dort die Arbeit, und zwar vor der KI-Entwicklung, nicht danach. In meiner Methode ist der zweite Schritt, vor jedem Bau, die Festlegung von Zugriff und menschlicher Kontrolle: Was die KI vorschlagen darf, was ein Mensch prüfen muss, und was passiert, wenn eine Antwort fehlt oder falsch ist.
 
+### Was liegt am Ende der Gestaltung vor?
+
+Vier Dinge, bevor die Entwicklung beginnt: eine Liste, was die KI vorschlagen darf und was ein Mensch freigeben muss; entworfene Zustände für Label, Bearbeitung, Fehler und Verzögerung; ein Protokollkonzept, das festhält, wer was auf welcher Grundlage akzeptiert hat; und eine benannte Person mit einem Schalter für den Stopp. Mit diesen vier Ergebnissen kann der begrenzte Pilot starten, und die acht Fragen oben sind beantwortet.
+
 ### Was schwierig war
 
 Die meisten KI-Projekte beginnen mit dem, was sich automatisieren lässt. Bei Instructure haben wir mit dem begonnen, was menschlich bleiben muss. Der schwierige Teil war ethisch, nicht technisch: für den Fall zu gestalten, dass die KI irrt, verzerrt ist oder missbraucht wird, statt so zu tun, als käme das nicht vor. Daraus wird keine beeindruckende Präsentation. Daraus wird KI, die echte Institutionen für Millionen Menschen einführen können und danach ruhig schlafen. Details: [Instructure-Fallstudie](https://www.barnanorbert.com/de/arbeit/instructure).
@@ -3554,6 +3873,12 @@ Ja. Die Zusammenarbeit läuft auf Englisch oder Ungarisch; deutschsprachige Team
 ### Fazit
 
 Menschliche Aufsicht lässt sich leichter gestalten als nachrüsten. Das Produkt, das eine Prüfung besteht, ist das, in dem jede KI-Ausgabe schon ein Label, einen Bearbeitungszustand und einen Weg zurück hatte. Bringen Sie den Ablauf und die Entscheidung mit, die Ihnen Sorgen macht, und [dort fangen wir an](https://www.barnanorbert.com/de/kontakt).
+
+### Quellen
+
+- [Article 14: Human oversight](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026
+- [Article 50: Transparency obligations for providers and deployers of certain AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026
 
 ---
 
@@ -3661,7 +3986,7 @@ Die KI-Kennzeichnungspflicht ist für ein gut gestaltetes Produkt keine zusätzl
 
 - URL: https://www.barnanorbert.com/de/wissen/ki-automatisierung-erster-prozess
 - Language: German
-- Published: 2026-10-21; updated: 2026-10-22
+- Published: 2026-10-21; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in Hungarian: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-melyik-folyamattal-kezdj; English: https://www.barnanorbert.com/writing/which-process-to-automate-with-ai-first
 - Summary: KI-Automatisierung: fünf Kriterien für den ersten Prozess, wann klassische Automatisierung reicht, und der Weg zum Pilot.
@@ -3671,6 +3996,14 @@ Der richtige erste Prozess für eine KI-Automatisierung ist einer, der oft vorko
 Dieser Artikel gibt Ihnen fünf Kriterien, mit denen Sie Ihre Prozesse sortieren, eine Abgrenzung zwischen KI und klassischer Automatisierung, Beispiele für gute und schlechte erste Kandidaten, und den Ablauf, mit dem aus einem Kandidaten ein messbarer Pilot wird. Es ist die Fortsetzung des Artikels [KI im Mittelstand einführen](https://www.barnanorbert.com/de/wissen/ki-im-mittelstand-einfuehren), der den Zeitplan beschreibt; hier geht es um die Auswahl.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt: Der erste Prozess für eine KI-Automatisierung
+
+- **Die Regel:** Wenn Sie die Regel aufschreiben können, automatisieren Sie klassisch. KI lohnt sich dort, wo heute ein Mensch unstrukturierte Eingaben liest, versteht und überträgt.
+- **Fünf Kriterien:** Häufigkeit, unstrukturierte Eingabe, prüfbare Ausgabe, begrenzte Folgen eines Fehlers, messbarer Ausgangswert. Vier von fünf reichen oft; prüfbare Ausgabe und begrenzte Fehlerfolgen dürfen nicht fehlen.
+- **Gute erste Kandidaten:** Anfragen klassifizieren und Antworten entwerfen, Felder aus Dokumenten zur Prüfung vorausfüllen, interne Fragen aus der eigenen Dokumentation mit Quellenangabe beantworten.
+- **Kein erster Prozess:** alles, was ohne menschliche Freigabe Zahlungen auslöst oder über Menschen entscheidet. Software, die Bewerbungen sortiert, führt die Europäische Kommission als Beispiel für Hochrisiko-KI; die Pflichten dafür gelten ab dem 2. Dezember 2027.
+- **Einordnung:** Von den Unternehmen in der EU, die KI einsetzen, nutzten sie 2025 laut Eurostat 34,70 % für Marketing oder Vertrieb und 31,05 % für die Organisation von Verwaltungsprozessen oder das Management. Die am häufigsten eingesetzte Technik war die Analyse geschriebener Sprache, in 11,75 % aller Unternehmen.
 
 ### KI-Automatisierung oder klassische Automatisierung?
 
@@ -3706,6 +4039,15 @@ Sie wissen heute, wie lange der Prozess dauert und wie oft er Rückfragen oder F
 
 Ein Prozess, der alle fünf Kriterien erfüllt, ist ein guter Anfang. Vier von fünf reichen oft; fehlt die prüfbare Ausgabe oder die Begrenzung der Folgen, ist es kein erster Prozess, sondern ein zweiter oder dritter.
 
+: Fünf Kriterien für den ersten KI-Prozess: wann ein Kriterium erfüllt ist und woran Sie das Gegenteil erkennen
+| Kriterium | Erfüllt, wenn | Nicht erfüllt, wenn |
+| --- | --- | --- |
+| Häufigkeit | Der Prozess läuft täglich oder wöchentlich | Er läuft quartalsweise oder seltener |
+| Unstrukturierte Eingabe | E-Mails, PDFs, Scans, Freitext oder Gesprächsnotizen kommen herein | Die Daten sind strukturiert und die Regel ist aufschreibbar: klassisch automatisieren |
+| Prüfbare Ausgabe | Ein Mensch prüft das Ergebnis in Sekunden, bevor es wirkt | Die Prüfung dauert länger als die Arbeit, oder das Ergebnis wirkt ungeprüft |
+| Begrenzte Fehlerfolgen | Ein Fehler ist ärgerlich und korrigierbar, etwa ein falsch zugeordnetes Ticket | Ein Fehler löst eine Zahlung aus oder trifft eine Entscheidung über einen Menschen |
+| Messbarer Ausgangswert | Dauer, Rückfragen und Fehler sind bekannt oder in zwei Wochen messbar | Niemand kann sagen, wie lange der Prozess heute dauert |
+
 ### Gute und schlechte erste Kandidaten
 
 **Gute erste Kandidaten:**
@@ -3736,6 +4078,14 @@ Was ich dabei aus der Produktarbeit mitbringe: Bei Instructure haben wir KI-Funk
 4. **Integration nur so weit wie nötig.** Für den Pilot reicht oft eine Verbindung, die liest, aber nicht schreibt. Schreibende Integration kommt, wenn der Pilot etwas bewiesen hat.
 5. **Pilot mit Verantwortlichem und Messung.** Dauer pro Vorgang gegenüber dem Ausgangswert, Anteil umgeschriebener Vorschläge, Rückmeldungen der Mitarbeiter.
 6. **Entscheidung mit Zahlen.** Ausweiten, umbauen oder abbrechen, und das Ergebnis dokumentieren.
+
+### Wer muss an Auswahl und Pilot beteiligt sein?
+
+Die Menschen, die den Prozess heute ausführen, denn sie liefern die Beobachtung und bearbeiten später die Vorschläge. Dazu kommen eine verantwortliche Person, die den Pilot anhalten darf, die IT für die lesende Anbindung und der Datenschutzbeauftragte für die Frage, welche Daten die KI sehen darf. Ein Prozess, den niemand im Haus verantwortet, scheidet schon bei der Auswahl aus.
+
+### Was liegt am Ende des Pilots vor?
+
+Drei Messwerte und eine Entscheidung: die Dauer pro Vorgang im Vergleich zum Ausgangswert, der Anteil der Vorschläge, die Mitarbeiter umgeschrieben oder verworfen haben, und ihre Rückmeldungen. Daraus folgt schriftlich, ob der Prozess ausgeweitet, umgebaut oder abgebrochen wird. Auch ein Abbruch ist ein Ergebnis, weil er dokumentiert, warum dieser Prozess kein Kandidat war.
 
 ### Was die KI-Verordnung für Prozessautomatisierung bedeutet
 
@@ -3770,6 +4120,12 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 ### Fazit
 
 KI-Automatisierung scheitert selten an der Technik und oft an der Auswahl des ersten Prozesses. Wenn Sie mir drei Prozesse nennen, die in Ihrem Unternehmen Zeit fressen, sage ich Ihnen in einem Gespräch, welcher davon die fünf Kriterien erfüllt und welcher besser klassisch automatisiert wird: [Kontakt](https://www.barnanorbert.com/de/kontakt).
+
+### Quellen
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat, Daten für 2025, Datenstand Dezember 2025, abgerufen am 28. November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026
+- [Article 50: Transparency obligations for providers and deployers of certain AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026
 
 ---
 
@@ -4125,7 +4481,7 @@ Das BFSG hat Barrierefreiheit für viele Unternehmenswebsites zur Pflicht gemach
 
 - URL: https://www.barnanorbert.com/de/wissen/mvp-entwicklung-regulierte-produkte
 - Language: German
-- Published: 2026-10-21; updated: 2026-10-22
+- Published: 2026-10-21; updated: 2026-11-28
 - Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
 - Also available in English: https://www.barnanorbert.com/writing/mvp-development-regulated-products; Hungarian: https://www.barnanorbert.com/hu/irasok/mvp-fejlesztes-szabalyozott-termekhez
 - Summary: MVP-Entwicklung in Fintech, Gesundheit und regulierten Märkten: was Sie weglassen dürfen, was am ersten Tag echt sein muss, und wie.
@@ -4135,6 +4491,14 @@ Ein MVP, ein Minimum Viable Product, ist die kleinste Version eines Produkts, mi
 Dieser Artikel beschreibt, wie sich MVP-Entwicklung in regulierten Produkten von der im Startup-Lehrbuch unterscheidet, was in zwei Projekten, an denen ich gearbeitet habe, am ersten Tag echt sein musste, und wie der Ablauf von der Hypothese bis zum ersten Nutzer aussieht.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt: MVP-Entwicklung im regulierten Markt
+
+- **Definition:** Ein MVP ist die kleinste funktionsfähige Version eines Produkts, mit der sich eine zentrale Annahme an echten Nutzern prüfen lässt.
+- **Die Regel:** Fassade erlaubt, Fundament nicht. Weglassen dürfen Sie Nebenfunktionen, Hintergrundautomatisierung, Skalierung und Design-Feinschliff.
+- **Am ersten Tag echt:** Identitätsprüfung und Einwilligung, die Bestätigung folgenreicher Aktionen, Datenschutz im Code, vollständige Protokolle, und bei KI Kennzeichnung, Prüfschritt und Konfidenz.
+- **Prototyp oder MVP:** Ein Prototyp ist nicht funktionsfähig und geht nicht an echte Nutzer; er testet die kritischen Abläufe, bevor Pflichten greifen. Deshalb kommt er in regulierten Produkten vor dem MVP.
+- **KI-Verordnung (EU) 2024/1689:** Die Hinweispflicht nach Artikel 50 gilt seit dem 2. August 2026 auch für ein MVP, und zwar nach Absatz 5 spätestens bei der ersten Interaktion. Die Hochrisiko-Pflichten nach Anhang III, zu deren Anwendungsfällen die Europäische Kommission die Kreditwürdigkeitsprüfung zählt, gelten ab dem 2. Dezember 2027.
 
 ### Was ist ein MVP, und was darf es in regulierten Märkten nicht sein?
 
@@ -4183,6 +4547,24 @@ Bei SportsGambit, einem KI-gestützten Prognosemarkt-MVP, stand bei jeder Empfeh
 6. **Mit wenigen echten Nutzern starten,** hinter Zugangsbeschränkung, mit einem Verantwortlichen, der jede Woche die Zahlen liest.
 7. **Entscheiden.** Ausbauen, umbauen oder einstellen, auf Basis dessen, was die Nutzer getan haben, nicht dessen, was sie gesagt haben.
 
+: Phasen einer MVP-Entwicklung im regulierten Markt: was am Ende vorliegt und wer mitwirken muss
+| Phase | Was am Ende vorliegt | Wer mitwirken muss |
+| --- | --- | --- |
+| Annahme und Pflichtliste (Schritte 1 und 2) | Ein messbarer Satz zur Annahme und die Liste der Pflichten ab dem ersten echten Nutzer | Produktverantwortliche und Rechtsberatung |
+| Fassade und Fundament trennen (Schritt 3) | Zwei Listen: „weglassen oder von Hand“ und „echt bauen“ | Produktverantwortliche und Entwicklung |
+| Prototyp der kritischen Abläufe (Schritt 4) | Mit Nutzern getestete Entwürfe für Onboarding, Bestätigung, Fehler und Weg zurück | Design und Testpersonen aus der Zielgruppe |
+| Bau in kurzen Schleifen (Schritt 5) | Funktionsfähige Software mit echtem Fundament und Messung der Abbrüche | Entwicklung, Design und die Anbieter angebundener Dienste, etwa für Identitätsprüfung oder Zahlung |
+| Start mit wenigen Nutzern (Schritt 6) | Verhaltensdaten echter Nutzer hinter einer Zugangsbeschränkung | Eine benannte verantwortliche Person und der Support |
+| Entscheidung (Schritt 7) | Ausbauen, umbauen oder einstellen, mit den Zahlen als Begründung | Geschäftsführung und Produktverantwortliche |
+
+### Wer entwickelt ein MVP für einen regulierten Markt?
+
+Ein MVP in einem regulierten Markt braucht drei Rollen: jemanden, der die Abläufe gestaltet, jemanden, der sie baut, und eine Rechtsberatung, die die Pflichtliste mitschreibt. Dazu kommen die Anbieter der angebundenen Dienste, etwa für Identitätsprüfung und Zahlung. Ich übernehme Gestaltung und Entwicklung; die rechtliche Bewertung bleibt bei Ihrer Rechtsberatung, und die Entscheidung über die eine Annahme bleibt bei Ihnen.
+
+### Was liegt am Ende einer MVP-Entwicklung vor?
+
+Am Ende steht ein funktionsfähiges Produkt mit kleinem Funktionsumfang und vollständigem Fundament: echte Identitätsprüfung und Einwilligung, bestätigte Aktionen, Datenschutz im Code und lückenlose Protokolle. Dazu kommen die Messdaten der ersten Nutzer, also wo sie abbrechen, zögern oder den Support rufen, und eine dokumentierte Entscheidung über Ausbau, Umbau oder Einstellung. Was fehlt, steht auf der Liste „weglassen oder von Hand“ und ist damit sichtbar, nicht vergessen.
+
 ### Wovon Aufwand und Kosten abhängen, wenn Sie ein MVP entwickeln lassen
 
 - Welche Pflichten greifen: Identitätsprüfung, Zahlungsabwicklung, Gesundheitsdaten, KI-Kennzeichnung.
@@ -4222,6 +4604,11 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 ### Fazit
 
 Ein MVP in einem regulierten Markt ist klein im Umfang und vollständig im Fundament; das gilt für MVP-Software mit und ohne KI-Entwicklung, für eine Webanwendung genauso wie für eine App. Wenn Sie mir Ihre eine Annahme und den Markt nennen, in dem das Produkt startet, sage ich Ihnen in einem Gespräch, was auf die Pflichtliste gehört und was Sie getrost weglassen können: [Kontakt](https://www.barnanorbert.com/de/kontakt).
+
+### Quellen
+
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026
+- [Article 50: Transparency obligations for providers and deployers of certain AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026
 
 ---
 

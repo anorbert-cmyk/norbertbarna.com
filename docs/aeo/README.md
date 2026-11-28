@@ -4,7 +4,7 @@ The aim is to be cited by ChatGPT, Google AI Mode, Perplexity and similar answer
 
 ## Files
 
-- `questions.json`: 90 fixed questions, 30 each in Hungarian, English and German. Types: `info` (a question one of our articles answers or should answer), `commercial` (someone looking for a provider), `brand` (someone asking about Norbert Barna or the site). `target` is the page that should be cited, or `null` where no page existed on the day the set was written. Never edit a question; add new ones with new ids.
+- `questions.json`: 126 fixed questions: 90 from 2026-11-27 (30 each in Hungarian, English and German) and 36 buyer questions from 2026-11-28 (12 per language). Types: `info` (a question one of our articles answers or should answer), `commercial` (someone looking for a provider), `brand` (someone asking about Norbert Barna or the site). `buyer` (added 2026-11-28, 36 questions in the words a buyer uses: "best X", "X or Y", alternatives, a concrete situation; asked with Perplexity `sonar-pro` at 1024 tokens). `target` is the page that should be cited, or `null` where no page existed on the day the set was written. Never edit a question; add new ones with new ids.
 - `results/<date>.json`: one measurement. For every question and engine: the URLs the answer cited, whether the site was cited or named, and the first 600 characters of the answer.
 - `score-<date>.md`: the score of that measurement, printed by `scripts/aeo-score.mjs`.
 - `findings-<date>.md`: what the measurement showed and what was changed because of it.

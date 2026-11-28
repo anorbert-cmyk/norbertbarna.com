@@ -4,7 +4,7 @@ description: "KI-Beratung Kosten im Mittelstand: acht Faktoren, die den Preis be
 lang: de
 slug: ki-beratung-kosten
 date: 2026-11-27T23:30:00+01:00
-updated: 2026-11-27T23:30:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ki beratung kosten, ki beratung mittelstand, ki einführung kosten, ki projekt kosten, ki beratung angebot vergleichen, ki betriebskosten]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
@@ -17,6 +17,14 @@ KI-Beratung Kosten: Was ein mittelständisches Unternehmen zahlt, hängt nicht v
 In diesem Artikel nenne ich keine Zahlen, denn jedes KI-Projekt ist individuelle Arbeit. Ich beschreibe die acht Faktoren hinter dem Preis, was sich staffeln lässt, wie Sie zwei Angebote vergleichen und welche laufenden Kosten gern vergessen werden.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+## Kurz gesagt: Wovon die Kosten einer KI-Beratung abhängen
+
+- **Acht Faktoren:** Umfang des Prozesses, Zustand der Daten, Integrationen, Grad der menschlichen Kontrolle, Evaluierung, Risiko und Regulierung, Sprachen, Pflege nach dem Start.
+- **Vier Stufen:** Analyse, Prototyp, Pilot, Einführung. Jede Stufe endet mit einem Ergebnis, nach dem Sie aufhören können; die nächste beauftragen Sie erst, wenn die vorherige ihren Nutzen gezeigt hat.
+- **Vergleichsregel:** Zwei Angebote sind nur vergleichbar, wenn beide denselben Prozess, dieselbe Endstufe und dieselbe Datenaufbereitung beschreiben. Vergleichen Sie zuerst den Leistungsumfang, dann den Preis.
+- **Laufende Kosten:** Modellnutzung, Monitoring, Pflege der Quellen, Änderungen und Support. Modelle und externe Dienste werden nach Nutzung abgerechnet; verlässlich messen lässt sich das erst im Pilot.
+- **Einordnung:** 2025 nutzten laut Eurostat 17 % der kleinen, 30,36 % der mittleren und 55,03 % der großen Unternehmen in der EU KI. Als mögliche Gründe für den Abstand nennt Eurostat die Komplexität der Einführung, Größenvorteile und die Kosten.
 
 ## Wovon hängen die Kosten einer KI-Beratung ab?
 
@@ -58,6 +66,10 @@ Ein KI-Projekt muss nicht als Ganzes beauftragt werden. Am Ende jeder Stufe steh
 
 Die Staffelung senkt nicht den Gesamtaufwand, sie senkt das Risiko: Sie zahlen für die nächste Stufe erst, wenn die vorherige gezeigt hat, dass sie sich lohnt. Den zeitlichen Ablauf beschreibt der Artikel [KI im Mittelstand einführen](/de/wissen/ki-im-mittelstand-einfuehren), den Leistungsumfang die Seite [KI-Beratung und Entwicklung](/de/ki-beratung-entwicklung).
 
+## Wer muss auf Ihrer Seite mitarbeiten?
+
+Zum Preis einer KI-Beratung gehört die Zeit Ihrer eigenen Leute, und sie steht in keinem Angebot. In der Analyse beschreiben die Menschen aus dem Fachbereich den Ablauf, im Prototyp bewerten sie die Ergebnisse an echten Beispielen, im Pilot prüfen sie Vorschläge im Alltag. Die IT gibt Zugriffe frei, der Datenschutzbeauftragte bewertet die Datenwege, und eine benannte Person entscheidet nach jeder Stufe über die nächste. Fragen Sie jeden Anbieter, wie viel Mitarbeit er von wem erwartet, und rechnen Sie diese Zeit in Ihren Vergleich ein.
+
 ## Ein Beispiel aus der Praxis: Wo die Arbeit bei Instructure lag
 
 Bei Instructure habe ich die End-to-End-Entwicklung von Features einer Enterprise-Lernplattform geleitet, darunter KI-Vorschläge für Lehrende und Lernende. Laut Fallstudie war kein Black-Box-Verhalten zulässig: Jeder KI-Vorschlag musste erklärbar, editierbar und auditierbar sein. Die Leitplanken standen vom ersten Tag an, die Abläufe wurden gemeinsam mit Legal, Compliance und Data Science geprüft und danach in wiederverwendbare Muster überführt.
@@ -91,6 +103,10 @@ Die Kosten eines KI-Projekts enden nicht beim Start. Vier Posten fehlen in viele
 ## Fazit
 
 Was KI-Beratung kostet, ist die Folge der Aufgabe: Prozess, Daten, Integrationen, Kontrolle, Evaluierung, Risiko, Sprachen und Pflege. Den größten Hebel haben Sie selbst in der Hand, nämlich einen abgegrenzten ersten Prozess, geordnete Quellen und eine benannte verantwortliche Person. Beschreiben Sie mir den Ablauf, die betroffenen Systeme und Daten und was als Erfolg gelten würde, [am besten in wenigen Sätzen](/de/kontakt), und ich sage Ihnen, mit welcher Stufe wir sinnvoll beginnen.
+
+## Quellen
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat, Daten für 2025, Datenstand Dezember 2025, abgerufen am 28. November 2026
 
 ## Häufige Fragen
 

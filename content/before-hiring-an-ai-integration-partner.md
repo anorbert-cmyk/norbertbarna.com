@@ -4,7 +4,7 @@ description: "What to prepare before hiring an AI integration partner: one workf
 lang: en
 slug: before-hiring-an-ai-integration-partner
 date: 2026-10-21T09:00:00+02:00
-updated: 2026-10-21T09:00:00+02:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ai integration, ai integration consultant, ai implementation, ai consulting, ai integration services]
 service: /ai-integration
 service_label: AI integration for regulated industries
@@ -15,6 +15,14 @@ pair: [hu/ai-fejleszto-partner-valasztasa, de/ki-dienstleister-auswaehlen]
 Before you hire an AI integration partner, prepare five things: one workflow described by the people who do it, a baseline of how it performs today, the data and systems the AI may touch, the decisions a person must keep, and the measure that would make a pilot worth continuing. With those, a first conversation produces a scoped proposal instead of a demo.
 
 This article is the preparation checklist I wish every company brought to the first call, the questions worth asking any partner, and the red flags I would watch for. The tone is practical; the pitch, such as it is, comes at the end.
+
+## In short: what to prepare before hiring an AI integration partner
+
+- **Bring five things:** one workflow described by the people who do it, a baseline, the data and systems the AI may touch, the decisions a person keeps, and the measure that decides whether a pilot continues.
+- **A baseline is:** time per case, error rate and waiting time, taken from your own records before any partner is hired.
+- **Do not share yet:** passwords, customer data or confidential material. An anonymised one-page description of the workflow is enough for a first conversation.
+- **A good first conversation ends with:** a bounded problem, a draft of access and review rules, a decision on whether to prototype, and a statement of what the prototype must prove.
+- **Why outside help is common:** in 2025, 19.95% of EU enterprises used AI technologies, and among enterprises that considered AI but did not use it, lack of relevant expertise was the reason given most often (70.89%), ahead of unclear legal consequences (52.52%) (Eurostat, data extracted December 2025).
 
 ## Why does preparation change the quality of proposals?
 
@@ -46,7 +54,7 @@ Which measure decides whether the pilot continues: task completion, review effor
 
 ### 6. Your constraints
 
-Languages, regulated data, accessibility requirements, procurement rules, and your exposure to the EU AI Act. For orientation: the Article 50 transparency duties apply from 2 August 2026, and after the Digital Omnibus (Regulation (EU) 2026/1744) the Annex III high-risk obligations apply from 2 December 2027 (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21). Not legal advice; which category your system falls into is a question for your counsel.
+Languages, regulated data, accessibility requirements, procurement rules, and your exposure to the EU AI Act. For orientation: the Article 50 transparency duties apply from 2 August 2026, and after the Digital Omnibus (Regulation (EU) 2026/1744) the Annex III high-risk obligations apply from 2 December 2027, dates the European Commission’s AI Act page confirms (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21). Not legal advice; which category your system falls into is a question for your counsel.
 
 ## Questions to ask an AI integration partner
 
@@ -59,6 +67,17 @@ Languages, regulated data, accessibility requirements, procurement rules, and yo
 7. Which of your past projects is closest to ours, and what exactly was your role in it?
 8. How do you handle our data during the prototype?
 
+: Questions to ask an AI integration partner: what a good answer contains and what should warn you
+| Question to ask | A good answer | A warning sign |
+|---|---|---|
+| What would you test before building anything? | Names your workflow, representative examples and what the prototype must prove | A demo before any question about your workflow |
+| How do you evaluate quality on our own examples? | A set of your cases with expected results, compared with your baseline | Success promised before a baseline exists |
+| What happens when the output is wrong, empty or late? | Describes the review step, the failure states and the way back | No answer on failure states |
+| Who owns it after hand-over, and how do we stop it? | A named owner on your side who can pause the pilot or roll it back | No named owner after hand-over |
+| What will you not do? | A written “not in scope” list | A proposal that names a model before it names your task |
+| Which past project is closest, and what was your role? | Role and boundaries stated, including what was not shipped | A logo list with no role named |
+| How do you handle our data during the prototype? | Approved, anonymised examples and an agreed sharing method | A request for passwords or raw customer data up front |
+
 Question seven is the one most portfolios answer vaguely. Mine states role and boundaries on every case page, including what was not shipped, because that is the information you need to compare partners.
 
 ## Red flags
@@ -70,6 +89,10 @@ These are opinions from experience, not rules.
 - Success promised before a baseline exists.
 - No named owner after hand-over.
 - A proposal that names a model before it names your task.
+
+## Who should be in the first conversation from your side?
+
+Three roles are enough: the person who owns the workflow and can decide, someone who does the task every day and can describe its inputs and exceptions, and whoever approves access to the systems and data. If the workflow touches customers or regulated data, add your compliance contact or counsel early. A first call with only a sponsor and no one who does the work usually ends with a demo request.
 
 ## What I look for in a project
 
@@ -108,3 +131,8 @@ Every engagement is scoped to the workflow, the data and the integrations, so th
 ## Where to start
 
 Bring the workflow, who uses it, the systems and data involved, and what success would look like. That is enough for a [first conversation](/contact), and it is the difference between a proposal and a demo.
+
+## Sources
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat Statistics Explained, data extracted December 2025, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026

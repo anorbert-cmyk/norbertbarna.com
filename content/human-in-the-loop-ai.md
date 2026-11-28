@@ -4,7 +4,7 @@ description: "Human-in-the-loop AI patterns that hold up in review: labels, edit
 lang: en
 slug: human-in-the-loop-ai
 date: 2026-10-21T09:00:00+02:00
-updated: 2026-10-21T09:00:00+02:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [human in the loop ai, ai integration, ai product design, regulated industries, eu ai act, human oversight]
 service: /ai-integration
 service_label: AI integration for regulated industries
@@ -15,6 +15,14 @@ pair: [de/human-in-the-loop-ki, hu/human-in-the-loop-emberi-felugyelet]
 Human-in-the-loop AI means a person reviews, edits or approves what the system proposes before it has an effect, and can override or stop it. In a regulated product that is not a checkbox at the end of the project. It is a set of interface decisions made on day one: what the AI may suggest, what a person must check, how the person sees why, and what happens when the output is wrong.
 
 This article describes seven patterns that held up in review in two products I worked on: AI features in Instructure’s learning platform, and an AI-based prediction-market MVP called SportsGambit. The examples come from those projects; the conclusions are mine.
+
+## In short: human-in-the-loop AI in five facts
+
+- **Definition:** human-in-the-loop AI is a workflow in which the system proposes and a person reviews, edits or approves each consequential output before it takes effect.
+- **The test:** a person is in the loop only if three things hold: they can see that AI was involved, they can change or reject the output, and the decision is recorded.
+- **The decision rule:** choose human in the loop when a wrong output would reach a customer, move money or affect a person’s rights. Human on the loop is enough only where an error is cheap and someone sees it afterwards.
+- **The law:** Article 14 of the EU AI Act (Regulation (EU) 2024/1689) requires that high-risk AI systems can be “effectively overseen by natural persons” while in use, including the ability to override the output and to interrupt the system through a “stop” button or a similar procedure.
+- **The dates:** according to the European Commission, the AI Act’s transparency rules apply from 2 August 2026, the rules for Annex III high-risk use cases from 2 December 2027, and those for high-risk systems embedded in regulated products (Annex I) from 2 August 2028.
 
 ## What does human-in-the-loop AI mean, and what does it not?
 
@@ -35,6 +43,15 @@ Article 14 of the EU AI Act requires that high-risk AI systems be designed so th
 On timing: the Digital Omnibus on AI (Regulation (EU) 2026/1744, in force since 27 July 2026) moved the Annex III high-risk obligations to 2 December 2027 and the Annex I obligations to 2 August 2028. The Article 50 transparency duties, such as telling people they are interacting with an AI system, still apply from 2 August 2026 (sources: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), accessed 2026-10-21).
 
 This is a design reading of the text, not legal advice. Whether your system is high-risk is a question for your counsel. What I can say from shipped work is that each of the five oversight abilities in Article 14 maps to an interface decision, and the rest of this article is those decisions.
+
+: Article 14(4) of the EU AI Act: the five oversight abilities and the interface decision behind each
+| Ability in Article 14(4) | Interface decision | Pattern below |
+|---|---|---|
+| (a) Understand capacities and limitations, monitor operation | Label every AI output; show the empty, late and error states | 1 and 4 |
+| (b) Remain aware of automation bias | Show confidence and track record; keep a deliberate review step | 5 |
+| (c) Interpret the output correctly | Show signals and sources before the suggestion | 2 |
+| (d) Decide not to use, disregard, override or reverse the output | Editable, undoable outputs with draft, reviewed and published states | 3 |
+| (e) Intervene or interrupt through a “stop” button or similar | Feature flag and a named owner who can pause or roll back | 7 |
 
 ## Seven human-in-the-loop AI patterns that hold up in review
 
@@ -89,6 +106,14 @@ Decide: who owns the stop, how fast it can happen, and what is logged for later 
 
 If these questions do not have answers yet, that is where the AI product design work starts, and human oversight is its first deliverable. In my method the second step, before anything is built, is defining access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. If you are comparing partners, [what to prepare before hiring an AI integration partner](/writing/before-hiring-an-ai-integration-partner) lists the inputs that make that conversation useful.
 
+## Who designs human oversight in an AI product?
+
+Human oversight is designed by the product team, not added by a reviewer at the end: the person responsible for the interface, with legal, compliance and data science reviewing the flows from the start. Article 14(3) of the EU AI Act splits the measures in two: those the provider builds into the system before it goes on the market, and those the provider identifies for the deployer to carry out. So if you buy an AI component, ask the vendor which oversight measures are built in and which are left to you.
+
+## What is ready at the end of the oversight design work?
+
+Before any model is connected, the design work ends with written answers to the eight questions above: what the AI may suggest and what a person must approve, the wording and place of the AI label, the review states, the screens for empty, late and wrong output, the named person who can stop the feature, and the list of what is logged. That set is what legal and compliance review, and it is what the pilot is built from. The NIST AI Risk Management Framework, a voluntary framework released on 26 January 2023, asks for the same thing in other words: trustworthiness considered in the design, development, use and evaluation of an AI product.
+
 ## What made it hard
 
 Most AI projects start with what can be automated. At Instructure we started with what must stay human. The hard part was ethical, not technical: designing for the AI being wrong, biased or misused, instead of pretending those cases would not occur. That does not make for an impressive slide deck. It makes for AI that real institutions can roll out to millions of people and still sleep at night. Details: [Instructure case study](/work/instructure).
@@ -126,3 +151,9 @@ Yes. Communication is in English or Hungarian; German-speaking teams work with m
 ## Where to start
 
 Human-in-the-loop AI is easier to design than to retrofit. The product that passes review is the one where every AI output already had a label, an edit state and a way back. Bring the workflow and the decision you are worried about, and [we start there](/contact).
+
+## Sources
+
+- [Article 14: Human oversight](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), AI Act Service Desk, European Commission, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
+- [AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), National Institute of Standards and Technology (NIST), AI RMF 1.0 released 26 January 2023, accessed 28 November 2026
