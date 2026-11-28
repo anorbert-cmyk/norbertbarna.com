@@ -431,6 +431,9 @@ app.use(
       if (path.basename(filePath) === "feed.xml") {
         res.setHeader("Content-Type", "application/rss+xml; charset=utf-8");
         res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+        // Feeds are for readers, not search results: without this Search
+        // Console lists them as "Crawled - currently not indexed".
+        res.setHeader("X-Robots-Tag", "noindex");
       }
     },
   })

@@ -436,6 +436,7 @@ try {
     assert(feed.ok, `${feedPath} returned ${feed.status}`);
     assert(/^application\/rss\+xml/.test(feed.headers.get("content-type") || ""), `${feedPath} must be served as RSS`);
     assert(cacheDirectives(feed.headers.get("cache-control") || "").has("must-revalidate"), `${feedPath} must revalidate`);
+    assert(/\bnoindex\b/.test(feed.headers.get("x-robots-tag") || ""), `${feedPath} must send X-Robots-Tag: noindex`);
     assert((await feed.text()).includes("<rss version=\"2.0\""), `${feedPath} is not an RSS 2.0 document`);
   }
   for (const sourcePath of ["/content/human-in-the-loop-ai.md", "/content/", "/Content/ceges-weboldal-ara.md"]) {
