@@ -11,13 +11,17 @@ The aim is to be cited by ChatGPT, Google AI Mode, Perplexity and similar answer
 
 ## Taking a measurement
 
-The engines are reached through the Monid connector, so a measurement runs from a Claude session, not from CI. One full run is 270 calls and costs about 0.90 USD.
+The engines are reached through the Monid connector, so a measurement runs from a Claude session, not from CI. One full run of the first three engines is 270 calls and costs about 0.90 USD; Gemini adds about 0.04 USD and Claude about 2.1 USD for 78 questions.
 
 | Engine | Monid provider and endpoint | Input |
 | --- | --- | --- |
 | Google AI Mode | `litescrape` `/google/ai-mode` | `q`, `hl`, `gl` (hu/hu, en/us, de/de) |
 | ChatGPT (signed out, web search on) | `cloro` `/chatgpt/ask` | `prompt`, `country` (HU, US, DE) |
 | Perplexity (sonar) | `dataforseo` `/ai/perplexity-response` | `user_prompt`, `model_name: sonar`, `max_output_tokens: 400`, `web_search_country_iso_code` |
+| Gemini (consumer app, logged out) | `cloro` `/gemini/ask` (async) | `prompt`, `country` (HU, US, DE) |
+| Claude with web search | `dataforseo` `/ai/claude-response` | `user_prompt`, `model_name: claude-haiku-4-5`, `max_output_tokens: 1024`, `web_search: true`, `force_web_search: true`, `web_search_country_iso_code` US or DE (Hungary is not accepted: leave it out) |
+
+Claude: do not use the larger models for this. They skipped the forced web search in most calls, cut off at 600 tokens, and cost about three times as much. Haiku with 1024 tokens searched every time at about 0.026 USD per call. The 2026-11-28 run asked Claude only the 78 non-brand questions.
 
 Each call is stored as one small JSON file `<id>.<engine>.json` with `id`, `engine`, `ok`, `cited` (every cited URL, exact), `answer`. Then:
 

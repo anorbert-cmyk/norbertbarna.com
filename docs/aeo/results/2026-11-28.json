@@ -1,0 +1,2182 @@
+{
+ "measured": "2026-11-28",
+ "engines": [
+  "gemini",
+  "claude"
+ ],
+ "missing": [
+  "hu-27.claude",
+  "hu-28.claude",
+  "hu-29.claude",
+  "hu-30.claude",
+  "en-27.claude",
+  "en-28.claude",
+  "en-29.claude",
+  "en-30.claude",
+  "de-27.claude",
+  "de-28.claude",
+  "de-29.claude",
+  "de-30.claude"
+ ],
+ "records": [
+  {
+   "id": "de-01",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.moersbergerit.de/artikel-firmen-website-kosten-2026.html",
+    "https://evolix-media.de/blog/website-kosten/",
+    "https://kunden-navigator.de/blog/was-kostet-eine-website",
+    "https://www.takeoffpr.com/blog/was-kostet-eine-website"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Kosten für eine Website für Unternehmen in 2026 hängen stark vom Umfang und der Komplexität ab:\n\n## Einmalige Kosten (Erstellung)\n\n**Einfache Websites:**\n- Ein professioneller One-Pager kostet 2026 typisch zwischen 800 und 2.500 €\n\n**Standard-Unternehmenswebsites:**\n- Eine Unternehmenswebsite mit 5–15 Seiten kostet 2026 bei einer Agentur 4.400 bis 8.100 Euro, beim Freelancer 2.450 bis 5.100 Euro\n- Für die meisten kleinen Unternehmen liegt der realistische Festpreis bei 4.500 bis 12.000 €\n\n**Komplexe Lösungen:**\n- Individuelle Agentur-Website: 15.000–30.000 € und mehr\n- Komplexe Websites mi"
+  },
+  {
+   "id": "de-01",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://maxpruegner.com/webdesign-preise/",
+    "https://hc-digital.de/blog/was-kostet-eine-professionelle-website-2026",
+    "https://sefdigital.de/2026/11/15/website-erstellen-lassen-kosten/",
+    "https://bumblebits.de/website-erstellen/website-kosten-2026-was-kostet-eine-website-wirklich/",
+    "https://www.webfeinschliff.de/ratgeber/was-kostet-eine-website/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Eine professionelle Unternehmenswebsite kostet im Jahr 2026 in Deutschland in der Regel zwischen 1.500 € und 12.000 € (netto) für die Erstellung, zuzüglich 10 € bis 150 € monatlich für den laufenden Betrieb. Der genaue Preis hängt vor allem davon ab, ob ein Baukasten, ein Freelancer oder eine Agentur beauftragt wird und welchen Funktionsumfang die Seite benötigt.\n\nEinmalige Erstellungskosten im Überblick\n\nWebsite-Typ / Umfang\nBaukasten (DIY)\nFreelancer\nWebdesign-Agentur\nOnepager / Visitenkarte (1 Seite, Basis-Infos, Kontakt)\n0 € (Eigenleistung)\n500 – 2.000 €\n1.500 – 4.000 €\nKleine Unternehmens"
+  },
+  {
+   "id": "de-02",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.webwide.de/de/blog/baukasten-vs-individuelle-webentwicklung",
+    "https://www.wvnderlab.com/baukasten-oder-individuelles-webdesign/",
+    "https://justsimplify.de/blog/baukasten-oder-eigene-website/",
+    "https://adeska.de/wissen-ratgeber/baukasten-oder-individuelles-webdesign/",
+    "https://webseite.hamburg/wissen/website-baukasten-oder-eigene-website",
+    "https://huntercloser.de/entscheidungshilfen/website-baukasten-oder-individuelle-website",
+    "https://nakaryu.de/website/wann-sich-ein-website-baukasten-lohnt-und-wann-nicht/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Wahl hängt stark von Ihren spezifischen Anforderungen ab. Hier ist eine Übersicht:\n\n## Website-Baukasten – die richtige Wahl, wenn:\n\nKleine Unternehmen mit begrenztem Budget und Zeitmangel eine kostengünstige und schnelle Möglichkeit benötigen, online präsent zu sein. Ein Baukasten ist sinnvoll für eine kleine, klar abgegrenzte Website mit wenigen Seiten, wenig Pflegeaufwand und ohne besondere Funktionen.\n\n**Konkrete Szenarien:**\n- Ihre Website ist vor allem eine digitale Visitenkarte mit Adresse, Öffnungszeiten und ein paar Fotos\n- Kleine lokale Unternehmen, einfache Portfolios oder erste"
+  },
+  {
+   "id": "de-02",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Für ein kleines Unternehmen ist die Wahl zwischen einer individuellen Website und einem Website-Baukasten (wie Wix, Jimdo oder Squarespace) eine der wichtigsten Weichenstellungen. Beide Wege haben klare Vor- und Nachteile in Bezug auf Kosten, Zeitaufwand und Flexibilität.\n\n1. Website-Baukasten (SaaS-Lösungen)\n\nBaukasten-Systeme eignen sich hervorragend für den schnellen, unkomplizierten Start ohne Programmierkenntnisse.\n\nVorteile:\n\nGeringe Einstiegskosten & hohe Planungssicherheit: Du zahlst monatliche Fixgebühren (meist zwischen 10 und 40 Euro), in denen Hosting, Sicherheitszertifikate (SSL) "
+  },
+  {
+   "id": "de-03",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.bluetheweb.de/blue-blog/website-relaunch/",
+    "https://www.tauch-auf.de/website-ueberarbeiten-oder-neu-erstellen/",
+    "https://www.clarity-webdesign.com/post/website-ueberarbeiten-lassen-oder-neu-erstellen",
+    "https://trendship-jz.com/ratgeber/website-relaunch-wann-lohnt-sich.html",
+    "https://dare-solutions.de/website-uberarbeiten-lassen/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Hier ist eine Orientierungshilfe zur Entscheidung zwischen Website-Relaunch und Überarbeitung:\n\n## Die grundsätzliche Unterscheidung\n\n**Überarbeitung:** Technik und Struktur sind solide, aber Texte, Bilder oder einzelne Seiten sind veraltet. Hier genügt oft ein Update von Inhalten, Design-Details und Ladezeit.\n\n**Relaunch:** System, Seitenstruktur oder Design passen grundsätzlich nicht mehr. Dann ist ein Neuaufbau sinnvoller als viele kleine Reparaturen.\n\n## Wann reicht eine Überarbeitung?\n\nEine Überarbeitung ist sinnvoll, wenn Angebot, Zielgruppe und grundlegender Aufbau noch passen und die t"
+  },
+  {
+   "id": "de-03",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Entscheidung zwischen einem kompletten Relaunch (Neubau von Grund auf) und einer gezielten Überarbeitung (Redesign/Optimierung des Bestehenden) hängt vor allem vom technischen Zustand der aktuellen Website, den Zielen und dem Budget ab.\n\nHier sind die wichtigsten Kriterien als Entscheidungshilfe:\n\nDirektvergleich: Überarbeitung vs. Relaunch\n\nKriterium\nÜberarbeitung (Redesign / Refresh)\nKompletter Relaunch\nTechnisches Fundament\nDas CMS (z. B. WordPress) ist aktuell, schnell und sicher.\nVeraltetes System, Sicherheitslücken, langsame Ladezeiten oder kein Support mehr.\nStruktur & Inhalte\nSeite"
+  },
+  {
+   "id": "de-04",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://leosa.de/barrierefreie-website-bfsg/",
+    "https://frame-for-business.de/blog/website-barrierefreiheit-bfsg-anforderungen/",
+    "https://www.netprofit.de/blog/bfsg-webseiten.html",
+    "https://www.ihk.de/stuttgart/fuer-unternehmen/recht-und-steuern/it-recht/barrierefreie-webseiten-6200594"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ob Ihre Website nach dem BFSG barrierefrei sein muss, hängt davon ab, ob Sie unter das Gesetz fallen:\n\n## Wer ist betroffen?\n\nDas BFSG gilt für bestimmte Produkte und Dienstleistungen für Verbraucher. Eine allgemeine Unternehmenswebsite ohne Verkaufs- oder Buchungsfunktion fällt nicht automatisch unter das BFSG, aber ein Online-Shop, der über die Website Waren verkauft, ist erfasst.\n\n**Ausnahmen:**\nKleinstunternehmen mit weniger als 10 Mitarbeitern und einem Jahresumsatz von weniger als 2 Millionen Euro sind von den Anforderungen ausgenommen. Diese Ausnahme gilt jedoch nur für Dienstleistungen"
+  },
+  {
+   "id": "de-04",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.dkd.de/de/leistungen/beratung/digitale-barrierefreiheit/wer-muss-barrierefrei-sein-verpflichtungen-nach-dem-bfsg-2025/",
+    "https://www.srd-rechtsanwaelte.de/blog/barrierefreiheitsstaerkungsgesetz-bfsg-neue-pflichten-fuer-unternehmen-ab-28-juni-2025",
+    "https://www.barrierefreiheit-dienstekonsolidierung.bund.de/Webs/PB/DE/gesetze-und-richtlinien/barrierefreiheitsstaerkungsgesetz/barrierefreiheitsstaerkungsgesetz-node.html",
+    "https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz/FAQ/faq_node",
+    "https://www.ihk.de/schwaben/produktmarken/recht-und-steuern/onlinerecht/barrierefreiheitsstaerkungsgesetz-6292836",
+    "https://www.webfeinschliff.de/ratgeber/website-barrierefreiheit/",
+    "https://www.ihk.de/stuttgart/fuer-unternehmen/recht-und-steuern/it-recht/barrierefreie-webseiten-6200594"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ob deine Website nach dem Barrierefreiheitsstärkungsgesetz (BFSG) barrierefrei sein muss, hängt im Wesentlichen von zwei Faktoren ab: Was bietest du an? und Wie groß ist dein Unternehmen?\n\nEntgegen einer weitverbreiteten Annahme sind nicht alle Webseiten pauschal betroffen. Hier ist die genaue Unterscheidung:\n\n1. Wann muss deine Website barrierefrei sein?\n\nDas BFSG gilt vor allem für digitale Angebote, die sich an Verbraucher (Endkunden / B2C) richten und Verträge im elektronischen Geschäftsverkehr ermöglichen. Deine Website muss barrierefrei sein, wenn sie Folgendes beinhaltet:\n\nOnline-Shops "
+  },
+  {
+   "id": "de-05",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.ihk.de/meo/recht-und-steuern/steuerrecht/downloads/beitraege/barrierefreiheitsgesetz-6359242",
+    "https://www.ihk.de/berlin/service-und-beratung/recht-und-steuern/informationsseite-bfsg-6451846",
+    "https://datenschutz-generator.de/bfsg-ratgeber/",
+    "https://bfsg-gesetz.de/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Das Barrierefreiheitsstärkungsgesetz (BFSG) gilt für verschiedene Arten von Unternehmen:\n\n## Betroffene Unternehmenstypen\n\nDas BFSG betrifft Hersteller, Händler und Importeure von bestimmten Produkten sowie Dienstleistungserbringende für Verbraucherinnen und Verbraucher.\n\nDas betrifft viele Unternehmen – besonders in der Digitalbranche, im Handel und im Dienstleistungsbereich.\n\n## Geltungsbereich\n\nDas BFSG gilt ausschließlich für Unternehmen, die in Deutschland tätig sind oder digitale Produkte und Dienstleistungen in Deutschland anbieten.\n\nDas Barrierefreiheitsstärkungsgesetz gilt für digital"
+  },
+  {
+   "id": "de-05",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barrierefreiheit-dienstekonsolidierung.bund.de/Webs/PB/DE/gesetze-und-richtlinien/barrierefreiheitsstaerkungsgesetz/barrierefreiheitsstaerkungsgesetz-node.html",
+    "https://www.ihk.de/aschaffenburg/recht/internetrecht/barriere-6445858",
+    "https://www.bundesfachstelle-barrierefreiheit.de/DE/Barrierefreiheitsstaerkungsgesetz/FAQ/faq_node",
+    "https://www.ihk.de/schwaben/produktmarken/recht-und-steuern/onlinerecht/barrierefreiheitsstaerkungsgesetz-6292836",
+    "https://www.ihk.de/bremen-bremerhaven/branchen/handel/bfsg-pflichten-unternehmen-barrierefreiheit-6497340",
+    "https://bfsg-gesetz.de/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Das Barrierefreiheitsstärkungsgesetz (BFSG), das seit dem 28. Juni 2025 gilt, betrifft privatwirtschaftliche Unternehmen, die bestimmte Produkte oder Dienstleistungen für Verbraucher (B2C) anbieten. Es gilt für Hersteller, Händler, Importeure und Dienstleistungserbringer, sofern deren Angebote in den gesetzlichen Anwendungsbereich (§ 1 BFSG) fallen.\n\n1. Betroffene Unternehmensbereiche\n\nDas Gesetz unterscheidet zwischen konkreten Produkten und digitalen oder verbrauchernahen Dienstleistungen:\n\nE-Commerce und Online-Handel: Unternehmen, die Online-Shops betreiben oder über Websites und mobile Ap"
+  },
+  {
+   "id": "de-06",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://refa.de/ki-am-arbeitsplatz/ki-glossar/human-in-the-loop-hitl",
+    "https://www.lizzy-ai.com/de/ki-recruiting/human-in-the-loop",
+    "https://ai-handwerk.de/glossar/was-bedeutet-human-in-the-loop-hitl-ki-menschliche-freigabe/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "\"Human in the Loop\" (HITL) ist eine Umschreibung für die Einbindung des Menschen in die (Lern-)Schleifen eines KI-Modells.\n\n## Kernidee\n\nDer Mensch ist dabei fester Teil des Entscheidungsablaufs eines KI-Systems: Die KI schlägt vor, der Mensch prüft, korrigiert oder entscheidet. Der Mensch nimmt dabei eine aktive Rolle als Trainer eines KI-Systems oder als Kontroll- und Entscheidungsinstanz ein.\n\n## Praktische Umsetzung\n\nEin Mensch bleibt fester Teil des Ablaufs und prüft jede Aktion des Systems, gibt sie frei, ändert oder stoppt sie, bevor sie wirkt. Ein konkretes Beispiel: Ein Sprachmodell o"
+  },
+  {
+   "id": "de-06",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Human-in-the-Loop (oft als HITL abgekürzt) bedeutet, dass bei der Entwicklung, dem Training oder der Anwendung von Künstlicher Intelligenz (KI) Menschen aktiv in den Prozess eingebunden sind. Die KI arbeitet also nicht völlig autonom, sondern wird von Menschen überwacht, korrigiert oder unterstützt.\n\nWarum wird Human-in-the-Loop eingesetzt?\n\nQualität und Genauigkeit: KIs machen Fehler oder \"halluzinieren\" manchmal Fakten. Menschen überprüfen die Ergebnisse, korrigieren Fehler und sorgen dafür, dass die Daten verlässlich bleiben.\n\nSicherheit und Ethik: Besonders in sensiblen Bereichen hilft der"
+  },
+  {
+   "id": "de-07",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.ventum-consulting.com/news/ki-einfuehrung-kmu-mittelstand/",
+    "https://sensified.ai/ki-implementierung-im-mittelstand-leitfaden-2026/",
+    "https://oit.digital/knowledge/ki-implementierung-mittelstand/",
+    "https://ki-spezial.systems/blog/ki-mittelstand-einfuehren.html",
+    "https://www.wik.org/veroeffentlichungen/veroeffentlichung/kurzstudie-implementierung-von-ki-im-mittelstand-die-verfuegbarkeit-von-trainingsdaten-und-foerderung-offener-datenstrukturen",
+    "https://www.patrickschoekel.com/ki-einfuehrung-mittelstand",
+    "https://www.agitano.com/ki-implementierung-mittelstand/165524"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Einführung von KI im Mittelstand ist ein strukturiertes Vorgehen, das über den reinen Technologiekauf hinausgeht. Hier sind die wichtigsten Schritte:\n\n## Grundprinzipien\n\nDie KI-Einführung im Mittelstand gelingt nicht durch den Kauf eines Tools – sondern durch eine strukturierte Kombination aus Bedarfsanalyse, Strategieentwicklung, Pilotierung und Skalierung. KI-Implementierung umfasst drei Ebenen: erstens die Identifikation eines tragfähigen Use Cases, zweitens die technische Umsetzung inklusive Datenanbindung und drittens den stabilen Betrieb mit Monitoring, Security und Compliance.\n\n## "
+  },
+  {
+   "id": "de-07",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Einführung von Künstlicher Intelligenz (KI) im Mittelstand gelingt am besten schrittweise und strategisch. Da kleine und mittlere Unternehmen (KMU) oft über begrenzte Ressourcen verfügen, ist ein fokussierter Ansatz entscheidend, um schnell einen echten Mehrwert zu erzeugen.\n\nHier ist ein bewährter Leitfaden für die erfolgreiche KI-Einführung:\n\n1. Strategie und Anwendungsfälle definieren\n\nStatt KI einzuführen, „nur weil es alle tun“, sollten Sie konkrete unternehmerische Probleme lösen.\n\nProzessanalyse: Untersuchen Sie, wo im Unternehmen repetitive Aufgaben, Zeitfresser oder Datenengpässe "
+  },
+  {
+   "id": "de-08",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.christelixautomation.de/2026/07/23/ki-automatisierung-im-unternehmen-starten-christelix-automation/",
+    "https://peter-kaczmarek.de/wissen/ki-automatisierung-mittelstand",
+    "https://frontierx.ch/wissen/ki-automatisierung-starten/",
+    "https://omr.com/de/reviews/contenthub/ki-prozessautomatisierung",
+    "https://nextki-agentur.de/blog/ki-prozessautomatisierung/",
+    "https://da-gesellschaft.de/wissen/ki-automatisierung-fuer-unternehmen"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Basierend auf aktuellen Best-Practice-Empfehlungen sollte ein Unternehmen bei der KI-Automatisierung nach einem strukturierten Ansatz vorgehen:\n\n## 1. **Mit einem konkreten Prozess starten, nicht mit einem Tool**\n\nDer beste Einstieg beginnt nicht mit einem Tool, sondern mit einem wiederkehrenden Problem. Mit dem Tool anzufangen statt mit dem Prozess ist ein häufiger Fehler – \"Wir brauchen ChatGPT\" ist keine Strategie.\n\n## 2. **Den richtigen Prozess auswählen**\n\nEin einzelner Prozess sollte drei Bedingungen erfüllen: Er kommt regelmäßig vor, kostet spürbar Zeit und folgt einem ähnlichen Ablauf."
+  },
+  {
+   "id": "de-08",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ein Unternehmen sollte bei der KI-Automatisierung mit Prozessen beginnen, die als „Quick Wins“ gelten: Sie müssen wiederkehrend, datenbasiert, regelfinanziert und von überschaubarem Risiko sein. Das schafft schnelle Erfolge, baut internes Know-how auf und minimiert das Frustrationsrisiko.\n\nHier sind die idealen Eigenschaften für den ersten zu automatisierenden Prozess sowie konkrete Praxisbeispiele:\n\n1. Kriterien für den idealen Startprozess\n\nHohes Volumen & Zeitersparnis: Der Prozess nimmt aktuell viel manuelle Arbeitszeit in Anspruch.\n\nStrukturierte oder leicht fassbare Daten: Die Eingabedat"
+  },
+  {
+   "id": "de-09",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://dnd-systems.de/wissen/ki-dsgvo-konform-einsetzen-unternehmen",
+    "https://mprotect365.de/datenschutz/ki",
+    "https://decode.agency/de/article/ki-dsgvo-konform-einfuhren/",
+    "https://dnd-systems.de/wissen/ki-dsgvo-konform-einsetzen",
+    "https://dnd-systems.de/wissen/dsgvo-konforme-ki-tools-fuer-unternehmen",
+    "https://dnd-systems.de/wissen/ki-datenschutz-dsgvo-leitfaden-unternehmen",
+    "https://da-gesellschaft.de/wissen/ki-automatisierung-datenschutz"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Hier sind die wichtigsten Punkte für den DSGVO-konformen Einsatz von KI im Unternehmen:\n\n## Grundprinzipien\n\nDie DSGVO verbietet den Einsatz von Künstlicher Intelligenz nicht grundsätzlich, verlangt jedoch eine klare Kontrolle darüber, wohin personenbezogene Daten fließen, wer Zugriff darauf erhält und wofür sie verwendet werden. Prinzipien wie Rechtmäßigkeit, Transparenz, Zweckbindung, Datenminimierung und Integrität müssen eingehalten und nachweisbar umgesetzt werden.\n\n## Auswahl der richtigen KI-Variante\n\nÖffentliche KI-Tools eignen sich für allgemeine Textarbeit ohne Personenbezug, etwa Id"
+  },
+  {
+   "id": "de-09",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.spruck-it.de/ratgeber/dsgvo-konforme-ki-unternehmen",
+    "https://mhl.de/de/wissen/ki-dsgvo.php",
+    "https://live.handelsblatt.com/ki-und-datenschutz-so-nutzen-sie-ki-systeme-dsgvo-konform/",
+    "https://www.ihk-muenchen.de/ratgeber/recht/datenschutz/ki/",
+    "https://www.ihk.de/bayreuth/hauptnavigation/service/recht/allgemeine-rechtsthemen/ki-im-unternehmen-rechtssichere-einsetzen-ein-leitfaden-7002148"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Um Künstliche Intelligenz (KI) DSGVO-konform im Unternehmen einzusetzen, reicht ein einzelnes Häkchen in den Einstellungen nicht aus – entscheidend ist die gesamte Verarbeitungskette aus Technik, Verträgen und internen Regeln.\n\n1. Die richtige technische Basis wählen\n\nKeine kostenlosen Privat-Accounts: Verbieten Sie die geschäftliche Nutzung von kostenlosen oder privaten KI-Konten (z. B. ChatGPT Free). Dort fließen Eingaben oft in das Modelltraining ein.\n\nBusiness-/Enterprise-Tarife oder APIs nutzen: Setzen Sie auf geschäftliche Lizenzen (z. B. Microsoft 365 Copilot, ChatGPT Team/Enterprise, C"
+  },
+  {
+   "id": "de-10",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://lumdona.de/blog/kundendaten-in-chatgpt",
+    "https://inrema.de/themen/kundendaten-in-ki-tools-eingeben/",
+    "https://www.inrema.de/wissen/digitalisierung-ki/ki-und-datenschutz-was-mitarbeiter-wissen-muessen-bevor-sie-kundendaten-eingeben/",
+    "https://www.ratgeberrecht.eu/aktuell/darf-ich-kundendaten-in-chatgpt-eingeben/",
+    "https://easyrechtssicher.de/blog/ki-und-datenschutz",
+    "https://www.geraldb.at/artikel-datenschutz.html"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Antwort ist differenziert und hängt stark davon ab, welche Version von ChatGPT Sie nutzen:\n\n## Kostenlose Version und ChatGPT Plus\n\nIn der kostenlosen Version und in ChatGPT Plus dürfen Sie keine Kundendaten eingeben — das ist bei personenbezogenen Daten in der Regel ein DSGVO-Verstoß. Die Eingabe von Kundendaten in KI-Tools ist in aller Regel ein DSGVO-Verstoß, weil kein Auftragsverarbeitungsvertrag besteht und Eingaben zur Modellverbesserung genutzt werden können.\n\n## Business-Versionen (Team/Enterprise)\n\nMit einem Business-Account (ChatGPT Team oder Enterprise) und abgeschlossenem AVV i"
+  },
+  {
+   "id": "de-10",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Generell nein in der kostenlosen Version, aber unter bestimmten Voraussetzungen in den Business- und Enterprise-Tarifen.\n\nHier sind die wichtigsten Aspekte für den datenschutzkonformen Umgang:\n\nKostenlose Version und ChatGPT Plus: Gib hier keine echten Kundendaten (wie Namen, Adressen, E-Mail-Adressen oder sensible Geschäftszahlen) ein. Standardmäßig werden Eingaben in diesen Versionen zum Trainieren der KI verwendet, was im Rahmen der Datenschutzgrundverordnung (DSGVO) ohne ausdrückliche Einwilligung der Kunden unzulässig ist.\n\nChatGPT Team, Enterprise & API: In diesen kostenpflichtigen Unter"
+  },
+  {
+   "id": "de-11",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://refa.de/ki-am-arbeitsplatz/ki-glossar/halluzinationen",
+    "https://www.onlinesolutionsgroup.de/blog/glossar/h/halluzination-ki/",
+    "https://www.computerweekly.com/de/definition/KI-Halluzination",
+    "https://gerlinger.ai/lexikon/halluzination",
+    "https://mava-digital.de/ai-lexikon/halluzination/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "## Was sind KI-Halluzinationen?\n\nKI-Halluzinationen bezeichnen Antworten einer KI, die zwar plausibel oder überzeugend klingen, aber inhaltlich falsch, erfunden oder irreführend sind. Sie entstehen, wenn ein Sprachmodell wahrscheinliche Wörter zu einer Antwort verbindet, ohne die Aussage zuverlässig anhand belastbarer Daten zu prüfen.\n\n### Ursachen von KI-Halluzinationen\n\nHalluzinationen können auftreten, wenn die Trainingsdaten schlecht, falsch oder unvollständig sind, oder wenn der vom Nutzer bereitgestellte Prompt unklar, inkonsistent oder widersprüchlich ist. Eine Halluzination entsteht be"
+  },
+  {
+   "id": "de-11",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "KI-Halluzinationen (auch künstliche Halluzinationen genannt) beschreiben ein Phänomen, bei dem ein Sprachmodell (LLM) falsche, erfundene oder völlig aus der Luft gegriffene Informationen erzeugt, diese aber mit absoluter Überzeugung und Plausibilität darstellt.\n\nDas Modell hat dabei keinen „Faktencheck“ im Hintergrund, sondern generiert Wörter basierend auf Wahrscheinlichkeiten. Wenn es eine Lücke in seinem Wissen gibt, füllt es diese statistisch passend, statt zuzugeben, dass es die Antwort nicht kennt.\n\nWie verhindert man KI-Halluzinationen im Unternehmen?\n\nUm das Risiko von Halluzinationen "
+  },
+  {
+   "id": "de-12",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.sophiehundertmark.com/wann-macht-ki-im-kundenservice-sinn/",
+    "https://florschuetz-consulting.de/automatisierung-kundenservice-ki/",
+    "https://www.business-wissen.de/artikel/servicemanagement-ki-strategie-im-kundenservice/",
+    "https://it-dock.de/blog/ki-und-automation/ki-kundenservice/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "KI im Kundenservice lohnt sich unter bestimmten Bedingungen. Hier sind die wichtigsten Faktoren:\n\n## Ideale Einsatzbereiche\n\nStandardisierte Prozesse wie Terminvereinbarungen oder Statusabfragen eignen sich ideal für KI. KI-Automatisierung im Kundenservice rechnet sich dann, wenn ein Unternehmen regelmäßig viele wiederkehrende Anfragen manuell bearbeitet: Bestellstatus, Lieferzeiten, Retouren, Reklamationen, Terminabstimmungen, Ersatzteile, Produktfragen oder einfache First-Level-Themen.\n\nKI im Kundenservice lohnt sich besonders für Unternehmen mit vielen wiederkehrenden Kundenanfragen, hohem "
+  },
+  {
+   "id": "de-12",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Künstliche Intelligenz (KI) im Kundenservice lohnt sich immer dann, wenn repetitive, zeitaufwendige Standardanfragen den menschlichen Support überlasten und gleichzeitig eine schnelle, 24/7-verfügbare Lösung gefordert ist. Der Einsatz rechnet sich ab einem bestimmten Volumen und bei klar definierten Anwendungsfällen.\n\nHier sind die wichtigsten Szenarien, in denen sich KI im Kundenservice wirtschaftlich und qualitativ auszahlt:\n\n1. Hohes Aufkommen an Standardanfragen (Hohes Ticket-Volumen)\n\nDas Szenario: Ein großer Teil des Kundenservice-Teams beschäftigt sich täglich mit denselben Fragen: „Wo "
+  },
+  {
+   "id": "de-13",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.mrak.at/ki-kennzeichnung-seit-2-august-was-artikel-50-ki-vo-tatsachlich-verlangt/",
+    "https://www.baesler-consulting.de/artikel-ki-kennzeichnungspflicht.html",
+    "https://wz-it.com/blog/ki-kennzeichnungspflicht-ai-act-artikel-50/",
+    "https://www.yagemi.de/blog/recht-compliance/ki-kennzeichnungspflicht/",
+    "https://basebox.ai/ratgeber/ki-kennzeichnungspflicht-art-50"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Artikel 50 der KI-Verordnung regelt die Kennzeichnungspflicht für KI-Inhalte. Die Norm enthält keine allgemeine Kennzeichnungspflicht für sämtliche KI-Inhalte, sondern vier klar abgegrenzte Tatbestände mit unterschiedlichen Adressaten und mehreren Ausnahmen.\n\nDie vier Hauptanforderungen sind:\n\n1. **Hinweis auf KI-Interaktion (Absatz 1):** Artikel 50 Absatz 1 verpflichtet den Anbieter, das System so zu gestalten, dass Menschen erkennen, dass sie mit einer KI sprechen – außer es ist offensichtlich.\n\n2. **Maschinenlesbare Markierung (Absatz 2):** Anbieter von KI-Systemen, die synthetische Audio-,"
+  },
+  {
+   "id": "de-13",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://die-tuev-akademie.de/blog/kennzeichnungspflicht-fuer-ki-inhalte-was-art-50-ai-act-tatsaechlich-verlangt",
+    "https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act",
+    "https://ai-act-service-desk.ec.europa.eu/de/ai-act/article-50",
+    "https://gesellschaft-datenschutz.de/ki-kennzeichnungspflicht/",
+    "https://www.ra-plutte.de/ki-kennzeichnungspflichten/",
+    "https://www.prigge-recht.de/ki-kennzeichnungspflicht/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Artikel 50 der europäischen KI-Verordnung (EU AI Act) regelt spezifische Transparenz- und Kennzeichnungspflichten, die seit dem 2. August 2026 gelten. Ziel der Vorschrift ist es, Menschen vor Täuschungen durch künstliche Intelligenz zu schützen – es gibt jedoch keine pauschale Kennzeichnungspflicht für jeden einzelnen KI-gestützten Text oder jede kleine Bildbearbeitung.\n\nDie Pflichten richten sich nach der Rolle im Umgang mit der KI (Anbieter oder Betreiber) und dem konkreten Anwendungsfall:\n\n1. Pflichten für Anbieter von KI-Systemen (Entwickler)\n\nDirekte Interaktion mit Menschen (Art. 50 Abs."
+  },
+  {
+   "id": "de-14",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://gesellschaft-datenschutz.de/ki-kennzeichnungspflicht/",
+    "https://www.prigge-recht.de/ki-kennzeichnungspflicht/",
+    "https://www.ihk.de/nordwestfalen/wirtschaftsspiegel-online/praxis-und-ratgeber/ki-kennzeichnungspflicht-unternehmen-7128394"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Antwort hängt von der Art und dem Kontext der KI-generierten Inhalte ab.\n\n## Gesetzliche Regelung\n\nAb August 2026 sind Anbieter und Betreiber von KI-Systemen dazu verpflichtet, klar zu kennzeichnen, wenn Inhalte maßgeblich durch KI erstellt wurden. Diese Regelung basiert auf dem EU AI Act (KI-Verordnung).\n\n## Wann ist eine Kennzeichnung erforderlich?\n\n**KI-generierte Texte:**\nBetreiber müssen KI-generierte oder manipulierte Texte nur dann als KI-Inhalt kennzeichnen, wenn diese die Öffentlichkeit über Angelegenheiten von öffentlichem Interesse informieren. Nutzt jemand KI lediglich als Hilf"
+  },
+  {
+   "id": "de-14",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://digitalzentrum-berlin.de/leitfaden-ki-generierte-inhalte-kennzeichnen",
+    "https://www.ihk.de/koeln/hauptnavigation/digitalisierung-und-innovation/digitalisierung/transparenzpflichten-nach-der-ki-verordnung-7100068",
+    "https://www.dqsglobal.com/de/entdecken/blog/ki-kennzeichnungspflicht-eu-ai-act",
+    "https://www.ihk.de/nordwestfalen/wirtschaftsspiegel-online/praxis-und-ratgeber/ki-kennzeichnungspflicht-unternehmen-7128394",
+    "https://www.e-recht24.de/ki/13336-ki-kennzeichnungspflicht-fuer-unternehmer.html"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ob du KI-generierte Inhalte kennzeichnen musst, hängt vor allem davon ab, wer du bist, wofür du die Inhalte nutzt und welche Art von Inhalt es ist.\n\nDie rechtlichen Vorgaben (insbesondere durch den EU AI Act) sehen hier klare Regeln vor:\n\n1. Private Nutzung\n\nWenn du KI-Inhalte rein privat für dich oder deine Freunde nutzt (z. B. ein privates Bild generierst oder dir einen Text für den Hausgebrauch schreiben lässt), gibt es keine Kennzeichnungspflicht.\n\n2. Öffentliche oder geschäftliche Nutzung (Unternehmen, Creator, Medien)\n\nWenn du KI beruflich, gewerblich oder in der Öffentlichkeit einsetzt,"
+  },
+  {
+   "id": "de-15",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://graphek.de/minimum-viable-product/",
+    "https://punktum.net/de/insights/mvp-beginn-des-richtigen/",
+    "https://www.decivo.de/de/blog/was-ist-ein-mvp"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Entwicklung eines MVP für ein reguliertes Produkt ist eine besondere Herausforderung, da hier Sicherheit und Compliance nicht verhandelbar sind. Hier sind die wichtigsten Aspekte:\n\n## Besonderheiten bei regulierten Produkten\n\nProdukte, bei denen Sicherheit oder Regulierung keine Kompromisse erlauben (wie Medizinprodukte oder Finanzdienstleistungen mit strengen Compliance-Anforderungen), sind Ausnahmen vom klassischen MVP-Ansatz.\n\n## Regulatorische Anforderungen berücksichtigen\n\nUm sicherzustellen, dass das MVP die technischen Anforderungen erfüllt und den regulatorischen Anforderungen ents"
+  },
+  {
+   "id": "de-15",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Entwicklung eines Minimum Viable Product (MVP) für ein reguliertes Produkt (wie Medizinprodukte, Fintech-Anwendungen oder Automobilkomponenten) erfordert einen anderen Ansatz als bei unregulierten Software- oder Konsumgütern. Da gesetzliche Vorgaben, Sicherheitsstandards und Compliance von Tag eins an greifen, spricht man oft von einem Minimum Viable Compliant Product (MVCP).\n\n1. Die Kernprinzipien für regulierte MVPs\n\nCompliance-by-Design: Regulatorische Anforderungen können nicht erst nach dem MVP „nachgerüstet“ werden. Das Fundament (Datenschutz, Cybersecurity, Rückverfolgbarkeit) muss "
+  },
+  {
+   "id": "de-16",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://distart.de/blog/kennzeichnungspflicht-ki-inhalte-eu-ai-act",
+    "https://chatvise.de/insights/ki-kennzeichnungspflicht-chatbot",
+    "https://sunsideai.de/blog/eu-ai-act-chatbot",
+    "https://techtalentfachinformatik.academy/wissen/ki-kennzeichnungspflicht.html"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ja, in der EU besteht eine Kennzeichnungspflicht für Chatbots. Setzt ein Unternehmen einen Chatbot oder Sprachassistenten ein, muss für die Nutzenden von der ersten Interaktion an erkennbar sein, dass sie mit einer Maschine sprechen, nicht mit einem Menschen.\n\n## Rechtliche Grundlage und Geltung\n\nArtikel 50 des EU AI Act schreibt eine Kennzeichnungspflicht für bestimmte KI-Inhalte vor. Diese Pflicht läuft bereits seit August 2026 ohne Übergangsfrist.\n\n## Anforderungen an die Kennzeichnung\n\nDer Hinweis muss von der ersten Interaktion an klar erkennbar sein, zum Beispiel: „Du sprichst mit einem "
+  },
+  {
+   "id": "de-16",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ja, prinzipiell müssen Chatbots als Künstliche Intelligenz gekennzeichnet werden.\n\nDurch das Inkrafttreten der EU-KI-Verordnung (EU AI Act) gelten klare Transparenzpflichten für den Einsatz von KI-Systemen.\n\nHier sind die wichtigsten Punkte dazu:\n\nInformationspflicht: Nutzerinnen und Nutzer müssen frühzeitig und klar darüber informiert werden, dass sie mit einer KI und nicht mit einem Menschen kommunizieren. Das gilt insbesondere für Chatbots im Kundenservice, virtuelle Assistenten oder automatisierte Support-Systeme.\n\nAusnahmen: Eine Kennzeichnung ist dann nicht erforderlich, wenn es für eine"
+  },
+  {
+   "id": "de-17",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.haufe.de/finance/steuern-finanzen/digital-omnibus-was-aendert-sich-an-der-ki-verordnung_190_691870.html",
+    "https://www.activemind.legal/guides/aenderungen-ki-verordnung/",
+    "https://krammerjahn.de/blog/digital-omnibus-ki-verordnung/",
+    "https://www.deloitte.com/de/de/issues/innovation-ai/eu-ai-act-digital-omnibus.html",
+    "https://www.bindergroesswang.at/insights/law-blog/2026/digital-omnibus-verordnung-zur-ki",
+    "https://oikonomakislaw.com/ki-verordnung-nach-dem-digital-omnibus-was-bereits-gilt-und-was-verschoben-wurde/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Der Digital Omnibus hat die Fristen der KI-Verordnung erheblich verschoben:\n\n## Hauptänderungen bei den Hochrisiko-Fristen\n\nDie Pflichten für eigenständige Hochrisiko-KI-Systeme nach Anhang III sollen nicht mehr am 2.8.2026, sondern am 2.12.2027 greifen. Sind die betroffenen Produkte nach Anhang 1 der Verordnung reguliert, bleibt sogar noch mehr Zeit, dann gilt der 2. August 2028.\n\nDie Verordnung (EU) 2026/1744 (Digital-Omnibus-Verordnung zur KI) verschiebt die Pflichten für Hochrisiko-KI-Systeme um 16 Monate.\n\n## Weitere Fristenänderungen\n\nDie Frist zur Einrichtung mindestens eines KI-Reallab"
+  },
+  {
+   "id": "de-17",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Mir liegen keine verifizierten Informationen zu einem „Digital Omnibus“-Gesetzespaket und dessen konkreten Auswirkungen auf die Fristen der EU-KI-Verordnung (AI Act) vor.\n\nFalls du dich auf ein bestimmtes EU-Gesetzesvorhaben (wie die verschiedenen Omnibus-Vereinfachungspakete der Europäischen Kommission ab 2025) beziehst oder einen konkreten Entwurfstext bzw. Artikel vorliegen hast, teile die Details oder den Text gerne hier – dann fasse ich die genauen Friständerungen für dich zusammen."
+  },
+  {
+   "id": "de-18",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.ki-beratung-unternehmen.de/ki-beratung-kosten",
+    "https://dnd-systems.de/wissen/ki-beratung-fuer-den-mittelstand-kosten",
+    "https://www.andersai.de/blog/ki-berater-kosten",
+    "https://www.ki-automatisierung-mittelstand.de/ki-beratung-kosten/",
+    "https://www.ki-mittelstand.eu/blog/ki-beratung-mittelstand-auswahl-kosten-2026",
+    "https://automated-ki-agentur.de/ki-beratung-mittelstand"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Kosten für KI-Beratung im Mittelstand hängen von mehreren Faktoren ab:\n\n## Haupteinflussfaktoren:\n\n**1. Projektumfang und Komplexität**\nDie Kosten variieren je nach Projektumfang, Komplexität und gewünschtem Ergebnis. Entscheidend sind der Umfang der Analyse und die Tiefe der strategischen Ausarbeitung, nicht allein der Stundensatz des Beraters.\n\n**2. Art der Leistung**\nEs gibt vier Preismodelle: Tagessatz, Projektpauschale, Retainer und Erfolgsbeteiligung. Die Kosten unterscheiden sich deutlich je nach Leistungstyp:\n- Tagessätze liegen zwischen 800–3.000 € pro Tag\n- Eine Potenzialanalyse "
+  },
+  {
+   "id": "de-18",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Die Kosten für eine KI-Beratung in einem mittelständischen Unternehmen (KMU) lassen sich nicht pauschal beziffern, da sie von verschiedenen individuellen Faktoren abhängen. Im Wesentlichen wird der Preis durch den Umfang des Projekts, die Tiefe der technischen Umsetzung und die Qualität bzw. Erfahrung des Beratungsunternehmens bestimmt.\n\nHier sind die zentralen Faktoren, von denen die Kosten abhängen:\n\n1. Art und Tiefe der Beratungsleistung (Projektphase)\n\nStrategieberatung & Potenzialanalyse: Geht es erst einmal darum, herauszufinden, wo im Unternehmen KI überhaupt Sinn macht (Use-Case-Identi"
+  },
+  {
+   "id": "de-19",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://der-ki-auditor.de/wissen/ki-dienstleister-fragenkatalog-20-fragen/",
+    "https://basebox.ai/ratgeber/checkliste-ki-anbieter-bewerten",
+    "https://wiemer-arndt.de/ki-anbieter-pruefen-fuenf-fragen/",
+    "https://zenolabs.de/ratgeber/ki-agentur-mittelstand",
+    "https://avervo.de/fachwissen/ki-agentur-kompetenz-pruefen/",
+    "https://www.agenturmarkt.de/magazin/ki-dienstleister-auswahlen-10-fragen-die-du-als-agentur-im-erstgesprach-stellen-musst"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Hier ist eine Übersicht der wichtigsten Fragen, die Sie einem KI-Dienstleister vor der Beauftragung stellen sollten:\n\n## 1. **Rollen und Verantwortlichkeiten**\n\nSind Sie Anbieter, Betreiber oder Händler des Systems? Die Rolle entscheidet über die Pflichten. Setzen Sie ein fremdes Modell ein, und wenn ja, welches in welcher Version? Sehr viele Dienste sind eine Oberfläche vor einem fremden Modell.\n\n## 2. **Datensicherheit und Datenschutz**\n\nIn welchem Land und Rechenzentrum werden Ihre Daten gespeichert, und wo werden Sicherungen aufbewahrt? An welchen Standorten werden Logs, Telemetriedaten, B"
+  },
+  {
+   "id": "de-19",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Bevor Sie einen KI-Dienstleister beauftragen, ist es entscheidend, die technischen, rechtlichen und wirtschaftlichen Rahmenbedingungen genau zu klären.\n\nHier sind die wichtigsten Fragen, gegliedert nach Kernbereichen:\n\n1. Erfahrung & Referenzen\n\nWelche vergleichbaren Projekte haben Sie bereits erfolgreich umgesetzt? (Bitte nennen Sie konkrete Use Cases oder Branchenbeispiele).\n\nWie sieht Ihr Team aus? Welche spezifischen Qualifikationen (z. B. Data Scientists, ML-Engineers, KI-Ethiker) bringen die beteiligten Personen mit?\n\nKönnen Sie Referenzen von früheren Kunden nennen, die wir kontaktieren"
+  },
+  {
+   "id": "de-20",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.ipdynamics.de/wissen/chatbot-kundenservice",
+    "https://collectivebrain.de/ki-kundenservice-chatbots-kmu-2026/",
+    "https://blog.hubspot.de/service/ki-agent-vs-ki-chatbot",
+    "https://solytics.de/blog/ki-kundenservice-agent/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Der Unterschied zwischen einem Chatbot und KI im Kundenservice ist fundamental und betrifft sowohl die Technologie als auch die Funktionsweise:\n\n## Arten von Chatbots\n\nIm Kundenservice werden drei Arten von Chatbots unterschieden: regelbasierte Chatbots, KI-Chatbots und hybride Chatbots.\n\n**Regelbasierte Chatbots:** Ein klassischer Chatbot folgt starren Entscheidungsbäumen und antwortet nur auf fest hinterlegte Fragen.\n\n**KI-Chatbots:** Ein KI-Chatbot im Kundenservice, oft auch intelligente Chatbots genannt, erkennt die Absicht hinter einer frei formulierten Nachricht. Ein KI-Chatbot versteht "
+  },
+  {
+   "id": "de-20",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Im Kundenservice wird oft von Chatbots und Künstlicher Intelligenz (KI) gesprochen, als wären sie dasselbe. Es gibt jedoch einen klaren technischen und funktionalen Unterschied: Ein Chatbot ist ein Werkzeug (das oft auf festen Regeln basiert), während KI das Gehirn und die Technologie ist, die moderne Systeme unglaublich klug und flexibel macht.\n\nDie genauen Unterschiede zeigen sich in folgenden Punkten:\n\nDer direkte Vergleich\n\nMerkmal\nKlassischer Chatbot\nKI im Kundenservice\nArbeitsweise\nFeste Skripte, Entscheidungsbäume (\"Wenn der Nutzer X sagt, antworte mit Y\")\nMaschinelles Lernen, verarbeit"
+  },
+  {
+   "id": "de-21",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://pexon-consulting.de/ki-beratung/",
+    "https://www.prodot.de/ki-beratung-mittelstand",
+    "https://tr3m.de/beratung/",
+    "https://www.ki-beratung-deutschland.de/ki-beratung-fuer-unternehmen",
+    "https://www.synapse-ki-agentur.de/die-10-besten-ki-beratungen-fuer-den-mittelstand-in-deutschland-2026/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Es gibt mehrere spezialisierte Anbieter von KI-Beratung für den Mittelstand mit Erfahrung in regulierten Branchen:\n\n## Führende Anbieter:\n\n**1. Pexon Consulting**\nFür streng regulierte Branchen (Verteidigung, BSI-Grundschutz, Private-AI-Pflicht) deployen sie LLMs auf Kunden-GPUs ohne externen Netzzugang. Sie bieten KI-Beratung für Maschinenbau, Versicherung, Bank und Energie.\n\n**2. prodot**\nAls KI- & Software-Dienstleister begleiten sie mittelständische Unternehmen dabei, KI im Unternehmen zu implementieren und bieten KI-Beratung und die Umsetzung der KI-Lösungen aus einer Hand. Sie sind ISO-z"
+  },
+  {
+   "id": "de-21",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Für den deutschen Mittelstand gibt es verschiedene Kategorien von KI-Beratungen, die gezielt auf stark regulierte Branchen (wie Finanzwesen, Pharma/Medizintechnik, Energie oder öffentliche Verwaltung) spezialisiert sind. Da sich je nach Branche unterschiedliche regulatorische Anforderungen (z. B. EU AI Act, DSGVO, BaFin/DORA, MDR oder GxP) ergeben, unterscheidet sich die Auswahl der passenden Anbieter.\n\nAnbieter-Kategorie\nBeispiele für Anbieter\nSchwerpunkte & Branchenfokus\nSpezialisierte KI-Boutiquen\nappliedAI (UnternehmerTUM), statworx, Alexander Thamm (at), QuantCo\nPraxisnahe Use-Case-Entwic"
+  },
+  {
+   "id": "de-22",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.fastlancer.org/en/fastlancer-blog/freelance-platforms/",
+    "https://freenance.io/remote-work/how-to-start-freelancing-eu-2026-by-country-tax-platforms-rates/",
+    "https://aynsoft.com/top-10-der-deutschen-websites-fur-freiberufler-die-besten-plattformen-fur-den-start-in-die-selbststandigkeit/",
+    "https://solopreneurship.eu/reviews/best-freelance-platforms-eu-freelancers/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Gerne helfe ich dir! Hier sind meine Empfehlungen für Freelancer-Plattformen in der EU, auf denen du qualifizierte Entwickler für individuelle Webanwendungen finden kannst:\n\n## Top-Plattformen für EU-basierte Freelancer:\n\n**1. Malt** (beste EU-Option)\nMalt ist am besten für europäische Freelancer geeignet, besonders in Frankreich, Deutschland und UK, mit starker Unternehmensabdeckung, höheren durchschnittlichen Projektwerten als US-Plattformen und GDPR-konformer Vertragsgestaltung.\n\n**2. Upwork**\nUpwork bietet den größten Pool mit den meisten Kandidaten und einer Provision von 5-10%.\n\n**3. Top"
+  },
+  {
+   "id": "de-22",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Da ich keine einzelnen Privatpersonen namentlich empfehlen oder auf persönliche Verfügbarkeiten prüfen kann, findest du hier die besten spezialisierten Plattformen und Netzwerke, über die du gezielt geprüfte Freelancer für individuelle Webanwendungen (Full-Stack, SaaS, komplexe Backends) innerhalb der EU beauftragen kannst:\n\n1. Kuratierte Top-Netzwerke (Hohes Qualitätsniveau, geprüft)\n\nToptal: Bietet nur die obersten 3 % der geprüften Entwickler. Ideal für komplexe Webanwendungen mit hohen Architektur-Anforderungen, allerdings im oberen Preissegment (ca. 80–150+ €/Std.).\n\nUplink (Fokus DACH): "
+  },
+  {
+   "id": "de-23",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.bfsg360.de/",
+    "https://shopbarrierefrei.de/",
+    "https://www.odclegal.de/blog/bfsg-website-pflicht",
+    "https://rene-koch.com/barrierefreiheit/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Mittelständische Unternehmen, die ihre Website BFSG-konform machen müssen, können sich an verschiedene Unterstützungsangebote wenden:\n\n## Spezialisierte Agenturen und Dienstleister\n\nSpezialisierte Agenturen entwickeln barrierefreie Websites, Designs und PDF-Dokumente nach WCAG 2.2 – konform mit BFSG und BITV 2.0. Es gibt mehrere Anbieter, die sich auf BFSG-Compliance spezialisiert haben:\n\n- **ShopBarrierefrei**: Macht Onlineshops und Unternehmenswebsites barrierefrei nach WCAG 2.1 AA\n- **danubius GmbH**: ISO-zertifiziert mit über 250 Projekten und 20+ Jahren Erfahrung\n- **Rechtliche Beratung**"
+  },
+  {
+   "id": "de-23",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Mittelständische Unternehmen erhalten Unterstützung bei der Umsetzung des BFSG? durch verschiedene spezialisierte Anlaufstellen, die jeweils unterschiedliche Aufgaben übernehmen:\n\n1. Spezialisierte Digital- und Barrierefreiheits-Agenturen\n\nDiese Dienstleister übernehmen die praktische Prüfung und technische Umsetzung direkt auf Ihrer Website.\n\nBIK-Prüfstellen (Barrierefrei informieren und kommunizieren): Ein bundesweites Netzwerk aus unabhängigen Prüfstellen (z. B. DIAS GmbH oder das Deutsche Zentrum für barrierefreies Lesen). Sie führen offizielle BITV-Tests? durch, erstellen detaillierte Män"
+  },
+  {
+   "id": "de-24",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://solveit.dev/blog/top-mvp-development-companies",
+    "https://stackademic.com/blog/top-10-mvp-developers-for-saas-fintech-and-healthtech-products",
+    "https://syndelltech.com/blog/best-mvp-development-companies-for-fintech-startups/",
+    "https://helpware.com/blog/tech/mvp-development-companies",
+    "https://www.gilzor.com/insights/mvp-development-companies-for-startups-europe"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Es gibt mehrere spezialisierte MVP-Entwicklungsunternehmen in Europa, die sich auf Fintech- und Health-Startups konzentrieren:\n\n## Führende europäische Anbieter:\n\n**Spezialisiert auf Fintech & Healthcare:**\n\n- **Upsilon** (Polen, Estland, Brasilien, USA) – mit Fokus auf Healthcare, Fintech und IoT\n- **ELEKS** – zahlt spezifische Aufmerksamkeit auf Healthtech- und Fintech-Regulierungsanforderungen\n- **Netguru** (Polen) – spezialisiert auf design-geführte europäische Fintech-Produkte\n\n**Weitere europäische MVP-Entwickler:**\n\n- **SolveIt** (Polen, USA, Schweden) – bietet Full-Cycle MVP-Entwicklun"
+  },
+  {
+   "id": "de-24",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://bambooagile.eu/insights/top-mvp-development-companies",
+    "https://stackademic.com/blog/top-10-mvp-developers-for-saas-fintech-and-healthtech-products",
+    "https://trembit.com/blog/top-mvp-software-development-companies-in-europe-2025-guide/",
+    "https://cieden.com/best-mvp-development-agencies"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "In Europa gibt es eine Reihe spezialisierter Entwicklungsagenturen und Produktstudios, die sich auf regulierte Branchen wie Fintech und HealthTech konzentrieren. Da in diesen Bereichen Themen wie DSGVO, BaFin-Anforderungen, PSD2 (Open Banking) oder DiGA-Zertifizierungen schon beim MVP mitgedacht werden müssen, lohnt sich die Wahl eines Partners mit Branchenerfahrung.\n\nHier ist eine Übersicht etablierter Anbieter – unterteilt nach ihrem jeweiligen Schwerpunkt:\n\n1. Spezialisten für Fintech & HealthTech (Design & Produktstrategie)\n\nDiese Agenturen begleiten Startups oft schon ab der Ideenvalidier"
+  },
+  {
+   "id": "de-25",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.backbase.com/blog/human-in-the-loop",
+    "https://www.clavisit.com/b/ki-im-banking",
+    "https://www.hiig.de/en/automated-credit-lending/",
+    "https://www.der-bank-blog.de/ki-banking-werkzeug-autopilot/humor/37730494/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Vielen Dank für Ihre Anfrage! Basierend auf den aktuellen Best Practices für KI im Banking kann ich Ihnen folgende Orientierung geben:\n\n## Was Sie bei der Suche nach einem KI-Berater mit Banking-Erfahrung beachten sollten:\n\n### Erforderliche Kompetenzen:\n\n**Banking-Domänenwissen:**\nEin KI-Berater sollte Banking tiefgreifend verstehen, nicht nur Data Science. Dies ist essentiell, um Human-in-the-Loop-Systeme richtig im Banking-Kontext zu implementieren.\n\n**Human-in-the-Loop Expertise:**\nIn Human-in-the-Loop-Szenarien wird die KI gezielt als Assistenz eingesetzt, während der Mensch die Kontrolle"
+  },
+  {
+   "id": "de-25",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ein KI-Berater mit Bankerfahrung und Expertise in Human-in-the-Loop (HITL)-Systemen verbindet tiefes technisches Verständnis für maschinelles Lernen mit den strengen regulatorischen und sicherheitsspezifischen Anforderungen der Finanzbranche.\n\nKernbereiche eines solchen Profils\n\nRegulatorik & Compliance: Implementierung von Kontrollmechanismen, die im Einklang mit dem EU AI Act, den Vorgaben der BaFin/EZB sowie der DSGVO stehen (insbesondere bei automatisierten Kreditentscheidungen und Bonitätsprüfungen).\n\nRisikomanagement & Fraud Detection: Konzeption von Systemen, bei denen KI verdächtige Tr"
+  },
+  {
+   "id": "de-26",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://dailyemerald.com/180655/promotedposts/top-6-fintech-software-development-companies-in-europe-2026-review/",
+    "https://fintechnologica.com/fintech-development"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Basierend auf den Suchergebnissen gibt es mehrere Möglichkeiten, Produktdesigner für regulierte Fintech-Produkte in Europa zu finden:\n\n## Spezialisierte Fintech-Agenturen\n\nNetguru ist ein in Posen ansässiges digitales Produktunternehmen, das sich auf UX-geführtes Fintech, Mobile Banking und skalierbare Webentwicklung spezialisiert. The Software House wird als der stärkste Fintech-Softwareentwicklungspartner für Unternehmen hervorgehoben, die konforme, skalierbare Finanzplattformen aufbauen.\n\nScalo ist ein in Breslau ansässiges Fintech- und Banking-Softwareunternehmen, das besonders für stark r"
+  },
+  {
+   "id": "de-26",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Um Produktdesigner zu finden, die Erfahrung mit regulierten europäischen Finanzprodukten (wie KYC?, PSD2?, MiCA? oder BaFin-Vorgaben) haben, lohnt sich eine gezielte Suche über spezialisierte Plattformen, Netzwerke und Agenturen:\n\n1. Kuratierte Freelancer-Plattformen (für Einzelpersonen)\n\nToptal & A.Team: Beide Plattformen prüfen Bewerber im Vorfeld intensiv. Dort lassen sich gezielt Senior-Produktdesigner filtern, die bereits für Banken, Neobroker oder Payment-Anbieter gearbeitet haben.\n\nMalt (stark in DACH & Frankreich): Bietet eine gute Übersicht über europäische Freelancer inklusive verifi"
+  },
+  {
+   "id": "de-27",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": true,
+   "answer": "Zu einer Person namens Norbert Barna in der Position eines Product VP liegen in öffentlichen Quellen keine verifizierbaren Angaben vor.\n\nFalls du nach einem bestimmten Unternehmen, einer Branche oder einem Projekthintergrund suchst, nenne gerne weitere Details – beispielsweise den Namen der Firma oder den regionalen Schwerpunkt –, damit ich gezielter weiterhelfen kann."
+  },
+  {
+   "id": "de-28",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": true,
+   "answer": "Für die Website barnanorbert.com lassen sich aktuell keine öffentlich indexierten Inhalte oder Angebote abrufen. Das deutet in der Regel darauf hin, dass die Domain nicht aktiv ist, sich im Wartungsmodus befindet, nur eine Platzhalterseite anzeigt oder eine sehr neue bzw. private Seite ohne Suchmaschinen-Indexierung ist.\n\nFalls dir ein bestimmter Text, ein Link oder ein Hinweis von dieser Seite vorliegt, kannst du ihn hier einfügen, um ihn gemeinsam einzuordnen."
+  },
+  {
+   "id": "de-29",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barnanorbert.com/de",
+    "https://www.barnanorbert.com/web-development",
+    "https://www.barnanorbert.com/writing",
+    "https://www.barnanorbert.com/about"
+   ],
+   "ownCited": true,
+   "ownMentioned": true,
+   "answer": "Bei Norbert Barna (KI-Beratung und Webentwicklung) handelt es sich um ein Dienstleistungsangebot für individuelle Webentwicklung, Webanwendungen und KI-Integration, das sich an Unternehmen richtet, die maßgeschneiderte Lösungen statt standardisierter Vorlagen (Templates) suchen.\n\nHier sind die wichtigsten Punkte, die man darüber wissen sollte:\n\n1. Kernleistungen\n\nWebentwicklung: Konzeption und Umsetzung von Unternehmenswebsites, Webanwendungen, Kundenportalen, Mitgliederbereichen oder MVPs (Minimum Viable Products) für Start-ups. Der Fokus liegt auf Performance, Suchmaschinenfreundlichkeit (SE"
+  },
+  {
+   "id": "de-30",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.wingsforlife.com/de/aktuelles/gepaarte-assoziative-stimulation-fuer-mehr-handfunktion",
+    "https://www.barnanorbert.com/work/kineticare",
+    "https://apps.apple.com/ua/app/kineticare-ai/id6749323467?l=en-GB",
+    "https://apps.apple.com/us/app/kineticare-ai/id6749323467"
+   ],
+   "ownCited": true,
+   "ownMentioned": true,
+   "answer": "Je nachdem, welches konkrete Angebot gemeint ist, gibt es zwei gleichnamige digitale Anwendungen für die Handrehabilitation:\n\nKineticare (Web-Plattform): Diese Plattform für physiotherapeutisch angeleitete Handrehabilitation zu Hause wurde von dem Produktdesigner und Full-Stack-Entwickler Norbert Barna gestaltet und entwickelt.\n\nKinetiCare.ai (Mobile App): Die gleichnamige App für iOS und Android wurde von einem Team aus einem Facharzt für Orthopädie und einem lizenzierten Ergotherapeuten konzipiert und wird über das Unternehmen Absolute Medical Innovations, LLC veröffentlicht."
+  },
+  {
+   "id": "en-01",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.godaddy.com/resources/skills/how-much-does-a-website-cost",
+    "https://www.altlimit.com/blog/how-much-does-a-website-cost-2026/",
+    "https://lionridgedesign.com/website-strategy/how-much-does-a-business-website-cost-in-2026/",
+    "https://abmarketinggroup.co/blog/how-much-does-a-website-cost"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "The cost of a business website in 2026 varies significantly depending on how you build it and what features you need:\n\n## Initial Build Costs\n\nA small business website can cost around $120 per year, while a large, custom site can cost $10,000 or more.\n\nMore specifically, here are the typical ranges by approach:\n\n- **DIY Website Builders:** DIY builders like Wix, Squarespace, and Shopify cost $150 to $600 per year, where you pay a monthly subscription (typically $16–$50/mo) plus a domain, and you do all the work yourself.\n\n- **Freelance Designers:** Typical 2026 ranges run $1,500 to $8,000 for "
+  },
+  {
+   "id": "en-01",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://liftedlogic.com/how-much-does-a-website-cost/",
+    "https://www.marklogix.com/blog/business-website-cost/",
+    "https://www.godaddy.com/resources/skills/how-much-does-a-website-cost",
+    "https://elementor.com/blog/how-much-does-a-small-business-website-cost/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "In 2026, a business website typically costs between $150 and $500 per year for a basic DIY build, $1,500 to $10,000 upfront for a professional freelancer or small studio, and $10,000 to $50,000+ for a custom agency site. Your total cost splits into two phases: the upfront build and ongoing annual operations.\n\n1. Upfront Build Costs by Approach\n\nDIY Website Builder (Wix, Squarespace, Shopify): $0 - $300 upfront, $16 - $150+ monthly. DIY WordPress (Self-hosted): $100 - $450 upfront, $10 - $50 monthly. Freelancer / Small Studio: $1,500 - $8,000 upfront, $50 - $150 monthly. Web Design Agency: $10,"
+  },
+  {
+   "id": "en-02",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.databricks.com/blog/human-in-the-loop",
+    "https://zapier.com/blog/human-in-the-loop/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Human in the loop (HITL) is an AI and machine learning approach where people actively participate in a system's training, supervision or decision-making to improve accuracy, safety and ethical alignment.\n\nIn practical terms, the AI pauses and waits for a person to review or approve a decision before taking action. This is particularly important where AI decisions carry real consequences or require human judgment, context or expertise.\n\n**Key differences from related concepts:**\n\n- Human in the loop means the AI pauses and waits for a person to review or approve a decision before taking action,"
+  },
+  {
+   "id": "en-02",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Human-in-the-loop (HITL) in AI means involving people directly in how an AI system is trained, evaluated, or operated—rather than letting it run completely autonomously. Humans act as checkpoints, reviewers, or collaborators where judgment, context, or accountability matters.\n\nWhere Humans Fit In\n\nData labeling and training: People annotate text, images, or audio, rate model responses, or demonstrate ideal behavior (such as in RLHF) so the model learns patterns and preferences.\n\nApproval gates and oversight: An AI drafts an action—like sending an email, approving a loan, triaging a medical ale"
+  },
+  {
+   "id": "en-03",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://velt.dev/blog/designing-human-in-the-loop-workflows-ai-products",
+    "https://ppc.land/human-in-the-loop/",
+    "https://www.appsilon.com/post/human-in-the-loop-ai",
+    "https://inspiro.com/insights/blog/human-in-the-loop-is-not-a-compromise-its-the-product-ai-bps-in-regulated-finance",
+    "https://arxiv.org/pdf/2604.23938"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Designing human-in-the-loop (HITL) AI for regulated products requires a structured approach centered on accountability, oversight, and compliance. Here are the key principles:\n\n## Start with the Right Architecture\n\nFor high-stakes outputs in regulated industries, start with human-in-the-loop where reviewers approve before outputs take effect, then graduate to human-on-the-loop or automation for cases where the AI proves consistently reliable. A human-in-the-loop design pauses an automated system at defined steps until a person approves, edits or rejects its proposed action, differing from huma"
+  },
+  {
+   "id": "en-03",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Designing human-in-the-loop (HITL) AI for a regulated product—such as healthcare, financial services, legal, or industrial safety—requires treating human oversight as a verifiable control mechanism, not just a UI approval button. Regulators scrutinize whether humans can genuinely exercise informed judgment, whether system limits are clear, and whether every decision is auditable.\n\n1. Define Meaningful Human Control (Not Rubber-Stamping)\n\nRegulators and safety standards evaluate whether the human actually has the authority, time, and information to intervene effectively.\n\nMatch oversight to ris"
+  },
+  {
+   "id": "en-04",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://leanware.co/insights/choose-ai-development-partner",
+    "https://www.aikenhouse.com/post/ai-integration-services",
+    "https://www.atfworld.com/blog/how-to-choose-ai-integration-partner",
+    "https://www.j9systems.com/blog/how-to-choose-an-ai-implementation-partner",
+    "https://globalriskcommunity.com/profiles/blogs/choosing-an-ai-implementation-partner-in-2026-8-risk-questions-to",
+    "https://www.aimprosoft.com/blog/ai-integration-consulting-guide/",
+    "https://www.technource.com/blog/how-to-choose-ai-integration-development-partner/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Here are the key questions you should ask before hiring an AI integration partner:\n\n## Experience & Track Record\n\nAsk what AI projects they have successfully delivered, requesting specific examples rather than generic descriptions. Request to see an integration they built that's still running in production after six months and what systems it connects to. Ask for the names and CVs of the operators who will actually do the work.\n\n## Technical & Integration Questions\n\nAsk how the partner designs for growth, what infrastructure decisions they make to support scaling, and how they handle increased"
+  },
+  {
+   "id": "en-04",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.v2soft.com/blogs/ai-vendor-evaluation-10-questions-to-ask-before-you-sign/",
+    "https://sphereiq.ai/blog/questions-to-ask-a-rag-partner",
+    "https://medium.com/@michaellow_61071/before-you-hire-an-ai-consultant-answer-these-5-questions-eacc8a44bb95",
+    "https://www.corporatecomplianceinsights.com/10-questions-every-organization-should-ask-ai-vendor/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Evaluate potential AI integration partners across five areas to separate production-ready engineers from agencies selling slick demos.\n\n1. Architecture & System Integration\n\nHow will the solution connect to our existing tech stack? Require concrete integration patterns for your specific ERP, CRM, databases, and identity systems—not just \"we support APIs\". Ask how they handle silent upstream failures, expired tokens, and rate limits.\n\nAre we locked into a single model provider? Verify whether their architecture uses an abstraction layer so you can swap underlying models if pricing shifts, an ou"
+  },
+  {
+   "id": "en-05",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.botiqueai.com/en/news/prevenir-hallucinations-ia",
+    "https://www.parloa.com/blog/hallucinations-customer-service/",
+    "https://www.businessbuildersclub.co/blog/how-to-stop-ai-hallucinations-in-your-business",
+    "https://bovo-digital.tech/en/blog/prevent-ai-hallucinations-complete-guide-business",
+    "https://www.niharrout.com/blog/how-to-reduce-ai-hallucinations",
+    "https://neuraltrust.ai/blog/ai-hallucinations-business-risk",
+    "https://intuitionlabs.ai/articles/ai-hallucinations-business-causes-prevention"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Stopping AI hallucinations in a business product requires a multi-layered approach. Here are the most effective strategies:\n\n## Core Technical Approaches\n\n**Retrieval-Augmented Generation (RAG)**\nThe most effective single measure for a company is retrieval-augmented generation (RAG) on a clean, governed knowledge base, combined with a rule that the assistant says \"I don't know\" when it finds no source. This grounds AI responses in verified data rather than relying on the model's training data.\n\n**Grounding in Verified Sources**\nEvaluation should show whether prompts can be grounded in verified"
+  },
+  {
+   "id": "en-05",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "You cannot guarantee zero hallucinations in generative AI—next-token prediction is probabilistic—so production systems focus on preventing, constraining, verifying, and containing them where stakes are highest.\n\n1. Restrict Scope and Ground in Sources\n\nNarrow the job: Avoid open-ended chat when a workflow, search, or form is safer. Make \"I don't know / not in the provided documents\" an explicit, rewarded behavior.\n\nUse RAG: Retrieve authoritative records (policies, manuals, databases) and instruct the model to answer only from those passages.\n\nRequire inline citations: Have the model link ever"
+  },
+  {
+   "id": "en-06",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://botscrew.com/blog/guide-to-fixing-ai-hallucinations/",
+    "https://arxiv.org/pdf/2601.09929",
+    "https://arxiv.org/pdf/2507.22915",
+    "https://arxiv.org/abs/2502.12187"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "No, AI hallucinations cannot be eliminated completely because hallucination is a property of how generative models work, not a defect that can be patched.\n\nThe fundamental reason is rooted in how these systems operate: The statistical nature of language modeling means these systems operate by predicting plausible sequences rather than verifying ground truth. Additionally, the dynamic nature of real-world knowledge creates inherent gaps between training data and current information.\n\nFrom a theoretical perspective, if an LLM is used as a general problem solver across an open-ended space of quer"
+  },
+  {
+   "id": "en-06",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "No—current evidence indicates that AI hallucinations cannot be eliminated completely in general-purpose generative AI systems, though they can be substantially reduced in specific, constrained tasks.\n\nWhy Complete Elimination Is Unlikely\n\nProbabilistic next-token prediction: Large language and multimodal models generate text or media by estimating statistical patterns from training data rather than consulting a ground-truth database. When prompts are ambiguous, under-specified, or push beyond the model's training distribution, guessing the most statistically plausible continuation can produce "
+  },
+  {
+   "id": "en-07",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.bakerbotts.com/thought-leadership/publications/2026/september/eu-ai-act-article-50-transparency-obligations-go-live",
+    "https://governancedocs.com/eu-ai-act-transparency-obligations/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Article 50 of the EU Artificial Intelligence Act's transparency obligations became enforceable on August 2, 2026. Article 50 imposes four distinct duties:\n\n1. **Disclosure of AI interaction**: Providers must design AI systems that interact directly with people, such as chatbots and voice assistants, to inform users that they are dealing with an AI system, unless that fact is obvious from the circumstances.\n\n2. **Machine-readable markings on synthetic content**: Providers of generative AI systems must embed machine-readable markings in synthetic audio, image, video, and text output so that the "
+  },
+  {
+   "id": "en-07",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.ssl.com/article/eu-ai-act-article-50-a-complete-guide-to-ai-transparency-compliance/",
+    "https://www.disseqt.ai/blog/eu-ai-act-article-50-transparency",
+    "https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50",
+    "https://www.orrick.com/en/Insights/2026/08/EU-AI-Act-Transparency-Obligations-for-AI-Generated-Content-Article-50",
+    "https://alicelabs.ai/en/insights/eu-ai-act-timeline-2026"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Article 50 of the EU AI Act (Regulation (EU) 2024/1689) mandates clear disclosure when people interact with AI systems or encounter AI-generated content. These obligations became enforceable on August 2, 2026, with a final transitional grace period ending on December 2, 2026 for marking legacy generative systems.\n\nThe rules split responsibilities between providers (who develop and place AI systems on the market) and deployers (organizations that use AI systems under their authority).\n\nCore Obligations by Role\n\nArt. 50(1): Direct Interaction - Providers - Design systems (e.g., chatbots, voice a"
+  },
+  {
+   "id": "en-08",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.spurnow.com/en/blogs/eu-ai-act-article-50-chatbots",
+    "https://www.regulatoryai.eu/ai-chatbot-disclosure/",
+    "https://www.checkcompliance.eu/eu-ai-act-article-50-transparency",
+    "https://neuradynamics.ai/blogs/eu-ai-act-article-50-chatbots",
+    "https://www.ubstandard.com/technology/europe-now-legally-requires-ai-to-admit-its-ai"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Yes, you do have to tell users they are talking to an AI chatbot in the EU. EU AI Act Article 50 has required chatbots to say they are AI since 2 August 2026.\n\nHere are the key requirements:\n\n**Who it applies to:** EU AI Act Article 50 requires every AI chatbot that talks with people in the EU to tell them they are talking to an AI, clearly and from the start of the first chat. This applies to a UK or US business that must disclose AI to its EU customers.\n\n**Timing:** The disclosure must be in a clear and timely way, unless this is obvious to a reasonably well-informed person from the context "
+  },
+  {
+   "id": "en-08",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barclaydamon.com/alerts/eu-leads-the-way-on-artificial-intelligence-regulation"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Yes. Under Article 50 of the EU Artificial Intelligence Act, deployers of AI systems intended to interact directly with natural persons must inform them that they are interacting with an AI system, unless this is obvious from the point of view of a person who is reasonably well-informed, observant, and circumspect, taking into account the circumstances and the context of use.\n\nCore Disclosure Rule\n\nDirect interaction: If a user chats with an AI assistant, customer support bot, or virtual agent, you generally need to disclose that it is AI before or at the start of the interaction.\n\nThe \"obviou"
+  },
+  {
+   "id": "en-09",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://volo.global/blog/fintech-mvp-development",
+    "https://www.valtorian.com/blog/fintech-healthcare-mvp-development-how-compliance-changes-the-plan",
+    "https://mvpdevelopment.company/blog/fintech-mvp",
+    "https://vivasoftltd.com/mvp-development-for-fintech/",
+    "https://www.sanoworks.com/blog/compliant-healthtech-mvp-healthsprint-method/",
+    "https://codeandpepper.com/blog/what-is-mvp-in-software-development/",
+    "https://www.frontetica.com/blog/how-top-industries-use-mvps",
+    "https://www.cm-alliance.com/cybersecurity-blog/top-mvp-development-companies-for-secure-fintech-payment-solutions"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Building an MVP for regulated products like fintech or digital health is fundamentally different from typical software because compliance isn't optional—it's core to viability. Here's how to approach it:\n\n## The Core Principle: Compliance First\n\nFounders building in regulated spaces should approach MVP development with baseline compliance baked in, such as KYC, PCI DSS, or GDPR, even in early versions. You can't skip KYC/AML in fintech, and you can't ignore PHI protection in healthcare — so the MVP must include compliance‑critical flows from day one.\n\n## What Can't Be Cut\n\nA fintech MVP cannot"
+  },
+  {
+   "id": "en-09",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Building a minimum viable product (MVP) for fintech or digital health requires flipping the standard \"move fast and break things\" playbook. In regulated spaces, breaking things can mean frozen funds, patient harm, or costly regulatory blocks before you prove product-market fit.\n\nThe goal is to de-risk compliance and core value simultaneously—testing real user demand while staying inside clear legal boundaries.\n\n1. Define Your Regulatory Boundary First\n\nBefore writing production code, map out which rules apply to the exact feature set you plan to ship—not the full vision you have in two years.\n"
+  },
+  {
+   "id": "en-10",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.orrick.com/en/Insights/2026/07/EU-AI-Act-Update-Digital-Omnibus-Finalizes-8-Compliance-Changes",
+    "https://takdevs.com/eu-ai-act-deadlines-after-the-omnibus-what-is-due-in-2026-and-2027/",
+    "https://usercentrics.com/knowledge-hub/eu-ai-act-high-risk-delay-article-50-transparency-consent/",
+    "https://www.cobalt.legal/news-cases/digital-omnibus-on-ai/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "The EU Digital Omnibus made significant changes to AI Act deadlines, primarily postponing compliance requirements for high-risk AI systems:\n\n**High-Risk AI Deadlines:**\n\nObligations for high-risk AI systems designated under Article 6(2) and Annex III of the AI Act will now take effect on 2 December 2027 instead of 2 August 2026. High-risk AI systems subject to existing EU harmonization legislation listed in Annex I and Article 6(1) will follow a later date: 2 August 2028.\n\n**Other Key Changes:**\n\nArticle 50 transparency rules, banned practices and general-purpose AI model duties kept their dat"
+  },
+  {
+   "id": "en-10",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://williamlaurentavocat.com/en/notes/ai-act-timeline-digital-omnibus/",
+    "https://www.whitecase.com/insight-alert/eu-ai-omnibus-enters-force-amending-ai-act",
+    "https://www.gibsondunn.com/eu-ai-act-omnibus-agreement-postponed-high-risk-deadlines-and-other-key-changes/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "The EU Digital Omnibus on AI (Regulation (EU) 2026/1744), which entered into force on 27 July 2026, pushed back the main compliance deadlines for high-risk AI systems by 12 to 16 months while introducing a targeted grace period for legacy generative AI watermarking and adding new prohibitions.\n\nSummary of Deadline Changes\n\nStandalone High-Risk AI (Annex III): 2 August 2026 -> 2 December 2027 (+16 months)\nEmbedded High-Risk AI (Annex I): 2 August 2027 -> 2 August 2028 (+12 months)\nNational AI Regulatory Sandboxes: 2 August 2026 -> 2 August 2027 (+12 months)\nWatermarking for Pre-Existing Generat"
+  },
+  {
+   "id": "en-11",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://answers.databricks.com/human-approval-tools-ai-outputs",
+    "https://appmaster.io/blog/human-review-ai-workflows",
+    "https://ssoagency.com/blog/how-to-validate-ai-outputs",
+    "https://www.nextteammate.ai/resources/evaluate-ai-generated-work",
+    "https://oleg.is/blog/human-review-ai-approvals",
+    "https://www.ai-first.company/practices/keep-a-person-checking-what-goes-out/",
+    "https://www.aicharcha.com/guides/how-to-review-ai-outputs-before-publishing/",
+    "https://smlbai.com/2026/10/12/human-review-ai-workflows-small-business/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Human review of AI output should follow these key principles:\n\n## When to Review\n\nReserve human review for high-risk or irreversible actions. The timing depends on the type of output:\n\n- **Always review before sending**: Review AI drafts before a message is sent, a record is changed, or a case is approved, denied, refunded, or routed. This includes summaries when people will act on them, classifications when labels control routing or priority, and suggested replies before customers see them.\n\n- **Full review for high-stakes content**: If the output can affect money, compliance, safety, or an i"
+  },
+  {
+   "id": "en-11",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://levystreet.com/learn/planning-human-review-for-ai-output/",
+    "https://www.tommasomariaricci.com/blog/human-in-the-loop-ai-agents",
+    "https://velt.dev/blog/how-to-add-human-review-ai-output"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A human should review AI output before it reaches a customer whenever an error carries high impact or is irreversible. Gating every AI action destroys automation speed, while gating nothing creates legal, financial, and brand liability.\n\nMandatory Pre-Customer Review Triggers\n\nRoute AI output through a mandatory human-in-the-loop gate in these scenarios:\n\nIrreversible Actions: Sending external emails, issuing refunds, executing payments, modifying contracts, deleting account data, or publishing public statements.\n\nConsequential Decisions: Outputs affecting a customer's money, credit, insurance"
+  },
+  {
+   "id": "en-12",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.bolddesk.com/blogs/human-in-the-loop-ai-for-customer-service",
+    "https://dialzara.com/blog/human-oversight-in-ai-best-practices",
+    "https://supportyourapp.com/blog/ai-governance-in-customer-service/",
+    "https://customerscience.com.au/insights/human-in-the-loop-ai-governance-2/",
+    "https://cobbai.com/blog/human-oversight-ai-customer-service"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Based on current best practices, here's how companies should effectively use AI in customer service with human oversight:\n\n## Key Strategic Approaches\n\n**Risk-Based Oversight Levels**\n\nHuman oversight works best as an AI governance framework, helping support teams concentrate their attention on the requests where a wrong decision would be far more costly than a delayed one. Companies should tailor oversight intensity based on the stakes of each interaction—from low-risk routine inquiries to high-stakes decisions involving money or account access.\n\n**Confidence Thresholds and Escalation**\n\nAI c"
+  },
+  {
+   "id": "en-12",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Effective AI integration in customer service uses a tiered human-in-the-loop architecture: let AI handle predictable, high-volume tasks while reserving human agents for complex, high-stakes, or emotionally charged interactions.\n\n1. Tiered Automation Architecture\n\nMatch the level of AI autonomy to the risk and complexity of the inquiry.\n\nTier 1: Full Automation - Order status, password resets, hours, basic FAQs - AI resolves end-to-end via self-service bot - humans spot-check transcripts via QA sampling.\nTier 2: AI Copilot (Assistive) - Billing disputes, technical troubleshooting, warranty clai"
+  },
+  {
+   "id": "en-13",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://socialfirm.com/blog/custom-website-vs-template-website/",
+    "https://plumrocket.com/blog/custom-vs-template-website",
+    "https://www.cleanastic.com/custom-website-design-vs-template-which-one-is-right-for-your-business/",
+    "https://ccbd.dev/blog/custom-website-vs-template-website-which-one-actually-grows-your-business"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "The answer depends on your specific situation, budget, and growth plans. Here's a breakdown to help you decide:\n\n## Template Websites Are Better If:\n\nTemplate websites are the practical choice for small businesses with a limited budget (under roughly $5,000), simple needs, or an urgent launch timeline. If your team lacks in-house technical expertise or development capacity, a template website lowers the barrier to entry and simplifies maintenance. Template websites are more affordable and faster to launch.\n\n## Custom Websites Are Better If:\n\nCustom websites are the stronger investment when you"
+  },
+  {
+   "id": "en-13",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://gruffygoat.com/blog/custom-website-vs-template",
+    "https://gotechark.com/blog/custom-website-vs-template-whats-really-best-for-your-business-growth/",
+    "https://kyliebussdesign.com/custom-website-vs-template/",
+    "https://www.hightidemarketing.com/blog/custom-website-vs-template"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "For most small businesses, a template is better early on when speed, lower upfront cost, and self-editing matter most, while a custom website is better once your site drives significant revenue, needs unique workflows or complex SEO architecture, and can support a larger investment.\n\nSide-by-Side Comparison\n\nUpfront Cost: Template - Low (subscription + optional theme; often under $3,000 or DIY); Custom - Higher (typically $5,000-$15,000+ depending on scope and team)\nLaunch Timeline: Template - Days to a few weeks; Custom - Several weeks to 2-3+ months\nDesign & Branding: Template - Uses a pre-b"
+  },
+  {
+   "id": "en-14",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://rakosmediagroup.com/90-day-ai-strategy-small-business/",
+    "https://dev.to/azrty/how-to-scope-a-first-ai-project-for-a-small-business-40cb",
+    "https://aibusiness.vc/b2b/how-to-implement-ai-in-small-business",
+    "https://www.bbehmermedia.com/blog/ai-adoption-roadmap-for-small-business/",
+    "https://www.nfd.ca/company-blog/ai-automation-for-small-business",
+    "https://botlogix.ca/insights/first-90-days-ai-implementation",
+    "https://maheshika.com/blog/how-to-create-an-ai-strategy-for-your-business-in-90-days"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Here's a practical roadmap for small businesses to start with AI in the first 90 days:\n\n## Core Philosophy\n\nMost small businesses stall on AI not because they lack interest but because they start too broad, buy too fast, and measure nothing. The key is to run a fixed, time-boxed 90-day pilot with one process, one measurable success criterion, and a written kill-or-scale decision at day 90.\n\n## The Three Phases\n\n**Phase 1: Days 1-14 (Setup & Baseline)**\n- Document the current process and measure it—hours spent, error rate, response time. Without a baseline, you'll never prove ROI.\n- List tasks "
+  },
+  {
+   "id": "en-14",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A small business gets the best return in its first 90 days with AI by starting on narrow, high-friction operational bottlenecks rather than buying broad platforms or trying to automate everything at once. Keep humans in the loop on customer-facing outputs, financial records, and anything involving sensitive data.\n\nDays 1-30: Audit, Guardrails, and One Quick Win\n\nMap repetitive bottlenecks: List tasks that eat hours every week—drafting routine replies, summarizing calls or notes, sorting inquiries, formatting spreadsheets, or turning raw updates into status briefs. Pick one or two with clear in"
+  },
+  {
+   "id": "en-15",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.twig.so/blog/is-ai-customer-support-gdpr-compliant",
+    "https://klaus-ki.eu/en/knowledge/gdpr-compliant-ai-tools",
+    "https://www.aiovert.com/blog/gdpr-ai-tools-compliance",
+    "https://www.docuflair.com/en/pages/resources/blog/gdpr-ai-personal-data.html",
+    "https://clapnclaw.io/en/blog/gdpr-compliant-ai-guide"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Whether using AI tools with customer data is GDPR compliant depends on several key factors:\n\n## The Short Answer\n\nAI customer support can be GDPR compliant, but compliance is not automatic. No tool is GDPR compliant \"out of the box.\" You need a business plan with a data processing agreement, training switched off, deliberately chosen settings and your own documentation.\n\n## Key Requirements for Compliance\n\nTo use AI tools with customer data legally under GDPR, you need:\n\n1. **Data Processing Agreement (DPA)**: A Data Processing Agreement is a legally binding contract required by GDPR Article 2"
+  },
+  {
+   "id": "en-15",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Yes, using AI tools with customer data can be GDPR compliant, provided specific legal, technical, and contractual safeguards are in place. GDPR does not ban AI, nor does it treat AI differently from any other software that processes personal data—instead, it strictly regulates how and why that data is processed.\n\nTo ensure compliance when feeding customer data into an AI tool, you must satisfy the following core requirements:\n\n1. Establish a Lawful Basis\n\nUnder GDPR (Article 6), you cannot process personal data without a valid legal reason. For AI tools, the two most common bases are:\n\nConsent"
+  },
+  {
+   "id": "en-16",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://phoenix.studio/blog/european-accessibility-act-websites-2026",
+    "https://eseospace.com/blog/european-accessibility-act-us-websites/",
+    "https://trustyourwebsite.com/eu/en/guides/eaa-small-business-guide",
+    "https://wpsupport.io/knowledge/compliance/european-accessibility-act-websites/",
+    "https://www.lanceerstudio.nl/en/insights/accessibility-act-website"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Whether the European Accessibility Act (EAA) applies to your company website depends on several factors:\n\n## Key Determining Factors\n\n**Your Market, Not Your Location:** The EAA applies if you sell one of the covered services to consumers in the European Union, no matter where your company is registered. The EAA follows your customers, not your incorporation.\n\n**Type of Service:** If you sell products or services through a website, this law might apply to you. Specifically, the European Accessibility Act requires certain products and services, including e-commerce websites and apps, consumer b"
+  },
+  {
+   "id": "en-16",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.webyes.com/blogs/eaa-who-needs-to-comply/",
+    "https://www.iubenda.com/en/help/179096-eaa-compliance-2/",
+    "https://accessible.org/eaa-ecommerce-services-requirements/",
+    "https://www.levelaccess.com/compliance-overview/european-accessibility-act-eaa/",
+    "https://www.wcag.com/compliance/european-accessibility-act/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "The European Accessibility Act (EAA) applies to your company website if you offer covered products or services to consumers (B2C) in the European Union—even if your company is headquartered outside the EU (such as in the US or UK). The law has been in full force since June 28, 2025.\n\nYour website falls within scope if it meets all of the following criteria:\n\n1. You Sell or Serve EU Consumers (B2C)\n\nIn scope: Any consumer-facing website that sells goods, takes bookings, provides digital subscriptions, or offers covered services to individuals in any EU member state.\n\nOut of scope: Purely busine"
+  },
+  {
+   "id": "en-17",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.sierraexperts.com/website-redesign-vs-website-rebuild/",
+    "https://meltdesign.co.uk/website-redesign-vs-rebuild/",
+    "https://dev.to/enh_consulting_/when-should-you-rebuild-a-website-instead-of-redesigning-it-2oa2",
+    "https://www.optimaflow.dev/blog/when-to-rebuild-vs-redesign-your-website",
+    "https://www.goodfirms.co/blog/website-redesign-vs-website-refresh",
+    "https://vylino.com/resources/website-redesign-vs-rebuild/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Here's a practical framework to help you decide between a redesign and a full rebuild:\n\n## The Core Distinction\n\nA website redesign changes how the website looks and feels, while a website rebuild changes how the website is built.\n\n## Choose a Redesign When:\n\nThe foundations are sound and the problem is the design, the content or the conversion. More specifically:\n\n- The problem is mostly visual or UX-related\n- The site runs on a solid platform like WordPress, loads reasonably well, and ranks for at least some of the terms that matter\n- Core Web Vitals are green, your CMS is fine (Shopify, Web"
+  },
+  {
+   "id": "en-17",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Choose a redesign when your underlying technology still works well and you only need to modernize visuals, navigation, and messaging; choose a full rebuild when technical limitations, poor performance, or broken integrations prevent you from scaling or maintaining the site.\n\nFactor\nChoose a Redesign (Visual & UX Refresh)\nChoose a Full Rebuild (From the Ground Up)\nCore Purpose\nModernize look, feel, layout, and conversion flows.\nReplace outdated architecture, tech stack, or CMS.\nSite Performance\nSpeed and Core Web Vitals are already acceptable.\nSlow load times caused by bloated code or legacy sy"
+  },
+  {
+   "id": "en-18",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://dev.to/dhruvjoshi9/which-business-processes-should-you-automate-with-ai-first-a-5-factor-scoring-model-18j7",
+    "https://lytvynov-production.com/en/guides/ai-automation-business-processes",
+    "https://appsontechnologies.com/2026/08/31/business-processes-to-automate-with-ai-first/",
+    "https://www.designtactics.com/what-business-processes-should-you-automate-first/",
+    "https://www.holmesconsultants.com/blog/ai-automation-which-processes-first/",
+    "https://meethayat.com/blog/which-business-processes-should-i-automate-first-with-ai-2026-07-24"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Based on current best practices, the ideal first business process to automate with AI depends on several key criteria:\n\n## Characteristics of a Good First Automation\n\nThe best first process for AI automation is usually a high-volume workflow with clear inputs, repeatable decisions, accessible systems, and low-cost exceptions. More specifically, automate the processes that are frequent, mostly rule-based and cheap to correct when the AI is wrong.\n\n## Top Candidates for First Automation\n\nThe best first candidates for AI automation of business processes are document processing, lead qualification"
+  },
+  {
+   "id": "en-18",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Start with Tier-1 customer support and internal IT/HR helpdesks. Across almost every industry, routine ticket triage, FAQ resolution, and password/access resets deliver the highest return on investment with the lowest implementation risk.\n\nWhy Customer & Internal Support Wins First\n\nHigh volume, low complexity: 60% to 80% of inbound queries are repetitive questions answered by existing documentation (return policies, order status, software access, PTO rules).\n\nExisting training data: Most companies already have thousands of historical support tickets and a knowledge base, eliminating the need "
+  },
+  {
+   "id": "en-19",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://decagon.ai/glossary/human-in-the-loop-vs-human-on-the-loop",
+    "https://chainofthought.show/ai-decoded/human-in-the-loop-vs-human-on-the-loop/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "The key difference between these two concepts comes down to **timing and where the human sits in the process**:\n\n## Human in the Loop (HITL)\n\nIn human-in-the-loop, a person approves each decision before it takes effect. In-the-loop oversight happens before the action. The human acts as a gatekeeper—nothing proceeds until they explicitly approve it.\n\n## Human on the Loop (HOTL)\n\nIn human-on-the-loop, the system acts on its own while a person watches and can step in, correct it or stop it. On-the-loop oversight happens during or after it. The human is a supervisor rather than an approver.\n\n## Ke"
+  },
+  {
+   "id": "en-19",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Human-in-the-loop (HITL) requires a human to actively participate in a decision or action before the system proceeds. Human-on-the-loop (HOTL) lets an autonomous system act by default while a human monitors performance and intervenes only when needed.\n\nCore Differences\n\nDimension\nHuman-in-the-Loop (HITL)\nHuman-on-the-Loop (HOTL)\nRole\nActive participant or gatekeeper\nSupervisor or exception handler\nExecution pace\nPauses for human input or sign-off\nRuns continuously unless interrupted\nPrimary trade-off\nHigher safety and control, slower throughput\nHigher speed and scale, higher risk of missed edg"
+  },
+  {
+   "id": "en-20",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://medium.com/@dejanmarkovic_53716/ai-automation-integration-costs-hidden-expenses-revealed-40b24a9619dc",
+    "https://gaincafe.com/blog/ai-integration-cost",
+    "https://www.aspiroai.studio/insights/ai-implementation-cost-2026",
+    "https://aristeksystems.com/blog/how-much-does-it-really-cost-to-implement-ai-in-business/",
+    "https://www.walturn.com/insights/the-cost-of-implementing-ai-in-a-business-a-comprehensive-analysis"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "AI integration costs for a mid-size company depend on several key factors:\n\n## Primary Cost Drivers\n\nAI implementation expenses typically include software licensing, hardware requirements, integration services, consulting fees, and internal resource allocation.\n\nMore specifically, the major cost factors are:\n\n1. **Data Readiness and Preparation**: Data preparation alone often accounts for 30 to 70% of an AI project's time and cost. Clean, accessible data reduces implementation cost by 30-50%.\n\n2. **Integration Complexity**: Connecting to existing CRM, ERP, or proprietary systems adds 20-40% to"
+  },
+  {
+   "id": "en-20",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://dancumberlandlabs.com/blog/ai-implementation-cost/",
+    "https://www.pertamapartners.com/insights/ai-costs-small-medium-business",
+    "https://www.nextgencodingcompany.com/insights/cost-of-implementing-ai-in-business",
+    "https://bellec-services.com/en/blog/real-cost-of-ai-integration-sme/",
+    "https://leadsnow.ai/how-much-does-ai-implementation-cost-for-a-mid-market-business/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "For a mid-size company, AI integration costs depend primarily on technical complexity, data readiness, deployment architecture, and ongoing operational overhead rather than company headcount alone. Total mid-market implementations typically range from $100,000 to $500,000 depending on scope.\n\n1. Build Approach & Customization\n\nOff-the-Shelf SaaS vs. Custom Builds: Packaged AI tools and no-code platforms reduce upfront expenses compared to custom agent layers or tailored workflows.\n\nModel Strategy: Using commercial APIs (e.g., pay-per-token models) keeps initial infrastructure low, whereas fine"
+  },
+  {
+   "id": "en-21",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.techaheadcorp.com/blog/human-in-the-loop-ai-design/",
+    "https://www.lxt.ai/services/human-in-the-loop-services/",
+    "https://supportyourapp.com/human-in-the-loop-ai-customer-support/",
+    "https://tinkogroup.com/what-we-do/human-in-the-loop-services/",
+    "https://miniml.ai/industries/fintech/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Based on the search results, several organizations offer human-in-the-loop AI integration consulting for fintech in the EU:\n\n1. **TechAhead** - As an AI-native development and consulting company, TechAhead delivers end-to-end HITL implementations integrating EU AI Act requirements.\n\n2. **LXT** - Offers fraud detection validation, risk assessment enhancement, document processing verification, and regulatory compliance monitoring for fintech applications.\n\n3. **SupportBrain** - Specializes in fintech support with human-in-the-loop AI that helps agents with fraud, loan questions, and compliance c"
+  },
+  {
+   "id": "en-21",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Human-in-the-loop (HITL) AI integration consulting for European fintech sits at the intersection of workflow engineering and strict regulatory compliance—most notably the EU AI Act, DORA?, and GDPR Article 22 (restrictions on solely automated individual decision-making).\n\nBecause credit scoring, fraud detection, and AML? systems carry high-risk classifications, consulting providers generally fall into four distinct tiers depending on whether you need regulatory sign-off, custom software architecture, or managed operational review.\n\n1. Global Consultancies (Enterprise Compliance & Governance)\n\n"
+  },
+  {
+   "id": "en-22",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://neurons-lab.com/articles/what-ai-consulting-firms-work-with-medium-to-large-financial-services-enterprises-and-deliver-production-ready-solutions/",
+    "https://londonlovesbusiness.com/top-10-european-ai-and-machine-learning-vendors-for-banks-2027/",
+    "https://accedia.com/insights/blog/best-ai-consulting-firms-for-banks-in-europe",
+    "https://neurons-lab.com/articles/best-boutique-ai-consulting-firms-experience-in-financial-services/",
+    "https://www.woumba.com/en/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Based on recent research, here are some excellent AI product consultants with banking experience in Europe:\n\n## Top Recommendations:\n\n**1. Neurons Lab**\nNeurons Lab is an AI-exclusive consultancy based in London and Singapore that takes financial services firms from discovery, strategy and pilots to production-ready systems. They focus on building scalable, compliant AI systems for enterprise clients in banking, asset management, and insurance across North America, Europe, and Asia.\n\n**2. Accedia**\nAccedia is an AI consulting and custom software development company with a strong focus on banki"
+  },
+  {
+   "id": "en-22",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://accedia.com/insights/blog/best-ai-consulting-firms-for-banks-in-europe",
+    "https://alicelabs.ai/en/ai-consulting-europe",
+    "https://impetora.com/answers/top-ai-consultancies-banking-2026",
+    "https://alicelabs.ai/en/insights/best-ai-consulting-firms-europe-2026",
+    "https://outsized.com/talent/david-nagtzaam/",
+    "https://reverbico.com/blog/top-fractional-ai-team-providers/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Choosing the right AI product consultant for European banking depends on whether you need a fractional individual leader, a specialized product/AI boutique, or a compliance-heavy enterprise consultancy.\n\n1. Boutique & Product-Focused AI Consultancies (Best for Hands-On Product Delivery)\n\nIf you are building a customer-facing banking product, embedded finance solution, or internal AI agent and need end-to-end product lifecycle support (strategy, UX, and engineering):\n\nMiquido (Kraków, Poland / EU-wide): Covers the full banking product lifecycle from product strategy and UX design to mobile/web "
+  },
+  {
+   "id": "en-23",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://arc.dev/hire-designers/fintech-designers",
+    "https://www.lawosull.uk/",
+    "https://humbleteam.com/blog/best-fintech-design-agencies-in-london"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Based on current information, here are some good options for freelance product designers specializing in regulated fintech products in Europe:\n\n## Individual Freelancers\n\nSlawomir J. is a vetted fintech designer based in Germany, and Anisat Y. is a vetted fintech designer in the Netherlands. Both are available for freelance work.\n\nThere's a UK-based product designer who freelances on select regulated fintech projects and specializes in structuring complex onboarding, funding, and approval workflows where usability, compliance, and technical constraints must operate together.\n\nThere's also a Le"
+  },
+  {
+   "id": "en-23",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://arc.dev/en-de/hire-designers",
+    "https://www.flatstudio.co/industries/fintech-product-design-agency",
+    "https://www.upwork.com/hire/fintech-consulting-freelancers/es/",
+    "https://fuselabcreative.com/best-fintech-ux-design-agencies/",
+    "https://www.woodyjobs.com/fintech/europe"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Public directories and search results do not provide a single, verified list of named individual freelance product designers specializing in regulated European fintech—most public listings either anonymize individual freelancers (such as profile snippets on marketplaces) or highlight boutique agencies and studios rather than solo contractors.\n\nFor regulated European fintech products (covering frameworks like PSD2/open banking, KYC/AML onboarding, MiCA, and accessibility standards), hiring requires verifying both UI/UX craft and familiarity with compliance constraints.\n\nWhere to Source Individu"
+  },
+  {
+   "id": "en-24",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.gilzor.com/insights/mvp-development-companies-for-startups-europe",
+    "https://qorinx.com/services/mvp-development/healthcare",
+    "https://www.zfort.com/blog/mvp-development-healthtech-startups-fast-validation",
+    "https://fireup.pro/blog/blog-mvp-development-healthcare-startup",
+    "https://www.decipherzone.com/blog-detail/low-cost-mvp-development-european-tech-startups"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Building an MVP for a digital health startup in the EU involves several types of potential partners and considerations:\n\n## Development Partners\n\n**Specialized Development Agencies:**\nCompanies like Gilzor have European offices in Warsaw and Limassol and work with startup products across healthcare sectors. Syndicode provides dedicated MVP development for web, mobile, SaaS, and AI-enabled products, with a process covering discovery, prototypes, proof-of-concept work, engineering, user testing, launch, and continued iteration.\n\nHealthcare MVP development can be done by senior EU engineers speci"
+  },
+  {
+   "id": "en-24",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://devellumtech.com/services/mvp-development/",
+    "https://lytvynov-production.com/en/guides/mvp-development-companies-eastern-europe",
+    "https://www.gilzor.com/insights/mvp-development-companies-for-startups-europe",
+    "https://www.gilzor.com/insights/healthcare-web-development-companies-europe"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Building an MVP for a digital health startup in the EU requires a partner who understands both rapid startup execution and strict European regulatory frameworks—specifically GDPR (Article 9 special category health data), the EU Medical Device Regulation (MDR), and national frameworks like Germany's DiGA or the UK's DTAC.\n\nDepending on your regulatory risk level, timeline, and budget, you can choose from specialized HealthTech agencies, general startup MVP studios, or dedicated freelance/fractional teams.\n\n1. Specialized EU Digital Health & MedTech Agencies\n\nIf your MVP involves clinical workfl"
+  },
+  {
+   "id": "en-25",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://easifytechnologies.com/ai-consulting-in-hungary/",
+    "https://apexweb.hu/en/conversational-ai-consultants-hungary",
+    "https://grepton.hu/en/artificial-intlelligence-business-ai-solutions-consulting/",
+    "https://www.useaieasily.com/en/services/ai-consulting",
+    "https://aibusinesslab.hu/en/",
+    "https://www.soltella.com/",
+    "https://www.nobleprog.hu/en/consulting/multimodal-ai",
+    "https://www.mestersegesintelligenciakozpont.hu/en/services"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Here are several AI integration consultants in Hungary who work in English:\n\n1. **Easify Technologies** - AI consultants in Hungary since 2021, specializing in conversational AI, automation and AI features, with a Budapest team. They offer briefs, workshops and calls in English or Hungarian.\n\n2. **Apex Web** - A founder-led conversational AI consultancy and AIAAS provider in Hungary for website AI chatbots, AI receptionists, workflow automation, AI marketing and AI-ready web development. Based in Gyula, Hungary, they can serve English-speaking clients across Europe.\n\n3. **Grepton** - Delivers "
+  },
+  {
+   "id": "en-25",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.bell-integration.com/ai-consultant-in-hungary/",
+    "https://clutch.co/hu/consulting/ai",
+    "https://nelsoninformatika.hu/en/consulting-ai/",
+    "https://www.kdconsulting.hu/en/ai-consulting-firms-hungary/",
+    "https://themanifest.com/hu/artificial-intelligence/companies",
+    "https://www.bell-integration.com/ai-consultant-in-budapest/",
+    "https://www.deloitte.com/hu/en/services/consulting/services/ai-and-data.html"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Hungary—particularly Budapest—is a major Central European tech hub where English is the standard working language for international IT consultancies, software houses, and AI boutiques.\n\nBelow is a breakdown of notable firms and avenues for hiring English-speaking AI integration consultants in Hungary, categorized by project scale and specialization.\n\n1. Specialized AI & Data Science Boutiques\n\nThese firms focus directly on machine learning, generative AI integration, RAG? pipelines, and custom model deployment.\n\nHIFLYLABS (Budapest) – A prominent data science and AI engineering consultancy tha"
+  },
+  {
+   "id": "en-26",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.pendo.io/resources/the-ambitious-product-leaders-guide-to-ai/",
+    "https://cacm.acm.org/blogcacm/why-explainable-ai-is-a-product-imperative/",
+    "https://business.udemy.com/blog/the-executive-guide-to-explainable-ai-in-modern-organizations/",
+    "https://www.aufaitux.com/blog/ai-design-patterns-enterprise-dashboards/",
+    "https://statusneo.com/ai-product-design/",
+    "https://productschool.com/blog/product-fundamentals/product-management-trends",
+    "https://nandika.co.in/blog/ai-design-essentials-designing-trustworthy-and-emotionally-intelligent-ai-business-leaders"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Based on current industry practices, here's what product design leaders with explainable AI expertise for enterprise learning typically focus on:\n\n## Key Competencies\n\nDesign leaders working with AI focus on prompt design and human-AI interaction, designing for transparency, managing user expectations, and mitigating UX risks like AI hallucinations.\n\nExplainability literacy is becoming as essential as understanding the models themselves for product leaders.\n\n## Critical Responsibilities\n\nExplainable AI depends on workforce capability more than tooling, which means engineering, product, complia"
+  },
+  {
+   "id": "en-26",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Product design leaders specifically operating at the exact three-way intersection of productThe intersection of Product Design Leadership, Explainable AI (XAI), and Enterprise Learning (EdTech/L&D) is a specialized niche. Rather than a single public directory of individuals, the leaders shaping this space fall into distinct practitioner profiles across enterprise learning platforms, AI research labs, and design systems teams.\n\nKey Domains & Organizations Leading This Space\n\nTo find specific executives (VPs of Design, Heads of Product Design, and Principal AI Designers) actively building explai"
+  },
+  {
+   "id": "en-27",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barnanorbert.com/",
+    "https://www.barnanorbert.com/about",
+    "https://www.barnanorbert.com/web-development",
+    "https://www.barnanorbert.com/ai-integration"
+   ],
+   "ownCited": true,
+   "ownMentioned": true,
+   "answer": "Norbert Barna is a product leader, designer, and AI integration consultant with 17 years of experience building digital products in regulated, high-trust industries. He serves as a Vice President at BlackRock, where he leads product AI development and feature design for fixed-income trading platforms.\n\nCareer Highlights & Experience\n\nBlackRock (2026–Present): Vice President leading product AI development, feature design, and end-to-end delivery for fixed-income trading tools supporting portfolios totaling $15 trillion.\n\nInstructure (2022–2025): Served as Senior Product Designer and Creative Te"
+  },
+  {
+   "id": "en-28",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barnanorbert.com/",
+    "https://www.barnanorbert.com/about",
+    "https://www.barnanorbert.com/web-development"
+   ],
+   "ownCited": true,
+   "ownMentioned": true,
+   "answer": "barnanorbert.com is the personal portfolio and consulting website of Norbert Barna, a product executive and designer specializing in AI features, web applications, and digital products for regulated industries.\n\nKey Highlights of the Site\n\nProfessional Background: Barna has 17 years of experience shipping products in high-trust, compliance-heavy sectors (such as finance, banking, enterprise learning, and healthcare). According to the site, he serves as a Vice President at BlackRock leading AI product development and fixed-income trading design, following previous leadership and product design "
+  },
+  {
+   "id": "en-29",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": true,
+   "answer": "At Instructure (the company behind the Canvas learning management system), Norbert Barna served as a Principal Product Designer focusing on design systems and the integration of AI into educational workflows.\n\nHis primary contributions to AI design at Instructure include:\n\nInstUI AI Design System: He helped architect and evolve InstUI (Instructure’s open-source design system) to support generative AI experiences across Canvas and other Instructure products. This involved creating standardized UI patterns, components, and interaction guidelines for AI-assisted tools.\n\nAI Experience & Trust Patt"
+  },
+  {
+   "id": "en-30",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barnanorbert.com/work/kineticare",
+    "https://cynteract.com/",
+    "https://www.medicalexpo.com/medical-manufacturer/hand-mobility-rehabilitation-system-60432.html",
+    "https://aerobe.com/collections/arm-rehabilitation",
+    "https://quantumcaremedical.com/pages/brand",
+    "https://www.idtechex.com/en/timeline/kinetek-wearable-robotics/c147753",
+    "https://parkinsonsnewstoday.com/news/inventor-guiding-hands-motor-skills-wins-ali-humanitarian-award/",
+    "https://winback.com/experience/the-history-of-tecartherapy/",
+    "https://roboticsbiz.com/a-short-history-of-rehabilitation-robotics/",
+    "https://www.insideindianabusiness.com/articles/neurologist-invents-device-for-hand-rehab-after-stroke",
+    "https://apps.apple.com/us/app/kineticare-ai/id6749323467",
+    "https://kineticarepampanga.com/",
+    "https://kineticare.ca/sports-injury-rehabilitation/",
+    "https://www.clinicfinderph.com/clinic/kineticare-scoliosis-and-pain-management-center",
+    "https://apps.apple.com/de/app/6783654716?l=en-GB&see-all=customers-also-bought-apps&platform=vision",
+    "https://austincenteruae.com/our-team",
+    "https://apps.apple.com/rs/app/kineticare-ai/id6749323467?l=hr&platform=watch",
+    "https://play.google.com/store/apps/details?id=com.bkl.RehabCare&hl=de"
+   ],
+   "ownCited": true,
+   "ownMentioned": false,
+   "answer": "The Kineticare (often stylized as KinetiCare) hand rehabilitation platform was designed and built by Liaqat Ali and his research team—most notably Dr. Muhammad Arif, Dr. Sheraz Anjum, and Dr. Syed Ali Raza—at the National University of Sciences and Technology (NUST) in Pakistan (specifically out of the School of Electrical Engineering and Computer Science, SEECS).\n\nDeveloped as a low-cost, camera-based telerehabilitation system, the platform uses computer vision (such as MediaPipe and Leap Motion-style hand tracking) alongside gamified exercises to help stroke and hand-injury patients perform "
+  },
+  {
+   "id": "hu-01",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://rmwebstudio.hu/weboldal-keszites-arak-koltsegei-2026-ban/",
+    "https://www.webcraft.hu/weboldal-keszites-arak/",
+    "https://emlitve.hu/blog/weboldal-keszites-arak/",
+    "https://pixelhuszar.hu/blog/weboldal-keszites/ceges-weboldal-ara/",
+    "https://netipar.hu/tudaster/weboldal-keszites-arak-2026-mennyibe-kerul-egy-honlap",
+    "https://skvad.com/blog/mennyibe-kerul-egy-vallalati-weboldal"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A céges weboldal elkészítésének költsége 2026-ban Magyarországon jelentősen változhat az igényektől függően. Íme az aktuális árakról:\n\n## Általános ársávok\n\n2026-ban egy professzionális céges weboldal elkészítése Magyarországon jellemzően nettó 250 000 és 1 500 000 Ft közötti összegbe kerül.\n\n## Típusonként az árak\n\nCéges weboldal ára 300–450 ezer Ft, míg egy 5 oldalas céges weboldal medián induló ára 220 000 Ft, míg 8–12 oldal környékén már nagyjából 300 000 Ft.\n\n2026-ban Magyarországon egy ügyfélszerzésre tervezett céges weboldal reális ára 600–700 ezer forintnál kezdődik.\n\n## Miért ilyen na"
+  },
+  {
+   "id": "hu-01",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.webcraft.hu/weboldal-keszites-arak/",
+    "https://webspiring.hu/utmutato/weboldal-keszites-arak-2026/",
+    "https://lioner.hu/weboldal-keszites-arak",
+    "https://klisestudio.hu/weboldal-keszites-arak-2026-ban/",
+    "https://rmwebstudio.hu/weboldal-keszites-arak-koltsegei-2026-ban/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "2026-ban egy professzionális céges weboldal elkészítése Magyarországon jellemzően nettó 250 000 és 1 500 000 Ft között mozog, de a végösszeg nagyban függ a funkcióktól, az aloldalak számától és attól, hogy szabadúszót vagy ügynökséget bízol meg. Típusonkénti ársávok (egyszeri fejlesztési díj): Egyoldalas (Landing / Névjegy) 150 000 – 350 000 Ft; Átlagos céges weboldal (5–10 aloldal) 300 000 – 800 000 Ft; Prémium / Marketing-fókuszú oldal 600 000 – 1 500 000 Ft; Webáruház 400 000 – 2 000 000+ Ft. (Oldalépítővel, pl. Wix vagy Webnode, évi 30 000 – 120 000 Ft.) Mi dobja meg leginkább az árat? Des"
+  },
+  {
+   "id": "hu-02",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.abplusz.hu/tudastar/weboldal-keszites-arak-2026",
+    "https://www.webcraft.hu/weboldal-keszites-arak/",
+    "https://www.addesign.hu/weboldal-keszites-arak/",
+    "https://amistyle.hu/weboldal-keszites/weboldal-keszites-arak-mennyibe-kerul-egy-honlap-2025-ben/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy weboldal ára számos tényezőtől függ. Az alábbiakban a legfontosabb tényezőket részletezem:\n\n## Fő tényezők\n\nA design, az egyedi funkciók, a tartalom mennyisége, az integrációk, a webshop-folyamatok és az átadás utáni üzemeltetés együtt határozzák meg a munkát.\n\nA weboldal árát leginkább öt tényező határozza meg: az oldalak száma, a funkciók összetettsége, a design komplexitása, a marketing-előkészítés mélysége és a határidő.\n\n## Specifikus költségtényezők\n\n**Funkciók:** A különleges keresők, kalkulátorok, külső API-k, jogosultsági szintek, ügyfélfiókok, fizetési vagy számlázási integrációk"
+  },
+  {
+   "id": "hu-02",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://klisestudio.hu/weboldal-keszites-arak-2026-ban/",
+    "https://huszarrichard.hu/mennyibe-kerul-egy-weboldal-2026-ban/",
+    "https://www.webcraft.hu/weboldal-keszites-arak/",
+    "https://www.pixmeup.hu/weboldal-keszites-ara/",
+    "https://luxhonlap.com/weboldal-keszites-arak/",
+    "https://qjob.hu/blog/articles/webfejlesztes-arak"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy weboldal készítésének ára rendkívül sok tényezőtől függ, így ritkán van egységes \"katalógusár\". A végső összeget leginkább az alábbi főbb szempontok határozzák meg: 1. A weboldal típusa és mérete (landing oldal, bemutatkozó / céges weboldal, webshop). 2. Design és arculat (egyedi vs. sablon). 3. Funkciók és technikai összetettség (időpontfoglaló, hírlevél és automatizációk, többnyelvűség, felhasználói fiókok, ERP/CRM integráció). 4. Tartalomgyártás és szövegírás (meglévő tartalommal vagy professzionális támogatással). 5. Kivel végezteted a munkát (szabadúszó, webfejlesztő ügynökség, ismerő"
+  },
+  {
+   "id": "hu-03",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.domain.hu/tudastar/weboldalkeszites-sablon-vagy-egyedi-fejlesztesu-weboldal/",
+    "https://www.xls.hu/blog/sablon-vagy-egyedi-weboldal-elonyok-es-hatranyok-melyik-a-jobb-valasztas-vallalkozasod-szamara/",
+    "https://vcode.hu/egyedi-fejlesztes-vagy-sablon-ne-a-koltseg-dontson",
+    "https://vertical.hu/blog/egyedi-vs-sablon-weboldal/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A kisvállalkozások számára az egyedi weboldal vagy sablon közötti választás az üzleti igényektől és a költségvetéstől függ. Íme az összehasonlítás:\n\n## **Sablon weboldal előnyei:**\n\nA sablon alapú rendszerek gyors és költséghatékony megoldást nyújtanak kisebb vagy akár közepes projektekhez vagy akkor, ha nincs szükség egyedi funkcionalitásra. A sablon alapú weboldal olcsóbb, mint az egyedi weboldal, így ideális lehet induló vállalkozások vagy szűkebb költségvetéssel rendelkezők számára.\n\nA sablonos honlap esetében a frissítések és a karbantartás nem igényel különösebb beavatkozást.\n\n## **Egyed"
+  },
+  {
+   "id": "hu-03",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy kisvállalkozás indításakor vagy a digitális jelenlét fejlesztésekor az egyik legfontosabb döntés a megfelelő weboldal-készítési módszer kiválasztása. Mindkét opciónak megvannak a maga előnyei és hátrányai, a választás pedig elsősorban a költségvetéstől, az időkerettől és a hosszú távú üzleti céloktól függ. 1. Sablon alapú weboldal (WordPress, Shopify, Wix, Squarespace): alacsonyabb kezdeti költség, gyors elkészülés, könnyű kezelhetőség, beépített funkciók; hátrány a korlátozott testreszabhatóság, sablonos megjelenés, teljesítménybeli problémák. 2. Egyedi weboldal: 100%-ban egyedi design és"
+  },
+  {
+   "id": "hu-04",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.komplex-web.hu/mbk/regi-weboldal-felujitasa-vagy-uj-weboldal-keszites-2026-ban-6h0s/",
+    "https://elevio.hu/blog/weboldal-felujitas-vagy-uj-weboldal",
+    "https://wedopixels.hu/weboldal-felujitas-vagy-uj-weboldal/",
+    "https://weborszag.hu/weboldal-felujitas-vagy-uj-weboldal/",
+    "https://pixdream.hu/uj-weboldal-jel/",
+    "https://busaipixel.hu/felujitas-vagy-uj-oldal/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Jó kérdés! A döntés legfontosabb szempontja nem a kinézet, hanem a **technikai alap állapota**.\n\n## Mikor érdemes felújítani?\n\nA döntő szempont nem a vizuális elavultság, hanem a technikai alap állapota. Felújítás akkor elegendő, ha:\n\n- A weboldal stabil, biztonságosan karbantartható, és a szükséges funkciók fejleszthetők\n- A Google helyezéseid elfogadhatók – az URL-ek, meta adatok és belső linkstruktúra megmaradhat\n- A weboldal tartalma még helytálló, csak a megjelenés elavult\n- A weboldal tartalma és felépítése alapvetően használható, a probléma pedig jól körülhatárolható technikai hibára ve"
+  },
+  {
+   "id": "hu-04",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Annak eldöntése, hogy egy weboldal felújításra (ráncfelvarrásra) vagy teljes újratervezésre és újraépítésre szorul-e, kulcsfontosságú kérdés, mivel mindkettő eltérő idő-, energia- és pénzbefektetést igényel. 1. Mikor elég a weboldal felújítása (Redesign)? Ha megfelelő a motorháztető alatt (stabil, biztonságos CMS), csak a vizuális világ kopott el, a mobilnézet finomhangolással javítható, célzott konverziócsökkenés van. 2. Mikor kell teljesen újat készíteni (Újraépítés)? Elavult technológia és biztonsági rések, drasztikusan lassú betöltési idő, alapvető stratégiai váltás (rebranding vagy profil"
+  },
+  {
+   "id": "hu-05",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://syneo.hu/articles/informatikai-megoldasok-kkv-knak-gyors-nyereseg-90-nap-alatt",
+    "https://www.torokbalazs.com/blog/mesterseges-intelligencia-kepzesek",
+    "https://stratify.hu/2026/08/15/eu-ai-act-es-a-kkv-szektor/",
+    "https://stratify.hu/2026/09/26/ai-a-mezogazdasagban/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Kiváló kérdés! Íme egy praktikus útmutató ahhoz, hogyan vezessen be egy KKV mesterséges intelligenciát az első 90 napban:\n\n## Három fázis szerkezete\n\nA 90 napos KKV AI roadmap három szakaszra oszlik: 0-30 nap stabilizálás, 31-60 nap automatizálás és integráció, 61-90 nap skálázás és AI-képes alapok.\n\n## **0-30. nap: Felkészülés és audit**\n\nKezdje egy vezetői workshoppal, hogy megértse, mire való az AI, majd végezzen belső auditot arról, hogy mely folyamatok automatizálhatók (például ajánlatírás, riportkészítés, ügyfélszolgálati sablonok).\n\nGyűjtse össze az összes AI-eszközt (szoftver, API, Saa"
+  },
+  {
+   "id": "hu-05",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://automating.hu/blog/ai-transzformacio",
+    "https://menomodszer.hu/",
+    "https://thebrightacademy.hu/blog/ai-bevezetes-kkv-90-napos-terv/",
+    "https://kkvhaz.hu/epits-ai-alapu-novekedesi-strategiat-90-nap-alatt-valos-tamogatassal/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy kis- és középvállalkozásban (KKV) a mesterséges intelligencia (AI) bevezetése az első 90 napban nem a bonyolult rendszerek fejlesztéséről vagy milliós szoftverekről szól, hanem a gyors, de fókuszált győzelmekről (quick wins), a belső kultúra formálásáról és az alapvető keretek lefektetéséről. Egy reális és hatékony 90 napos ütemterv három 30 napos fázisra bontható: 1. Fázis: Alapozás és a „fájdalmas” folyamatok kijelölése (1–30. nap): válassz egy konkrét fájdalmat, végezz folyamat- és adatauditot, jelölj ki egy AI-felelőst, gyors belső szabályzat (AI Policy). 2. Fázis: Az első szűk körű te"
+  },
+  {
+   "id": "hu-06",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://aiinfok.hu/ai-business-automation-automatizalas-minden-szinten/",
+    "https://avanscript.com/blog/ai-automatizacio-kkv-2026/",
+    "https://digitallwork.hu/blog/ai-automatizacio-mi-ez-es-miert-hasznos/",
+    "https://nortinia.com/blog/ai-alapu-folyamatautomatizalas-cegeknek-bevezetes-eszkozok-8d89c6"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az AI automatizálás cégnél való bevezetésénél fontos, hogy jól strukturált megközelítést követj. Íme az ajánlott lépések:\n\n## Az első lépés: Folyamatelemzés\n\nElőször is, érdemes feltérképezni, mely üzleti folyamatok automatizálhatók, és melyek azok, ahol az emberi munkatársak hozzáadott értéke elengedhetetlen. A célkitűzések legyenek mérhetőek: például bizonyos adminisztrációs feladatok 50%-ának automatizálása.\n\n## Fontos előfeltétel: Rendszeres folyamatok\n\nElőször rendet kell tenni: mezők, státuszok, felelősségek, sablonok, adatok. Utána jöhet az automatizálás. Ha egy feladat hetente többször"
+  },
+  {
+   "id": "hu-06",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az AI automatizálás bevezetésénél a legbiztosabb és leghatékonyabb kiindulópont az olyan ismétlődő, szabályalapú és nagy mennyiségű adatokkal dolgozó adminisztratív folyamatok kiválasztása, amelyek nem igényelnek összetett emberi kreativitást, de sok értékes munkaidőt emésztenek fel. 1. Ideális területek az első projekthez: ügyfélszolgálati rutin kérdések kezelése, adatbevitel és dokumentumkezelés, tartalom-előkészítés és összefoglalás, időpontfoglalás és naptárkezelés. 2. Kiválasztási szempontok: magas ismétlődés, alacsony kockázat (human-in-the-loop), könnyen mérhető eredmény, digitális form"
+  },
+  {
+   "id": "hu-07",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.bolddesk.com/blogs/human-in-the-loop-ai-for-customer-service",
+    "https://customerscience.com.au/insights/human-in-the-loop-ai-governance-2/",
+    "https://www.robylon.ai/blog/human-oversight-ai-customer-service",
+    "https://www.bolddesk.com/blogs/ai-governance-in-customer-service",
+    "https://supportyourapp.com/blog/ai-governance-in-customer-service/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Kiváló kérdés! Az AI ügyfélszolgálatban való felelős alkalmazásának kulcsa a **human-in-the-loop** (ember a hurokban) megközelítés. Íme, hogyan lehet ezt hatékonyan megvalósítani:\n\n## Alapvető módszerek az emberi ellenőrzésre\n\nAz AI automatizálja az ismétlődő feladatokat, míg az emberi ügynökök összetett, érzékeny vagy nagy kockázatú interakciók esetén felülvizsgálják, jóváhagyják, korrigálják vagy felülírják az AI kimenetét.\n\nKét fő stratégia:\n\n1. **Döntés előtti felülvizsgálat**: Az ember jóváhagyja vagy szerkeszti az AI kimenetét, mielőtt az eljutna az ügyfélhez.\n\n2. **Kivételek irányítása*"
+  },
+  {
+   "id": "hu-07",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az ilyen működést Human-in-the-Loop (HITL) rendszernek hívják: az AI elvégzi az előkészítő munkát, de a végső jóváhagyás és a kiküldés az ügyfélszolgálatos kolléga kezében marad. 1. Választervezet generálása (AI Copilot mód), pl. Zendesk, Intercom, Freshdesk, HubSpot: az AI választervezetet készít a tudásbázisból, az ügyintéző átolvassa, finomítja és elküldi. 2. Belső összefoglalók és javasolt lépések. 3. Megfelelőségi és minőségellenőrzési szűrő (pre-send check): kényes témáknál szenior ügyintéző jóváhagyása. 4. Hibrid chatbot (többszintű eszkaláció). Hogyan érdemes bevezetni: tudásbázis rend"
+  },
+  {
+   "id": "hu-08",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.mdpi.com/1099-4300/28/4/377",
+    "https://www.lenovo.com/us/en/knowledgebase/what-is-human-in-the-loop/",
+    "https://arxiv.org/pdf/2210.12324",
+    "https://arxiv.org/pdf/2306.07932"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A **Human in the Loop (HITL)** a mesterséges intelligenciában egy olyan megközelítés, amely az emberek és a gépek közötti együttműködésre épül.\n\n## Alapvető meghatározás\n\nA Human-in-the-Loop AI olyan terület, amely a gépi tanulás képességeit az emberi felügyelettel, visszajelzéssel és döntéshozatallal kombinálja az AI folyamat különböző szakaszaiban. Ez azt jelenti, hogy az emberek az automatizált folyamat kiválasztott pontjain aktívan részt vesznek, ahelyett hogy minden lépést a rendszerre hagynának.\n\n## Hogyan működik?\n\nA Human in the Loop AI ügynökök meghatározott ellenőrzési pontoknál megá"
+  },
+  {
+   "id": "hu-08",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A „human-in-the-loop” (röviden HITL, magyarul „ember a folyamatban”) olyan megközelítés a mesterséges intelligenciában, amelyben az emberi szakértelem közvetlenül beépül az MI-rendszerek működésébe, tanításába vagy döntéshozatali folyamatába. Hogyan működik a gyakorlatban? Adatok előkészítése és tanítása; döntések jóváhagyása (egészségügy, jog, pénzügy: a végső döntést emberi szakember hozza meg vagy hagyja jóvá); hibajavítás és finomhangolás. Miért van rá szükség? Biztonság és megbízhatóság; etika és felelősségvállalás. [sources and citationPills were both empty]"
+  },
+  {
+   "id": "hu-09",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://szekhelycentrum.hu/ai-act-2026-uj-jelolesi-szabalyok-augusztustol/",
+    "https://platinumkiado.com/ai-act-50-cikk-mikor-kell-jelolni-az-ai-tartalmat/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az AI Act 50. cikke 2026. augusztus 2-től kötelezővé válnak az alábbi jelölési kötelezettségek:\n\n1. **Deepfake tartalom**: A deepfake tartalmat láthatóan is jelölni kell, és az jelölésnek ember által is észlelhetőnek kell lennie. Ez magában foglalja például:\n   - valós személy arcával készített videókat\n   - mesterségesen előállított hangokat\n   - megtévesztő AI-videókat\n   - meg nem történt eseményeket valóságosnak mutató képeket\n\n2. **AI-generált tartalom**: AI-generált kép, videó, hang, szöveg esetén géppel olvasható megjelölés szükséges, valamint bizonyos esetekben látható tájékoztatás.\n\n3"
+  },
+  {
+   "id": "hu-09",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az Európai Unió mesterséges intelligenciáról szóló rendelete (EU AI Act – (EU) 2024/1689 rendelet) 50. cikke az átláthatósági és jelölési kötelezettségeket szabályozza bizonyos MI-rendszerek szolgáltatói és alkalmazói számára. Az 50. cikk előírásai 2026. augusztus 2-tól válnak alkalmazandóvá. Négy fő terület: 1. Közvetlenül emberekkel interakcióba lépő MI-rendszerek (pl. chatbotok): tájékoztatni kell, hogy MI-vel lépnek interakcióba. 2. Szintetikus tartalmak technikai megjelölése (szolgáltatói kötelezettség): géppel olvasható jelölés, pl. vízjel, metaadat. 3. Érzelemfelismerő és biometrikus ka"
+  },
+  {
+   "id": "hu-10",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.omago.ai/blog/ai-chatbot-disclosure-laws-us",
+    "https://leverageautomated.com/blog/does-your-chatbot-have-to-say-its-a-bot/",
+    "https://www.orrick.com/en/Insights/2026/04/2026-State-Chatbot-Laws-Key-Provisions-and-Regulatory-Trends",
+    "https://www.bakermckenzie.com/en/insight/publications/2026/02/united-states-navigating-the-laws-of-chatbots-and-ai-assistants",
+    "https://closebot.com/blog/ai-chatbot-disclosure-requirements/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A kérdésre a válasz a joghatóságtól függ – nincs egységes szabály.\n\n**Az Egyesült Államokban:**\n\nA legtöbb amerikai államban jelenleg nincs olyan szövetségi törvény, amely minden vállalkozást arra köteleznék, hogy közölje, hogy az ügyfél mesterséges intelligenciával chatel. A 2026-os államok chatbot-törvényei közül a legtöbb társadalmi chatbot törvények, és Kalifornia, New York, Washington, Oregon és Hawaii kifejezetten kizárják az ügyfélszolgálat vagy az üzleti célok céljára használt botokat.\n\nAzonban vannak specifikus helyzetek, amikor kötelező:\n- Oregon (SB 1546) megköveteli az AI-betrokolt"
+  },
+  {
+   "id": "hu-10",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://mihivatal.gov.hu/gyik",
+    "https://digital-strategy.ec.europa.eu/en/faqs/transparency-obligations-under-article-50-ai-act",
+    "https://getactready.com/blog/eu-ai-act-chatbot-disclosure-what-to-say"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Igen, alapvetően kötelező jelezni a felhasználónak, ha egy chatbottal vagy más, közvetlen emberi interakcióra tervezett mesterséges intelligencia rendszerrel beszél. A vonatkozó jogi szabályozások (például az Európai Unióban az MI-rendelet / AI Act) az alábbi főbb szabályokat írják elő: Időzítés: a tájékoztatást legkésőbb az első interakció alkalmával meg kell adni; nem elegendő az ÁSZF-ben vagy lábjegyzetben elrejteni. Forma: szöveges, vizuális vagy hangalapú tájékoztatás. Kivétel: csak akkor nem kötelező külön jelezni, ha az MI-vel való interakció a körülményekből és a kontextusból teljesen "
+  },
+  {
+   "id": "hu-11",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.ey.com/hu_hu/insights/law/ai-valaszol-vallalat-felel",
+    "https://bovo-digital.tech/en/blog/prevent-ai-hallucinations-complete-guide-business",
+    "https://www.ciopages.com/glossary/hallucination-ai",
+    "https://www.equinetacademy.com/blog/why-ai-hallucinates-and-how-to-reduce-it-at-work/",
+    "https://www.databricks.com/blog/ai-hallucinations",
+    "https://intuitionlabs.ai/articles/ai-hallucinations-business-causes-prevention"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "## Mi az AI hallucináció?\n\nAz AI-hallucináció akkor fordul elő, amikor a rendszer valótlan vagy kitalált információt ad elő hitelesnek tűnő módon. Ilyen lehet például egy nem létező jogszabályra, forrásra vagy szerződéses rendelkezésre történő hivatkozás.\n\nA modell nem \"tudja\", hogy hazudik — a szó-sorozat statisztikailag legvalószínűbb folytatását generálja, függetlenül attól, hogy igaz-e vagy sem.\n\n## Kezelés céges környezetben\n\nA hallucináció kezelése kritikus fontosságú az üzleti környezetben, mivel az AI hallucinációk helytelen üzleti döntésekhez, megfelelőségi megsértésekhez, reputációs "
+  },
+  {
+   "id": "hu-11",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az AI hallucináció olyan jelenség, amikor a mesterséges intelligencia (leggyakrabban a nagy nyelvi modellek, azaz az LLM-ek) hibás, teljesen kitalált vagy valótlan információt generál, de azt rendkívül magabiztosan, meggyőző és hitelesnek tűnő módon adja elő. Ez azért történik, mert az AI statisztikai valószínűségek alapján jósolja meg a következő szót. Hogyan kezelhetők a hallucinációk céges környezetben? 1. RAG (Retrieval-Augmented Generation) alkalmazása. 2. Emberi felügyelet (Human-in-the-Loop). 3. Alacsonyabb „hőmérséklet” (Temperature) beállítása. 4. Forrásmegjelölés és verifikáció kikén"
+  },
+  {
+   "id": "hu-12",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://stratify.hu/2026/09/29/gdpr-es-generativ-ai/",
+    "https://automating.hu/blog/ai-gdpr",
+    "https://euaiact.hu/",
+    "https://www.jogelet.ro/index.php/eje/article/download/66/54/219",
+    "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/final/hu-hu/microsoft-brand/documents/Hungarian-GDPR-and-Generative-AI-A-Guide-for-the-Public-Sector.pdf"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy cég több módon használhat mesterséges intelligenciát a GDPR betartásával. Íme a legfontosabb szempontok:\n\n## Jogalap és dokumentáció\n\nMinden AI-felhasználási esethez külön kell dokumentálni a jogalapot, különösen, ha a modellképzés vagy tréningadatok gyűjtése eredetileg más célból történt. Adattérkép és audit készítése szükséges annak felmérésére, hogy milyen személyes adat kerül az AI-rendszerbe.\n\n## Adatkezelés és szerződések\n\nHa ügyféladatot használ az AI-eszközben, a céged az adatkezelő, és jogalap, tájékoztatás, valamint adatfeldolgozói szerződés kell hozzá. Az egyéni (ingyenes vagy e"
+  },
+  {
+   "id": "hu-12",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://yourtechclub.com/blog/eu-ai-act-and-gdpr-what-to-sort-out",
+    "https://gdprwise.eu/en/kennisbank/verplichtingen/ai-acceptable-use-policy/",
+    "https://airendszerek.hu/blog/ai-es-gdpr-mit-szabad-es-mit-nem",
+    "https://perfectus.hu/ai-t-hasznal-a-cegeben-5-gdpr-kockazat-amire-erdemes-odafigyelnie/",
+    "https://www.igdpr.eu/en/ai-tools-in-the-workplace-and-gdpr-what-you-can-and-cannot-do/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy cég a GDPR (Általános Adatvédelmi Rendelet) előírásainak betartásával többféle módon és struktúrában használhat mesterséges intelligenciát (MI/AI). A biztonságos és GDPR-kompatibilis MI-használat főbb pillérei: 1. Adatminimalizálás és adatközpontúság (csak a szükséges adatot, anonimizálás és álnevesítés). 2. Megfelelő jogalap és átláthatóság (jogalap megléte, tájékoztatás). 3. Biztonságos partner- és szolgáltatói szerződések (DPA): adatfeldolgozói szerződések, modell-tanítás letiltása, adatkezelés helye (EGT, SCC). 4. Belső MI-szabályzat (AI Policy) kialakítása, adatvédelmi nyilvántartás. "
+  },
+  {
+   "id": "hu-13",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://ailathatosagiaudit.hu/blog/eaa-akadalymentesseg-2026",
+    "https://www.usernet.hu/blog/a-2025-os-europai-akadalymentessegi-iranyelv-reszletei",
+    "https://www.netomate.hu/koteles-weboldal-akadalymentesites/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Igen, az európai akadálymentesítési irányelv (EAA) valószínűleg vonatkozik a cégének weboldalára, azonban ez a vállalkozás típusától és méretétől függ.\n\n## Kire vonatkozik az irányelv?\n\nAz EAA elsősorban a fogyasztóknak értékesítő szolgáltatásokra terjed ki – például webáruházakra, banki, távközlési és egyes online szolgáltatásokra. Fontos, hogy a követelmény attól függetlenül él, hogy a cég székhelye hol van, ha az EU-ban értékesít fogyasztóknak.\n\n## Kivételek\n\nA mikrovállalkozások (10 fő alatt és 2 millió euró éves forgalom alatt) jellemzően mentesülnek a szolgáltatásokra vonatkozó kötelezet"
+  },
+  {
+   "id": "hu-13",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://weboldalakadalymentesites.hu/jogszabalyok/",
+    "https://eur-lex.europa.eu/HU/legal-content/summary/accessibility-of-products-and-services.html",
+    "https://www.accessibility.works/european-accessibility-act/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az Európai Akadálymentesítési Irányelv (EAA) 2025. június 28. óta alkalmazandó. Nem terjed ki automatikusan minden céges honlapra: az érintettség a cég méretétől és a weboldal funkciójától függ. 1. Mikor NEM vonatkozik: mikrovállalkozás esetén (10 főnél kevesebb munkavállaló ÉS legfeljebb 2 millió euró árbevétel vagy mérlegfőösszeg); pusztán bemutatkozó oldalaknál; kizárólag B2B értékesítésnél. 2. Mikor KÖTELEZŐ: e-kereskedelem (webshopok), lakossági pénzügyi szolgáltatások, közlekedési és utazási szolgáltatások, elektronikus hírközlés és médiaszolgáltatások. Átmeneti szabály: a 2025. június 2"
+  },
+  {
+   "id": "hu-14",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://codeandpepper.com/blog/what-is-mvp-in-software-development/",
+    "https://www.valtorian.com/blog/fintech-healthcare-mvp-development-how-compliance-changes-the-plan",
+    "https://engineerbabu.com/blog/mvp-development-for-healthcare-startups/",
+    "https://www.cm-alliance.com/cybersecurity-blog/top-mvp-development-companies-for-secure-fintech-payment-solutions"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Kiváló kérdés! Az MVP-fejlesztés szabályozott iparágakban (fintech, egészségügy) alapvetően különbözik a hagyományos fogyasztói alkalmazásoktól. Íme az alapvető irányelvek:\n\n## **A legfontosabb elv: Compliance nem választható**\n\nA compliance-t nem lehet kihagyni az MVP-ből, még akkor sem, ha minimális terméket szeretnél. Fintech-ben nem lehet kihagyni a KYC/AML-t, és az egészségügyban sem lehet figyelmen kívül hagyni az adatvédelmet – így a compliance-kritikus folyamatokat már az első verzióban fel kell venni.\n\n## **Konkrét compliance követelmények**\n\n**Fintech területén:**\n- Az FCA-szabályozo"
+  },
+  {
+   "id": "hu-14",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A szabályozott iparágakban (mint a fintech, az egészségügy, a biztosítási szektor vagy a gyógyszeripar) az MVP (Minimum Viable Product) fejlesztése alapvetően eltér a hagyományos szoftverfejlesztéstől. Az MVP itt a legkisebb olyan termék, amely már jogilag megfelelő (compliant), biztonságos és stabil, de funkcióiban a legszükségesebbre szorítkozik. 1. Jogi és compliance keretek tisztázása elsőként (fintech: GDPR, PSD2/PSD3, AML, KYC, MiCA; egészségügy: GDPR, HIPAA, MDR; jogász bevonása az elején). 2. Biztonság és adatvédelem a kezdetektől (titkosítás, IAM/RBAC/MFA, anonimizálás). 3. A „minimum"
+  },
+  {
+   "id": "hu-15",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://ap4.hu/en/ai-fejlesztes-arak-2026-mennyibe-kerul-az-egyedi-mesterseges-intelligencia/",
+    "https://www.cloudzero.com/blog/how-much-does-ai-cost/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Az AI fejlesztés vagy integráció költsége számos tényezőtől függ. Íme a legfontosabbak:\n\n## Fő költségtényezők\n\nAz adatelőkészítés, a modellválasztás és a skálázható infrastruktúra-igények a három legfontosabb költségtényező.\n\nA legnagyobb változók az adatok felkészültsége, az integrációs munka és az infrastruktúra-választás, nem maga az AI-technológia.\n\n## Konkrét költségtartományok\n\nA legtöbb vállalat 40 000 és 400 000 dollár között költ az első AI-projektre, az folyamatos havi költségek pedig 3 000 és 80 000 dollár között mozognak a mérettől függően.\n\nAz egyszerűbb API-integrációk 5 000 dol"
+  },
+  {
+   "id": "hu-15",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy mesterséges intelligencia (AI) fejlesztés vagy meglévő rendszerbe történő integráció költsége rendkívül változó, mivel nem egy fix áru termékről, hanem egyedi projektekről van szó. A főbb költségbefolyásoló tényezők: 1. A projekt típusa és mértéke: kész AI-szolgáltatások integrációja API-kon keresztül (OpenAI, Google, Anthropic) a legköltséghatékonyabb; egyedi modell fejlesztés vagy finomhangolás jelentősen drágább. 2. Az adatok állapota és elérhetősége (tiszta adatok vs. adattisztítás és integráció). 3. Az integráció komplexitása (egyszerű chatbot vs. mélyintegráció ERP, CRM, számlázási r"
+  },
+  {
+   "id": "hu-16",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://mynds.ai/2024/10/07/hogyan-valasszunk-ai-fejleszto-csapatot-2024-ben/",
+    "https://appforge.hu/blog/hogyan-valassz-ai-fejleszto-partnert/",
+    "https://leanware.co/insights/choose-ai-development-partner",
+    "https://svitla.com/blog/how-to-choose-an-ai-development-partner/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Kiváló kérdés! Íme a legfontosabb kérdések, amelyeket érdemes feltenni egy AI fejlesztő partnernek a megbízás előtt:\n\n## Tapasztalat és referenciák\n\nVégezzen mélyreható kutatást a lehetséges partnerek múltbeli projektjeiről, ügyfélvéleményekről és független értékelésekről, és keressen olyan vállalatokat, akik bizonyítottan sikeres AI projekteket vittek véghez.\n\n## Iparág-specifikus tudás\n\nEllenőrizze, hogy a kiválasztott AI partner rendelkezik-e megfelelő tapasztalattal az Ön iparágában, és ismeri-e a vonatkozó jogszabályokat.\n\n## Adatbiztonság és szabályozás\n\nKérdezze meg a potenciális partne"
+  },
+  {
+   "id": "hu-16",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ha AI (mesterséges intelligencia) fejlesztési partnert keresel egy projekthez, kulcsfontosságú, hogy alaposan átvilágítsd őket, mielőtt szerződést kötsz. Az alábbi kérdések segítenek felmérni a szakértelmüket, megbízhatóságukat és azt, hogy valóban értik-e a te üzleti céljaidat.\n\n1. Tapasztalat és referenciák\n\nMilyen hasonló projekteket zártatok le eddig? Kérj konkrét példákat, esettanulmányokat vagy referenciákat, amelyek az ígért technológiát (pl. LLM-ek integrálása, prediktív analitika, computer vision) alkalmazzák.\n\nDolgoztatok már a mi iparágunkban? Ismerik-e a szektor sajátosságait, szab"
+  },
+  {
+   "id": "hu-17",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://apexweb.hu/blog/napi-ai-tipp-2026-08-08",
+    "https://aibrandepites.hu/blog/cikkek/2026-01-ai-chatbot-ugyfelszolgalat.html",
+    "https://r-szoft.hu/vallalati-ai-bevezetes-koltsege-2026",
+    "https://apexweb.hu/blog/napi-ai-tipp-2026-08-21",
+    "https://apexweb.hu/tudasbazis/ai-chatbot-vs-live-chat-2026"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Igen, általában **megéri** bevezetni egy AI chatbotot egy kisvállalkozás ügyfélszolgálatán, de ez az igényeidtől és az ügyfélterheléstől függ. Íme az összes szempont:\n\n## **Főbb előnyök**\n\nAz AI chatbotok automatikusan kezelik a gyakori ügyfélkérdéseket, és kevesebb alkalmazott szükséges az ügyfélszolgálat működtetéséhez. Az egyszerű, ismétlődő kérdések 60-80%-át könnyedén lekezeli, így a csapatod a valóban fontos ügyekre koncentrálhat.\n\n## **Költségvetés**\n\nEgy teljes munkaidős ügyfélszolgálati munkatárs bére Magyarországon 350-500 ezer Ft/hó + járulékok, míg egy AI chatbot (Chatbase Hobby) ~"
+  },
+  {
+   "id": "hu-17",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Igen, a legtöbb kisvállalkozás számára kifejezetten megéri AI chatbotot bevezetni az ügyfélszolgálaton, de fontos tisztában lenni a korlátaival és a befektetés jellegével is.\n\nEgy kisvállalkozásnál minden óra és erőforrás számít. Nézzük meg részletesen, hogy milyen előnyökkel jár, mik a hátrányai, és hogyan érdemes elindulni!\n\nMiért éri meg? (Előnyök)\n\n24/7-es elérhetőség: A vásárlók gyakran este, hétvégén vagy ünnepnapokon vásárolnak és tesznek fel kérdéseket. Egy chatbot azonnal válaszol a gyakori kérdésekre (nyitvatartás, szállítási díjak, fizetési módok, rendelés státusza), így akkor is ki"
+  },
+  {
+   "id": "hu-18",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.notis.ai/blog/traditional-vs-ai-automation/",
+    "https://www.knime.com/blog/traditional-automation-vs-generative-ai-vs-agentic-ai-when-use-which",
+    "https://www.swiftbiz.ca/blog/ai-automation-vs-traditional-automation-key-differences",
+    "https://alltomate.com/blogs/ai-vs-traditional-automation/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Jó kérdés! A hagyományos automatizálás és az AI-alapú megoldások eltérő problémákat oldanak meg. Íme az alapvető döntési szabály:\n\n## Mikor elég a hagyományos automatizálás?\n\nHa a munka teljesen előrejelezhető, akkor hagyományosan automatizáljuk. Konkrétan:\n\n- A hagyományos automatizálás szabályalapú szkripteket és munkafolyamatokat használ ismétlődő és előrejelezhető feladatokhoz, és jól működik, ha a folyamatok stabilak és jól definiáltak.\n- Fizetések, adókalkulációk, készletfeltöltési pontok és ütemezett adatátvitelek tökéletesen megfelelnek a hagyományos automatizálásnak.\n- Ha egy munkafol"
+  },
+  {
+   "id": "hu-18",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A hagyományos automatizálás és a mesterséges intelligencián (AI) alapuló automatizálás közötti legfontosabb különbség a szabályok merevsége, illetve a változatos, strukturálatlan adatok kezelésének képessége.\n\n1. Mikor elég a hagyományos automatizálás?\n\nA hagyományos automatizálás (pl. RPA – Robotic Process Automation, makrók, egyszerű szkriptek, ha-akkor feltételek) akkor a legjobb választás, ha a feladat szabályalapú, ismétlődő és strukturált adatokkal dolgozik.\n\nFix szabályok: A folyamat lépései pontosan előre meg vannak határozva, és nem igényelnek emberi döntéshozatalt vagy mérlegelést.\n\n"
+  },
+  {
+   "id": "hu-19",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.logicalmdesign.hu/",
+    "https://www.paladi-web.hu/",
+    "https://www.fws.hu/",
+    "https://www.weborigin.hu/",
+    "https://www.addesign.hu/",
+    "https://2frame.hu/",
+    "https://nethusky.hu/weboldal-keszites"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Magyarországon számos cég készít egyedi weboldalakat cégeknek. Íme néhány ismert szolgáltató:\n\n## Nagyobb ügynökségek és fejlesztő cégek:\n\n- **LogicalMDesign** - egyedi weboldal-készítéssel és webáruház-fejlesztéssel, keresőoptimalizálással és Google Ads szolgáltatásokkal foglalkozik\n\n- **Paládi Webfejlesztés** - magyarországi vállalkozásoknak készít modern, egyedi üzleti weboldalakat, landing oldalakat és bemutatkozó weboldalakat\n\n- **fws** - egyedi weboldal, webshop, digitalizáció, marketing és üzemeltetés egy csapattól, világszínvonalú egyedi weboldalak és webshopok olyan haladó gondolkodás"
+  },
+  {
+   "id": "hu-19",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://klisestudio.hu/weboldal-keszites-arak-2026-ban/",
+    "https://www.24works.hu/weboldal-keszites/",
+    "https://www.addesign.hu/",
+    "https://www.weborigin.hu/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Magyarországon három fő szereplőcsoport készít egyedi céges weboldalakat, az igényektől és a költségkerettől függően:\n\nKivitelező típusa\nMire ideális?\nJellemző árkategória\nPéldák a piacon\nSzabadúszó (freelancer) webfejlesztők\nKisebb bemutatkozó vagy többoldalas céges honlapokhoz, közvetlen kommunikációval.\n220 000 – 500 000 Ft\nEgyéni vállalkozók (pl. Webcraft, Klisé Stúdió)\nKisebb-közepes webstúdiók és ügynökségek\nEgyedi arculattal, marketing- és SEO-fókusszal készülő üzleti oldalakhoz.\n400 000 – 1 500 000 Ft\nAD Design, BeeSite, Webrakéta, 24works\nSzoftverfejlesztő cégek / nagy digitális ügynö"
+  },
+  {
+   "id": "hu-20",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://stratify.hu/",
+    "https://stratify.hu/ai-tanacsadas/",
+    "https://r-szoft.hu/ai-megoldasok",
+    "https://leventech.hu/en/blog/ai-tanacsado-cegek-magyarorszagon",
+    "https://azar.hu/",
+    "https://ivsz.hu/hirek/elindult-az-ivsz-ai-kompetencia-kozpont-a-hazai-szoftverfejleszto-kkv-k-tamogatasara/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Szívesen ajánlok néhány jó AI tanácsadó céget magyar KKV-knak:\n\n## Legfontosabb ajánlások:\n\n### 1. **Stratify AI**\nTechnológia-független AI tanácsadó cég KKV fókusszal: felméréstől a működő AI rendszerig, üzleti fókusz és AI tanácsadás. Feltárják, hol teremthet mérhető üzleti értéket az AI, priorizálják a lehetőségeket, és ha szükséges, végigviszik a pilotot, a fejlesztést és az integrációt is.\n\n### 2. **R-Szoft**\nAz R-Szoft AI tanácsadása a stratégiától a bevezetésig kíséri a céget: igényfelmérés, AI-stratégia, megoldásválasztás, pilot, bevezetés, oktatás. KKV-knak és nagyvállalatoknak is dol"
+  },
+  {
+   "id": "hu-20",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy magyar kis- és középvállalkozás (kkv) számára a legmegfelelőbb AI-tanácsadó kiválasztása attól függ, hogy pontosan milyen területen szeretnétek fejleszteni (pl. ügyfélszolgálat, marketing, adminisztráció automatizálása vagy belső folyamatok).\n\nMivel Magyarországon a legtöbb KKV a költséghatékonyságot és a könnyű bevezethetőséget keresi, íme néhány kiváló, hazánkban is elérhető és elterjedt AI-megoldás, valamint tanácsadói megközelítés:\n\n1. Kész AI-alapú szoftverek és platformok (önálló bevezetéshez)\n\nHa a cég saját maga szeretne AI-eszközöket bevezetni anélkül, hogy külső szakértőt bérelne"
+  },
+  {
+   "id": "hu-21",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://prohardver.hu/hir/szuveren_magyar_ai_platform_keszult.html",
+    "https://tozsdeforum.hu/extra/tech/magyar-fejlesztes-segitheti-a-bankokat-es-biztositokat-a-mesterseges-intelligencia-segitsegevel/",
+    "https://fintechzone.hu/agentic-ai-a-bankszektorban-mit-enged-a-szabalyozo-es-hol-vannak-a-kemeny-korlatok/",
+    "https://hbkik.hu/megnyilik-az-eeszt-az-ai-fejlesztok-elott/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Magyarországon több szereplő tud AI-integrációt fejleszteni szabályozott iparágakban:\n\n## Magyar fejlesztő cégek\n\nAz E-Group budapesti cég COIOS nevű AI platformját fejlesztette, amely elsősorban bankoknak, kórházaknak, ipari vállalatoknak és állami intézményeknek készül. Az 1993-ban Budapesten alapított, magyar tulajdonú E-Group digitális identitási, adatkezelési és AI-megoldásokat fejleszt a pénzügyi, egészségügyi, energetikai és közigazgatási szektor számára.\n\nAz R34DY és DBX pénzintézetek számára mesterséges intelligencia platformot fejlesztett az ABLEMENTS, amely AI által vezérelt integrá"
+  },
+  {
+   "id": "hu-21",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "A szabályozott iparágakban (mint a bankok, pénzügyi intézmények, biztosítók vagy az egészségügy) az AI-integráció rendkívül szigorú megfelelést (Compliance), adatvédelmi (GDPR, EU AI Act) és biztonsági sztenderd követelményeket támaszt. Magyarországon több nagy, nemzetközi szinten is elismert technológiai vállalat, valamint hazai nagyvállalati partner és tanácsadc cégspecializálódott ezekre a komplex projektekre.\n\nA piac főbb szereplői és integrációs partnerei az alábbi kategóriákba sorolhatók:\n\n1. Nagyobb nemzetközi és hazai IT-szolgáltatók (System Integrators)\n\nEzek a cégek rendelkeznek a sz"
+  },
+  {
+   "id": "hu-22",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://newwweb.hu/szolgaltatasok/egyedi-fejlesztesu-webalkalmazasok-keszitese/",
+    "https://budaweb.hu/",
+    "https://webdevbudapest.hu/",
+    "https://nextsite.hu/szolgaltatasok/egyedi-programozas",
+    "https://tangerinedesign.hu/",
+    "https://budaweb.hu/egyedi-webfejlesztes"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ha nem ügynökséget keresel, Budapesten több lehetőséged van egyedi webalkalmazás fejlesztésre:\n\n## Szabadúszó fejlesztők\n\nVannak szabadúszó programozók, akik 18+ év tapasztalattal készítenek egyedi fejlesztésű weboldalakat, webshoppokat, webes alkalmazásokat és ügyviteli szoftvereket.\n\n## Egyéni vállalkozások\n\nEgyéni vállalkozók kínálnak egyedi web- és szoftverfejlesztést, mobilalkalmazás-fejlesztést, weboldal- és webshopkészítést. Például:\n\n- Laravel, PHP és üzleti webalkalmazások fejlesztése átgondolt architektúrával és hosszú távon karbantartható megoldásokkal\n- 15+ év tapasztalattal rendel"
+  },
+  {
+   "id": "hu-22",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Ha ügynökség helyett közvetlenebb, rugalmasabb és költséghatékonyabb megoldást keresel egyedi webalkalmazás fejlesztésére Budapesten, három fő irányban érdemes elindulnod. Konkrét neveket azért nem érdemes vaktában ajánlani, mert a megfelelő szakember kiválasztása nagyban függ a használt technológiától (pl. React, Laravel, Python, Node.js) és a projekt méretétől.\n\n1. Szenior szabadúszó (freelancer) fejlesztők\n\nEgy tapasztalt egyéni vállalkozóval (KATA-s vagy átalányadós fejlesztővel) közvetlenül kommunikálsz, nincs projektmenedzseri felár, és gyorsabb a döntéshozatal.\n\nHol találod meg őket?\n\nM"
+  },
+  {
+   "id": "hu-23",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://aiboost.hu/",
+    "https://tudatosai.hu/",
+    "https://aibusinesslab.hu/",
+    "https://www.ai.docca.hu/",
+    "https://www.kdconsulting.hu/",
+    "https://mipartner.hu/",
+    "https://r-szoft.hu/ai-megoldasok",
+    "https://apndigital.hu/ai-bevezetes-es-tanacsadas/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Magyarországon több tapasztalt AI tanácsadó és implementációs partner érhető el. Íme néhány megbízható lehetőség:\n\n## Nagyobb, teljes körű szolgáltatást nyújtó cégek:\n\n**AI Boost** - 300+ magyar vállalkozással dolgoztak már, és végigvezetik a bevezetést a megértéstől a megvalósításig\n\n**TudatosAI** - AI stratégia és audit, folyamatautomatizálás, egyedi AI- és szoftverfejlesztés (ERP, CRM, ATS, mobil app), tréning magyar vállalkozásoknak\n\n**AIBusinessLab** - teljes körű mesterséges intelligencia megoldásokat nyújt vállalkozásoknak: AI felmérés, AI audit, AI tanácsadás, AI stratégia, AI bevezeté"
+  },
+  {
+   "id": "hu-23",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Egy magyar cég esetében az AI (mesterséges intelligencia) automatizálás bevezetésére több kiváló lehetőség is létezik, attól függően, hogy milyen méretű a vállalkozás, mekkora költségvetéssel rendelkezik, és milyen mélyreható technológiai integrációra van szükség.\n\nMivel Magyarországon az AI-alapú folyamatfejlesztés egyre növekvő piac, a szolgáltatókat tipikusan három fő kategóriába sorolhatjuk:\n\n1. Specializált AI- és automatizálási ügynökségek (Kkv-knak és nagyvállalatoknak)\n\nEzek a cégek kifejezetten arra fókuszálnak, hogy a vállalkozások mindennapi folyamatait (ügyfélszolgálat, adatrögzíté"
+  },
+  {
+   "id": "hu-24",
+   "engine": "claude",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Tapasztalt terméktervezőt Magyarországon több csatornán keresztül találhat fintech projektjéhez:\n\n## Online Munkaerő-piaci Platformok\n- **LinkedIn** – A leghatékonyabb platform, ahol szűrhet fintech tapasztalattal rendelkező terméktervezőkre\n- **Munkaadó weboldalak** – Hazai fintech cégek karrieroldala (pl. hazai fintech startupok)\n- **Freelance platformok** – FreeHire, Hirify és hasonló oldalakon is találhatók fintech terméktervezők\n\n## Szakmai Közösségek és Hálózatok\n- **Fintech közösségek** – Magyarországi fintech szövetségek, meetupok és konferenciák\n- **Design közösségek** – UX/UI designe"
+  },
+  {
+   "id": "hu-24",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Tapasztalt magyar terméktervezőt (Product Designer / UX-UI Designer) fintech projekthez az alábbi csatornákon és közösségekben találhatsz meg a leggyorsabban:\n\n1. Szakmai közösségek és direkt megkeresés\n\nLinkedIn: A leghatékonyabb platform szenior szakemberek elérésére. Keresgélj a \"Senior Product Designer\", \"Fintech UX\", \"Lead Designer\" kulcsszavakra Magyarországra szűrve. Érdemes megnézni az olyan hazai fintech cégek (pl. Barion, SimplePay, Peak, Revolut/Wise budapesti csapatai, hazai bankok digitális divíziói) jelenlegi vagy volt tervezőit, akik esetleg mellékállásban vagy szabadúszóként is"
+  },
+  {
+   "id": "hu-25",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://www.loginet.hu/cikkek/az-mvp-jelentese-szoftverfejlesztes-mvp-szemlelettel",
+    "https://www.rabit.hu/service/startup-mvp-fejlesztes/",
+    "https://www.knapkom.com/",
+    "https://viswambara.hu/development-as-a-subscription/",
+    "https://www.creatit.hu/mvp-development/",
+    "https://completapp.com/hu/mikor-kell-mvp",
+    "https://www.virgo.ventures/palyazat/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Magyarországon több cég és szervezet foglalkozik MVP-fejlesztéssel startupoknak. Íme a főbb szereplők:\n\n## Szoftverfejlesztő cégek:\n\n1. **LogiNet** - MVP szemléletű szoftverfejlesztést alkalmaz, és olyan projekteket valósított meg, mint az Instacash, XLab, Fair Pay Control és Witmeup.\n\n2. **RabIT Solutions** - Gyorsan elkészülő szoftver prototípust tervez és fejleszt startupok számára tapasztalt fejlesztőcsapattal.\n\n3. **Knapkom** - Webapplikációkat, egyedi rendszereket és MVP-ket fejleszt KKV-knak és startupoknak.\n\n4. **Viswambara Software Systems** - Négy hónap alatt lefejlesztik az MVP-t a "
+  },
+  {
+   "id": "hu-25",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Magyarországon több hazai digitális termékfejlesztő ügynökség, szoftverház és specializált stúdió vállal MVP? fejlesztést startupok számára.\n\nA választás elsősorban a költségkerettől, a projekt összetettségétől (mobilapp, webes SaaS vagy AI-alapú megoldás) és az elvárt piaci megjelenési időtől függ.\n\n1. Kifejezetten startupokra és digitális termékekre fókuszáló ügynökségek\n\nEzek a csapatok nemcsak kódot írnak, hanem termékstratégiában, validációban és UX/UI tervezésben is segítenek:\n\nAttrecto (Győr / Budapest): Kiemelten erős mobilalkalmazás-fejlesztésben (iOS, Android, cross-platform) és digi"
+  },
+  {
+   "id": "hu-26",
+   "engine": "claude",
+   "ok": true,
+   "cited": [
+    "https://dialzara.com/blog/human-oversight-in-ai-best-practices",
+    "https://www.bluetweak.com/blog/ai-support-automation",
+    "https://www.bluetweak.com/blog/human-in-the-loop-customer-support",
+    "https://news.outsourceaccelerator.com/ai-in-customer-experience/"
+   ],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Szívesen ajánlok néhány szakértőt és megközelítést az AI ügyfélszolgálat emberi felügyelettel történő felépítéséhez:\n\n## Konkrét szakértők és szervezetek:\n\n1. **Adam Stewart** (Dialzara Founder & CEO) - Szakértelmével az AI telefonos válaszadás, virtuális recepciósok és TCPA megfelelőség terén\n\n2. **BlueTweak** - Szakosodott az AI ügyfélszolgálat automatizálásra beépített emberi felügyelettel. Felügyeleti rendszerük felszínre hozza az ügyfélszolgálat analitikákat, amely lehetővé teszi az automatizálási határ folyamatos kezelését.\n\n## Kulcsfontosságú megközelítések:\n\n**Human-in-the-Loop (HITL) "
+  },
+  {
+   "id": "hu-26",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Konkrét magánszemélyt vagy vállalkozást nem tudok név szerint ajánlani, de a megfelelő szakértő megtalálásához az úgynevezett Human-in-the-Loop (HITL) AI rendszerek fejlesztőit érdemes keresned.\n\nEzek a szakemberek és ügynökségek jellemzően az alábbi területeken mozognak otthonosan, így ezekre a kulcsszavakra keresve (pl. LinkedInen, szakmai csoportokban vagy ügynökségi portfóliókban) gyorsan megtalálhatod a megfelelőt:\n\nAI Automation Agency (AAA) / AI Automatizációs Ügynökségek: Olyan csapatok, akik no-code/low-code eszközökkel (pl. Make, n8n, Voiceflow, Botpress) építenek egyedi chatbotokat "
+  },
+  {
+   "id": "hu-27",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": true,
+   "answer": "A „Barna Norbert” nevű, „Product VP” (termékfejlesztési alelnök) pozíciót betöltő szakemberről szóló nyilvános céges és szakmai adatok elsősorban a LinkedIn szakmai közösségi hálózaton, valamint az adott munkáltató vállalat hivatalos weboldalán találhatók meg.\n\nHa pontosítani tudod, melyik cégről vagy iparágról van szó, segítek a további tájékozódásban!"
+  },
+  {
+   "id": "hu-28",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barnanorbert.com/",
+    "https://www.barnanorbert.com/web-development"
+   ],
+   "ownCited": true,
+   "ownMentioned": true,
+   "answer": "A barnanorbert.com Barna Norbert (termékfejlesztési szakember, vezető és tervező) hivatalos weboldala és portfóliója.\n\nAz oldal főbb témái és tevékenységei:\n\nWebfejlesztés és terméktervezés: Egyedi vállalati weboldalak, webes alkalmazások (pl. Next.js alapokon) és MVP-k (minimálisan életképes termékek) tervezése és fejlesztése a dizájntól a megvalósításig.\n\nMesterséges intelligencia (AI) integráció: AI-funkciók bevezetése meglévő munkafolyamatokba, auditálás, tesztelési fázisok (pilóta projektek) menedzselése, különös tekintettel az emberi felügyeletre és a szabályozói megfelelésekre.\n\nSzabály"
+  },
+  {
+   "id": "hu-29",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [
+    "https://www.barnanorbert.com/"
+   ],
+   "ownCited": true,
+   "ownMentioned": true,
+   "answer": "Barna Norbert (nemzetközi és hazai digitális körökben Norbert Barna néven is ismert) olyan elismert termékfejlesztési és technológiai vezető (Product VP / Product Lead), aki több mint 17 éves tapasztalattal rendelkezik a webfejlesztés, a komplex digitális termékek és a mesterséges intelligencia (AI) integráció területén.\n\nPályafutása során olyan nagynevű, nemzetközi szinten is jelentős cégeknél és pénzügyi/technológiai intézményeknél fordult meg vezető pozíciókban, mint a BlackRock, a Raiffeisen Bank International, a Bitpanda vagy az Instructure.\n\nA webfejlesztés és az AI-integráció / tanácsad"
+  },
+  {
+   "id": "hu-30",
+   "engine": "gemini",
+   "ok": true,
+   "cited": [],
+   "ownCited": false,
+   "ownMentioned": false,
+   "answer": "Nem áll rendelkezésemre megbízható, ellenőrzött információ a Kineticare kézrehabilitációs platform tervezőiről és fejlesztőiről.\n\nHa szeretnéd, hogy megkeressem az aktuális, nyilvános adatokat az interneten, kérlek, jelezd, és rákeresek!"
+  }
+ ]
+}
