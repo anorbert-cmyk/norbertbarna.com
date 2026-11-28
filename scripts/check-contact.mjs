@@ -103,7 +103,7 @@ try {
   // language, repeating nothing of the message, never blocking the answer.
   {
     process.env.CONTACT_AUTOREPLY = "1";
-    process.env.CONTACT_FROM = "Norbert Barna <hello@barnanorbert.com>";
+    process.env.CONTACT_FROM = "Barna Norbert weboldal <hello@barnanorbert.com>";
     sent.length = 0;
     const settle = () => new Promise((resolve) => setTimeout(resolve, 50));
     const ask = async (patch, ip) => {
@@ -115,7 +115,7 @@ try {
     let r = await ask({ email: "grace@example.com", name: "Grace Hopper", lang: "hu", topic: "web" }, "203.0.113.90");
     expect(r.status === 200 && sent.length === 2, `a message sends the notification and one confirmation (got ${sent.length})`);
     const confirmation = sent.find((m) => m.to === "grace@example.com") || {};
-    expect(confirmation.from === "Norbert Barna <hello@barnanorbert.com>", "the confirmation comes from CONTACT_FROM");
+    expect(confirmation.from === "Norbert Barna <hello@barnanorbert.com>", "the confirmation uses the CONTACT_FROM address with a personal display name");
     expect(confirmation.replyTo === undefined, "the confirmation exposes no private inbox address");
     expect(confirmation.headers && confirmation.headers["Auto-Submitted"] === "auto-replied", "the confirmation is marked auto-submitted");
     expect(/Megkaptam/.test(confirmation.subject) && /Grace Hopper/.test(confirmation.html) && /ceges-weboldal-ara/.test(confirmation.html), "the confirmation follows the page language and topic");
