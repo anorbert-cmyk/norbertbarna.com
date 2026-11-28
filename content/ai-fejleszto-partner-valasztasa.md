@@ -4,7 +4,7 @@ description: "Mit kérdezz egy AI fejlesztő partnertől a megbízás előtt: ö
 lang: hu
 slug: ai-fejleszto-partner-valasztasa
 date: 2026-11-27T23:30:00+01:00
-updated: 2026-11-27T23:30:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ai fejlesztő, ai fejlesztés, ai tanácsadás, ai bevezetés, ai automatizálás, ai integráció]
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
@@ -15,6 +15,14 @@ pair: [en/before-hiring-an-ai-integration-partner, de/ki-dienstleister-auswaehle
 Egy AI fejlesztő partnertől a megbízás előtt azt kérdezd meg, mit tesztelne, mielőtt bármit építene, hogyan méri a kimenet minőségét a te valódi eseteiden, mi történik a felületen, ha az AI téved, kik dolgoznak a projekten, és kié lesz a rendszer az átadás után. Előtte készíts elő öt dolgot: egy folyamatot, annak mai kiinduló értékét, az érintett adatokat és rendszereket, azt, hogy mi marad emberi döntés, és a mérőszámot, amely eldönti, folytatódik-e a pilot. Ezekkel az első beszélgetésből körülhatárolt ajánlat lesz, nélkülük egy demó.
 
 Ez a cikk két listát ad: mit vigyél magaddal az első egyeztetésre, és mit kérdezz ott, a jó válasz ismérveivel együtt. Tizenhét éve dolgozom szabályozott termékeken (banki, vállalati biztonsági és vállalati EdTech rendszereken), és a listák a saját projektjeimből állnak össze, nem piaci felmérésből.
+
+## Röviden: hogyan válassz AI fejlesztő partnert
+
+- **Öt dolgot vigyél az első egyeztetésre:** egy folyamat leírását, a mai kiinduló értékét, az érintett adatok és rendszerek listáját, azt, hogy mi marad emberi döntés, és a mérőszámot, amely a pilot folytatásáról dönt.
+- **A legfontosabb kérdés:** „Mit tesztelnél, mielőtt bármit építesz?” A jó válasz megnevez egy feltevést, egy próbát a te anonimizált eseteiden, és azt az eredményt, amelynél a partner azt javasolná, hogy ne építsetek semmit.
+- **Döntési szabály:** azt a partnert válaszd, aki írásban, a te folyamatodra vonatkoztatva válaszol a tíz kérdésre. Ha a demó előbb jön, mint a kérdések a folyamatodról, keress tovább.
+- **Tulajdon:** az átadás után a kód, a promptok, a tesztkészlet és a dokumentáció a tiéd, a szolgáltatói fiókok a te nevedben futnak. Ezt a szerződés előtt rögzítsd írásban.
+- **Adat:** az első beszélgetéshez elég a folyamat egyoldalas, anonimizált leírása. Jelszót és ügyféladatot ne küldj, amíg a megosztás módja nincs írásban rögzítve.
 
 ## Miért az előkészítésen múlik, milyen ajánlatot kapsz?
 
@@ -50,20 +58,28 @@ A kérdéseket küldd el előre. Aki írásban, a te folyamatodra vonatkoztatva 
 Az alábbi jelek tapasztalatból származó vélemények, nem szabályok.
 
 : Figyelmeztető jelek az AI fejlesztő partner kiválasztásánál
-| Amit látsz | Amit jelent |
-| --- | --- |
-| Demó, mielőtt a folyamatodról kérdezne | Kész megoldáshoz keres problémát |
-| Nincs válasz a hibás vagy üres kimenetre | A felület csak a jó esetre készül |
-| Eredményt ígér, mielőtt kiinduló érték lenne | Nem lesz mihez mérni a pilotot |
-| Az ajánlat előbb nevez meg modellt, mint feladatot | Az eszköz vezeti a tervet, nem a munka |
-| Nincs megnevezett gazda az átadás után | A rendszer az első hibánál magára marad |
-| Nincs lista arról, ami nem része a munkának | A határ menet közben, vitában dől el |
+| Amit látsz | Amit jelent | Mit kérj helyette |
+| --- | --- | --- |
+| Demó, mielőtt a folyamatodról kérdezne | Kész megoldáshoz keres problémát | Próbát a te anonimizált eseteiden |
+| Nincs válasz a hibás vagy üres kimenetre | A felület csak a jó esetre készül | Az üres, a hibás és a késő állapot leírását |
+| Eredményt ígér, mielőtt kiinduló érték lenne | Nem lesz mihez mérni a pilotot | Mérést a saját nyilvántartásodból, a pilot előtt |
+| Az ajánlat előbb nevez meg modellt, mint feladatot | Az eszköz vezeti a tervet, nem a munka | A feladat és az elfogadási szempontok leírását |
+| Nincs megnevezett gazda az átadás után | A rendszer az első hibánál magára marad | Nevet, szerepet és működtetési útmutatót |
+| Nincs lista arról, ami nem része a munkának | A határ menet közben, vitában dől el | Írott listát arról, ami kívül esik a munkán |
 
 ## Példa: hogyan hangzik a jó válasz egy valódi projekten
 
 Az Instructure-nél egy vállalati tanulási platform AI-funkcióinak teljes körű tervezését vezettem. A védőkorlátokat az első napon rögzítettük: human-in-the-loop működés, egyértelmű AI-jelölés, szerkeszthető kimenetek, forrásjelzések és helyreállítási utak. A hibatűrő állapotokat (üres, hiba, betöltés, késleltetés) külön megterveztük, a folyamatokat a jogi, a megfelelőségi és a data science csapattal közösen néztük át, a funkciók pedig feature flagek mögött kerültek ki, mért használat mellett. A negyedik és a kilencedik kérdésre ilyen konkrét választ várj. Részletek: [Instructure esettanulmány](/hu/munka/instructure).
 
 A hetedik kérdéshez: az esettanulmányaim mindegyike megnevezi a szerepemet és a határait, mert partnereket összehasonlítani ebből az adatból lehet.
+
+## Ki végzi az AI fejlesztést: tanácsadó, fejlesztő cég vagy önálló szakember?
+
+Három típus közül választhatsz. A tanácsadó felméri a folyamatot és tervet ad, de nem mindig épít. A fejlesztő cég épít, és nagyobb csapatot tud adni, cserébe több kézen megy át a munka. Az önálló szakember egy személyben tervez és épít, kisebb terjedelemben. Válassz tanácsadót, ha még nem tudod, melyik folyamattal kezdj. Válassz fejlesztő céget vagy önálló szakembert, ha a folyamat és a kiinduló érték már megvan. A hatodik és a tizedik kérdés mindhárom típusnál ugyanazt tisztázza: ki felel az eredményért, és kié a rendszer.
+
+## Mi készül el az első szakasz végére?
+
+Az első szakasz a felmérés, és a végén három dolog van a kezedben: egy körülhatárolt probléma, egy kiinduló érték a saját adataidból, és egy javaslat arról, kell-e egyáltalán AI. Egy könyvelőirodánál ez lehet például a bejövő számlák rögzítésének leírása a mai átfutási idővel és hibaaránnyal. Egy logisztikai cégnél a szállítólevelek feldolgozása. Ha a felmérés végén nincs ilyen leírás és nincs mérés, akkor a partner még nem a te folyamatodon dolgozott.
 
 ## Mitől függ az ár és az időtartam?
 
@@ -72,6 +88,10 @@ Az AI fejlesztés ára és időtartama négy tényezőtől függ: hány folyamat
 ## Összegzés
 
 Az AI fejlesztő partner kiválasztása két listán múlik. Az egyik a tiéd: egy folyamat, kiinduló érték, adatok, emberi döntési pontok, sikermérőszám és felelős. A másik a tíz kérdés, amelyekre konkrét, a te folyamatodra szabott választ kell kapnod, főleg a tesztelésről, a hibás kimenetről, az adatkezelésről és az átadás utáni tulajdonról. Kevés megbízást vállalok, olyanokat, ahol az ügyfél is energiát tesz a munkába. Aki ezzel a két listával érkezik, az általában ilyen ügyfél. A módszerem lépéseit az [AI tanácsadás, automatizálás és fejlesztés](/hu/ai-tanacsadas-fejlesztes) oldalon találod. Ha megvan a folyamatod egyoldalas leírása, egy beszélgetéshez ennyi elég: [kapcsolat](/hu/kapcsolat).
+
+## Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek az AI-rendszerek szolgáltatói és alkalmazói számára](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ## Gyakori kérdések
 

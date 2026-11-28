@@ -4,7 +4,7 @@ description: "AI integration cost for a mid-size company depends on eight factor
 lang: en
 slug: what-ai-integration-cost-depends-on
 date: 2026-11-27T23:30:00+01:00
-updated: 2026-11-27T23:30:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ai integration cost, ai integration, ai implementation cost, ai integration pricing, ai pilot, ai running costs]
 service: /ai-integration
 service_label: AI integration for regulated industries
@@ -15,6 +15,14 @@ pair: [hu/ai-fejlesztes-ara-mitol-fugg, de/ki-beratung-kosten]
 For a mid-size company, AI integration cost depends far more on the work around the model than on the model. Eight factors decide it: the scope of the workflow, the readiness of your data, the number of integrations, the level of human review, how the output is evaluated, risk and regulation, the languages involved, and who maintains the result after launch. Two quotes for the same request can differ widely and both be fair, because they answer those eight questions differently.
 
 There are no price figures in this article. Every AI integration is custom work, and a number without a scope says nothing about your project. I work with companies across the EU, in English or Hungarian.
+
+## In short: what AI integration cost depends on
+
+- **Eight factors decide the cost:** workflow scope, data readiness, number of integrations, level of human review, evaluation, risk and regulation, languages, and who maintains the feature after launch.
+- **The strongest lever you control:** narrow the project to one repeated task for one team. Reading from a system is also a smaller job than writing to it.
+- **It can be bought in stages:** discovery ends with a focused problem, an initial scope and a baseline; the prototype ends with evaluation examples and a build decision; the pilot ends with a bounded version measured against the baseline. You can stop after any stage.
+- **Five running costs start on launch day:** model usage billed by volume, monitoring, source maintenance, reviewer time, and retesting after changes.
+- **Where mid-size companies stand:** in 2025, 30.36% of medium-sized EU enterprises used AI, against 17% of small and 55.03% of large enterprises (Eurostat, data extracted December 2025).
 
 ## Why do quotes for the same AI project differ so much?
 
@@ -40,11 +48,11 @@ A review step is designed work: an interface for checking, editing and rejecting
 
 ### 5. Evaluation
 
-Evaluation is the set of your own examples, with expected results, that the feature is tested against before launch and after every change. Building that set takes time from the people who know the work. Without it nobody can say whether the pilot helped or whether a model update made it worse.
+Evaluation is the set of your own examples, with expected results, that the feature is tested against before launch and after every change. Building that set takes time from the people who know the work. Without it nobody can say whether the pilot helped or whether a model update made it worse. The NIST AI Risk Management Framework, a voluntary framework released on 26 January 2023, treats evaluation as part of an AI product in the same breath as its design, development and use.
 
 ### 6. Risk and regulation
 
-Personal, health or financial data and decisions that affect people need more design, testing and documentation. EU AI Act obligations widen the evidence you will want to keep. These are design questions here, not legal advice: which rules apply to you is for your counsel. The labelling duties are covered in [EU AI Act Article 50: what product teams must label now](/writing/eu-ai-act-transparency-obligations).
+Personal, health or financial data and decisions that affect people need more design, testing and documentation. EU AI Act obligations widen the evidence you will want to keep: the European Commission lists CV-sorting software for recruitment and credit scoring among the high-risk use cases, and the rules for those apply from 2 December 2027. These are design questions here, not legal advice: which rules apply to you is for your counsel. The labelling duties are covered in [EU AI Act Article 50: what product teams must label now](/writing/eu-ai-act-transparency-obligations).
 
 ### 7. Languages
 
@@ -76,6 +84,14 @@ An AI integration can be bought in stages. Each stage ends with a decision, and 
 4. **Rollout.** Wider use, once the pilot is measured against the baseline.
 
 Staging lowers the risk: you commit to a build only after the prototype has shown what the task needs. The steps are on my [AI integration](/ai-integration) page, and [what to prepare before hiring an AI integration partner](/writing/before-hiring-an-ai-integration-partner) lists the inputs that keep discovery short.
+
+## Who does the work in an AI integration, and how much of it is yours?
+
+The partner maps the workflow, designs the review interface, connects the systems and sets up the evaluation. Your side supplies what no partner can: the people who do the task describe it, assemble the examples with expected results and review the outputs; the owner of each system grants access; one named person owns the pilot. That internal time appears in no quote, so plan it before you compare offers.
+
+## How long does an AI integration take?
+
+The duration follows the stages, and each stage ends with something you can check: a scope and a baseline, then evaluation examples and a build decision, then a measured pilot. What stretches the calendar is rarely the model. It is data approval, access to the connected systems and the availability of the people who review outputs. I do not give a duration before discovery, for the same reason I do not give a price.
 
 ## An example: where the work went at Instructure
 
@@ -110,6 +126,12 @@ If one quote answers all seven and the other answers three, the price difference
 ## Where to start
 
 AI integration cost follows from scope, and you can write the scope down before any partner is involved. Pick one workflow, name the systems and data it touches, decide what a person must approve, and say which languages matter at launch. [Send me that description](/contact) and I will tell you which stage makes sense first.
+
+## Sources
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat Statistics Explained, data extracted December 2025, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
+- [AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework), National Institute of Standards and Technology (NIST), AI RMF 1.0 released 26 January 2023, accessed 28 November 2026
 
 ## Frequently asked questions
 

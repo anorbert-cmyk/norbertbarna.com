@@ -4,7 +4,7 @@ description: "AI automatizálás cégeknek: öt szempont az első folyamat kivá
 lang: hu
 slug: ai-automatizalas-melyik-folyamattal-kezdj
 date: 2026-11-12T12:00:00+01:00
-updated: 2026-11-12T12:00:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ai automatizálás, folyamatautomatizálás, ai audit, ai tanácsadás, ai bevezetés]
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
@@ -15,6 +15,14 @@ pair: [de/ki-automatisierung-erster-prozess, en/which-process-to-automate-with-a
 Az AI automatizálás első folyamata legyen olyan, amely gyakran előfordul, strukturálatlan bemenettel dolgozik (e-mail, dokumentum, szabad szöveg), az eredményét ember ellenőrizni tudja, mielőtt hatása lenne, és a haszna folyamatonként percekben mérhető. Ha egy folyamat rögzített szabályokat követ és strukturált adatokat dolgoz fel, akkor nem AI kell hozzá, hanem hagyományos automatizálás. Az olcsóbb és megbízhatóbb.
 
 Ebben a cikkben öt szempontot kapsz, amellyel sorba rendezheted a folyamataidat. Megmutatom, hol a határ az AI és a hagyományos automatizálás között, hozok példát jó és rossz első jelöltre, és leírom, milyen lépésekben lesz egy jelöltből mérhető pilot. A cikk az [AI bevezetése KKV-nál: az első 90 nap](/hu/irasok/ai-bevezetese-kkv-elso-90-nap) folytatása. Az a menetrendről szól, ez a kiválasztásról.
+
+## Röviden: melyik folyamattal kezdd az AI automatizálást
+
+- **Öt szempont az első folyamathoz:** gyakran fut, strukturálatlan a bemenete, a kimenetét ember másodpercek alatt ellenőrizni tudja, a hiba következménye korlátozott, és van mérhető kiinduló értéke.
+- **Döntési szabály:** ha le tudod írni a szabályt, automatizálj hagyományosan. AI arra a részre kell, ahol e-mailt, dokumentumot vagy szabad szöveget kell megérteni.
+- **Ötből négy sokszor elég,** de az ellenőrizhető kimenet és a korlátozott következményű hiba nem hiányozhat. Ha valamelyik hiányzik, az nem első folyamat.
+- **Ne ezzel kezdd:** fizetést indító vagy szerződést kötő folyamat emberi jóváhagyás nélkül, emberekről szóló döntés, leíratlan tudásra épülő folyamat, és olyan folyamat, amelynek nincs gazdája.
+- **Jogi dátum:** ha az AI ügyfelekkel lép kapcsolatba, az EU AI-rendelete, az (EU) 2024/1689 rendelet 50. cikke szerinti tájékoztatási kötelezettség 2026. augusztus 2. óta alkalmazandó.
 
 ## AI automatizálás vagy hagyományos automatizálás?
 
@@ -66,6 +74,19 @@ Az a folyamat, amely mind az öt szempontnak megfelel, jó kezdet. Ötből négy
 - Olyan folyamatok, amelyeknek a tudása nincs leírva. Itt az első lépés a dokumentálás.
 - Olyan folyamatok, amelyeknek a cégen belül nincs gazdája.
 
+Így néz ki a besorolás néhány tipikus folyamaton, 20 és 250 fő közötti magyar cégeknél. A példák szemléltetnek, a te folyamatodat a megfigyelés dönti el.
+
+: Példafolyamatok besorolása: melyik jó első jelölt az AI automatizáláshoz, és melyik nem
+| Folyamat | Besorolás | Miért |
+| --- | --- | --- |
+| Könyvelőiroda: bejövő számlák és bizonylatok adatainak kiolvasása, előtöltés rögzítésre | Jó első jelölt | Naponta fut, a bemenet PDF vagy fotó, a könyvelő rögzítés előtt ellenőrzi |
+| Biztosítási alkusz: beérkező ügyfélmegkeresések besorolása és válaszvázlat | Jó első jelölt | Szabad szöveg, a munkatárs küldés előtt átírja, a téves besorolás javítható |
+| Logisztika: szállítólevelek és fuvarokmányok mezőinek kiolvasása | Jó első jelölt | Gyakori, szkennelt irat, az előtöltött adat ránézésre ellenőrizhető |
+| Nagykereskedés: e-mailben érkező rendelések előkészítése a rendszerbe | Jó első jelölt, olvasó kapcsolattal | A rendelést ember hagyja jóvá, mielőtt bekerül a rendszerbe |
+| Nagykereskedés: készletszint alatti automatikus újrarendelés | Hagyományos automatizálás | A szabály leírható, az adat strukturált, nem kell hozzá AI |
+| Bármely cég: utalás indítása emberi jóváhagyás nélkül | Nem első folyamat | A hiba drága, és nem fordítható vissza |
+| Bármely cég: jelentkezők előszűrése | Előbb jogi vizsgálat | Emberekről szóló döntés, várhatóan magas kockázatú terület |
+
 ## Hogyan néz ki valójában egy AI audit?
 
 Sok szolgáltató „AI auditot”, „AI potenciálelemzést” vagy „AI folyamatoptimalizálást” árul, ami a gyakorlatban egy workshop, diákkal. Ami ebből hasznos, az nem látványos: egy lista a folyamataidról a fenti öt szempont szerint. Megfigyelésből áll össze, és beszélgetésekből azokkal, akik a munkát végzik. A végén két vagy három jelölt marad, indoklással arról, miért ezek kerülnek sorra először. Mellette egy másik lista azokról a folyamatokról, amelyeket jobb hagyományosan automatizálni, vagy sehogy.
@@ -85,6 +106,14 @@ Egy jó AI tanácsadás tehát nem azzal kezdődik, hogy mit tud az AI, hanem az
 
 A hat lépés sorrendje számít. Az eszköz kiválasztása a végére marad, a megfigyelés pedig nem hagyható ki, mert abból lesz a kiinduló érték, amelyhez a pilotot méred.
 
+## Ki végzi a kiválasztást, és kinek kell részt vennie?
+
+A kiválasztást az végzi, aki a megfigyelést vezeti, de három ember nélkül nem megy. A folyamat gazdája dönt arról, mi számít sikernek. Egy vagy két munkatárs, aki a munkát ma végzi, megmutatja a valódi eseteket és a kivételeket. Aki a rendszerekért felel, megmondja, melyik adat érhető el és hogyan. Ha az AI ügyféladatot is lát, az adatvédelemért felelős kollégát már a határok meghúzásánál vond be.
+
+## Mi készül el az egyes lépések végére?
+
+A megfigyelés végén megvan a kiinduló érték: időtartam, hibák és visszakérdezések esetenként. A határok meghúzása után írásban áll, mit javasol az AI, mit hagy jóvá az ember, és milyen adatot láthat a rendszer. A prototípus végén a munkatársak valódi, anonimizált eseteken próbálták ki a javaslatokat. A pilot végén mért eredményed van a kiinduló értékhez képest, és ebből születik a döntés: kiterjesztés, átalakítás vagy leállítás.
+
 ## Mit jelent az AI-rendelet a folyamatautomatizálásra nézve
 
 A legtöbb belső automatizálás, amely dokumentumokat rendez vagy vázlatokat ír, az EU AI-rendelete szerint korlátozott vagy minimális kockázatú rendszer. Két dologra mégis figyelni kell. Ha az AI ügyfelekkel lép kapcsolatba, az 50. cikk szerinti jelölési kötelezettség 2026. augusztus 2. óta alkalmazandó. Erről az esetről külön cikk szól: [AI ügyfélszolgálat emberi ellenőrzéssel](/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel). Ha az AI emberekről szóló döntéseket készít elő, például jelentkezések elbírálásánál, akkor várhatóan a magas kockázatú rendszerekre vonatkozó kötelezettségek érvényesek, amelyek alkalmazását a 2026-os Digital Omnibus 2027. december 2-ra halasztotta.
@@ -94,6 +123,10 @@ Az általános adatvédelmi rendelet (GDPR) emellett változatlanul érvényes. 
 ## Összegzés
 
 Az AI automatizálás ritkán a technikán bukik el, és gyakran azon, hogy rossz folyamattal indul. Az első folyamat legyen gyakori, strukturálatlan bemenetű, ellenőrizhető kimenetű, olcsón javítható hibájú és mérhető. Amit szabályként le tudsz írni, azt automatizáld hagyományosan. A módszer többi lépését az [AI tanácsadás, automatizálás és fejlesztés](/hu/ai-tanacsadas-fejlesztes) oldalon írom le. Ha megnevezel három folyamatot, amely a cégednél viszi az időt, egy beszélgetésben megmondom, melyik felel meg az öt szempontnak, és melyiket jobb hagyományosan automatizálni: [kapcsolat](/hu/kapcsolat).
+
+## Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 50. cikk: átláthatósági kötelezettségek, 6. cikk (2) bekezdés és III. melléklet: magas kockázatú AI-rendszerek](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ## Gyakori kérdések
 

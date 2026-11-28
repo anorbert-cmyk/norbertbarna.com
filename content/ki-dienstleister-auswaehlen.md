@@ -4,7 +4,7 @@ description: "KI-Dienstleister auswählen: was Sie selbst vorbereiten, zehn Frag
 lang: de
 slug: ki-dienstleister-auswaehlen
 date: 2026-11-27T23:30:00+01:00
-updated: 2026-11-27T23:30:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ki dienstleister, ki agentur, ki beratung, ki dienstleister auswählen, ki projekt ausschreiben, ki integration]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
@@ -17,6 +17,14 @@ Einen KI-Dienstleister fragen Sie vor der Beauftragung vor allem fünf Dinge: wa
 Dieser Artikel enthält zuerst die Liste dessen, was Sie selbst vorbereiten, dann zehn Fragen an den Anbieter mit einer Beschreibung, wie eine gute Antwort klingt, und zuletzt die Warnsignale.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+## Kurz gesagt: KI-Dienstleister auswählen
+
+- **Fünf Kernfragen:** Was testen Sie vor dem Bau, wie messen Sie die Qualität an unseren Beispielen, was passiert bei einer falschen Antwort, wer ist nach der Übergabe verantwortlich, wie stoppen wir den Pilotversuch?
+- **Ihre Vorbereitung:** ein Arbeitsablauf, Ausgangswerte wie Bearbeitungszeit und Fehlerquote, Daten und Zugriffe, die Rolle des Menschen, eine Erfolgsgröße mit verantwortlicher Person, Ihre Rahmenbedingungen.
+- **Entscheidungsregel:** Wählen Sie den Anbieter, der zuerst nach Ihrem Ablauf fragt und an Ihren eigenen, anonymisierten Fällen testet. Nennt ein Angebot das Modell, bevor es Ihre Aufgabe nennt, ist das ein Warnsignal.
+- **Eigentum:** Code, Prompts, Testfälle und Dokumentation gehören schriftlich Ihnen, einschließlich der Zugänge zu den Konten, in denen das System läuft.
+- **Einordnung:** 2025 setzten laut Eurostat 19,95 % der Unternehmen in der EU mit mindestens zehn Beschäftigten KI ein, 6,47 Prozentpunkte mehr als 2024. Bei kleinen Unternehmen waren es 17 %, bei großen 55,03 %.
 
 ## Warum entscheidet Ihre Vorbereitung über die Qualität der Angebote?
 
@@ -34,6 +42,10 @@ Sechs Punkte reichen für ein Erstgespräch.
 6. **Ihre Rahmenbedingungen.** Sprachen, regulierte Daten, Barrierefreiheit, Einkaufsregeln, Betriebsrat, und die Einordnung nach der EU-KI-Verordnung. Welche Risikoklasse Ihr System hat, klärt Ihre Rechtsberatung, nicht der Anbieter allein.
 
 Seien Sie auf die ehrliche Antwort vorbereitet, dass die Aufgabe keine KI braucht, sondern klarere Regeln oder eine bessere Oberfläche. Ein guter Anbieter sagt das im ersten Termin.
+
+## Wer sollte auf Ihrer Seite an der Auswahl beteiligt sein?
+
+Vier Rollen: die Menschen aus dem Fachbereich, die den Ablauf ausführen und später die Ergebnisse prüfen, die IT für Systeme und Zugriffe, der Datenschutzbeauftragte für die Datenwege, und die Person, die den Pilotversuch anhalten darf. Wo es einen Betriebsrat gibt, gehört er früh dazu. Die Einordnung nach der EU-KI-Verordnung kommt von Ihrer Rechtsberatung: Die Europäische Kommission unterscheidet vier Risikostufen und nennt als Beispiel für Hochrisiko unter anderem Software, die Bewerbungen sortiert.
 
 ## Zehn Fragen an einen KI-Dienstleister, und wie eine gute Antwort klingt
 
@@ -78,6 +90,11 @@ Ein gutes Erstgespräch liefert vier Ergebnisse: ein abgegrenztes Problem, einen
 ## Fazit
 
 Einen KI-Dienstleister wählen Sie nicht nach der Demo aus, sondern nach seinen Antworten auf Fragen zu Tests, Fehlerfällen, Daten, Eigentum und Ausstieg. Bereiten Sie einen Arbeitsablauf, Ausgangswerte und Ihre Datengrenzen vor, stellen Sie allen Anbietern dieselben zehn Fragen und vergleichen Sie die Antworten schriftlich. Wenn Sie die Fragen an mir ausprobieren möchten, schicken Sie mir die anonymisierte Beschreibung eines Ablaufs: [Kontakt](/de/kontakt). Den Weg danach beschreibt [KI im Mittelstand einführen](/de/wissen/ki-im-mittelstand-einfuehren).
+
+## Quellen
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat, Daten für 2025, Datenstand Dezember 2025, abgerufen am 28. November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026
 
 ## Häufige Fragen
 

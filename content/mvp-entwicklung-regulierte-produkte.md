@@ -4,7 +4,7 @@ description: "MVP-Entwicklung in Fintech, Gesundheit und regulierten Märkten: w
 lang: de
 slug: mvp-entwicklung-regulierte-produkte
 date: 2026-10-21T10:10:00+02:00
-updated: 2026-10-22T09:00:00+02:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [mvp entwicklung, mvp software, mvp entwickeln lassen, minimum viable product, ki entwicklung, webentwicklung]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
@@ -17,6 +17,14 @@ Ein MVP, ein Minimum Viable Product, ist die kleinste Version eines Produkts, mi
 Dieser Artikel beschreibt, wie sich MVP-Entwicklung in regulierten Produkten von der im Startup-Lehrbuch unterscheidet, was in zwei Projekten, an denen ich gearbeitet habe, am ersten Tag echt sein musste, und wie der Ablauf von der Hypothese bis zum ersten Nutzer aussieht.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+## Kurz gesagt: MVP-Entwicklung im regulierten Markt
+
+- **Definition:** Ein MVP ist die kleinste funktionsfähige Version eines Produkts, mit der sich eine zentrale Annahme an echten Nutzern prüfen lässt.
+- **Die Regel:** Fassade erlaubt, Fundament nicht. Weglassen dürfen Sie Nebenfunktionen, Hintergrundautomatisierung, Skalierung und Design-Feinschliff.
+- **Am ersten Tag echt:** Identitätsprüfung und Einwilligung, die Bestätigung folgenreicher Aktionen, Datenschutz im Code, vollständige Protokolle, und bei KI Kennzeichnung, Prüfschritt und Konfidenz.
+- **Prototyp oder MVP:** Ein Prototyp ist nicht funktionsfähig und geht nicht an echte Nutzer; er testet die kritischen Abläufe, bevor Pflichten greifen. Deshalb kommt er in regulierten Produkten vor dem MVP.
+- **KI-Verordnung (EU) 2024/1689:** Die Hinweispflicht nach Artikel 50 gilt seit dem 2. August 2026 auch für ein MVP, und zwar nach Absatz 5 spätestens bei der ersten Interaktion. Die Hochrisiko-Pflichten nach Anhang III, zu deren Anwendungsfällen die Europäische Kommission die Kreditwürdigkeitsprüfung zählt, gelten ab dem 2. Dezember 2027.
 
 ## Was ist ein MVP, und was darf es in regulierten Märkten nicht sein?
 
@@ -65,6 +73,24 @@ Bei SportsGambit, einem KI-gestützten Prognosemarkt-MVP, stand bei jeder Empfeh
 6. **Mit wenigen echten Nutzern starten,** hinter Zugangsbeschränkung, mit einem Verantwortlichen, der jede Woche die Zahlen liest.
 7. **Entscheiden.** Ausbauen, umbauen oder einstellen, auf Basis dessen, was die Nutzer getan haben, nicht dessen, was sie gesagt haben.
 
+: Phasen einer MVP-Entwicklung im regulierten Markt: was am Ende vorliegt und wer mitwirken muss
+| Phase | Was am Ende vorliegt | Wer mitwirken muss |
+| --- | --- | --- |
+| Annahme und Pflichtliste (Schritte 1 und 2) | Ein messbarer Satz zur Annahme und die Liste der Pflichten ab dem ersten echten Nutzer | Produktverantwortliche und Rechtsberatung |
+| Fassade und Fundament trennen (Schritt 3) | Zwei Listen: „weglassen oder von Hand“ und „echt bauen“ | Produktverantwortliche und Entwicklung |
+| Prototyp der kritischen Abläufe (Schritt 4) | Mit Nutzern getestete Entwürfe für Onboarding, Bestätigung, Fehler und Weg zurück | Design und Testpersonen aus der Zielgruppe |
+| Bau in kurzen Schleifen (Schritt 5) | Funktionsfähige Software mit echtem Fundament und Messung der Abbrüche | Entwicklung, Design und die Anbieter angebundener Dienste, etwa für Identitätsprüfung oder Zahlung |
+| Start mit wenigen Nutzern (Schritt 6) | Verhaltensdaten echter Nutzer hinter einer Zugangsbeschränkung | Eine benannte verantwortliche Person und der Support |
+| Entscheidung (Schritt 7) | Ausbauen, umbauen oder einstellen, mit den Zahlen als Begründung | Geschäftsführung und Produktverantwortliche |
+
+## Wer entwickelt ein MVP für einen regulierten Markt?
+
+Ein MVP in einem regulierten Markt braucht drei Rollen: jemanden, der die Abläufe gestaltet, jemanden, der sie baut, und eine Rechtsberatung, die die Pflichtliste mitschreibt. Dazu kommen die Anbieter der angebundenen Dienste, etwa für Identitätsprüfung und Zahlung. Ich übernehme Gestaltung und Entwicklung; die rechtliche Bewertung bleibt bei Ihrer Rechtsberatung, und die Entscheidung über die eine Annahme bleibt bei Ihnen.
+
+## Was liegt am Ende einer MVP-Entwicklung vor?
+
+Am Ende steht ein funktionsfähiges Produkt mit kleinem Funktionsumfang und vollständigem Fundament: echte Identitätsprüfung und Einwilligung, bestätigte Aktionen, Datenschutz im Code und lückenlose Protokolle. Dazu kommen die Messdaten der ersten Nutzer, also wo sie abbrechen, zögern oder den Support rufen, und eine dokumentierte Entscheidung über Ausbau, Umbau oder Einstellung. Was fehlt, steht auf der Liste „weglassen oder von Hand“ und ist damit sichtbar, nicht vergessen.
+
 ## Wovon Aufwand und Kosten abhängen, wenn Sie ein MVP entwickeln lassen
 
 - Welche Pflichten greifen: Identitätsprüfung, Zahlungsabwicklung, Gesundheitsdaten, KI-Kennzeichnung.
@@ -104,3 +130,8 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 ## Fazit
 
 Ein MVP in einem regulierten Markt ist klein im Umfang und vollständig im Fundament; das gilt für MVP-Software mit und ohne KI-Entwicklung, für eine Webanwendung genauso wie für eine App. Wenn Sie mir Ihre eine Annahme und den Markt nennen, in dem das Produkt startet, sage ich Ihnen in einem Gespräch, was auf die Pflichtliste gehört und was Sie getrost weglassen können: [Kontakt](/de/kontakt).
+
+## Quellen
+
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026
+- [Article 50: Transparency obligations for providers and deployers of certain AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026

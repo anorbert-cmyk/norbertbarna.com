@@ -4,7 +4,7 @@ description: "KI-Automatisierung: fünf Kriterien für den ersten Prozess, wann 
 lang: de
 slug: ki-automatisierung-erster-prozess
 date: 2026-10-21T10:30:00+02:00
-updated: 2026-10-22T09:00:00+02:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ki automatisierung, ki prozessautomatisierung, ki prozessoptimierung, ki audit, ki potenzialanalyse, automatisierung mit ki]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
@@ -17,6 +17,14 @@ Der richtige erste Prozess für eine KI-Automatisierung ist einer, der oft vorko
 Dieser Artikel gibt Ihnen fünf Kriterien, mit denen Sie Ihre Prozesse sortieren, eine Abgrenzung zwischen KI und klassischer Automatisierung, Beispiele für gute und schlechte erste Kandidaten, und den Ablauf, mit dem aus einem Kandidaten ein messbarer Pilot wird. Es ist die Fortsetzung des Artikels [KI im Mittelstand einführen](/de/wissen/ki-im-mittelstand-einfuehren), der den Zeitplan beschreibt; hier geht es um die Auswahl.
 
 Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+## Kurz gesagt: Der erste Prozess für eine KI-Automatisierung
+
+- **Die Regel:** Wenn Sie die Regel aufschreiben können, automatisieren Sie klassisch. KI lohnt sich dort, wo heute ein Mensch unstrukturierte Eingaben liest, versteht und überträgt.
+- **Fünf Kriterien:** Häufigkeit, unstrukturierte Eingabe, prüfbare Ausgabe, begrenzte Folgen eines Fehlers, messbarer Ausgangswert. Vier von fünf reichen oft; prüfbare Ausgabe und begrenzte Fehlerfolgen dürfen nicht fehlen.
+- **Gute erste Kandidaten:** Anfragen klassifizieren und Antworten entwerfen, Felder aus Dokumenten zur Prüfung vorausfüllen, interne Fragen aus der eigenen Dokumentation mit Quellenangabe beantworten.
+- **Kein erster Prozess:** alles, was ohne menschliche Freigabe Zahlungen auslöst oder über Menschen entscheidet. Software, die Bewerbungen sortiert, führt die Europäische Kommission als Beispiel für Hochrisiko-KI; die Pflichten dafür gelten ab dem 2. Dezember 2027.
+- **Einordnung:** Von den Unternehmen in der EU, die KI einsetzen, nutzten sie 2025 laut Eurostat 34,70 % für Marketing oder Vertrieb und 31,05 % für die Organisation von Verwaltungsprozessen oder das Management. Die am häufigsten eingesetzte Technik war die Analyse geschriebener Sprache, in 11,75 % aller Unternehmen.
 
 ## KI-Automatisierung oder klassische Automatisierung?
 
@@ -52,6 +60,15 @@ Sie wissen heute, wie lange der Prozess dauert und wie oft er Rückfragen oder F
 
 Ein Prozess, der alle fünf Kriterien erfüllt, ist ein guter Anfang. Vier von fünf reichen oft; fehlt die prüfbare Ausgabe oder die Begrenzung der Folgen, ist es kein erster Prozess, sondern ein zweiter oder dritter.
 
+: Fünf Kriterien für den ersten KI-Prozess: wann ein Kriterium erfüllt ist und woran Sie das Gegenteil erkennen
+| Kriterium | Erfüllt, wenn | Nicht erfüllt, wenn |
+| --- | --- | --- |
+| Häufigkeit | Der Prozess läuft täglich oder wöchentlich | Er läuft quartalsweise oder seltener |
+| Unstrukturierte Eingabe | E-Mails, PDFs, Scans, Freitext oder Gesprächsnotizen kommen herein | Die Daten sind strukturiert und die Regel ist aufschreibbar: klassisch automatisieren |
+| Prüfbare Ausgabe | Ein Mensch prüft das Ergebnis in Sekunden, bevor es wirkt | Die Prüfung dauert länger als die Arbeit, oder das Ergebnis wirkt ungeprüft |
+| Begrenzte Fehlerfolgen | Ein Fehler ist ärgerlich und korrigierbar, etwa ein falsch zugeordnetes Ticket | Ein Fehler löst eine Zahlung aus oder trifft eine Entscheidung über einen Menschen |
+| Messbarer Ausgangswert | Dauer, Rückfragen und Fehler sind bekannt oder in zwei Wochen messbar | Niemand kann sagen, wie lange der Prozess heute dauert |
+
 ## Gute und schlechte erste Kandidaten
 
 **Gute erste Kandidaten:**
@@ -82,6 +99,14 @@ Was ich dabei aus der Produktarbeit mitbringe: Bei Instructure haben wir KI-Funk
 4. **Integration nur so weit wie nötig.** Für den Pilot reicht oft eine Verbindung, die liest, aber nicht schreibt. Schreibende Integration kommt, wenn der Pilot etwas bewiesen hat.
 5. **Pilot mit Verantwortlichem und Messung.** Dauer pro Vorgang gegenüber dem Ausgangswert, Anteil umgeschriebener Vorschläge, Rückmeldungen der Mitarbeiter.
 6. **Entscheidung mit Zahlen.** Ausweiten, umbauen oder abbrechen, und das Ergebnis dokumentieren.
+
+## Wer muss an Auswahl und Pilot beteiligt sein?
+
+Die Menschen, die den Prozess heute ausführen, denn sie liefern die Beobachtung und bearbeiten später die Vorschläge. Dazu kommen eine verantwortliche Person, die den Pilot anhalten darf, die IT für die lesende Anbindung und der Datenschutzbeauftragte für die Frage, welche Daten die KI sehen darf. Ein Prozess, den niemand im Haus verantwortet, scheidet schon bei der Auswahl aus.
+
+## Was liegt am Ende des Pilots vor?
+
+Drei Messwerte und eine Entscheidung: die Dauer pro Vorgang im Vergleich zum Ausgangswert, der Anteil der Vorschläge, die Mitarbeiter umgeschrieben oder verworfen haben, und ihre Rückmeldungen. Daraus folgt schriftlich, ob der Prozess ausgeweitet, umgebaut oder abgebrochen wird. Auch ein Abbruch ist ein Ergebnis, weil er dokumentiert, warum dieser Prozess kein Kandidat war.
 
 ## Was die KI-Verordnung für Prozessautomatisierung bedeutet
 
@@ -116,3 +141,9 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 ## Fazit
 
 KI-Automatisierung scheitert selten an der Technik und oft an der Auswahl des ersten Prozesses. Wenn Sie mir drei Prozesse nennen, die in Ihrem Unternehmen Zeit fressen, sage ich Ihnen in einem Gespräch, welcher davon die fünf Kriterien erfüllt und welcher besser klassisch automatisiert wird: [Kontakt](/de/kontakt).
+
+## Quellen
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat, Daten für 2025, Datenstand Dezember 2025, abgerufen am 28. November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026
+- [Article 50: Transparency obligations for providers and deployers of certain AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026

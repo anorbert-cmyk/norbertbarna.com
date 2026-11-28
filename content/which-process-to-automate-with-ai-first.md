@@ -4,7 +4,7 @@ description: "AI automation works best on a first process that is frequent, read
 lang: en
 slug: which-process-to-automate-with-ai-first
 date: 2026-11-27T23:30:00+01:00
-updated: 2026-11-27T23:30:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [ai automation, business process automation, ai integration, ai audit, human in the loop ai, ai pilot]
 service: /ai-integration
 service_label: AI integration for regulated industries
@@ -15,6 +15,14 @@ pair: [de/ki-automatisierung-erster-prozess, hu/ai-automatizalas-melyik-folyamat
 The first business process a company should hand to AI automation is one that runs daily or weekly, starts from unstructured input such as emails, documents or free text, produces a result a person can check in seconds before it takes effect, and is cheap to correct when it is wrong. In most companies that is intake and triage: reading incoming requests or documents, classifying them, and preparing a draft or a pre-filled record for a colleague to approve. A process that follows fixed rules on structured data needs classic automation, not AI.
 
 Below are five criteria, a decision table and six steps to a measured pilot. I work with companies across the EU, in English or Hungarian.
+
+## In short: the first process for AI automation
+
+- **The first process:** one that runs daily or weekly, starts from unstructured input, produces a result a person can check in seconds, and is cheap to correct. In most companies that is intake and triage.
+- **The rule:** if you can write the rule down, use classic automation. Use AI only for the part where no rule can be written.
+- **Not first:** payments, contracts and decisions about people. The European Commission lists CV-sorting software for recruitment and credit scoring among the high-risk use cases of the AI Act, whose rules apply from 2 December 2027.
+- **What others use AI for:** in 2025, 19.95% of EU enterprises used AI technologies, 6.47 percentage points more than in 2024. The most common use was the analysis of written language (text mining), at 11.75% of enterprises (Eurostat, data extracted December 2025).
+- **A pilot is measured by:** time per case against the baseline, the share of suggestions that were rewritten, and what the employees report.
 
 ## Which business process should a company automate with AI first?
 
@@ -45,14 +53,14 @@ The working rule: **if you can write the rule down, automate it the classic way.
 Four out of five is often enough, unless checkable output or limited consequence is the missing one.
 
 : Decision table: classic automation, AI automation or not yet
-| What the process looks like | Recommendation |
-|---|---|
-| Fixed rules, structured data | Classic automation, no AI |
-| Frequent, messy input, a person approves the draft, errors are cheap | AI automation, a good first project |
-| Messy input, but the output acts without review | Add a review step first, or choose another process |
-| Triggers payments or concludes contracts | Not first, and never without human approval |
-| Decides about people: hiring, credit, performance | Legal review before any technical work |
-| Undocumented, or nobody owns it | Document it and name an owner first |
+| What the process looks like | Recommendation | Example |
+|---|---|---|
+| Fixed rules, structured data | Classic automation, no AI | Filing an incoming invoice and entering the amount in a table |
+| Frequent, messy input, a person approves the draft, errors are cheap | AI automation, a good first project | Ticket triage with a draft reply; fields read from delivery notes into a form |
+| Messy input, but the output acts without review | Add a review step first, or choose another process | A customer-facing bot that answers on its own |
+| Triggers payments or concludes contracts | Not first, and never without human approval | Releasing a bank transfer; accepting a contract |
+| Decides about people: hiring, credit, performance | Legal review before any technical work | CV screening, credit scoring |
+| Undocumented, or nobody owns it | Document it and name an owner first | A task only one colleague knows how to do |
 
 ## Which processes should you not automate with AI first?
 
@@ -82,6 +90,14 @@ The same order applies to process automation: observe the work, pick the task, f
 
 The tool comes last. Workflow platforms such as n8n or Make are often sensible for a prototype, but the process and the limits are decided first. If you plan to bring in outside help, [what to prepare before hiring an AI integration partner](/writing/before-hiring-an-ai-integration-partner) lists the inputs that make the first conversation useful.
 
+## Who should take part in choosing the first process?
+
+Four roles: the people who do the work, because only they know the inputs and the exceptions; the process owner, who can change how the work is done; whoever runs the systems the AI would read; and one named person who will own the pilot and can pause it. Where the process touches customer data or decisions about people, your counsel joins before any technical work.
+
+## What is ready at the end of the pilot?
+
+At the end of the pilot you have a comparison of time per case against the baseline, the share of AI suggestions that employees rewrote or rejected, a list of the cases where the output failed, and the employees’ own account. From those you take a documented decision: extend, rebuild or stop.
+
 ## What the answer depends on
 
 The right first process depends on where unstructured input arrives in volume, how well the process is documented, which systems can be read without a large integration, and what a wrong output would cost. Regulation matters as well. Most internal automations that sort documents or write drafts are limited-risk or minimal-risk systems under the EU AI Act, Regulation (EU) 2024/1689 (source: [EUR-Lex](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), accessed 22 October 2026). When the AI talks to customers directly, the transparency duties described in [EU AI Act Article 50](/writing/eu-ai-act-transparency-obligations) apply. This is a product team’s design reading, not legal advice.
@@ -89,6 +105,11 @@ The right first process depends on where unstructured input arrives in volume, h
 ## Where to start
 
 AI automation rarely fails on technology and often fails on the choice of the first process. The full method is on the [AI integration](/ai-integration) page. Name three processes that consume time in your company, and I will tell you which meets the five criteria and which is better automated without AI: [contact](/contact).
+
+## Sources
+
+- [Use of artificial intelligence in enterprises](https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Use_of_artificial_intelligence_in_enterprises), Eurostat Statistics Explained, data extracted December 2025, accessed 28 November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), European Commission, Shaping Europe’s digital future, accessed 28 November 2026
 
 ## Frequently asked questions
 

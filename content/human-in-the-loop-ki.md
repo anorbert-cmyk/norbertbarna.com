@@ -4,7 +4,7 @@ description: "Human in the Loop bei KI: sieben Muster, die eine Prüfung bestehe
 lang: de
 slug: human-in-the-loop-ki
 date: 2026-10-21T10:40:00+02:00
-updated: 2026-10-21T10:40:00+02:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [human in the loop, human in the loop ki, menschliche aufsicht ki, ki verordnung, ki integration, ki entwicklung]
 service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
@@ -17,6 +17,14 @@ Human in the Loop bedeutet, dass ein Mensch prüft, bearbeitet oder freigibt, wa
 Dieser Artikel beschreibt sieben Muster, die in zwei Produkten, an denen ich gearbeitet habe, einer Prüfung standgehalten haben: KI-Funktionen in der Lernplattform von Instructure und ein KI-gestützter Prognosemarkt-MVP namens SportsGambit. Die Beispiele stammen aus diesen Projekten; die Schlussfolgerungen sind meine.
 
 Zur Zusammenarbeit: Ich arbeite mit Teams in Deutschland und der EU, die Kommunikation läuft auf Englisch oder Ungarisch.
+
+## Kurz gesagt: Human in the Loop und menschliche Aufsicht
+
+- **Definition:** Bei Human in the Loop gibt ein Mensch jede folgenreiche KI-Ausgabe frei, bevor sie wirkt. Bei Human on the Loop handelt das System selbst, und ein Mensch überwacht und greift ein.
+- **Drei Bedingungen:** Der Mensch sieht, dass KI beteiligt war, er kann die Ausgabe ändern oder ablehnen, und seine Entscheidung wird aufgezeichnet. Fehlt eine davon, schaut er nur zu.
+- **Entscheidungsregel:** Wählen Sie die Stufe der Aufsicht nach den Folgen einer falschen Ausgabe, nicht nach der Qualität des Modells. Erreicht die Ausgabe einen Kunden oder bewegt sie Geld, gibt ein Mensch sie vorher frei.
+- **Artikel 14 der KI-Verordnung (EU) 2024/1689:** Absatz 4 nennt fünf Fähigkeiten der beaufsichtigenden Person: Grenzen des Systems verstehen, Automatisierungsbias kennen, Ausgaben richtig interpretieren, Ausgaben verwerfen oder übersteuern, das System über eine „Stopp“-Taste anhalten.
+- **Termine:** Die Transparenzpflichten nach Artikel 50 gelten seit dem 2. August 2026; der Hinweis muss nach Artikel 50 Absatz 5 spätestens bei der ersten Interaktion erfolgen. Die Hochrisiko-Pflichten gelten für Anhang III ab dem 2. Dezember 2027 und für Anhang I ab dem 2. August 2028.
 
 ## Was bedeutet Human in the Loop bei KI, und was nicht?
 
@@ -37,6 +45,21 @@ Artikel 14 der EU-KI-Verordnung verlangt, dass Hochrisiko-KI-Systeme so gestalte
 Zum Zeitplan: Der Digital Omnibus zur KI (Verordnung (EU) 2026/1744, in Kraft seit 27. Juli 2026) hat die Pflichten für Hochrisiko-Systeme nach Anhang III auf den 2. Dezember 2027 und nach Anhang I auf den 2. August 2028 verschoben. Die Transparenzpflichten nach Artikel 50, etwa der Hinweis, dass man mit einem KI-System interagiert, gelten weiterhin seit dem 2. August 2026 (Quellen: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/), [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), abgerufen am 21. Oktober 2026). Was die Kennzeichnung konkret für Produktteams bedeutet, steht in einem eigenen Artikel: [KI-Kennzeichnungspflicht](/de/wissen/ki-kennzeichnungspflicht).
 
 Das ist die Lesart aus Produktsicht, keine Rechtsberatung. Ob Ihr System ein Hochrisiko-System ist, klärt Ihre Rechtsabteilung. Aus Projekten, die live gegangen sind, kann ich sagen: Jede der fünf Aufsichtsfähigkeiten in Artikel 14 entspricht einer Entscheidung über die Oberfläche. Der Rest dieses Artikels sind diese Entscheidungen.
+
+: Artikel 14 Absatz 4 der KI-Verordnung: fünf Aufsichtsfähigkeiten und die passende Entscheidung in der Oberfläche
+| Art. 14 Abs. 4 | Was die beaufsichtigende Person können muss | Entscheidung in der Oberfläche |
+| --- | --- | --- |
+| Buchstabe a | Fähigkeiten und Grenzen des Systems verstehen, den Betrieb überwachen, Anomalien erkennen | Sichtbare Zustände für leer, laden, Fehler und Verzögerung (Muster 4) |
+| Buchstabe b | Sich des Automatisierungsbias bewusst bleiben | Konfidenzwert und bewusster Prüfschritt vor jeder Aktion (Muster 5) |
+| Buchstabe c | Die Ausgabe richtig interpretieren | KI-Label, Signale und Quellen vor dem Vorschlag (Muster 1 und 2) |
+| Buchstabe d | Das System nicht verwenden, die Ausgabe verwerfen, übersteuern oder rückgängig machen | Editierbare Ausgabe mit den Zuständen Entwurf, geprüft, veröffentlicht (Muster 3) |
+| Buchstabe e | Eingreifen oder das System über eine „Stopp“-Taste in einen sicheren Zustand bringen | Feature-Flag und eine benannte Person, die stoppen darf (Muster 7) |
+
+Die Zuordnung in der dritten Spalte ist meine Lesart aus der Produktarbeit; die Verordnung schreibt kein bestimmtes Oberflächenmuster vor.
+
+## Wer ist für die menschliche Aufsicht verantwortlich?
+
+Artikel 14 Absatz 3 kennt zwei Arten von Aufsichtsmaßnahmen: solche, die der Anbieter vor dem Inverkehrbringen in das System einbaut, und solche, die der Anbieter festlegt und der Betreiber umsetzt. Für ein Produktteam heißt das: Label, Prüfzustände und Stopp gehören ins Produkt, und der Betreiber benennt die Personen, die prüfen und anhalten dürfen. Nach Absatz 3 müssen die Maßnahmen dem Risiko, dem Grad der Autonomie und dem Einsatzkontext des Systems angemessen sein. An der Gestaltung sitzen deshalb Produkt und Design, die späteren Prüfer aus dem Fachbereich, Recht und Compliance sowie Data Science an einem Tisch.
 
 ## Sieben Human-in-the-Loop-Muster, die eine Prüfung bestehen
 
@@ -91,6 +114,10 @@ Entscheiden: Wer ist für den Stopp verantwortlich, wie schnell kann er wirken, 
 
 Wenn diese Fragen noch keine Antworten haben, beginnt dort die Arbeit, und zwar vor der KI-Entwicklung, nicht danach. In meiner Methode ist der zweite Schritt, vor jedem Bau, die Festlegung von Zugriff und menschlicher Kontrolle: Was die KI vorschlagen darf, was ein Mensch prüfen muss, und was passiert, wenn eine Antwort fehlt oder falsch ist.
 
+## Was liegt am Ende der Gestaltung vor?
+
+Vier Dinge, bevor die Entwicklung beginnt: eine Liste, was die KI vorschlagen darf und was ein Mensch freigeben muss; entworfene Zustände für Label, Bearbeitung, Fehler und Verzögerung; ein Protokollkonzept, das festhält, wer was auf welcher Grundlage akzeptiert hat; und eine benannte Person mit einem Schalter für den Stopp. Mit diesen vier Ergebnissen kann der begrenzte Pilot starten, und die acht Fragen oben sind beantwortet.
+
 ## Was schwierig war
 
 Die meisten KI-Projekte beginnen mit dem, was sich automatisieren lässt. Bei Instructure haben wir mit dem begonnen, was menschlich bleiben muss. Der schwierige Teil war ethisch, nicht technisch: für den Fall zu gestalten, dass die KI irrt, verzerrt ist oder missbraucht wird, statt so zu tun, als käme das nicht vor. Daraus wird keine beeindruckende Präsentation. Daraus wird KI, die echte Institutionen für Millionen Menschen einführen können und danach ruhig schlafen. Details: [Instructure-Fallstudie](/de/arbeit/instructure).
@@ -128,3 +155,9 @@ Ja. Die Zusammenarbeit läuft auf Englisch oder Ungarisch; deutschsprachige Team
 ## Fazit
 
 Menschliche Aufsicht lässt sich leichter gestalten als nachrüsten. Das Produkt, das eine Prüfung besteht, ist das, in dem jede KI-Ausgabe schon ein Label, einen Bearbeitungszustand und einen Weg zurück hatte. Bringen Sie den Ablauf und die Entscheidung mit, die Ihnen Sorgen macht, und [dort fangen wir an](/de/kontakt).
+
+## Quellen
+
+- [Article 14: Human oversight](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026
+- [Article 50: Transparency obligations for providers and deployers of certain AI systems](https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50), AI Act Service Desk der Europäischen Kommission, abgerufen am 28. November 2026
+- [AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai), Europäische Kommission, Abschnitte „A Risk-based Approach“ und „Application timeline“, abgerufen am 28. November 2026

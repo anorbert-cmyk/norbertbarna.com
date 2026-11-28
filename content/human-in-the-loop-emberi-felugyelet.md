@@ -4,7 +4,7 @@ description: "Human in the loop a gyakorlatban: hét minta, amely kiállja a fel
 lang: hu
 slug: human-in-the-loop-emberi-felugyelet
 date: 2026-11-12T12:00:00+01:00
-updated: 2026-11-12T12:00:00+01:00
+updated: 2026-11-28T12:00:00+01:00
 tags: [human in the loop, emberi felügyelet, ai act, ai fejlesztés, ai tanácsadás]
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
@@ -15,6 +15,14 @@ pair: [en/human-in-the-loop-ai, de/human-in-the-loop-ki]
 A human in the loop azt jelenti, hogy egy ember átnézi, szerkeszti vagy jóváhagyja, amit az AI-rendszer javasol, mielőtt annak bármilyen hatása lenne, és felül is bírálhatja vagy leállíthatja a rendszert. Szabályozott termékben ez nem egy pipa a projekt végén. Felületi döntések sora, amelyeket az első napon kell meghozni: mit javasolhat az AI, mit kell embernek ellenőriznie, miből látja az ellenőrző a javaslat okát, és mi történik, ha a kimenet hibás.
 
 Ebben a cikkben hét mintát írok le. Mind kiállta a felülvizsgálatot két termékben, amelyen dolgoztam: az egyik az Instructure tanulási platformjának AI-funkciói, a másik a SportsGambit, egy AI-alapú előrejelzési piac MVP-je. A példák ezekből a projektekből valók, a következtetések az enyémek.
+
+## Röviden: mit jelent a human in the loop, és mikor kell
+
+- **Meghatározás:** human in the loop az a működés, amelyben minden következménnyel járó AI-kimenetet ember néz át, szerkeszt vagy hagy jóvá, mielőtt az hatni kezd.
+- **Három feltétel:** az ember látja, hogy AI is részt vett a munkában, meg tudja változtatni vagy el tudja vetni a kimenetet, és a döntését a rendszer naplózza. Ha bármelyik hiányzik, a felügyelet csak látszat.
+- **Döntési szabály:** válaszd a human in the loop működést, ha a kimenet ügyfélhez jut el, pénzt mozgat vagy emberről szóló döntést készít elő. A human on the loop akkor elég, ha a hiba gyorsan észrevehető és visszafordítható.
+- **Jogi alap:** az EU AI-rendelete, az (EU) 2024/1689 rendelet 14. cikkének (4) bekezdése öt képességet vár el a magas kockázatú rendszert felügyelő embertől: megérti a rendszer korlátait, számol az automatizálási torzítással, helyesen értelmezi a kimenetet, felülbírálhatja, és le tudja állítani.
+- **Dátumok:** az 50. cikk átláthatósági kötelezettségei 2026. augusztus 2. óta alkalmazandók. A III. melléklet szerinti magas kockázatú rendszerek kötelezettségei a 2026-os Digital Omnibus után 2027. december 2-tól, az I. melléklet szerintieké 2028. augusztus 2-tól.
 
 ## Mit jelent a human in the loop, és mit nem?
 
@@ -35,6 +43,17 @@ Az EU AI-rendelet (AI Act) 14. cikke szerint a magas kockázatú AI-rendszereket
 A határidőkről: az AI-ra vonatkozó Digital Omnibus (az (EU) 2026/1744 rendelet, hatályos 2026. július 27-től) a III. melléklet szerinti magas kockázatú rendszerek kötelezettségeit 2027. december 2-ra, az I. melléklet szerintiekét 2028. augusztus 2-ra tolta. Az 50. cikk átláthatósági kötelezettségei, például annak jelzése, hogy a felhasználó AI-rendszerrel lép kapcsolatba, változatlanul 2026. augusztus 2. óta alkalmazandók (források: [Cooley](https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/) és [National Law Review](https://natlawreview.com/article/eu-digital-omnibus-ai-enters-force), lekérve 2026. október 21-én).
 
 Ez egy terméktervező olvasata, nem jogi tanácsadás. Hogy a te rendszered magas kockázatú-e, azt jogásszal kell tisztáznod. Amit élesbe állított munkák alapján mondani tudok: a 14. cikk öt felügyeleti képessége mind megfeleltethető egy felületi döntésnek. A cikk hátralévő része ezekről a döntésekről szól.
+
+: Az AI-rendelet 14. cikkének (4) bekezdése szerinti öt felügyeleti képesség és a felületi megfelelőjük
+| Amit a 14. cikk (4) bekezdése elvár | Felületi döntés | Minta a cikkben |
+| --- | --- | --- |
+| a) Megérti a rendszer képességeit és korlátait, és figyeli a működését | AI-címke minden kimeneten, látható üres, hibás és késő állapot | 1. és 4. minta |
+| b) Tudatában marad az automatizálási torzításnak | Bizonyossági szint és tudatos ellenőrző lépés a művelet előtt | 5. minta |
+| c) Helyesen értelmezi a kimenetet | Előbb a jelzések és a források, utána a javaslat | 2. minta |
+| d) Dönthet úgy, hogy nem használja, felülbírálja vagy visszafordítja | Szerkeszthető, elvethető, visszavonható kimenet három állapottal: vázlat, ellenőrzött, közzétett | 3. minta |
+| e) Beavatkozik, vagy „stop” gombbal leállítja a rendszert | Feature flag és név szerint kijelölt felelős, aki szüneteltethet | 7. minta |
+
+A megfeleltetés az én tervezői olvasatom. A rendelet a képességeket írja elő, felületi megoldást nem nevez meg.
 
 ## Hét human in the loop minta, amely kiállja a felülvizsgálatot
 
@@ -89,6 +108,14 @@ Döntsd el: ki felel a leállításért, milyen gyorsan történhet meg, és mi 
 
 Ha ezekre még nincs válasz, ott kezdődik a munka, mégpedig az AI fejlesztés előtt, nem utána. Az emberi felügyelet a tervezés első leszállítandó eredménye. A módszeremben a második lépés, még mielőtt bármi megépülne, a hozzáférés és az emberi kontroll rögzítése: mit javasolhat az AI, mit kell embernek átnéznie, és mi történik, ha egy válasz hiányzik vagy hibás. Hogy ez hogyan illeszkedik egy teljes bevezetés menetrendjébe, arról az [AI bevezetése KKV-nál: az első 90 nap](/hu/irasok/ai-bevezetese-kkv-elso-90-nap) című cikkben írok.
 
+## Ki felel az emberi felügyeletért egy AI-projektben?
+
+Az emberi felügyeletet nem egy ember tervezi meg. A terméktervező írja le a felületi állapotokat, a jogi és a compliance terület mondja meg, mit kell embernek jóváhagynia, a data science pedig azt, mikor bizonytalan a modell. Az üzleti oldal név szerint kijelöl egy felelőst, aki a funkciót szüneteltetheti vagy leállíthatja. Egy 20 és 250 fő közötti cégnél, például egy könyvelőirodánál vagy egy biztosítási alkusznál, ez gyakran két ember: a folyamat gazdája és az, aki a jogi kérdésekért felel.
+
+## Mi készül el a tervezés végére, még az építés előtt?
+
+A tervezési szakasz végén négy dolog van írásban. Az első a lista arról, mit javasolhat az AI, és mit kell embernek jóváhagynia. A második a kimenet állapotai és a címke pontos szövege. A harmadik a leállításért felelős ember neve. A negyedik az, hogy mi kerül a naplóba a későbbi felülvizsgálathoz. Ha ezek megvannak, a fejlesztés már nem a felügyeletről vitatkozik, hanem megépíti.
+
 ## Mi volt benne a nehéz
 
 A legtöbb AI-projekt azzal indul, mit lehet automatizálni. Az Instructure-nél azzal kezdtük, minek kell emberi kézben maradnia. A nehéz rész nem technikai volt, hanem etikai: arra az esetre tervezni, amikor az AI téved, elfogult, vagy visszaélnek vele, ahelyett hogy úgy tennénk, mintha ilyen nem fordulna elő. Ebből nem lesz látványos prezentáció. Olyan AI lesz belőle, amelyet valódi intézmények több millió embernek vezethetnek be, és utána is nyugodtan alszanak. Részletek: [Instructure esettanulmány](/hu/munka/instructure).
@@ -96,6 +123,10 @@ A legtöbb AI-projekt azzal indul, mit lehet automatizálni. Az Instructure-nél
 ## Összegzés
 
 Az emberi felügyeletet könnyebb megtervezni, mint utólag beépíteni. Az a termék megy át a felülvizsgálaton, amelyben már az elejétől minden AI-kimenethez tartozott címke, szerkesztési állapot és visszaút. Hozd a munkafolyamatot és azt a döntést, amely miatt aggódsz, és [ott kezdjük](/hu/kapcsolat).
+
+## Források
+
+- [Az Európai Parlament és a Tanács (EU) 2024/1689 rendelete (AI-rendelet), 14. cikk: emberi felügyelet, 50. cikk: átláthatósági kötelezettségek](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), EUR-Lex, az Európai Unió Hivatalos Lapja, 2024. június 13., lekérve 2026. november 28-án
 
 ## Gyakori kérdések
 
