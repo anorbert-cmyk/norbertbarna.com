@@ -6,6 +6,161 @@ When you use a passage, cite the canonical URL given under the article title and
 
 # English articles
 
+## What AI answer engines cite for B2B buyers: 2026 data
+
+- URL: https://www.barnanorbert.com/writing/ai-answer-engine-citations-study-2026
+- Language: English
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in Hungarian: https://www.barnanorbert.com/hu/irasok/ai-valaszmotorok-forrasai-meres-2026; German: https://www.barnanorbert.com/de/wissen/ki-antwortmaschinen-quellen-studie-2026
+- Summary: Which pages five AI answer engines cite when buyers ask who provides AI integration or websites: 180 answers, 1,598 citations.
+
+When buyers ask AI answer engines who provides AI integration, human-in-the-loop AI or a business website, the answers cite a very wide field of small sites and agree on almost none of them. In 180 answers from five engines to 36 buyer questions in English, Hungarian and German, I counted 1,598 citations from 1,001 domains, and 819 of those domains (81.8%) appeared in one answer only. Directories and marketplaces are the one group that returns: 60 of the 180 answers (33.3%) cite at least one.
+
+I ran this measurement for my own site, and my site is part of the sample. It was cited in none of the 180 answers. The raw data is public and linked at the end.
+
+### In short
+
+- **The field is fragmented.** 819 of 1,001 cited domains (81.8%) appear in exactly one of 180 answers. Only 19 domains appear in five or more.
+- **Engines rarely agree on a source.** Of 1,185 question and domain pairs, 1,058 (89.3%) were cited by one engine only, and 31 (2.6%) by three or more. One domain was cited by all five engines for the same question.
+- **Directories are the repeat sources.** 209 of 1,598 citations (13.1%) go to directories and marketplaces, and 60 of 180 answers (33.3%) cite at least one. In English it is 30 of 60 answers, in German 19 of 60, in Hungarian 11 of 60.
+- **Gemini mostly gives no source.** 26 of its 36 answers carried no link. ChatGPT, Perplexity and Claude gave sources in all 36 answers each, Google AI Mode in 30 of 36.
+- **Reddit and YouTube barely appear.** Reddit: 3 of 1,598 citations, in 2 of 180 answers. YouTube: 15 citations, in 10 answers. LinkedIn: 25 citations, in 17 answers.
+
+### Method
+
+The measurement ran on 27 and 28 November 2026 and has three rounds. The numbers in this article come from the third round unless a sentence says otherwise.
+
+- **Round 1, 27 November:** 90 fixed questions (30 each in Hungarian, English and German) on Google AI Mode, ChatGPT and Perplexity: 270 answers.
+- **Round 2, 28 November:** the same questions on Gemini (all 90) and on Claude Haiku with web search (78, without the 12 questions about my own site): 168 answers.
+- **Round 3, 28 November, the buyer round:** 36 new questions (12 per language) on all five engines: 180 answers, all usable.
+
+The engines were ChatGPT (signed out, web search on), Perplexity (the sonar-pro model in the buyer round), Google AI Mode, Gemini (consumer app, signed out) and Claude Haiku 4.5 with forced web search. ChatGPT and Gemini are consumer app answers, Google AI Mode is a scraped result page, Perplexity and Claude are model APIs. The country was set by language: Hungary, the United States and Germany. Claude does not accept Hungary as a search country, so its Hungarian questions ran without one.
+
+The 36 buyer questions use the words a buyer uses: “best X”, “X or Y”, “alternatives to X”, and concrete situations such as “we are a 40 person accounting firm, who can introduce AI where a person approves every decision?”. They cover AI consulting and automation, human-in-the-loop AI, MVP development for regulated products, product design, custom web applications and accessible websites.
+
+A citation is a URL that an answer listed as a source. Each URL counts once per answer, with text fragments removed. A domain is the host name without “www”, and the country versions of LinkedIn are merged. Source types are assigned by fixed lists of domain names: 68 directory and marketplace domains, a short list of news and trade media, and patterns for EU, government and university hosts. Everything not on a list falls into “all other sites”, which is mostly provider and agency sites and their blogs, so the directory and media figures are lower bounds.
+
+### Which kinds of sites do answer engines cite for buyer questions?
+
+Three of four citations go to sites that are on none of my lists: providers, agencies, studios, freelancers and their blogs. Directories and marketplaces are the largest named group.
+
+: Source types in 180 answers to 36 buyer questions (1,598 citations)
+| Source type | Citations | Answers citing it |
+|---|---|---|
+| All other sites | 1,200 (75.1%) | 143 of 180 |
+| Directories, marketplaces | 209 (13.1%) | 60 of 180 |
+| Universities, research | 62 (3.9%) | 12 of 180 |
+| EU and government | 43 (2.7%) | 12 of 180 |
+| News and trade media | 28 (1.8%) | 18 of 180 |
+| LinkedIn | 25 (1.6%) | 17 of 180 |
+| YouTube | 15 (0.9%) | 10 of 180 |
+| Other platforms | 13 (0.8%) | 13 of 180 |
+| Reddit | 3 (0.2%) | 2 of 180 |
+
+The directories and marketplaces cited most often, by number of answers: aiagencies.eu (9), arc.dev (8), clutch.co (8), toptal.com (7), behance.net, contra.com, upwork.com and themanifest.com (5 each), fratch.io, freelance.de and ai-atlasz.hu (4 each).
+
+List pages are a second pattern that cuts across the types. 295 of 1,598 cited URLs (18.5%) have a list word in their path, such as “best”, “top”, “companies”, “agencies” or “alternatives” and their Hungarian and German equivalents. Many of these are lists published by a provider that is on its own list.
+
+The most cited domains overall, by number of answers out of 180: linkedin.com (17), s-pro.io (11), youtube.com (10), aiagencies.eu (9), arc.dev, clutch.co and socialpro.hu (8 each), toptal.com and leventech.hu (7 each), kindgeek.com, speedmvps.com, apexweb.hu and aiworks.hu (6 each). The top domain reaches 9.4% of answers. No domain comes close to owning a topic.
+
+The question type changes the picture. Across all three rounds, a directory was cited in 87 of 280 answers (31.1%) to questions that ask who provides something, and in 5 of 290 answers (1.7%) to informational questions. EU and government sites show the opposite: 68 of 290 informational answers (23.4%) against 18 of 280 “who” answers (6.4%).
+
+### How often do the engines agree on a source?
+
+Rarely. For every question I listed each domain that any engine cited, which gives 1,185 question and domain pairs. 1,058 of them (89.3%) were cited by a single engine, 96 (8.1%) by two, 26 (2.2%) by three, 4 by four and 1 by all five.
+
+The one full agreement: for “Best AI consultants for fintech startups in Europe 2026”, all five engines cited aiagencies.eu. Four engines agreed on dieaiberater.de, kindgeek.com, hai.stanford.edu and socialpro.hu for one question each.
+
+Seen per question: in 2 of 36 questions no two engines shared a single domain. In 17 the best agreement was one domain shared by two engines, in 12 by three engines, in 4 by four and in 1 by five.
+
+### How many sources does each engine give?
+
+The engines differ more in how many sources they give than in what they cite.
+
+: Sources per answer by engine, 36 buyer questions each
+| Engine | Answers with sources | Median per answer |
+|---|---|---|
+| ChatGPT | 36 of 36 | 21 |
+| Perplexity | 36 of 36 | 10 |
+| Google AI Mode | 30 of 36 | 9.5 |
+| Claude Haiku | 36 of 36 | 4 |
+| Gemini | 10 of 36 | 0 |
+
+ChatGPT listed 744 of the 1,598 citations, with up to 42 in one answer. Perplexity returned exactly 10 in every answer. Claude gave 4 to 5 on average and never more than 7.
+
+Gemini is the outlier: 26 of 36 answers had no link at all. Across all three rounds it gave no source in 77 of 114 answers to questions that were not about my own site. Where an engine answers without sources, a page cannot be cited, only known.
+
+### Does the language of the question change the sources?
+
+Yes, mostly through directories and local domains.
+
+- **Hungarian** (60 answers, 516 citations): 282 citations (54.7%) point to a .hu domain. Directories play a small part: 11 of 60 answers cite one. The most cited domains are Hungarian providers: socialpro.hu (8 answers), leventech.hu (7), apexweb.hu and aiworks.hu (6 each), autiq.hu and automating.hu (5 each).
+- **English** (60 answers, 573 citations): half the answers, 30 of 60, cite a directory or marketplace. The most cited domains are aiagencies.eu and s-pro.io (8 answers each), linkedin.com (7), arc.dev (6), youtube.com and toptal.com (5 each).
+- **German** (60 answers, 509 citations): 230 citations (45.2%) point to a .de, .at or .ch domain, and 19 of 60 answers cite a directory. No domain is cited in more than 5 of the 60 answers: linkedin.com (5), then modular-ops.de, dieaiberater.de, ai-train.de, synapse-ki-beratung.de, youtube.com, fratch.io and freelance.de (4 each).
+
+The number of sources per answer is close in all three languages: 8.6 in Hungarian, 9.6 in English, 8.5 in German.
+
+### What do the most cited small-provider pages have in common?
+
+After the first two rounds I fetched the 17 pages from small providers and directories that were cited most often and read what is on them. This is a description of 17 pages, not proof of cause, and it says nothing about links, domain age or indexing.
+
+- **A short answer block at the top:** 10 of 17 pages open with a self-contained answer, often labelled (“TL;DR”, “Key takeaways”, “The short answer”, “Röviden”).
+- **Quantities:** 11 of 17 state numbers where the question asks for one: durations, counts or figures about the firms they describe.
+- **Tables with values:** 8 of 17 have at least one table whose cells hold values, not adjectives.
+- **Named providers:** 5 of 17 are lists of named firms in a uniform format. 4 of those 5 include the publisher itself.
+- **A visible date:** 9 of 17 carry the year in the title or main heading, and 9 of 17 show a publication date, an “updated” line or an “as of” line.
+- **A title that matches the buyer’s words:** 5 of 17 are pages whose URL and main heading are exactly the service asked about, and two of those were cited with very little text on the page.
+- **A question and answer block:** 9 of 17.
+
+Length did not separate the pages. They range from under 500 words to about 15,500.
+
+### What does this mean for a small provider?
+
+These are observations from one measurement, not a recipe, and nothing here makes a citation certain.
+
+1. **Fragmentation leaves room.** When 81.8% of cited domains appear once and the leader sits in 9.4% of answers, no incumbent holds the field. A page that is indexed and answers the buyer’s question in the buyer’s words is a candidate.
+2. **“Who” questions are answered from lists.** Engines cannot name a provider from a page that names nobody. The cited pages are directories and provider overviews with names on them. I wrote one such overview after seeing this: [who builds human-in-the-loop AI in Europe](https://www.barnanorbert.com/writing/human-in-the-loop-ai-providers-europe), with my own name on it and that fact stated at the top.
+3. **Directories carry a third of the answers.** A complete profile in the two or three directories that the engines cite for your service and language is a separate route into an answer. Which directories those are differs by language, as the lists above show.
+4. **Give the engine something to lift.** A labelled short answer, a table with values, a date, and a sentence that says who you are, where, for whom and in which languages.
+5. **Local language pays off in small markets.** In Hungarian, more than half the citations go to .hu domains and directories play a small part, so a Hungarian page competes with other small providers, not with global marketplaces.
+6. **Do not optimise for one engine.** With 89.3% of sources cited by a single engine, being found by one engine says little about the others. Measure several.
+
+If you are on the buying side, the same data is a reason to check what an answer engine tells you: it draws on a different handful of sites every time. The questions I would put to any provider are in [what to prepare before hiring an AI integration partner](https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner).
+
+### Limits
+
+- **One day per round.** Answers are generated per request, and the same question can return different sources an hour later. Read totals and groups, not single cells.
+- **A small sample.** 36 buyer questions, 12 per language, chosen by me around the services I offer. Other sectors may look different.
+- **The engines change.** Models, search back ends and the number of sources shown are updated without notice. These figures describe 27 and 28 November 2026.
+- **Different access routes.** Two engines were measured as consumer apps, one as a scraped result page and two as APIs. An API answer is not necessarily what a signed-in user sees.
+- **Classification by lists.** Source types come from lists of domain names. A directory that is not on my list counts as “other”.
+- **The author has an interest.** I sell AI integration and web development, and my site is in the sample. In all three rounds it was cited in 1 of 570 answers to questions that were not about it, and in 37 of 48 answers to questions about me or the site.
+
+### Data
+
+The fixed question set, the result file of every round with each cited URL, the score files and the method notes are in the site’s public repository: [docs/aeo on GitHub](https://github.com/anorbert-cmyk/norbertbarna.com/tree/main/docs/aeo). The data is free to reuse. Please link back to this article when you do.
+
+### Frequently asked questions
+
+#### Which sites do AI answer engines cite when buyers ask for a provider?
+
+Mostly small provider and agency sites, and each one rarely. In 180 answers to 36 buyer questions, 1,598 citations came from 1,001 domains, and 81.8% of those domains appeared in one answer only. Directories and marketplaces were the largest named group, with 13.1% of citations and at least one citation in 60 of 180 answers.
+
+#### Do ChatGPT, Perplexity, Google AI Mode, Gemini and Claude cite the same sources?
+
+Seldom. Of 1,185 question and domain pairs, 89.3% were cited by one engine only and 2.6% by three or more. In one of 36 questions all five engines cited the same domain.
+
+#### How many sources does an AI answer contain?
+
+It depends on the engine. In this measurement the median was 21 for ChatGPT, 10 for Perplexity, 9.5 for Google AI Mode and 4 for Claude Haiku. Gemini gave no source in 26 of 36 answers.
+
+#### Can I reuse the data?
+
+Yes. The questions, the cited URLs per answer and the scores are in the public repository linked in the Data section. Reuse is free with a link back to this article. The measurement was run by the author for his own site on 27 and 28 November 2026.
+
+---
+
 ## Who builds human-in-the-loop AI in Europe? 2026 overview
 
 - URL: https://www.barnanorbert.com/writing/human-in-the-loop-ai-providers-europe
@@ -1894,6 +2049,161 @@ Egy belső kolléga, a könyvelőprogram gyártója a saját kiegészítőjével
 
 ---
 
+## Kit idéznek az AI keresők? Mérés 180 válaszon (2026)
+
+- URL: https://www.barnanorbert.com/hu/irasok/ai-valaszmotorok-forrasai-meres-2026
+- Language: Hungarian
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in English: https://www.barnanorbert.com/writing/ai-answer-engine-citations-study-2026; German: https://www.barnanorbert.com/de/wissen/ki-antwortmaschinen-quellen-studie-2026
+- Summary: Milyen oldalakat idéznek az AI keresők és válaszmotorok, amikor a vevő AI fejlesztőt keres: öt motor, 180 válasz, 1598 hivatkozás.
+
+Amikor a vevő azt kérdezi, ki vezet be AI-t, ki épít emberi jóváhagyású AI-t vagy ki készít céges weboldalt, az AI keresők és válaszmotorok nagyon sok kis oldalt idéznek, és szinte egyikben sem értenek egyet. Öt válaszmotor 180 válaszában, 36 magyar, angol és német vevői kérdésre 1598 hivatkozást számoltam 1001 domainről, és ezek közül 819 domain (81,8%) egyetlen válaszban szerepelt. Egy csoport tér vissza rendszeresen: a szakmai címtárak és piacterek, amelyekből a 180 válaszból 60 (33,3%) legalább egyet idéz.
+
+A mérést a saját oldalam miatt futtattam, és az oldalam része a mintának. A 180 válasz egyike sem idézte. A nyers adat nyilvános, a cikk végén megtalálod.
+
+### Röviden
+
+- **A mezőny szétaprózott.** Az 1001 idézett domainből 819 (81,8%) a 180 válaszból pontosan egyben szerepel. Öt vagy több válaszban csak 19 domain jelenik meg.
+- **A motorok ritkán értenek egyet a forrásban.** Az 1185 kérdés és domain párból 1058-at (89,3%) csak egy motor idézett, 31-et (2,6%) három vagy több. Egyetlen domaint idézett mind az öt motor ugyanarra a kérdésre.
+- **A címtárak a visszatérő források.** Az 1598 hivatkozásból 209 (13,1%) címtárra vagy piactérre mutat, és a 180 válaszból 60 (33,3%) idéz legalább egyet. Angolul a 60 válaszból 30, németül 19, magyarul 11.
+- **A Gemini többnyire nem ad forrást.** 36 válaszából 26-ban egyetlen link sem volt. A ChatGPT, a Perplexity és a Claude mind a 36 válaszában adott forrást, a Google AI Mode 36-ból 30-ban.
+- **A Reddit és a YouTube alig jelenik meg.** Reddit: az 1598 hivatkozásból 3, a 180 válaszból 2-ben. YouTube: 15 hivatkozás 10 válaszban. LinkedIn: 25 hivatkozás 17 válaszban.
+
+### Módszer
+
+A mérés 2026. november 27-én és 28-án futott, három körben. A cikk számai a harmadik körből valók, hacsak a mondat mást nem mond.
+
+- **1. kör, november 27.:** 90 rögzített kérdés (30 magyar, 30 angol, 30 német) a Google AI Mode-on, a ChatGPT-n és a Perplexityn: 270 válasz.
+- **2. kör, november 28.:** ugyanezek a kérdések a Geminin (mind a 90) és a webes kereséssel futó Claude Haikun (78, a saját oldalamról szóló 12 kérdés nélkül): 168 válasz.
+- **3. kör, november 28., a vevői kör:** 36 új kérdés (nyelvenként 12) mind az öt motoron: 180 válasz, mind használható.
+
+A motorok: ChatGPT (kijelentkezve, webes kereséssel), Perplexity (a vevői körben a sonar-pro modell), Google AI Mode, Gemini (a fogyasztói alkalmazás, kijelentkezve) és Claude Haiku 4.5 kötelező webes kereséssel. A ChatGPT és a Gemini válasza a fogyasztói alkalmazásból jön, a Google AI Mode-é a találati oldalról, a Perplexity és a Claude modell API-n keresztül válaszolt. Az országot a nyelv szerint állítottam be: Magyarország, Egyesült Államok, Németország. A Claude keresése nem fogadja el Magyarországot, ezért a magyar kérdések ott ország megadása nélkül futottak.
+
+A 36 vevői kérdés úgy szól, ahogy egy vevő kérdez: „legjobb X”, „X vagy Y”, „X alternatívái”, és konkrét helyzetek, például „könyvelőiroda vagyunk 40 fővel, ki tud nekünk AI-t bevezetni úgy, hogy minden döntést ember hagyjon jóvá?”. A témák: AI tanácsadás és automatizálás, emberi jóváhagyású AI, MVP fejlesztés szabályozott termékhez, terméktervezés, egyedi webalkalmazás és akadálymentes weboldal.
+
+Hivatkozásnak azt az URL-t számoltam, amelyet a válasz forrásként felsorolt. Egy URL válaszonként egyszer számít, a szövegrészre mutató végződés nélkül. A domain a gépnév „www” nélkül, a LinkedIn országos változatait összevontam. A forrástípust rögzített domainlisták adják: 68 címtár és piactér, egy rövid lista a hír- és szakmédiáról, valamint minták az uniós, kormányzati és egyetemi címekre. Ami egyik listán sincs rajta, az „egyéb oldal”: ez többnyire szolgáltatók és ügynökségek oldala és blogja. A címtárak és a média aránya ezért alsó becslés.
+
+### Milyen oldalakat idéznek a válaszmotorok a vevői kérdésekre?
+
+Négy hivatkozásból három olyan oldalra mutat, amely egyik listámon sincs rajta: szolgáltatók, ügynökségek, stúdiók, szabadúszók és a blogjaik. A legnagyobb megnevezhető csoport a címtáraké és piactereké.
+
+: Forrástípusok 36 vevői kérdés 180 válaszában (1598 hivatkozás)
+| Forrástípus | Hivatkozás | Válasz, amely idézi |
+|---|---|---|
+| Egyéb oldal | 1200 (75,1%) | 180-ból 143 |
+| Címtár, piactér | 209 (13,1%) | 180-ból 60 |
+| Egyetem, kutatás | 62 (3,9%) | 180-ból 12 |
+| EU és kormányzat | 43 (2,7%) | 180-ból 12 |
+| Hír- és szakmédia | 28 (1,8%) | 180-ból 18 |
+| LinkedIn | 25 (1,6%) | 180-ból 17 |
+| YouTube | 15 (0,9%) | 180-ból 10 |
+| Más platform | 13 (0,8%) | 180-ból 13 |
+| Reddit | 3 (0,2%) | 180-ból 2 |
+
+A leggyakrabban idézett címtárak és piacterek, a válaszok száma szerint: aiagencies.eu (9), arc.dev (8), clutch.co (8), toptal.com (7), behance.net, contra.com, upwork.com és themanifest.com (5-5), fratch.io, freelance.de és ai-atlasz.hu (4-4).
+
+A listaoldal a másik minta, és ez átnyúlik a típusokon. Az 1598 idézett URL-ből 295-nek (18,5%) az útvonalában listára utaló szó áll: „best”, „top”, „companies”, „agencies”, „alternatives”, illetve ezek magyar és német megfelelői. Sok ilyen listát olyan szolgáltató tett közzé, amely maga is szerepel rajta.
+
+A leggyakrabban idézett domainek összesen, a 180 válaszból: linkedin.com (17), s-pro.io (11), youtube.com (10), aiagencies.eu (9), arc.dev, clutch.co és socialpro.hu (8-8), toptal.com és leventech.hu (7-7), kindgeek.com, speedmvps.com, apexweb.hu és aiworks.hu (6-6). Az első helyezett a válaszok 9,4%-ában van jelen. Egyetlen domain sem uralja a témát.
+
+A kérdés típusa megváltoztatja a képet. A három kör együtt: azokra a kérdésekre, amelyek szolgáltatót keresnek, a 280 válaszból 87 (31,1%) idézett címtárat, a tájékozódó kérdésekre adott 290 válaszból 5 (1,7%). Az uniós és kormányzati oldalaknál fordított a helyzet: a 290 tájékozódó válaszból 68 (23,4%) idézi őket, a 280 szolgáltatót kereső válaszból 18 (6,4%).
+
+### Milyen gyakran értenek egyet a motorok egy forrásban?
+
+Ritkán. Minden kérdésnél felsoroltam az összes domaint, amelyet bármelyik motor idézett: ez 1185 kérdés és domain pár. Ebből 1058-at (89,3%) egyetlen motor idézett, 96-ot (8,1%) kettő, 26-ot (2,2%) három, 4-et négy, 1-et mind az öt.
+
+Az egyetlen teljes egyezés: a „Best AI consultants for fintech startups in Europe 2026” kérdésre mind az öt motor az aiagencies.eu oldalt idézte. Négy motor egyezett a dieaiberater.de, a kindgeek.com, a hai.stanford.edu és a socialpro.hu domainben, mindegyiknél egy kérdésre.
+
+Kérdésenként nézve: a 36 kérdésből 2-nél két motor sem idézett közös domaint. 17 kérdésnél a legjobb egyezés egy domain volt két motornál, 12-nél három motornál, 4-nél négynél, 1-nél ötnél.
+
+### Hány forrást ad egy-egy motor?
+
+A motorok jobban különböznek abban, hogy hány forrást adnak, mint abban, hogy mit idéznek.
+
+: Források válaszonként motor szerint, motoronként 36 vevői kérdés
+| Motor | Válasz forrással | Medián válaszonként |
+|---|---|---|
+| ChatGPT | 36-ból 36 | 21 |
+| Perplexity | 36-ból 36 | 10 |
+| Google AI Mode | 36-ból 30 | 9,5 |
+| Claude Haiku | 36-ból 36 | 4 |
+| Gemini | 36-ból 10 | 0 |
+
+Az 1598 hivatkozásból 744-et a ChatGPT sorolt fel, egy válaszban legfeljebb 42-t. A Perplexity minden válaszában pontosan 10 forrást adott. A Claude átlagosan 4 és 5 között, és soha nem többet 7-nél.
+
+A Gemini kilóg: 36 válaszából 26-ban egyetlen link sem volt. A három kör együtt: a nem a saját oldalamról szóló kérdésekre adott 114 válaszából 77-ben nem volt forrás. Ahol a motor forrás nélkül válaszol, ott egy oldalt nem lehet idézni, csak ismerni.
+
+### Változtat a forrásokon a kérdés nyelve?
+
+Igen, főleg a címtárak és a helyi domainek miatt.
+
+- **Magyar** (60 válasz, 516 hivatkozás): 282 hivatkozás (54,7%) .hu domainre mutat. A címtárak szerepe kicsi: a 60 válaszból 11 idéz ilyet. A leggyakrabban idézett domainek magyar szolgáltatók: socialpro.hu (8 válasz), leventech.hu (7), apexweb.hu és aiworks.hu (6-6), autiq.hu és automating.hu (5-5).
+- **Angol** (60 válasz, 573 hivatkozás): a válaszok fele, 60-ból 30, címtárat vagy piacteret idéz. A leggyakrabban idézett domainek: aiagencies.eu és s-pro.io (8-8 válasz), linkedin.com (7), arc.dev (6), youtube.com és toptal.com (5-5).
+- **Német** (60 válasz, 509 hivatkozás): 230 hivatkozás (45,2%) .de, .at vagy .ch domainre mutat, és a 60 válaszból 19 idéz címtárat. Egyetlen domain sem szerepel a 60 válaszból 5-nél többen: linkedin.com (5), utána modular-ops.de, dieaiberater.de, ai-train.de, synapse-ki-beratung.de, youtube.com, fratch.io és freelance.de (4-4).
+
+A források száma válaszonként mindhárom nyelven hasonló: magyarul 8,6, angolul 9,6, németül 8,5.
+
+### Mi a közös a leggyakrabban idézett kis szolgáltatói oldalakban?
+
+Az első két kör után letöltöttem azt a 17 kis szolgáltatói és címtároldalt, amelyet a motorok a legtöbbször idéztek, és megnéztem, mi van rajtuk. Ez 17 oldal leírása, nem ok-okozati bizonyíték, és semmit nem mond a linkekről, a domain koráról vagy az indexelésről.
+
+- **Rövid válasz az oldal tetején:** a 17 oldalból 10 önmagában is érthető válasszal kezd, sokszor címkével („Röviden”, „A rövid válasz”, „TL;DR”, „Key takeaways”).
+- **Mennyiségek:** 17-ből 11 számot ír oda, ahol a kérdés számot kér: időtartamot, darabszámot vagy a bemutatott cégek adatait.
+- **Táblázat értékekkel:** 17-ből 8 oldalon van legalább egy táblázat, amelynek celláiban értékek állnak, nem jelzők.
+- **Megnevezett szolgáltatók:** 17-ből 5 megnevezett cégek egységes formátumú listája. Az 5-ből 4 listán a közzétevő maga is rajta van.
+- **Látható dátum:** 17-ből 9 címében vagy főcímében szerepel az évszám, és 17-ből 9 mutat megjelenési dátumot, frissítési sort vagy „állapot” sort.
+- **A vevő szavaival egyező cím:** 17-ből 5 olyan oldal, amelynek URL-je és főcíme pontosan a keresett szolgáltatás, és ezek közül kettőt úgy idéztek, hogy alig van rajtuk szöveg.
+- **Kérdés és válasz blokk:** 17-ből 9.
+
+A terjedelem nem választotta el az oldalakat: 500 szó alattitól nagyjából 15 500 szavasig terjednek.
+
+### Mit jelent ez egy kis szolgáltatónak?
+
+Ezek egyetlen mérés megfigyelései, nem recept, és semmi nem teszi biztossá, hogy egy motor idézni fog.
+
+1. **A szétaprózottság helyet hagy.** Ha az idézett domainek 81,8%-a egyszer szerepel, és az első helyezett a válaszok 9,4%-ában van ott, akkor a mezőnyt senki nem birtokolja. Egy indexelt oldal, amely a vevő kérdésére a vevő szavaival válaszol, esélyes jelölt.
+2. **A „ki” kérdésre listákból jön a válasz.** A motor nem tud szolgáltatót megnevezni egy olyan oldalról, amely senkit nem nevez meg. Az idézett oldalak címtárak és szolgáltatói áttekintések, nevekkel. Ezt látva írtam egy ilyen áttekintést: [ki fejleszt emberi jóváhagyású AI-t](https://www.barnanorbert.com/hu/irasok/emberi-jovahagyasu-ai-szolgaltatok). A saját nevem is rajta van, és ez az elején le van írva.
+3. **A válaszok harmada címtárra támaszkodik.** Egy teljes profil abban a két-három címtárban, amelyet a motorok a te szolgáltatásodra és nyelvedre idéznek, külön út a válaszba. Hogy melyek ezek, az nyelvenként eltér, ahogy a fenti listák mutatják.
+4. **Adj a motornak kiemelhető részt.** Címkézett rövid válasz, táblázat értékekkel, dátum, és egy mondat arról, hogy ki vagy, hol, kinek dolgozol és milyen nyelven.
+5. **Kis piacon megéri a helyi nyelv.** Magyarul a hivatkozások több mint fele .hu domainre megy, a címtárak szerepe kicsi, tehát egy magyar oldal más kis szolgáltatókkal versenyez, nem a globális piacterekkel.
+6. **Ne egy motorra optimalizálj.** Ha a források 89,3%-át egyetlen motor idézi, akkor az, hogy az egyik megtalál, keveset mond a többiről. Mérj többet.
+
+Ha a vevői oldalon állsz, ugyanez az adat arra int, hogy ellenőrizd, amit egy válaszmotor mond: minden alkalommal más maroknyi oldalból dolgozik. A kérdéseket, amelyeket bármelyik szolgáltatónak feltennék, az [AI fejlesztő partner: 10 kérdés, mielőtt megbízod](https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa) című írásban találod.
+
+### Korlátok
+
+- **Körönként egy nap.** A válasz kérésenként készül, ugyanaz a kérdés egy óra múlva más forrásokat adhat. Az összegeket és a csoportokat olvasd, ne az egyes cellákat.
+- **Kis minta.** 36 vevői kérdés, nyelvenként 12, és én választottam őket a saját szolgáltatásaim köré. Más ágazatban más lehet a kép.
+- **A motorok változnak.** A modellek, a mögöttük álló keresés és a megmutatott források száma értesítés nélkül frissül. Ezek a számok 2026. november 27-ét és 28-át írják le.
+- **Eltérő hozzáférés.** Két motort fogyasztói alkalmazásként mértem, egyet találati oldalként, kettőt API-n. Az API válasza nem feltétlenül az, amit egy bejelentkezett felhasználó lát.
+- **Besorolás listák alapján.** A forrástípus domainlistákból jön. Az a címtár, amely nincs a listámon, „egyéb” oldalnak számít.
+- **A szerző érdekelt.** AI integrációt és webfejlesztést árulok, és az oldalam benne van a mintában. A három körben a nem róla szóló kérdésekre adott 570 válaszból 1 idézte, a rólam vagy az oldalról szóló kérdésekre adott 48 válaszból 37.
+
+### Adatok
+
+A rögzített kérdéssor, minden kör eredményfájlja az összes idézett URL-lel, a pontszámfájlok és a módszertani jegyzetek az oldal nyilvános tárolójában vannak: [docs/aeo a GitHubon](https://github.com/anorbert-cmyk/norbertbarna.com/tree/main/docs/aeo). Az adat szabadon felhasználható. Kérlek, hivatkozz vissza erre a cikkre, ha használod.
+
+### Gyakori kérdések
+
+#### Milyen oldalakat idéznek az AI válaszmotorok, ha a vevő szolgáltatót keres?
+
+Főleg kis szolgáltatói és ügynökségi oldalakat, és mindegyiket ritkán. 36 vevői kérdés 180 válaszában 1598 hivatkozás jött 1001 domainről, és a domainek 81,8%-a egyetlen válaszban szerepelt. A legnagyobb megnevezhető csoport a címtáraké és piactereké: a hivatkozások 13,1%-a, és a 180 válaszból 60-ban legalább egy.
+
+#### Ugyanazokat a forrásokat idézi a ChatGPT, a Perplexity, a Google AI Mode, a Gemini és a Claude?
+
+Ritkán. Az 1185 kérdés és domain párból 89,3%-ot csak egy motor idézett, 2,6%-ot három vagy több. A 36 kérdésből egynél idézte mind az öt motor ugyanazt a domaint.
+
+#### Hány forrás van egy AI válaszban?
+
+A motortól függ. Ebben a mérésben a medián a ChatGPT-nél 21, a Perplexitynél 10, a Google AI Mode-nál 9,5, a Claude Haikunál 4 volt. A Gemini 36 válaszából 26-ban nem adott forrást.
+
+#### Felhasználhatom az adatokat?
+
+Igen. A kérdések, a válaszonként idézett URL-ek és a pontszámok az Adatok részben linkelt nyilvános tárolóban vannak. A felhasználás ingyenes, ha visszahivatkozol erre a cikkre. A mérést a szerző a saját oldala miatt futtatta 2026. november 27-én és 28-án.
+
+---
+
 ## Ki fejleszt emberi jóváhagyású AI-t? Áttekintés 2026
 
 - URL: https://www.barnanorbert.com/hu/irasok/emberi-jovahagyasu-ai-szolgaltatok
@@ -3705,6 +4015,163 @@ Lassen Sie sich den Bildschirm zeigen, auf dem ein Mensch eine KI-Ausgabe freigi
 #### Arbeiten Sie mit Teams in Deutschland?
 
 Ja. Die Zusammenarbeit läuft auf Englisch oder Ungarisch; deutschsprachige Teams arbeiten mit mir auf Englisch.
+
+---
+
+## Wen zitiert die KI-Suche? Messung an 180 Antworten
+
+- URL: https://www.barnanorbert.com/de/wissen/ki-antwortmaschinen-quellen-studie-2026
+- Language: German
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in English: https://www.barnanorbert.com/writing/ai-answer-engine-citations-study-2026; Hungarian: https://www.barnanorbert.com/hu/irasok/ai-valaszmotorok-forrasai-meres-2026
+- Summary: Welche Seiten die KI-Suche zitiert, wenn Käufer nach Anbietern für KI oder Websites fragen: fünf Systeme, 180 Antworten.
+
+Wenn Käufer fragen, wer KI einführt, wer Human-in-the-Loop-KI baut oder wer eine Unternehmenswebsite erstellt, zitieren die Systeme der KI-Suche ein sehr breites Feld kleiner Seiten und sind sich bei fast keiner einig. In 180 Antworten von fünf KI-Suchmaschinen auf 36 Käuferfragen in Deutsch, Englisch und Ungarisch habe ich 1.598 Quellenangaben von 1.001 Domains gezählt, und 819 dieser Domains (81,8 %) kamen in nur einer Antwort vor. Eine Gruppe kehrt regelmäßig wieder: Verzeichnisse und Marktplätze, von denen 60 der 180 Antworten (33,3 %) mindestens eines zitieren.
+
+Ich habe diese Messung für meine eigene Website gemacht, und meine Website ist Teil der Stichprobe. Keine der 180 Antworten hat sie zitiert. Die Rohdaten sind öffentlich und am Ende verlinkt.
+
+Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt
+
+- **Das Feld ist zersplittert.** 819 von 1.001 zitierten Domains (81,8 %) stehen in genau einer von 180 Antworten. Nur 19 Domains stehen in fünf oder mehr.
+- **Die Systeme sind sich bei Quellen selten einig.** Von 1.185 Paaren aus Frage und Domain wurden 1.058 (89,3 %) von nur einem System zitiert, 31 (2,6 %) von drei oder mehr. Eine Domain wurde von allen fünf zur selben Frage zitiert.
+- **Verzeichnisse sind die wiederkehrenden Quellen.** 209 von 1.598 Quellenangaben (13,1 %) führen zu Verzeichnissen und Marktplätzen, und 60 von 180 Antworten (33,3 %) zitieren mindestens eines. Auf Englisch sind es 30 von 60 Antworten, auf Deutsch 19 von 60, auf Ungarisch 11 von 60.
+- **Gemini nennt meist keine Quelle.** 26 seiner 36 Antworten enthielten keinen Link. ChatGPT, Perplexity und Claude gaben in allen 36 Antworten Quellen an, Google AI Mode in 30 von 36.
+- **Reddit und YouTube kommen kaum vor.** Reddit: 3 von 1.598 Quellenangaben, in 2 von 180 Antworten. YouTube: 15 Angaben in 10 Antworten. LinkedIn: 25 Angaben in 17 Antworten.
+
+### Methode
+
+Die Messung lief am 27. und 28. November 2026 in drei Runden. Die Zahlen in diesem Beitrag stammen aus der dritten Runde, sofern ein Satz nichts anderes sagt.
+
+- **Runde 1, 27. November:** 90 feste Fragen (je 30 auf Ungarisch, Englisch und Deutsch) an Google AI Mode, ChatGPT und Perplexity: 270 Antworten.
+- **Runde 2, 28. November:** dieselben Fragen an Gemini (alle 90) und an Claude Haiku mit Websuche (78, ohne die 12 Fragen zu meiner eigenen Website): 168 Antworten.
+- **Runde 3, 28. November, die Käuferrunde:** 36 neue Fragen (12 je Sprache) an alle fünf Systeme: 180 Antworten, alle verwertbar.
+
+Die Systeme waren ChatGPT (abgemeldet, Websuche an), Perplexity (in der Käuferrunde das Modell sonar-pro), Google AI Mode, Gemini (Verbraucher-App, abgemeldet) und Claude Haiku 4.5 mit erzwungener Websuche. Bei ChatGPT und Gemini sind es Antworten der Verbraucher-App, bei Google AI Mode eine ausgelesene Ergebnisseite, bei Perplexity und Claude Antworten über die Modell-API. Das Land folgte der Sprache: Ungarn, USA, Deutschland. Claude akzeptiert Ungarn nicht als Suchland, die ungarischen Fragen liefen dort ohne Landesangabe.
+
+Die 36 Käuferfragen sind so formuliert, wie Käufer fragen: „beste X“, „X oder Y“, „Alternativen zu X“ und konkrete Lagen wie „Wir sind ein Versicherungsmakler mit 60 Mitarbeitern. Wer führt KI ein, bei der ein Mensch jede Entscheidung freigibt?“. Die Themen: KI-Beratung und Automatisierung, Human-in-the-Loop-KI, MVP-Entwicklung für regulierte Produkte, Produktdesign, individuelle Webanwendungen und barrierefreie Websites.
+
+Als Quellenangabe zählt eine URL, die eine Antwort als Quelle aufführt. Jede URL zählt je Antwort einmal, ohne Textfragment. Eine Domain ist der Hostname ohne „www“, die Länderversionen von LinkedIn sind zusammengefasst. Die Quellentypen ergeben sich aus festen Listen von Domainnamen: 68 Verzeichnisse und Marktplätze, eine kurze Liste von Nachrichten- und Fachmedien sowie Muster für Adressen der EU, von Behörden und Hochschulen. Was auf keiner Liste steht, fällt unter „übrige Seiten“. Das sind überwiegend Seiten und Blogs von Anbietern und Agenturen. Die Anteile der Verzeichnisse und Medien sind deshalb Untergrenzen.
+
+### Welche Arten von Seiten zitieren KI-Suchmaschinen bei Käuferfragen?
+
+Drei von vier Quellenangaben führen zu Seiten, die auf keiner meiner Listen stehen: Anbieter, Agenturen, Studios, Freiberufler und ihre Blogs. Die größte benennbare Gruppe sind Verzeichnisse und Marktplätze.
+
+: Quellentypen in 180 Antworten auf 36 Käuferfragen (1.598 Quellenangaben)
+| Quellentyp | Angaben | Antworten mit Zitat |
+|---|---|---|
+| Übrige Seiten | 1.200 (75,1 %) | 143 von 180 |
+| Verzeichnisse, Marktplätze | 209 (13,1 %) | 60 von 180 |
+| Hochschulen, Forschung | 62 (3,9 %) | 12 von 180 |
+| EU und Behörden | 43 (2,7 %) | 12 von 180 |
+| Nachrichten, Fachmedien | 28 (1,8 %) | 18 von 180 |
+| LinkedIn | 25 (1,6 %) | 17 von 180 |
+| YouTube | 15 (0,9 %) | 10 von 180 |
+| Andere Plattformen | 13 (0,8 %) | 13 von 180 |
+| Reddit | 3 (0,2 %) | 2 von 180 |
+
+Die am häufigsten zitierten Verzeichnisse und Marktplätze, nach Zahl der Antworten: aiagencies.eu (9), arc.dev (8), clutch.co (8), toptal.com (7), behance.net, contra.com, upwork.com und themanifest.com (je 5), fratch.io, freelance.de und ai-atlasz.hu (je 4).
+
+Listenseiten sind das zweite Muster, quer durch die Typen. 295 von 1.598 zitierten URLs (18,5 %) tragen ein Listenwort im Pfad, etwa „best“, „top“, „companies“, „agencies“, „alternatives“ oder die deutschen und ungarischen Entsprechungen. Viele dieser Listen stammen von einem Anbieter, der selbst auf seiner Liste steht.
+
+Die insgesamt am häufigsten zitierten Domains, nach Zahl der Antworten von 180: linkedin.com (17), s-pro.io (11), youtube.com (10), aiagencies.eu (9), arc.dev, clutch.co und socialpro.hu (je 8), toptal.com und leventech.hu (je 7), kindgeek.com, speedmvps.com, apexweb.hu und aiworks.hu (je 6). Die erste Domain erreicht 9,4 % der Antworten. Keine Domain beherrscht ein Thema.
+
+Die Art der Frage verändert das Bild. Über alle drei Runden: Bei Fragen, die nach einem Anbieter suchen, zitierten 87 von 280 Antworten (31,1 %) ein Verzeichnis, bei Informationsfragen 5 von 290 (1,7 %). Bei Seiten der EU und von Behörden ist es umgekehrt: 68 von 290 Informationsantworten (23,4 %) gegenüber 18 von 280 Anbieterantworten (6,4 %).
+
+### Wie oft sind sich die Systeme bei einer Quelle einig?
+
+Selten. Für jede Frage habe ich jede Domain aufgelistet, die irgendein System zitiert hat. Das ergibt 1.185 Paare aus Frage und Domain. 1.058 davon (89,3 %) wurden von einem einzigen System zitiert, 96 (8,1 %) von zwei, 26 (2,2 %) von drei, 4 von vier und 1 von allen fünf.
+
+Die eine volle Übereinstimmung: Zur Frage „Best AI consultants for fintech startups in Europe 2026“ zitierten alle fünf Systeme aiagencies.eu. Vier Systeme stimmten bei dieaiberater.de, kindgeek.com, hai.stanford.edu und socialpro.hu überein, jeweils bei einer Frage.
+
+Je Frage betrachtet: Bei 2 von 36 Fragen teilten keine zwei Systeme auch nur eine Domain. Bei 17 Fragen war die beste Übereinstimmung eine Domain bei zwei Systemen, bei 12 bei drei, bei 4 bei vier und bei 1 bei fünf.
+
+### Wie viele Quellen nennt jedes System?
+
+Die Systeme unterscheiden sich stärker darin, wie viele Quellen sie nennen, als darin, was sie zitieren.
+
+: Quellen je Antwort nach System, je 36 Käuferfragen
+| System | Antworten mit Quellen | Median je Antwort |
+|---|---|---|
+| ChatGPT | 36 von 36 | 21 |
+| Perplexity | 36 von 36 | 10 |
+| Google AI Mode | 30 von 36 | 9,5 |
+| Claude Haiku | 36 von 36 | 4 |
+| Gemini | 10 von 36 | 0 |
+
+ChatGPT führte 744 der 1.598 Quellenangaben auf, bis zu 42 in einer Antwort. Perplexity gab in jeder Antwort genau 10 an. Claude nannte im Schnitt 4 bis 5 und nie mehr als 7.
+
+Gemini fällt heraus: 26 von 36 Antworten hatten keinen Link. Über alle drei Runden nannte es in 77 von 114 Antworten auf Fragen, die nicht meine eigene Website betrafen, keine Quelle. Wo ein System ohne Quellen antwortet, kann eine Seite nicht zitiert werden, nur bekannt sein.
+
+### Verändert die Sprache der Frage die Quellen?
+
+Ja, vor allem über Verzeichnisse und lokale Domains.
+
+- **Deutsch** (60 Antworten, 509 Quellenangaben): 230 Angaben (45,2 %) führen zu einer Domain auf .de, .at oder .ch, und 19 von 60 Antworten zitieren ein Verzeichnis. Keine Domain steht in mehr als 5 der 60 Antworten: linkedin.com (5), danach modular-ops.de, dieaiberater.de, ai-train.de, synapse-ki-beratung.de, youtube.com, fratch.io und freelance.de (je 4).
+- **Englisch** (60 Antworten, 573 Quellenangaben): Die Hälfte der Antworten, 30 von 60, zitiert ein Verzeichnis oder einen Marktplatz. Die am häufigsten zitierten Domains sind aiagencies.eu und s-pro.io (je 8 Antworten), linkedin.com (7), arc.dev (6), youtube.com und toptal.com (je 5).
+- **Ungarisch** (60 Antworten, 516 Quellenangaben): 282 Angaben (54,7 %) führen zu einer .hu-Domain. Verzeichnisse spielen eine kleine Rolle: 11 von 60 Antworten zitieren eines. Die am häufigsten zitierten Domains sind ungarische Anbieter: socialpro.hu (8 Antworten), leventech.hu (7), apexweb.hu und aiworks.hu (je 6).
+
+Die Zahl der Quellen je Antwort liegt in allen drei Sprachen nah beieinander: 8,5 auf Deutsch, 9,6 auf Englisch, 8,6 auf Ungarisch.
+
+### Was haben die meistzitierten Seiten kleiner Anbieter gemeinsam?
+
+Nach den ersten beiden Runden habe ich die 17 Seiten kleiner Anbieter und Verzeichnisse abgerufen, die am häufigsten zitiert wurden, und gelesen, was auf ihnen steht. Das ist eine Beschreibung von 17 Seiten, kein Beleg für eine Ursache, und es sagt nichts über Links, Domainalter oder Indexierung.
+
+- **Ein kurzer Antwortblock ganz oben:** 10 von 17 Seiten beginnen mit einer in sich geschlossenen Antwort, oft mit Etikett („Auf den Punkt“, „TL;DR“, „Key takeaways“, „The short answer“).
+- **Mengenangaben:** 11 von 17 nennen Zahlen, wo die Frage nach einer Zahl verlangt: Dauer, Anzahl oder Angaben zu den beschriebenen Firmen.
+- **Tabellen mit Werten:** 8 von 17 haben mindestens eine Tabelle, deren Zellen Werte enthalten, keine Adjektive.
+- **Benannte Anbieter:** 5 von 17 sind Listen benannter Firmen in einheitlichem Format. Auf 4 dieser 5 Listen steht der Herausgeber selbst.
+- **Ein sichtbares Datum:** 9 von 17 tragen die Jahreszahl im Titel oder in der Hauptüberschrift, und 9 von 17 zeigen ein Veröffentlichungsdatum, eine Zeile „aktualisiert“ oder eine Zeile „Stand“.
+- **Ein Titel in den Worten des Käufers:** 5 von 17 sind Seiten, deren URL und Hauptüberschrift genau die gefragte Leistung benennen, und zwei davon wurden mit sehr wenig Text zitiert.
+- **Ein Block mit Fragen und Antworten:** 9 von 17.
+
+Der Umfang hat die Seiten nicht getrennt. Sie reichen von unter 500 Wörtern bis etwa 15.500.
+
+### Was bedeutet das für einen kleinen Anbieter?
+
+Das sind Beobachtungen aus einer Messung, kein Rezept, und nichts davon macht ein Zitat sicher.
+
+1. **Zersplitterung lässt Platz.** Wenn 81,8 % der zitierten Domains einmal vorkommen und die erste in 9,4 % der Antworten steht, hält niemand das Feld. Eine indexierte Seite, die die Frage des Käufers in dessen Worten beantwortet, ist ein Kandidat.
+2. **„Wer“-Fragen werden aus Listen beantwortet.** Ein System kann keinen Anbieter von einer Seite nennen, die niemanden nennt. Zitiert werden Verzeichnisse und Anbieterübersichten mit Namen. Nach dieser Beobachtung habe ich eine solche Übersicht geschrieben: [Wer entwickelt Human-in-the-Loop-KI](https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki-anbieter). Mein eigener Name steht darauf, und das ist oben offengelegt.
+3. **Verzeichnisse tragen ein Drittel der Antworten.** Ein vollständiges Profil in den zwei oder drei Verzeichnissen, die die Systeme für Ihre Leistung und Sprache zitieren, ist ein eigener Weg in eine Antwort. Welche das sind, unterscheidet sich je Sprache, wie die Listen oben zeigen.
+4. **Geben Sie dem System etwas zum Herausheben.** Eine etikettierte Kurzantwort, eine Tabelle mit Werten, ein Datum und ein Satz, der sagt, wer Sie sind, wo, für wen und in welchen Sprachen.
+5. **Die Landessprache zählt.** Auf Deutsch führen 45,2 % der Quellenangaben zu Domains auf .de, .at oder .ch, und keine Domain steht in mehr als 5 von 60 Antworten. Eine deutsche Seite tritt gegen andere kleine Anbieter an, nicht gegen einen Platzhirsch.
+6. **Optimieren Sie nicht auf ein System.** Wenn 89,3 % der Quellen von nur einem System zitiert werden, sagt ein Treffer bei einem wenig über die anderen. Messen Sie mehrere.
+
+Wenn Sie auf der Käuferseite stehen, ist dieselbe Messung ein Grund, die Auskunft eines solchen Systems zu prüfen: Es stützt sich jedes Mal auf eine andere Handvoll Seiten. Die Fragen, die ich jedem Anbieter stellen würde, stehen in [KI-Dienstleister auswählen: Zehn Fragen vor dem Auftrag](https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen).
+
+### Grenzen
+
+- **Ein Tag je Runde.** Antworten entstehen pro Anfrage, und dieselbe Frage kann eine Stunde später andere Quellen liefern. Lesen Sie Summen und Gruppen, nicht einzelne Zellen.
+- **Eine kleine Stichprobe.** 36 Käuferfragen, 12 je Sprache, von mir rund um meine eigenen Leistungen gewählt. In anderen Branchen kann das Bild anders sein.
+- **Die Systeme ändern sich.** Modelle, die Suche dahinter und die Zahl der gezeigten Quellen werden ohne Ankündigung aktualisiert. Diese Zahlen beschreiben den 27. und 28. November 2026.
+- **Unterschiedliche Zugänge.** Zwei Systeme wurden als Verbraucher-App gemessen, eines als ausgelesene Ergebnisseite, zwei über die API. Eine API-Antwort ist nicht zwingend das, was ein angemeldeter Nutzer sieht.
+- **Einordnung nach Listen.** Die Quellentypen stammen aus Listen von Domainnamen. Ein Verzeichnis, das nicht auf meiner Liste steht, zählt als „übrige“ Seite.
+- **Der Autor hat ein Interesse.** Ich verkaufe KI-Integration und Webentwicklung, und meine Website ist in der Stichprobe. In allen drei Runden wurde sie in 1 von 570 Antworten auf Fragen zitiert, die nicht von ihr handelten, und in 37 von 48 Antworten auf Fragen zu mir oder zur Website.
+
+### Daten
+
+Der feste Fragensatz, die Ergebnisdatei jeder Runde mit jeder zitierten URL, die Auswertungen und die Methodennotizen liegen im öffentlichen Repository der Website: [docs/aeo auf GitHub](https://github.com/anorbert-cmyk/norbertbarna.com/tree/main/docs/aeo). Die Daten dürfen frei weiterverwendet werden. Bitte verlinken Sie dabei auf diesen Beitrag.
+
+### Häufige Fragen
+
+#### Welche Seiten zitieren KI-Suchmaschinen, wenn Käufer einen Anbieter suchen?
+
+Überwiegend kleine Seiten von Anbietern und Agenturen, und jede davon selten. In 180 Antworten auf 36 Käuferfragen kamen 1.598 Quellenangaben von 1.001 Domains, und 81,8 % dieser Domains standen in nur einer Antwort. Die größte benennbare Gruppe waren Verzeichnisse und Marktplätze mit 13,1 % der Angaben und mindestens einem Zitat in 60 von 180 Antworten.
+
+#### Zitieren ChatGPT, Perplexity, Google AI Mode, Gemini und Claude dieselben Quellen?
+
+Selten. Von 1.185 Paaren aus Frage und Domain wurden 89,3 % von nur einem System zitiert und 2,6 % von drei oder mehr. Bei einer von 36 Fragen zitierten alle fünf Systeme dieselbe Domain.
+
+#### Wie viele Quellen enthält eine KI-Antwort?
+
+Das hängt vom System ab. In dieser Messung lag der Median bei 21 für ChatGPT, 10 für Perplexity, 9,5 für Google AI Mode und 4 für Claude Haiku. Gemini nannte in 26 von 36 Antworten keine Quelle.
+
+#### Arbeiten Sie mit Teams in Deutschland, und darf ich die Daten verwenden?
+
+Ja zu beidem. Die Zusammenarbeit läuft auf Englisch oder Ungarisch; deutschsprachige Teams arbeiten mit mir auf Englisch. Die Fragen, die zitierten URLs je Antwort und die Auswertungen liegen im öffentlichen Repository aus dem Abschnitt „Daten“ und dürfen mit einem Link auf diesen Beitrag frei verwendet werden.
 
 ---
 
