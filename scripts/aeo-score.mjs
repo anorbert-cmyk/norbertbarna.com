@@ -22,8 +22,8 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OWN = /(^|\.)barnanorbert\.com$/i;
 const OWN_NAME = /norbert\s+barna|barna\s+norbert|barnanorbert\.com/i;
-const ENGINES = ["google_ai_mode", "chatgpt", "perplexity"];
-const ENGINE_NAMES = { google_ai_mode: "Google AI Mode", chatgpt: "ChatGPT", perplexity: "Perplexity" };
+const ALL_ENGINES = ["google_ai_mode", "chatgpt", "perplexity", "gemini", "claude"];
+const ENGINE_NAMES = { google_ai_mode: "Google AI Mode", chatgpt: "ChatGPT", perplexity: "Perplexity", gemini: "Gemini", claude: "Claude" };
 
 const hostOf = (url) => {
   try { return new URL(url).hostname.replace(/^www\./, "").toLowerCase(); } catch { return ""; }
@@ -40,8 +40,10 @@ function collect(rawDir, outFile) {
   const records = [];
   for (const name of readdirSync(rawDir).filter((file) => file.endsWith(".json")).sort()) {
     const raw = JSON.parse(readFileSync(join(rawDir, name), "utf8"));
-    if (!byId.has(raw.id) || !ENGINES.includes(raw.engine)) throw new Error(`${name}: unknown id or engine`);
-    const cited = [...new Set((raw.cited || []).filter((url) => /^https?:\/\//.test(url)))];
+    if (!byId.has(raw.id) || !ALL_ENGINES.includes(raw.engine)) throw new Error(`${name}: unknown id or engine`);
+    // Gemini cites one page several times with different #:~:text= fragments;
+    // a page is counted once.
+    const cited = [...new Set((raw.cited || []).filter((url) => /^https?:\/\//.test(url)).map((url) => url.split("#")[0]))];
     const answer = String(raw.answer || "");
     records.push({
       id: raw.id,
@@ -55,6 +57,9 @@ function collect(rawDir, outFile) {
       answer: answer.slice(0, 600),
     });
   }
+  // The engines of a measurement are the ones its files contain, so a run
+  // of two new engines is not reported as missing the other three.
+  const ENGINES = ALL_ENGINES.filter((engine) => records.some((record) => record.engine === engine));
   const missing = [];
   for (const { id } of questions) for (const engine of ENGINES) {
     if (!records.some((record) => record.id === id && record.engine === engine)) missing.push(`${id}.${engine}`);
@@ -64,7 +69,7 @@ function collect(rawDir, outFile) {
 }
 
 function score(file) {
-  const { measured, records } = JSON.parse(readFileSync(file, "utf8"));
+  const { measured, records, engines = ALL_ENGINES } = JSON.parse(readFileSync(file, "utf8"));
   const ok = records.filter((record) => record.ok);
   const slice = (filter) => {
     const rows = ok.filter(filter);
@@ -80,7 +85,7 @@ function score(file) {
       domains.set(key, (domains.get(key) || 0) + 1);
     }
   }
-  return { measured, records, ok, slice, questionIds, present, domains };
+  return { measured, records, engines, ok, slice, questionIds, present, domains };
 }
 
 function report(file, previousFile) {
@@ -91,7 +96,7 @@ function report(file, previousFile) {
   const total = now.slice(() => true);
   const totalBefore = before?.slice(() => true);
   lines.push(`# Answer engine citation score, ${now.measured}`, "");
-  lines.push(`${questions.length} fixed questions, ${ENGINES.length} engines, ${now.ok.length} usable answers of ${now.records.length}.`, "");
+  lines.push(`${questions.length} fixed questions, ${now.engines.length} engines, ${now.ok.length} usable answers of ${now.records.length}.`, "");
   lines.push(`- **Answers that cite barnanorbert.com: ${total.cited} of ${total.answers} (${pct(total.cited, total.answers)})**${delta(total.cited, totalBefore?.cited)}`);
   lines.push(`- Answers that name Norbert Barna or the site: ${total.mentioned} of ${total.answers} (${pct(total.mentioned, total.answers)})${delta(total.mentioned, totalBefore?.mentioned)}`);
   lines.push(`- Questions where at least one engine cites or names the site: ${now.present.length} of ${now.questionIds.length}${delta(now.present.length, before?.present.length)}`, "");
@@ -104,7 +109,7 @@ function report(file, previousFile) {
     }
     lines.push("");
   };
-  table("By engine", ENGINES.map((engine) => [ENGINE_NAMES[engine], (record) => record.engine === engine]));
+  table("By engine", now.engines.map((engine) => [ENGINE_NAMES[engine], (record) => record.engine === engine]));
   table("By language", ["hu", "en", "de"].map((lang) => [lang.toUpperCase(), (record) => byId.get(record.id).lang === lang]));
   table("By question type", ["info", "commercial", "brand"].map((type) => [type, (record) => byId.get(record.id).type === type]));
   lines.push("## Questions where the site appears", "");
@@ -114,6 +119,27 @@ function report(file, previousFile) {
     const pages = [...new Set(hits.flatMap((record) => record.cited.filter((url) => OWN.test(hostOf(url))).map(pathOf)))];
     lines.push(`- ${id} "${byId.get(id).question}": ${hits.map((record) => `${ENGINE_NAMES[record.engine]}${record.ownCited ? " cites" : " names"}`).join(", ")}${pages.length ? ` (${pages.join(", ")})` : ""}`);
   }
+  // Where the site stands inside an answer that cites it: 1 is the first
+  // source. Mentions are counted separately from citations above.
+  lines.push("", "## Position of the site among an answer's sources", "");
+  const placed = now.ok.map((record) => ({ record, index: record.cited.findIndex((url) => OWN.test(hostOf(url))) })).filter((row) => row.index >= 0);
+  if (!placed.length) lines.push("The site was cited in no answer.");
+  else {
+    const mean = placed.reduce((sum, row) => sum + row.index + 1, 0) / placed.length;
+    const first = placed.filter((row) => row.index === 0).length;
+    lines.push(`Cited in ${placed.length} answers; first source in ${first}; mean position ${mean.toFixed(1)}.`);
+  }
+  // Share of voice: the part of the answers to non-brand questions in which a
+  // domain is cited at least once. The questions about the site itself are left
+  // out, because there the site would win by definition.
+  const open = now.ok.filter((record) => byId.get(record.id).type !== "brand");
+  lines.push("", `## Share of voice on non-brand questions (${open.length} answers)`, "");
+  const voice = new Map();
+  for (const record of open) for (const host of new Set(record.cited.map(hostOf).filter(Boolean))) voice.set(host, (voice.get(host) || 0) + 1);
+  const ownVoice = open.filter((record) => record.ownCited).length;
+  lines.push(`barnanorbert.com: ${ownVoice} (${pct(ownVoice, open.length)})`, "");
+  lines.push("| Domain | Answers citing it | Share |", "| --- | --- | --- |");
+  for (const [host, count] of [...voice].sort((a, b) => b[1] - a[1]).slice(0, 15)) lines.push(`| ${host} | ${count} | ${pct(count, open.length)} |`);
   lines.push("", "## Most cited domains by language", "");
   for (const lang of ["hu", "en", "de"]) {
     const top = [...now.domains].filter(([key]) => key.startsWith(`${lang} `)).sort((a, b) => b[1] - a[1]).slice(0, 15);
