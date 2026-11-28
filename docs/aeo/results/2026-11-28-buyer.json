@@ -522,11 +522,18 @@
   {
    "id": "bde-01",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://dieaiberater.de/blog/beste-ki-beratung-mittelstand-2026",
+    "https://modular-ops.de/blog/ki-anbieter-mittelstand-2026/",
+    "https://wissen.danielbluemlein.de/beste-ki-beratung-mittelstand-2026",
+    "https://stay-digital.de/blog/die-besten-ki-unternehmen-deutschland-2026",
+    "https://www.synapse-ki-beratung.de/die-10-besten-ki-beratungen-fuer-den-mittelstand-in-deutschland-2026/",
+    "https://roover.de/ki-im-mittelstand/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4E2JRHVH3H2831PWBW33C, 01M8H4FK1BKXRJ0BR8GDEJBXTG)"
+   "answer": "Für den Mittelstand gibt es im Jahr 2026 nicht den einen universellen Testsieger, sondern die passende KI-Beratung hängt direkt von der Unternehmensgröße, der bestehenden IT-Landschaft und der konkreten Ausgangslage ab. Marktübersichten und Branchenanalysen teilen die relevanten Anbieter im DACH-Raum in verschiedene Spezialisierungs-Cluster ein.\n\nEmpfehlungen nach Ausgangslage\n\nJe nach Reifegrad und Zielsetzung eignen sich unterschiedliche Beratungsprofile besonders gut:\n\nAusgangslage & Ziel\nPassender Anbietertyp\nBeispiele aus aktuellen Marktvergleichen (2026)\nStrategie, ROI & EU AI Act\nStrate"
   },
   {
    "id": "bde-01",
@@ -609,11 +616,11 @@
   {
    "id": "bde-02",
    "engine": "google_ai_mode",
-   "ok": false,
+   "ok": true,
    "cited": [],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4H45DXYE9X31KPDXF2VY4, 01M8H4HPNB7XGT1BCNGW2EWMGH)"
+   "answer": "Für einen Versicherungsmakler mit 60 Mitarbeitern empfiehlt sich eine spezialisierte KI-Agentur für den Mittelstand oder ein InsurTech-Systemintegrator mit Erfahrung im deutschen Versicherungsmarkt, da Standard-Softwarehäuser oft die regulatorischen Anforderungen (DSGVO, EU AI Act) und Maklerprozesse (MVP-Anbindung) nicht tief genug abbilden.\n\nDas gewünschte Prinzip nennt sich Human-in-the-Loop (HITL). Die KI bereitet dabei Vorgänge vor (z. B. Policen-Checks, Schadenmeldungen, E-Mail-Entwürfe), ein Sachbearbeiter prüft und gibt per Klick frei.\n\nWer für die Umsetzung infrage kommt\n\nJe nach best"
   },
   {
    "id": "bde-02",
@@ -691,11 +698,17 @@
   {
    "id": "bde-03",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://optimusflow.consulting/ki-agentur-oder-ki-berater",
+    "https://leadbeyond.de/de/wissen/ki-beratung-mittelstand-vergleich/",
+    "https://www.andersai.de/blog/ki-berater-kosten",
+    "https://www.youtube.com/watch?v=z3_hzO5cCnc",
+    "https://www.hyland.com/de/resources/articles/benefits-ai"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4JD0HWAYMPBGX8HTMVZTD, 01M8H4MVWQ00MNTV977WY98ABA)"
+   "answer": "Für ein mittelständisches Unternehmen würde ich mit einem freiberuflichen KI-Berater starten, um die Strategie und Wirtschaftlichkeit zu klären, und erst für komplexe Umsetzungen oder den laufenden Betrieb eine KI-Agentur hinzuziehen.\n\nDer Grund ist pragmatisch: Im Mittelstand fehlt oft noch die Klarheit, welche Prozesse sich überhaupt für KI lohnen. Eine Agentur verdient ihr Geld mit dem Bau und Betrieb von Software – sie hat also ein Eigeninteresse, direkt ein großes Projekt zu verkaufen. Ein unabhängiger Berater prüft zuerst nüchtern, wo der größte Hebel liegt und ob ein einfaches Standard-"
   },
   {
    "id": "bde-03",
@@ -782,11 +795,23 @@
   {
    "id": "bde-04",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.advisori.de/leistungen/digitale-transformation/ki-kuenstliche-intelligenz/ki-beratung",
+    "https://www.youtube.com/watch?v=LaLbxSDVxaw&t=492",
+    "https://innowise.com/de/blog/top-ai-consulting-firms/",
+    "https://www.synapse-ki-beratung.de/die-10-besten-ki-beratungen-fuer-den-mittelstand-in-deutschland-2026/",
+    "https://sifamo.com/de/ki-beratung",
+    "https://www.ventum-consulting.com/news/eu-ai-act-beratung/",
+    "https://www.ki-beratung-deutschland.de/ki-beratung-mittelstand",
+    "https://www.proliance.ai/ki-compliance-beratung",
+    "https://www.kinast.eu/ki-beratung/",
+    "https://scheja-partners.de/beratung/datenrecht/ki-verordnung/",
+    "https://bemertenswert.de/it/dsgvo-eu-ai-act/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4QNPEG5NT8PA20Z2B4NWP, 01M8H4SC0ZPR5W8QB1RNWWXH3Z)"
+   "answer": "Wenn Sie den Overhead und die oft generischen Frameworks großer Beratungskonzerne vermeiden möchten, bieten sich für KI-Projekte in regulierten Branchen vor allem spezialisierte KI-Boutiquen, auf Datenschutz und IT-Recht fokussierte Kanzleien sowie souveräne Technologie-Anbieter an.\n\nDiese Alternativen punkten meist mit direktem Senioren-Kontakt, tiefer technischer Umsetzungskompetenz (MLOps, On-Premise) und praxisnaher Erfahrung im Umgang mit dem EU AI Act, der DSGVO sowie branchenspezifischen Normen (z. B. BAIT/VAIT, MDR, § 203 StGB).\n\n1. Spezialisierte Data-Science- & KI-Boutiquen\n\nDiese Hä"
   },
   {
    "id": "bde-04",
@@ -871,11 +896,25 @@
   {
    "id": "bde-05",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.d-mind.de/barrierefreie-websites/",
+    "https://digitalagenten.com/barrierefreie-website/",
+    "https://www.accessgo.de/die-10-besten-agenturen-zur-umsetzung-von-barrierefreiheit/",
+    "https://digitalagentur.berlin/infothek/magazin/barrierefreiheitsstaerkungsgesetz/",
+    "https://www.leonex.de/leistungen/websites/digitale-barrierefreiheit/",
+    "https://racoonmedia.de/ratgeber/barrierefreie-website-bfsg-pflicht/",
+    "https://www.aktion-mensch.de/inklusion/umsetzen/digitale-barrierefreiheit-websites",
+    "https://bgp.de/agentur-fuer-barrierefreies-webdesign/",
+    "https://www.youtube.com/watch?v=wl8tXGsaxW8",
+    "https://lau.do/barrierefreie-website/",
+    "https://www.friendventure.de/barrierefreies-webdesign/",
+    "https://www.dkd.de/de/leistungen/consulting/experten-barrierefreie-websites/",
+    "https://anatom5.de/beispiele-fuer-barrierefreie-webseiten"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4TYGDSC604SHSXGN5FQET, 01M8H4WHJ2TYE594T7T2PWMX5M)"
+   "answer": "Für die Umsetzung von Websites nach dem Barrierefreiheitsstärkungsgesetz (BFSG) (das für viele B2C-Unternehmen und Online-Shops verpflichtend ist) gibt es im deutschsprachigen Raum spezialisierte Digitalagenturen. Da das Gesetz auf den internationalen Richtlinien der WCAG 2.1 / 2.2 (Konformitätsstufe AA) basiert, zeichnen sich führende Dienstleister durch eine Kombination aus strategischer Beratung, technischer Entwicklung und zertifizierten Prüfverfahren aus.\n\nEtablierte Agenturen für BFSG-Konformität\n\nDie folgenden Agenturen haben nachweisbare Expertise und bieten oft eigene Prüftools oder s"
   },
   {
    "id": "bde-05",
@@ -958,11 +997,20 @@
   {
    "id": "bde-06",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://sdh.global/de/blog/development/ai-built-mvp-audit-refactor-rewrite/",
+    "https://marotino.com/de/industries/fintech",
+    "https://cruxdigits.nl/industries/finance/",
+    "https://mvpdevelopment.company/services/fintech-mvp-development",
+    "https://s-pro.io/fintech",
+    "https://yusmpgroup.com/de/industries/fintech",
+    "https://www.xmethod.de/mvp-entwicklung-agentur",
+    "https://speedmvps.com/ai-fintech-development-spain"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4XW1JTHNDAC3Y7VTZQJ5M, 01M8H50FX4W46M8RGQ1AY8RH6N)"
+   "answer": "In Europa gibt es spezialisierte Entwicklungsagenturen und Nearshoring-Partner, die auf regulierte Fintech-MVPs mit lückenlosem Audit-Trail (unveränderliche Protokollierung) und Human-in-the-Loop-Workflows (Vier-Augen-Prinzip bzw. menschliche Freigabeschleifen) ausgelegt sind.\n\nJe nach gewünschter Regulatorik, Budget und gewünschter Nähe zum DACH-Raum bieten sich unterschiedliche Anbietertypen an.\n\nSpezialisierte Fintech- & Compliance-Entwickler (DACH & Europa)\n\nS-PRO (Zürich, Schweiz / Europa). Das Unternehmen ist ISO-27001-zertifiziert und spezialisiert auf Banken- und Wealth-Management-Soft"
   },
   {
    "id": "bde-06",
@@ -1034,11 +1082,17 @@
   {
    "id": "bde-07",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.freelancermap.de/projekt/freelance-senior-ux-ui-designer-m-w-d-gesucht-mobile-banking-end-to-end-app-konzeption",
+    "https://www.freelance.de/UX-Design-Freelancer",
+    "https://www.gulp.de/freelancer/DP8L571XS",
+    "https://www.freelancermap.de/projekt/26137-senior-ux-designer-digital-banking",
+    "https://www.brightside-studio.de/branchen/fintech-ux"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4E2NN59BTCTE03X7KFEK6, 01M8H4FHFJ1XQ80V4FQK0GDG8E)"
+   "answer": "Da sich die Verfügbarkeit einzelner Freiberufler ständig ändert, ist die direkte Suche über spezialisierte DACH-Freelancer-Portale oder kuratierte Designer-Netzwerke der effizienteste Weg, um erfahrene Banking-UX-Designer zu finden.\n\nFür Banking-Software ist es entscheidend, Profile zu filtern, die bereits Erfahrung mit regulatorischen Anforderungen (wie PSD2, KYC, DSGVO) und Barrierefreiheit (WCAG) nachweisen können.\n\nEmpfohlene Plattformen & Netzwerke\n\nfreelancermap. Die Plattform ist im DACH-Raum besonders stark im IT- und Finanzsektor vertreten. Sie können gezielt nach Schlagworten wie „Di"
   },
   {
    "id": "bde-07",
@@ -1136,11 +1190,14 @@
   {
    "id": "bde-08",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://alcor.com/nearshoring-to-poland/",
+    "https://devsdata.com/software-nearshoring-poland-market-overview/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4FKAZ0D1ZZ5J2H0DEWCVD, 01M8H4XDWN5G20RY194XZH3K0X)"
+   "answer": "Die Entscheidung zwischen Polen und Ungarn für das Software-Nearshoring hängt stark von Ihren Prioritäten bei Talent-Pool, Kosten, Sprachkenntnissen und Projektkomplexität ab. Beide Länder gehören zur Europäischen Union (mit einheitlichem Datenschutz nach DSGVO/GDPR und vergleichbarem rechtlichen Rahmen), unterscheiden sich aber in wichtigen Punkten.\n\nPolen: Der Platzhirsch für Skalierung und Volumen\n\nPolen ist der größte und reifste IT-Markt in Mittel- und Osteuropa mit einer enormen Tiefe an Fachkräften.\n\nTalent-Pool & Größe: Mit über 778.000 Softwareentwicklern und rund 74.000 jährlichen ST"
   },
   {
    "id": "bde-08",
@@ -1221,11 +1278,24 @@
   {
    "id": "bde-09",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.finmatics.com/",
+    "https://www.buchhaltungsbutler.de/wiki/ki-gestuetzte-buchhaltung-kanzleien/?srsltid=AY6E960L3rELQkdz8sPICR4_Lbr16jp5q_TQII8ZO9MPJCXiraCVYDaB",
+    "https://steuerboard.com/blog/steuerberatung-automatisieren",
+    "https://telfo.ai/blog/ki-fuer-steuerberater",
+    "https://www.datev.de/web/de/berufsgruppenuebergreifend/ueber-datev/innovation/kuenstliche-intelligenz",
+    "https://jahresabschluss.io/ki-software-vergleich/ki-software-fuer-steuerkanzleien",
+    "https://arminius-ki.de/ki-steuerberatung/human-in-the-loop-ki",
+    "https://www.phacetlabs.com/de/persona/ki-steuerberater",
+    "https://www.stotax.de/ki-buchhaltung/",
+    "https://loopfour.ai/blog/ai-accounting-tools-startups",
+    "https://digits.com/",
+    "https://www.ledge.co/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4JM568EJ0B8JN0CF0AXM7, 01M8H4XFYWHGC6WMPP409W03N5)"
+   "answer": "Spezialisierte Softwareanbieter wie Finmatics, DATEV, Taxy.io, Steuerboard und Sachbearbeiter.io entwickeln KI-Automatisierung für Buchhaltungs- und Steuerkanzleien, die gezielt auf menschliche Kontrolle (Human-in-the-Loop) setzt. Da Kanzleien berufsrechtlich haften, übernimmt die KI dabei die zeitaufwendige Vorarbeit (Belege auslesen, vorkontieren, anmahnen), während Steuerfachangestellte oder Steuerberater unsichere Fälle prüfen und final freigeben.\n\nJe nach Arbeitsweise deiner Kanzlei lassen sich die Anbieter in drei Kategorien unterteilen:\n\n1. Spezialisierte KI-Lösungen für Belegverarbeitu"
   },
   {
    "id": "bde-09",
@@ -1313,11 +1383,22 @@
   {
    "id": "bde-10",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.hiig.de/ki-unter-aufsicht-human-in-the-loop/",
+    "https://www.eml-munich.de/people/zeynep-akata",
+    "https://humansintheloop.org/",
+    "https://www.uni-bamberg.de/kogsys/team/schmid-ute/",
+    "https://www.wi.uni-bayreuth.de/en/team/niklas_kuehl/index.php",
+    "https://profiles.imperial.ac.uk/y.demiris",
+    "https://www.edu.sot.tum.de/hctl/prof-dr-enkelejda-kasneci/",
+    "https://humansintheloop.org/impact/ethical-ai/",
+    "https://hitl.es/",
+    "https://www.hiig.de/en/project/human-in-the-loop/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4V3H64NQ7ZJPA1W878AJ5, 01M8H4XHVK0KFSN21X8PGHAG2P)"
+   "answer": "Zu den führenden Köpfen im Bereich Human-in-the-Loop (HITL) und Human-Centered AI in Europa zählen renommierte Forschende aus der Informatik, Kognitionswissenschaft und Wirtschaftsinformatik sowie spezialisierte Praxis-Pioniere.\n\nJe nachdem, ob der Fokus auf akademischer Grundlagenforschung, erklärbarer KI oder industrieller Anwendung liegt, stechen folgende Expertinnen und Experten besonders hervor:\n\nWissenschaft & Forschung\n\nProf. Dr. Andreas Holzinger (BOKU Wien / TU Graz, Österreich). Er gilt als einer der international führenden Pioniere für Human-Centered AI und interaktives maschinelles"
   },
   {
    "id": "bde-10",
@@ -1394,11 +1475,22 @@
   {
    "id": "bde-11",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://de.linkedin.com/pulse/7-best-freelance-platforms-hire-ai-developers-2026-second-talent-zsx2c?tl=de",
+    "https://www.malt.com/de-de/a/freelance/web-grafikdesign/ux-designer",
+    "https://www.junico.de/",
+    "https://www.gruenderkueche.de/fachartikel/organisation/top-projektboersen-und-jobportale-fuer-freelancer-auftraege-und-projekte/",
+    "https://www.freelance.de/UX-UI-Design-Freelancer",
+    "https://www.experte.de/freelancer-portale",
+    "https://www.findacreative.de/fuer-kreative/ui-ux-designer",
+    "https://trendreport.de/top-freelancer-portale-weltweit-die-wichtigsten-plattformen-fuer-digitale-projektarbeit/",
+    "https://fratch.io/de/role/ui-ux-designer/germany",
+    "https://www.eneba.com/hub/de/spielen-und-verdienen/die-besten-plattformen-fur-freiberufler/?srsltid=AY6E960COTQu5ncxCE9fVZvdmMqh2fFGM74NGj4DAlI1Dyx97KJ5BUWb"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4WBRRBR34B6W017HP1VEZ, 01M8H4YADTD2R9J70ECVGCSMSM)"
+   "answer": "Um einen KI-Produktdesigner (AI Product Designer / UX/UI mit Fokus auf KI-Interfaces) zu finden, würde ich für den DACH-Raum zuerst auf Malt oder Junico setzen. Während Freelancermap stark klassisch auf IT-Entwicklung und Projektbörsen-Ausschreibungen ausgerichtet ist, bieten diese Plattformen deutlich bessere visuelle Portfolios und spezialisierte Digital-Produktdesigner.\n\nJe nachdem, ob du lieber selbst stöberst, eine Vorauswahl möchtest oder international suchst, passen unterschiedliche Plattformen:\n\n1. Direkte Marktplätze (DACH-Fokus & starke Portfolios)\n\nDiese Plattformen eignen sich, wen"
   },
   {
    "id": "bde-11",
@@ -1464,11 +1556,28 @@
   {
    "id": "bde-12",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://vije.de/ai-act/",
+    "https://diconium.com/de/offering/daten-ki/ai-act-compliance",
+    "https://www.youtube.com/watch?v=1GtFZrPjFok&t=1",
+    "https://artificialintelligenceact.eu/de/article/14/",
+    "https://www.cgi.com/de/de/kuenstliche-intelligenz/eu-ai-act",
+    "https://www.pwc.de/de/risk-regulatory/responsible-ai/europaeische-ki-regulierung-und-ihre-umsetzung.html",
+    "https://ai-act-service-desk.ec.europa.eu/de/ai-act/article-14",
+    "https://www.regulation-ai.eu/de/articles/article-14/",
+    "https://innopulse.io/de/glossar/menschliche-aufsicht",
+    "https://tuv.com/de-de/consulting/digitale-transformation/kuenstliche-intelligenz/eu-ki-gesetz",
+    "https://www.vde.com/topics-de/kuenstliche-intelligenz/blog/menschliche-aufsicht",
+    "https://ki-kanzlei.de/ki-verordnung-ai-act",
+    "https://www.taylorwessing.com/de/campaigns/de/ai-act-audit-kooperation-plan-d",
+    "https://www.ey.com/de_de/insights/forensic-integrity-services/eu-ai-act-ein-fahrplan",
+    "https://umairzaffar.com/2026/11/19/eu-ai-act-artikel-14-menschliche-aufsicht/",
+    "https://www.youtube.com/watch?v=RhNCoG90JP0&t=45"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4WDS4B6T63D27VVWE3B2N, 01M8H4YD2REM4EEQK8ZH1V1ABR)"
+   "answer": "Für die Umsetzung von KI-Funktionen mit menschlicher Aufsicht (Artikel 14 EU AI Act) sind spezialisierte KI-Governance- und Technologieberatungen die beste Wahl. Da Artikel 14 sowohl juristische Vorgaben (z. B. Vermeidung von Automatisierungsverzerrung, Befugnisse der Aufsichtspersonen) als auch technische Design-Anforderungen (z. B. Mensch-Maschine-Schnittstellen und „Stopptasten“) kombiniert, reicht eine reine Rechtsberatung meist nicht aus.\n\nEmpfohlene Beratungskategorien & Anbieter in Deutschland\n\nJe nach Unternehmensgröße und Tiefe der technischen Entwicklung bieten sich verschiedene Spez"
   },
   {
    "id": "bde-12",
@@ -1553,11 +1662,20 @@
   {
    "id": "ben-01",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://accedia.com/insights/blog/best-ai-consulting-firms-for-banks-in-europe",
+    "https://www.destilabs.com/blog/top-ai-consulting-companies-fintech-2026",
+    "https://www.vectimo.ai/en/ai-consulting/best-ai-consulting-europe-sme",
+    "https://www.instinctools.com/blog/top-ai-consulting-companies/",
+    "https://www.gilzor.com/insights/ai-consulting-companies-for-startups-europe",
+    "https://www.aiagencies.eu/services/ai-agents/for/fintech",
+    "https://www.tamtam.ai/l/ai-service-providers-france",
+    "https://www.facebook.com/groups/1634213658056921/posts/1663412338470386/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4E40GCNKTM0FADFZRANNY, retry runId 01M8H4FHSKRRNYEHEZZYTR92WH)"
+   "answer": "For an early- to growth-stage European fintech startup in 2026, I would choose a specialized, engineering-led AI consultancy rather than a legacy enterprise firm. Fintech startups need partners who can move from prototype to production rapidly while baking EU AI Act, DORA, and GDPR compliance into the architecture from day one.\n\nTop Recommended AI Consultancies for European Fintech Startups\n\nMiquido (Kraków, Poland). Best for end-to-end fintech product builds. They specialize in banking and embedded finance, covering strategy, UX, and production deployment for credit scoring models, machine le"
   },
   {
    "id": "ben-01",
@@ -1640,11 +1758,23 @@
   {
    "id": "ben-02",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.youtube.com/watch?v=tiDTHaytcRQ&t=65",
+    "https://www.dataiku.com/blog/human-in-the-loop-ai-agents",
+    "https://www.kiteworks.com/regulatory-compliance/human-in-the-loop-ai-compliance/",
+    "https://geekyants.com/blog/how-to-build-ai-powered-regtech-software-architecture-features-costs-and-compliance-risks",
+    "https://codeandpepper.com/ai/ai-for-fintech/",
+    "https://velt.dev/blog/designing-human-in-the-loop-workflows-ai-products",
+    "https://visotrust.com/resources/ai-model-audit-trail-requirements/",
+    "https://zoolatech.com/industries/finance/regtech/",
+    "https://www.esparkinfo.com/blog/top-regtech-software-development-companies",
+    "https://www.elementum.ai/blog/ai-agent-monitoring-audit-logs-compliance",
+    "https://medium.com/@kuldeep.paul08/the-ai-audit-trail-how-to-ensure-compliance-and-transparency-with-llm-observability-74fd5f1968ef"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4HRZ4FPBDR0R67XS9KAJY, retry runId 01M8H4X62ZZ6GQWXSJKA381Q2F)"
+   "answer": "I would recommend hiring a RegTech-specialized engineering agency if you want an end-to-end custom build, or equipping your internal developers with specialized HITL and governance SDKs if you want to keep core IP in-house while avoiding weeks of boilerplate workflow engineering.\n\nBecause you are building for the EU AI Act, your implementation must satisfy specific technical mandates—specifically Article 12 (automatic, tamper-evident logging of inputs, outputs, model versions, and timestamps) and Article 14 (meaningful human oversight with clear attribution for overrides and sign-offs).\n\nDepen"
   },
   {
    "id": "ben-02",
@@ -1733,11 +1863,22 @@
   {
    "id": "ben-03",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://excited.agency/blog/freelance-designer-vs-agency-vs-vibe-coding-mvp",
+    "https://www.youtube.com/watch?v=D5NvOTF2aOc&t=257",
+    "https://www.eleken.co/blog-posts/hire-product-designer",
+    "https://www.youtube.com/watch?v=oU8i6I1FBPg",
+    "https://www.youtube.com/watch?v=Fz_KeGx3Tis&t=42",
+    "https://cieden.com/fintech-design-agencies",
+    "https://www.uxstudioteam.com/",
+    "https://www.toptal.com/designers/product-design",
+    "https://www.youtube.com/watch?v=0syMk9xmDmE&vl=en&t=368",
+    "https://www.reddit.com/r/UXDesign/comments/1er3wpi/what_is_a_reasonable_hourly_rate_for_a_freelance/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4K9EF2PPWQS57VV88CJSC, retry runId 01M8H4X80FNP8PQHPQMHR3R4FM)"
+   "answer": "I would choose a specialized fintech product design agency if you are navigating strict regulatory workflows (like KYC/AML onboarding) on a tight investor deadline, or a senior freelance fintech designer if you already have strong internal product leadership and need to keep early burn low.\n\nBecause fintech carries high trust deficits and complex compliance states, choosing the right partner depends heavily on your budget, timeline, and in-house product expertise.\n\nFreelancer vs. Agency for a Fintech MVP\n\nFactor\nFreelance Product Designer\nProduct Design Agency\nFintech MVP Impact\nTypical Cost\n€"
   },
   {
    "id": "ben-03",
@@ -1828,11 +1969,21 @@
   {
    "id": "ben-04",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://sdk.finance/blog/how-to-build-a-fintech-mvp/",
+    "https://sociilabs.com/blog/how-to-build-fintech-mvp",
+    "https://s-pro.io/fintech",
+    "https://www.valtorian.com/blog/top-fintech-mvp",
+    "https://www.reddit.com/r/SoftwareDevelopmentCA/comments/1ucm1f8/20_best_mvp_development_companies_for_startups_in/",
+    "https://www.reddit.com/r/DevCompanyInsights/comments/1sk710u/spent_3_weeks_evaluating_top_mvp_development/",
+    "https://www.baytechconsulting.com/blog/financial-software-development-companies",
+    "https://vacuumlabs.com/articles/fintech-software-development-companies/",
+    "https://www.kindgeek.com/blog/faq/what-is-a-fintech-mvp"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4PMPS87ZR6YYZ88HKKC7P, retry runId 01M8H4YTQKBMYRWK6AXE6G3JKP)"
+   "answer": "If you are looking for an alternative to S-PRO that handles strict financial compliance without sacrificing MVP speed, I would start with Kindgeek or DashDevs for neobanking and payments, or Vacuumlabs if you are building closer to core banking infrastructure.\n\nWhile S-PRO excels at strategy-first European/US builds with ISO 27001/27701 credentials, your best alternative depends on your specific regulatory model (e.g., BaaS wrapper vs. direct licensing) and budget.\n\nTop Regulated Fintech MVP Alternatives\n\nAgency\nPrimary Strength\nCompliance & Security\nBest Fit For\nKindgeek\nNeobanks, digital wal"
   },
   {
    "id": "ben-04",
@@ -1922,11 +2073,21 @@
   {
    "id": "ben-05",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://hai.stanford.edu/news/humans-loop-design-interactive-ai-systems",
+    "https://www.youtube.com/watch?v=TWP1c_m1Wpg",
+    "https://charm.seas.harvard.edu/",
+    "https://hcii.cmu.edu/people/john-zimmerman",
+    "https://cs.stanford.edu/~merrie/ai.html",
+    "https://humanaidesign.org/",
+    "https://dl.acm.org/doi/10.1145/3772363.3778710",
+    "https://medium.com/human-centered-ai/new-editors-good-reads-in-human-centered-ai-cc7380a2eee3",
+    "https://designai.cis.cornell.edu/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4R5787T4EY23ADXDG5410, retry runId 01M8H4YWHAM7R4BH2VATT2SNHR)"
+   "answer": "The top experts in human-in-the-loop (HITL) and human-centered AI design span pioneering academic researchers and industry design leaders shaping how humans guide, oversee, and collaborate with AI systems.\n\nAcademic & Research Pioneers\n\nDr. Rebecca Fiebrink. Professor at the Creative Computing Institute (University of the Arts London) and creator of Wekinator, she pioneered real-time interactive machine learning—reframing model training as an iterative human-computer interaction (HCI) task.\n\nJohn Zimmerman. Tang Family Professor of AI and HCI at Carnegie Mellon University's Human-Computer Inte"
   },
   {
    "id": "ben-05",
@@ -2024,11 +2185,16 @@
   {
    "id": "ben-06",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://quickbirdmedical.com/en/ai-medicine-software-app-development/",
+    "https://www.stjohnlynch.com/software-development/",
+    "https://www.aiagencies.eu/services/ai-development/for/healthcare",
+    "https://www.soulmatesventures.com/another-angle-compliance-first-architecture-healthtech/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4WCWV5WRK1ENRDDYRNDX1, retry runId 01M8H4YY9KHBBV19XCJQHZ5F3D)"
+   "answer": "For a healthtech MVP that needs to pass EU compliance review—specifically MDR, GDPR, and the EU AI Act—I would hire a specialized boutique software studio rather than a solo freelancer.\n\nA single freelancer rarely holds both deep ML explainability skills (e.g., SHAP, LIME, attention mapping) and the Quality Management System (QMS) documentation discipline required under ISO 13485 and IEC 62304.\n\nTop EU Boutique Teams for Regulated AI MVPs\n\nQuickBird Medical (Munich, Germany). QuickBird Medical is a specialized medical software studio certified under ISO 13485 and ISO 27001. They explicitly foc"
   },
   {
    "id": "ben-06",
@@ -2111,11 +2277,20 @@
   {
    "id": "ben-07",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://contra.com/hire/product-designers-for-generative-ai",
+    "https://arc.dev/hire-designers/ai-designers",
+    "https://www.upwork.com/hire/product-designers/ua/",
+    "https://appunik.ai/blog/appunik-vs-toptal-vs-upwork-hiring-ai-developers",
+    "https://www.toptal.com/designers/ai-ux",
+    "https://www.upwork.com/hire/ux-designers/pl/",
+    "https://www.upworkmrr.com/skills/UI%2FUX%20Prototyping/poland",
+    "https://arc.dev/en-ua/hire-designers"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4E4X3QX2XB3PK6WBVZB63, retry runId 01M8H4FCEEGR29036NSCZRYZ11)"
+   "answer": "If you are hiring in Eastern Europe, Vetted marketplaces like Toptal and Arc.dev, alongside commission-free platforms like Contra, are the strongest places to find top freelance AI product designers, with standout talent concentrated in Poland, Ukraine, Romania, and Bulgaria.\n\nRather than a single global ranking—since freelance availability shifts weekly—the top verified individuals and platforms for sourcing senior AI UX/UI specialists in the region include:\n\nTop Vetted Freelance AI Designers\n\nThese senior specialists are active on vetted networks and have proven track records designing AI-fi"
   },
   {
    "id": "ben-07",
@@ -2206,11 +2381,11 @@
   {
    "id": "ben-08",
    "engine": "google_ai_mode",
-   "ok": false,
+   "ok": true,
    "cited": [],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4G87BYA29FGBY1TK6W4D9, retry runId 01M8H4HN9RAKFWZV2Z54ZAVWMY)"
+   "answer": "Choosing between a big consultancy and an independent expert depends primarily on your product's regulatory complexity, internal engineering capacity, and speed-to-market needs.\n\nBecause banking products carry strict compliance, data privacy, and security requirements, the decision comes down to whether you need institutional risk coverage or agile technical execution.\n\nSide-by-Side Comparison\n\nFactor\nBig Consultancy (e.g., Accenture, Deloitte, McKinsey)\nIndependent AI Expert / Boutique Advisor\nBest For\nEnterprise-wide rollouts, legacy core banking integration, and high-compliance environments"
   },
   {
    "id": "ben-08",
@@ -2285,11 +2460,26 @@
   {
    "id": "ben-09",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://neurons-lab.com/articles/best-ai-agents-in-fintech/",
+    "https://www.moring.ai/fintech-and-banks/",
+    "https://www.unique.ai/",
+    "https://www.sim.ai/library/best-ai-agent-platforms-refund-purchase-order-approvals",
+    "https://teamvoy.com/blog/ai-agents-for-finance-use-cases-and-benefits/",
+    "https://www.swytchcode.com/content/best-approval-workflow-tools-agents",
+    "https://www.uptiq.ai/marketplace",
+    "https://www.360factors.com/blog/best-ai-agents/",
+    "https://www.salesforce.com/financial-services/artificial-intelligence/ai-agents-in-financial-services/",
+    "https://www.anthropic.com/news/finance-agents",
+    "https://www.youtube.com/shorts/gMzvBqFvI6M",
+    "https://jinba.io/uses",
+    "https://www.stackai.com/blog/enterprise-ai-with-built-in-oversight-introducing-human-in-the-loop-for-stackai-agents",
+    "https://www.workato.com/industry/financial_services"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4KERVC1GQ1D1V2SP2EZ82, retry runId 01M8H4MKEND833A0X0XBNK1VJF)"
+   "answer": "Specialized fintech agent builders, enterprise orchestration platforms, and custom AI consultancies design AI agents with human-in-the-loop (HITL) approval workflows for financial services. Because regulated institutions require audit trails, role-based access, and strict execution gates, these providers split into three main categories depending on whether you want ready-made banking agents, a low-code builder, or custom engineering.\n\n1. Finance-Specific AI Agent Platforms\n\nThese vendors build pre-configured agents tailored to banking, wealth management, and compliance, with built-in authorit"
   },
   {
    "id": "ben-09",
@@ -2367,11 +2557,32 @@
   {
    "id": "ben-10",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://speedmvps.com/blog/top-10-ai-product-development-agencies-in-hungary",
+    "https://verycreatives.com/our-work",
+    "https://www.linkedin.com/company/rabit-solutions",
+    "https://www.digiteum.com/top-4-destinations-for-nearshore-software-development-in-europe/",
+    "https://bitshore.dev/en/resources/nearshore-software-development-hungary-budapest-2026/",
+    "https://www.linkedin.com/company/verycreatives/",
+    "https://www.text.com/partners/directory/profile/verycreatives-saas-development/",
+    "https://clutch.co/profile/verycreatives-saas-development",
+    "https://clutch.co/hu/developers",
+    "https://www.cisin.com/coffee-break/10-leading-software-development-companies-in-london-you-need-to-know.html",
+    "https://www.rabitsolutions.com/service/startup-mvp-development/",
+    "https://www.g2.com/products/rabit-solutions/reviews",
+    "https://clutch.co/profile/rabit-solutions",
+    "https://www.cubicfox.com/",
+    "https://mystrika.com/directory/agencies/cubicfox",
+    "https://www.sortlist.com/agency/cubicfox",
+    "https://www.creuto.com/mvp-development-company-budapest",
+    "https://themanifest.com/hu/software-development/companies/budapest",
+    "https://www.1840andco.com/blog/nearshore-software-development-companies",
+    "https://www.highcircl.com/en/blog/mvp-development-agency-vs-freelancers-vs-nearshore"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4NSN6RJSXSXPYFXARVA3K, retry runId 01M8H4Q341P6898YVS6465E9H2)"
+   "answer": "For a full-service, founder-friendly MVP build in Hungary, VeryCreatives is the strongest starting point because they handle product strategy, UX/UI, and engineering end-to-end. Hungary offers EU data compliance, high English proficiency, and Central European Time (CET) overlap at roughly 30%–50% lower rates than Western Europe.\n\nTop Nearshore MVP Agencies in Hungary\n\nVeryCreatives\n\nBest for: Non-technical founders and SaaS startups needing end-to-end product strategy, UX/UI, and engineering.\nTrack record: Based in Budapest since 2013 with 50+ shipped products across fintech, legaltech, health"
   },
   {
    "id": "ben-10",
@@ -2474,11 +2685,20 @@
   {
    "id": "ben-11",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://improvs.com/toptal-alternatives/",
+    "https://www.a.team/join",
+    "https://arc.dev/hire-designers/ai-designers",
+    "https://www.upwork.com/freelance-jobs/apply/Senior-Product-Owner-Product-Manager-Fintech-First-Product_~022125672940740031661/",
+    "https://www.awesomic.com/hire/hire-a-fintech-designer",
+    "https://www.linkedin.com/pulse/7-best-freelance-platforms-hire-ai-developers-2026-second-talent-zsx2c",
+    "https://www.instagram.com/reel/DeKeVx0zJfz/",
+    "https://joinpond.ai/blog/toptal-alternatives"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4RA546M5B3ETNP53E44EA, retry runId 01M8H4SPXF1KC8DNGFMYZZ8Z01)"
+   "answer": "For hiring a senior AI product designer with banking experience, A.Team is the strongest alternative to Toptal. It explicitly vets for applied AI skills through an AI/ML Guild and organizes talent into domain-specific circles, including fintech.\n\nBecause banking requires strict compliance (such as KYC/AML, data privacy, and auditability) alongside complex AI workflows, general design networks often struggle to verify both skill sets.\n\nTop Vetted Alternatives\n\nA.Team: Best for enterprise AI and fintech. Their network includes specialized circles for fintech and AI product builders, with technic"
   },
   {
    "id": "ben-11",
@@ -2559,11 +2779,11 @@
   {
    "id": "ben-12",
    "engine": "google_ai_mode",
-   "ok": false,
+   "ok": true,
    "cited": [],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (first runId 01M8H4TT4ZS44DT266RD3YP07W, retry runId 01M8H4VYH1TDHHRSE8Z99Q2K6K)"
+   "answer": "To bridge the gap between a working AI prototype and a production feature that passes bank compliance, I would start by talking to a Principal AI/ML Platform Engineer (or Solutions Architect) who has direct experience in financial services (FinTech) and Model Risk Management (MRM).\n\nA typical AI developer focuses on making the model smart; a production financial AI engineer focuses on making the model auditable, deterministic, and secure.\n\n1. The Core Roles You Need\n\nDepending on your budget and timeline, look for one of these three profiles:\n\nFractional Head of AI / FinTech Solutions Architec"
   },
   {
    "id": "ben-12",
@@ -2649,11 +2869,26 @@
   {
    "id": "bhu-01",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://nexenit.hu/services",
+    "https://www.socialpro.hu/mesterseges-intelligencia/",
+    "https://apexweb.hu/ai-ugynokseg",
+    "https://aiworks.hu/",
+    "https://www.socialpro.hu/blog/kkv-automatizacio-toplista/",
+    "https://aiboost.hu/szolgaltatasok/ai-automatizacio/",
+    "https://myshp.hu/szolgaltatasok/ai-uzleti-megoldasok",
+    "https://azar.hu/ai-software/",
+    "https://www.instagram.com/reel/DbTVN8Yj0G2/",
+    "https://ai-uzleti-automatizacio.hu/",
+    "https://ravaszbalazs.hu/blog/mit-erdemes-automatizalni-magyar-kkv-ai/",
+    "https://brandrefel.hu/ai-automatizalas/",
+    "https://nexenit.hu/ai-alapu-uzleti-automatizalas",
+    "https://zenit.hu/szolgaltatasok/ai-bevezetes/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on first call (run 01M8H4E30GZX76A1JFGPBR28A7) and on the single retry (run 01M8H4FJQZWBMCN0Q4F09W5E0Q)."
+   "answer": "Magyarországon nincs egyetlen „legjobb” AI-automatizálással foglalkozó cég, mivel az ideális partner attól függ, hogy meglévő eszközöket szeretnél-e összekötni, egyedi szoftverre van-e szükséged, vagy üzleti tanácsadásból indulnál ki.\n\nKiemelt hazai szereplők típusonként\n\nNo-code / Low-code folyamatautomatizálás (n8n, Make, API-k): Ha gyorsan megtérülő megoldásokat keresel (pl. e-mailek, ajánlatkérések, számlázás vagy ügyfélszolgálat automatizálása meglévő CRM-rendszerekkel), az AIWORKS és a SocialPro kifejezetten KKV-kra szabott AI-ügynököket és munkafolyamatokat épít. Hasonló kulcsrakész aut"
   },
   {
    "id": "bhu-01",
@@ -2729,11 +2964,23 @@
   {
    "id": "bhu-02",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://nexly.digital/megoldasok/ai-folyamatautomatizalas",
+    "https://composite.hu/ai-szotar/human-in-the-loop",
+    "https://r-szoft.hu/ai-megoldasok",
+    "https://autiq.hu/",
+    "https://www.tacitproject.hu/human-in-the-loop/",
+    "https://www.crmbazis.hu/mrobert",
+    "https://360-marketing.hu/blog/konyveles-mesterseges-intelligencia/",
+    "https://fulophenrik.hu/penzugyi-tervezes-es-konyveles-ai-val/",
+    "https://whitehat.eu/hu/blog/human-in-the-loop-grc/",
+    "https://www.kavosz.hu/az-en-vallalkozasom/mi-a-konyvelesben/",
+    "https://stratify.hu/2026/09/23/ai-konyvelesi-szolgaltatasok/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on first call (run 01M8H4FMPK38JKVN8MF5Y8FAPH) and on the single retry (run 01M8H4XC1T6T313JCBZDWWTJGC)."
+   "answer": "Egy 40 fős könyvelőirodánál az AI-t magyar AI folyamatautomatizálási ügynökségek és KKV-tanácsadók segítségével érdemes bevezetni, akik kifejezetten az úgynevezett human-in-the-loop (emberi jóváhagyáson alapuló) működési modellt építik fel.\n\nKiket érdemes megkeresni a piacon?\n\nA hazai piacon három fő szereplőtípus érhető el erre a feladatra:\n\nFolyamatautomatizálási és AI ügynökségek. Olyan magyar cégek, mint a Nexly, az AutIQ vagy a TACIT Project, kifejezetten arra szakosodtak, hogy a meglévő ügyviteli rendszerekhez kapcsolva építsenek ki jóváhagyási pontokat tartalmazó AI-folyamatokat.\n\nIT- é"
   },
   {
    "id": "bhu-02",
@@ -2811,11 +3058,11 @@
   {
    "id": "bhu-03",
    "engine": "google_ai_mode",
-   "ok": false,
+   "ok": true,
    "cited": [],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on first call (run 01M8H4XE2ZVV488VT6Z2HAXXHD) and on the single retry (run 01M8H4ZN94KAP3Y5GR4H3594QH)."
+   "answer": "Egy 100 fős magyar vállalatnál én egy butik (kisebb, specializált) AI tanácsadó céget választanék, hacsak nincs már házon belül egy erős technológiai vezető (CTO/IT vezető), aki pontosan meg tudja fogalmazni a feladatokat.\n\nEbben a cégméretben (klasszikus magyar középvállalat) a legnagyobb kihívás általában nem a kódolás, hanem a folyamatok felmérése, az adatvédelem (GDPR, EU AI Act) és a kollégák betanítása. Egy ügynökség ezeket egyben kezeli, míg egy szabadúszótól jellemzően csak a technikai megvalósítást kapod meg.\n\nFőbb különbségek és kompromisszumok\n\nSzempont\nAI tanácsadó cég (ügynökség)\n"
   },
   {
    "id": "bhu-03",
@@ -2898,11 +3145,11 @@
   {
    "id": "bhu-04",
    "engine": "google_ai_mode",
-   "ok": false,
+   "ok": true,
    "cited": [],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on first call (run 01M8H4ZQDDDXG9QBZ7Q6J5MPMH) and on the single retry (run 01M8H5052QKG24SKECQSNS1FG9)."
+   "answer": "A nagy tanácsadó cégek (Big4, MBB) helyett a magyar biztosítási alkuszoknak szánt AI integrációhoz a legideálisabb alternatíva egy specializált, hazai vagy regionális AI- és szoftverfejlesztő ügynökség választása. Ezek a szereplők gyorsabban szállítanak, költséghatékonyabbak, és közvetlenül a kivitelezésre (nem pedig csak stratégiai diák készítésére) fókuszálnak.\n\nA céljaitól és a belső erőforrásoktól függően az alábbi négy fő irány közül választhat:\n\n1. Specializált hazai AI- és automatizációs ügynökségek\n\nOlyan magyar KKV-k vagy boutique fejlesztőcégek, amelyek kifejezetten generatív AI-ra ("
   },
   {
    "id": "bhu-04",
@@ -2981,11 +3228,22 @@
   {
    "id": "bhu-05",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://clutch.co/hu/developers/budapest",
+    "https://clutch.co/hu/web-developers/budapest",
+    "https://themanifest.com/hu/software-development/companies/budapest",
+    "https://www.google.com/searchviewer/10?svid=CCYSECoOCgwvZy8xaGh4MTFxM3cYCg",
+    "https://www.google.com/searchviewer/10?svid=CCYSESoPCg0vZy8xMWZ5bGtsZHkxGAo",
+    "https://zenit.hu/szolgaltatasok/szoftverfejlesztes/",
+    "https://www.google.com/searchviewer/10?svid=CCYSECoOCgwvZy8xaGh4NzQ0c2wYCg",
+    "https://www.google.com/searchviewer/10?svid=CCYSESoPCg0vZy8xMWowdDk2bWo2GAo",
+    "https://www.google.com/searchviewer/10?svid=CCYSESoPCg0vZy8xMWc0amgzdmZkGAo",
+    "https://www.google.com/searchviewer/10?svid=CCYSESoPCg0vZy8xMXQwdGY0ZjR6GAo"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on first call (run 01M8H4ZT927EAFZ3JDS1WTAAGY) and on the single retry (run 01M8H506XE169C0V631G8PEZDJ)."
+   "answer": "Budapesten az egyedi webalkalmazások fejlesztésében kiemelkedő szereplők között található a LogiNet Systems, a Wozify, a code and soda, a BLACKDEVS, a Danubius IT Solutions, valamint a nagyobb projektekre szakosodott Sigma Software Group. A legmegfelelőbb partner kiválasztása a projekt méretétől, az üzleti céloktól és a kívánt technológiai fókuszú együttműködéstől függ.\n\nNagyobb és komplex vállalati rendszerekhez\n\nLogiNet Systems Kft. (XI. kerület, Budaörsi út 48.). Több mint 100 fős csapattal dolgozó, régóta piacon lévő szoftverház. Erősségük a teljes körű termékfejlesztés az üzleti specifiká"
   },
   {
    "id": "bhu-05",
@@ -3063,11 +3321,11 @@
   {
    "id": "bhu-06",
    "engine": "google_ai_mode",
-   "ok": false,
+   "ok": true,
    "cited": [],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on first call (run 01M8H4ZW4PS5061CVVHBJ6WQGX) and on the single retry (run 01M8H508ZS27M50CW5R63JQC3N)."
+   "answer": "Én elsőként egy hazai AI-integrátor és üzleti folyamat-automatizálási (RPA/IDP) ügynökséget keresnék meg, mert ők nemcsak az adatkinyerést oldják meg, hanem összekötik azt a meglévő fuvarszervező vagy vállalatirányítási (ERP/TMS) rendszeretekkel is.\n\nA teljes önállóság helyett az úgynevezett Human-in-the-Loop (HITL) megoldásra lesz szükségetek: az AI kiolvassa az adatokat, a diszpécser pedig egyetlen kattintással jóváhagyja vagy javítja őket, mielőtt bekerülnének a rendszerbe.\n\nKiket érdemes megkeresned?\n\nA piacon három fő szereplő közül választhatsz, attól függően, mekkora a volumen és milyen"
   },
   {
    "id": "bhu-06",
@@ -3132,11 +3390,18 @@
   {
    "id": "bhu-07",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.uxagencies.com/industries/fintech/budapest",
+    "https://hu.linkedin.com/company/ergomania",
+    "https://ergomania.hu/",
+    "https://ergomania.eu/",
+    "https://hu.linkedin.com/in/viktor-abraham",
+    "https://hu.linkedin.com/in/gabor7074"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4E2RFQJE0V1RXGKA5YZF3 and 01M8H4FKRTBP4Y3V6P87ABTHVQ)"
+   "answer": "Magyarországon banki és fintech projektekhez két irányból érdemes választani: specializált UX-ügynökségek vagy közvetlenül nagybanki referenciákkal rendelkező senior szabadúszók közül. Mivel a pénzügyi szektorban a PSD2, a KYC-folyamatok és a szigorú megfelelőség (compliance) ismerete kulcsfontosságú, a mély iparági rutinnal rendelkező partnerek jelentik a legbiztonságosabb választást.\n\n1. Specializált magyar UX- és termékdizájn-ügynökségek\n\nHa összetett termékről van szó, ahol kutatásra, tesztelésre és gyors skálázhatóságra van szükség, egy dedikált csapat a legjobb megoldás.\n\nErgomania. Kife"
   },
   {
    "id": "bhu-07",
@@ -3230,11 +3495,22 @@
   {
    "id": "bhu-08",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://www.nexon.hu/hirek/belepteto-rendszer-es-munkaido-nyilvantartas-osszekapcsolasa-hogyan-valik-automatikussa",
+    "https://account.predor.hu/Content/files/Predor_kiadvany.pdf",
+    "https://onespire.hu/power-bi-adatvizualizacios-eszkoz/",
+    "https://munkaidokezelo.hu/?lang=hu",
+    "https://databi.hu/",
+    "https://nortinia.com/egyedi-szoftverfejlesztes",
+    "https://mgrvision.hu/fejlesztes",
+    "https://www.diosoft.hu/egyedi-szoftverfejlesztes/",
+    "https://munkaugyilevelek.hu/levelek/2025/09/23/5461/+bel%C3%A9ptet%C5%91rendszer+%C3%A9s+a+munkaid%C5%91nyilv%C3%A1ntart%C3%A1s",
+    "https://payrollers.hu/munkaido-nyilvantartasa-mire-figyel-a-hatosag/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4FRNW01VZ1JQMZ5X34YXN and 01M8H4PQCQPVB535CJ27KTS0B9)"
+   "answer": "A megvalósításhoz első lépésként a meglévő beléptető rendszer gyártóját vagy integrátorát érdemes megkeresni, ha pedig teljesen testreszabott vezetői felületre van szükség, egy BI (üzleti intelligencia) tanácsadó vagy egyedi szoftverfejlesztő cég a legjobb választás.\n\nA megfelelő partner kiválasztása attól függ, mekkora szabadságra és milyen mélységű adatfeldolgozásra van szükség:\n\n1. A meglévő beléptető- és munkaidő-rendszer szállítója\n\nA legtöbb modern beléptető és munkaidő-nyilvántartó rendszer (például a NEXON, a Predor vagy a BeeCheck) rendelkezik beépített riportoló modullal, vagy vállal"
   },
   {
    "id": "bhu-08",
@@ -3325,11 +3601,24 @@
   {
    "id": "bhu-09",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://somosmedia.co/hu/tudastar/cikk/egyedi-szoftver-vagy-kesz-rendszer/",
+    "https://aiworks.hu/",
+    "https://brandrefel.hu/ai-automatizalas/",
+    "https://makeden.hu/hu/blog/digitalis-transzformacio-kkv-realis-terv/",
+    "https://mezeitamasdev.hu/szolgaltatasok/automatizalas",
+    "https://n8n.hu/",
+    "https://remotestudio.hu/ai-automatizacio/n8n-automatizalas/",
+    "https://aitizeme.com/n8n-automatizalas/",
+    "https://zynai.hu/",
+    "https://bossa.hu/",
+    "https://www.n8nhost.hu/hu",
+    "https://digitallwork.hu/szolgaltatasok/n8n-bevezetes/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4RBX0R0W00D2Z8QM9F0FZ and 01M8H4WCWZ8VBY0CFFEP9SBPSC)"
+   "answer": "Egy magyar KKV esetében az esetek 85–90%-ában az n8n (vagy egy hibrid modell) éri meg jobban, mert töredékáron és hetek alatt élesíthető, szemben a hónapokig tartó egyedi fejlesztéssel.\n\nMikor melyiket válaszd?\n\nSzempont\nn8n (Workflow automatizálás)\nEgyedi fejlesztés (pl. Python, Node.js)\nKezdeti költség\nAlacsony (pár százezer Ft)\nMagas (több millió Ft)\nÁtfutási idő\n1–3 hét\n2–6 hónap\nMire ideális?\nKész rendszerek (CRM, számlázó, webshop, e-mail) összekötésére és AI-ügynökök futtatására.\nHa maga a szoftver a fő terméked, saját UI/portál kell az ügyfeleknek, vagy extrém nagy adatmennyiséget keze"
   },
   {
    "id": "bhu-09",
@@ -3421,11 +3710,25 @@
   {
    "id": "bhu-10",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://hrpwr.hu/cikk/human-in-the-loop-elv-alkalmazasa-a-kivalasztasban",
+    "https://mikutato.hu/",
+    "https://doktori.hu/doktori-kepzes/temakiirasok/267184/",
+    "https://hte.hu/documents/10180/4737479/HCAIM_Muszaki+_kerdesei_Antal_Peter_2022Okt12.pdf",
+    "https://elte.hu/innofair",
+    "https://tudaskoz.hu/media/irattar/2026/06/1780392237-iok2026_eigner-gyorgy-ai-alapu-egyetem-kiepitese-az-obudai-eg_G0Mashp.pdf",
+    "https://www.wolterskluwer.com/hu-hu/experts/tilesch-gyorgy",
+    "https://www.muszaki-magazin.hu/2024/06/28/mesterseges-intelligencia-emberkozpontu/",
+    "https://www.taylorfrancis.com/chapters/oa-edit/10.4324/9781003799139-22/human-loop-diana-kun",
+    "https://m2.mtmt.hu/gui2/?mode=browse¶ms=publication;37548168",
+    "https://itbusiness.hu/technology/human/amikor-a-mesterseges-intelligencia-valasztja-ki-a-jelolteket/",
+    "https://fulophenrik.hu/human-in-the-loop-a-gyakorlatban-mit-kell-tudni-az-automatizalt-dontesrol/",
+    "https://www.facebook.com/GaborDenesEgyetem/videos/az-ai-gyors-de-nem-t%C3%A9vedhetetlen-nem-mindegy-ez%C3%A9rt-hogy-hol-marad-az-ember-a-fol/1100156809386659/"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4WGMPBKSQ0FFP8N85VBZE and 01M8H4XV4SCF9V13CNAVARVMM9)"
+   "answer": "Magyarországon a human-in-the-loop (HITL) – vagyis az emberi felügyeleten, kontrollon és együttműködésen alapuló mesterséges intelligencia – nem egyetlen zárt szakterületként, hanem több terület metszéspontjában van jelen. Az alábbi szakemberek és kutatók foglalkoznak ezzel a témával a legkiemelkedőbben akadémiai, szabályozási és üzleti oldalról.\n\nAkadémiai és kutatói terület\n\nDr. Antal Péter és Dr. Héder Mihály (BME). A Budapesti Műszaki és Gazdaságtudományi Egyetem kutatói az európai és hazai emberközpontú mesterséges intelligencia (HCAI) projektek vezető alakjai, akik kifejezetten a rendsze"
   },
   {
    "id": "bhu-10",
@@ -3508,11 +3811,24 @@
   {
    "id": "bhu-11",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://saascomed.hu/courses/orvostechnikai-szoftverek-fejlesztese",
+    "https://appforge.hu/szoftverfejlesztes-egeszsegugy/",
+    "https://szoftvervalidalas.hu/orvostechnika/",
+    "https://www.silurus-software.com/hu/services/regulatory-consulting",
+    "https://www.silurus-software.com/hu",
+    "https://ehealthss.hu/en/about-us/",
+    "https://ehealthss.hu/egyedi-szoftver-fejlesztes/",
+    "https://www.loginet.hu/szolgaltatasok/digitalis-termekfejlesztes-mvp-fejlesztes",
+    "https://www.loginet.hu/cikkek/digitalis-healthtech-alkalmazas-fejlesztes-az-xlab-szamara",
+    "https://www.rabit.hu/industries/egeszsegugyi-szoftverfejlesztes/",
+    "https://www.saasco.hu/orvostechnikai-eszkoezoek/tanacsadas-komplex-projektek/orvostechnikai-eszkoez-fejlesztes-tamogatasa/",
+    "https://ogyei.gov.hu/mdr_hirlevel_92021_a_szoftverem_orvostechnikai_eszkoz_szoftver_az_mdrivdr_alapjan"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4XWYW7E1Q72SAAMXVTRNE and 01M8H4Z0PVF0NSP8P8Y5YX9E1V)"
+   "answer": "Magyarországon több olyan szoftverfejlesztő cég is működik, amely kifejezetten egészségügyi termékekre specializálódott, és ismeri a vonatkozó szabályozási keretrendszereket (EU MDR, IEC 62304, GDPR 9. cikk, illetve hazai piacon az EESZT integráció).\n\nÉn első körben a Silurus Software vagy az AppForge csapatát keresném meg, mivel náluk a szoftverfejlesztés és a szabályozási megfelelés (MDR, CE-jelölés, EESZT) szorosan összekapcsolódik. Az ideális partner kiválasztása attól függ, hogy az alkalmazás pusztán életmód-támogató, vagy orvostechnikai eszköznek (SaMD) minősül.\n\nSzabályozási fókuszú Med"
   },
   {
    "id": "bhu-11",
@@ -3599,11 +3915,24 @@
   {
    "id": "bhu-12",
    "engine": "google_ai_mode",
-   "ok": false,
-   "cited": [],
+   "ok": true,
+   "cited": [
+    "https://r-szoft.hu/ai-ugynok-fejlesztes",
+    "https://www.socialpro.hu/szolgaltatasok/ai-agent-fejlesztes/",
+    "https://www.socialpro.hu/mesterseges-intelligencia/",
+    "http://aiworks.hu",
+    "https://n8n.hu/",
+    "https://remotestudio.hu/ai-automatizacio/n8n-automatizalas/",
+    "https://agentcity.hu/ai-automatizacio",
+    "https://turn2smart.hu/ai-agent",
+    "https://www.socialpro.hu/blog/n8n-vs-make-vs-zapier/",
+    "https://www.hello-ai.hu/szolgaltatasok",
+    "https://www.kulman.hu/blog/n8n-make-zapier-vagy-egyedi-automatizalas/",
+    "https://clickup.com/hu/blog/496665/n8n-vs-make"
+   ],
    "ownCited": false,
    "ownMentioned": false,
-   "answer": "ERROR: provider httpStatus 503 {\"error\":\"no upstreams available\"} on both attempts (runs 01M8H4XYRDD967KWAQNZMHGHB6 and 01M8H4Z2PSFJDBVQMYPDA915EM)"
+   "answer": "Az AIWORKS elsősorban egyedi AI Agentek építésére, n8n alapú folyamatautomatizációra és API integrációkra specializálódott a KKV szektorban. Ha hasonló szemléletű hazai kivitelezőket vagy házon belül is használható szoftveres alternatívákat keresel, az alábbi irányok közül választhatsz:\n\n1. Hasonló hazai AI automatizációs kivitelezők és ügynökségek\n\nHa kulcsrakész megoldást és mérnöki megvalósítást szeretnél hasonló technológiai alapokon (n8n, Make, egyedi API-k):\n\nn8n.hu (Virtualcom Bt.). Kifejezetten n8n alapú folyamatautomatizációra, adatmásolásra, számlaellenőrzésre és saját szerveren (vag"
   },
   {
    "id": "bhu-12",
