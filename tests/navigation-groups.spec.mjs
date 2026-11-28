@@ -168,16 +168,17 @@ for (const [language, copy] of Object.entries(LANGUAGES)) {
   });
 }
 
-test("/hu: the Services group lists both Hungarian service pages and marks the current one from the service page", async ({ page }) => {
+test("/hu: the Services group lists the Hungarian service pages and marks the current one from the service page", async ({ page }) => {
   await open(page, "/hu");
   const trigger = page.locator('#primary-navigation [aria-controls="nav-services"]');
   await expect(trigger).toHaveText("Szolgáltatások");
   await expect(trigger).toHaveAttribute("aria-expanded", "false");
   await trigger.click();
   const links = page.locator("#nav-services a");
-  await expect(links).toHaveText(["Webfejlesztés", "AI tanácsadás és fejlesztés"]);
+  await expect(links).toHaveText(["Webfejlesztés", "AI tanácsadás és fejlesztés", "MVP fejlesztés"]);
   await expect(links.nth(0)).toHaveAttribute("href", "/hu/webfejlesztes");
   await expect(links.nth(1)).toHaveAttribute("href", "/hu/ai-tanacsadas-fejlesztes");
+  await expect(links.nth(2)).toHaveAttribute("href", "/hu/mvp-fejlesztes");
   // Opening the Articles group closes Services.
   await page.locator('#primary-navigation [aria-controls="nav-articles"]').click();
   await expect(trigger).toHaveAttribute("aria-expanded", "false");

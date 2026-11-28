@@ -155,7 +155,8 @@ const currentRoutes = [["/works", "/works"], ["/about", "/about"], ["/writing", 
   // The service pages live in the Services group: the panel link is current and the group button carries the mark.
   ["/ai-integration", "/ai-integration", "nav-services"], ["/web-development", "/web-development", "nav-services"],
   ["/hu/ai-tanacsadas-fejlesztes", "/hu/ai-tanacsadas-fejlesztes", "nav-services"], ["/hu/webfejlesztes", "/hu/webfejlesztes", "nav-services"],
-  ["/de/ki-beratung-entwicklung", "/de/ki-beratung-entwicklung", "nav-services"], ["/de/webentwicklung", "/de/webentwicklung", "nav-services"]];
+  ["/de/ki-beratung-entwicklung", "/de/ki-beratung-entwicklung", "nav-services"], ["/de/webentwicklung", "/de/webentwicklung", "nav-services"],
+  ["/mvp-development", "/mvp-development", "nav-services"], ["/hu/mvp-fejlesztes", "/hu/mvp-fejlesztes", "nav-services"], ["/de/mvp-entwicklung", "/de/mvp-entwicklung", "nav-services"]];
 async function currentMark(page, href, group) {
   const selector = group ? `#primary-navigation [aria-controls="${group}"]` : `#primary-navigation a.nav-link[href="${href}"]`;
   return page.locator(selector).evaluate((link) => {

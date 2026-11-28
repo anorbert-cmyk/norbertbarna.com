@@ -19,9 +19,9 @@ import { CheckList, LoadError, Loading, PageHeader, Score } from "../ui.jsx";
 
 const SECTION = { hu: "/hu/irasok", en: "/writing", de: "/de/wissen" };
 const SERVICES = {
-  hu: [["/hu/webfejlesztes", "Weboldal készítés és egyedi webfejlesztés cégeknek"], ["/hu/ai-tanacsadas-fejlesztes", "AI tanácsadás és fejlesztés"]],
-  en: [["/web-development", "Web development"], ["/ai-integration", "AI integration"]],
-  de: [["/de/webentwicklung", "Webentwicklung"], ["/de/ki-beratung-entwicklung", "KI-Beratung und Entwicklung"]],
+  hu: [["/hu/webfejlesztes", "Weboldal készítés és egyedi webfejlesztés cégeknek"], ["/hu/ai-tanacsadas-fejlesztes", "AI tanácsadás és fejlesztés"], ["/hu/mvp-fejlesztes", "MVP fejlesztés szabályozott termékekhez"]],
+  en: [["/web-development", "Web development"], ["/ai-integration", "AI integration"], ["/mvp-development", "MVP development for regulated products"]],
+  de: [["/de/webentwicklung", "Webentwicklung"], ["/de/ki-beratung-entwicklung", "KI-Beratung und Entwicklung"], ["/de/mvp-entwicklung", "MVP-Entwicklung für regulierte Produkte"]],
 };
 const pad = (n) => String(n).padStart(2, "0");
 function nowStamp() {

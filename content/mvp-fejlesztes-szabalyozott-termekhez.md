@@ -6,8 +6,8 @@ slug: mvp-fejlesztes-szabalyozott-termekhez
 date: 2026-11-27T23:30:00+01:00
 updated: 2026-11-28T12:00:00+01:00
 tags: [mvp fejlesztés, fintech mvp, mvp szabályozott iparágban, egészségügyi szoftverfejlesztés, minimum viable product, webalkalmazás fejlesztés]
-service: /hu/webfejlesztes
-service_label: Weboldal készítés és egyedi webfejlesztés cégeknek
+service: /hu/mvp-fejlesztes
+service_label: MVP fejlesztés szabályozott termékekhez
 cover: /assets/images/og/writing/mvp-entwicklung-regulierte-produkte.jpg
 cover_alt: Kicsi, tisztán hajtogatott papírforma szilárd, sötétzöld papírtalapzaton, körülötte hely a további hajtásoknak: MVP fejlesztés szabályozott termékhez
 pair: [de/mvp-entwicklung-regulierte-produkte, en/mvp-development-regulated-products]

@@ -4,7 +4,7 @@
 
 Self-hosted portfolio site, served by Express on Node 22
 and deployed to Railway. Static HTML, CSS, JS, images and videos; English pages at the
-root, Hungarian pages under `hu/` and German pages under `de/` (entry page, two service
+root, Hungarian pages under `hu/` and German pages under `de/` (entry page, three service
 pages, contact, privacy and the `de/wissen` articles; case studies, Works and About stay
 English and the German pages link them with `hreflang="en"`).
 
@@ -13,7 +13,7 @@ English and the German pages link them with `hreflang="en"`).
 - **Server**: Express.js (`server.js`) with compression, clean extension-less URLs, 301 redirects and security headers
 - **Runtime**: Node 22 (`engines.node: 22.x` in `package.json`, `nodejs_22` in `nixpacks.toml`, `node:22-alpine` in `Dockerfile`)
 - **Deployment**: Railway via Nixpacks (`railway.json`); the Dockerfile is an alternative
-- **Pages**: home, works, about, contact, AI integration, web development, privacy, 404, plus 7 case studies (Sportsgambit, Raiffeisen, Instructure, Bitpanda, OnRobot, Kineticare, Benker), each mirrored in Hungarian under `hu/` and `hu/munka/`; German: `/de`, `/de/webentwicklung`, `/de/ki-beratung-entwicklung`, `/de/kontakt`, `/de/datenschutz`, `/de/wissen`
+- **Pages**: home, works, about, contact, AI integration, web development, MVP development, privacy, 404, plus 7 case studies (Sportsgambit, Raiffeisen, Instructure, Bitpanda, OnRobot, Kineticare, Benker), each mirrored in Hungarian under `hu/` and `hu/munka/`; German: `/de`, `/de/webentwicklung`, `/de/ki-beratung-entwicklung`, `/de/mvp-entwicklung`, `/de/kontakt`, `/de/datenschutz`, `/de/wissen`
 - **Languages**: `scripts/service-pages.mjs` (`LANGS`, `PAGE_GROUPS`, `SITE_COPY`) is the single source of the language model; the checks and `scripts/site-chrome.mjs` read it. Client scripts switch copy on `<html lang>` (`navigation.js`, `consent.js`, `contact.js` carry en/hu/de)
 - **CSS**: `base.css` (reset and primitives) and `components.css` (inherited component rules) plus first-party layers (`responsive`, `editorial-sections`, `compact-navigation`, `arrival`, `case-motion`, ...), referenced by content-hashed filenames
 - **JS**: first-party scripts (`animations.js`, `navigation.js`, `media.js`, `physics.js`, ...) referenced by content-hashed filenames; no third-party runtime besides the vendored GSAP files

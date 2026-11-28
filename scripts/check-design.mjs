@@ -216,9 +216,9 @@ if (worksLd) {
     fail("hero-scene.js must not reach for one stage's class names");
   }
   const others = [
-    "works.html", "privacy.html", "ai-integration.html", "web-development.html",
-    "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html", "hu/adatvedelem.html",
-    "de/index.html", "de/ki-beratung-entwicklung.html", "de/webentwicklung.html", "de/datenschutz.html",
+    "works.html", "privacy.html", "ai-integration.html", "web-development.html", "mvp-development.html",
+    "hu/ai-tanacsadas-fejlesztes.html", "hu/webfejlesztes.html", "hu/mvp-fejlesztes.html", "hu/adatvedelem.html",
+    "de/index.html", "de/ki-beratung-entwicklung.html", "de/webentwicklung.html", "de/mvp-entwicklung.html", "de/datenschutz.html",
     ...WORK.map((slug) => `work/${slug}.html`),
   ];
   for (const page of others) {

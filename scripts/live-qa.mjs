@@ -144,7 +144,7 @@ for (const path of ["/robots.txt", "/llms.txt"]) {
   if (live.status !== 200) fail(`/assets/js/analytics.js -> ${live.status}`);
   else if (!["'/web-development'", "'/de/kontakt'", "'/de/arbeit/'", "de\\/wissen", "? 'de' : 'en'"].every((part) => body.includes(part))) fail("live analytics.js does not measure the German pages and /web-development");
   else pass("live analytics.js measures the English, Hungarian and German routes");
-  for (const page of ["/de", "/de/wissen", "/web-development"]) {
+  for (const page of ["/de", "/de/wissen", "/web-development", "/mvp-development", "/hu/mvp-fejlesztes", "/de/mvp-entwicklung"]) {
     const html = (await get(`${BASE}${page}`)).body;
     if (!html.includes('src="/assets/js/analytics.js"') || !html.includes('src="/assets/js/consent.js"')) fail(`${page} does not load the consent and analytics scripts`);
     else pass(`${page} loads the consent and analytics scripts`);

@@ -430,6 +430,9 @@ if (!existsSync(llmsPath)) {
       !llms.includes("https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes") ||
       !llms.includes("https://www.barnanorbert.com/de/ki-beratung-entwicklung") ||
       !llms.includes("https://www.barnanorbert.com/de/webentwicklung") ||
+      !llms.includes("https://www.barnanorbert.com/mvp-development") ||
+      !llms.includes("https://www.barnanorbert.com/hu/mvp-fejlesztes") ||
+      !llms.includes("https://www.barnanorbert.com/de/mvp-entwicklung") ||
       !llms.includes("https://www.barnanorbert.com/de/datenschutz") ||
       !llms.includes("https://www.barnanorbert.com/work/kineticare")) {
     fail("llms.txt is missing canonical portfolio, attribution, privacy or contact guidance");

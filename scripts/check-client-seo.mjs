@@ -27,7 +27,7 @@ for (const file of SERVICE_PAGES) {
   const h1 = text(body.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || "");
   assert.equal(attr(html.match(/<html\b[^>]*>/i)?.[0] || "", "lang"), language, `${file}: document language`);
   assert(/<head>\s*<meta charset="utf-8"\/>/.test(html) && /href="\/assets\/css\/fonts\.[a-f0-9]{12}\.css"/.test(html), `${file}: charset first and the self-hosted fonts stylesheet`);
-  assert(h1 && (file.includes("webfejlesztes") ? /weboldal készítés/i.test(h1) : file.includes("web-development") ? /web development/i.test(h1) : file.includes("webentwicklung") ? /webentwicklung/i.test(h1) : language === "de" ? /KI/.test(h1) : /AI/i.test(h1)), `${file}: visible service subject`);
+  assert(h1 && (/mvp-/.test(file) ? /MVP/.test(h1) : file.includes("webfejlesztes") ? /weboldal készítés/i.test(h1) : file.includes("web-development") ? /web development/i.test(h1) : file.includes("webentwicklung") ? /webentwicklung/i.test(h1) : language === "de" ? /KI/.test(h1) : /AI/i.test(h1)), `${file}: visible service subject`);
   // Every service page states the working languages (owner decision, 2026-10-21):
   // German and other European clients must read that the work runs in Hungarian and English.
   const languageStatement = { en: /English and Hungarian/, hu: /Magyarul és angolul dolgozom/, de: /Englisch und Ungarisch/ }[language];

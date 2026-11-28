@@ -6,8 +6,8 @@ slug: mvp-development-regulated-products
 date: 2026-11-12T12:00:00+01:00
 updated: 2026-11-28T12:00:00+01:00
 tags: [mvp development, fintech mvp, mvp for regulated industries, minimum viable product, saas development]
-service: /web-development
-service_label: Web development and product design for SaaS and fintech
+service: /mvp-development
+service_label: MVP development for regulated products
 cover: /assets/images/og/writing/mvp-entwicklung-regulierte-produkte.jpg
 cover_alt: A small, cleanly folded paper shape on a solid dark green paper base, with room around it for further folds: MVP development for regulated products
 pair: [de/mvp-entwicklung-regulierte-produkte, hu/mvp-fejlesztes-szabalyozott-termekhez]
