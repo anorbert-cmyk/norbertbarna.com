@@ -15,7 +15,7 @@ The engines are reached through the Monid connector, so a measurement runs from 
 
 | Engine | Monid provider and endpoint | Input |
 | --- | --- | --- |
-| Google AI Mode | `litescrape` `/google/ai-mode` | `q`, `hl`, `gl` (hu/hu, en/us, de/de) |
+| Google AI Mode | `litescrape` `/google/ai-mode` | `q`, `hl`, `gl` (hu/hu, en/us, de/de); when it answers 503, `cloro` `/google/ai-mode` with `prompt`, `country`, `hl` |
 | ChatGPT (signed out, web search on) | `cloro` `/chatgpt/ask` | `prompt`, `country` (HU, US, DE) |
 | Perplexity (sonar) | `dataforseo` `/ai/perplexity-response` | `user_prompt`, `model_name: sonar`, `max_output_tokens: 400`, `web_search_country_iso_code` |
 | Gemini (consumer app, logged out) | `cloro` `/gemini/ask` (async) | `prompt`, `country` (HU, US, DE) |
