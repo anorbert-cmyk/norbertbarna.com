@@ -1,5 +1,5 @@
 ---
-title: "KI-Automatisierung für Versicherungsmakler mit Freigabe"
+title: "KI-Automatisierung im Maklerbüro mit Freigabe"
 description: "KI-Automatisierung für Versicherungsmakler: was die KI vorbereitet, was ein Mensch freigibt und wer sie mit Ihnen einführt."
 lang: de
 slug: ki-automatisierung-versicherungsmakler

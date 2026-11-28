@@ -1,11 +1,11 @@
 ---
-title: "AI automatizálás könyvelőirodának emberi jóváhagyással"
+title: "AI automatizálás a könyvelésben, emberi jóváhagyással"
 description: "AI automatizálás könyvelőirodának: mely feladatokat készíti elő az AI, mit hagy jóvá a könyvelő, és ki tudja bevezetni az irodában."
 lang: hu
 slug: ai-automatizalas-konyveloirodanak
 date: 2026-11-28T12:00:00+01:00
 updated: 2026-11-28T12:00:00+01:00
-tags: [ai automatizálás könyvelőiroda, ai könyvelés, emberi jóváhagyás, számlafeldolgozás ai, ai bevezetés, human in the loop]
+tags: [ai automatizálás, könyvelőiroda ai, ai könyvelés, emberi jóváhagyás, számlafeldolgozás ai, ai bevezetés, human in the loop]
 service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
 pair: de/ki-automatisierung-steuerkanzlei

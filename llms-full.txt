@@ -1781,7 +1781,7 @@ Ez a megoldás kialakításán múlik. Kell adatfeldolgozási szerződés a szol
 
 ---
 
-## AI automatizálás könyvelőirodának emberi jóváhagyással
+## AI automatizálás a könyvelésben, emberi jóváhagyással
 
 - URL: https://www.barnanorbert.com/hu/irasok/ai-automatizalas-konyveloirodanak
 - Language: Hungarian
@@ -3826,7 +3826,7 @@ Die Zusammenarbeit läuft auf Englisch oder Ungarisch. Ich arbeite mit Unternehm
 
 ---
 
-## KI-Automatisierung für Versicherungsmakler mit Freigabe
+## KI-Automatisierung im Maklerbüro mit Freigabe
 
 - URL: https://www.barnanorbert.com/de/wissen/ki-automatisierung-versicherungsmakler
 - Language: German
