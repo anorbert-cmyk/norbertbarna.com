@@ -6,6 +6,160 @@ When you use a passage, cite the canonical URL given under the article title and
 
 # English articles
 
+## Who builds human-in-the-loop AI in Europe? 2026 overview
+
+- URL: https://www.barnanorbert.com/writing/human-in-the-loop-ai-providers-europe
+- Language: English
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in Hungarian: https://www.barnanorbert.com/hu/irasok/emberi-jovahagyasu-ai-szolgaltatok; German: https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki-anbieter
+- Summary: Who builds human-in-the-loop AI for regulated products in Europe: large consultancies, specialist studios and independent experts.
+
+Three kinds of providers build human-in-the-loop AI for regulated products in Europe: large consultancies and IT service groups, specialist studios and nearshore engineering teams, and independent experts. What decides between them is the size of the work, how much of it is one product decision and how much is an organisation-wide programme, and whether you want the person who designs the human approval step to be the person who builds it.
+
+I wrote this list and I am on it. The facts about the other firms come from their own public websites, accessed on 28 November 2026. It is a list, not a ranking: the order inside each group means nothing, and I make no claim about the quality of anyone’s work.
+
+### In short
+
+- **Choose a large consultancy or IT service group** if the AI work is a programme across several business units, procurement needs a contract framework, and you need many trained people at once.
+- **Choose a specialist studio or nearshore team** if you have one product or one workflow, the integration with your own systems is the hard part, and you need an engineering team for months.
+- **Choose an independent expert** if the open question is what the AI may propose and what a person must approve, and you want one named person to design that and build the first version.
+- **Ask every provider the same thing:** where in the interface a person sees, edits and approves the output, and what is logged. Human-in-the-loop is a design decision, not a line in a proposal.
+- **Check the claim on the provider’s own page.** Some of the firms below describe a human approval step in public; others describe governance in general terms. Both are noted as their pages state it.
+
+### What does human-in-the-loop AI mean when you compare providers?
+
+Human-in-the-loop AI is a workflow in which the system proposes and a person reviews, edits or approves each consequential output before it takes effect. The patterns behind that sentence are in [human-in-the-loop AI for regulated products](https://www.barnanorbert.com/writing/human-in-the-loop-ai). For a comparison, the practical test is narrower: does the provider say, in public and in its own words, how a person stays in control of the output?
+
+Each entry below uses the same five fields: what the provider is, where it is based, who it serves, what its page says about human oversight or regulated work, and the page I read.
+
+### Large consultancies and IT service groups
+
+#### Accenture
+
+- **What it is:** by its own description, a global professional services company with approximately 779,000 people.
+- **Based:** the press release is datelined New York; Accenture works globally.
+- **Serves:** large enterprises. The release names financial services, life sciences, healthcare and the public sector as the regulated industries it is developing joint offerings for with Anthropic.
+- **Human oversight and regulated work:** the release speaks of responsible AI and AI governance, so that enterprises deploy AI “with confidence, transparency, and accountability”. It does not describe a specific human approval step.
+- **Page read:** [Accenture newsroom, 9 December 2025](https://newsroom.accenture.com/news/2025/accenture-and-anthropic-launch-multi-year-partnership-to-drive-enterprise-ai-innovation-and-value-across-industries)
+
+#### adesso
+
+- **What it is:** a German IT service provider with more than 12,000 employees, as its press release states.
+- **Based:** Dortmund, Germany.
+- **Serves:** customers across all industries, with a focus in this release on agent-based software engineering.
+- **Human oversight and regulated work:** adesso describes its own development process with the principle that agents handle the implementation and humans the steering. The release is about software development, not about a regulated end-user product.
+- **Page read:** [adesso press release on its partnership with Anthropic](https://www.adesso.de/en/news/presse/adesso-partners-with-anthropic-to-scale-agent-based-software-engineering-for-its-customers.jsp)
+
+### Specialist studios and nearshore teams
+
+#### S-PRO
+
+- **What it is:** a fintech and AI engineering firm founded in 2014, with 250+ engineers.
+- **Based:** Zurich, Switzerland, with engineering centres in Zurich and Łódź.
+- **Serves:** banks, private banks, wealth managers and asset managers.
+- **Human oversight and regulated work:** S-PRO says it builds its agents with a governed data layer and human-in-the-loop approval, lists “evaluations, audit trail and human-in-the-loop as standard” among its selection criteria, and starts with a fixed-scope pilot. It states ISO 27001 and ISO 27701 certification.
+- **Page read:** [S-PRO, Claude implementation partners in Europe](https://s-pro.io/claude-implementation-partners-europe)
+
+#### Neurons Lab
+
+- **What it is:** a firm that delivers AI training and custom AI agents for financial services.
+- **Based:** London, United Kingdom, according to its contact page.
+- **Serves:** wealth management, retail and corporate banking, private banking, small business banking and insurance.
+- **Human oversight and regulated work:** its site says custom agents come with “full auditability, traceability, and governance controls built in from the start”, and that decision logic is aligned with the client’s business rules and policies. The pages read do not describe a human approval step in those words.
+- **Pages read:** [Neurons Lab home page](https://neurons-lab.com/) and [contact page](https://neurons-lab.com/contact/)
+
+#### Accedia
+
+- **What it is:** an IT services company for technology consulting and custom software development, founded in 2012, with 250+ engineers.
+- **Based:** Sofia, Bulgaria.
+- **Serves:** banking and fintech clients in regulated European, UK and US markets.
+- **Human oversight and regulated work:** Accedia states ISO 27001 certification and writes that, with the EU AI Act in effect, model explainability and AI governance are increasingly expected. The page read does not describe a human approval step.
+- **Page read:** [Accedia, AI consulting firms for banks in Europe](https://www.accedia.com/insights/blog/best-ai-consulting-firms-for-banks-in-europe)
+
+#### Kindgeek
+
+- **What it is:** a fintech product engineering company that describes itself as a Ukrainian company, launched in 2015, with a team of more than 200.
+- **Based:** Ukraine; the pages read name no city.
+- **Serves:** licensed fintech companies and enterprises.
+- **Human oversight and regulated work:** Kindgeek says AI accelerates its delivery “without compromising compliance”, with automated checks against PCI DSS, DORA and GDPR in every pull request. The pages read do not describe a human approval step in client products.
+- **Pages read:** [Kindgeek home page](https://kindgeek.com/) and [about page](https://www.kindgeek.com/about-us)
+
+### Independent experts
+
+#### Norbert Barna
+
+- **What it is:** an independent product and AI integration practice. I am a Product VP with 17 years in regulated and high-trust products, at Raiffeisen Bank International, Instructure and One Identity (formerly Balabit) among others.
+- **Based:** Hungary, working with teams in Hungary and across the EU, in English and Hungarian.
+- **Serves:** product and operations teams in fintech, banking, insurance, digital health and SaaS.
+- **Human oversight and regulated work:** the second step of my method, before anything is built, defines access and human control: what the AI can suggest, what a person must review, and what happens when an answer is missing or wrong. The fourth step is a bounded pilot with a named owner who can pause it or roll it back.
+- **Page read:** [AI integration for regulated industries](https://www.barnanorbert.com/ai-integration)
+
+#### Dániel Kalmár, KD AI Consulting
+
+- **What it is:** by his own description, an independent AI advisor and trainer who works on the client’s own data and processes.
+- **Based:** Hungary; the page read names no city.
+- **Serves:** mid-sized and large companies.
+- **Human oversight and regulated work:** the offer includes an AI compliance package with a company-specific policy and documented training. The page read does not describe a human approval step.
+- **Page read:** [KD Consulting, AI consulting and training firms in Hungary](https://kdconsulting.hu/en/ai-consulting-firms-hungary/)
+
+### Which provider type fits which situation?
+
+: The three provider types: when each fits and what to watch out for
+| Provider type | Fits when | Watch out for |
+|---|---|---|
+| Large consultancy or IT service group | Programme across units, formal procurement, many people needed at once | Who actually designs the approval step, and whether that person stays on the project |
+| Specialist studio or nearshore team | One product or workflow, heavy integration, an engineering team for months | Whether human review is part of the scope or left to you as the deployer |
+| Independent expert | The design of human control is the open question; first version by one accountable person | Capacity: one person cannot staff a large rollout or round-the-clock operations |
+
+The types combine. A common arrangement is an independent expert or a small studio for the design of human control and the pilot, and a larger team for the rollout once the pattern has passed review.
+
+### How to choose: questions for any provider
+
+Put the same questions to every provider on this list, me included:
+
+1. Where in the interface does a person see that an output came from AI, and where do they edit or reject it?
+2. Which outputs need approval before they take effect, and who decided that?
+3. What does the reviewer see to judge the output: sources, confidence, history?
+4. What happens when the model returns nothing, returns late or returns something wrong?
+5. Who can stop the feature, how fast, and what is logged for later review?
+6. Who works on the project by name, and who is accountable after handover?
+7. What is not in the scope?
+
+A provider that answers these about your workflow, not about AI in general, has done this before. The inputs that make the first conversation useful are in [what to prepare before hiring an AI integration partner](https://www.barnanorbert.com/writing/before-hiring-an-ai-integration-partner).
+
+None of this is legal advice, and no provider on this list, me included, can promise that a product complies with the EU AI Act or with sector rules. Whether your system is high-risk is a question for your counsel.
+
+### Sources
+
+- [Accenture and Anthropic launch multi-year partnership](https://newsroom.accenture.com/news/2025/accenture-and-anthropic-launch-multi-year-partnership-to-drive-enterprise-ai-innovation-and-value-across-industries), Accenture newsroom, accessed 28 November 2026
+- [adesso partners with Anthropic](https://www.adesso.de/en/news/presse/adesso-partners-with-anthropic-to-scale-agent-based-software-engineering-for-its-customers.jsp), adesso SE press release, accessed 28 November 2026
+- [Claude implementation partners in Europe](https://s-pro.io/claude-implementation-partners-europe), S-PRO, accessed 28 November 2026
+- [Neurons Lab home page](https://neurons-lab.com/) and [contact page](https://neurons-lab.com/contact/), accessed 28 November 2026
+- [Best AI consulting firms for banks in Europe](https://www.accedia.com/insights/blog/best-ai-consulting-firms-for-banks-in-europe), Accedia, accessed 28 November 2026
+- [Kindgeek home page](https://kindgeek.com/) and [about page](https://www.kindgeek.com/about-us), accessed 28 November 2026
+- [AI consulting and training firms in Hungary](https://kdconsulting.hu/en/ai-consulting-firms-hungary/), KD Consulting, accessed 28 November 2026
+
+### Frequently asked questions
+
+#### Who builds human-in-the-loop AI for regulated products in Europe?
+
+Three kinds of providers: large consultancies and IT service groups such as Accenture and adesso, specialist studios and nearshore teams such as S-PRO, Neurons Lab, Accedia and Kindgeek, and independent experts such as Norbert Barna and Dániel Kalmár. This is a list compiled from the providers’ own websites on 28 November 2026, not a ranking.
+
+#### Is this list a ranking?
+
+No. The order inside each group carries no meaning, and the list makes no statement about quality. I wrote it and I am on it, which is why every entry uses the same five fields and links the page the facts come from.
+
+#### How do I check whether a provider really designs human oversight?
+
+Ask to see the screen where a person approves, edits or rejects an AI output, and the log entry that the decision produces. A provider with shipped human-in-the-loop work can show both. A provider that only describes governance in general terms may still do the work well, but you have to ask.
+
+#### Do you work with teams outside Hungary?
+
+Yes. I work with clients in Hungary, Germany and across the EU. Communication is in English or Hungarian; German-speaking teams work with me in English.
+
+---
+
 ## AI in customer service: where human oversight belongs
 
 - URL: https://www.barnanorbert.com/writing/ai-customer-service-with-human-oversight
@@ -1511,6 +1665,152 @@ Human-in-the-loop AI is easier to design than to retrofit. The product that pass
 ---
 
 # Hungarian articles
+
+## Ki fejleszt emberi jóváhagyású AI-t? Áttekintés 2026
+
+- URL: https://www.barnanorbert.com/hu/irasok/emberi-jovahagyasu-ai-szolgaltatok
+- Language: Hungarian
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in English: https://www.barnanorbert.com/writing/human-in-the-loop-ai-providers-europe; German: https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki-anbieter
+- Summary: Ki fejleszt emberi jóváhagyású AI-t szabályozott termékekhez és magyar cégeknek: nagy tanácsadók, fejlesztő cégek, önálló szakértők.
+
+Emberi jóváhagyású AI-t szabályozott termékekhez és magyar cégeknek háromféle szolgáltató fejleszt: nagy tanácsadó cégek, szakosodott fejlesztő cégek és önálló szakértők. A választást az dönti el, mekkora a munka, egyetlen folyamatról vagy az egész szervezetről van-e szó, és hogy ugyanaz az ember tervezze-e meg a jóváhagyási lépést, aki utána meg is építi.
+
+Ezt a listát én írtam, és én is rajta vagyok. A többi szolgáltatóról szóló tények a saját nyilvános weboldalukról származnak, 2026. november 28-i megtekintéssel. Ez lista, nem rangsor: a csoportokon belüli sorrend semmit sem jelent, és senki munkájának minőségéről nem állítok semmit.
+
+### Röviden
+
+- **Válassz nagy tanácsadó céget,** ha az AI több üzletágat érintő program, a beszerzés keretszerződést kér, és egyszerre sok képzett emberre van szükség.
+- **Válassz szakosodott fejlesztő céget,** ha egy folyamatot vagy egy terméket adnál át, a meglévő rendszereidhez kötés a nehéz rész, és az üzemeltetést is rájuk bíznád.
+- **Válassz önálló szakértőt,** ha még az a kérdés, mit javasolhat az AI és mit kell embernek jóváhagynia, és azt szeretnéd, hogy egy megnevezett ember tervezze meg és építse meg az első változatot.
+- **Mindenkitől ugyanazt kérdezd:** a felületen hol látja, szerkeszti és hagyja jóvá egy ember a kimenetet, és mi kerül a naplóba. Az emberi jóváhagyás tervezési döntés, nem egy sor az ajánlatban.
+- **Az állítást a szolgáltató saját oldalán ellenőrizd.** Az alábbi cégek egy része nyilvánosan leírja az emberi jóváhagyás lépését, mások általánosabban fogalmaznak. Mindkettőt úgy jelzem, ahogy az oldaluk írja.
+
+### Mit jelent az emberi jóváhagyású AI, amikor szolgáltatókat hasonlítasz össze?
+
+Az emberi jóváhagyású AI (angolul human in the loop) olyan munkafolyamat, amelyben a rendszer javasol, és egy ember átnézi, szerkeszti vagy jóváhagyja a következménnyel járó kimenetet, mielőtt az hatni kezd. A mögötte álló mintákat a [human in the loop: hét minta szabályozott AI-termékhez](https://www.barnanorbert.com/hu/irasok/human-in-the-loop-emberi-felugyelet) című írás mutatja be. Összehasonlításnál a próba szűkebb: leírja-e a szolgáltató nyilvánosan, a saját szavaival, hogyan marad az ember kezében a döntés?
+
+Minden bejegyzés ugyanazt az öt mezőt használja: mi a szolgáltató, hol működik, kinek dolgozik, mit ír az oldala az emberi felügyeletről vagy a szabályozott munkáról, és melyik oldalt olvastam.
+
+### Nagy tanácsadó cégek
+
+#### Accenture
+
+- **Mi ez:** saját leírása szerint globális szakmai szolgáltató cég, nagyjából 779 000 munkatárssal.
+- **Hol működik:** a sajtóközlemény New Yorkból kelt; az Accenture világszerte dolgozik.
+- **Kinek dolgozik:** nagyvállalatoknak. A közlemény a pénzügyi szolgáltatásokat, az élettudományokat, az egészségügyet és a közszférát nevezi meg azokként a szabályozott iparágakként, amelyekre az Anthropickal közös megoldásokat fejleszt.
+- **Emberi felügyelet és szabályozott munka:** a közlemény felelős AI-ról és AI-irányításról beszél, hogy a vállalatok átláthatóan és elszámoltathatóan vezessék be az AI-t. Konkrét emberi jóváhagyási lépést nem ír le.
+- **Olvasott oldal:** [Accenture sajtószoba, 2025. december 9.](https://newsroom.accenture.com/news/2025/accenture-and-anthropic-launch-multi-year-partnership-to-drive-enterprise-ai-innovation-and-value-across-industries)
+
+
+### Szakosodott fejlesztő cégek
+
+#### Leventech
+
+- **Mi ez:** AI tanácsadó és fejlesztő cég, amely a felméréstől az üzemeltetésig épít AI-rendszereket, és a meglévő eszközökhöz köti őket.
+- **Hol működik:** Budapest.
+- **Kinek dolgozik:** kis- és középvállalatoknak, valamint nagyvállalatoknak; az oldal logisztikai, gyártási és pénzügyi szolgáltatási munkákat mutat be.
+- **Emberi felügyelet és szabályozott munka:** az oldal szerint az EU AI-rendelet szerinti kockázati besorolás minden projekt része, az alapító pedig magas kockázatú AI-rendszerek bevezetésében szerzett tapasztalatot említ. Emberi jóváhagyási lépést az olvasott oldal nem ír le.
+- **Olvasott oldal:** [Leventech, vállalati AI-megoldások](https://leventech.hu/en/enterprise-ai-solutions)
+
+#### Automating
+
+- **Mi ez:** saját leírása szerint magyar AI-cég, amely AI munkatársakat épít: ezek egy teljes munkakört visznek a cég saját rendszereiben.
+- **Hol működik:** Magyarország; az olvasott oldal várost nem nevez meg.
+- **Kinek dolgozik:** magyar cégeknek; az oldal a 10 és 250 fő közötti cégek vezetőit szólítja meg.
+- **Emberi felügyelet és szabályozott munka:** az oldal szerint az AI nem veszi át a döntést: ami döntést kér, vagy amire a szabályok nem adnak választ, azt előkészítve egy ember elé teszi. A szolgáltatóválasztási szempontjai között szerepel az adatfeldolgozási szerződés is.
+- **Olvasott oldal:** [Automating, AI automatizálás cégeknek](https://automating.hu/blog/ai-automatizalas-cegeknek)
+
+#### AIWORKS
+
+- **Mi ez:** AI-ügynököket és folyamatautomatizálást építő cég, amely mérnöki irodaként írja le magát; alapítója Szabó Tamás.
+- **Hol működik:** Magyarország; az olvasott oldal várost nem nevez meg.
+- **Kinek dolgozik:** kis- és középvállalkozásoknak.
+- **Emberi felügyelet és szabályozott munka:** az oldal szerint a rendszereiket a human in the loop elv szerint tervezik: kritikus döntésnél vagy bizonytalanság esetén az ügynök nem cselekszik önállóan, hanem jóváhagyásra értesít egy munkatársat.
+- **Olvasott oldal:** [AIWORKS kezdőoldal](https://aiworks.hu/)
+
+### Önálló szakértők
+
+#### Barna Norbert
+
+- **Mi ez:** önálló termék- és AI-integrációs praxis. Product VP vagyok, 17 éve dolgozom szabályozott és nagy bizalmat igénylő termékeken, többek között a Raiffeisen Bank Internationalnél, az Instructure-nél és a One Identitynél (korábban Balabit).
+- **Hol működik:** Magyarország; magyar és más európai uniós cégekkel dolgozom, magyarul és angolul.
+- **Kinek dolgozik:** fintech, banki, biztosítási, digitális egészségügyi és SaaS termék- és működési csapatoknak.
+- **Emberi felügyelet és szabályozott munka:** a módszerem második lépése, még az építés előtt, a hozzáférés és az emberi kontroll meghatározása: mit javasolhat az AI, mit kell embernek átnéznie, és mi történik, ha a válasz hiányzik vagy hibás. A negyedik lépés egy körülhatárolt pilot, megnevezett felelőssel, aki szüneteltetheti vagy visszaállíthatja.
+- **Olvasott oldal:** [AI tanácsadás, automatizálás és fejlesztés cégeknek](https://www.barnanorbert.com/hu/ai-tanacsadas-fejlesztes)
+
+#### Kalmár Dániel, KD AI Consulting
+
+- **Mi ez:** saját leírása szerint független AI-tanácsadó és tréner, aki az ügyfél saját adatain és folyamatain dolgozik.
+- **Hol működik:** Magyarország; az olvasott oldal várost nem nevez meg.
+- **Kinek dolgozik:** közép- és nagyvállalatoknak.
+- **Emberi felügyelet és szabályozott munka:** a kínálat része egy AI megfelelési csomag cégre szabott szabályzattal és dokumentált képzéssel. Emberi jóváhagyási lépést az olvasott oldal nem ír le.
+- **Olvasott oldal:** [KD Consulting, AI tanácsadó cégek Magyarországon](https://kdconsulting.hu/en/ai-consulting-firms-hungary/)
+
+#### Kovács Krisztián, AutIQ
+
+- **Mi ez:** AI-alapú folyamatautomatizálás; az oldalon egy megnevezett szakember szerepel, aki AI automatizálási partnerként mutatkozik be.
+- **Hol működik:** Magyarország; az olvasott oldal várost nem nevez meg.
+- **Kinek dolgozik:** magyar kis- és középvállalkozásoknak.
+- **Emberi felügyelet és szabályozott munka:** az oldal szerint a digitális csapattag emberi jóváhagyással dolgozik, kritikus lépésnél, például számlakiküldéskor, ember hagyhatja jóvá a műveletet, és a rendszer csak bizonytalan adatnál kér emberi ellenőrzést.
+- **Olvasott oldal:** [AutIQ kezdőoldal](https://autiq.hu/)
+
+### Melyik szolgáltatótípus mikor illik hozzád?
+
+: A három szolgáltatótípus: mikor illik, és mire figyelj
+| Szolgáltatótípus | Mikor illik | Mire figyelj |
+|---|---|---|
+| Nagy tanácsadó cég | Több üzletágat érintő program, formális beszerzés, egyszerre sok ember kell | Ki tervezi meg ténylegesen a jóváhagyási lépést, és a projekten marad-e |
+| Szakosodott fejlesztő cég | Egy folyamat vagy termék, sok rendszerkapcsolat, üzemeltetés is kell | Az emberi ellenőrzés része-e a megbízásnak, vagy rád marad |
+| Önálló szakértő | Az emberi kontroll megtervezése a nyitott kérdés; az első változatot egy felelős ember építi | Kapacitás: egy ember nem visz nagy bevezetést és folyamatos ügyeletet |
+
+A típusok kombinálhatók. Gyakori felállás, hogy az emberi kontroll megtervezését és a pilotot egy önálló szakértő vagy kis cég viszi, a szélesebb bevezetést pedig egy nagyobb csapat, miután a minta kiállta a felülvizsgálatot.
+
+### Hogyan válassz: kérdések bármelyik szolgáltatónak
+
+Ugyanezeket a kérdéseket tedd fel a lista minden szereplőjének, nekem is:
+
+1. A felületen hol látja az ember, hogy egy kimenet AI-tól származik, és hol szerkeszti vagy utasítja el?
+2. Mely kimenetekhez kell jóváhagyás, mielőtt hatni kezdenek, és ezt ki döntötte el?
+3. Mit lát az ellenőrző, amiből megítélheti a kimenetet: forrást, bizonyossági értéket, előzményt?
+4. Mi történik, ha a modell semmit sem ad vissza, késve válaszol, vagy hibásat ad?
+5. Ki állíthatja le a funkciót, milyen gyorsan, és mi kerül a naplóba?
+6. Név szerint kik dolgoznak a projekten, és ki felel az átadás után?
+7. Mi nincs benne a megbízásban?
+
+Aki ezekre a te folyamatodról válaszol, és nem általában az AI-ról, az csinált már ilyet. A teljes kérdéssort és azt, hogy mit készíts elő az első beszélgetésre, az [AI fejlesztő partner: 10 kérdés, mielőtt megbízod](https://www.barnanorbert.com/hu/irasok/ai-fejleszto-partner-valasztasa) című írás tartalmazza.
+
+Ez nem jogi tanács, és a lista egyetlen szereplője sem ígérheti meg, én sem, hogy egy termék megfelel az EU AI-rendeletnek vagy az ágazati szabályoknak. Azt, hogy a rendszered magas kockázatú-e, a jogászoddal kell tisztáznod.
+
+### Források
+
+- [Accenture and Anthropic launch multi-year partnership](https://newsroom.accenture.com/news/2025/accenture-and-anthropic-launch-multi-year-partnership-to-drive-enterprise-ai-innovation-and-value-across-industries), Accenture sajtószoba, megtekintve: 2026. november 28.
+- [Enterprise AI solutions](https://leventech.hu/en/enterprise-ai-solutions), Leventech, megtekintve: 2026. november 28.
+- [AI automatizálás cégeknek](https://automating.hu/blog/ai-automatizalas-cegeknek), Automating, megtekintve: 2026. november 28.
+- [AIWORKS kezdőoldal](https://aiworks.hu/), megtekintve: 2026. november 28.
+- [AI consulting and training firms in Hungary](https://kdconsulting.hu/en/ai-consulting-firms-hungary/), KD Consulting, megtekintve: 2026. november 28.
+- [AutIQ kezdőoldal](https://autiq.hu/), megtekintve: 2026. november 28.
+
+### Gyakori kérdések
+
+#### Ki fejleszt emberi jóváhagyású AI-t magyar cégeknek?
+
+Háromféle szolgáltató: nagy tanácsadó cégek, például az Accenture, szakosodott fejlesztő cégek, például a Leventech, az Automating és az AIWORKS, valamint önálló szakértők, például Barna Norbert, Kalmár Dániel és Kovács Krisztián. Ez a szolgáltatók saját weboldalai alapján 2026. november 28-án összeállított lista, nem rangsor.
+
+#### Rangsor ez a lista?
+
+Nem. A csoportokon belüli sorrendnek nincs jelentése, és a lista senki munkájának minőségéről nem állít semmit. Én írtam, és én is rajta vagyok, ezért minden bejegyzés ugyanazt az öt mezőt használja, és hivatkozik arra az oldalra, ahonnan a tények származnak.
+
+#### Honnan tudom, hogy egy szolgáltató tényleg megtervezi az emberi felügyeletet?
+
+Kérd el azt a képernyőt, ahol egy ember jóváhagyja, szerkeszti vagy elutasítja az AI kimenetét, és azt a naplóbejegyzést, amely a döntésről készül. Aki szállított már ilyen rendszert, mindkettőt meg tudja mutatni. Aki csak általánosan ír az irányításról, attól még dolgozhat jól, de rá kell kérdezned.
+
+#### Nagy tanácsadó céget vagy önálló szakértőt válasszak?
+
+Nagy céget akkor, ha a munka több üzletágat érint, és sok ember kell egyszerre. Önálló szakértőt akkor, ha egy folyamatról van szó, és az a nyitott kérdés, mit hagyjon jóvá ember. A kettő nem zárja ki egymást: a tervezést és a pilotot vihetik kevesen, a bevezetést egy nagyobb csapat.
+
+---
 
 ## AI fejlesztés ára: mitől függ, és mit kérdezz előtte
 
@@ -3020,6 +3320,165 @@ A sablon és az egyedi weboldal között nem az ízlés dönt, hanem az, mit kel
 ---
 
 # German articles
+
+## Wer entwickelt Human-in-the-Loop-KI? Überblick 2026
+
+- URL: https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki-anbieter
+- Language: German
+- Published: 2026-11-28; updated: 2026-11-28
+- Author: Norbert Barna (https://www.linkedin.com/in/barna-norbert/)
+- Also available in English: https://www.barnanorbert.com/writing/human-in-the-loop-ai-providers-europe; Hungarian: https://www.barnanorbert.com/hu/irasok/emberi-jovahagyasu-ai-szolgaltatok
+- Summary: Wer entwickelt Human-in-the-Loop-KI für regulierte Produkte: große Beratungen, spezialisierte Studios und unabhängige Experten.
+
+Human-in-the-Loop-KI für regulierte Produkte entwickeln drei Arten von Anbietern: große Beratungen und IT-Dienstleister, spezialisierte Studios und Nearshore-Teams sowie unabhängige Experten. Die Wahl hängt davon ab, wie groß das Vorhaben ist, ob es um einen Ablauf oder um die ganze Organisation geht, und ob dieselbe Person den Freigabeschritt gestalten soll, die ihn anschließend baut.
+
+Ich habe diese Liste geschrieben und stehe selbst darauf. Die Angaben zu den anderen Anbietern stammen von deren eigenen öffentlichen Websites, abgerufen am 28. November 2026. Es ist eine Liste, keine Rangfolge: Die Reihenfolge innerhalb der Gruppen bedeutet nichts, und ich treffe keine Aussage über die Qualität der Arbeit anderer.
+
+Zur Zusammenarbeit vorab: Ich arbeite mit Unternehmen in Deutschland und der EU; die Kommunikation läuft auf Englisch oder Ungarisch.
+
+### Kurz gesagt
+
+- **Wählen Sie eine große Beratung oder einen IT-Dienstleister,** wenn KI ein Programm über mehrere Geschäftsbereiche ist, der Einkauf einen Rahmenvertrag verlangt und viele geschulte Personen gleichzeitig gebraucht werden.
+- **Wählen Sie ein spezialisiertes Studio oder ein Nearshore-Team,** wenn es um ein Produkt oder einen Ablauf geht, die Anbindung an Ihre Systeme der schwierige Teil ist und Sie über Monate ein Entwicklungsteam brauchen.
+- **Wählen Sie einen unabhängigen Experten,** wenn noch offen ist, was die KI vorschlagen darf und was ein Mensch freigeben muss, und eine benannte Person das gestalten und die erste Version bauen soll.
+- **Stellen Sie jedem Anbieter dieselbe Frage:** Wo in der Oberfläche sieht, bearbeitet und genehmigt ein Mensch die Ausgabe, und was wird protokolliert? Human in the Loop ist eine Gestaltungsentscheidung, keine Zeile im Angebot.
+- **Prüfen Sie die Aussage auf der Seite des Anbieters.** Einige der folgenden Firmen beschreiben öffentlich einen Freigabeschritt, andere sprechen allgemeiner von Governance. Beides ist so vermerkt, wie es auf ihren Seiten steht.
+
+### Was bedeutet Human-in-the-Loop-KI beim Vergleich von Anbietern?
+
+Human-in-the-Loop-KI ist ein Ablauf, in dem das System vorschlägt und ein Mensch jede folgenreiche Ausgabe prüft, bearbeitet oder freigibt, bevor sie Wirkung entfaltet. Die Muster dahinter beschreibt der Beitrag [Human in the Loop: Was es im regulierten Produkt bedeutet](https://www.barnanorbert.com/de/wissen/human-in-the-loop-ki). Für einen Vergleich ist der Test enger: Beschreibt der Anbieter öffentlich und in eigenen Worten, wie der Mensch die Kontrolle über die Ausgabe behält?
+
+Jeder Eintrag nutzt dieselben fünf Felder: was der Anbieter ist, wo er sitzt, für wen er arbeitet, was seine Seite zu menschlicher Aufsicht oder regulierter Arbeit sagt, und welche Seite ich gelesen habe.
+
+### Große Beratungen und IT-Dienstleister
+
+#### adesso
+
+- **Was es ist:** ein deutscher IT-Dienstleister mit mehr als 12.000 Beschäftigten, so die eigene Pressemitteilung.
+- **Sitz:** Dortmund.
+- **Für wen:** Kunden aller Branchen; die Mitteilung behandelt agentenbasierte Softwareentwicklung.
+- **Menschliche Aufsicht und regulierte Arbeit:** adesso beschreibt sein eigenes Entwicklungsverfahren mit dem Grundsatz, dass Agenten die Umsetzung übernehmen und Menschen die Steuerung. Die Mitteilung handelt von Softwareentwicklung, nicht von einem regulierten Endkundenprodukt.
+- **Gelesene Seite:** [Pressemitteilung von adesso zur Partnerschaft mit Anthropic](https://www.adesso.de/en/news/presse/adesso-partners-with-anthropic-to-scale-agent-based-software-engineering-for-its-customers.jsp)
+
+#### Accenture
+
+- **Was es ist:** nach eigener Beschreibung ein globales Dienstleistungsunternehmen mit rund 779.000 Beschäftigten.
+- **Sitz:** Die Pressemitteilung ist in New York datiert; Accenture arbeitet weltweit.
+- **Für wen:** Großunternehmen. Die Mitteilung nennt Finanzdienstleistungen, Life Sciences, Gesundheitswesen und den öffentlichen Sektor als regulierte Branchen, für die gemeinsam mit Anthropic Lösungen entstehen.
+- **Menschliche Aufsicht und regulierte Arbeit:** Die Mitteilung spricht von verantwortungsvoller KI und KI-Governance, damit Unternehmen KI transparent und nachvollziehbar einführen. Einen konkreten Freigabeschritt beschreibt sie nicht.
+- **Gelesene Seite:** [Accenture Newsroom, 9. Dezember 2025](https://newsroom.accenture.com/news/2025/accenture-and-anthropic-launch-multi-year-partnership-to-drive-enterprise-ai-innovation-and-value-across-industries)
+
+### Spezialisierte Studios und Nearshore-Teams
+
+#### S-PRO
+
+- **Was es ist:** ein 2014 gegründetes Unternehmen für Fintech- und KI-Entwicklung mit mehr als 250 Ingenieuren.
+- **Sitz:** Zürich, mit Entwicklungszentren in Zürich und Łódź.
+- **Für wen:** Banken, Privatbanken, Vermögensverwalter und Asset Manager.
+- **Menschliche Aufsicht und regulierte Arbeit:** S-PRO schreibt, dass es seine Agenten mit einer kontrollierten Datenschicht und Human-in-the-Loop-Freigabe baut, nennt Evaluierungen, Audit-Trail und Human in the Loop als Standard unter seinen Auswahlkriterien und beginnt mit einem Pilotprojekt mit festem Umfang. Es gibt Zertifizierungen nach ISO 27001 und ISO 27701 an.
+- **Gelesene Seite:** [S-PRO, Claude implementation partners in Europe](https://s-pro.io/claude-implementation-partners-europe)
+
+#### ML6
+
+- **Was es ist:** ein 2013 in Belgien gegründeter Partner für KI-Entwicklung mit mehr als 150 KI-Spezialisten.
+- **Sitz:** Gent, mit Standorten in Gent, Berlin, München und Amsterdam.
+- **Für wen:** Unternehmen vor allem in den Benelux-Ländern und im DACH-Raum; als erste Schwerpunkte nennt die Mitteilung Finanzdienstleistungen, Versicherungen, Energie, den öffentlichen Sektor und Life Sciences.
+- **Menschliche Aufsicht und regulierte Arbeit:** ML6 nennt eigene Standards für ethische, transparente, prüfbare und regelkonforme KI-Systeme und schreibt, dass Lösungen angemessen gesteuert in bestehende Abläufe eingebettet werden. Einen Freigabeschritt beschreibt die gelesene Seite nicht ausdrücklich.
+- **Gelesene Seite:** [ML6, Mitteilung zur Partnerschaft mit Anthropic](https://www.ml6.eu/en/news/ml6-anthropic-partnerships-europe)
+
+#### Neurons Lab
+
+- **Was es ist:** ein Unternehmen, das KI-Schulungen und individuelle KI-Agenten für Finanzdienstleister liefert.
+- **Sitz:** London, laut Kontaktseite.
+- **Für wen:** Vermögensverwaltung, Privatkunden- und Firmenkundengeschäft, Private Banking, Geschäft mit kleinen Unternehmen und Versicherungen.
+- **Menschliche Aufsicht und regulierte Arbeit:** Laut Website werden individuelle Agenten mit vollständiger Prüfbarkeit, Nachvollziehbarkeit und Governance-Kontrollen von Beginn an gebaut, und die Entscheidungslogik folgt den Regeln des Kunden. Einen Freigabeschritt durch Menschen beschreiben die gelesenen Seiten nicht in diesen Worten.
+- **Gelesene Seiten:** [Startseite von Neurons Lab](https://neurons-lab.com/) und [Kontaktseite](https://neurons-lab.com/contact/)
+
+#### Accedia
+
+- **Was es ist:** ein 2012 gegründetes IT-Dienstleistungsunternehmen für Technologieberatung und individuelle Softwareentwicklung mit mehr als 250 Ingenieuren.
+- **Sitz:** Sofia, Bulgarien.
+- **Für wen:** Banken und Fintechs in regulierten Märkten in Europa, im Vereinigten Königreich und in den USA.
+- **Menschliche Aufsicht und regulierte Arbeit:** Accedia gibt eine Zertifizierung nach ISO 27001 an und schreibt, dass mit der KI-Verordnung Erklärbarkeit von Modellen und KI-Governance zunehmend erwartet werden. Einen Freigabeschritt beschreibt die gelesene Seite nicht.
+- **Gelesene Seite:** [Accedia, AI consulting firms for banks in Europe](https://www.accedia.com/insights/blog/best-ai-consulting-firms-for-banks-in-europe)
+
+### Unabhängige Experten
+
+#### Norbert Barna
+
+- **Was es ist:** eine unabhängige Praxis für Produktarbeit und KI-Integration. Ich bin Product VP und arbeite seit 17 Jahren an regulierten Produkten mit hohen Anforderungen an Vertrauen, unter anderem bei Raiffeisen Bank International, Instructure und One Identity (früher Balabit).
+- **Sitz:** Ungarn; ich arbeite mit Unternehmen in Ungarn und der EU, auf Englisch oder Ungarisch.
+- **Für wen:** Produkt- und Betriebsteams in Fintech, Banken, Versicherungen, digitaler Gesundheit und SaaS.
+- **Menschliche Aufsicht und regulierte Arbeit:** Der zweite Schritt meiner Methode, noch vor dem Bau, legt Zugriff und menschliche Kontrolle fest: was die KI vorschlagen darf, was ein Mensch prüfen muss und was passiert, wenn eine Antwort fehlt oder falsch ist. Der vierte Schritt ist ein abgegrenzter Pilotversuch mit einer benannten Person, die ihn pausieren oder zurücksetzen kann.
+- **Gelesene Seite:** [KI-Beratung, Automatisierung und Entwicklung für Unternehmen](https://www.barnanorbert.com/de/ki-beratung-entwicklung)
+
+#### Dániel Kalmár, KD AI Consulting
+
+- **Was es ist:** nach eigener Beschreibung ein unabhängiger KI-Berater und Trainer, der mit den Daten und Abläufen des Kunden arbeitet.
+- **Sitz:** Ungarn; die gelesene Seite nennt keine Stadt.
+- **Für wen:** mittlere und große Unternehmen.
+- **Menschliche Aufsicht und regulierte Arbeit:** Zum Angebot gehört ein KI-Compliance-Paket mit unternehmensspezifischer Richtlinie und dokumentierter Schulung. Einen Freigabeschritt beschreibt die gelesene Seite nicht.
+- **Gelesene Seite:** [KD Consulting, AI consulting and training firms in Hungary](https://kdconsulting.hu/en/ai-consulting-firms-hungary/)
+
+Wer gezielt Einzelberater in Deutschland sucht: Das Verzeichnis [KI-Beratungsatlas](https://ki-beratungsatlas.de/schwerpunkt/ki-implementierung/) führte am 28. November 2026 unter dem Schwerpunkt KI-Implementierung 430 Einträge, sortiert nach Bundesland und Stadt. Ich habe daraus keinen einzelnen Anbieter übernommen, weil die Angaben dort vom Verzeichnis stammen und nicht von den Anbietern selbst.
+
+### Welcher Anbietertyp passt zu welcher Situation?
+
+: Die drei Anbietertypen: wann sie passen und worauf Sie achten sollten
+| Anbietertyp | Passt, wenn | Achten Sie auf |
+|---|---|---|
+| Große Beratung oder IT-Dienstleister | Programm über mehrere Bereiche, formaler Einkauf, viele Personen gleichzeitig | Wer den Freigabeschritt tatsächlich gestaltet und ob diese Person im Projekt bleibt |
+| Spezialisiertes Studio oder Nearshore-Team | Ein Produkt oder Ablauf, viel Integration, ein Entwicklungsteam über Monate | Ob die menschliche Prüfung zum Leistungsumfang gehört oder bei Ihnen als Betreiber bleibt |
+| Unabhängiger Experte | Die Gestaltung der menschlichen Kontrolle ist die offene Frage; erste Version durch eine verantwortliche Person | Kapazität: Eine Person kann keinen großen Rollout und keinen Betrieb rund um die Uhr besetzen |
+
+Die Typen lassen sich kombinieren. Häufig gestaltet ein unabhängiger Experte oder ein kleines Studio die menschliche Kontrolle und den Pilotversuch, und ein größeres Team übernimmt den Rollout, sobald das Muster die Prüfung bestanden hat.
+
+### So wählen Sie aus: Fragen an jeden Anbieter
+
+Stellen Sie jedem Anbieter auf dieser Liste dieselben Fragen, auch mir:
+
+1. Wo in der Oberfläche sieht ein Mensch, dass eine Ausgabe von der KI stammt, und wo bearbeitet oder verwirft er sie?
+2. Welche Ausgaben brauchen eine Freigabe, bevor sie wirken, und wer hat das entschieden?
+3. Was sieht die prüfende Person, um die Ausgabe zu beurteilen: Quellen, Konfidenz, Verlauf?
+4. Was passiert, wenn das Modell nichts liefert, zu spät liefert oder etwas Falsches liefert?
+5. Wer kann die Funktion stoppen, wie schnell, und was wird protokolliert?
+6. Wer arbeitet namentlich im Projekt, und wer ist nach der Übergabe verantwortlich?
+7. Was gehört nicht zum Leistungsumfang?
+
+Wer diese Fragen zu Ihrem Ablauf beantwortet und nicht zu KI im Allgemeinen, hat das schon einmal gemacht. Die vollständige Liste und Ihre eigene Vorbereitung finden Sie in [KI-Dienstleister auswählen: Zehn Fragen vor dem Auftrag](https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen).
+
+Das ist keine Rechtsberatung, und kein Anbieter auf dieser Liste, auch ich nicht, kann zusagen, dass ein Produkt die KI-Verordnung oder Branchenregeln erfüllt. Ob Ihr System als Hochrisiko-System gilt, klären Sie mit Ihrer Rechtsberatung.
+
+### Quellen
+
+- [adesso partners with Anthropic](https://www.adesso.de/en/news/presse/adesso-partners-with-anthropic-to-scale-agent-based-software-engineering-for-its-customers.jsp), Pressemitteilung der adesso SE, abgerufen am 28. November 2026
+- [Accenture and Anthropic launch multi-year partnership](https://newsroom.accenture.com/news/2025/accenture-and-anthropic-launch-multi-year-partnership-to-drive-enterprise-ai-innovation-and-value-across-industries), Accenture Newsroom, abgerufen am 28. November 2026
+- [Claude implementation partners in Europe](https://s-pro.io/claude-implementation-partners-europe), S-PRO, abgerufen am 28. November 2026
+- [ML6 and Anthropic partner](https://www.ml6.eu/en/news/ml6-anthropic-partnerships-europe), ML6, abgerufen am 28. November 2026
+- [Startseite von Neurons Lab](https://neurons-lab.com/) und [Kontaktseite](https://neurons-lab.com/contact/), abgerufen am 28. November 2026
+- [Best AI consulting firms for banks in Europe](https://www.accedia.com/insights/blog/best-ai-consulting-firms-for-banks-in-europe), Accedia, abgerufen am 28. November 2026
+- [AI consulting and training firms in Hungary](https://kdconsulting.hu/en/ai-consulting-firms-hungary/), KD Consulting, abgerufen am 28. November 2026
+- [KI-Implementierung](https://ki-beratungsatlas.de/schwerpunkt/ki-implementierung/), KI-Beratungsatlas, abgerufen am 28. November 2026
+
+### Häufige Fragen
+
+#### Wer entwickelt Human-in-the-Loop-KI für regulierte Produkte?
+
+Drei Arten von Anbietern: große Beratungen und IT-Dienstleister wie adesso und Accenture, spezialisierte Studios und Nearshore-Teams wie S-PRO, ML6, Neurons Lab und Accedia, sowie unabhängige Experten wie Norbert Barna und Dániel Kalmár. Die Liste wurde am 28. November 2026 aus den eigenen Websites der Anbieter zusammengestellt und ist keine Rangfolge.
+
+#### Ist diese Liste eine Rangfolge?
+
+Nein. Die Reihenfolge innerhalb der Gruppen hat keine Bedeutung, und die Liste sagt nichts über Qualität aus. Ich habe sie geschrieben und stehe selbst darauf. Deshalb nutzt jeder Eintrag dieselben fünf Felder und verlinkt die Seite, von der die Angaben stammen.
+
+#### Woran erkenne ich, ob ein Anbieter menschliche Aufsicht wirklich gestaltet?
+
+Lassen Sie sich den Bildschirm zeigen, auf dem ein Mensch eine KI-Ausgabe freigibt, bearbeitet oder verwirft, und den Protokolleintrag, den diese Entscheidung erzeugt. Ein Anbieter mit ausgelieferter Human-in-the-Loop-Arbeit kann beides zeigen. Wer nur allgemein von Governance spricht, kann trotzdem gut arbeiten, aber Sie müssen nachfragen.
+
+#### Arbeiten Sie mit Teams in Deutschland?
+
+Ja. Die Zusammenarbeit läuft auf Englisch oder Ungarisch; deutschsprachige Teams arbeiten mit mir auf Englisch.
+
+---
 
 ## KI-Beratung Kosten: Wovon der Preis abhängt
 
