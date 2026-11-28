@@ -10,7 +10,7 @@ service: /ai-integration
 service_label: AI integration for regulated industries
 cover: /assets/images/og/writing/ki-halluzinationen-im-unternehmen.jpg
 cover_alt: A folded sheet of paper with one loose corner lifting away, next to a small olive check mark: containing AI hallucinations in a business product
-pair: de/ki-halluzinationen-im-unternehmen
+pair: [de/ki-halluzinationen-im-unternehmen, hu/ai-hallucinacio-ceges-termekben]
 ---
 AI hallucinations are outputs of a language model that read convincingly but are wrong or invented. In a business product you cannot switch them off, you can only contain them: the AI works from your own sources and shows them, the output is a draft that a person edits, and where no source exists the system says “I don’t know” instead of guessing. A team that builds this into the interface has not removed hallucinations, but it has taken away their effect.
 

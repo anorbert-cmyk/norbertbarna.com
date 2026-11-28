@@ -71,7 +71,7 @@ const CSP_REPORTING = [`report-uri ${CSP_REPORT_PATH}`, "report-to csp"];
 // Navigations, crawlers and
 // server-side fetches never consult this header.
 const CROSS_ORIGIN_RESOURCE =
-  /^\/(?:assets\/images\/og\/|assets\/icons\/|favicon\.ico$|robots\.txt$|llms\.txt$|sitemap\.xml$|[a-f0-9]{32}\.txt$|\.well-known\/search$|(?:hu\/irasok|writing|de\/wissen)\/feed\.xml$)/;
+  /^\/(?:assets\/images\/og\/|assets\/icons\/|favicon\.ico$|robots\.txt$|llms(?:-full)?\.txt$|sitemap\.xml$|[a-f0-9]{32}\.txt$|\.well-known\/search$|(?:hu\/irasok|writing|de\/wissen)\/feed\.xml$)/;
 
 // Security headers
 app.use((req, res, next) => {

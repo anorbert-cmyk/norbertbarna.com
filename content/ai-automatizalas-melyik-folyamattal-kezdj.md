@@ -10,7 +10,7 @@ service: /hu/ai-tanacsadas-fejlesztes
 service_label: AI tanácsadás, automatizálás és fejlesztés cégeknek
 cover: /assets/images/og/writing/ki-automatisierung-erster-prozess.jpg
 cover_alt: Több hajtogatott papírsáv fut egymás mellett, az egyik olajzöld színnel kiemelve egy kis papírkapun vezet át: az első folyamat, amellyel az AI automatizálás elindul
-pair: de/ki-automatisierung-erster-prozess
+pair: [de/ki-automatisierung-erster-prozess, en/which-process-to-automate-with-ai-first]
 ---
 Az AI automatizálás első folyamata legyen olyan, amely gyakran előfordul, strukturálatlan bemenettel dolgozik (e-mail, dokumentum, szabad szöveg), az eredményét ember ellenőrizni tudja, mielőtt hatása lenne, és a haszna folyamatonként percekben mérhető. Ha egy folyamat rögzített szabályokat követ és strukturált adatokat dolgoz fel, akkor nem AI kell hozzá, hanem hagyományos automatizálás. Az olcsóbb és megbízhatóbb.
 

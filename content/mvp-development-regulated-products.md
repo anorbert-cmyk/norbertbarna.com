@@ -10,7 +10,7 @@ service: /web-development
 service_label: Web development and product design for SaaS and fintech
 cover: /assets/images/og/writing/mvp-entwicklung-regulierte-produkte.jpg
 cover_alt: A small, cleanly folded paper shape on a solid dark green paper base, with room around it for further folds: MVP development for regulated products
-pair: de/mvp-entwicklung-regulierte-produkte
+pair: [de/mvp-entwicklung-regulierte-produkte, hu/mvp-fejlesztes-szabalyozott-termekhez]
 ---
 An MVP, a minimum viable product, is the smallest version of a product that lets you test one central assumption with real users. In MVP development for a regulated market, such as payments, health, insurance or gambling, the principle is the same, with one restriction: what you may leave out is scope. What you may not leave out is everything that concerns trust and permissibility: identity verification, consent, data protection, secure confirmation of consequential actions, traceability. Those are real on day one, or the product does not go to real users.
 

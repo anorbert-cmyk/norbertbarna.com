@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8"/><link rel="preload" href="/assets/fonts/inter-latin.c940764593d0.woff2" as="font" type="font/woff2" crossorigin="anonymous"/><link rel="preload" href="/assets/fonts/funnel-display-latin.96468ae77275.woff2" as="font" type="font/woff2" crossorigin="anonymous"/><link rel="preload" href="/assets/fonts/inter-latin-ext.a28eb6d3ccb5.woff2" as="font" type="font/woff2" crossorigin="anonymous"/><link href="/assets/css/fonts.83a121ab9427.css" rel="stylesheet" type="text/css"/>
+<title>AI hallucináció céges termékben: mi az, és hogyan kezeld</title>
+<meta content="Az AI hallucináció nem kapcsolható ki, de kezelhető: saját források, vázlat, tartózkodás, emberi ellenőrzés. Hét minta a gyakorlatból." name="description"/><meta content="ai hallucináció, ai hallucináció kezelése, mesterséges intelligencia hallucináció, rag, human in the loop, ai bevezetés" name="keywords"/>
+<meta content="AI hallucináció céges termékben: mi az, és hogyan kezeld" property="og:title"/>
+<meta content="Az AI hallucináció nem kapcsolható ki, de kezelhető: saját források, vázlat, tartózkodás, emberi ellenőrzés. Hét minta a gyakorlatból." property="og:description"/>
+<meta content="https://www.barnanorbert.com/assets/images/og/writing/ki-halluzinationen-im-unternehmen.jpg" property="og:image"/>
+<meta content="Hajtogatott papírlap, amelynek egyik sarka lazán elválik, mellette egy kis olajzöld pipa: az AI hallucináció kezelése céges termékben" property="og:image:alt"/>
+<meta content="1200" property="og:image:width"/>
+<meta content="630" property="og:image:height"/>
+<meta content="image/jpeg" property="og:image:type"/>
+<meta content="article" property="og:type"/>
+<meta content="Norbert Barna" property="og:site_name"/>
+<meta content="hu_HU" property="og:locale"/><meta content="de_DE" property="og:locale:alternate"/><meta content="en_US" property="og:locale:alternate"/>
+<meta content="https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben" property="og:url"/>
+<meta content="2026-11-27T23:30:00+01:00" property="article:published_time"/>
+<meta content="2026-11-27T23:30:00+01:00" property="article:modified_time"/>
+<meta content="https://www.linkedin.com/in/barna-norbert/" property="article:author"/>
+<meta content="AI tanácsadás, automatizálás és fejlesztés cégeknek" property="article:section"/>
+<meta content="ai hallucináció" property="article:tag"/>
+<meta content="ai hallucináció kezelése" property="article:tag"/>
+<meta content="mesterséges intelligencia hallucináció" property="article:tag"/>
+<meta content="rag" property="article:tag"/>
+<meta content="human in the loop" property="article:tag"/>
+<meta content="ai bevezetés" property="article:tag"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="AI hallucináció céges termékben: mi az, és hogyan kezeld" name="twitter:title"/>
+<meta content="Az AI hallucináció nem kapcsolható ki, de kezelhető: saját források, vázlat, tartózkodás, emberi ellenőrzés. Hét minta a gyakorlatból." name="twitter:description"/>
+<meta content="https://www.barnanorbert.com/assets/images/og/writing/ki-halluzinationen-im-unternehmen.jpg" name="twitter:image"/>
+<meta content="Hajtogatott papírlap, amelynek egyik sarka lazán elválik, mellette egy kis olajzöld pipa: az AI hallucináció kezelése céges termékben" name="twitter:image:alt"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<meta content="#000000" name="theme-color"/>
+<meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/><meta content="Use this search API to find relevant content across this site with keywords or natural-language queries, instead of crawling individual pages. Results are returned in Markdown." name="agent:instructions"/><meta content="https://www.barnanorbert.com/.well-known/search?q={query}" name="agent:endpoint"/><meta content="GET" name="agent:method"/><meta content="https://www.barnanorbert.com/llms.txt" name="agent:documentation"/>
+<meta content="Norbert Barna" name="author"/>
+<link rel="canonical" href="https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben"/>
+<link rel="alternate" hreflang="en" href="https://www.barnanorbert.com/writing/ai-hallucinations-in-business-products"/>
+<link rel="alternate" hreflang="hu" href="https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben"/>
+<link rel="alternate" hreflang="de" href="https://www.barnanorbert.com/de/wissen/ki-halluzinationen-im-unternehmen"/>
+<link rel="alternate" hreflang="x-default" href="https://www.barnanorbert.com/writing/ai-hallucinations-in-business-products"/>
+<link rel="alternate" type="application/rss+xml" title="Barna Norbert írásai" href="/hu/irasok/feed.xml"/>
+<link href="/assets/css/base.6b28bc12af70.css" rel="stylesheet" type="text/css"/><link href="/assets/css/components.49f63e6c921d.css" rel="stylesheet" type="text/css"/><link href="/assets/css/responsive.5a6f303edb57.css" rel="stylesheet" type="text/css"/><script type="text/javascript">!function(o,c){var n=c.documentElement,t=" has-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script><link href="/assets/icons/68f923d010d274634c966a6e_favicon.png" rel="icon" type="image/png"/><link href="/assets/icons/68f9237058b27cb0adfe0e4b_webclip.svg" rel="apple-touch-icon"/>
+<link rel="stylesheet" href="/assets/css/writing.55561001df86.css"/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben#article",
+      "mainEntityOfPage": "https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben",
+      "url": "https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben",
+      "headline": "AI hallucináció céges termékben: mi az, és hogyan kezeld",
+      "description": "Az AI hallucináció nem kapcsolható ki, de kezelhető: saját források, vázlat, tartózkodás, emberi ellenőrzés. Hét minta a gyakorlatból.",
+      "inLanguage": "hu",
+      "datePublished": "2026-11-27T23:30:00+01:00",
+      "dateModified": "2026-11-27T23:30:00+01:00",
+      "author": {
+        "@type": "Person",
+        "@id": "https://www.barnanorbert.com/#person",
+        "name": "Norbert Barna",
+        "alternateName": "Barna Norbert",
+        "url": "https://www.barnanorbert.com/",
+        "jobTitle": "Product VP",
+        "knowsLanguage": [
+          "hu",
+          "en"
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/barna-norbert/"
+        ]
+      },
+      "publisher": {
+        "@id": "https://www.barnanorbert.com/#person"
+      },
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://www.barnanorbert.com/assets/images/og/writing/ki-halluzinationen-im-unternehmen.jpg",
+        "width": 1200,
+        "height": 630,
+        "caption": "Hajtogatott papírlap, amelynek egyik sarka lazán elválik, mellette egy kis olajzöld pipa: az AI hallucináció kezelése céges termékben"
+      },
+      "abstract": "Az AI hallucináció a nyelvi modell olyan kimenete, amely meggyőzően hangzik, de téves vagy kitalált. Céges környezetben nem lehet kikapcsolni, csak kezelni: az AI a saját forrásaidból dolgozik és meg is mutatja őket, a kimenet vázlat, amelyet ember szerkeszt, és ahol nincs forrás, a rendszer azt mondja, „nem tudom”, ahelyett hogy találgatna. Aki ezt beépíti a felületbe és a munkafolyamatba, az a hallucinációt nem szüntette meg, de elvette a hatását.",
+      "wordCount": 1557,
+      "timeRequired": "PT8M",
+      "keywords": "ai hallucináció, ai hallucináció kezelése, mesterséges intelligencia hallucináció, rag, human in the loop, ai bevezetés",
+      "articleSection": "AI tanácsadás, automatizálás és fejlesztés cégeknek",
+      "citation": [
+        "https://arxiv.org/abs/2509.04664",
+        "https://eur-lex.europa.eu/eli/reg/2024/1689/oj"
+      ],
+      "isAccessibleForFree": true,
+      "isPartOf": {
+        "@id": "https://www.barnanorbert.com/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Főoldal",
+          "item": "https://www.barnanorbert.com/hu"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Írások",
+          "item": "https://www.barnanorbert.com/hu/irasok"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "AI hallucináció céges termékben: mi az, és hogyan kezeld"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben#faq",
+      "url": "https://www.barnanorbert.com/hu/irasok/ai-hallucinacio-ceges-termekben",
+      "inLanguage": "hu",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Mi az az AI hallucináció?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Az AI hallucináció olyan kimenet, amely hihetően hangzik, de téves, vagy semmilyen forrás nem támasztja alá: kitalált idézet, nem létező szabályzat, hibás szám. A modell nem „hazudik”. Nincs fogalma igazról és hamisról, csak valószínűről."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Meg lehet teljesen szüntetni az AI hallucinációt?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nem. Jelentősen csökkenthető, ha az AI a cég saját forrásaiból dolgozik, és forrás hiányában tartózkodik, a hatása pedig megfogható, ha ember ellenőrzi a kimenetet, mielőtt hatása lenne. Az a szállító, amely hallucinációmentes AI-t ígér, pontatlanul írja le a termékét."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Megoldja a RAG a hallucinációt?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A RAG a kitalált tények ellen segít. Nem segít a megtalált részek hibás összefoglalása, az elavult dokumentumok és az összekevert esetek ellen. Ezért a RAG mellé mindig látható forrás és ellenőrzési lépés kell."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hogyan ellenőrizzem, hogy az AI válasza helyes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nyisd meg a válasz mellett jelzett forrást, és vesd össze vele az állítást. Ha a rendszer nem mutat forrást, a választ kezeld ellenőrizetlen vázlatként. Számot, jogszabályi hivatkozást és ügyféladatot mindig az eredeti dokumentumból ellenőrizz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Ki felel, ha a cég AI-rendszere hibás választ ad?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Az a cég, amely a kimenetet felhasználja vagy az ügyfélnek továbbadja, nem a modell szolgáltatója. Ezért a következménnyel járó kimenetek emberi jóváhagyása nem puszta óvatosság: ez az a pont, ahol a felelősség ül. A pontos felelősségi helyzetet a jogi tanácsadód vizsgálja meg."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Melyik AI modell hallucinál a legkevésbé?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ez minden modellgenerációval változik, és a te esetedben csak a saját dokumentumaidon végzett mérés számít. A prototípusban több modellt tesztelünk ugyanazokon a példákon, és ez alapján választunk, nem ranglista alapján."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<noscript><style>@media (max-width:991px){.nav-wrap{flex-wrap:wrap!important}.nav-menu.site-nav-menu{display:block!important;position:static!important;width:100%!important;margin:8px 0 0!important}.menu-button{display:none!important}}</style></noscript>
+<link rel="stylesheet" href="/assets/css/consent.css"/>
+<script defer src="/assets/js/analytics-config.js"></script>
+<script defer src="/assets/js/consent.js"></script>
+<script defer src="/assets/js/analytics.js"></script>
+<link rel="stylesheet" href="/assets/css/editorial-sections.35ddaa5c7d18.css"/><link rel="stylesheet" href="/assets/css/compact-navigation.b362bbac52cf.css"/><link rel="expect" href="#primary-navigation" blocking="render"/></head>
+<body class="utility-page writing-page writing-article-page">
+<a class="skip-to-content" href="#main-content">Ugrás a tartalomhoz</a>
+<div lang="hu" class="navbar site-nav" data-collapse="medium" role="banner"><div class="container layout-container"><div class="nav-wrap dark"><a aria-label="Barna Norbert, főoldal" class="nav-logo-wrap logo site-nav-brand" href="/hu"><img alt="Barna Norbert" decoding="async" src="/assets/images/68f9e9de8ed08e31e52c4188_NB.svg" width="62" height="34"/></a><button type="button" class="menu-button site-nav-toggle" aria-label="Navigáció megnyitása" aria-controls="primary-navigation" aria-expanded="false"><span class="black site-nav-icon"></span></button><nav id="primary-navigation" class="nav-menu grey site-nav-menu" aria-label="Főmenü"><div class="nav-menu-area"><a class="nav-link white site-nav-link" href="/hu/munkak">Munkák</a><div class="nav-group" data-nav-group lang="hu"><button type="button" class="nav-link white site-nav-link nav-group-trigger" data-nav-toggle aria-expanded="false" aria-controls="nav-services">Szolgáltatások<svg class="nav-chevron" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4"/></svg></button><div class="nav-group-panel" id="nav-services" hidden><ul class="nav-group-list"><li><a class="nav-group-link" href="/hu/webfejlesztes">Webfejlesztés</a></li><li><a class="nav-group-link" href="/hu/ai-tanacsadas-fejlesztes">AI tanácsadás és fejlesztés</a></li></ul></div></div><div class="nav-group" data-nav-group lang="hu"><a class="nav-link white site-nav-link" href="/hu/irasok">Tudástár</a><button type="button" class="nav-group-toggle" data-nav-toggle aria-expanded="false" aria-controls="nav-articles" aria-label="Tudástár: legújabb cikkek" data-current><svg class="nav-chevron" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4"/></svg></button><div class="nav-group-panel" id="nav-articles" hidden><ul class="nav-group-list"><li><a class="nav-group-link" href="/hu/irasok/ai-fejlesztes-ara-mitol-fugg">AI fejlesztés ára: mitől függ, és mit kérdezz előtte</a></li><li><a class="nav-group-link" href="/hu/irasok/ai-fejleszto-partner-valasztasa">AI fejlesztő partner: 10 kérdés, mielőtt megbízod</a></li><li><a aria-current="page" class="nav-group-link" href="/hu/irasok/ai-hallucinacio-ceges-termekben">AI hallucináció céges termékben: mi az, és hogyan kezeld</a></li><li><a class="nav-group-link" href="/hu/irasok/mvp-fejlesztes-szabalyozott-termekhez">MVP fejlesztés szabályozott iparágban: mi legyen valódi?</a></li><li><a class="nav-group-link" href="/hu/irasok/ai-act-jelolesi-kotelezettseg">AI Act: mit kell jelölnie egy terméknek 2026 augusztusa óta</a></li><li><a class="nav-group-link nav-group-more" href="/hu/irasok">Összes cikk</a></li></ul></div></div><a class="nav-link white site-nav-link" href="/hu/rolam">Rólam</a><a class="nav-link white site-nav-link" href="/hu/kapcsolat">Kapcsolat</a><a aria-label="LinkedIn-profilom (új lapon nyílik meg)" class="nav-link white site-nav-link" href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer">LinkedIn</a><div class="nav-group nav-lang" data-nav-group><button type="button" class="nav-lang-trigger" data-nav-toggle aria-expanded="false" aria-controls="nav-languages" aria-label="Nyelv: HU, Magyar"><svg class="nav-flag" viewBox="0 0 60 40" width="21" height="14" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#fff"/><rect width="60" height="13.4" fill="#CE2939"/><rect y="26.6" width="60" height="13.4" fill="#477050"/></svg><span class="nav-lang-code" aria-hidden="true">HU</span><span class="nav-lang-name" aria-hidden="true">Magyar</span><svg class="nav-chevron" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6l4 4 4-4"/></svg></button><div class="nav-group-panel nav-lang-panel" id="nav-languages" hidden><ul class="nav-group-list"><li><a class="nav-group-link lang-switch" href="/writing/ai-hallucinations-in-business-products" hreflang="en" lang="en" rel="alternate"><svg class="nav-flag" viewBox="0 0 60 30" width="21" height="14" preserveAspectRatio="none" aria-hidden="true" focusable="false"><rect width="60" height="30" fill="#012169"/><path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0l60 30M60 0L0 30" stroke="#C8102E" stroke-width="2"/><path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/><path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6"/></svg><span>English</span></a></li><li><span class="nav-lang-current" aria-current="true" lang="hu"><svg class="nav-flag" viewBox="0 0 60 40" width="21" height="14" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#fff"/><rect width="60" height="13.4" fill="#CE2939"/><rect y="26.6" width="60" height="13.4" fill="#477050"/></svg><span>Magyar</span></span></li><li><a class="nav-group-link lang-switch" href="/de/wissen/ki-halluzinationen-im-unternehmen" hreflang="de" lang="de" rel="alternate"><svg class="nav-flag" viewBox="0 0 60 40" width="21" height="14" aria-hidden="true" focusable="false"><rect width="60" height="40" fill="#FFCE00"/><rect width="60" height="26.6" fill="#D00"/><rect width="60" height="13.3" fill="#000"/></svg><span>Deutsch</span></a></li></ul></div></div></div></nav></div></div></div>
+<main id="main-content" tabindex="-1"><article class="writing-article" aria-labelledby="article-title">
+<header class="writing-opening writing-opening-article"><div class="writing-frame">
+<nav class="writing-breadcrumb" aria-label="Morzsamenü"><ol><li><a href="/hu">Főoldal</a></li><li><a href="/hu/irasok">Írások</a></li><li aria-current="page">AI hallucináció céges termékben: mi az, és hogyan kezeld</li></ol></nav>
+<p class="writing-kicker">AI tanácsadás, automatizálás és fejlesztés cégeknek</p>
+<h1 class="writing-title" id="article-title">AI hallucináció céges termékben: mi az, és hogyan kezeld</h1>
+<p class="writing-dek">Az AI hallucináció nem kapcsolható ki, de kezelhető: saját források, vázlat, tartózkodás, emberi ellenőrzés. Hét minta a gyakorlatból.</p>
+<p class="writing-meta"><span><a href="/hu/rolam" rel="author">Barna Norbert</a></span><span><time datetime="2026-11-27">2026. november 27.</time></span><span>8 perc olvasás</span></p>
+<figure class="writing-cover"><img src="/assets/images/og/writing/ki-halluzinationen-im-unternehmen.jpg" alt="Hajtogatott papírlap, amelynek egyik sarka lazán elválik, mellette egy kis olajzöld pipa: az AI hallucináció kezelése céges termékben" width="1200" height="630" decoding="async" fetchpriority="high"/></figure>
+</div></header>
+<div class="writing-body"><div class="writing-frame">
+<div class="writing-rail"><nav class="writing-toc" aria-labelledby="writing-toc-label"><details data-label="Tartalom"><summary class="writing-toc-label" id="writing-toc-label">Tartalom<span class="writing-toc-count" aria-hidden="true"> (8)</span></summary><ol><li><a href="#miert-hallucinal-az-ai">Miért hallucinál az AI?</a></li><li><a href="#melyik-ai-hallucinacio-okoz-valodi-kart-egy-cegnel">Melyik AI hallucináció okoz valódi kárt egy cégnél?</a></li><li><a href="#hogyan-kezelheto-az-ai-hallucinacio-ceges-kornyezetben-het-minta">Hogyan kezelhető az AI hallucináció céges környezetben? Hét minta</a></li><li><a href="#eleg-a-jo-prompt-az-oktatas-es-a-belso-szabalyzat">Elég a jó prompt, az oktatás és a belső szabályzat?</a></li><li><a href="#melyik-ai-hallucinal-a-legkevesbe-es-szamit-ez">Melyik AI hallucinál a legkevésbé, és számít ez?</a></li><li><a href="#mit-mond-errol-az-eu-ai-rendelete">Mit mond erről az EU AI-rendelete?</a></li><li><a href="#osszegzes">Összegzés</a></li><li><a href="#gyakori-kerdesek">Gyakori kérdések</a></li></ol></details></nav></div>
+<div class="writing-prose">
+<p>Az AI hallucináció a nyelvi modell olyan kimenete, amely meggyőzően hangzik, de téves vagy kitalált. Céges környezetben nem lehet kikapcsolni, csak kezelni: az AI a saját forrásaidból dolgozik és meg is mutatja őket, a kimenet vázlat, amelyet ember szerkeszt, és ahol nincs forrás, a rendszer azt mondja, „nem tudom”, ahelyett hogy találgatna. Aki ezt beépíti a felületbe és a munkafolyamatba, az a hallucinációt nem szüntette meg, de elvette a hatását.</p>
+<p>A témáról szóló írások többsége elmagyarázza, mi a hallucináció, és miért keletkezik. Ez a cikk ott kezdődik, ahol azok véget érnek: mit tesz egy termékcsapat, amely munkatársaknak vagy ügyfeleknek épít AI-funkciót, hogy a hibás válasz ne okozzon kárt. A hét minta két termékből származik, amelyeken dolgoztam: az Instructure tanulási platformjának AI-funkcióiból és a SportsGambit nevű, AI-alapú előrejelzési piac MVP-jéből.</p>
+<h2 id="miert-hallucinal-az-ai">Miért hallucinál az AI?</h2>
+<p>A nyelvi modell nem az igazságot jósolja meg, hanem a legvalószínűbb következő szót. Ahol a tanítóanyagában nincs tény, ott a hiányt olyasmivel tölti ki, ami hihetően hangzik. A szokásos értékelési módszerek ráadásul a találgatást jutalmazzák: az OpenAI kutatóinak tanulmánya szerint az a modell, amely bizonytalanság esetén tippel, jobb eredményt ér el a megszokott teszteken, mint az, amelyik tartózkodik, mert a „nem tudom” nulla pontot ér, a szerencsés tipp pedig egyet (forrás: Kalai, Nachum, Vempala, Zhang, <a href="https://arxiv.org/abs/2509.04664" target="_blank" rel="noopener noreferrer">Why Language Models Hallucinate<span class="sr-only"> (új lapon nyílik meg)</span></a>, 2025. szeptember 4., lekérve 2026. október 21-én).</p>
+<p>A termékre nézve ebből az következik, hogy a modell magától nem lesz óvatos. Az óvatosságot a felületnek és a munkafolyamatnak kell beépítenie.</p>
+<h2 id="melyik-ai-hallucinacio-okoz-valodi-kart-egy-cegnel">Melyik AI hallucináció okoz valódi kárt egy cégnél?</h2>
+<p>Nem minden hibás válasz kerül ugyanannyiba. A céges projektekben három fajtával találkozom a leggyakrabban, és a háromból kettő nem a modellben keletkezik, hanem a cég adataiban.</p>
+<div class="writing-table"><table><caption id="writing-table-1">Az AI hallucináció három gyakori fajtája céges környezetben és az ellenszere</caption><thead><tr><th scope="col">Fajta és eredete</th><th scope="col">Példa</th><th scope="col">Mi fogja meg</th></tr></thead><tbody><tr><th scope="row">Kitalált forrás vagy szám (a modellben keletkezik)</th><td>Nem létező szabályzatra, szerződési pontra vagy árra hivatkozik</td><td>Saját források, látható hivatkozás, tartózkodás</td></tr><tr><th scope="row">Összekevert esetek (a keresésben és az adatokban)</th><td>Az egyik ügyfél kérdésére a másik ügyfél adataival válaszol</td><td>Szűk jogosultság, forrás a válasz mellett, emberi jóváhagyás</td></tr><tr><th scope="row">Elavult igazság (a dokumentumokban)</th><td>A válasz két éve helyes volt, a dokumentumot azóta senki sem frissítette</td><td>Gazdája van minden forrásnak, a hibákat méred</td></tr></tbody></table></div>
+<p>A kitalált forrás azért veszélyes, mert a kimenet bizonyítéknak látszik. Az összekevert eset az ügyfélszolgálaton és mindenhol, ahol személyes adat van, a legdrágább hiba. Az elavult igazság szigorúan véve nem hallucináció, de a felhasználónak ugyanaz. Ezért a hallucináció elleni munka egy egyszerű kérdéssel indul: milyen forrásokból dolgozhat egyáltalán az AI?</p>
+<h2 id="hogyan-kezelheto-az-ai-hallucinacio-ceges-kornyezetben-het-minta">Hogyan kezelhető az AI hallucináció céges környezetben? Hét minta</h2>
+<h3 id="1-az-ai-a-te-forrasaidbol-dolgozik-nem-az-emlekezetebol">1. Az AI a te forrásaidból dolgozik, nem az emlékezetéből</h3>
+<p>A technika neve retrieval augmented generation, röviden RAG: a rendszer előbb megkeresi a kérdéshez illő részeket a cég dokumentumaiban, és a modell ezekből válaszol. A RAG érezhetően csökkenti a kitalált tények számát. Nem szünteti meg őket, mert a modell a megtalált részeket is összefoglalhatja hibásan. A RAG az alap, nem a megoldás.</p>
+<h3 id="2-a-forras-ott-all-a-valasz-mellett">2. A forrás ott áll a válasz mellett</h3>
+<p>Minden válasz megmutatja, melyik dokumentum melyik részéből származik, és a felhasználó egy kattintással odajut. Az Instructure-nél a forrásjelzés az első naptól rögzített védőkorlátok egyike volt, az AI-jelölés, a szerkeszthető kimenet és a helyreállítási út mellett, hogy az oktatók lássák, mire épül egy javaslat. Látható forrás nélkül a felhasználók vagy mindent ellenőriznek, és akkor oda az időmegtakarítás, vagy semmit, és akkor a hiba átmegy. Részletek: <a href="/hu/munka/instructure">Instructure esettanulmány</a>.</p>
+<h3 id="3-a-kimenet-vazlat-nem-eredmeny">3. A kimenet vázlat, nem eredmény</h3>
+<p>Az AI ír, az ember küld. A mező szerkeszthető, az elvetés egy kattintás, és a termék nem azt írja ki, hogy „kész”, hanem azt, hogy „vázlat ellenőrzésre”. Ez az egy szó a felületen megváltoztatja, hogyan bánnak a munkatársak a kimenettel.</p>
+<h3 id="4-a-tartozkodas-megengedett-valasz">4. A tartózkodás megengedett válasz</h3>
+<p>Ha a keresés nem talál illő részt a forrásaidban, a rendszer nem a modell általános tudásából válaszol, hanem ezt mondja: „Erről nem találtam semmit a dokumentumokban.” A tartózkodást külön meg kell tervezni és tesztelni kell, mert a modell magától inkább találgat. Az a rendszer, amely naponta tízszer tartózkodik, jobb annál, amely naponta tízszer meggyőzően téved.</p>
+<h3 id="5-a-bizonyossagot-a-termek-megmutatja-nem-allitja">5. A bizonyosságot a termék megmutatja, nem állítja</h3>
+<p>A SportsGambitben minden AI-tipp mellett megbízhatósági pontszám állt, a teljesítmény-ranglistákon pedig az ügynök korábbi eredményei látszottak, így a felhasználó mérlegelni tudta az ajánlást, mielőtt cselekedett. A korai termékadatok egy kockázatot is jeleztek: a felhasználók erősen támaszkodtak az AI ajánlásaira. Ettől a látható megbízhatósági információ és a tudatos ellenőrzési lépés fontosabb lett, nem kevésbé fontos. A megbízhatósági pontszám nem bizonyítja, hogy a válasz helyes. Azt mondja meg a felhasználónak, mennyi ellenőrzést érdemel. Részletek: <a href="/hu/munka/sportsgambit">SportsGambit esettanulmány</a>.</p>
+<h3 id="6-az-ellenorzes-merteke-a-kovetkezmenyhez-igazodik">6. Az ellenőrzés mértéke a következményhez igazodik</h3>
+<p>Nem minden kimenet igényel ugyanakkora kontrollt. Egy belső összefoglalót az AI önállóan is adhat. Az ügyfélnek szóló válaszvázlatot ember hagyja jóvá. Ami pénzt mozgat, jogi helyzetet érint vagy egy emberről szóló döntést készít elő, az automatikusan ki sem megy. Ezt a lépcsőzést részletesen a <a href="/hu/irasok/human-in-the-loop-emberi-felugyelet">human in the loop mintákról szóló cikkben</a> írom le, az ügyfélszolgálati esetet pedig az <a href="/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel">AI ügyfélszolgálat emberi ellenőrzéssel</a> című írásban.</p>
+<h3 id="7-a-hibakat-mered-nem-csak-meseled">7. A hibákat méred, nem csak meséled</h3>
+<p>A pilot azt méri, milyen gyakran írják át vagy vetik el a vázlatokat, milyen gyakran tartózkodik a rendszer, és mely kérdések vezetnek hibás válaszhoz. Ez a lista a projekt legértékesebb dokumentuma. Megmutatja, mely források hiányoznak vagy avultak el, és ezzel tudod a cégvezetés és az adatvédelmi felelős előtt igazolni, hogy az ellenőrzés működik.</p>
+<h2 id="eleg-a-jo-prompt-az-oktatas-es-a-belso-szabalyzat">Elég a jó prompt, az oktatás és a belső szabályzat?</h2>
+<p>A prompt, a modell beállításai, a munkatársak képzése és a belső AI-szabályzat hasznos, de önmagában egyik sem kezeli a hallucinációt. A prompt és az alacsonyabb temperature érték ritkítja a hibát, a szabályzat pedig leírja, hogy a kimenetet ellenőrizni kell. Egyik sem dönti el, mi történik azon a napon, amikor a munkatárs siet, és a válasz hihetőnek tűnik.</p>
+<p>Egy kkv-nál ez általában így néz ki: a kollégák egy általános chatbotot használnak, a szabályzat annyit mond, hogy „mindig ellenőrizd”. Ez a szabály addig él, amíg van rá idő. A fenti hét minta azért a termékben és a folyamatban van, mert ott akkor is működik, ha senki sem gondol rá. A képzés ezután jön, és arról szól, hogyan olvasd a forrásjelzést és a vázlat állapotát. A bevezetés sorrendjét az <a href="/hu/irasok/ai-bevezetese-kkv-elso-90-nap">AI bevezetése KKV-nál: az első 90 nap</a> című cikk írja le.</p>
+<h2 id="melyik-ai-hallucinal-a-legkevesbe-es-szamit-ez">Melyik AI hallucinál a legkevésbé, és számít ez?</h2>
+<p>Gyakori kérdés, hogy melyik modell hallucinál a legkevésbé, a válasz pedig minden modellgenerációval változik. Egy céges terméknél ez másodlagos. Egy közepes modell tiszta forrásokkal, látható hivatkozással és emberi ellenőrzéssel megbízhatóbb, mint a legjobb modell, amely szabadon, emlékezetből válaszol. A modellt később le lehet cserélni. A források, a felület és a munkafolyamat megmarad.</p>
+<p>Ugyanez érvényes, amikor szállítókat hasonlítasz össze: azt kérdezd, hogyan viselkedik a termék, amikor a modell téved, ne azt, hogy melyik modell van benne. A költség is ezektől a tényezőktől függ: a források számától és állapotától, az integrációktól és az ellenőrzés mértékétől, mert minden megbízás egyedi munka.</p>
+<h2 id="mit-mond-errol-az-eu-ai-rendelete">Mit mond erről az EU AI-rendelete?</h2>
+<p>Az EU AI-rendelete nem követel hibátlan AI-t. A magas kockázatú rendszereknél emberi felügyeletet ír elő (14. cikk), az emberekkel kapcsolatba lépő AI-nál pedig átláthatóságot (50. cikk, amely 2026. augusztus 2. óta alkalmazandó). A fenti minták mindkét követelményre a tervezési választ adják. A jelölésről külön cikk szól: <a href="/hu/irasok/ai-act-jelolesi-kotelezettseg">AI Act: mit kell jelölnie egy terméknek</a>. A jogalap az (EU) 2024/1689 rendelet (forrás: <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener noreferrer">EUR-Lex, (EU) 2024/1689 rendelet<span class="sr-only"> (új lapon nyílik meg)</span></a>, lekérve 2026. október 22-én). Ez egy termékcsapat olvasata, nem jogi tanácsadás.</p>
+<h2 id="osszegzes">Összegzés</h2>
+<p>Nem az a kérdés, hogy hallucinál-e a céged AI-rendszere. Hallucinál. Az a kérdés, hogy a terméked úgy épült-e meg, hogy a hibás válasz feltűnjön, mielőtt hatása lenne: saját források, látható hivatkozás, vázlat, tartózkodás, megmutatott bizonyosság, következményhez igazított ellenőrzés és mérés. Ha AI-funkciót tervezel, vagy egy meglévőt szeretnél átnézetni, egy beszélgetésben megmondom, a hét minta közül melyik hiányzik nálad először: <a href="/hu/kapcsolat">kapcsolat</a>. A módszert az <a href="/hu/ai-tanacsadas-fejlesztes">AI tanácsadás, automatizálás és fejlesztés</a> oldalon írom le.</p>
+<h2 id="gyakori-kerdesek">Gyakori kérdések</h2>
+<h3 id="mi-az-az-ai-hallucinacio">Mi az az AI hallucináció?</h3>
+<p>Az AI hallucináció olyan kimenet, amely hihetően hangzik, de téves, vagy semmilyen forrás nem támasztja alá: kitalált idézet, nem létező szabályzat, hibás szám. A modell nem „hazudik”. Nincs fogalma igazról és hamisról, csak valószínűről.</p>
+<h3 id="meg-lehet-teljesen-szuntetni-az-ai-hallucinaciot">Meg lehet teljesen szüntetni az AI hallucinációt?</h3>
+<p>Nem. Jelentősen csökkenthető, ha az AI a cég saját forrásaiból dolgozik, és forrás hiányában tartózkodik, a hatása pedig megfogható, ha ember ellenőrzi a kimenetet, mielőtt hatása lenne. Az a szállító, amely hallucinációmentes AI-t ígér, pontatlanul írja le a termékét.</p>
+<h3 id="megoldja-a-rag-a-hallucinaciot">Megoldja a RAG a hallucinációt?</h3>
+<p>A RAG a kitalált tények ellen segít. Nem segít a megtalált részek hibás összefoglalása, az elavult dokumentumok és az összekevert esetek ellen. Ezért a RAG mellé mindig látható forrás és ellenőrzési lépés kell.</p>
+<h3 id="hogyan-ellenorizzem-hogy-az-ai-valasza-helyes">Hogyan ellenőrizzem, hogy az AI válasza helyes?</h3>
+<p>Nyisd meg a válasz mellett jelzett forrást, és vesd össze vele az állítást. Ha a rendszer nem mutat forrást, a választ kezeld ellenőrizetlen vázlatként. Számot, jogszabályi hivatkozást és ügyféladatot mindig az eredeti dokumentumból ellenőrizz.</p>
+<h3 id="ki-felel-ha-a-ceg-ai-rendszere-hibas-valaszt-ad">Ki felel, ha a cég AI-rendszere hibás választ ad?</h3>
+<p>Az a cég, amely a kimenetet felhasználja vagy az ügyfélnek továbbadja, nem a modell szolgáltatója. Ezért a következménnyel járó kimenetek emberi jóváhagyása nem puszta óvatosság: ez az a pont, ahol a felelősség ül. A pontos felelősségi helyzetet a jogi tanácsadód vizsgálja meg.</p>
+<h3 id="melyik-ai-modell-hallucinal-a-legkevesbe">Melyik AI modell hallucinál a legkevésbé?</h3>
+<p>Ez minden modellgenerációval változik, és a te esetedben csak a saját dokumentumaidon végzett mérés számít. A prototípusban több modellt tesztelünk ugyanazokon a példákon, és ez alapján választunk, nem ranglista alapján.</p>
+<section class="writing-cta" aria-labelledby="kapcsolodo-szolgaltatas">
+<h2 id="kapcsolodo-szolgaltatas">Ha ez a te projekted</h2>
+<p>Erről a munkáról bővebben itt olvashatsz: <a href="/hu/ai-tanacsadas-fejlesztes">AI tanácsadás, automatizálás és fejlesztés cégeknek</a>. Ha már tudod, mit szeretnél, írj pár sort a céljaidról.</p>
+<p><a class="footer-email hero-work-link" href="/hu/kapcsolat">Beszéljünk a projektedről</a></p>
+</section>
+<section class="writing-comments" id="comments" aria-labelledby="comments-title" data-comments data-page="/hu/irasok/ai-hallucinacio-ceges-termekben" data-copy="{&quot;author&quot;:&quot;Szerző&quot;,&quot;reply&quot;:&quot;Válasz&quot;,&quot;replyingTo&quot;:&quot;Válasz neki: {name}&quot;,&quot;sending&quot;:&quot;Küldés folyamatban…&quot;,&quot;sent&quot;:&quot;Köszönöm. A hozzászólásod moderálás után jelenik meg.&quot;,&quot;errors&quot;:{&quot;generic&quot;:&quot;A hozzászólást most nem sikerült elküldeni. Próbáld újra kicsit később.&quot;,&quot;rate&quot;:&quot;Túl sok hozzászólás érkezett rövid idő alatt. Próbáld újra később.&quot;,&quot;closed&quot;:&quot;A hozzászólás jelenleg nem érhető el.&quot;,&quot;name&quot;:{&quot;empty&quot;:&quot;Add meg a neved.&quot;,&quot;short&quot;:&quot;A név legalább 2 karakter legyen.&quot;,&quot;long&quot;:&quot;A név legfeljebb 60 karakter lehet.&quot;,&quot;format&quot;:&quot;A névben nem lehet link.&quot;},&quot;body&quot;:{&quot;empty&quot;:&quot;Írd be a hozzászólásod.&quot;,&quot;short&quot;:&quot;A hozzászólás túl rövid.&quot;,&quot;long&quot;:&quot;A hozzászólás legfeljebb 2000 karakter lehet.&quot;,&quot;links&quot;:&quot;Legfeljebb két link szerepelhet a hozzászólásban.&quot;}}}" hidden><h2 id="comments-title">Hozzászólások<span data-comments-count></span></h2><p class="writing-comments-empty" data-comments-empty hidden>Még nincs hozzászólás. Írd meg az elsőt.</p><ol class="writing-comments-list" data-comments-list hidden></ol><form class="writing-comments-form" novalidate aria-labelledby="comments-form-title"><h3 id="comments-form-title">Szólj hozzá</h3><p class="writing-comments-replying" data-comments-replying hidden><span></span> <button type="button" data-comments-cancel>Mégse</button></p><p class="writing-comments-field"><label for="comment-name">Név</label><input id="comment-name" name="name" type="text" autocomplete="name" maxlength="60" required/></p><p class="writing-comments-field"><label for="comment-body">Hozzászólás</label><textarea id="comment-body" name="body" rows="5" maxlength="2000" required></textarea></p><p class="writing-comments-trap" aria-hidden="true"><label for="comment-website">Website</label><input id="comment-website" name="website" type="text" tabindex="-1" autocomplete="off"/></p><p class="writing-comments-note">A hozzászólás moderálás után jelenik meg. Csak a megadott nevet és a szöveget tárolom, e-mail-címet nem kérek. Részletek az <a href="/hu/adatvedelem">adatvédelmi tájékoztatóban</a>.</p><p class="writing-comments-actions"><button type="submit" class="writing-comments-send">Hozzászólás küldése</button><span class="writing-comments-status" data-comments-status role="status" aria-live="polite"></span></p></form><script defer src="/assets/js/comments.acd2c422df04.js"></script></section>
+</div></div></div>
+<aside class="writing-related" aria-labelledby="writing-related-title"><div class="writing-frame"><h2 id="writing-related-title">További cikkek</h2><ol class="writing-rows"><li class="writing-row"><a class="writing-row-link" href="/hu/irasok/human-in-the-loop-emberi-felugyelet"><span class="writing-row-number" aria-hidden="true">01</span><figure class="writing-row-media"><img src="/assets/images/og/writing/human-in-the-loop-ai.jpg" alt="" width="1200" height="630" decoding="async" loading="lazy"/></figure><div class="writing-row-copy"><p class="writing-kicker">AI tanácsadás, automatizálás és fejlesztés cégeknek</p><h3 id="human-in-the-loop-emberi-felugyelet">Human in the loop: hét minta szabályozott AI-termékhez</h3><p>Human in the loop a gyakorlatban: hét minta, amely kiállja a felülvizsgálatot. AI-jelölés, szerkeszthető kimenet, forrás, stop.</p><p class="writing-meta"><span><time datetime="2026-11-12">2026. november 12.</time></span><span>9 perc olvasás</span></p></div></a></li><li class="writing-row"><a class="writing-row-link" href="/hu/irasok/ai-ugyfelszolgalat-emberi-ellenorzessel"><span class="writing-row-number" aria-hidden="true">02</span><figure class="writing-row-media"><img src="/assets/images/og/writing/ai-ugyfelszolgalat-emberi-ellenorzessel.jpg" alt="" width="1200" height="630" decoding="async" loading="lazy"/></figure><div class="writing-row-copy"><p class="writing-kicker">AI tanácsadás, automatizálás és fejlesztés cégeknek</p><h3 id="ai-ugyfelszolgalat-emberi-ellenorzessel">AI ügyfél&shy;szolgálat emberi ellen&shy;őrzéssel: mikor éri meg</h3><p>AI ügyfélszolgálat emberi ellenőrzéssel: mikor éri meg, mit válaszolhat az AI magától, mit néz át ember, és mit ír elő az AI-rendelet.</p><p class="writing-meta"><span><time datetime="2026-10-21">2026. október 21.</time></span><span>5 perc olvasás</span></p></div></a></li><li class="writing-row"><a class="writing-row-link" href="/hu/irasok/ai-fejlesztes-ara-mitol-fugg"><span class="writing-row-number" aria-hidden="true">03</span><figure class="writing-row-media"><img src="/assets/images/og/writing/ai-integration-cost.jpg" alt="" width="1200" height="630" decoding="async" loading="lazy"/></figure><div class="writing-row-copy"><p class="writing-kicker">AI tanácsadás, automatizálás és fejlesztés cégeknek</p><h3 id="ai-fejlesztes-ara-mitol-fugg">AI fejlesztés ára: mitől függ, és mit kérdezz előtte</h3><p>AI fejlesztés ára: nyolc tényező, amely drágítja vagy olcsóbbá teszi, a szakaszolás, két ajánlat összevetése és a futó költségek.</p><p class="writing-meta"><span><time datetime="2026-11-27">2026. november 27.</time></span><span>8 perc olvasás</span></p></div></a></li></ol></div></aside>
+</article></main>
+<footer lang="hu" class="footer-section editorial-footer"><div class="container footer-inner"><div class="footer-chrome"><div class="footer-ident"><a class="footer-brand" href="/hu" aria-label="Barna Norbert, főoldal"><img alt="" class="footer-wordmark" decoding="async" src="/assets/images/68f9e9de8ed08e31e52c4188_NB.svg" width="110" height="60"/></a><h2 class="editorial-footer-title">Beszéljünk<br>termékről.</h2><p class="footer-lede">Product VP vagyok, AI-termékeket vezetek szabályozott pénzügyi és magas bizalmi igényű rendszerekben.</p><div class="footer-cta"><a class="footer-email" href="/hu/kapcsolat">Beszéljünk a projektedről</a><a class="footer-contact-link" href="https://www.linkedin.com/in/barna-norbert/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn-profilom (új lapon nyílik meg)"><svg class="footer-icon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 9.1H4.1V20h2.5V9.1ZM5.35 4.2a1.55 1.55 0 1 0 0 3.1 1.55 1.55 0 0 0 0-3.1ZM19.9 13.25c0-3.18-1.7-4.66-3.98-4.66-1.84 0-2.66 1.02-3.12 1.74V9.1h-2.48c.04.72 0 10.9 0 10.9h2.48v-6.08c0-.33.02-.66.12-.9.27-.66.87-1.35 1.89-1.35 1.33 0 1.87 1.02 1.87 2.5V20h2.22v-6.75Z"/></svg><span class="editorial-linkedin-label">LinkedIn</span></a></div></div><nav class="footer-nav" aria-label="Lábléc"><div class="footer-col"><p class="footer-col-title">Munkák</p><ul class="footer-col-list"><li><a href="/hu/munka/raiffeisen">Raiffeisen</a></li><li><a href="/hu/munka/instructure">Instructure</a></li><li><a href="/hu/munka/bitpanda">Bitpanda</a></li><li><a href="/hu/munka/kineticare">Kineticare</a></li><li><a href="/hu/munkak">Összes munka</a></li></ul></div><div class="footer-col footer-col-services"><p class="footer-col-title">Szolgáltatások</p><ul class="footer-col-list"><li><a href="/hu/webfejlesztes">Webfejlesztés</a></li><li><a href="/hu/ai-tanacsadas-fejlesztes">AI tanácsadás és fejlesztés</a></li></ul></div><div class="footer-col footer-col-articles"><p class="footer-col-title">Tudástár</p><ul class="footer-col-list"><li><a href="/hu/irasok/ai-fejlesztes-ara-mitol-fugg">AI fejlesztés ára: mitől függ, és mit kérdezz előtte</a></li><li><a href="/hu/irasok/ai-fejleszto-partner-valasztasa">AI fejlesztő partner: 10 kérdés, mielőtt megbízod</a></li><li><a href="/hu/irasok/ai-hallucinacio-ceges-termekben">AI hallucináció céges termékben: mi az, és hogyan kezeld</a></li><li><a href="/hu/irasok">Összes cikk</a></li></ul></div></nav></div><div class="footer-bar"><p class="footer-copyright">© 2026 Barna Norbert</p><div class="footer-privacy"><a href="/hu/adatvedelem" lang="hu">Adatvédelem</a><button type="button" data-consent-settings hidden>Analitikai beállítások</button></div></div></div></footer>
+<script src="/assets/js/media.4a5f4385717d.js"></script>
+<script src="/assets/js/navigation.js"></script><script src="/assets/js/vendor/gsap.min.js"></script><script src="/assets/js/vendor/ScrollTrigger.min.js"></script><script src="/assets/js/immersive-navigation.34545d79ebbc.js"></script><script src="/assets/js/animations.ae0c9e34b03c.js"></script>
+</body>
+</html>

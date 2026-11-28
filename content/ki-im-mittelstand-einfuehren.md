@@ -10,7 +10,7 @@ service: /de/ki-beratung-entwicklung
 service_label: KI-Beratung, Automatisierung und Entwicklung für Unternehmen
 cover: /assets/images/og/writing/ki-im-mittelstand-einfuehren.jpg
 cover_alt: Drei gefaltete Papierstufen, die nach rechts ansteigen, vor lilafarbenem Hintergrund: KI im Mittelstand einführen in drei Phasen
-pair: hu/ai-bevezetese-kkv-elso-90-nap
+pair: [hu/ai-bevezetese-kkv-elso-90-nap, en/ai-for-small-business-first-90-days]
 ---
 KI im Mittelstand einzuführen beginnt mit einem einzigen Arbeitsablauf, nicht mit einem Werkzeug. In den ersten drei Monaten wählen Sie eine wiederkehrende Aufgabe aus, legen fest, was die KI tun darf und was ein Mensch prüft, testen das an echten Beispielen und messen es in einem engen Pilotversuch. Am Ende haben Sie keine „KI-Strategie“, sondern eine Entscheidung: weitermachen, umbauen oder abbrechen.
 

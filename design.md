@@ -1101,7 +1101,7 @@ carry `scope`, the first cell of a body row is its row header at regular
 weight; only a table of four or more columns may scroll, inside a
 `.writing-table-wide` region that is focusable and named by its caption),
 ends in the
-lilac CTA card and two related articles (`.writing-related`, rows headed
+lilac CTA card and three related articles chosen by topic (`.writing-related`, rows headed
 `h3` under the section's `h2`). An article is a
 schema `Article` (author `#person` with `jobTitle` and `knowsLanguage`,
 `datePublished`/`dateModified` as full date-times) plus a `BreadcrumbList`

@@ -10,7 +10,7 @@ service: /de/webentwicklung
 service_label: Webentwicklung und individuelle Webanwendungen für Unternehmen
 cover: /assets/images/og/writing/individuelle-website-oder-baukasten.jpg
 cover_alt: Links ein Raster gleichförmiger kleiner Papierkacheln, rechts eine einzelne frei gefaltete Papierform in Olivgrün: Website-Baukasten oder individuelle Website
-pair: hu/egyedi-weboldal-vagy-sablon
+pair: [hu/egyedi-weboldal-vagy-sablon, en/custom-website-or-template]
 ---
 Ein Baukasten ist die richtige Wahl, wenn Ihre Website vor allem informieren soll, Sie sie selbst pflegen wollen und keine Anbindung an andere Systeme brauchen. Eine individuelle Website lohnt sich, wenn die Seite Vertrauen aufbauen muss, bevor jemand bezahlt oder anfragt, wenn Zahlung, Buchung oder ein Kundenbereich dazugehören, wenn sie mit Ihrem CRM, ERP oder Buchungssystem sprechen muss, oder wenn Geschwindigkeit und Auffindbarkeit über Aufträge entscheiden. Der Preis ist in dieser Entscheidung nicht das erste Kriterium, sondern das letzte.
 

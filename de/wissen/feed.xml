@@ -6,7 +6,33 @@
     <atom:link href="https://www.barnanorbert.com/de/wissen/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Artikel von Norbert Barna zu KI-Beratung, Human in the Loop, KI-Verordnung und Webentwicklung, geschrieben aus eigenen Projekten.</description>
     <language>de</language>
-    <lastBuildDate>Thu, 22 Oct 2026 07:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Nov 2026 22:30:00 +0000</lastBuildDate>
+    <item>
+      <title>KI-Beratung Kosten: Wovon der Preis abhängt</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-beratung-kosten</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-beratung-kosten</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>KI-Beratung Kosten im Mittelstand: acht Faktoren, die den Preis bewegen, was sich staffeln lässt und welche Betriebskosten bleiben.</description>
+      <category>ki beratung kosten</category>
+      <category>ki beratung mittelstand</category>
+      <category>ki einführung kosten</category>
+      <category>ki projekt kosten</category>
+      <category>ki beratung angebot vergleichen</category>
+      <category>ki betriebskosten</category>
+    </item>
+    <item>
+      <title>KI-Dienstleister auswählen: Zehn Fragen vor dem Auftrag</title>
+      <link>https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/de/wissen/ki-dienstleister-auswaehlen</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>KI-Dienstleister auswählen: was Sie selbst vorbereiten, zehn Fragen für das Erstgespräch und woran Sie eine gute Antwort erkennen.</description>
+      <category>ki dienstleister</category>
+      <category>ki agentur</category>
+      <category>ki beratung</category>
+      <category>ki dienstleister auswählen</category>
+      <category>ki projekt ausschreiben</category>
+      <category>ki integration</category>
+    </item>
     <item>
       <title>Was kostet eine Website? Wovon der Preis wirklich abhängt</title>
       <link>https://www.barnanorbert.com/de/wissen/was-kostet-eine-website</link>

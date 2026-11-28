@@ -6,7 +6,85 @@
     <atom:link href="https://www.barnanorbert.com/writing/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Articles by Norbert Barna on AI integration, human-in-the-loop product design and web development, drawn from shipped work.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 12 Nov 2026 11:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 27 Nov 2026 22:30:00 +0000</lastBuildDate>
+    <item>
+      <title>AI in customer service: where human oversight belongs</title>
+      <link>https://www.barnanorbert.com/writing/ai-customer-service-with-human-oversight</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/ai-customer-service-with-human-oversight</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>AI in customer service with human oversight: what the AI may answer alone, what a person approves, and when it must hand over.</description>
+      <category>ai in customer service</category>
+      <category>ai customer service</category>
+      <category>human oversight</category>
+      <category>human in the loop</category>
+      <category>customer service chatbot</category>
+      <category>ai integration</category>
+    </item>
+    <item>
+      <title>AI for small business: what to do in the first 90 days</title>
+      <link>https://www.barnanorbert.com/writing/ai-for-small-business-first-90-days</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/ai-for-small-business-first-90-days</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>AI for small business in the first 90 days: which workflow to pick, what a person checks, how to measure a pilot and when to stop.</description>
+      <category>ai for small business</category>
+      <category>ai adoption</category>
+      <category>ai pilot</category>
+      <category>ai integration</category>
+      <category>workflow automation</category>
+      <category>human oversight</category>
+    </item>
+    <item>
+      <title>Custom website vs template: six criteria to decide</title>
+      <link>https://www.barnanorbert.com/writing/custom-website-or-template</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/custom-website-or-template</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>Custom website vs template for a small business: six criteria, a decision table and a real example to help you choose.</description>
+      <category>custom website vs template</category>
+      <category>custom website</category>
+      <category>website template</category>
+      <category>small business website</category>
+      <category>website builder</category>
+      <category>web development services</category>
+    </item>
+    <item>
+      <title>Website redesign or full rebuild: how to decide</title>
+      <link>https://www.barnanorbert.com/writing/website-redesign-or-rebuild</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/website-redesign-or-rebuild</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>Website redesign or full rebuild? Six signs the foundation has failed, when a redesign is enough, and an SEO checklist for launch.</description>
+      <category>website redesign</category>
+      <category>website rebuild</category>
+      <category>website redesign vs rebuild</category>
+      <category>website migration seo</category>
+      <category>website redesign checklist</category>
+      <category>web development services</category>
+    </item>
+    <item>
+      <title>AI integration cost: what it depends on at mid-size</title>
+      <link>https://www.barnanorbert.com/writing/what-ai-integration-cost-depends-on</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/what-ai-integration-cost-depends-on</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>AI integration cost for a mid-size company depends on eight factors. How each moves the price, what to stage, how to compare quotes.</description>
+      <category>ai integration cost</category>
+      <category>ai integration</category>
+      <category>ai implementation cost</category>
+      <category>ai integration pricing</category>
+      <category>ai pilot</category>
+      <category>ai running costs</category>
+    </item>
+    <item>
+      <title>AI automation: which business process to automate first</title>
+      <link>https://www.barnanorbert.com/writing/which-process-to-automate-with-ai-first</link>
+      <guid isPermaLink="true">https://www.barnanorbert.com/writing/which-process-to-automate-with-ai-first</guid>
+      <pubDate>Fri, 27 Nov 2026 22:30:00 +0000</pubDate>
+      <description>AI automation works best on a first process that is frequent, reads messy input, is checked by a person and is cheap to get wrong.</description>
+      <category>ai automation</category>
+      <category>business process automation</category>
+      <category>ai integration</category>
+      <category>ai audit</category>
+      <category>human in the loop ai</category>
+      <category>ai pilot</category>
+    </item>
     <item>
       <title>AI hallucinations in business: what a product has to do</title>
       <link>https://www.barnanorbert.com/writing/ai-hallucinations-in-business-products</link>
